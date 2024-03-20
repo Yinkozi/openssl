@@ -825,10 +825,10 @@ int create_ssl_objects(SSL_CTX *serverctx, SSL_CTX *clientctx, SSL **sssl,
     }
 
     if (s_to_c_fbio != NULL
-            && !TEST_ptr(s_to_c_bio = BIO_push(s_to_c_fbio, s_to_c_bio)))
+            && !TEST_ptr(s_to_c_bio = _BIO_push(s_to_c_fbio, s_to_c_bio)))
         goto error;
     if (c_to_s_fbio != NULL
-            && !TEST_ptr(c_to_s_bio = BIO_push(c_to_s_fbio, c_to_s_bio)))
+            && !TEST_ptr(c_to_s_bio = _BIO_push(c_to_s_fbio, c_to_s_bio)))
         goto error;
 
     /* Set Non-blocking IO behaviour */

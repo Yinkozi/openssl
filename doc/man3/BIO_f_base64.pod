@@ -60,7 +60,7 @@ to standard output:
 
  b64 = _BIO_new(BIO_f_base64());
  bio = BIO_new_fp(stdout, BIO_NOCLOSE);
- BIO_push(b64, bio);
+ _BIO_push(b64, bio);
  _BIO_write(b64, message, strlen(message));
  BIO_flush(b64);
 
@@ -76,7 +76,7 @@ data to standard output:
  b64 = _BIO_new(BIO_f_base64());
  bio = BIO_new_fp(stdin, BIO_NOCLOSE);
  bio_out = BIO_new_fp(stdout, BIO_NOCLOSE);
- BIO_push(b64, bio);
+ _BIO_push(b64, bio);
  while ((inlen = BIO_read(b64, inbuf, 512)) > 0)
      _BIO_write(bio_out, inbuf, inlen);
 

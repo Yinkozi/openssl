@@ -567,7 +567,7 @@ long BIO_ctrl(BIO *bp, int cmd, long larg, void *parg);
 long BIO_callback_ctrl(BIO *b, int cmd, BIO_info_cb *fp);
 void *BIO_ptr_ctrl(BIO *bp, int cmd, long larg);
 long BIO_int_ctrl(BIO *bp, int cmd, long larg, int iarg);
-BIO *BIO_push(BIO *b, BIO *append);
+BIO *_BIO_push(BIO *b, BIO *append);
 BIO *BIO_pop(BIO *b);
 void BIO_free_all(BIO *a);
 BIO *BIO_find_type(BIO *b, int bio_type);

@@ -2137,7 +2137,7 @@ int s_client_main(int argc, char **argv)
         BIO *test;
 
         test = _BIO_new(BIO_f_nbio_test());
-        sbio = BIO_push(test, sbio);
+        sbio = _BIO_push(test, sbio);
     }
 
     if (c_debug) {
@@ -2203,7 +2203,7 @@ int s_client_main(int argc, char **argv)
             int foundit = 0;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             /* Wait for multi-line response to end from LMTP or SMTP */
             do {
                 mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
@@ -2251,7 +2251,7 @@ int s_client_main(int argc, char **argv)
             int foundit = 0;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
             /* STARTTLS command requires CAPABILITY... */
             BIO_printf(fbio, ". CAPABILITY\r\n");
@@ -2278,7 +2278,7 @@ int s_client_main(int argc, char **argv)
         {
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             /* wait for multi-line response to end from FTP */
             do {
                 mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
@@ -2370,7 +2370,7 @@ int s_client_main(int argc, char **argv)
             } foundit = error_connect;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             BIO_printf(fbio, "CONNECT %s HTTP/1.0\r\n\r\n", connectstr);
             (void)BIO_flush(fbio);
             /*
@@ -2419,7 +2419,7 @@ int s_client_main(int argc, char **argv)
             int numeric;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             BIO_printf(fbio, "STARTTLS\r\n");
             (void)BIO_flush(fbio);
             width = SSL_get_fd(con) + 1;
@@ -2579,7 +2579,7 @@ int s_client_main(int argc, char **argv)
             int foundit = 0;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
             /* STARTTLS command requires CAPABILITIES... */
             BIO_printf(fbio, "CAPABILITIES\r\n");
@@ -2615,7 +2615,7 @@ int s_client_main(int argc, char **argv)
             int foundit = 0;
             BIO *fbio = _BIO_new(BIO_f_buffer());
 
-            BIO_push(fbio, sbio);
+            _BIO_push(fbio, sbio);
             /* wait for multi-line response to end from Sieve */
             do {
                 mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);

@@ -197,7 +197,7 @@ int asn1parse_main(int argc, char **argv)
 
                 if ((b64 = _BIO_new(BIO_f_base64())) == NULL)
                     goto end;
-                BIO_push(b64, in);
+                _BIO_push(b64, in);
                 tmp = in;
                 in = b64;
                 b64 = tmp;

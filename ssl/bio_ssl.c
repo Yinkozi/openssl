@@ -291,7 +291,7 @@ static long ssl_ctrl(BIO *b, int cmd, long num, void *ptr)
         bio = SSL_get_rbio(ssl);
         if (bio != NULL) {
             if (next != NULL)
-                BIO_push(bio, next);
+                _BIO_push(bio, next);
             BIO_set_next(b, bio);
             BIO_up_ref(bio);
         }
@@ -427,7 +427,7 @@ BIO *BIO_new_buffer_ssl_connect(SSL_CTX *ctx)
         return NULL;
     if ((ssl = BIO_new_ssl_connect(ctx)) == NULL)
         goto err;
-    if ((ret = BIO_push(buf, ssl)) == NULL)
+    if ((ret = _BIO_push(buf, ssl)) == NULL)
         goto err;
     return ret;
  err:
@@ -446,7 +446,7 @@ BIO *BIO_new_ssl_connect(SSL_CTX *ctx)
         return NULL;
     if ((ssl = BIO_new_ssl(ctx, 1)) == NULL)
         goto err;
-    if ((ret = BIO_push(ssl, con)) == NULL)
+    if ((ret = _BIO_push(ssl, con)) == NULL)
         goto err;
     return ret;
  err:

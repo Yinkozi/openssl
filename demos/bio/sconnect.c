@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     out = _BIO_new(BIO_s_connect());
     BIO_set_conn_hostname(out, hostport);
     BIO_set_nbio(out, 1);
-    out = BIO_push(ssl_bio, out);
+    out = _BIO_push(ssl_bio, out);
 
     p = "GET / HTTP/1.0\r\n\r\n";
     len = strlen(p);

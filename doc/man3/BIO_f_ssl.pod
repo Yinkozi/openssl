@@ -43,7 +43,7 @@ I/O performed on an SSL BIO communicates using the SSL protocol with
 the SSLs read and write BIOs. If an SSL connection is not established
 then an attempt is made to establish one on the first I/O call.
 
-If a BIO is appended to an SSL BIO using BIO_push() it is automatically
+If a BIO is appended to an SSL BIO using _BIO_push() it is automatically
 used as the SSL BIOs read and write BIOs.
 
 Calling BIO_reset() on an SSL BIO closes down any current SSL connection
@@ -232,7 +232,7 @@ a client and also echoes the request to standard output.
 
  SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
  bbio = _BIO_new(BIO_f_buffer());
- sbio = BIO_push(bbio, sbio);
+ sbio = _BIO_push(bbio, sbio);
  acpt = BIO_new_accept("4433");
 
  /*

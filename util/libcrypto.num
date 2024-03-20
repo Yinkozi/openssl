@@ -2175,7 +2175,7 @@ d2i_IPAddressChoice                     2149	1_1_0	EXIST::FUNCTION:RFC3779
 IPAddressFamily_it                      2150	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:RFC3779
 IPAddressFamily_it                      2150	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:RFC3779
 ERR_load_OCSP_strings                   2151	1_1_0	EXIST::FUNCTION:OCSP
-BIO_push                                2152	1_1_0	EXIST::FUNCTION:
+_BIO_push                                2152	1_1_0	EXIST::FUNCTION:
 ASN1_BMPSTRING_new                      2153	1_1_0	EXIST::FUNCTION:
 COMP_get_type                           2154	1_1_0	EXIST::FUNCTION:COMP
 d2i_ASIdentifierChoice                  2155	1_1_0	EXIST::FUNCTION:RFC3779

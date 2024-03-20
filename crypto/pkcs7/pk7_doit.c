@@ -70,7 +70,7 @@ static int PKCS7_bio_add_digest(BIO **pbio, X509_ALGOR *alg)
     BIO_set_md(btmp, md);
     if (*pbio == NULL)
         *pbio = btmp;
-    else if (!BIO_push(*pbio, btmp)) {
+    else if (!_BIO_push(*pbio, btmp)) {
         PKCS7err(PKCS7_F_PKCS7_BIO_ADD_DIGEST, ERR_R_BIO_LIB);
         goto err;
     }
@@ -314,7 +314,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
         if (out == NULL)
             out = btmp;
         else
-            BIO_push(out, btmp);
+            _BIO_push(out, btmp);
         btmp = NULL;
     }
 
@@ -333,7 +333,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
             goto err;
     }
     if (out)
-        BIO_push(out, bio);
+        _BIO_push(out, bio);
     else
         out = bio;
     return out;
@@ -458,7 +458,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
             if (out == NULL)
                 out = btmp;
             else
-                BIO_push(out, btmp);
+                _BIO_push(out, btmp);
             btmp = NULL;
         }
     }
@@ -560,7 +560,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
         if (out == NULL)
             out = etmp;
         else
-            BIO_push(out, etmp);
+            _BIO_push(out, etmp);
         etmp = NULL;
     }
     if (in_bio != NULL) {
@@ -577,7 +577,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
         if (bio == NULL)
             goto err;
     }
-    BIO_push(out, bio);
+    _BIO_push(out, bio);
     bio = NULL;
     return out;
 

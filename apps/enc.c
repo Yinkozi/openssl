@@ -389,9 +389,9 @@ int enc_main(int argc, char **argv)
             BIO_set_callback_arg(bzl, (char *)bio_err);
         }
         if (enc)
-            wbio = BIO_push(bzl, wbio);
+            wbio = _BIO_push(bzl, wbio);
         else
-            rbio = BIO_push(bzl, rbio);
+            rbio = _BIO_push(bzl, rbio);
     }
 #endif
 
@@ -405,9 +405,9 @@ int enc_main(int argc, char **argv)
         if (olb64)
             BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
         if (enc)
-            wbio = BIO_push(b64, wbio);
+            wbio = _BIO_push(b64, wbio);
         else
-            rbio = BIO_push(b64, rbio);
+            rbio = _BIO_push(b64, rbio);
     }
 
     if (cipher != NULL) {
@@ -585,7 +585,7 @@ int enc_main(int argc, char **argv)
 
     /* Only encrypt/decrypt as we write the file */
     if (benc != NULL)
-        wbio = BIO_push(benc, wbio);
+        wbio = _BIO_push(benc, wbio);
 
     while (BIO_pending(rbio) || !BIO_eof(rbio)) {
         inl = BIO_read(rbio, (char *)buff, bsize);

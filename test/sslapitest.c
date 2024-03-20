@@ -1960,7 +1960,7 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
      * If anything goes wrong here then we could leak memory, so this will
      * be caught in a crypto-mdebug build
      */
-    BIO_push(sslbio, membio1);
+    _BIO_push(sslbio, membio1);
 
     /* Verify changing the rbio/wbio directly does not cause leaks */
     if (change_bio != NO_BIO_CHANGE) {

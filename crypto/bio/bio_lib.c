@@ -579,7 +579,7 @@ size_t BIO_ctrl_wpending(BIO *bio)
 }
 
 /* put the 'bio' on the end of b's list of operators */
-BIO *BIO_push(BIO *b, BIO *bio)
+BIO *_BIO_push(BIO *b, BIO *bio)
 {
     BIO *lb;
 
@@ -728,7 +728,7 @@ BIO *BIO_dup_chain(BIO *in)
             eoc = new_bio;
             ret = eoc;
         } else {
-            BIO_push(eoc, new_bio);
+            _BIO_push(eoc, new_bio);
             eoc = new_bio;
         }
     }

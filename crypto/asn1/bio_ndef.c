@@ -73,7 +73,7 @@ BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
         goto err;
 
     /* ASN1 bio needs to be next to output BIO */
-    out = BIO_push(asn_bio, out);
+    out = _BIO_push(asn_bio, out);
     if (out == NULL)
         goto err;
     pop_bio = asn_bio;

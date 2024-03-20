@@ -376,7 +376,7 @@ int dgst_main(int argc, char **argv)
             goto end;
         }
     }
-    inp = BIO_push(bmd, in);
+    inp = _BIO_push(bmd, in);
 
     if (md == NULL) {
         EVP_MD_CTX *tctx;

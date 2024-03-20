@@ -4712,7 +4712,7 @@
   *) Disable MD2 in the default configuration.
      [Steve Henson]
 
-  *) In BIO_pop() and BIO_push() use the ctrl argument (which was NULL) to
+  *) In BIO_pop() and _BIO_push() use the ctrl argument (which was NULL) to
      indicate the initial BIO being pushed or popped. This makes it possible
      to determine whether the BIO is the one explicitly called or as a result
      of the ctrl being passed down the chain. Fix BIO_pop() and SSL BIOs so

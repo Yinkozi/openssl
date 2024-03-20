@@ -84,13 +84,13 @@ checking has been omitted for clarity.
  mdtmp = _BIO_new(_BIO_f_md());
  BIO_set_md(mdtmp, _EVP_sha1());
  /*
-  * For BIO_push() we want to append the sink BIO and keep a note of
+  * For _BIO_push() we want to append the sink BIO and keep a note of
   * the start of the chain.
   */
- bio = BIO_push(mdtmp, bio);
+ bio = _BIO_push(mdtmp, bio);
  mdtmp = _BIO_new(_BIO_f_md());
  BIO_set_md(mdtmp, EVP_md5());
- bio = BIO_push(mdtmp, bio);
+ bio = _BIO_push(mdtmp, bio);
  /* Note: mdtmp can now be discarded */
  _BIO_write(bio, message, strlen(message));
 
@@ -103,10 +103,10 @@ The next example digests data by reading through a chain instead:
  bio = BIO_new_file(file, "rb");
  mdtmp = _BIO_new(_BIO_f_md());
  BIO_set_md(mdtmp, _EVP_sha1());
- bio = BIO_push(mdtmp, bio);
+ bio = _BIO_push(mdtmp, bio);
  mdtmp = _BIO_new(_BIO_f_md());
  BIO_set_md(mdtmp, EVP_md5());
- bio = BIO_push(mdtmp, bio);
+ bio = _BIO_push(mdtmp, bio);
  do {
      rdlen = BIO_read(bio, buf, sizeof(buf));
      /* Might want to do something with the data here */

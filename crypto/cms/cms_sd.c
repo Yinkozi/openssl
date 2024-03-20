@@ -799,7 +799,7 @@ BIO *cms_SignedData_init_bio(CMS_ContentInfo *cms)
         if (!mdbio)
             goto err;
         if (chain)
-            BIO_push(chain, mdbio);
+            _BIO_push(chain, mdbio);
         else
             chain = mdbio;
     }

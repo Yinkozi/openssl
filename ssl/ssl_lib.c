@@ -1258,7 +1258,7 @@ void SSL_set0_wbio(SSL *s, BIO *wbio)
 
     /* Re-attach |bbio| to the new |wbio|. */
     if (s->bbio != NULL)
-        s->wbio = BIO_push(s->bbio, s->wbio);
+        s->wbio = _BIO_push(s->bbio, s->wbio);
 }
 
 void SSL_set_bio(SSL *s, BIO *rbio, BIO *wbio)
@@ -4045,7 +4045,7 @@ int ssl_init_wbio_buffer(SSL *s)
         return 0;
     }
     s->bbio = bbio;
-    s->wbio = BIO_push(bbio, s->wbio);
+    s->wbio = _BIO_push(bbio, s->wbio);
 
     return 1;
 }

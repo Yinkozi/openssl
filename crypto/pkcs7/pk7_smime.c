@@ -509,7 +509,7 @@ int PKCS7_decrypt(PKCS7 *p7, EVP_PKEY *pkey, X509 *cert, BIO *data, int flags)
             BIO_free_all(tmpmem);
             return 0;
         }
-        if ((bread = BIO_push(tmpbuf, tmpmem)) == NULL) {
+        if ((bread = _BIO_push(tmpbuf, tmpmem)) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_DECRYPT, ERR_R_MALLOC_FAILURE);
             BIO_free_all(tmpbuf);
             BIO_free_all(tmpmem);

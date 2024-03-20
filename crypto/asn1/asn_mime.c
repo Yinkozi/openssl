@@ -108,7 +108,7 @@ static int B64_write_ASN1(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
     /*
      * prepend the b64 BIO so all data is base64 encoded.
      */
-    out = BIO_push(b64, out);
+    out = _BIO_push(b64, out);
     r = i2d_ASN1_bio_stream(out, val, in, flags, it);
     (void)BIO_flush(out);
     BIO_pop(out);
@@ -137,7 +137,7 @@ static ASN1_VALUE *b64_read_asn1(BIO *bio, const ASN1_ITEM *it)
         ASN1err(ASN1_F_B64_READ_ASN1, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    bio = BIO_push(b64, bio);
+    bio = _BIO_push(b64, bio);
     val = ASN1_item_d2i_bio(it, bio, NULL);
     if (!val)
         ASN1err(ASN1_F_B64_READ_ASN1, ASN1_R_DECODE_ERROR);
@@ -497,7 +497,7 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
     bf = _BIO_new(BIO_f_buffer());
     if (bf == NULL)
         return 0;
-    out = BIO_push(bf, out);
+    out = _BIO_push(bf, out);
     if (flags & SMIME_BINARY) {
         while ((len = BIO_read(in, linebuf, MAX_SMLEN)) > 0)
             _BIO_write(out, linebuf, len);

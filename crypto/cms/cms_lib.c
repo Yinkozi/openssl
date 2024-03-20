@@ -96,7 +96,7 @@ BIO *CMS_dataInit(CMS_ContentInfo *cms, BIO *icont)
     }
 
     if (cmsbio)
-        return BIO_push(cmsbio, cont);
+        return _BIO_push(cmsbio, cont);
 
 err:
     if (!icont)

@@ -1024,7 +1024,7 @@ static bool DoExchange(bssl::UniquePtr<SSL_SESSION> *out_session,
       return false;
     }
     GetTestState(ssl.get())->packeted_bio = packeted.get();
-    BIO_push(packeted.get(), bio.release());
+    _BIO_push(packeted.get(), bio.release());
     bio = std::move(packeted);
   }
   if (config->async) {
@@ -1033,7 +1033,7 @@ static bool DoExchange(bssl::UniquePtr<SSL_SESSION> *out_session,
     if (!async_scoped) {
       return false;
     }
-    BIO_push(async_scoped.get(), bio.release());
+    _BIO_push(async_scoped.get(), bio.release());
     GetTestState(ssl.get())->async_bio = async_scoped.get();
     bio = std::move(async_scoped);
   }

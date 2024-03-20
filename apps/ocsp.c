@@ -1432,7 +1432,7 @@ static int do_responder(OCSP_REQUEST **preq, BIO **pcbio, BIO *acbio,
             goto out;
         }
         BIO_set_flags(b64, BIO_FLAGS_BASE64_NO_NL);
-        getbio = BIO_push(b64, getbio);
+        getbio = _BIO_push(b64, getbio);
     } else if (strncmp(reqbuf, "POST ", 5) != 0) {
         log_message(LOG_INFO, "Invalid request -- bad HTTP verb: %s", client);
         goto out;
@@ -1609,7 +1609,7 @@ OCSP_RESPONSE *process_responder(OCSP_REQUEST *req,
         }
         SSL_CTX_set_mode(ctx, SSL_MODE_AUTO_RETRY);
         sbio = BIO_new_ssl(ctx, 1);
-        cbio = BIO_push(sbio, cbio);
+        cbio = _BIO_push(sbio, cbio);
     }
 
     resp = query_responder(cbio, host, path, headers, req, req_timeout);
