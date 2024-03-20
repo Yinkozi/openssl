@@ -2217,7 +2217,7 @@ static int digestverify_test_run(EVP_TEST *t)
         return 1;
     }
 
-    if (EVP_DigestVerifyFinal(mdata->ctx, mdata->output,
+    if (_EVP_DigestVerifyFinal(mdata->ctx, mdata->output,
                               mdata->output_len) <= 0)
         t->err = "VERIFY_ERROR";
     return 1;

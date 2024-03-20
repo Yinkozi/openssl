@@ -964,7 +964,7 @@ OBJ_NAME_init                           960	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_meth_set_keygen                961	1_1_0	EXIST::FUNCTION:
 RSA_PSS_PARAMS_new                      962	1_1_0	EXIST::FUNCTION:RSA
 RSA_sign                                963	1_1_0	EXIST::FUNCTION:RSA
-EVP_DigestVerifyFinal                   964	1_1_0	EXIST::FUNCTION:
+_EVP_DigestVerifyFinal                   964	1_1_0	EXIST::FUNCTION:
 d2i_RSA_PUBKEY_bio                      965	1_1_0	EXIST::FUNCTION:RSA
 TS_RESP_dup                             966	1_1_0	EXIST::FUNCTION:TS
 ERR_set_error_data                      967	1_1_0	EXIST::FUNCTION:

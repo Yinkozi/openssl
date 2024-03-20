@@ -518,7 +518,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
     if (sigin != NULL) {
         EVP_MD_CTX *ctx;
         BIO_get_md_ctx(bp, &ctx);
-        i = EVP_DigestVerifyFinal(ctx, sigin, (unsigned int)siglen);
+        i = _EVP_DigestVerifyFinal(ctx, sigin, (unsigned int)siglen);
         if (i > 0) {
             BIO_printf(out, "Verified OK\n");
         } else if (i == 0) {

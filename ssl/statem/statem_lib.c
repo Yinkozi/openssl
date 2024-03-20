@@ -493,7 +493,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
                      ERR_R_EVP_LIB);
             goto err;
         }
-        if (EVP_DigestVerifyFinal(mctx, data, len) <= 0) {
+        if (_EVP_DigestVerifyFinal(mctx, data, len) <= 0) {
             SSLfatal(s, SSL_AD_DECRYPT_ERROR, SSL_F_TLS_PROCESS_CERT_VERIFY,
                      SSL_R_BAD_SIGNATURE);
             goto err;

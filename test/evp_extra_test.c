@@ -1029,7 +1029,7 @@ static int test_EVP_DigestSignInit(void)
                                         NULL, pkey))
             || !TEST_true(_EVP_DigestVerifyUpdate(md_ctx_verify,
                                                  kMsg, sizeof(kMsg)))
-            || !TEST_true(EVP_DigestVerifyFinal(md_ctx_verify, sig, sig_len)))
+            || !TEST_true(_EVP_DigestVerifyFinal(md_ctx_verify, sig, sig_len)))
         goto out;
 
     ret = 1;
@@ -1055,7 +1055,7 @@ static int test_EVP_DigestVerifyInit(void)
 
     if (!TEST_true(_EVP_DigestVerifyInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
             || !TEST_true(_EVP_DigestVerifyUpdate(md_ctx, kMsg, sizeof(kMsg)))
-            || !TEST_true(EVP_DigestVerifyFinal(md_ctx, kSignature,
+            || !TEST_true(_EVP_DigestVerifyFinal(md_ctx, kSignature,
                                                  sizeof(kSignature))))
         goto out;
     ret = 1;
@@ -1247,7 +1247,7 @@ static int test_EVP_SM2_verify(void)
     if (!TEST_true(_EVP_DigestVerifyUpdate(mctx, msg, strlen(msg))))
         goto done;
 
-    if (!TEST_true(EVP_DigestVerifyFinal(mctx, signature, sizeof(signature))))
+    if (!TEST_true(_EVP_DigestVerifyFinal(mctx, signature, sizeof(signature))))
         goto done;
     rc = 1;
 
@@ -1349,7 +1349,7 @@ static int test_EVP_SM2(void)
     if (!TEST_true(_EVP_DigestVerifyUpdate(md_ctx_verify, kMsg, sizeof(kMsg))))
         goto done;
 
-    if (!TEST_true(EVP_DigestVerifyFinal(md_ctx_verify, sig, sig_len)))
+    if (!TEST_true(_EVP_DigestVerifyFinal(md_ctx_verify, sig, sig_len)))
         goto done;
 
     /* now check encryption/decryption */

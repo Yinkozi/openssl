@@ -166,7 +166,7 @@ void SCT_CTX_set_time(SCT_CTX *sctx, uint64_t time_in_ms);
 /*
  * Verifies an SCT with the given context.
  * Returns 1 if the SCT verifies successfully; any other value indicates
- * failure. See EVP_DigestVerifyFinal() for the meaning of those values.
+ * failure. See _EVP_DigestVerifyFinal() for the meaning of those values.
  */
 __owur int SCT_CTX_verify(const SCT_CTX *sctx, const SCT *sct);
 

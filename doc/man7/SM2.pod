@@ -56,7 +56,7 @@ a message with the SM2 signature algorithm and the SM3 hash algorithm:
  EVP_MD_CTX_set_pkey_ctx(mctx, pctx);;
  _EVP_DigestVerifyInit(mctx, NULL, EVP_sm3(), NULL, pkey);
  _EVP_DigestVerifyUpdate(mctx, msg, msg_len);
- EVP_DigestVerifyFinal(mctx, sig, sig_len)
+ _EVP_DigestVerifyFinal(mctx, sig, sig_len)
 
 =head1 SEE ALSO
 
