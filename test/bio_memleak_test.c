@@ -23,7 +23,7 @@ static int test_bio_memleak(void)
     static const char str[] = "BIO test\n";
     char buf[100];
 
-    bio = _BIO_new(BIO_s_mem());
+    bio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(bio))
         goto finish;
     bufmem.length = sizeof(str);
@@ -48,7 +48,7 @@ static int test_bio_get_mem(void)
     BIO *bio = NULL;
     BUF_MEM *bufmem = NULL;
 
-    bio = _BIO_new(BIO_s_mem());
+    bio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(bio))
         goto finish;
     if (!TEST_int_eq(BIO_puts(bio, "Hello World\n"), 12))
@@ -123,7 +123,7 @@ static int test_bio_rdonly_mem_buf(void)
         goto finish;
     (void)BIO_set_close(bio, BIO_NOCLOSE);
 
-    bio2 = _BIO_new(BIO_s_mem());
+    bio2 = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(bio2))
         goto finish;
     BIO_set_mem_buf(bio2, bufmem, BIO_CLOSE);
@@ -153,7 +153,7 @@ static int test_bio_rdwr_rdonly(void)
     BIO *bio = NULL;
     char data[16];
 
-    bio = _BIO_new(BIO_s_mem());
+    bio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(bio))
         goto finish;
     if (!TEST_int_eq(BIO_puts(bio, "Hello World\n"), 12))
@@ -189,7 +189,7 @@ static int test_bio_nonclear_rst(void)
     BIO *bio = NULL;
     char data[16];
 
-    bio = _BIO_new(BIO_s_mem());
+    bio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(bio))
         goto finish;
     if (!TEST_int_eq(BIO_puts(bio, "Hello World\n"), 12))
@@ -244,7 +244,7 @@ static int test_bio_i2d_ASN1_mime(void)
     static const char str[] = "BIO mime test\n";
     PKCS7 *p7 = NULL;
 
-    if (!TEST_ptr(bio = _BIO_new(BIO_s_mem())))
+    if (!TEST_ptr(bio = _BIO_new(_BIO_s_mem())))
         goto finish;
 
     bufmem.length = sizeof(str);
@@ -254,7 +254,7 @@ static int test_bio_i2d_ASN1_mime(void)
     BIO_set_flags(bio, BIO_FLAGS_MEM_RDONLY);
     BIO_set_callback_ex(bio, BIO_error_callback);
 
-    if (!TEST_ptr(out = _BIO_new(BIO_s_mem())))
+    if (!TEST_ptr(out = _BIO_new(_BIO_s_mem())))
         goto finish;
     if (!TEST_ptr(p7 = PKCS7_new()))
         goto finish;

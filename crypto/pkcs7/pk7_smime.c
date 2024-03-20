@@ -313,7 +313,7 @@ int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,
         goto err;
 
     if (flags & PKCS7_TEXT) {
-        if ((tmpout = _BIO_new(BIO_s_mem())) == NULL) {
+        if ((tmpout = _BIO_new(_BIO_s_mem())) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_VERIFY, ERR_R_MALLOC_FAILURE);
             goto err;
         }

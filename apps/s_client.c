@@ -2671,7 +2671,7 @@ int s_client_main(int argc, char **argv)
             char *genstr = NULL;
             int result = -1;
             ASN1_TYPE *atyp = NULL;
-            BIO *ldapbio = _BIO_new(BIO_s_mem());
+            BIO *ldapbio = _BIO_new(_BIO_s_mem());
             CONF *cnf = NCONF_new(NULL);
 
             if (cnf == NULL) {

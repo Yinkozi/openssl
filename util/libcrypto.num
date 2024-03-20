@@ -2156,7 +2156,7 @@ EDIPARTYNAME_it                         2131	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:
 ERR_print_errors_fp                     2132	1_1_0	EXIST::FUNCTION:STDIO
 BN_GF2m_mod_div_arr                     2133	1_1_0	EXIST::FUNCTION:EC2M
 PKCS12_SAFEBAG_get0_attr                2134	1_1_0	EXIST::FUNCTION:
-BIO_s_mem                               2135	1_1_0	EXIST::FUNCTION:
+_BIO_s_mem                               2135	1_1_0	EXIST::FUNCTION:
 OCSP_RESPDATA_new                       2136	1_1_0	EXIST::FUNCTION:OCSP
 ASN1_item_i2d_fp                        2137	1_1_0	EXIST::FUNCTION:STDIO
 BN_GF2m_mod_sqr                         2138	1_1_0	EXIST::FUNCTION:EC2M

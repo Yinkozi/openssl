@@ -43,7 +43,7 @@ These functions are currently the only way to store encrypted private keys using
 
 Currently all the functions use BIOs or FILE pointers, there are no functions which
 work directly on memory: this can be readily worked around by converting the buffers
-to memory BIOs, see L<BIO_s_mem(3)> for details.
+to memory BIOs, see L<_BIO_s_mem(3)> for details.
 
 These functions make no assumption regarding the pass phrase received from the
 password callback.

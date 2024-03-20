@@ -48,7 +48,7 @@ BIO *cms_content_bio(CMS_ContentInfo *cms)
      * If content not detached and created return memory BIO
      */
     if (!*pos || ((*pos)->flags == ASN1_STRING_FLAG_CONT))
-        return _BIO_new(BIO_s_mem());
+        return _BIO_new(_BIO_s_mem());
     /* Else content was read in: return read only BIO for it */
     return BIO_new_mem_buf((*pos)->data, (*pos)->length);
 }

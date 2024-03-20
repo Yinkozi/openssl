@@ -914,7 +914,7 @@ int PEM_read_bio_ex(BIO *bp, char **name_out, char **header,
         PEMerr(PEM_F_PEM_READ_BIO_EX, ERR_R_PASSED_INVALID_ARGUMENT);
         goto end;
     }
-    bmeth = (flags & PEM_FLAG_SECURE) ? BIO_s_secmem() : BIO_s_mem();
+    bmeth = (flags & PEM_FLAG_SECURE) ? BIO_s_secmem() : _BIO_s_mem();
 
     headerB = _BIO_new(bmeth);
     dataB = _BIO_new(bmeth);

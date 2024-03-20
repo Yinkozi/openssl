@@ -324,7 +324,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
         } else if (os && os->length > 0) {
             bio = BIO_new_mem_buf(os->data, os->length);
         } else {
-            bio = _BIO_new(BIO_s_mem());
+            bio = _BIO_new(_BIO_s_mem());
             if (bio == NULL)
                 goto err;
             BIO_set_mem_eof_return(bio, 0);
@@ -569,7 +569,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
         if (data_body->length > 0)
             bio = BIO_new_mem_buf(data_body->data, data_body->length);
         else {
-            bio = _BIO_new(BIO_s_mem());
+            bio = _BIO_new(_BIO_s_mem());
             if (bio == NULL)
                 goto err;
             BIO_set_mem_eof_return(bio, 0);

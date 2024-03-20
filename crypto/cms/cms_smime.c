@@ -22,7 +22,7 @@ static BIO *cms_get_text_bio(BIO *out, unsigned int flags)
     if (out == NULL)
         rbio = _BIO_new(BIO_s_null());
     else if (flags & CMS_TEXT) {
-        rbio = _BIO_new(BIO_s_mem());
+        rbio = _BIO_new(_BIO_s_mem());
         BIO_set_mem_eof_return(rbio, 0);
     } else
         rbio = out;

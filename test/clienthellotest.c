@@ -164,8 +164,8 @@ static int test_client_hello(int currtest)
             goto end;
     }
 
-    rbio = _BIO_new(BIO_s_mem());
-    wbio = _BIO_new(BIO_s_mem());
+    rbio = _BIO_new(_BIO_s_mem());
+    wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
         BIO_free(rbio);
         BIO_free(wbio);

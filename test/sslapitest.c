@@ -1867,7 +1867,7 @@ static int test_ssl_set_bio(int idx)
             || initwbio == USE_BIO_1
             || newrbio == USE_BIO_1
             || newwbio == USE_BIO_1) {
-        if (!TEST_ptr(bio1 = _BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(bio1 = _BIO_new(_BIO_s_mem())))
             goto end;
     }
 
@@ -1875,7 +1875,7 @@ static int test_ssl_set_bio(int idx)
             || initwbio == USE_BIO_2
             || newrbio == USE_BIO_2
             || newwbio == USE_BIO_2) {
-        if (!TEST_ptr(bio2 = _BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(bio2 = _BIO_new(_BIO_s_mem())))
             goto end;
     }
 
@@ -1951,7 +1951,7 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
     if (!TEST_ptr(ctx = SSL_CTX_new(TLS_method()))
             || !TEST_ptr(ssl = SSL_new(ctx))
             || !TEST_ptr(sslbio = _BIO_new(BIO_f_ssl()))
-            || !TEST_ptr(membio1 = _BIO_new(BIO_s_mem())))
+            || !TEST_ptr(membio1 = _BIO_new(_BIO_s_mem())))
         goto end;
 
     BIO_set_ssl(sslbio, ssl, BIO_CLOSE);
@@ -1964,7 +1964,7 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
 
     /* Verify changing the rbio/wbio directly does not cause leaks */
     if (change_bio != NO_BIO_CHANGE) {
-        if (!TEST_ptr(membio2 = _BIO_new(BIO_s_mem()))) {
+        if (!TEST_ptr(membio2 = _BIO_new(_BIO_s_mem()))) {
             ssl = NULL;
             goto end;
         }
@@ -5130,8 +5130,8 @@ static int test_max_fragment_len_ext(int idx_tst)
     if (!TEST_ptr(con))
         goto end;
 
-    rbio = _BIO_new(BIO_s_mem());
-    wbio = _BIO_new(BIO_s_mem());
+    rbio = _BIO_new(_BIO_s_mem());
+    wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
         BIO_free(rbio);
         BIO_free(wbio);

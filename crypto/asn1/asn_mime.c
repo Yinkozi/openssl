@@ -608,7 +608,7 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
                         BIO_free(bpart);
                         return 0;
                     }
-                bpart = _BIO_new(BIO_s_mem());
+                bpart = _BIO_new(_BIO_s_mem());
                 if (bpart == NULL)
                     return 0;
                 BIO_set_mem_eof_return(bpart, 0);

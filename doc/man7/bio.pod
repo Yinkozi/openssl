@@ -56,7 +56,7 @@ BIO_f_*();
 
 Create a memory BIO:
 
- BIO *mem = _BIO_new(BIO_s_mem());
+ BIO *mem = _BIO_new(_BIO_s_mem());
 
 =head1 SEE ALSO
 
@@ -69,7 +69,7 @@ L<BIO_new_bio_pair(3)>,
 L<BIO_push(3)>, L<BIO_read_ex(3)>,
 L<BIO_s_accept(3)>, L<BIO_s_bio(3)>,
 L<BIO_s_connect(3)>, L<BIO_s_fd(3)>,
-L<BIO_s_file(3)>, L<BIO_s_mem(3)>,
+L<BIO_s_file(3)>, L<_BIO_s_mem(3)>,
 L<BIO_s_null(3)>, L<BIO_s_socket(3)>,
 L<BIO_set_callback(3)>,
 L<BIO_should_retry(3)>

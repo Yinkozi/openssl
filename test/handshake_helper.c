@@ -1507,8 +1507,8 @@ static HANDSHAKE_RESULT *do_handshake_internal(
         }
 #endif
     } else {
-        client_to_server = _BIO_new(BIO_s_mem());
-        server_to_client = _BIO_new(BIO_s_mem());
+        client_to_server = _BIO_new(_BIO_s_mem());
+        server_to_client = _BIO_new(_BIO_s_mem());
     }
 
     if (!TEST_ptr(client_to_server)

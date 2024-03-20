@@ -484,8 +484,8 @@ static int test_bad_dtls(void)
         goto end;
     SSL_SESSION_free(sess);
 
-    rbio = _BIO_new(BIO_s_mem());
-    wbio = _BIO_new(BIO_s_mem());
+    rbio = _BIO_new(_BIO_s_mem());
+    wbio = _BIO_new(_BIO_s_mem());
 
     if (!TEST_ptr(rbio)
             || !TEST_ptr(wbio))

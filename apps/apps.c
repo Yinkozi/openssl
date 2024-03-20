@@ -1887,7 +1887,7 @@ int bio_to_mem(unsigned char **out, int maxlen, BIO *in)
     int len, ret;
     unsigned char tbuf[1024];
 
-    mem = _BIO_new(BIO_s_mem());
+    mem = _BIO_new(_BIO_s_mem());
     if (mem == NULL)
         return -1;
     for (;;) {

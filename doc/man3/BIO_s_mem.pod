@@ -3,14 +3,14 @@
 =head1 NAME
 
 BIO_s_secmem,
-BIO_s_mem, BIO_set_mem_eof_return, BIO_get_mem_data, BIO_set_mem_buf,
+_BIO_s_mem, BIO_set_mem_eof_return, BIO_get_mem_data, BIO_set_mem_buf,
 BIO_get_mem_ptr, BIO_new_mem_buf - memory BIO
 
 =head1 SYNOPSIS
 
  #include <openssl/bio.h>
 
- const BIO_METHOD *BIO_s_mem(void);
+ const BIO_METHOD *_BIO_s_mem(void);
  const BIO_METHOD *BIO_s_secmem(void);
 
  BIO_set_mem_eof_return(BIO *b, int v)
@@ -22,13 +22,13 @@ BIO_get_mem_ptr, BIO_new_mem_buf - memory BIO
 
 =head1 DESCRIPTION
 
-BIO_s_mem() returns the memory BIO method function.
+_BIO_s_mem() returns the memory BIO method function.
 
 A memory BIO is a source/sink BIO which uses memory for its I/O. Data
 written to a memory BIO is stored in a BUF_MEM structure which is extended
 as appropriate to accommodate the stored data.
 
-BIO_s_secmem() is like BIO_s_mem() except that the secure heap is used
+BIO_s_secmem() is like _BIO_s_mem() except that the secure heap is used
 for buffer storage.
 
 Any data written to a memory BIO can be recalled by reading from it.
@@ -120,7 +120,7 @@ There should be an option to set the maximum size of a memory BIO.
 
 =head1 RETURN VALUES
 
-BIO_s_mem() and BIO_s_secmem() return a valid memory B<BIO_METHOD> structure.
+_BIO_s_mem() and BIO_s_secmem() return a valid memory B<BIO_METHOD> structure.
 
 BIO_set_mem_eof_return(), BIO_set_mem_buf() and BIO_get_mem_ptr()
 return 1 on success or a value which is less than or equal to 0 if an error occurred.
@@ -134,7 +134,7 @@ BIO_new_mem_buf() returns a valid B<BIO> structure on success or NULL on error.
 
 Create a memory BIO and write some data to it:
 
- BIO *mem = _BIO_new(BIO_s_mem());
+ BIO *mem = _BIO_new(_BIO_s_mem());
 
  BIO_puts(mem, "Hello World\n");
 

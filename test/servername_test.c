@@ -102,8 +102,8 @@ static int client_setup_sni_before_state(void)
     /* set SNI before 'client side' is set */
     SSL_set_tlsext_host_name(con, host);
 
-    rbio = _BIO_new(BIO_s_mem());
-    wbio = _BIO_new(BIO_s_mem());
+    rbio = _BIO_new(_BIO_s_mem());
+    wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
         BIO_free(rbio);
         BIO_free(wbio);
@@ -147,8 +147,8 @@ static int client_setup_sni_after_state(void)
     if (!TEST_ptr(con))
         goto end;
 
-    rbio = _BIO_new(BIO_s_mem());
-    wbio = _BIO_new(BIO_s_mem());
+    rbio = _BIO_new(_BIO_s_mem());
+    wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
         BIO_free(rbio);
         BIO_free(wbio);

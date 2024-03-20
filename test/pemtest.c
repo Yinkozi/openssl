@@ -30,7 +30,7 @@ static const char *pemtype = "PEMTESTDATA";
 
 static int test_b64(int idx)
 {
-    BIO *b = _BIO_new(BIO_s_mem());
+    BIO *b = _BIO_new(_BIO_s_mem());
     char *name = NULL, *header = NULL;
     unsigned char *data = NULL;
     long len;
@@ -60,7 +60,7 @@ static int test_b64(int idx)
 
 static int test_invalid(void)
 {
-    BIO *b = _BIO_new(BIO_s_mem());
+    BIO *b = _BIO_new(_BIO_s_mem());
     char *name = NULL, *header = NULL;
     unsigned char *data = NULL;
     long len;

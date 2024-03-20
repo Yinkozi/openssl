@@ -73,7 +73,7 @@ typedef struct bio_buf_mem_st {
  * should_retry is not set
  */
 
-const BIO_METHOD *BIO_s_mem(void)
+const BIO_METHOD *_BIO_s_mem(void)
 {
     return &mem_method;
 }
@@ -95,7 +95,7 @@ BIO *BIO_new_mem_buf(const void *buf, int len)
         return NULL;
     }
     sz = (len < 0) ? strlen(buf) : (size_t)len;
-    if ((ret = _BIO_new(BIO_s_mem())) == NULL)
+    if ((ret = _BIO_new(_BIO_s_mem())) == NULL)
         return NULL;
     bb = (BIO_BUF_MEM *)ret->ptr;
     b = bb->buf;

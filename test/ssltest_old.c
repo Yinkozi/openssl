@@ -2595,8 +2595,8 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
     if ((sbuf = OPENSSL_zalloc(bufsiz)) == NULL)
         goto err;
 
-    c_to_s = _BIO_new(BIO_s_mem());
-    s_to_c = _BIO_new(BIO_s_mem());
+    c_to_s = _BIO_new(_BIO_s_mem());
+    s_to_c = _BIO_new(_BIO_s_mem());
     if ((s_to_c == NULL) || (c_to_s == NULL)) {
         ERR_print_errors(bio_err);
         goto err;

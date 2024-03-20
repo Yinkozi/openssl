@@ -129,7 +129,7 @@ static int compare_sct_list_printout(STACK_OF(SCT) *sct,
     char *actual_output = NULL;
     int result = 0;
 
-    if (!TEST_ptr(text_buffer = _BIO_new(BIO_s_mem())))
+    if (!TEST_ptr(text_buffer = _BIO_new(_BIO_s_mem())))
         goto end;
 
     SCT_LIST_print(sct, text_buffer, 0, "\n", NULL);
@@ -155,7 +155,7 @@ static int compare_extension_printout(X509_EXTENSION *extension,
     char *actual_output = NULL;
     int result = 0;
 
-    if (!TEST_ptr(text_buffer = _BIO_new(BIO_s_mem()))
+    if (!TEST_ptr(text_buffer = _BIO_new(_BIO_s_mem()))
             || !TEST_true(X509V3_EXT_print(text_buffer, extension,
                                            X509V3_EXT_DEFAULT, 0)))
         goto end;

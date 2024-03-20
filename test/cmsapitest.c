@@ -16,7 +16,7 @@ static int test_encrypt_decrypt(void)
     STACK_OF(X509) *certstack = sk_X509_new_null();
     const char *msg = "Hello world";
     BIO *msgbio = BIO_new_mem_buf(msg, strlen(msg));
-    BIO *outmsgbio = _BIO_new(BIO_s_mem());
+    BIO *outmsgbio = _BIO_new(_BIO_s_mem());
     CMS_ContentInfo* content = NULL;
     char buf[80];
 

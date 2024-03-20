@@ -819,8 +819,8 @@ int create_ssl_objects(SSL_CTX *serverctx, SSL_CTX *clientctx, SSL **sssl,
                 || !TEST_ptr(c_to_s_bio = _BIO_new(bio_s_mempacket_test())))
             goto error;
     } else {
-        if (!TEST_ptr(s_to_c_bio = _BIO_new(BIO_s_mem()))
-                || !TEST_ptr(c_to_s_bio = _BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(s_to_c_bio = _BIO_new(_BIO_s_mem()))
+                || !TEST_ptr(c_to_s_bio = _BIO_new(_BIO_s_mem())))
             goto error;
     }
 

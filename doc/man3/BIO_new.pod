@@ -57,7 +57,7 @@ BIO_set() was removed in OpenSSL 1.1.0 as BIO type is now opaque.
 
 Create a memory BIO:
 
- BIO *mem = _BIO_new(BIO_s_mem());
+ BIO *mem = _BIO_new(_BIO_s_mem());
 
 =head1 COPYRIGHT
 
