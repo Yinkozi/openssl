@@ -25,7 +25,7 @@
 #include <openssl/err.h>
 #include <openssl/crypto.h>
 
-static int bio_new(BIO *bio);
+static int _BIO_new(BIO *bio);
 static int bio_free(BIO *bio);
 static int bio_read(BIO *bio, char *buf, int size);
 static int bio_write(BIO *bio, const char *buf, int num);
@@ -47,7 +47,7 @@ static const BIO_METHOD methods_biop = {
     bio_puts,
     NULL /* no bio_gets */ ,
     bio_ctrl,
-    bio_new,
+    _BIO_new,
     bio_free,
     NULL                        /* no bio_callback_ctrl */
 };
@@ -75,7 +75,7 @@ struct bio_bio_st {
                                  * warrants. */
 };
 
-static int bio_new(BIO *bio)
+static int _BIO_new(BIO *bio)
 {
     struct bio_bio_st *b = OPENSSL_zalloc(sizeof(*b));
 
@@ -689,10 +689,10 @@ int BIO_new_bio_pair(BIO **bio1_p, size_t writebuf1,
     long r;
     int ret = 0;
 
-    bio1 = BIO_new(BIO_s_bio());
+    bio1 = _BIO_new(BIO_s_bio());
     if (bio1 == NULL)
         goto err;
-    bio2 = BIO_new(BIO_s_bio());
+    bio2 = _BIO_new(BIO_s_bio());
     if (bio2 == NULL)
         goto err;
 

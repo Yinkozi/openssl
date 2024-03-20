@@ -49,7 +49,7 @@ static int test_bio_callback(void)
 
     my_param_count = 0;
 
-    bio = BIO_new(BIO_s_mem());
+    bio = _BIO_new(BIO_s_mem());
     if (bio == NULL)
         goto err;
 

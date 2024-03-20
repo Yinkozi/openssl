@@ -1767,7 +1767,7 @@ int s_server_main(int argc, char *argv[])
 
     if (bio_s_out == NULL) {
         if (s_quiet && !s_debug) {
-            bio_s_out = BIO_new(BIO_s_null());
+            bio_s_out = _BIO_new(BIO_s_null());
             if (s_msg && bio_s_msg == NULL)
                 bio_s_msg = dup_bio_out(FORMAT_TEXT);
         } else {
@@ -2369,7 +2369,7 @@ static int sv_body(int s, int stype, int prot, unsigned char *context)
     if (s_nbio_test) {
         BIO *test;
 
-        test = BIO_new(BIO_f_nbio_test());
+        test = _BIO_new(BIO_f_nbio_test());
         sbio = BIO_push(test, sbio);
     }
 
@@ -3010,8 +3010,8 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
     width = s + 1;
 
     buf = app_malloc(bufsize, "server www buffer");
-    io = BIO_new(BIO_f_buffer());
-    ssl_bio = BIO_new(BIO_f_ssl());
+    io = _BIO_new(BIO_f_buffer());
+    ssl_bio = _BIO_new(BIO_f_ssl());
     if ((io == NULL) || (ssl_bio == NULL))
         goto err;
 
@@ -3045,7 +3045,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
     if (s_nbio_test) {
         BIO *test;
 
-        test = BIO_new(BIO_f_nbio_test());
+        test = _BIO_new(BIO_f_nbio_test());
         sbio = BIO_push(test, sbio);
     }
     SSL_set_bio(con, sbio, sbio);
@@ -3055,7 +3055,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
     BIO_set_ssl(ssl_bio, con, BIO_CLOSE);
     BIO_push(io, ssl_bio);
 #ifdef CHARSET_EBCDIC
-    io = BIO_push(BIO_new(BIO_f_ebcdic_filter()), io);
+    io = BIO_push(_BIO_new(BIO_f_ebcdic_filter()), io);
 #endif
 
     if (s_debug) {
@@ -3394,8 +3394,8 @@ static int rev_body(int s, int stype, int prot, unsigned char *context)
     BIO *io, *ssl_bio, *sbio;
 
     buf = app_malloc(bufsize, "server rev buffer");
-    io = BIO_new(BIO_f_buffer());
-    ssl_bio = BIO_new(BIO_f_ssl());
+    io = _BIO_new(BIO_f_buffer());
+    ssl_bio = _BIO_new(BIO_f_ssl());
     if ((io == NULL) || (ssl_bio == NULL))
         goto err;
 
@@ -3426,7 +3426,7 @@ static int rev_body(int s, int stype, int prot, unsigned char *context)
     BIO_set_ssl(ssl_bio, con, BIO_CLOSE);
     BIO_push(io, ssl_bio);
 #ifdef CHARSET_EBCDIC
-    io = BIO_push(BIO_new(BIO_f_ebcdic_filter()), io);
+    io = BIO_push(_BIO_new(BIO_f_ebcdic_filter()), io);
 #endif
 
     if (s_debug) {

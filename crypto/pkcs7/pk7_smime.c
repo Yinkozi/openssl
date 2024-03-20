@@ -313,7 +313,7 @@ int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,
         goto err;
 
     if (flags & PKCS7_TEXT) {
-        if ((tmpout = BIO_new(BIO_s_mem())) == NULL) {
+        if ((tmpout = _BIO_new(BIO_s_mem())) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_VERIFY, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -504,7 +504,7 @@ int PKCS7_decrypt(PKCS7 *p7, EVP_PKEY *pkey, X509 *cert, BIO *data, int flags)
     if (flags & PKCS7_TEXT) {
         BIO *tmpbuf, *bread;
         /* Encrypt BIOs can't do BIO_gets() so add a buffer BIO */
-        if ((tmpbuf = BIO_new(BIO_f_buffer())) == NULL) {
+        if ((tmpbuf = _BIO_new(BIO_f_buffer())) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_DECRYPT, ERR_R_MALLOC_FAILURE);
             BIO_free_all(tmpmem);
             return 0;

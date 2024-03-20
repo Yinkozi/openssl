@@ -18,7 +18,7 @@ int DHparams_print_fp(FILE *fp, const DH *x)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         DHerr(DH_F_DHPARAMS_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }

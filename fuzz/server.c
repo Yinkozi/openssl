@@ -558,7 +558,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
 #ifndef OPENSSL_NO_EC
     /* ECDSA */
-    bio_buf = BIO_new(BIO_s_mem());
+    bio_buf = _BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, ECDSAPrivateKeyPEM, sizeof(ECDSAPrivateKeyPEM)) == sizeof(ECDSAPrivateKeyPEM));
     ecdsakey = PEM_read_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
@@ -570,7 +570,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     OPENSSL_assert(ret == 1);
     EVP_PKEY_free(pkey);
 
-    bio_buf = BIO_new(BIO_s_mem());
+    bio_buf = _BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, ECDSACertPEM, sizeof(ECDSACertPEM)) == sizeof(ECDSACertPEM));
     cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
@@ -582,7 +582,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
 #ifndef OPENSSL_NO_DSA
     /* DSA */
-    bio_buf = BIO_new(BIO_s_mem());
+    bio_buf = _BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, DSAPrivateKeyPEM, sizeof(DSAPrivateKeyPEM)) == sizeof(DSAPrivateKeyPEM));
     dsakey = PEM_read_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
@@ -594,7 +594,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     OPENSSL_assert(ret == 1);
     EVP_PKEY_free(pkey);
 
-    bio_buf = BIO_new(BIO_s_mem());
+    bio_buf = _BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, DSACertPEM, sizeof(DSACertPEM)) == sizeof(DSACertPEM));
     cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
@@ -607,8 +607,8 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     /* TODO: Set up support for SRP and PSK */
 
     server = SSL_new(ctx);
-    in = BIO_new(BIO_s_mem());
-    out = BIO_new(BIO_s_mem());
+    in = _BIO_new(BIO_s_mem());
+    out = _BIO_new(BIO_s_mem());
     SSL_set_bio(server, in, out);
     SSL_set_accept_state(server);
 

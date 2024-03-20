@@ -50,7 +50,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     /* Encrypt tests */
 
     /* reference output for single-chunk operation */
-    b = BIO_new(BIO_f_cipher());
+    b = _BIO_new(BIO_f_cipher());
     if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, ENCRYPT)))
         return 0;
     BIO_push(b, BIO_new_mem_buf(inp, DATA_SIZE));
@@ -59,7 +59,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
 
     /* perform split operations and compare to reference */
     for (i = 1; i < lref; i++) {
-        b = BIO_new(BIO_f_cipher());
+        b = _BIO_new(BIO_f_cipher());
         if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, ENCRYPT))) {
             TEST_info("Split encrypt failed @ operation %d", i);
             return 0;
@@ -86,7 +86,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     for (i = 1; i < lref / 2; i++) {
         int delta;
 
-        b = BIO_new(BIO_f_cipher());
+        b = _BIO_new(BIO_f_cipher());
         if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, ENCRYPT))) {
             TEST_info("Small chunk encrypt failed @ operation %d", i);
             return 0;
@@ -107,7 +107,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     /* Decrypt tests */
 
     /* reference output for single-chunk operation */
-    b = BIO_new(BIO_f_cipher());
+    b = _BIO_new(BIO_f_cipher());
     if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, DECRYPT)))
         return 0;
     /* Use original reference output as input */
@@ -122,7 +122,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
 
     /* perform split operations and compare to reference */
     for (i = 1; i < lref; i++) {
-        b = BIO_new(BIO_f_cipher());
+        b = _BIO_new(BIO_f_cipher());
         if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, DECRYPT))) {
             TEST_info("Split decrypt failed @ operation %d", i);
             return 0;
@@ -149,7 +149,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     for (i = 1; i < lref / 2; i++) {
         int delta;
 
-        b = BIO_new(BIO_f_cipher());
+        b = _BIO_new(BIO_f_cipher());
         if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, DECRYPT))) {
             TEST_info("Small chunk decrypt failed @ operation %d", i);
             return 0;

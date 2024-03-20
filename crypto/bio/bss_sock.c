@@ -60,7 +60,7 @@ BIO *BIO_new_socket(int fd, int close_flag)
 {
     BIO *ret;
 
-    ret = BIO_new(BIO_s_socket());
+    ret = _BIO_new(BIO_s_socket());
     if (ret == NULL)
         return NULL;
     BIO_set_fd(ret, fd, close_flag);

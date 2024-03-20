@@ -20,7 +20,7 @@ int ECPKParameters_print_fp(FILE *fp, const EC_GROUP *x, int off)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         ECerr(EC_F_ECPKPARAMETERS_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }
@@ -35,7 +35,7 @@ int EC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         ECerr(EC_F_EC_KEY_PRINT_FP, ERR_R_BIO_LIB);
         return 0;
     }
@@ -50,7 +50,7 @@ int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         ECerr(EC_F_ECPARAMETERS_PRINT_FP, ERR_R_BIO_LIB);
         return 0;
     }

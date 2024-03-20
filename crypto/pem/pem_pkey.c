@@ -175,7 +175,7 @@ EVP_PKEY *PEM_read_PrivateKey(FILE *fp, EVP_PKEY **x, pem_password_cb *cb,
     BIO *b;
     EVP_PKEY *ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_READ_PRIVATEKEY, ERR_R_BUF_LIB);
         return 0;
     }
@@ -237,7 +237,7 @@ DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u)
     BIO *b;
     DH *ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_READ_DHPARAMS, ERR_R_BUF_LIB);
         return 0;
     }

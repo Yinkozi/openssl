@@ -463,7 +463,7 @@ static int test_x509_time_print(int idx)
     char *pp;
     const char *readable;
 
-    if (!TEST_ptr(m = BIO_new(BIO_s_mem())))
+    if (!TEST_ptr(m = _BIO_new(BIO_s_mem())))
         goto err;
 
     rv = ASN1_TIME_print(m, &x509_print_tests[idx].asn1);

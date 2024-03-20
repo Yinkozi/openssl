@@ -18,7 +18,7 @@ int DSA_print_fp(FILE *fp, const DSA *x, int off)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         DSAerr(DSA_F_DSA_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }
@@ -33,7 +33,7 @@ int DSAparams_print_fp(FILE *fp, const DSA *x)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         DSAerr(DSA_F_DSAPARAMS_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }

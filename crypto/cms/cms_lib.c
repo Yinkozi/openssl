@@ -43,12 +43,12 @@ BIO *cms_content_bio(CMS_ContentInfo *cms)
         return NULL;
     /* If content detached data goes nowhere: create NULL BIO */
     if (!*pos)
-        return BIO_new(BIO_s_null());
+        return _BIO_new(BIO_s_null());
     /*
      * If content not detached and created return memory BIO
      */
     if (!*pos || ((*pos)->flags == ASN1_STRING_FLAG_CONT))
-        return BIO_new(BIO_s_mem());
+        return _BIO_new(BIO_s_mem());
     /* Else content was read in: return read only BIO for it */
     return BIO_new_mem_buf((*pos)->data, (*pos)->length);
 }
@@ -296,7 +296,7 @@ BIO *cms_DigestAlgorithm_init_bio(X509_ALGOR *digestAlgorithm)
                CMS_R_UNKNOWN_DIGEST_ALGORITHM);
         goto err;
     }
-    mdbio = BIO_new(BIO_f_md());
+    mdbio = _BIO_new(BIO_f_md());
     if (mdbio == NULL || !BIO_set_md(mdbio, digest)) {
         CMSerr(CMS_F_CMS_DIGESTALGORITHM_INIT_BIO, CMS_R_MD_BIO_INIT_ERROR);
         goto err;

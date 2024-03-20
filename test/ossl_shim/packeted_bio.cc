@@ -268,7 +268,7 @@ static const BIO_METHOD *PacketedMethod(void)
 }  // namespace
 
 bssl::UniquePtr<BIO> PacketedBioCreate(bool advance_clock) {
-  bssl::UniquePtr<BIO> bio(BIO_new(PacketedMethod()));
+  bssl::UniquePtr<BIO> bio(_BIO_new(PacketedMethod()));
   if (!bio) {
     return nullptr;
   }

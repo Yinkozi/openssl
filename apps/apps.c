@@ -426,7 +426,7 @@ static char *app_get_pass(const char *arg, int keepbio)
             /*
              * Can't do BIO_gets on an fd BIO so add a buffering BIO
              */
-            btmp = BIO_new(BIO_f_buffer());
+            btmp = _BIO_new(BIO_f_buffer());
             pwdbio = BIO_push(btmp, pwdbio);
 #endif
         } else if (strcmp(arg, "stdin") == 0) {
@@ -1887,7 +1887,7 @@ int bio_to_mem(unsigned char **out, int maxlen, BIO *in)
     int len, ret;
     unsigned char tbuf[1024];
 
-    mem = BIO_new(BIO_s_mem());
+    mem = _BIO_new(BIO_s_mem());
     if (mem == NULL)
         return -1;
     for (;;) {
@@ -2518,13 +2518,13 @@ BIO *dup_bio_out(int format)
 
 #ifdef OPENSSL_SYS_VMS
     if (istext(format))
-        b = BIO_push(BIO_new(BIO_f_linebuffer()), b);
+        b = BIO_push(_BIO_new(BIO_f_linebuffer()), b);
 #endif
 
     if (istext(format) && (prefix = getenv("HARNESS_OSSL_PREFIX")) != NULL) {
         if (prefix_method == NULL)
             prefix_method = apps_bf_prefix();
-        b = BIO_push(BIO_new(prefix_method), b);
+        b = BIO_push(_BIO_new(prefix_method), b);
         BIO_ctrl(b, PREFIX_CTRL_SET_PREFIX, 0, prefix);
     }
 
@@ -2537,7 +2537,7 @@ BIO *dup_bio_err(int format)
                         BIO_NOCLOSE | (istext(format) ? BIO_FP_TEXT : 0));
 #ifdef OPENSSL_SYS_VMS
     if (istext(format))
-        b = BIO_push(BIO_new(BIO_f_linebuffer()), b);
+        b = BIO_push(_BIO_new(BIO_f_linebuffer()), b);
 #endif
     return b;
 }

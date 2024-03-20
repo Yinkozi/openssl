@@ -76,7 +76,7 @@ BIO *cms_CompressedData_init_bio(CMS_ContentInfo *cms)
                CMS_R_UNSUPPORTED_COMPRESSION_ALGORITHM);
         return NULL;
     }
-    return BIO_new(BIO_f_zlib());
+    return _BIO_new(BIO_f_zlib());
 }
 
 #endif

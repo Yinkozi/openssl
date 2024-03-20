@@ -91,7 +91,7 @@ is set. Blocking I/O is the default. The call to BIO_set_nbio()
 should be made before the connection is established because
 non blocking I/O is set during the connect process.
 
-BIO_new_connect() combines BIO_new() and BIO_set_conn_hostname() into
+BIO_new_connect() combines _BIO_new() and BIO_set_conn_hostname() into
 a single call: that is it creates a new connect BIO with B<name>.
 
 BIO_do_connect() attempts to connect the supplied BIO. It returns 1

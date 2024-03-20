@@ -147,7 +147,7 @@ BIO *BIO_new_dgram(int fd, int close_flag)
 {
     BIO *ret;
 
-    ret = BIO_new(BIO_s_datagram());
+    ret = _BIO_new(BIO_s_datagram());
     if (ret == NULL)
         return NULL;
     BIO_set_fd(ret, fd, close_flag);
@@ -833,7 +833,7 @@ BIO *BIO_new_dgram_sctp(int fd, int close_flag)
 #   endif
 #  endif
 
-    bio = BIO_new(BIO_s_datagram_sctp());
+    bio = _BIO_new(BIO_s_datagram_sctp());
     if (bio == NULL)
         return NULL;
     BIO_set_fd(bio, fd, close_flag);

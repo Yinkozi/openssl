@@ -31,7 +31,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     unsigned char *der = NULL;
     STACK_OF(SCT) *scts = d2i_SCT_LIST(NULL, pp, len);
     if (scts != NULL) {
-        BIO *bio = BIO_new(BIO_s_null());
+        BIO *bio = _BIO_new(BIO_s_null());
         SCT_LIST_print(scts, bio, 4, "\n", NULL);
         BIO_free(bio);
 

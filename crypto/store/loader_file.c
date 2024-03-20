@@ -909,7 +909,7 @@ static OSSL_STORE_LOADER_CTX *file_open(const OSSL_STORE_LOADER *loader,
         BIO *buff = NULL;
         char peekbuf[4096] = { 0, };
 
-        if ((buff = BIO_new(BIO_f_buffer())) == NULL
+        if ((buff = _BIO_new(BIO_f_buffer())) == NULL
             || (ctx->_.file.file = BIO_new_file(path, "rb")) == NULL) {
             BIO_free_all(buff);
             goto err;

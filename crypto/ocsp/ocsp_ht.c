@@ -69,7 +69,7 @@ OCSP_REQ_CTX *OCSP_REQ_CTX_new(BIO *io, int maxline)
         return NULL;
     rctx->state = OHS_ERROR;
     rctx->max_resp_len = OCSP_MAX_RESP_LENGTH;
-    rctx->mem = BIO_new(BIO_s_mem());
+    rctx->mem = _BIO_new(BIO_s_mem());
     rctx->io = io;
     if (maxline > 0)
         rctx->iobuflen = maxline;

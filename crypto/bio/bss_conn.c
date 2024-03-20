@@ -560,7 +560,7 @@ BIO *BIO_new_connect(const char *str)
 {
     BIO *ret;
 
-    ret = BIO_new(BIO_s_connect());
+    ret = _BIO_new(BIO_s_connect());
     if (ret == NULL)
         return NULL;
     if (BIO_set_conn_hostname(ret, str))

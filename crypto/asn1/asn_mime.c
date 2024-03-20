@@ -100,7 +100,7 @@ static int B64_write_ASN1(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
 {
     BIO *b64;
     int r;
-    b64 = BIO_new(BIO_f_base64());
+    b64 = _BIO_new(BIO_f_base64());
     if (b64 == NULL) {
         ASN1err(ASN1_F_B64_WRITE_ASN1, ERR_R_MALLOC_FAILURE);
         return 0;
@@ -133,7 +133,7 @@ static ASN1_VALUE *b64_read_asn1(BIO *bio, const ASN1_ITEM *it)
     BIO *b64;
     ASN1_VALUE *val;
 
-    if ((b64 = BIO_new(BIO_f_base64())) == NULL) {
+    if ((b64 = _BIO_new(BIO_f_base64())) == NULL) {
         ASN1err(ASN1_F_B64_READ_ASN1, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -494,7 +494,7 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
      * Buffer output so we don't write one line at a time. This is useful
      * when streaming as we don't end up with one OCTET STRING per line.
      */
-    bf = BIO_new(BIO_f_buffer());
+    bf = _BIO_new(BIO_f_buffer());
     if (bf == NULL)
         return 0;
     out = BIO_push(bf, out);
@@ -608,7 +608,7 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
                         BIO_free(bpart);
                         return 0;
                     }
-                bpart = BIO_new(BIO_s_mem());
+                bpart = _BIO_new(BIO_s_mem());
                 if (bpart == NULL)
                     return 0;
                 BIO_set_mem_eof_return(bpart, 0);

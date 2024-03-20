@@ -3151,7 +3151,7 @@ BIO_ADDR_hostname_string                3103	1_1_0	EXIST::FUNCTION:SOCK
 USERNOTICE_new                          3104	1_1_0	EXIST::FUNCTION:
 POLICY_MAPPING_new                      3105	1_1_0	EXIST::FUNCTION:
 CRYPTO_gcm128_release                   3106	1_1_0	EXIST::FUNCTION:
-BIO_new                                 3107	1_1_0	EXIST::FUNCTION:
+_BIO_new                                 3107	1_1_0	EXIST::FUNCTION:
 d2i_GENERAL_NAMES                       3108	1_1_0	EXIST::FUNCTION:
 PKCS7_SIGNER_INFO_new                   3109	1_1_0	EXIST::FUNCTION:
 PEM_read_DSA_PUBKEY                     3110	1_1_0	EXIST::FUNCTION:DSA,STDIO

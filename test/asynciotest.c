@@ -311,8 +311,8 @@ static int test_asyncio(int test)
         fragment = 1;
 
 
-    s_to_c_fbio = BIO_new(bio_f_async_filter());
-    c_to_s_fbio = BIO_new(bio_f_async_filter());
+    s_to_c_fbio = _BIO_new(bio_f_async_filter());
+    c_to_s_fbio = _BIO_new(bio_f_async_filter());
     if (!TEST_ptr(s_to_c_fbio)
             || !TEST_ptr(c_to_s_fbio)) {
         BIO_free(s_to_c_fbio);

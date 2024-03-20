@@ -146,11 +146,11 @@ static const BIO_METHOD *AsyncMethod(void)
 }  // namespace
 
 bssl::UniquePtr<BIO> AsyncBioCreate() {
-  return bssl::UniquePtr<BIO>(BIO_new(AsyncMethod()));
+  return bssl::UniquePtr<BIO>(_BIO_new(AsyncMethod()));
 }
 
 bssl::UniquePtr<BIO> AsyncBioCreateDatagram() {
-  bssl::UniquePtr<BIO> ret(BIO_new(AsyncMethod()));
+  bssl::UniquePtr<BIO> ret(_BIO_new(AsyncMethod()));
   if (!ret) {
     return nullptr;
   }

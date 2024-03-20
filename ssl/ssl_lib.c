@@ -1353,7 +1353,7 @@ int SSL_set_fd(SSL *s, int fd)
     int ret = 0;
     BIO *bio = NULL;
 
-    bio = BIO_new(BIO_s_socket());
+    bio = _BIO_new(BIO_s_socket());
 
     if (bio == NULL) {
         SSLerr(SSL_F_SSL_SET_FD, ERR_R_BUF_LIB);
@@ -1372,7 +1372,7 @@ int SSL_set_wfd(SSL *s, int fd)
 
     if (rbio == NULL || BIO_method_type(rbio) != BIO_TYPE_SOCKET
         || (int)BIO_get_fd(rbio, NULL) != fd) {
-        BIO *bio = BIO_new(BIO_s_socket());
+        BIO *bio = _BIO_new(BIO_s_socket());
 
         if (bio == NULL) {
             SSLerr(SSL_F_SSL_SET_WFD, ERR_R_BUF_LIB);
@@ -1393,7 +1393,7 @@ int SSL_set_rfd(SSL *s, int fd)
 
     if (wbio == NULL || BIO_method_type(wbio) != BIO_TYPE_SOCKET
         || ((int)BIO_get_fd(wbio, NULL) != fd)) {
-        BIO *bio = BIO_new(BIO_s_socket());
+        BIO *bio = _BIO_new(BIO_s_socket());
 
         if (bio == NULL) {
             SSLerr(SSL_F_SSL_SET_RFD, ERR_R_BUF_LIB);
@@ -4038,7 +4038,7 @@ int ssl_init_wbio_buffer(SSL *s)
         return 1;
     }
 
-    bbio = BIO_new(BIO_f_buffer());
+    bbio = _BIO_new(BIO_f_buffer());
     if (bbio == NULL || !BIO_set_read_buffer_size(bbio, 1)) {
         BIO_free(bbio);
         SSLerr(SSL_F_SSL_INIT_WBIO_BUFFER, ERR_R_BUF_LIB);

@@ -67,11 +67,11 @@ int main(int argc, char *argv[])
         goto err;
 
     /* Use it inside an SSL BIO */
-    ssl_bio = BIO_new(BIO_f_ssl());
+    ssl_bio = _BIO_new(BIO_f_ssl());
     BIO_set_ssl(ssl_bio, ssl, BIO_CLOSE);
 
     /* Lets use a connect BIO under the SSL BIO */
-    out = BIO_new(BIO_s_connect());
+    out = _BIO_new(BIO_s_connect());
     BIO_set_conn_hostname(out, hostport);
     BIO_set_nbio(out, 1);
     out = BIO_push(ssl_bio, out);

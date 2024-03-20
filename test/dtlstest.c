@@ -70,7 +70,7 @@ static int test_dtls_unprocessed(int testidx)
     if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "AES128-SHA")))
         goto end;
 
-    c_to_s_fbio = BIO_new(bio_f_tls_dump_filter());
+    c_to_s_fbio = _BIO_new(bio_f_tls_dump_filter());
     if (!TEST_ptr(c_to_s_fbio))
         goto end;
 
@@ -187,7 +187,7 @@ static int test_dtls_drop_records(int idx)
         srv_to_cli_epoch0 = SRV_TO_CLI_EPOCH_0_RECS;
     }
 
-    c_to_s_fbio = BIO_new(bio_f_tls_dump_filter());
+    c_to_s_fbio = _BIO_new(bio_f_tls_dump_filter());
     if (!TEST_ptr(c_to_s_fbio))
         goto end;
 

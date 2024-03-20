@@ -30,7 +30,7 @@ static X509 *load_cert_pem(const char *file)
     X509 *cert = NULL;
     BIO *bio = NULL;
 
-    if (!TEST_ptr(bio = BIO_new(BIO_s_file())))
+    if (!TEST_ptr(bio = _BIO_new(BIO_s_file())))
         return NULL;
     if (TEST_int_gt(BIO_read_filename(bio, file), 0))
         (void)TEST_ptr(cert = PEM_read_bio_X509(bio, NULL, NULL, NULL));

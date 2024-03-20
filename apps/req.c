@@ -393,7 +393,7 @@ int req_main(int argc, char **argv)
             p = opt_arg();
             if (addexts == NULL) {
                 addexts = lh_OPENSSL_STRING_new(ext_name_hash, ext_name_cmp);
-                addext_bio = BIO_new(BIO_s_mem());
+                addext_bio = _BIO_new(BIO_s_mem());
                 if (addexts == NULL || addext_bio == NULL)
                     goto end;
             }

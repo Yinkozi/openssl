@@ -36,7 +36,7 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
 
     enc = ec->cipher ? 1 : 0;
 
-    b = BIO_new(BIO_f_cipher());
+    b = _BIO_new(BIO_f_cipher());
     if (b == NULL) {
         CMSerr(CMS_F_CMS_ENCRYPTEDCONTENT_INIT_BIO, ERR_R_MALLOC_FAILURE);
         return NULL;

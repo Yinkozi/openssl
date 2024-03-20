@@ -43,7 +43,7 @@ static int read_key(STANZA *s)
     char tmpbuf[128];
 
     if (s->key == NULL) {
-        if (!TEST_ptr(s->key = BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(s->key = _BIO_new(BIO_s_mem())))
             return 0;
     } else if (!TEST_int_gt(BIO_reset(s->key), 0)) {
         return 0;

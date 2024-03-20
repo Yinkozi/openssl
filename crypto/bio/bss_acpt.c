@@ -556,7 +556,7 @@ BIO *BIO_new_accept(const char *str)
 {
     BIO *ret;
 
-    ret = BIO_new(BIO_s_accept());
+    ret = _BIO_new(BIO_s_accept());
     if (ret == NULL)
         return NULL;
     if (BIO_set_accept_name(ret, str))

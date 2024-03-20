@@ -38,7 +38,7 @@ BIO).
 
 
 Some BIOs (such as memory BIOs) can be used immediately after calling
-BIO_new(). Others (such as file BIOs) need some additional initialization,
+_BIO_new(). Others (such as file BIOs) need some additional initialization,
 and frequently a utility function exists to create and initialize such BIOs.
 
 If BIO_free() is called on a BIO chain it will only free one BIO resulting
@@ -56,7 +56,7 @@ BIO_f_*();
 
 Create a memory BIO:
 
- BIO *mem = BIO_new(BIO_s_mem());
+ BIO *mem = _BIO_new(BIO_s_mem());
 
 =head1 SEE ALSO
 
@@ -64,7 +64,7 @@ L<BIO_ctrl(3)>,
 L<BIO_f_base64(3)>, L<BIO_f_buffer(3)>,
 L<BIO_f_cipher(3)>, L<BIO_f_md(3)>,
 L<BIO_f_null(3)>, L<BIO_f_ssl(3)>,
-L<BIO_find_type(3)>, L<BIO_new(3)>,
+L<BIO_find_type(3)>, L<_BIO_new(3)>,
 L<BIO_new_bio_pair(3)>,
 L<BIO_push(3)>, L<BIO_read_ex(3)>,
 L<BIO_s_accept(3)>, L<BIO_s_bio(3)>,

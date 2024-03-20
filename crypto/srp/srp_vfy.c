@@ -391,7 +391,7 @@ int SRP_VBASE_init(SRP_VBASE *vb, char *verifier_file)
     SRP_user_pwd *user_pwd = NULL;
 
     TXT_DB *tmpdb = NULL;
-    BIO *in = BIO_new(BIO_s_file());
+    BIO *in = _BIO_new(BIO_s_file());
 
     error_code = SRP_ERR_OPEN_FILE;
 

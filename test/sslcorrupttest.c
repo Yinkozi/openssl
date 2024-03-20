@@ -212,7 +212,7 @@ static int test_ssl_corrupt(int testidx)
     if (!TEST_true(SSL_CTX_set_max_proto_version(cctx, TLS1_2_VERSION)))
         goto end;
 
-    if (!TEST_ptr(c_to_s_fbio = BIO_new(bio_f_tls_corrupt_filter())))
+    if (!TEST_ptr(c_to_s_fbio = _BIO_new(bio_f_tls_corrupt_filter())))
         goto end;
 
     /* BIO is freed by create_ssl_connection on error */

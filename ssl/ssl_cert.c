@@ -603,7 +603,7 @@ static unsigned long xname_hash(const X509_NAME *a)
 
 STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file)
 {
-    BIO *in = BIO_new(BIO_s_file());
+    BIO *in = _BIO_new(BIO_s_file());
     X509 *x = NULL;
     X509_NAME *xn = NULL;
     STACK_OF(X509_NAME) *ret = NULL;
@@ -669,7 +669,7 @@ int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
 
     oldcmp = sk_X509_NAME_set_cmp_func(stack, xname_sk_cmp);
 
-    in = BIO_new(BIO_s_file());
+    in = _BIO_new(BIO_s_file());
 
     if (in == NULL) {
         SSLerr(SSL_F_SSL_ADD_FILE_CERT_SUBJECTS_TO_STACK, ERR_R_MALLOC_FAILURE);

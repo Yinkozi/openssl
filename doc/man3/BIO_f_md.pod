@@ -80,15 +80,15 @@ checking has been omitted for clarity.
  BIO *bio, *mdtmp;
  char message[] = "Hello World";
 
- bio = BIO_new(BIO_s_null());
- mdtmp = BIO_new(BIO_f_md());
+ bio = _BIO_new(BIO_s_null());
+ mdtmp = _BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, _EVP_sha1());
  /*
   * For BIO_push() we want to append the sink BIO and keep a note of
   * the start of the chain.
   */
  bio = BIO_push(mdtmp, bio);
- mdtmp = BIO_new(BIO_f_md());
+ mdtmp = _BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, EVP_md5());
  bio = BIO_push(mdtmp, bio);
  /* Note: mdtmp can now be discarded */
@@ -101,10 +101,10 @@ The next example digests data by reading through a chain instead:
  int rdlen;
 
  bio = BIO_new_file(file, "rb");
- mdtmp = BIO_new(BIO_f_md());
+ mdtmp = _BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, _EVP_sha1());
  bio = BIO_push(mdtmp, bio);
- mdtmp = BIO_new(BIO_f_md());
+ mdtmp = _BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, EVP_md5());
  bio = BIO_push(mdtmp, bio);
  do {

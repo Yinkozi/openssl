@@ -656,7 +656,7 @@ int CRYPTO_mem_leaks_fp(FILE *fp)
      * left anything un-free()'d!!
      */
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_DISABLE);
-    b = BIO_new(BIO_s_file());
+    b = _BIO_new(BIO_s_file());
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
     if (b == NULL)
         return -1;

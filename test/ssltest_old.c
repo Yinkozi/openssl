@@ -1968,11 +1968,11 @@ int doit_localhost(SSL *s_ssl, SSL *c_ssl, int family, long count,
     BIO_free_all(acpt);
     acpt = NULL;
 
-    s_ssl_bio = BIO_new(BIO_f_ssl());
+    s_ssl_bio = _BIO_new(BIO_f_ssl());
     if (!s_ssl_bio)
         goto err;
 
-    c_ssl_bio = BIO_new(BIO_f_ssl());
+    c_ssl_bio = _BIO_new(BIO_f_ssl());
     if (!c_ssl_bio)
         goto err;
 
@@ -2206,11 +2206,11 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
     if (!BIO_new_bio_pair(&client, bufsiz, &client_io, bufsiz))
         goto err;
 
-    s_ssl_bio = BIO_new(BIO_f_ssl());
+    s_ssl_bio = _BIO_new(BIO_f_ssl());
     if (!s_ssl_bio)
         goto err;
 
-    c_ssl_bio = BIO_new(BIO_f_ssl());
+    c_ssl_bio = _BIO_new(BIO_f_ssl());
     if (!c_ssl_bio)
         goto err;
 
@@ -2595,15 +2595,15 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
     if ((sbuf = OPENSSL_zalloc(bufsiz)) == NULL)
         goto err;
 
-    c_to_s = BIO_new(BIO_s_mem());
-    s_to_c = BIO_new(BIO_s_mem());
+    c_to_s = _BIO_new(BIO_s_mem());
+    s_to_c = _BIO_new(BIO_s_mem());
     if ((s_to_c == NULL) || (c_to_s == NULL)) {
         ERR_print_errors(bio_err);
         goto err;
     }
 
-    c_bio = BIO_new(BIO_f_ssl());
-    s_bio = BIO_new(BIO_f_ssl());
+    c_bio = _BIO_new(BIO_f_ssl());
+    s_bio = _BIO_new(BIO_f_ssl());
     if ((c_bio == NULL) || (s_bio == NULL)) {
         ERR_print_errors(bio_err);
         goto err;

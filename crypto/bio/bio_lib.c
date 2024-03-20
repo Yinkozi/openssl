@@ -68,7 +68,7 @@ static long bio_call_callback(BIO *b, int oper, const char *argp, size_t len,
     return ret;
 }
 
-BIO *BIO_new(const BIO_METHOD *method)
+BIO *_BIO_new(const BIO_METHOD *method)
 {
     BIO *bio = OPENSSL_zalloc(sizeof(*bio));
 
@@ -700,7 +700,7 @@ BIO *BIO_dup_chain(BIO *in)
     BIO *ret = NULL, *eoc = NULL, *bio, *new_bio;
 
     for (bio = in; bio != NULL; bio = bio->next_bio) {
-        if ((new_bio = BIO_new(bio->method)) == NULL)
+        if ((new_bio = _BIO_new(bio->method)) == NULL)
             goto err;
         new_bio->callback = bio->callback;
         new_bio->callback_ex = bio->callback_ex;

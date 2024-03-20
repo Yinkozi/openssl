@@ -306,7 +306,7 @@ static int dtls_listen_test(int i)
 
     /* Create an SSL object and set the BIO */
     if (!TEST_ptr(ssl = SSL_new(ctx))
-            || !TEST_ptr(outbio = BIO_new(BIO_s_mem())))
+            || !TEST_ptr(outbio = _BIO_new(BIO_s_mem())))
         goto err;
     SSL_set0_wbio(ssl, outbio);
 

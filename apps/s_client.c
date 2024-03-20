@@ -1713,7 +1713,7 @@ int s_client_main(int argc, char **argv)
 
     if (bio_c_out == NULL) {
         if (c_quiet && !c_debug) {
-            bio_c_out = BIO_new(BIO_s_null());
+            bio_c_out = _BIO_new(BIO_s_null());
             if (c_msg && bio_c_msg == NULL)
                 bio_c_msg = dup_bio_out(FORMAT_TEXT);
         } else if (bio_c_out == NULL)
@@ -2136,7 +2136,7 @@ int s_client_main(int argc, char **argv)
     if (nbio_test) {
         BIO *test;
 
-        test = BIO_new(BIO_f_nbio_test());
+        test = _BIO_new(BIO_f_nbio_test());
         sbio = BIO_push(test, sbio);
     }
 
@@ -2201,7 +2201,7 @@ int s_client_main(int argc, char **argv)
              * later on to not disturb the rest of the s_client operation.
              */
             int foundit = 0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             /* Wait for multi-line response to end from LMTP or SMTP */
@@ -2249,7 +2249,7 @@ int s_client_main(int argc, char **argv)
     case PROTO_IMAP:
         {
             int foundit = 0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
@@ -2276,7 +2276,7 @@ int s_client_main(int argc, char **argv)
         break;
     case PROTO_FTP:
         {
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             /* wait for multi-line response to end from FTP */
@@ -2368,7 +2368,7 @@ int s_client_main(int argc, char **argv)
                 error_connect,   /* CONNECT failed */
                 success
             } foundit = error_connect;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             BIO_printf(fbio, "CONNECT %s HTTP/1.0\r\n\r\n", connectstr);
@@ -2417,7 +2417,7 @@ int s_client_main(int argc, char **argv)
     case PROTO_IRC:
         {
             int numeric;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             BIO_printf(fbio, "STARTTLS\r\n");
@@ -2577,7 +2577,7 @@ int s_client_main(int argc, char **argv)
     case PROTO_NNTP:
         {
             int foundit = 0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
@@ -2613,7 +2613,7 @@ int s_client_main(int argc, char **argv)
     case PROTO_SIEVE:
         {
             int foundit = 0;
-            BIO *fbio = BIO_new(BIO_f_buffer());
+            BIO *fbio = _BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
             /* wait for multi-line response to end from Sieve */
@@ -2671,7 +2671,7 @@ int s_client_main(int argc, char **argv)
             char *genstr = NULL;
             int result = -1;
             ASN1_TYPE *atyp = NULL;
-            BIO *ldapbio = BIO_new(BIO_s_mem());
+            BIO *ldapbio = _BIO_new(BIO_s_mem());
             CONF *cnf = NCONF_new(NULL);
 
             if (cnf == NULL) {

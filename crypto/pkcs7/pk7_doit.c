@@ -56,7 +56,7 @@ static int PKCS7_bio_add_digest(BIO **pbio, X509_ALGOR *alg)
 {
     BIO *btmp;
     const EVP_MD *md;
-    if ((btmp = BIO_new(BIO_f_md())) == NULL) {
+    if ((btmp = _BIO_new(BIO_f_md())) == NULL) {
         PKCS7err(PKCS7_F_PKCS7_BIO_ADD_DIGEST, ERR_R_BIO_LIB);
         goto err;
     }
@@ -275,7 +275,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
         int keylen, ivlen;
         EVP_CIPHER_CTX *ctx;
 
-        if ((btmp = BIO_new(BIO_f_cipher())) == NULL) {
+        if ((btmp = _BIO_new(BIO_f_cipher())) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_DATAINIT, ERR_R_BIO_LIB);
             goto err;
         }
@@ -320,11 +320,11 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
 
     if (bio == NULL) {
         if (PKCS7_is_detached(p7)) {
-            bio = BIO_new(BIO_s_null());
+            bio = _BIO_new(BIO_s_null());
         } else if (os && os->length > 0) {
             bio = BIO_new_mem_buf(os->data, os->length);
         } else {
-            bio = BIO_new(BIO_s_mem());
+            bio = _BIO_new(BIO_s_mem());
             if (bio == NULL)
                 goto err;
             BIO_set_mem_eof_return(bio, 0);
@@ -441,7 +441,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
     if (md_sk != NULL) {
         for (i = 0; i < sk_X509_ALGOR_num(md_sk); i++) {
             xa = sk_X509_ALGOR_value(md_sk, i);
-            if ((btmp = BIO_new(BIO_f_md())) == NULL) {
+            if ((btmp = _BIO_new(BIO_f_md())) == NULL) {
                 PKCS7err(PKCS7_F_PKCS7_DATADECODE, ERR_R_BIO_LIB);
                 goto err;
             }
@@ -464,7 +464,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
     }
 
     if (evp_cipher != NULL) {
-        if ((etmp = BIO_new(BIO_f_cipher())) == NULL) {
+        if ((etmp = _BIO_new(BIO_f_cipher())) == NULL) {
             PKCS7err(PKCS7_F_PKCS7_DATADECODE, ERR_R_BIO_LIB);
             goto err;
         }
@@ -569,7 +569,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
         if (data_body->length > 0)
             bio = BIO_new_mem_buf(data_body->data, data_body->length);
         else {
-            bio = BIO_new(BIO_s_mem());
+            bio = _BIO_new(BIO_s_mem());
             if (bio == NULL)
                 goto err;
             BIO_set_mem_eof_return(bio, 0);

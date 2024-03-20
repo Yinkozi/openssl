@@ -134,7 +134,7 @@ BIO_new_mem_buf() returns a valid B<BIO> structure on success or NULL on error.
 
 Create a memory BIO and write some data to it:
 
- BIO *mem = BIO_new(BIO_s_mem());
+ BIO *mem = _BIO_new(BIO_s_mem());
 
  BIO_puts(mem, "Hello World\n");
 

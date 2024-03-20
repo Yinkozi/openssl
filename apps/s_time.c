@@ -359,7 +359,7 @@ static SSL *doConnection(SSL *scon, const char *host, SSL_CTX *ctx)
     SSL *serverCon;
     int i;
 
-    if ((conn = BIO_new(BIO_s_connect())) == NULL)
+    if ((conn = _BIO_new(BIO_s_connect())) == NULL)
         return NULL;
 
     BIO_set_conn_hostname(conn, host);

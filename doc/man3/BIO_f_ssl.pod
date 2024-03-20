@@ -231,7 +231,7 @@ a client and also echoes the request to standard output.
  }
 
  SSL_set_mode(ssl, SSL_MODE_AUTO_RETRY);
- bbio = BIO_new(BIO_f_buffer());
+ bbio = _BIO_new(BIO_f_buffer());
  sbio = BIO_push(bbio, sbio);
  acpt = BIO_new_accept("4433");
 

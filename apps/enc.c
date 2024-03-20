@@ -382,7 +382,7 @@ int enc_main(int argc, char **argv)
 
 #ifdef ZLIB
     if (do_zlib) {
-        if ((bzl = BIO_new(BIO_f_zlib())) == NULL)
+        if ((bzl = _BIO_new(BIO_f_zlib())) == NULL)
             goto end;
         if (debug) {
             BIO_set_callback(bzl, BIO_debug_callback);
@@ -396,7 +396,7 @@ int enc_main(int argc, char **argv)
 #endif
 
     if (base64) {
-        if ((b64 = BIO_new(BIO_f_base64())) == NULL)
+        if ((b64 = _BIO_new(BIO_f_base64())) == NULL)
             goto end;
         if (debug) {
             BIO_set_callback(b64, BIO_debug_callback);
@@ -525,7 +525,7 @@ int enc_main(int argc, char **argv)
             OPENSSL_cleanse(hkey, strlen(hkey));
         }
 
-        if ((benc = BIO_new(BIO_f_cipher())) == NULL)
+        if ((benc = _BIO_new(BIO_f_cipher())) == NULL)
             goto end;
 
         /*

@@ -109,7 +109,7 @@ void *PEM_ASN1_read(d2i_of_void *d2i, const char *name, FILE *fp, void **x,
     BIO *b;
     void *ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_ASN1_READ, ERR_R_BUF_LIB);
         return 0;
     }
@@ -294,7 +294,7 @@ int PEM_ASN1_write(i2d_of_void *i2d, const char *name, FILE *fp,
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_ASN1_WRITE, ERR_R_BUF_LIB);
         return 0;
     }
@@ -588,7 +588,7 @@ int PEM_write(FILE *fp, const char *name, const char *header,
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_WRITE, ERR_R_BUF_LIB);
         return 0;
     }
@@ -668,7 +668,7 @@ int PEM_read(FILE *fp, char **name, char **header, unsigned char **data,
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = _BIO_new(BIO_s_file())) == NULL) {
         PEMerr(PEM_F_PEM_READ, ERR_R_BUF_LIB);
         return 0;
     }
@@ -916,8 +916,8 @@ int PEM_read_bio_ex(BIO *bp, char **name_out, char **header,
     }
     bmeth = (flags & PEM_FLAG_SECURE) ? BIO_s_secmem() : BIO_s_mem();
 
-    headerB = BIO_new(bmeth);
-    dataB = BIO_new(bmeth);
+    headerB = _BIO_new(bmeth);
+    dataB = _BIO_new(bmeth);
     if (headerB == NULL || dataB == NULL) {
         PEMerr(PEM_F_PEM_READ_BIO_EX, ERR_R_MALLOC_FAILURE);
         goto end;

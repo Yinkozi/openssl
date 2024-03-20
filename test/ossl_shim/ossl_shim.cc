@@ -122,7 +122,7 @@ static TestState *GetTestState(const SSL *ssl) {
 }
 
 static bssl::UniquePtr<X509> LoadCertificate(const std::string &file) {
-  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_file()));
+  bssl::UniquePtr<BIO> bio(_BIO_new(BIO_s_file()));
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }
@@ -130,7 +130,7 @@ static bssl::UniquePtr<X509> LoadCertificate(const std::string &file) {
 }
 
 static bssl::UniquePtr<EVP_PKEY> LoadPrivateKey(const std::string &file) {
-  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_file()));
+  bssl::UniquePtr<BIO> bio(_BIO_new(BIO_s_file()));
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }

@@ -91,7 +91,7 @@ int rand_main(int argc, char **argv)
         goto end;
 
     if (format == FORMAT_BASE64) {
-        BIO *b64 = BIO_new(BIO_f_base64());
+        BIO *b64 = _BIO_new(BIO_f_base64());
         if (b64 == NULL)
             goto end;
         out = BIO_push(b64, out);

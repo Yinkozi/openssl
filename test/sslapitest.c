@@ -1867,7 +1867,7 @@ static int test_ssl_set_bio(int idx)
             || initwbio == USE_BIO_1
             || newrbio == USE_BIO_1
             || newwbio == USE_BIO_1) {
-        if (!TEST_ptr(bio1 = BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(bio1 = _BIO_new(BIO_s_mem())))
             goto end;
     }
 
@@ -1875,7 +1875,7 @@ static int test_ssl_set_bio(int idx)
             || initwbio == USE_BIO_2
             || newrbio == USE_BIO_2
             || newwbio == USE_BIO_2) {
-        if (!TEST_ptr(bio2 = BIO_new(BIO_s_mem())))
+        if (!TEST_ptr(bio2 = _BIO_new(BIO_s_mem())))
             goto end;
     }
 
@@ -1950,8 +1950,8 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
 
     if (!TEST_ptr(ctx = SSL_CTX_new(TLS_method()))
             || !TEST_ptr(ssl = SSL_new(ctx))
-            || !TEST_ptr(sslbio = BIO_new(BIO_f_ssl()))
-            || !TEST_ptr(membio1 = BIO_new(BIO_s_mem())))
+            || !TEST_ptr(sslbio = _BIO_new(BIO_f_ssl()))
+            || !TEST_ptr(membio1 = _BIO_new(BIO_s_mem())))
         goto end;
 
     BIO_set_ssl(sslbio, ssl, BIO_CLOSE);
@@ -1964,7 +1964,7 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
 
     /* Verify changing the rbio/wbio directly does not cause leaks */
     if (change_bio != NO_BIO_CHANGE) {
-        if (!TEST_ptr(membio2 = BIO_new(BIO_s_mem()))) {
+        if (!TEST_ptr(membio2 = _BIO_new(BIO_s_mem()))) {
             ssl = NULL;
             goto end;
         }
@@ -4927,7 +4927,7 @@ static int test_key_update_in_write(int tst)
     int testresult = 0;
     char buf[20];
     static char *mess = "A test message";
-    BIO *bretry = BIO_new(bio_s_always_retry());
+    BIO *bretry = _BIO_new(bio_s_always_retry());
     BIO *tmp = NULL;
     SSL *peerupdate = NULL, *peerwrite = NULL;
 
@@ -5130,8 +5130,8 @@ static int test_max_fragment_len_ext(int idx_tst)
     if (!TEST_ptr(con))
         goto end;
 
-    rbio = BIO_new(BIO_s_mem());
-    wbio = BIO_new(BIO_s_mem());
+    rbio = _BIO_new(BIO_s_mem());
+    wbio = _BIO_new(BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
         BIO_free(rbio);
         BIO_free(wbio);
@@ -6305,19 +6305,19 @@ static int cert_cb(SSL *s, void *arg)
         chain = sk_X509_new_null();
         if (!TEST_ptr(chain))
             goto out;
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, rootfile), 0)
                 || !TEST_ptr(rootx = PEM_read_bio_X509(in, NULL, NULL, NULL))
                 || !TEST_true(sk_X509_push(chain, rootx)))
             goto out;
         rootx = NULL;
         BIO_free(in);
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsacert), 0)
                 || !TEST_ptr(x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
             goto out;
         BIO_free(in);
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsakey), 0)
                 || !TEST_ptr(pkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL)))
             goto out;

@@ -1295,10 +1295,10 @@ static BIO *init_responder(const char *port)
 #else
     BIO *acbio = NULL, *bufbio = NULL;
 
-    bufbio = BIO_new(BIO_f_buffer());
+    bufbio = _BIO_new(BIO_f_buffer());
     if (bufbio == NULL)
         goto err;
-    acbio = BIO_new(BIO_s_accept());
+    acbio = _BIO_new(BIO_s_accept());
     if (acbio == NULL
         || BIO_set_bind_mode(acbio, BIO_BIND_REUSEADDR) < 0
         || BIO_set_accept_port(acbio, port) < 0) {
@@ -1427,7 +1427,7 @@ static int do_responder(OCSP_REQUEST **preq, BIO **pcbio, BIO *acbio,
             goto out;
         }
         if ((getbio = BIO_new_mem_buf(p, len)) == NULL
-            || (b64 = BIO_new(BIO_f_base64())) == NULL) {
+            || (b64 = _BIO_new(BIO_f_base64())) == NULL) {
             log_message(LOG_ERR, "Could not allocate base64 bio: %s", client);
             goto out;
         }

@@ -25,7 +25,7 @@ void OPENSSL_LH_stats(const OPENSSL_LHASH *lh, FILE *fp)
 {
     BIO *bp;
 
-    bp = BIO_new(BIO_s_file());
+    bp = _BIO_new(BIO_s_file());
     if (bp == NULL)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
@@ -37,7 +37,7 @@ void OPENSSL_LH_node_stats(const OPENSSL_LHASH *lh, FILE *fp)
 {
     BIO *bp;
 
-    bp = BIO_new(BIO_s_file());
+    bp = _BIO_new(BIO_s_file());
     if (bp == NULL)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
@@ -49,7 +49,7 @@ void OPENSSL_LH_node_usage_stats(const OPENSSL_LHASH *lh, FILE *fp)
 {
     BIO *bp;
 
-    bp = BIO_new(BIO_s_file());
+    bp = _BIO_new(BIO_s_file());
     if (bp == NULL)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
