@@ -12362,7 +12362,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      an area of memory needs to be read from a BIO. The previous method was
      to create a memory BIO and write the data to it, this results in two
      copies of the data and an O(n^2) reading algorithm. There is a new
-     function BIO_new_mem_buf() which creates a read only memory BIO from
+     function _BIO_new_mem_buf() which creates a read only memory BIO from
      an area of memory. Also modified the PKCS#7 routines to use read only
      memory BIOs.
      [Steve Henson]

@@ -588,7 +588,7 @@ long BIO_debug_callback(BIO *bio, int cmd, const char *argp, int argi,
 
 const BIO_METHOD *_BIO_s_mem(void);
 const BIO_METHOD *BIO_s_secmem(void);
-BIO *BIO_new_mem_buf(const void *buf, int len);
+BIO *_BIO_new_mem_buf(const void *buf, int len);
 # ifndef OPENSSL_NO_SOCK
 const BIO_METHOD *BIO_s_socket(void);
 const BIO_METHOD *BIO_s_connect(void);

@@ -1138,7 +1138,7 @@ static int test_invalide_ec_char2_pub_range_decode(int id)
     BIO *bio = NULL;
     EC_KEY *eckey = NULL;
 
-    if (!TEST_ptr(bio = BIO_new_mem_buf(ec_der_pub_keys[id].der,
+    if (!TEST_ptr(bio = _BIO_new_mem_buf(ec_der_pub_keys[id].der,
                                         ec_der_pub_keys[id].len)))
         goto err;
     eckey = d2i_EC_PUBKEY_bio(bio, NULL);
@@ -1218,7 +1218,7 @@ static int test_EVP_SM2_verify(void)
     EVP_MD_CTX *mctx = NULL;
     EVP_PKEY_CTX *pctx = NULL;
 
-    bio = BIO_new_mem_buf(pubkey, strlen(pubkey));
+    bio = _BIO_new_mem_buf(pubkey, strlen(pubkey));
     if (!TEST_true(bio != NULL))
         goto done;
 
@@ -1530,7 +1530,7 @@ static int test_EVP_PKEY_check(int i)
         break;
 #ifndef OPENSSL_NO_EC
     case 1:
-        if (!TEST_ptr(pubkey = BIO_new_mem_buf(input, input_len))
+        if (!TEST_ptr(pubkey = _BIO_new_mem_buf(input, input_len))
             || !TEST_ptr(eckey = d2i_EC_PUBKEY_bio(pubkey, NULL))
             || !TEST_ptr(pkey = _EVP_PKEY_new())
             || !TEST_true(EVP_PKEY_assign_EC_KEY(pkey, eckey)))

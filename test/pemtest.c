@@ -95,7 +95,7 @@ static int test_empty_payload(void)
     long len;
     int ret = 0;
 
-    b = BIO_new_mem_buf(emptypay, strlen(emptypay));
+    b = _BIO_new_mem_buf(emptypay, strlen(emptypay));
     if (!TEST_ptr(b))
         return 0;
 

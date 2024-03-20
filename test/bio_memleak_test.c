@@ -77,7 +77,7 @@ static int test_bio_new_mem_buf(void)
     BUF_MEM *bufmem;
     char data[16];
 
-    bio = BIO_new_mem_buf("Hello World\n", 12);
+    bio = _BIO_new_mem_buf("Hello World\n", 12);
     if (!TEST_ptr(bio))
         goto finish;
     if (!TEST_int_eq(BIO_read(bio, data, 5), 5))
@@ -112,7 +112,7 @@ static int test_bio_rdonly_mem_buf(void)
     BUF_MEM *bufmem;
     char data[16];
 
-    bio = BIO_new_mem_buf("Hello World\n", 12);
+    bio = _BIO_new_mem_buf("Hello World\n", 12);
     if (!TEST_ptr(bio))
         goto finish;
     if (!TEST_int_eq(BIO_read(bio, data, 5), 5))

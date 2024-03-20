@@ -38,7 +38,7 @@ static const ERR_STRING_DATA BIO_str_functs[] = {
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NEW, 0), "_BIO_new"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NEW_DGRAM_SCTP, 0), "BIO_new_dgram_sctp"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NEW_FILE, 0), "BIO_new_file"},
-    {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NEW_MEM_BUF, 0), "BIO_new_mem_buf"},
+    {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NEW_MEM_BUF, 0), "_BIO_new_mem_buf"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NREAD, 0), "BIO_nread"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NREAD0, 0), "BIO_nread0"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_NWRITE, 0), "BIO_nwrite"},

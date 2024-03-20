@@ -1426,7 +1426,7 @@ static int do_responder(OCSP_REQUEST **preq, BIO **pcbio, BIO *acbio,
                         "Invalid request -- bad URL encoding: %s", client);
             goto out;
         }
-        if ((getbio = BIO_new_mem_buf(p, len)) == NULL
+        if ((getbio = _BIO_new_mem_buf(p, len)) == NULL
             || (b64 = _BIO_new(BIO_f_base64())) == NULL) {
             log_message(LOG_ERR, "Could not allocate base64 bio: %s", client);
             goto out;

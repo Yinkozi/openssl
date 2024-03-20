@@ -50,7 +50,7 @@ BIO *cms_content_bio(CMS_ContentInfo *cms)
     if (!*pos || ((*pos)->flags == ASN1_STRING_FLAG_CONT))
         return _BIO_new(_BIO_s_mem());
     /* Else content was read in: return read only BIO for it */
-    return BIO_new_mem_buf((*pos)->data, (*pos)->length);
+    return _BIO_new_mem_buf((*pos)->data, (*pos)->length);
 }
 
 BIO *CMS_dataInit(CMS_ContentInfo *cms, BIO *icont)

@@ -83,7 +83,7 @@ const BIO_METHOD *BIO_s_secmem(void)
     return(&secmem_method);
 }
 
-BIO *BIO_new_mem_buf(const void *buf, int len)
+BIO *_BIO_new_mem_buf(const void *buf, int len)
 {
     BIO *ret;
     BUF_MEM *b;

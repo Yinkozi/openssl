@@ -4,7 +4,7 @@
 
 BIO_s_secmem,
 _BIO_s_mem, BIO_set_mem_eof_return, BIO_get_mem_data, BIO_set_mem_buf,
-BIO_get_mem_ptr, BIO_new_mem_buf - memory BIO
+BIO_get_mem_ptr, _BIO_new_mem_buf - memory BIO
 
 =head1 SYNOPSIS
 
@@ -18,7 +18,7 @@ BIO_get_mem_ptr, BIO_new_mem_buf - memory BIO
  BIO_set_mem_buf(BIO *b, BUF_MEM *bm, int c)
  BIO_get_mem_ptr(BIO *b, BUF_MEM **pp)
 
- BIO *BIO_new_mem_buf(const void *buf, int len);
+ BIO *_BIO_new_mem_buf(const void *buf, int len);
 
 =head1 DESCRIPTION
 
@@ -67,7 +67,7 @@ It is a macro.
 BIO_get_mem_ptr() places the underlying BUF_MEM structure in *B<pp>. It is
 a macro.
 
-BIO_new_mem_buf() creates a memory BIO using B<len> bytes of data at B<buf>,
+_BIO_new_mem_buf() creates a memory BIO using B<len> bytes of data at B<buf>,
 if B<len> is -1 then the B<buf> is assumed to be nul terminated and its
 length is determined by B<strlen>. The BIO is set to a read only state and
 as a result cannot be written to. This is useful when some data needs to be
@@ -128,7 +128,7 @@ return 1 on success or a value which is less than or equal to 0 if an error occu
 BIO_get_mem_data() returns the total number of bytes available on success,
 0 if b is NULL, or a negative value in case of other errors.
 
-BIO_new_mem_buf() returns a valid B<BIO> structure on success or NULL on error.
+_BIO_new_mem_buf() returns a valid B<BIO> structure on success or NULL on error.
 
 =head1 EXAMPLES
 
@@ -141,7 +141,7 @@ Create a memory BIO and write some data to it:
 Create a read only memory BIO:
 
  char data[] = "Hello World";
- BIO *mem = BIO_new_mem_buf(data, -1);
+ BIO *mem = _BIO_new_mem_buf(data, -1);
 
 Extract the BUF_MEM structure from a memory BIO and then free up the BIO:
 

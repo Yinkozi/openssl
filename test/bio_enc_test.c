@@ -53,7 +53,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     b = _BIO_new(BIO_f_cipher());
     if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, ENCRYPT)))
         return 0;
-    BIO_push(b, BIO_new_mem_buf(inp, DATA_SIZE));
+    BIO_push(b, _BIO_new_mem_buf(inp, DATA_SIZE));
     lref = BIO_read(b, ref, sizeof(ref));
     BIO_free_all(b);
 
@@ -64,7 +64,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
             TEST_info("Split encrypt failed @ operation %d", i);
             return 0;
         }
-        BIO_push(b, BIO_new_mem_buf(inp, DATA_SIZE));
+        BIO_push(b, _BIO_new_mem_buf(inp, DATA_SIZE));
         memset(out, 0, sizeof(out));
         out[i] = ~ref[i];
         len = BIO_read(b, out, i);
@@ -91,7 +91,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
             TEST_info("Small chunk encrypt failed @ operation %d", i);
             return 0;
         }
-        BIO_push(b, BIO_new_mem_buf(inp, DATA_SIZE));
+        BIO_push(b, _BIO_new_mem_buf(inp, DATA_SIZE));
         memset(out, 0, sizeof(out));
         for (len = 0; (delta = BIO_read(b, out + len, i)); ) {
             len += delta;
@@ -111,7 +111,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     if (!TEST_true(BIO_set_cipher(b, cipher, key, iv, DECRYPT)))
         return 0;
     /* Use original reference output as input */
-    BIO_push(b, BIO_new_mem_buf(ref, lref));
+    BIO_push(b, _BIO_new_mem_buf(ref, lref));
     (void)BIO_flush(b);
     memset(out, 0, sizeof(out));
     len = BIO_read(b, out, sizeof(out));
@@ -127,7 +127,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
             TEST_info("Split decrypt failed @ operation %d", i);
             return 0;
         }
-        BIO_push(b, BIO_new_mem_buf(ref, lref));
+        BIO_push(b, _BIO_new_mem_buf(ref, lref));
         memset(out, 0, sizeof(out));
         out[i] = ~ref[i];
         len = BIO_read(b, out, i);
@@ -154,7 +154,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
             TEST_info("Small chunk decrypt failed @ operation %d", i);
             return 0;
         }
-        BIO_push(b, BIO_new_mem_buf(ref, lref));
+        BIO_push(b, _BIO_new_mem_buf(ref, lref));
         memset(out, 0, sizeof(out));
         for (len = 0; (delta = BIO_read(b, out + len, i)); ) {
             len += delta;

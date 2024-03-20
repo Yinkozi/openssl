@@ -342,7 +342,7 @@ int CMS_verify(CMS_ContentInfo *cms, STACK_OF(X509) *certs,
         char *ptr;
         long len;
         len = BIO_get_mem_data(dcont, &ptr);
-        tmpin = (len == 0) ? dcont : BIO_new_mem_buf(ptr, len);
+        tmpin = (len == 0) ? dcont : _BIO_new_mem_buf(ptr, len);
         if (tmpin == NULL) {
             CMSerr(CMS_F_CMS_VERIFY, ERR_R_MALLOC_FAILURE);
             goto err2;
@@ -516,7 +516,7 @@ CMS_ContentInfo *CMS_sign_receipt(CMS_SignerInfo *si,
         goto err;
 
     /* Set content to digest */
-    rct_cont = BIO_new_mem_buf(os->data, os->length);
+    rct_cont = _BIO_new_mem_buf(os->data, os->length);
     if (!rct_cont)
         goto err;
 

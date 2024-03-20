@@ -322,7 +322,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
         if (PKCS7_is_detached(p7)) {
             bio = _BIO_new(BIO_s_null());
         } else if (os && os->length > 0) {
-            bio = BIO_new_mem_buf(os->data, os->length);
+            bio = _BIO_new_mem_buf(os->data, os->length);
         } else {
             bio = _BIO_new(_BIO_s_mem());
             if (bio == NULL)
@@ -567,7 +567,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
         bio = in_bio;
     } else {
         if (data_body->length > 0)
-            bio = BIO_new_mem_buf(data_body->data, data_body->length);
+            bio = _BIO_new_mem_buf(data_body->data, data_body->length);
         else {
             bio = _BIO_new(_BIO_s_mem());
             if (bio == NULL)

@@ -5260,7 +5260,7 @@ static int create_new_vfile(char *userid, char *password, const char *filename)
     OPENSSL_STRING *row = OPENSSL_zalloc(sizeof(row) * (DB_NUMBER + 1));
     TXT_DB *db = NULL;
     int ret = 0;
-    BIO *out = NULL, *dummy = BIO_new_mem_buf("", 0);
+    BIO *out = NULL, *dummy = _BIO_new_mem_buf("", 0);
     size_t i;
 
     if (!TEST_ptr(dummy) || !TEST_ptr(row))
