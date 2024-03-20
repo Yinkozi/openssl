@@ -684,7 +684,7 @@ int EVP_CIPHER_CTX_set_padding(EVP_CIPHER_CTX *c, int pad);
 int EVP_CIPHER_CTX_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg, void *ptr);
 int EVP_CIPHER_CTX_rand_key(EVP_CIPHER_CTX *ctx, unsigned char *key);
 
-const BIO_METHOD *BIO_f_md(void);
+const BIO_METHOD *_BIO_f_md(void);
 const BIO_METHOD *BIO_f_base64(void);
 const BIO_METHOD *BIO_f_cipher(void);
 const BIO_METHOD *BIO_f_reliable(void);

@@ -219,7 +219,7 @@ int dgst_main(int argc, char **argv)
         impl = e;
 
     in = _BIO_new(BIO_s_file());
-    bmd = _BIO_new(BIO_f_md());
+    bmd = _BIO_new(_BIO_f_md());
     if ((in == NULL) || (bmd == NULL)) {
         ERR_print_errors(bio_err);
         goto end;

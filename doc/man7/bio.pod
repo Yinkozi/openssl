@@ -62,7 +62,7 @@ Create a memory BIO:
 
 L<BIO_ctrl(3)>,
 L<BIO_f_base64(3)>, L<BIO_f_buffer(3)>,
-L<BIO_f_cipher(3)>, L<BIO_f_md(3)>,
+L<BIO_f_cipher(3)>, L<_BIO_f_md(3)>,
 L<BIO_f_null(3)>, L<BIO_f_ssl(3)>,
 L<BIO_find_type(3)>, L<_BIO_new(3)>,
 L<BIO_new_bio_pair(3)>,

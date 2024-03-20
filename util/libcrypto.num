@@ -2300,7 +2300,7 @@ ASN1_OBJECT_it                          2269	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:
 BN_mod_add_quick                        2270	1_1_0	EXIST::FUNCTION:
 NCONF_free                              2271	1_1_0	EXIST::FUNCTION:
 NETSCAPE_SPKI_b64_decode                2272	1_1_0	EXIST::FUNCTION:
-BIO_f_md                                2273	1_1_0	EXIST::FUNCTION:
+_BIO_f_md                                2273	1_1_0	EXIST::FUNCTION:
 EVP_MD_CTX_pkey_ctx                     2274	1_1_0	EXIST::FUNCTION:
 ENGINE_set_default_EC                   2275	1_1_0	EXIST::FUNCTION:ENGINE
 CMS_ReceiptRequest_free                 2276	1_1_0	EXIST::FUNCTION:CMS

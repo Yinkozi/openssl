@@ -296,7 +296,7 @@ BIO *cms_DigestAlgorithm_init_bio(X509_ALGOR *digestAlgorithm)
                CMS_R_UNKNOWN_DIGEST_ALGORITHM);
         goto err;
     }
-    mdbio = _BIO_new(BIO_f_md());
+    mdbio = _BIO_new(_BIO_f_md());
     if (mdbio == NULL || !BIO_set_md(mdbio, digest)) {
         CMSerr(CMS_F_CMS_DIGESTALGORITHM_INIT_BIO, CMS_R_MD_BIO_INIT_ERROR);
         goto err;

@@ -45,7 +45,7 @@ static const BIO_METHOD methods_md = {
     md_callback_ctrl,
 };
 
-const BIO_METHOD *BIO_f_md(void)
+const BIO_METHOD *_BIO_f_md(void)
 {
     return &methods_md;
 }

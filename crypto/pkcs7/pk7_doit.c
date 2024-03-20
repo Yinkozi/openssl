@@ -56,7 +56,7 @@ static int PKCS7_bio_add_digest(BIO **pbio, X509_ALGOR *alg)
 {
     BIO *btmp;
     const EVP_MD *md;
-    if ((btmp = _BIO_new(BIO_f_md())) == NULL) {
+    if ((btmp = _BIO_new(_BIO_f_md())) == NULL) {
         PKCS7err(PKCS7_F_PKCS7_BIO_ADD_DIGEST, ERR_R_BIO_LIB);
         goto err;
     }
@@ -441,7 +441,7 @@ BIO *PKCS7_dataDecode(PKCS7 *p7, EVP_PKEY *pkey, BIO *in_bio, X509 *pcert)
     if (md_sk != NULL) {
         for (i = 0; i < sk_X509_ALGOR_num(md_sk); i++) {
             xa = sk_X509_ALGOR_value(md_sk, i);
-            if ((btmp = _BIO_new(BIO_f_md())) == NULL) {
+            if ((btmp = _BIO_new(_BIO_f_md())) == NULL) {
                 PKCS7err(PKCS7_F_PKCS7_DATADECODE, ERR_R_BIO_LIB);
                 goto err;
             }
