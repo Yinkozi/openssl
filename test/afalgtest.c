@@ -64,7 +64,7 @@ static int test_afalg_aes_cbc(int keysize_idx)
         default:
             cipher = NULL;
     }
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new()))
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new()))
             return 0;
 
     if (!TEST_true(EVP_CipherInit_ex(ctx, cipher, e, key, iv, 1))
@@ -103,7 +103,7 @@ static int test_pr16743(void)
     if (!TEST_true(ENGINE_init(e)))
         return 0;
     cipher = ENGINE_get_cipher(e, NID_aes_128_cbc);
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     if (cipher != NULL && ctx != NULL)
         ret = EVP_EncryptInit_ex(ctx, cipher, e, NULL, NULL);
     TEST_true(ret);

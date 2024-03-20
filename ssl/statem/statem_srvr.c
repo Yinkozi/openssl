@@ -3897,7 +3897,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
         goto err;
     }
 
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     hctx = HMAC_CTX_new();
     if (ctx == NULL || hctx == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_CONSTRUCT_STATELESS_TICKET,

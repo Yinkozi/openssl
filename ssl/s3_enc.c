@@ -119,7 +119,7 @@ int ssl3_change_cipher_state(SSL *s, int which)
     if (which & SSL3_CC_READ) {
         if (s->enc_read_ctx != NULL) {
             reuse_dd = 1;
-        } else if ((s->enc_read_ctx = EVP_CIPHER_CTX_new()) == NULL) {
+        } else if ((s->enc_read_ctx = _EVP_CIPHER_CTX_new()) == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL3_CHANGE_CIPHER_STATE,
                      ERR_R_MALLOC_FAILURE);
             goto err;
@@ -156,7 +156,7 @@ int ssl3_change_cipher_state(SSL *s, int which)
         s->statem.enc_write_state = ENC_WRITE_STATE_INVALID;
         if (s->enc_write_ctx != NULL) {
             reuse_dd = 1;
-        } else if ((s->enc_write_ctx = EVP_CIPHER_CTX_new()) == NULL) {
+        } else if ((s->enc_write_ctx = _EVP_CIPHER_CTX_new()) == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL3_CHANGE_CIPHER_STATE,
                      ERR_R_MALLOC_FAILURE);
             goto err;

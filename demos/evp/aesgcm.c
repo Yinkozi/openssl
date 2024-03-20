@@ -55,7 +55,7 @@ void aes_gcm_encrypt(void)
     printf("AES GCM Encrypt:\n");
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, gcm_pt, sizeof(gcm_pt));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
     EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length if default 96 bits is not appropriate */
@@ -87,7 +87,7 @@ void aes_gcm_decrypt(void)
     printf("AES GCM Decrypt:\n");
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, gcm_ct, sizeof(gcm_ct));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     /* Select cipher */
     EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length, omit for 96 bits */

@@ -676,7 +676,7 @@ int EVP_DecodeBlock(unsigned char *t, const unsigned char *f, int n);
 #  define EVP_CIPHER_CTX_init(c)      EVP_CIPHER_CTX_reset(c)
 #  define EVP_CIPHER_CTX_cleanup(c)   EVP_CIPHER_CTX_reset(c)
 # endif
-EVP_CIPHER_CTX *EVP_CIPHER_CTX_new(void);
+EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void);
 int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *c);
 void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *c);
 int EVP_CIPHER_CTX_set_key_length(EVP_CIPHER_CTX *x, int keylen);

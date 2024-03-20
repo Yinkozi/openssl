@@ -55,7 +55,7 @@ void aes_ccm_encrypt(void)
     printf("AES CCM Encrypt:\n");
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, ccm_pt, sizeof(ccm_pt));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
     EVP_EncryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length if default 96 bits is not appropriate */
@@ -92,7 +92,7 @@ void aes_ccm_decrypt(void)
     printf("AES CCM Derypt:\n");
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, ccm_ct, sizeof(ccm_ct));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     /* Select cipher */
     EVP_DecryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length, omit for 96 bits */

@@ -435,9 +435,9 @@ int drbg_ctr_init(RAND_DRBG *drbg)
 
     ctr->keylen = keylen;
     if (ctr->ctx_ecb == NULL)
-        ctr->ctx_ecb = EVP_CIPHER_CTX_new();
+        ctr->ctx_ecb = _EVP_CIPHER_CTX_new();
     if (ctr->ctx_ctr == NULL)
-        ctr->ctx_ctr = EVP_CIPHER_CTX_new();
+        ctr->ctx_ctr = _EVP_CIPHER_CTX_new();
     if (ctr->ctx_ecb == NULL || ctr->ctx_ctr == NULL
         || !EVP_CipherInit_ex(ctr->ctx_ecb,
                               ctr->cipher_ecb, NULL, NULL, NULL, 1)
@@ -459,7 +459,7 @@ int drbg_ctr_init(RAND_DRBG *drbg)
         };
 
         if (ctr->ctx_df == NULL)
-            ctr->ctx_df = EVP_CIPHER_CTX_new();
+            ctr->ctx_df = _EVP_CIPHER_CTX_new();
         if (ctr->ctx_df == NULL)
             return 0;
         /* Set key schedule for df_key */

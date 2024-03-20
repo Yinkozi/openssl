@@ -160,7 +160,7 @@ static int cms_kari_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 {
     CMS_KeyAgreeRecipientInfo *kari = (CMS_KeyAgreeRecipientInfo *)*pval;
     if (operation == ASN1_OP_NEW_POST) {
-        kari->ctx = EVP_CIPHER_CTX_new();
+        kari->ctx = _EVP_CIPHER_CTX_new();
         if (kari->ctx == NULL)
             return 0;
         EVP_CIPHER_CTX_set_flags(kari->ctx, EVP_CIPHER_CTX_FLAG_WRAP_ALLOW);

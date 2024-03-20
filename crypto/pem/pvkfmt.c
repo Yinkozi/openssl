@@ -681,7 +681,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
     unsigned char *enctmp = NULL, *q;
     unsigned char keybuf[20];
 
-    EVP_CIPHER_CTX *cctx = EVP_CIPHER_CTX_new();
+    EVP_CIPHER_CTX *cctx = _EVP_CIPHER_CTX_new();
     if (saltlen) {
         char psbuf[PEM_BUFSIZE];
         int enctmplen, inlen;
@@ -803,7 +803,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
         }
     }
 
-    cctx = EVP_CIPHER_CTX_new();
+    cctx = _EVP_CIPHER_CTX_new();
     if (cctx == NULL)
         goto error;
 

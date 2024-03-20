@@ -581,7 +581,7 @@ static int cipher_test_enc(EVP_TEST *t, int enc,
     EVP_CIPHER_CTX *ctx = NULL;
 
     t->err = "TEST_FAILURE";
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new()))
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new()))
         goto err;
     EVP_CIPHER_CTX_set_flags(ctx, EVP_CIPHER_CTX_FLAG_WRAP_ALLOW);
     if (enc) {

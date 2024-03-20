@@ -1399,7 +1399,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
         ret = SSL_TICKET_FATAL_ERR_MALLOC;
         goto end;
     }
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     if (ctx == NULL) {
         ret = SSL_TICKET_FATAL_ERR_MALLOC;
         goto end;

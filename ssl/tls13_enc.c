@@ -475,7 +475,7 @@ int tls13_change_cipher_state(SSL *s, int which)
         if (s->enc_read_ctx != NULL) {
             EVP_CIPHER_CTX_reset(s->enc_read_ctx);
         } else {
-            s->enc_read_ctx = EVP_CIPHER_CTX_new();
+            s->enc_read_ctx = _EVP_CIPHER_CTX_new();
             if (s->enc_read_ctx == NULL) {
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                          SSL_F_TLS13_CHANGE_CIPHER_STATE, ERR_R_MALLOC_FAILURE);
@@ -491,7 +491,7 @@ int tls13_change_cipher_state(SSL *s, int which)
         if (s->enc_write_ctx != NULL) {
             EVP_CIPHER_CTX_reset(s->enc_write_ctx);
         } else {
-            s->enc_write_ctx = EVP_CIPHER_CTX_new();
+            s->enc_write_ctx = _EVP_CIPHER_CTX_new();
             if (s->enc_write_ctx == NULL) {
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                          SSL_F_TLS13_CHANGE_CIPHER_STATE, ERR_R_MALLOC_FAILURE);

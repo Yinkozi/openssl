@@ -6303,7 +6303,7 @@
      branch, not in the OpenSSL 0.9.8 branch).
      [Douglas Stebila]
 
-  *) New functions EVP_CIPHER_CTX_new() and EVP_CIPHER_CTX_free() to support
+  *) New functions _EVP_CIPHER_CTX_new() and EVP_CIPHER_CTX_free() to support
      opaque EVP_CIPHER_CTX handling.
      [Steve Henson]
 

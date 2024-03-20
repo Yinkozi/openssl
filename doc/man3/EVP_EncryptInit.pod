@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-EVP_CIPHER_CTX_new,
+_EVP_CIPHER_CTX_new,
 EVP_CIPHER_CTX_reset,
 EVP_CIPHER_CTX_free,
 EVP_EncryptInit_ex,
@@ -54,7 +54,7 @@ EVP_enc_null
 
  #include <openssl/evp.h>
 
- EVP_CIPHER_CTX *EVP_CIPHER_CTX_new(void);
+ EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void);
  int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx);
  void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx);
 
@@ -123,7 +123,7 @@ EVP_enc_null
 The EVP cipher routines are a high-level interface to certain
 symmetric ciphers.
 
-EVP_CIPHER_CTX_new() creates a cipher context.
+_EVP_CIPHER_CTX_new() creates a cipher context.
 
 EVP_CIPHER_CTX_free() clears all information from a cipher context
 and free up any allocated memory associate with it, including B<ctx>
@@ -285,7 +285,7 @@ buffer at least as big as the value returned by EVP_CIPHER_CTX_key_length().
 
 =head1 RETURN VALUES
 
-EVP_CIPHER_CTX_new() returns a pointer to a newly created
+_EVP_CIPHER_CTX_new() returns a pointer to a newly created
 B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 
 EVP_EncryptInit_ex(), EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
@@ -539,7 +539,7 @@ Encrypt a string using IDEA:
      EVP_CIPHER_CTX *ctx;
      FILE *out;
 
-     ctx = EVP_CIPHER_CTX_new();
+     ctx = _EVP_CIPHER_CTX_new();
      EVP_EncryptInit_ex(ctx, EVP_idea_cbc(), NULL, key, iv);
 
      if (!EVP_EncryptUpdate(ctx, outbuf, &outlen, intext, strlen(intext))) {
@@ -597,7 +597,7 @@ with a 128-bit key:
      unsigned char iv[] = "1234567887654321";
 
      /* Don't set key or IV right away; we want to check lengths */
-     ctx = EVP_CIPHER_CTX_new();
+     ctx = _EVP_CIPHER_CTX_new();
      EVP_CipherInit_ex(ctx, EVP_aes_128_cbc(), NULL, NULL, NULL,
                        do_encrypt);
      OPENSSL_assert(EVP_CIPHER_CTX_key_length(ctx) == 16);

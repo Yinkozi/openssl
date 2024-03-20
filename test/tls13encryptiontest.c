@@ -342,11 +342,11 @@ static int test_tls13_encryption(void)
         goto err;
     }
 
-    s->enc_read_ctx = EVP_CIPHER_CTX_new();
+    s->enc_read_ctx = _EVP_CIPHER_CTX_new();
     if (!TEST_ptr(s->enc_read_ctx))
         goto err;
 
-    s->enc_write_ctx = EVP_CIPHER_CTX_new();
+    s->enc_write_ctx = _EVP_CIPHER_CTX_new();
     if (!TEST_ptr(s->enc_write_ctx))
         goto err;
 

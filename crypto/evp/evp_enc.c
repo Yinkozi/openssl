@@ -38,7 +38,7 @@ int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *c)
     return 1;
 }
 
-EVP_CIPHER_CTX *EVP_CIPHER_CTX_new(void)
+EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void)
 {
     return OPENSSL_zalloc(sizeof(EVP_CIPHER_CTX));
 }

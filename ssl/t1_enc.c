@@ -115,7 +115,7 @@ int tls1_change_cipher_state(SSL *s, int which)
 
         if (s->enc_read_ctx != NULL) {
             reuse_dd = 1;
-        } else if ((s->enc_read_ctx = EVP_CIPHER_CTX_new()) == NULL) {
+        } else if ((s->enc_read_ctx = _EVP_CIPHER_CTX_new()) == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS1_CHANGE_CIPHER_STATE,
                      ERR_R_MALLOC_FAILURE);
             goto err;
@@ -162,7 +162,7 @@ int tls1_change_cipher_state(SSL *s, int which)
             s->mac_flags &= ~SSL_MAC_FLAG_WRITE_MAC_STREAM;
         if (s->enc_write_ctx != NULL && !SSL_IS_DTLS(s)) {
             reuse_dd = 1;
-        } else if ((s->enc_write_ctx = EVP_CIPHER_CTX_new()) == NULL) {
+        } else if ((s->enc_write_ctx = _EVP_CIPHER_CTX_new()) == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS1_CHANGE_CIPHER_STATE,
                      ERR_R_MALLOC_FAILURE);
             goto err;

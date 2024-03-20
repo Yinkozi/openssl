@@ -70,7 +70,7 @@ static int enc_new(BIO *bi)
         return 0;
     }
 
-    ctx->cipher = EVP_CIPHER_CTX_new();
+    ctx->cipher = _EVP_CIPHER_CTX_new();
     if (ctx->cipher == NULL) {
         OPENSSL_free(ctx);
         return 0;
@@ -379,7 +379,7 @@ static long enc_ctrl(BIO *b, int cmd, long num, void *ptr)
     case BIO_CTRL_DUP:
         dbio = (BIO *)ptr;
         dctx = BIO_get_data(dbio);
-        dctx->cipher = EVP_CIPHER_CTX_new();
+        dctx->cipher = _EVP_CIPHER_CTX_new();
         if (dctx->cipher == NULL)
             return 0;
         ret = EVP_CIPHER_CTX_copy(dctx->cipher, ctx->cipher);

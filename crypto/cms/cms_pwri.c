@@ -79,7 +79,7 @@ CMS_RecipientInfo *CMS_add0_recipient_password(CMS_ContentInfo *cms,
     if (encalg == NULL) {
         goto merr;
     }
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
 
     if (EVP_EncryptInit_ex(ctx, kekciph, NULL, NULL, NULL) <= 0) {
         CMSerr(CMS_F_CMS_ADD0_RECIPIENT_PASSWORD, ERR_R_EVP_LIB);
@@ -317,7 +317,7 @@ int cms_RecipientInfo_pwri_crypt(CMS_ContentInfo *cms, CMS_RecipientInfo *ri,
         return 0;
     }
 
-    kekctx = EVP_CIPHER_CTX_new();
+    kekctx = _EVP_CIPHER_CTX_new();
     if (kekctx == NULL) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_PWRI_CRYPT, ERR_R_MALLOC_FAILURE);
         return 0;

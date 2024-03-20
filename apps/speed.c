@@ -2630,7 +2630,7 @@ int speed_main(int argc, char **argv)
                               seconds.sym);
 
                 for (k = 0; k < loopargs_len; k++) {
-                    loopargs[k].ctx = EVP_CIPHER_CTX_new();
+                    loopargs[k].ctx = _EVP_CIPHER_CTX_new();
                     if (loopargs[k].ctx == NULL) {
                         BIO_printf(bio_err, "\nEVP_CIPHER_CTX_new failure\n");
                         exit(1);
@@ -3631,7 +3631,7 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
 
     inp = app_malloc(mblengths[num - 1], "multiblock input buffer");
     out = app_malloc(mblengths[num - 1] + 1024, "multiblock output buffer");
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, no_iv);
 
     keylen = EVP_CIPHER_CTX_key_length(ctx);

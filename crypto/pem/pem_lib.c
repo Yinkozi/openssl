@@ -381,7 +381,7 @@ int PEM_ASN1_write_bio(i2d_of_void *i2d, const char *name, BIO *bp,
         /* k=strlen(buf); */
 
         ret = 1;
-        if ((ctx = EVP_CIPHER_CTX_new()) == NULL
+        if ((ctx = _EVP_CIPHER_CTX_new()) == NULL
             || !EVP_EncryptInit_ex(ctx, enc, NULL, key, iv)
             || !EVP_EncryptUpdate(ctx, data, &j, data, i)
             || !EVP_EncryptFinal_ex(ctx, &(data[j]), &i))
@@ -443,7 +443,7 @@ int PEM_do_header(EVP_CIPHER_INFO *cipher, unsigned char *data, long *plen,
                         (unsigned char *)buf, keylen, 1, key, NULL))
         return 0;
 
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     if (ctx == NULL)
         return 0;
 

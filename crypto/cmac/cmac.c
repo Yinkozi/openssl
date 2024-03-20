@@ -51,7 +51,7 @@ CMAC_CTX *CMAC_CTX_new(void)
         CRYPTOerr(CRYPTO_F_CMAC_CTX_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
-    ctx->cctx = EVP_CIPHER_CTX_new();
+    ctx->cctx = _EVP_CIPHER_CTX_new();
     if (ctx->cctx == NULL) {
         OPENSSL_free(ctx);
         return NULL;

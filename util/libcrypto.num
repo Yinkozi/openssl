@@ -3256,7 +3256,7 @@ X509_issuer_name_hash_old               3208	1_1_0	EXIST::FUNCTION:MD5
 i2d_PKCS12_SAFEBAG                      3209	1_1_0	EXIST::FUNCTION:
 BN_rand_range                           3210	1_1_0	EXIST::FUNCTION:
 SMIME_write_ASN1                        3211	1_1_0	EXIST::FUNCTION:
-EVP_CIPHER_CTX_new                      3212	1_1_0	EXIST::FUNCTION:
+_EVP_CIPHER_CTX_new                      3212	1_1_0	EXIST::FUNCTION:
 MD4_Final                               3213	1_1_0	EXIST::FUNCTION:MD4
 EVP_PKEY_id                             3214	1_1_0	EXIST::FUNCTION:
 CMS_RecipientInfo_get0_pkey_ctx         3215	1_1_0	EXIST::FUNCTION:CMS

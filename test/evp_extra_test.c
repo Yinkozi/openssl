@@ -517,7 +517,7 @@ static int test_evp_init_seq(int idx)
     size_t taglen = sizeof(tag);
     char *errmsg = NULL;
 
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = _EVP_CIPHER_CTX_new();
     if (ctx == NULL) {
         errmsg = "CTX_ALLOC";
         goto err;
@@ -621,7 +621,7 @@ static int test_evp_reset(int idx)
     const EVP_CIPHER *type = NULL;
     char *errmsg = NULL;
 
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new())) {
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())) {
         errmsg = "CTX_ALLOC";
         goto err;
     }
@@ -711,7 +711,7 @@ static int test_gcm_reinit(int idx)
     size_t taglen = sizeof(tag);
     char *errmsg = NULL;
 
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new())) {
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())) {
         errmsg = "CTX_ALLOC";
         goto err;
     }
@@ -865,7 +865,7 @@ static int test_evp_updated_iv(int idx)
     int iv_len;
     char *errmsg = NULL;
 
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new())) {
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())) {
         errmsg = "CTX_ALLOC";
         goto err;
     }
@@ -968,7 +968,7 @@ static int test_EVP_Enveloped(void)
 
     if (!TEST_ptr(keypair = load_example_rsa_key())
             || !TEST_ptr(kek = OPENSSL_zalloc(EVP_PKEY_size(keypair)))
-            || !TEST_ptr(ctx = EVP_CIPHER_CTX_new())
+            || !TEST_ptr(ctx = _EVP_CIPHER_CTX_new())
             || !TEST_true(EVP_SealInit(ctx, type, &kek, &kek_len, iv,
                                        &keypair, 1))
             || !TEST_true(EVP_SealUpdate(ctx, ciphertext, &ciphertext_len,
@@ -1679,7 +1679,7 @@ static int test_decrypt_null_chunks(void)
     int ret = 0;
     const int enc_offset = 10, dec_offset = 20;
 
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new())
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())
             || !TEST_true(EVP_EncryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL,
                                              key, iv))
             || !TEST_true(EVP_EncryptUpdate(ctx, ciphertext, &ctlen, msg,
@@ -1972,8 +1972,8 @@ static int test_cipher_with_engine(void)
         return 0;
     }
 
-    if (!TEST_ptr(ctx = EVP_CIPHER_CTX_new())
-            || !TEST_ptr(ctx2 = EVP_CIPHER_CTX_new()))
+    if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())
+            || !TEST_ptr(ctx2 = _EVP_CIPHER_CTX_new()))
         goto err;
 
     if (!TEST_true(EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), e, keyiv, keyiv)))
