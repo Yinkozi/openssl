@@ -529,7 +529,7 @@ static ASN1_INTEGER *create_nonce(int bits)
 
     if (len > (int)sizeof(buf))
         goto err;
-    if (RAND_bytes(buf, len) <= 0)
+    if (_RAND_bytes(buf, len) <= 0)
         goto err;
 
     /* Find the first non-zero byte and creating ASN1_INTEGER object. */

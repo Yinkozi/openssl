@@ -1698,7 +1698,7 @@ static int s390x_aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
             memcpy(gctx->iv, ptr, arg);
 
         enc = EVP_CIPHER_CTX_encrypting(c);
-        if (enc && RAND_bytes(gctx->iv + arg, gctx->ivlen - arg) <= 0)
+        if (enc && _RAND_bytes(gctx->iv + arg, gctx->ivlen - arg) <= 0)
             return 0;
 
         gctx->iv_gen = 1;
@@ -2904,7 +2904,7 @@ static int aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
             return 0;
         if (arg)
             memcpy(gctx->iv, ptr, arg);
-        if (c->encrypt && RAND_bytes(gctx->iv + arg, gctx->ivlen - arg) <= 0)
+        if (c->encrypt && _RAND_bytes(gctx->iv + arg, gctx->ivlen - arg) <= 0)
             return 0;
         gctx->iv_gen = 1;
         return 1;

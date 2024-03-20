@@ -44,7 +44,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     int i, lref, len;
 
     /* Fill buffer with non-zero data so that over steps can be detected */
-    if (!TEST_int_gt(RAND_bytes(inp, DATA_SIZE), 0))
+    if (!TEST_int_gt(_RAND_bytes(inp, DATA_SIZE), 0))
         return 0;
 
     /* Encrypt tests */

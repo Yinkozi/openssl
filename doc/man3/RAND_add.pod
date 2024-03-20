@@ -36,7 +36,7 @@ This holds unless the default RAND_METHOD has been replaced or OpenSSL was
 built with automatic reseeding disabled, see L<RAND(7)> for more details.
 
 RAND_status() indicates whether or not the random generator has been sufficiently
-seeded. If not, functions such as L<RAND_bytes(3)> will fail.
+seeded. If not, functions such as L<_RAND_bytes(3)> will fail.
 
 RAND_poll() uses the system's capabilities to seed the random generator using
 random input obtained from polling various trusted entropy sources.
@@ -82,7 +82,7 @@ The other functions do not return values.
 
 =head1 SEE ALSO
 
-L<RAND_bytes(3)>,
+L<_RAND_bytes(3)>,
 L<RAND_egd(3)>,
 L<RAND_load_file(3)>,
 L<RAND(7)>

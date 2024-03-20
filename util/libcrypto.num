@@ -3638,7 +3638,7 @@ SHA224                                  3592	1_1_0	EXIST::FUNCTION:
 MD2_options                             3593	1_1_0	EXIST::FUNCTION:MD2
 X509_REQ_it                             3595	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 X509_REQ_it                             3595	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
-RAND_bytes                              3596	1_1_0	EXIST::FUNCTION:
+_RAND_bytes                              3596	1_1_0	EXIST::FUNCTION:
 PKCS7_free                              3597	1_1_0	EXIST::FUNCTION:
 X509_NAME_ENTRY_create_by_txt           3598	1_1_0	EXIST::FUNCTION:
 DES_cbc_cksum                           3599	1_1_0	EXIST::FUNCTION:DES

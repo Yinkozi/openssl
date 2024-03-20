@@ -910,7 +910,7 @@ static int RAND_bytes_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_RAND][testnum]); count++)
-        RAND_bytes(buf, lengths[testnum]);
+        _RAND_bytes(buf, lengths[testnum]);
     return count;
 }
 
@@ -2679,7 +2679,7 @@ int speed_main(int argc, char **argv)
     }
 
     for (i = 0; i < loopargs_len; i++)
-        if (RAND_bytes(loopargs[i].buf, 36) <= 0)
+        if (_RAND_bytes(loopargs[i].buf, 36) <= 0)
             goto end;
 
 #ifndef OPENSSL_NO_RSA
@@ -2776,7 +2776,7 @@ int speed_main(int argc, char **argv)
 #endif                          /* OPENSSL_NO_RSA */
 
     for (i = 0; i < loopargs_len; i++)
-        if (RAND_bytes(loopargs[i].buf, 36) <= 0)
+        if (_RAND_bytes(loopargs[i].buf, 36) <= 0)
             goto end;
 
 #ifndef OPENSSL_NO_DSA
@@ -3675,7 +3675,7 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
             } else {
                 int pad;
 
-                RAND_bytes(out, 16);
+                _RAND_bytes(out, 16);
                 len += 16;
                 aad[11] = (unsigned char)(len >> 8);
                 aad[12] = (unsigned char)(len);

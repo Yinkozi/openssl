@@ -136,7 +136,7 @@ static int sign_and_verify(int len)
 
     if (!TEST_ptr(dataToSign) ||
         !TEST_ptr(paddedData) ||
-        !TEST_int_eq(RAND_bytes(dataToSign, len), 1))
+        !TEST_int_eq(_RAND_bytes(dataToSign, len), 1))
         goto end;
 
     memset(paddedData, 0, digestlen);

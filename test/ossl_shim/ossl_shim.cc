@@ -386,7 +386,7 @@ static int TicketKeyCallback(SSL *ssl, uint8_t *key_name, uint8_t *iv,
 
   if (encrypt) {
     memcpy(key_name, kZeros, sizeof(kZeros));
-    RAND_bytes(iv, 16);
+    _RAND_bytes(iv, 16);
   } else if (memcmp(key_name, kZeros, 16) != 0) {
     return 0;
   }

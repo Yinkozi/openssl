@@ -646,7 +646,7 @@ structure on success or NULL if an error occurred.
 =head1 SEE ALSO
 
 L<OPENSSL_init_crypto(3)>, L<RSA_new_method(3)>, L<DSA_new(3)>, L<DH_new(3)>,
-L<RAND_bytes(3)>, L<config(5)>
+L<_RAND_bytes(3)>, L<config(5)>
 
 =head1 HISTORY
 

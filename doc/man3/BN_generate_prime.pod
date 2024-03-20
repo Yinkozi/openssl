@@ -200,7 +200,7 @@ Instead applications should create a BN_GENCB structure using BN_GENCB_new:
 =head1 SEE ALSO
 
 L<DH_generate_parameters(3)>, L<DSA_generate_parameters(3)>,
-L<RSA_generate_key(3)>, L<ERR_get_error(3)>, L<RAND_bytes(3)>,
+L<RSA_generate_key(3)>, L<ERR_get_error(3)>, L<_RAND_bytes(3)>,
 L<RAND(7)>
 
 =head1 HISTORY

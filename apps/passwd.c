@@ -800,7 +800,7 @@ static int do_passwd(int passed_salt, char **salt_p, char **salt_malloc_p,
 
         if (*salt_malloc_p == NULL)
             *salt_p = *salt_malloc_p = app_malloc(saltlen + 1, "salt buffer");
-        if (RAND_bytes((unsigned char *)*salt_p, saltlen) <= 0)
+        if (_RAND_bytes((unsigned char *)*salt_p, saltlen) <= 0)
             goto end;
 
         for (i = 0; i < saltlen; i++)

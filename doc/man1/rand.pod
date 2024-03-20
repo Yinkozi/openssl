@@ -21,11 +21,11 @@ I<num>
 This command generates I<num> random bytes using a cryptographically
 secure pseudo random number generator (CSPRNG).
 
-The random bytes are generated using the L<RAND_bytes(3)> function,
+The random bytes are generated using the L<_RAND_bytes(3)> function,
 which provides a security level of 256 bits, provided it managed to
 seed itself successfully from a trusted operating system entropy source.
 Otherwise, the command will fail with a nonzero error code.
-For more details, see L<RAND_bytes(3)>, L<RAND(7)>, and L<RAND_DRBG(7)>.
+For more details, see L<_RAND_bytes(3)>, L<RAND(7)>, and L<RAND_DRBG(7)>.
 
 =head1 OPTIONS
 
@@ -79,7 +79,7 @@ every use of B<-rand> should be paired with B<-writerand>.
 
 =head1 SEE ALSO
 
-L<RAND_bytes(3)>,
+L<_RAND_bytes(3)>,
 L<RAND(7)>,
 L<RAND_DRBG(7)>
 

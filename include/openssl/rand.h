@@ -39,7 +39,7 @@ RAND_METHOD *RAND_OpenSSL(void);
 # if OPENSSL_API_COMPAT < 0x10100000L
 #   define RAND_cleanup() while(0) continue
 # endif
-int RAND_bytes(unsigned char *buf, int num);
+int _RAND_bytes(unsigned char *buf, int num);
 int RAND_priv_bytes(unsigned char *buf, int num);
 DEPRECATEDIN_1_1_0(int RAND_pseudo_bytes(unsigned char *buf, int num))
 

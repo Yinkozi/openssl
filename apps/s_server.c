@@ -3546,7 +3546,7 @@ static int generate_session_id(SSL *ssl, unsigned char *id,
 {
     unsigned int count = 0;
     do {
-        if (RAND_bytes(id, *id_len) <= 0)
+        if (_RAND_bytes(id, *id_len) <= 0)
             return 0;
         /*
          * Prefix the session_id with the required prefix. NB: If our prefix

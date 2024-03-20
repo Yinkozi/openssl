@@ -2450,7 +2450,7 @@
      sha256
      [Rich Salz]
 
-  *) RAND_pseudo_bytes has been deprecated. Users should use RAND_bytes instead.
+  *) RAND_pseudo_bytes has been deprecated. Users should use _RAND_bytes instead.
      [Matt Caswell]
 
   *) Added support for TLS extended master secret from
@@ -5615,7 +5615,7 @@
      [Steve Henson]
 
   *) The functions ENGINE_ctrl(), OPENSSL_isservice(),
-     CMS_get1_RecipientRequest() and RAND_bytes() can return <=0 on error
+     CMS_get1_RecipientRequest() and _RAND_bytes() can return <=0 on error
      fixes for a few places where the return code is not checked
      correctly.
      [Julia Lawall <julia@diku.dk>]
@@ -11270,7 +11270,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) In PEM_ASN1_write_bio and some other functions, use RAND_pseudo_bytes
-     instead of RAND_bytes for encryption IVs and salts.
+     instead of _RAND_bytes for encryption IVs and salts.
      [Bodo Moeller]
 
   *) Include RAND_status() into RAND_METHOD instead of implementing
@@ -11612,7 +11612,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      NO_RSA in ssl/s2*.c.
      [Kris Kennaway <kris@hub.freebsd.org>, modified by Ulf Möller]
 
-  *) Precautions against using the PRNG uninitialized: RAND_bytes() now
+  *) Precautions against using the PRNG uninitialized: _RAND_bytes() now
      has a return value which indicates the quality of the random data
      (1 = ok, 0 = not seeded).  Also an error is recorded on the thread's
      error queue. New function RAND_pseudo_bytes() generates output that is

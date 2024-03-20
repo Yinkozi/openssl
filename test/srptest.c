@@ -52,7 +52,7 @@ static int run_srp(const char *username, const char *client_pass,
     test_output_bignum("Verifier", v);
 
     /* Server random */
-    RAND_bytes(rand_tmp, sizeof(rand_tmp));
+    _RAND_bytes(rand_tmp, sizeof(rand_tmp));
     b = BN_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
     if (!TEST_BN_ne_zero(b))
         goto end;
@@ -66,7 +66,7 @@ static int run_srp(const char *username, const char *client_pass,
         goto end;
 
     /* Client random */
-    RAND_bytes(rand_tmp, sizeof(rand_tmp));
+    _RAND_bytes(rand_tmp, sizeof(rand_tmp));
     a = BN_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
     if (!TEST_BN_ne_zero(a))
         goto end;

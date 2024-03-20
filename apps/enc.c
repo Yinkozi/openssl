@@ -432,7 +432,7 @@ int enc_main(int argc, char **argv)
                             BIO_printf(bio_err, "invalid hex salt value\n");
                             goto end;
                         }
-                    } else if (RAND_bytes(salt, sizeof(salt)) <= 0) {
+                    } else if (_RAND_bytes(salt, sizeof(salt)) <= 0) {
                         goto end;
                     }
                     /*

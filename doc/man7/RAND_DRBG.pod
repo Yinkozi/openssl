@@ -26,7 +26,7 @@ configuration parameters.
 
 Unless you have very specific requirements for your random generator,
 it is in general not necessary to utilize the RAND_DRBG API directly.
-The usual way to obtain random bytes is to use L<RAND_bytes(3)> or
+The usual way to obtain random bytes is to use L<_RAND_bytes(3)> or
 L<RAND_priv_bytes(3)>, see also L<RAND(7)>.
 
 =head2 Typical Use Cases
@@ -73,7 +73,7 @@ the <master>, <public>, and <private> DRBG.
 While the <master> DRBG is a single global instance, the <public> and <private>
 DRBG are created per thread and accessed through thread-local storage.
 
-By default, the functions L<RAND_bytes(3)> and L<RAND_priv_bytes(3)> use
+By default, the functions L<_RAND_bytes(3)> and L<RAND_priv_bytes(3)> use
 the thread-local <public> and <private> DRBG instance, respectively.
 
 =head2 The <master> DRBG instance
@@ -85,7 +85,7 @@ previously by L<RAND_add(3)>.
 
 =head2 The <public> DRBG instance
 
-This instance is used per default by L<RAND_bytes(3)>.
+This instance is used per default by L<_RAND_bytes(3)>.
 
 =head2 The <private> DRBG instance
 
@@ -134,7 +134,7 @@ together and are being used.
               <public>     <private>   <- | per-thread DRBG instances |
                  |             |          +---------------------------+
                  v             v
-               RAND_bytes()   RAND_priv_bytes()
+               _RAND_bytes()   RAND_priv_bytes()
                     |               ^
                     |               |
     +------------------+      +------------------------------------+
@@ -143,7 +143,7 @@ together and are being used.
     +------------------+      +------------------------------------+
 
 
-The usual way to obtain random bytes is to call RAND_bytes(...) or
+The usual way to obtain random bytes is to call _RAND_bytes(...) or
 RAND_priv_bytes(...). These calls are roughly equivalent to calling
 RAND_DRBG_bytes(<public>, ...) and RAND_DRBG_bytes(<private>, ...),
 respectively. The method L<RAND_DRBG_bytes(3)> is a convenience method
@@ -205,7 +205,7 @@ The <public> and <private> DRBG will detect this on their next generate
 call and reseed, pulling randomness from <master>.
 
 The last feature has been added to support the common practice used with
-previous OpenSSL versions to call RAND_add() before calling RAND_bytes().
+previous OpenSSL versions to call RAND_add() before calling _RAND_bytes().
 
 
 =head2 Entropy Input vs. Additional Data

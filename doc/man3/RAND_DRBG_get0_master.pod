@@ -22,7 +22,7 @@ The default RAND API implementation (RAND_OpenSSL()) utilizes three
 shared DRBG instances which are accessed via the RAND API:
 
 The <public> and <private> DRBG are thread-local instances, which are used
-by RAND_bytes() and RAND_priv_bytes(), respectively.
+by _RAND_bytes() and RAND_priv_bytes(), respectively.
 The <master> DRBG is a global instance, which is not intended to be used
 directly, but is used internally to reseed the other two instances.
 

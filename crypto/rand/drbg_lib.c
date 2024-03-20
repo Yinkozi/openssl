@@ -50,7 +50,7 @@ static RAND_DRBG *master_drbg;
 /*
  * The <public> DRBG
  *
- * Used by default for generating random bytes using RAND_bytes().
+ * Used by default for generating random bytes using _RAND_bytes().
  *
  * The <public> DRBG is thread-local, i.e., there is one instance per thread.
  */
@@ -945,7 +945,7 @@ void drbg_delete_thread_state(void)
     RAND_DRBG_free(drbg);
 }
 
-/* Implements the default OpenSSL RAND_bytes() method */
+/* Implements the default OpenSSL _RAND_bytes() method */
 static int drbg_bytes(unsigned char *out, int count)
 {
     int ret;

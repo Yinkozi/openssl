@@ -173,15 +173,15 @@ static int test_mod_exp(int round)
         || !TEST_ptr(m = BN_new()))
         goto err;
 
-    RAND_bytes(&c, 1);
+    _RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
     BN_rand(a, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
 
-    RAND_bytes(&c, 1);
+    _RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
     BN_rand(b, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
 
-    RAND_bytes(&c, 1);
+    _RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
     BN_rand(m, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
 

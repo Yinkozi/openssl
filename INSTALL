@@ -1286,4 +1286,4 @@
  and reseeding is disabled (--with-rand-seed=none) and it may be necessary
  to install additional support software to obtain a random seed and reseed
  the CSPRNG manually.  Please check out the manual pages for RAND_add(),
- RAND_bytes(), RAND_egd(), and the FAQ for more information.
+ _RAND_bytes(), RAND_egd(), and the FAQ for more information.

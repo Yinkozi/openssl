@@ -56,7 +56,7 @@ details.
 Despite the names of SSL_get_client_random() and SSL_get_server_random(), they
 ARE NOT random number generators.  Instead, they return the mostly-random values that
 were already generated and used in the TLS protocol.  Using them
-in place of RAND_bytes() would be grossly foolish.
+in place of _RAND_bytes() would be grossly foolish.
 
 The security of your TLS session depends on keeping the master key secret:
 do not expose it, or any information about it, to anybody.
@@ -87,7 +87,7 @@ of bytes they would copy -- that is, the length of the underlying field.
 =head1 SEE ALSO
 
 L<ssl(7)>,
-L<RAND_bytes(3)>,
+L<_RAND_bytes(3)>,
 L<SSL_export_keying_material(3)>,
 L<SSL_CTX_set_psk_use_session_callback(3)>
 

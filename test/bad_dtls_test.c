@@ -320,7 +320,7 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     } while (len % 16);
 
     /* Generate IV, and encrypt */
-    RAND_bytes(iv, sizeof(iv));
+    _RAND_bytes(iv, sizeof(iv));
     enc_ctx = _EVP_CIPHER_CTX_new();
     EVP_CipherInit_ex(enc_ctx, EVP_aes_128_cbc(), NULL, enc_key, iv, 1);
     EVP_Cipher(enc_ctx, enc, enc, len);
@@ -453,10 +453,10 @@ static int test_bad_dtls(void)
     int ret;
     int i;
 
-    RAND_bytes(session_id, sizeof(session_id));
-    RAND_bytes(master_secret, sizeof(master_secret));
-    RAND_bytes(cookie, sizeof(cookie));
-    RAND_bytes(server_random + 4, sizeof(server_random) - 4);
+    _RAND_bytes(session_id, sizeof(session_id));
+    _RAND_bytes(master_secret, sizeof(master_secret));
+    _RAND_bytes(cookie, sizeof(cookie));
+    _RAND_bytes(server_random + 4, sizeof(server_random) - 4);
 
     now = time(NULL);
     memcpy(server_random, &now, sizeof(now));

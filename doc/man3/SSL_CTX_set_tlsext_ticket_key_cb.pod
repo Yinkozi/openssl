@@ -139,7 +139,7 @@ Reference Implementation:
      your_type_t *key; /* something that you need to implement */
 
      if (enc) { /* create new session */
-         if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) <= 0)
+         if (_RAND_bytes(iv, EVP_MAX_IV_LENGTH) <= 0)
              return -1; /* insufficient random */
 
          key = currentkey(); /* something that you need to implement */

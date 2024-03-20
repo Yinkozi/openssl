@@ -182,7 +182,7 @@
                  * wouldn't be constructed with top!=dmax. */ \
                 BN_ULONG *_not_const; \
                 memcpy(&_not_const, &_bnum1->d, sizeof(_not_const)); \
-                RAND_bytes(&_tmp_char, 1); /* Debug only - safe to ignore error return */\
+                _RAND_bytes(&_tmp_char, 1); /* Debug only - safe to ignore error return */\
                 memset(_not_const + _bnum1->top, _tmp_char, \
                        sizeof(*_not_const) * (_bnum1->dmax - _bnum1->top)); \
             } \

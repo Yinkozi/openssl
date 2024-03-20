@@ -435,10 +435,10 @@ static int test_bi_ige_garble3(void)
 
 int setup_tests(void)
 {
-    RAND_bytes(rkey, sizeof(rkey));
-    RAND_bytes(rkey2, sizeof(rkey2));
-    RAND_bytes(plaintext, sizeof(plaintext));
-    RAND_bytes(saved_iv, sizeof(saved_iv));
+    _RAND_bytes(rkey, sizeof(rkey));
+    _RAND_bytes(rkey2, sizeof(rkey2));
+    _RAND_bytes(plaintext, sizeof(plaintext));
+    _RAND_bytes(saved_iv, sizeof(saved_iv));
 
     ADD_TEST(test_ige_enc_dec);
     ADD_TEST(test_ige_enc_chaining);

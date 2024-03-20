@@ -262,7 +262,7 @@ struct rand_drbg_st {
      * to its two children, the <public> and <private> DRBG. This feature is
      * very special and its sole purpose is to ensure that any randomness which
      * is added by RAND_add() or RAND_seed() will have an immediate effect on
-     * the output of RAND_bytes() resp. RAND_priv_bytes().
+     * the output of _RAND_bytes() resp. RAND_priv_bytes().
      */
     TSAN_QUALIFIER unsigned int reseed_counter;
 

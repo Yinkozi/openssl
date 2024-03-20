@@ -170,7 +170,7 @@ static size_t tls1_1_multi_block_encrypt(EVP_AES_HMAC_SHA256 *key,
 #  endif
 
     /* ask for IVs in bulk */
-    if (RAND_bytes((IVs = blocks[0].c), 16 * x4) <= 0)
+    if (_RAND_bytes((IVs = blocks[0].c), 16 * x4) <= 0)
         return 0;
 
     /* align */

@@ -568,7 +568,7 @@ static void reset_drbg_hook_ctx(void)
 }
 
 /*
- * Generates random output using RAND_bytes() and RAND_priv_bytes()
+ * Generates random output using _RAND_bytes() and RAND_priv_bytes()
  * and checks whether the three shared DRBGs were reseeded as
  * expected.
  *
@@ -619,7 +619,7 @@ static int test_drbg_reseed(int expect_success,
 
     /* Generate random output from the public and private DRBG */
     before_reseed = expect_master_reseed == 1 ? reseed_time : 0;
-    if (!TEST_int_eq(RAND_bytes(buf, sizeof(buf)), expect_success)
+    if (!TEST_int_eq(_RAND_bytes(buf, sizeof(buf)), expect_success)
         || !TEST_int_eq(RAND_priv_bytes(buf, sizeof(buf)), expect_success))
         return 0;
     after_reseed = time(NULL);
@@ -859,7 +859,7 @@ static void run_multi_thread_test(void)
     RAND_DRBG_set_reseed_time_interval(public, 1);
 
     do {
-        if (RAND_bytes(buf, sizeof(buf)) <= 0)
+        if (_RAND_bytes(buf, sizeof(buf)) <= 0)
             multi_thread_rand_bytes_succeeded = 0;
         if (RAND_priv_bytes(buf, sizeof(buf)) <= 0)
             multi_thread_rand_priv_bytes_succeeded = 0;

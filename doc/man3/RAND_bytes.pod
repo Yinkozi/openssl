@@ -2,13 +2,13 @@
 
 =head1 NAME
 
-RAND_bytes, RAND_priv_bytes, RAND_pseudo_bytes - generate random data
+_RAND_bytes, RAND_priv_bytes, RAND_pseudo_bytes - generate random data
 
 =head1 SYNOPSIS
 
  #include <openssl/rand.h>
 
- int RAND_bytes(unsigned char *buf, int num);
+ int _RAND_bytes(unsigned char *buf, int num);
  int RAND_priv_bytes(unsigned char *buf, int num);
 
 Deprecated:
@@ -19,10 +19,10 @@ Deprecated:
 
 =head1 DESCRIPTION
 
-RAND_bytes() generates B<num> random bytes using a cryptographically
+_RAND_bytes() generates B<num> random bytes using a cryptographically
 secure pseudo random generator (CSPRNG) and stores them in B<buf>.
 
-RAND_priv_bytes() has the same semantics as RAND_bytes().  It is intended to
+RAND_priv_bytes() has the same semantics as _RAND_bytes().  It is intended to
 be used for generating values that should remain private. If using the
 default RAND_METHOD, this function uses a separate "private" PRNG
 instance so that a compromise of the "public" PRNG instance will not
@@ -39,7 +39,7 @@ using the operating systems's random generator.
 
 If the entropy source fails or is not available, the CSPRNG will enter an
 error state and refuse to generate random bytes. For that reason, it is important
-to always check the error return value of RAND_bytes() and RAND_priv_bytes() and
+to always check the error return value of _RAND_bytes() and RAND_priv_bytes() and
 not take randomness for granted.
 
 On other platforms, there might not be a trusted entropy source available
@@ -50,7 +50,7 @@ mailing list.
 
 =head1 RETURN VALUES
 
-RAND_bytes() and RAND_priv_bytes()
+_RAND_bytes() and RAND_priv_bytes()
 return 1 on success, -1 if not supported by the current
 RAND method, or 0 on other failure. The error code can be
 obtained by L<ERR_get_error(3)>.
@@ -58,7 +58,7 @@ obtained by L<ERR_get_error(3)>.
 =head1 SEE ALSO
 
 L<RAND_add(3)>,
-L<RAND_bytes(3)>,
+L<_RAND_bytes(3)>,
 L<RAND_priv_bytes(3)>,
 L<ERR_get_error(3)>,
 L<RAND(7)>,
@@ -70,7 +70,7 @@ L<RAND_DRBG(7)>
 
 =item *
 
-RAND_pseudo_bytes() was deprecated in OpenSSL 1.1.0; use RAND_bytes() instead.
+RAND_pseudo_bytes() was deprecated in OpenSSL 1.1.0; use _RAND_bytes() instead.
 
 =item *
 

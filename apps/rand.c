@@ -104,7 +104,7 @@ int rand_main(int argc, char **argv)
         chunk = num;
         if (chunk > (int)sizeof(buf))
             chunk = sizeof(buf);
-        r = RAND_bytes(buf, chunk);
+        r = _RAND_bytes(buf, chunk);
         if (r <= 0)
             goto end;
         if (format != FORMAT_TEXT) {

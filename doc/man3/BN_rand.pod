@@ -46,7 +46,7 @@ number B<rnd> in the range 0 E<lt>= B<rnd> E<lt> B<range>.
 BN_priv_rand() and BN_priv_rand_range() have the same semantics as
 BN_rand() and BN_rand_range() respectively.  They are intended to be
 used for generating values that should remain private, and mirror the
-same difference between L<RAND_bytes(3)> and L<RAND_priv_bytes(3)>.
+same difference between L<_RAND_bytes(3)> and L<RAND_priv_bytes(3)>.
 
 =head1 NOTES
 
@@ -63,7 +63,7 @@ The error codes can be obtained by L<ERR_get_error(3)>.
 
 L<ERR_get_error(3)>,
 L<RAND_add(3)>,
-L<RAND_bytes(3)>,
+L<_RAND_bytes(3)>,
 L<RAND_priv_bytes(3)>,
 L<RAND(7)>,
 L<RAND_DRBG(7)>
