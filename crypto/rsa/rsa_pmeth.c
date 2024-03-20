@@ -634,7 +634,7 @@ static int pkey_rsa_ctrl_str(EVP_PKEY_CTX *ctx,
     if (strcmp(type, "rsa_keygen_bits") == 0) {
         int nbits = atoi(value);
 
-        return EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, nbits);
+        return _EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, nbits);
     }
 
     if (strcmp(type, "rsa_keygen_pubexp") == 0) {

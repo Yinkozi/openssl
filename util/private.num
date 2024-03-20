@@ -242,7 +242,7 @@ EVP_PKEY_CTX_set_ecdh_kdf_outlen        define
 EVP_PKEY_CTX_set_ecdh_kdf_type          define
 EVP_PKEY_CTX_set_hkdf_md                define
 EVP_PKEY_CTX_set_mac_key                define
-EVP_PKEY_CTX_set_rsa_keygen_bits        define
+_EVP_PKEY_CTX_set_rsa_keygen_bits        define
 EVP_PKEY_CTX_set_rsa_keygen_pubexp      define
 EVP_PKEY_CTX_set_rsa_keygen_primes      define
 EVP_PKEY_CTX_set_rsa_mgf1_md            define

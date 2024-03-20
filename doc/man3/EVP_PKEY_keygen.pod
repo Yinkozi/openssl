@@ -125,7 +125,7 @@ Generate a 2048 bit RSA key:
      /* Error occurred */
  if (_EVP_PKEY_keygen_init(ctx) <= 0)
      /* Error */
- if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048) <= 0)
+ if (_EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048) <= 0)
      /* Error */
 
  /* Generate key */

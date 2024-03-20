@@ -118,7 +118,7 @@ extern "C" {
         RSA_pkey_ctx_ctrl(ctx, (EVP_PKEY_OP_SIGN|EVP_PKEY_OP_VERIFY), \
                           EVP_PKEY_CTRL_GET_RSA_PSS_SALTLEN, 0, plen)
 
-# define EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) \
+# define _EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) \
         RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
                           EVP_PKEY_CTRL_RSA_KEYGEN_BITS, bits, NULL)
 

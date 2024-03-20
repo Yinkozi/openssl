@@ -1580,7 +1580,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
     }
 #ifndef OPENSSL_NO_RSA
     if ((*pkey_type == EVP_PKEY_RSA) && (keylen != -1)) {
-        if (EVP_PKEY_CTX_set_rsa_keygen_bits(gctx, keylen) <= 0) {
+        if (_EVP_PKEY_CTX_set_rsa_keygen_bits(gctx, keylen) <= 0) {
             BIO_puts(bio_err, "Error setting RSA keysize\n");
             ERR_print_errors(bio_err);
             EVP_PKEY_CTX_free(gctx);
