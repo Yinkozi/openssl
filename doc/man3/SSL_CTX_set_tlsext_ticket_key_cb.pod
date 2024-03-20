@@ -53,7 +53,7 @@ maximum IV length is B<EVP_MAX_IV_LENGTH> bytes defined in B<evp.h>.
 
 The initialization vector I<iv> should be a random value. The cipher context
 I<ctx> should use the initialisation vector I<iv>. The cipher context can be
-set using L<EVP_EncryptInit_ex(3)>. The hmac context can be set using
+set using L<_EVP_EncryptInit_ex(3)>. The hmac context can be set using
 L<HMAC_Init_ex(3)>.
 
 When the client presents a session ticket, the callback function with be called
@@ -156,7 +156,7 @@ Reference Implementation:
          }
          memcpy(key_name, key->name, 16);
 
-         EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
+         _EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
          HMAC_Init_ex(&hctx, key->hmac_key, 32, _EVP_sha256(), NULL);
 
          return 1;

@@ -1680,7 +1680,7 @@ static int test_decrypt_null_chunks(void)
     const int enc_offset = 10, dec_offset = 20;
 
     if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())
-            || !TEST_true(EVP_EncryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL,
+            || !TEST_true(_EVP_EncryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL,
                                              key, iv))
             || !TEST_true(EVP_EncryptUpdate(ctx, ciphertext, &ctlen, msg,
                                             enc_offset))
@@ -1976,7 +1976,7 @@ static int test_cipher_with_engine(void)
             || !TEST_ptr(ctx2 = _EVP_CIPHER_CTX_new()))
         goto err;
 
-    if (!TEST_true(EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), e, keyiv, keyiv)))
+    if (!TEST_true(_EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), e, keyiv, keyiv)))
         goto err;
 
     /* Copy the ctx, and complete the operation with the new ctx */

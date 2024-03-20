@@ -1014,7 +1014,7 @@ static int EVP_Update_loop_aead(void *args)
         }
     } else {
         for (count = 0; COND(nb_iter); count++) {
-            EVP_EncryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            _EVP_EncryptInit_ex(ctx, NULL, NULL, NULL, iv);
             EVP_EncryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
             EVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
             EVP_EncryptFinal_ex(ctx, buf + outl, &outl);
@@ -3632,12 +3632,12 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
     inp = app_malloc(mblengths[num - 1], "multiblock input buffer");
     out = app_malloc(mblengths[num - 1] + 1024, "multiblock output buffer");
     ctx = _EVP_CIPHER_CTX_new();
-    EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, no_iv);
+    _EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, no_iv);
 
     keylen = EVP_CIPHER_CTX_key_length(ctx);
     key = app_malloc(keylen, "evp_cipher key");
     EVP_CIPHER_CTX_rand_key(ctx, key);
-    EVP_EncryptInit_ex(ctx, NULL, NULL, key, NULL);
+    _EVP_EncryptInit_ex(ctx, NULL, NULL, key, NULL);
     OPENSSL_clear_free(key, keylen);
 
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_MAC_KEY, sizeof(no_key), no_key);

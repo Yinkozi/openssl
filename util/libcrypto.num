@@ -3424,7 +3424,7 @@ PKCS12_SAFEBAGS_it                      3375	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION
 PKCS12_SAFEBAGS_it                      3375	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 PKCS12_PBE_add                          3376	1_1_0	EXIST::FUNCTION:
 EC_KEY_set_public_key_affine_coordinates 3377	1_1_0	EXIST::FUNCTION:EC
-EVP_EncryptInit_ex                      3378	1_1_0	EXIST::FUNCTION:
+_EVP_EncryptInit_ex                      3378	1_1_0	EXIST::FUNCTION:
 ENGINE_add                              3379	1_1_0	EXIST::FUNCTION:ENGINE
 OPENSSL_LH_error                        3380	1_1_0	EXIST::FUNCTION:
 PKCS7_DIGEST_it                         3381	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:

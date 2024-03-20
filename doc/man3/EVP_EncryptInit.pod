@@ -5,7 +5,7 @@
 _EVP_CIPHER_CTX_new,
 EVP_CIPHER_CTX_reset,
 EVP_CIPHER_CTX_free,
-EVP_EncryptInit_ex,
+_EVP_EncryptInit_ex,
 EVP_EncryptUpdate,
 EVP_EncryptFinal_ex,
 EVP_DecryptInit_ex,
@@ -58,7 +58,7 @@ EVP_enc_null
  int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx);
  void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx);
 
- int EVP_EncryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
+ int _EVP_EncryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
  int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
@@ -131,7 +131,7 @@ itself. This function should be called after all operations using a
 cipher are complete so sensitive information does not remain in
 memory.
 
-EVP_EncryptInit_ex() sets up cipher context B<ctx> for encryption
+_EVP_EncryptInit_ex() sets up cipher context B<ctx> for encryption
 with cipher B<type> from ENGINE B<impl>. B<ctx> must be created
 before calling this function. B<type> is normally supplied
 by a function such as EVP_aes_256_cbc(). If B<impl> is NULL then the
@@ -193,7 +193,7 @@ for another EVP_CipherInit() / EVP_CipherUpdate() / EVP_CipherFinal()
 series of calls.
 
 EVP_EncryptInit(), EVP_DecryptInit() and EVP_CipherInit() behave in a
-similar way to EVP_EncryptInit_ex(), EVP_DecryptInit_ex() and
+similar way to _EVP_EncryptInit_ex(), EVP_DecryptInit_ex() and
 EVP_CipherInit_ex() except they always use the default cipher implementation.
 
 EVP_EncryptFinal(), EVP_DecryptFinal() and EVP_CipherFinal() are
@@ -213,7 +213,7 @@ IDENTIFIER.
 
 EVP_CIPHER_CTX_set_padding() enables or disables padding. This
 function should be called after the context is set up for encryption
-or decryption with EVP_EncryptInit_ex(), EVP_DecryptInit_ex() or
+or decryption with _EVP_EncryptInit_ex(), EVP_DecryptInit_ex() or
 EVP_CipherInit_ex(). By default encryption operations are padded using
 standard block padding and the padding is checked and removed when
 decrypting. If the B<pad> parameter is zero then no padding is
@@ -288,7 +288,7 @@ buffer at least as big as the value returned by EVP_CIPHER_CTX_key_length().
 _EVP_CIPHER_CTX_new() returns a pointer to a newly created
 B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 
-EVP_EncryptInit_ex(), EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
+_EVP_EncryptInit_ex(), EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
 EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
@@ -494,7 +494,7 @@ the total amount of data decrypted is a multiple of the block size.
 
 The functions EVP_EncryptInit(), EVP_EncryptFinal(), EVP_DecryptInit(),
 EVP_CipherInit() and EVP_CipherFinal() are obsolete but are retained for
-compatibility with existing code. New code should use EVP_EncryptInit_ex(),
+compatibility with existing code. New code should use _EVP_EncryptInit_ex(),
 EVP_EncryptFinal_ex(), EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
 EVP_CipherInit_ex() and EVP_CipherFinal_ex() because they can reuse an
 existing context without allocating and freeing it up on each call.
@@ -540,7 +540,7 @@ Encrypt a string using IDEA:
      FILE *out;
 
      ctx = _EVP_CIPHER_CTX_new();
-     EVP_EncryptInit_ex(ctx, EVP_idea_cbc(), NULL, key, iv);
+     _EVP_EncryptInit_ex(ctx, EVP_idea_cbc(), NULL, key, iv);
 
      if (!EVP_EncryptUpdate(ctx, outbuf, &outlen, intext, strlen(intext))) {
          /* Error */

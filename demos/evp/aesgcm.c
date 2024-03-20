@@ -57,11 +57,11 @@ void aes_gcm_encrypt(void)
     BIO_dump_fp(stdout, gcm_pt, sizeof(gcm_pt));
     ctx = _EVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
-    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    _EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length if default 96 bits is not appropriate */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
     /* Initialise key and IV */
-    EVP_EncryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
+    _EVP_EncryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
     EVP_EncryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Encrypt plaintext */

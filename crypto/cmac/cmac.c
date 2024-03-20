@@ -109,7 +109,7 @@ int CMAC_Init(CMAC_CTX *ctx, const void *key, size_t keylen,
         /* Not initialised */
         if (ctx->nlast_block == -1)
             return 0;
-        if (!EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, zero_iv))
+        if (!_EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, zero_iv))
             return 0;
         memset(ctx->tbl, 0, EVP_CIPHER_CTX_block_size(ctx->cctx));
         ctx->nlast_block = 0;
@@ -119,7 +119,7 @@ int CMAC_Init(CMAC_CTX *ctx, const void *key, size_t keylen,
     if (cipher != NULL) {
         /* Ensure we can't use this ctx until we also have a key */
         ctx->nlast_block = -1;
-        if (!EVP_EncryptInit_ex(ctx->cctx, cipher, impl, NULL, NULL))
+        if (!_EVP_EncryptInit_ex(ctx->cctx, cipher, impl, NULL, NULL))
             return 0;
     }
     /* Non-NULL key means initialisation complete */
@@ -132,7 +132,7 @@ int CMAC_Init(CMAC_CTX *ctx, const void *key, size_t keylen,
             return 0;
         if (!EVP_CIPHER_CTX_set_key_length(ctx->cctx, keylen))
             return 0;
-        if (!EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, key, zero_iv))
+        if (!_EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, key, zero_iv))
             return 0;
         bl = EVP_CIPHER_CTX_block_size(ctx->cctx);
         if (EVP_Cipher(ctx->cctx, ctx->tbl, zero_iv, bl) <= 0)
@@ -141,7 +141,7 @@ int CMAC_Init(CMAC_CTX *ctx, const void *key, size_t keylen,
         make_kn(ctx->k2, ctx->k1, bl);
         OPENSSL_cleanse(ctx->tbl, bl);
         /* Reset context again ready for first data block */
-        if (!EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, zero_iv))
+        if (!_EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, zero_iv))
             return 0;
         /* Zero tbl so resume works */
         memset(ctx->tbl, 0, bl);
@@ -229,5 +229,5 @@ int CMAC_resume(CMAC_CTX *ctx)
      * decrypted block will allow CMAC to continue after calling
      * CMAC_Final().
      */
-    return EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, ctx->tbl);
+    return _EVP_EncryptInit_ex(ctx->cctx, NULL, NULL, NULL, ctx->tbl);
 }

@@ -841,7 +841,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
         if (enclevel == 1)
             memset(keybuf + 5, 0, 11);
         p = salt + PVK_SALTLEN + 8;
-        if (!EVP_EncryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+        if (!_EVP_EncryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
             goto error;
         OPENSSL_cleanse(keybuf, 20);
         if (!EVP_EncryptUpdate(cctx, p, &enctmplen, p, pklen - 8))

@@ -358,7 +358,7 @@ static int cms_wrap_init(CMS_KeyAgreeRecipientInfo *kari,
         kekcipher = EVP_aes_192_wrap();
     else
         kekcipher = EVP_aes_256_wrap();
-    return EVP_EncryptInit_ex(ctx, kekcipher, NULL, NULL, NULL);
+    return _EVP_EncryptInit_ex(ctx, kekcipher, NULL, NULL, NULL);
 }
 
 /* Encrypt content key in key agreement recipient info */

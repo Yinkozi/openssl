@@ -57,14 +57,14 @@ void aes_ccm_encrypt(void)
     BIO_dump_fp(stdout, ccm_pt, sizeof(ccm_pt));
     ctx = _EVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
-    EVP_EncryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
+    _EVP_EncryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length if default 96 bits is not appropriate */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
                         NULL);
     /* Set tag length */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(ccm_tag), NULL);
     /* Initialise key and IV */
-    EVP_EncryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
+    _EVP_EncryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set plaintext length: only needed if AAD is used */
     EVP_EncryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_pt));
     /* Zero or one call to specify any AAD */

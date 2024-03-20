@@ -105,7 +105,7 @@ static int test_pr16743(void)
     cipher = ENGINE_get_cipher(e, NID_aes_128_cbc);
     ctx = _EVP_CIPHER_CTX_new();
     if (cipher != NULL && ctx != NULL)
-        ret = EVP_EncryptInit_ex(ctx, cipher, e, NULL, NULL);
+        ret = _EVP_EncryptInit_ex(ctx, cipher, e, NULL, NULL);
     TEST_true(ret);
     EVP_CIPHER_CTX_free(ctx);
     ENGINE_finish(e);

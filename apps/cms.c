@@ -842,7 +842,7 @@ int cms_main(int argc, char **argv)
                 && wrap_cipher) {
                 EVP_CIPHER_CTX *wctx;
                 wctx = CMS_RecipientInfo_kari_get0_ctx(ri);
-                EVP_EncryptInit_ex(wctx, wrap_cipher, NULL, NULL, NULL);
+                _EVP_EncryptInit_ex(wctx, wrap_cipher, NULL, NULL, NULL);
             }
         }
 
