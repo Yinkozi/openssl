@@ -150,7 +150,7 @@ int EVP_PKEY_CTX_get_keygen_info(EVP_PKEY_CTX *ctx, int idx)
     return ctx->keygen_info[idx];
 }
 
-EVP_PKEY *EVP_PKEY_new_mac_key(int type, ENGINE *e,
+EVP_PKEY *_EVP_PKEY_new_mac_key(int type, ENGINE *e,
                                const unsigned char *key, int keylen)
 {
     EVP_PKEY_CTX *mac_ctx = NULL;

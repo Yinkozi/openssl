@@ -1153,7 +1153,7 @@ SMIME_crlf_copy                         1143	1_1_0	EXIST::FUNCTION:
 OCSP_REQUEST_get_ext_count              1144	1_1_0	EXIST::FUNCTION:OCSP
 OCSP_REQ_CTX_new                        1145	1_1_0	EXIST::FUNCTION:OCSP
 X509_load_cert_crl_file                 1146	1_1_0	EXIST::FUNCTION:
-EVP_PKEY_new_mac_key                    1147	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_new_mac_key                    1147	1_1_0	EXIST::FUNCTION:
 DIST_POINT_new                          1148	1_1_0	EXIST::FUNCTION:
 BN_is_prime_fasttest                    1149	1_1_0	EXIST::FUNCTION:DEPRECATEDIN_0_9_8
 EC_POINT_dup                            1150	1_1_0	EXIST::FUNCTION:EC

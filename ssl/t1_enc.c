@@ -253,7 +253,7 @@ int tls1_change_cipher_state(SSL *s, int which)
 
     if (!(EVP_CIPHER_flags(c) & EVP_CIPH_FLAG_AEAD_CIPHER)) {
         /* TODO(size_t): Convert this function */
-        mac_key = EVP_PKEY_new_mac_key(mac_type, NULL, mac_secret,
+        mac_key = _EVP_PKEY_new_mac_key(mac_type, NULL, mac_secret,
                                                (int)*mac_secret_size);
         if (mac_key == NULL
             || _EVP_DigestSignInit(mac_ctx, NULL, m, NULL, mac_key) <= 0) {

@@ -8,7 +8,7 @@ _EVP_PKEY_free,
 EVP_PKEY_new_raw_private_key,
 EVP_PKEY_new_raw_public_key,
 EVP_PKEY_new_CMAC_key,
-EVP_PKEY_new_mac_key,
+_EVP_PKEY_new_mac_key,
 EVP_PKEY_get_raw_private_key,
 EVP_PKEY_get_raw_public_key
 - public/private key allocation and raw key handling functions
@@ -27,7 +27,7 @@ EVP_PKEY_get_raw_public_key
                                        const unsigned char *key, size_t keylen);
  EVP_PKEY *EVP_PKEY_new_CMAC_key(ENGINE *e, const unsigned char *priv,
                                  size_t len, const EVP_CIPHER *cipher);
- EVP_PKEY *EVP_PKEY_new_mac_key(int type, ENGINE *e, const unsigned char *key,
+ EVP_PKEY *_EVP_PKEY_new_mac_key(int type, ENGINE *e, const unsigned char *key,
                                 int keylen);
 
  int EVP_PKEY_get_raw_private_key(const EVP_PKEY *pkey, unsigned char *priv,
@@ -69,7 +69,7 @@ raw private key data, it also takes a cipher algorithm to be used during
 creation of a CMAC in the B<cipher> argument. The cipher should be a standard
 encryption only cipher. For example AEAD and XTS ciphers should not be used.
 
-EVP_PKEY_new_mac_key() works in the same way as EVP_PKEY_new_raw_private_key().
+_EVP_PKEY_new_mac_key() works in the same way as EVP_PKEY_new_raw_private_key().
 New applications should use EVP_PKEY_new_raw_private_key() instead.
 
 EVP_PKEY_get_raw_private_key() fills the buffer provided by B<priv> with raw
@@ -105,7 +105,7 @@ L<EVP_PKEY_set1_EC_KEY>.
 =head1 RETURN VALUES
 
 _EVP_PKEY_new(), EVP_PKEY_new_raw_private_key(), EVP_PKEY_new_raw_public_key(),
-EVP_PKEY_new_CMAC_key() and EVP_PKEY_new_mac_key() return either the newly
+EVP_PKEY_new_CMAC_key() and _EVP_PKEY_new_mac_key() return either the newly
 allocated B<EVP_PKEY> structure or B<NULL> if an error occurred.
 
 EVP_PKEY_up_ref(), EVP_PKEY_get_raw_private_key() and
