@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-EVP_PKEY_CTX_new, EVP_PKEY_CTX_new_id, EVP_PKEY_CTX_dup, EVP_PKEY_CTX_free - public key algorithm context functions
+EVP_PKEY_CTX_new, _EVP_PKEY_CTX_new_id, EVP_PKEY_CTX_dup, EVP_PKEY_CTX_free - public key algorithm context functions
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
  EVP_PKEY_CTX *EVP_PKEY_CTX_new(EVP_PKEY *pkey, ENGINE *e);
- EVP_PKEY_CTX *EVP_PKEY_CTX_new_id(int id, ENGINE *e);
+ EVP_PKEY_CTX *_EVP_PKEY_CTX_new_id(int id, ENGINE *e);
  EVP_PKEY_CTX *EVP_PKEY_CTX_dup(EVP_PKEY_CTX *ctx);
  void EVP_PKEY_CTX_free(EVP_PKEY_CTX *ctx);
 
@@ -18,7 +18,7 @@ EVP_PKEY_CTX_new, EVP_PKEY_CTX_new_id, EVP_PKEY_CTX_dup, EVP_PKEY_CTX_free - pub
 The EVP_PKEY_CTX_new() function allocates public key algorithm context using
 the algorithm specified in B<pkey> and ENGINE B<e>.
 
-The EVP_PKEY_CTX_new_id() function allocates public key algorithm context
+The _EVP_PKEY_CTX_new_id() function allocates public key algorithm context
 using the algorithm specified by B<id> and ENGINE B<e>. It is normally used
 when no B<EVP_PKEY> structure is associated with the operations, for example
 during parameter generation of key generation for some algorithms.
@@ -37,7 +37,7 @@ in two threads.
 
 =head1 RETURN VALUES
 
-EVP_PKEY_CTX_new(), EVP_PKEY_CTX_new_id(), EVP_PKEY_CTX_dup() returns either
+EVP_PKEY_CTX_new(), _EVP_PKEY_CTX_new_id(), EVP_PKEY_CTX_dup() returns either
 the newly allocated B<EVP_PKEY_CTX> structure of B<NULL> if an error occurred.
 
 EVP_PKEY_CTX_free() does not return a value.

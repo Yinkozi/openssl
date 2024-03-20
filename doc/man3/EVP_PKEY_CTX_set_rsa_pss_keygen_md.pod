@@ -67,7 +67,7 @@ to B<saltlen>.
 
 A context for the B<RSA-PSS> algorithm can be obtained by calling:
 
- EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA_PSS, NULL);
+ EVP_PKEY_CTX *pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_RSA_PSS, NULL);
 
 =head1 RETURN VALUES
 

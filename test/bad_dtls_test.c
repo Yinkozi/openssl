@@ -65,7 +65,7 @@ static int do_PRF(const void *seed1, int seed1_len,
                   const void *seed3, int seed3_len,
                   unsigned char *out, int olen)
 {
-    EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_TLS1_PRF, NULL);
+    EVP_PKEY_CTX *pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_TLS1_PRF, NULL);
     size_t outlen = olen;
 
     /* No error handling. If it all screws up, the test will fail anyway */

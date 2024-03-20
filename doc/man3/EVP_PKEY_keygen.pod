@@ -120,7 +120,7 @@ Generate a 2048 bit RSA key:
  EVP_PKEY_CTX *ctx;
  EVP_PKEY *pkey = NULL;
 
- ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
+ ctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
  if (!ctx)
      /* Error occurred */
  if (EVP_PKEY_keygen_init(ctx) <= 0)

@@ -1563,7 +1563,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
         *pkeylen = EVP_PKEY_bits(param);
         EVP_PKEY_free(param);
     } else {
-        gctx = EVP_PKEY_CTX_new_id(*pkey_type, keygen_engine);
+        gctx = _EVP_PKEY_CTX_new_id(*pkey_type, keygen_engine);
     }
 
     if (gctx == NULL) {

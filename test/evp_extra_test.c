@@ -1281,7 +1281,7 @@ static int test_EVP_SM2(void)
 
     uint8_t sm2_id[] = {1, 2, 3, 4, 'l', 'e', 't', 't', 'e', 'r'};
 
-    pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
+    pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
     if (!TEST_ptr(pctx))
         goto done;
 
@@ -1560,7 +1560,7 @@ static int test_EVP_PKEY_check(int i)
     if (!TEST_int_eq(EVP_PKEY_param_check(ctx), expected_param_check))
         goto done;
 
-    ctx2 = EVP_PKEY_CTX_new_id(0xdefaced, NULL);
+    ctx2 = _EVP_PKEY_CTX_new_id(0xdefaced, NULL);
     /* assign the pkey directly, as an internal test */
     EVP_PKEY_up_ref(pkey);
     ctx2->pkey = pkey;
@@ -1599,7 +1599,7 @@ static int test_HKDF(void)
     };
     size_t expectedlen = sizeof(expected);
 
-    if (!TEST_ptr(pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL)))
+    if (!TEST_ptr(pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL)))
         goto done;
 
     /* We do this twice to test reuse of the EVP_PKEY_CTX */

@@ -2959,12 +2959,12 @@ int speed_main(int argc, char **argv)
              * If this fails we try creating a EVP_PKEY_EC generic param ctx,
              * then we set the curve by NID before deriving the actual keygen
              * ctx for that specific curve. */
-            kctx = EVP_PKEY_CTX_new_id(test_curves[testnum].nid, NULL); /* keygen ctx from NID */
+            kctx = _EVP_PKEY_CTX_new_id(test_curves[testnum].nid, NULL); /* keygen ctx from NID */
             if (!kctx) {
                 EVP_PKEY_CTX *pctx = NULL;
                 EVP_PKEY *params = NULL;
 
-                /* If we reach this code EVP_PKEY_CTX_new_id() failed and a
+                /* If we reach this code _EVP_PKEY_CTX_new_id() failed and a
                  * "int_ctx_new:unsupported algorithm" error was added to the
                  * error queue.
                  * We remove it from the error queue as we are handling it. */
@@ -2984,7 +2984,7 @@ int speed_main(int argc, char **argv)
                 }
 
                 if (            /* Create the context for parameter generation */
-                       !(pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL)) ||
+                       !(pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL)) ||
                        /* Initialise the parameter generation */
                        !EVP_PKEY_paramgen_init(pctx) ||
                        /* Set the curve by NID */
@@ -3106,7 +3106,7 @@ int speed_main(int argc, char **argv)
                 break;
             }
 
-            if ((ed_pctx = EVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
+            if ((ed_pctx = _EVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
                     == NULL
                 || EVP_PKEY_keygen_init(ed_pctx) <= 0
                 || EVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {

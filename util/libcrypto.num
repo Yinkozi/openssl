@@ -3581,7 +3581,7 @@ ENGINE_set_default_string               3532	1_1_0	EXIST::FUNCTION:ENGINE
 BIO_number_read                         3533	1_1_0	EXIST::FUNCTION:
 CRYPTO_zalloc                           3534	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_cmp_parameters                 3535	1_1_0	EXIST::FUNCTION:
-EVP_PKEY_CTX_new_id                     3537	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_CTX_new_id                     3537	1_1_0	EXIST::FUNCTION:
 TLS_FEATURE_free                        3538	1_1_0	EXIST::FUNCTION:
 d2i_BASIC_CONSTRAINTS                   3539	1_1_0	EXIST::FUNCTION:
 X509_CERT_AUX_new                       3540	1_1_0	EXIST::FUNCTION:

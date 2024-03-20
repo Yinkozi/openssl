@@ -21,7 +21,7 @@ static int test_kdf_tls1_prf(void)
     EVP_PKEY_CTX *pctx;
     unsigned char out[16];
     size_t outlen = sizeof(out);
-    pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_TLS1_PRF, NULL);
+    pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_TLS1_PRF, NULL);
 
     if (EVP_PKEY_derive_init(pctx) <= 0) {
         TEST_error("EVP_PKEY_derive_init");
@@ -62,7 +62,7 @@ static int test_kdf_hkdf(void)
     EVP_PKEY_CTX *pctx;
     unsigned char out[10];
     size_t outlen = sizeof(out);
-    pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL);
+    pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_HKDF, NULL);
 
     if (EVP_PKEY_derive_init(pctx) <= 0) {
         TEST_error("EVP_PKEY_derive_init");
@@ -107,7 +107,7 @@ static int test_kdf_scrypt(void)
     EVP_PKEY_CTX *pctx;
     unsigned char out[64];
     size_t outlen = sizeof(out);
-    pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_SCRYPT, NULL);
+    pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_SCRYPT, NULL);
 
     if (EVP_PKEY_derive_init(pctx) <= 0) {
         TEST_error("EVP_PKEY_derive_init");

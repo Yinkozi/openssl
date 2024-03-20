@@ -420,7 +420,7 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
                 goto end;
             }
         }
-        ctx = EVP_PKEY_CTX_new_id(kdfnid, impl);
+        ctx = _EVP_PKEY_CTX_new_id(kdfnid, impl);
     } else {
         if (pkey == NULL)
             goto end;

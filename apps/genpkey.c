@@ -281,7 +281,7 @@ int init_gen_str(EVP_PKEY_CTX **pctx,
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_finish(tmpeng);
 #endif
-    ctx = EVP_PKEY_CTX_new_id(pkey_id, e);
+    ctx = _EVP_PKEY_CTX_new_id(pkey_id, e);
 
     if (!ctx)
         goto err;

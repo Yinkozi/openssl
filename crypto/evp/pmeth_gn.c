@@ -155,7 +155,7 @@ EVP_PKEY *EVP_PKEY_new_mac_key(int type, ENGINE *e,
 {
     EVP_PKEY_CTX *mac_ctx = NULL;
     EVP_PKEY *mac_key = NULL;
-    mac_ctx = EVP_PKEY_CTX_new_id(type, e);
+    mac_ctx = _EVP_PKEY_CTX_new_id(type, e);
     if (!mac_ctx)
         return NULL;
     if (EVP_PKEY_keygen_init(mac_ctx) <= 0)

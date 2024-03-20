@@ -4716,9 +4716,9 @@ EVP_PKEY *ssl_generate_pkey_group(SSL *s, uint16_t id)
     }
     gtype = ginf->flags & TLS_CURVE_TYPE;
     if (gtype == TLS_CURVE_CUSTOM)
-        pctx = EVP_PKEY_CTX_new_id(ginf->nid, NULL);
+        pctx = _EVP_PKEY_CTX_new_id(ginf->nid, NULL);
     else
-        pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
+        pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
     if (pctx == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_GENERATE_PKEY_GROUP,
                  ERR_R_MALLOC_FAILURE);
@@ -4767,7 +4767,7 @@ EVP_PKEY *ssl_generate_param_group(uint16_t id)
         return NULL;
     }
 
-    pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
+    pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL);
     if (pctx == NULL)
         goto err;
     if (EVP_PKEY_paramgen_init(pctx) <= 0)

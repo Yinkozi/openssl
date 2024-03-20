@@ -1738,7 +1738,7 @@ static int kdf_test_init(EVP_TEST *t, const char *name)
 
     if (!TEST_ptr(kdata = OPENSSL_zalloc(sizeof(*kdata))))
         return 0;
-    kdata->ctx = EVP_PKEY_CTX_new_id(kdf_nid, NULL);
+    kdata->ctx = _EVP_PKEY_CTX_new_id(kdf_nid, NULL);
     if (kdata->ctx == NULL) {
         OPENSSL_free(kdata);
         return 0;
@@ -1943,7 +1943,7 @@ static int keygen_test_init(EVP_TEST *t, const char *alg)
             return 0;
     }
 
-    if (!TEST_ptr(genctx = EVP_PKEY_CTX_new_id(nid, NULL))) {
+    if (!TEST_ptr(genctx = _EVP_PKEY_CTX_new_id(nid, NULL))) {
         /* assume algorithm disabled */
         t->skip = 1;
         return 1;

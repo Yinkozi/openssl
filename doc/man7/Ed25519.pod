@@ -33,11 +33,11 @@ or X509_sign_ctx() in the usual way.
 
 A context for the B<Ed25519> algorithm can be obtained by calling:
 
- EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
+ EVP_PKEY_CTX *pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
 
 For the B<Ed448> algorithm a context can be obtained by calling:
 
- EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED448, NULL);
+ EVP_PKEY_CTX *pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_ED448, NULL);
 
 Ed25519 or Ed448 private keys can be set directly using
 L<EVP_PKEY_new_raw_private_key(3)> or loaded from a PKCS#8 private key file
@@ -62,7 +62,7 @@ output in PEM format:
  #include <openssl/pem.h>
  ...
  EVP_PKEY *pkey = NULL;
- EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
+ EVP_PKEY_CTX *pctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
  EVP_PKEY_keygen_init(pctx);
  EVP_PKEY_keygen(pctx, &pkey);
  EVP_PKEY_CTX_free(pctx);
