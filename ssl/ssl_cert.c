@@ -121,7 +121,7 @@ CERT *ssl_cert_dup(CERT *cert)
         if (cert->pkeys[i].serverinfo != NULL) {
             /* Just copy everything. */
             ret->pkeys[i].serverinfo =
-                OPENSSL_malloc(cert->pkeys[i].serverinfo_length);
+                _OPENSSL_malloc(cert->pkeys[i].serverinfo_length);
             if (ret->pkeys[i].serverinfo == NULL) {
                 SSLerr(SSL_F_SSL_CERT_DUP, ERR_R_MALLOC_FAILURE);
                 goto err;
@@ -134,7 +134,7 @@ CERT *ssl_cert_dup(CERT *cert)
 
     /* Configured sigalgs copied across */
     if (cert->conf_sigalgs) {
-        ret->conf_sigalgs = OPENSSL_malloc(cert->conf_sigalgslen
+        ret->conf_sigalgs = _OPENSSL_malloc(cert->conf_sigalgslen
                                            * sizeof(*cert->conf_sigalgs));
         if (ret->conf_sigalgs == NULL)
             goto err;
@@ -145,7 +145,7 @@ CERT *ssl_cert_dup(CERT *cert)
         ret->conf_sigalgs = NULL;
 
     if (cert->client_sigalgs) {
-        ret->client_sigalgs = OPENSSL_malloc(cert->client_sigalgslen
+        ret->client_sigalgs = _OPENSSL_malloc(cert->client_sigalgslen
                                              * sizeof(*cert->client_sigalgs));
         if (ret->client_sigalgs == NULL)
             goto err;

@@ -37,7 +37,7 @@ static async_ctx *async_ctx_new(void)
     if (!ossl_init_thread_start(OPENSSL_INIT_THREAD_ASYNC))
         return NULL;
 
-    nctx = OPENSSL_malloc(sizeof(*nctx));
+    nctx = _OPENSSL_malloc(sizeof(*nctx));
     if (nctx == NULL) {
         ASYNCerr(ASYNC_F_ASYNC_CTX_NEW, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -224,7 +224,7 @@ int ASYNC_start_job(ASYNC_JOB **job, ASYNC_WAIT_CTX *wctx, int *ret,
             return ASYNC_NO_JOBS;
 
         if (args != NULL) {
-            ctx->currjob->funcargs = OPENSSL_malloc(size);
+            ctx->currjob->funcargs = _OPENSSL_malloc(size);
             if (ctx->currjob->funcargs == NULL) {
                 ASYNCerr(ASYNC_F_ASYNC_START_JOB, ERR_R_MALLOC_FAILURE);
                 async_release_job(ctx->currjob);

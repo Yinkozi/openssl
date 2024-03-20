@@ -226,7 +226,7 @@ static void pem_free(void *p, unsigned int flags, size_t num)
 static void *pem_malloc(int num, unsigned int flags)
 {
     return (flags & PEM_FLAG_SECURE) ? OPENSSL_secure_malloc(num)
-                                     : OPENSSL_malloc(num);
+                                     : _OPENSSL_malloc(num);
 }
 
 static int pem_bytes_read_bio_flags(unsigned char **pdata, long *plen,
@@ -339,7 +339,7 @@ int PEM_ASN1_write_bio(i2d_of_void *i2d, const char *name, BIO *bp,
     }
     /* dsize + 8 bytes are needed */
     /* actually it needs the cipher block size extra... */
-    data = OPENSSL_malloc((unsigned int)dsize + 20);
+    data = _OPENSSL_malloc((unsigned int)dsize + 20);
     if (data == NULL) {
         PEMerr(PEM_F_PEM_ASN1_WRITE_BIO, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -627,7 +627,7 @@ int PEM_write_bio(BIO *bp, const char *name, const char *header,
             goto err;
     }
 
-    buf = OPENSSL_malloc(PEM_BUFSIZE * 8);
+    buf = _OPENSSL_malloc(PEM_BUFSIZE * 8);
     if (buf == NULL) {
         reason = ERR_R_MALLOC_FAILURE;
         goto err;

@@ -627,10 +627,10 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
 
     if ((num * 16 + 6) > OPENSSL_MALLOC_MAX_NELEMS(P256_POINT)
         || (table_storage =
-            OPENSSL_malloc((num * 16 + 5) * sizeof(P256_POINT) + 64)) == NULL
+            _OPENSSL_malloc((num * 16 + 5) * sizeof(P256_POINT) + 64)) == NULL
         || (p_str =
-            OPENSSL_malloc(num * 33 * sizeof(unsigned char))) == NULL
-        || (scalars = OPENSSL_malloc(num * sizeof(BIGNUM *))) == NULL) {
+            _OPENSSL_malloc(num * 33 * sizeof(unsigned char))) == NULL
+        || (scalars = _OPENSSL_malloc(num * sizeof(BIGNUM *))) == NULL) {
         ECerr(EC_F_ECP_NISTZ256_WINDOWED_MUL, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -863,7 +863,7 @@ __owur static int ecp_nistz256_mult_precompute(EC_GROUP *group, BN_CTX *ctx)
     w = 7;
 
     if ((precomp_storage =
-         OPENSSL_malloc(37 * 64 * sizeof(P256_POINT_AFFINE) + 64)) == NULL) {
+         _OPENSSL_malloc(37 * 64 * sizeof(P256_POINT_AFFINE) + 64)) == NULL) {
         ECerr(EC_F_ECP_NISTZ256_MULT_PRECOMPUTE, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -1117,13 +1117,13 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
          * Without a precomputed table for the generator, it has to be
          * handled like a normal point.
          */
-        new_scalars = OPENSSL_malloc((num + 1) * sizeof(BIGNUM *));
+        new_scalars = _OPENSSL_malloc((num + 1) * sizeof(BIGNUM *));
         if (new_scalars == NULL) {
             ECerr(EC_F_ECP_NISTZ256_POINTS_MUL, ERR_R_MALLOC_FAILURE);
             goto err;
         }
 
-        new_points = OPENSSL_malloc((num + 1) * sizeof(EC_POINT *));
+        new_points = _OPENSSL_malloc((num + 1) * sizeof(EC_POINT *));
         if (new_points == NULL) {
             ECerr(EC_F_ECP_NISTZ256_POINTS_MUL, ERR_R_MALLOC_FAILURE);
             goto err;

@@ -138,11 +138,11 @@ it also takes a printf format string and argument.  In all cases the TEST_xxx
 macros are guaranteed to evaluate their arguments exactly once.  This means
 that expressions with side effects are allowed as parameters.  Thus,
 
-    if (!TEST_ptr(ptr = OPENSSL_malloc(..)))
+    if (!TEST_ptr(ptr = _OPENSSL_malloc(..)))
 
 works fine and can be used in place of:
 
-    ptr = OPENSSL_malloc(..);
+    ptr = _OPENSSL_malloc(..);
     if (!TEST_ptr(ptr))
 
 The former produces a more meaningful message on failure than the latter.

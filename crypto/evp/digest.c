@@ -256,7 +256,7 @@ int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
         if (tmp_buf)
             out->md_data = tmp_buf;
         else {
-            out->md_data = OPENSSL_malloc(out->digest->ctx_size);
+            out->md_data = _OPENSSL_malloc(out->digest->ctx_size);
             if (out->md_data == NULL) {
                 EVPerr(EVP_F_EVP_MD_CTX_COPY_EX, ERR_R_MALLOC_FAILURE);
                 return 0;

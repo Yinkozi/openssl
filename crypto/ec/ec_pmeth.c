@@ -202,7 +202,7 @@ static int pkey_ec_kdf_derive(EVP_PKEY_CTX *ctx,
         return 0;
     if (!pkey_ec_derive(ctx, NULL, &ktmplen))
         return 0;
-    if ((ktmp = OPENSSL_malloc(ktmplen)) == NULL) {
+    if ((ktmp = _OPENSSL_malloc(ktmplen)) == NULL) {
         ECerr(EC_F_PKEY_EC_KDF_DERIVE, ERR_R_MALLOC_FAILURE);
         return 0;
     }

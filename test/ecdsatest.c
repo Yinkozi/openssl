@@ -233,7 +233,7 @@ static int test_builtin(int n)
 
     sig_len = ECDSA_size(eckey);
 
-    if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
+    if (!TEST_ptr(sig = _OPENSSL_malloc(sig_len))
         /* create a signature */
         || !TEST_true(_EVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_true(EVP_DigestSign(mctx, sig, &sig_len, tbs, sizeof(tbs)))
@@ -322,7 +322,7 @@ int setup_tests(void)
 #else
     /* get a list of all internal curves */
     crv_len = EC_get_builtin_curves(NULL, 0);
-    if (!TEST_ptr(curves = OPENSSL_malloc(sizeof(*curves) * crv_len))
+    if (!TEST_ptr(curves = _OPENSSL_malloc(sizeof(*curves) * crv_len))
         || !TEST_true(EC_get_builtin_curves(curves, crv_len)))
         return 0;
     ADD_ALL_TESTS(test_builtin, crv_len);

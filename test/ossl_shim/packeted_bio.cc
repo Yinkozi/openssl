@@ -191,7 +191,7 @@ static int PacketedRead(BIO *bio, char *out, int outl) {
 
     uint32_t len = (len_bytes[0] << 24) | (len_bytes[1] << 16) |
         (len_bytes[2] << 8) | len_bytes[3];
-    uint8_t *buf = (uint8_t *)OPENSSL_malloc(len);
+    uint8_t *buf = (uint8_t *)_OPENSSL_malloc(len);
     if (buf == NULL) {
       return -1;
     }

@@ -59,13 +59,13 @@ static hm_fragment *dtls1_hm_fragment_new(size_t frag_len, int reassembly)
     unsigned char *buf = NULL;
     unsigned char *bitmask = NULL;
 
-    if ((frag = OPENSSL_malloc(sizeof(*frag))) == NULL) {
+    if ((frag = _OPENSSL_malloc(sizeof(*frag))) == NULL) {
         SSLerr(SSL_F_DTLS1_HM_FRAGMENT_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
     if (frag_len) {
-        if ((buf = OPENSSL_malloc(frag_len)) == NULL) {
+        if ((buf = _OPENSSL_malloc(frag_len)) == NULL) {
             SSLerr(SSL_F_DTLS1_HM_FRAGMENT_NEW, ERR_R_MALLOC_FAILURE);
             _OPENSSL_free(frag);
             return NULL;

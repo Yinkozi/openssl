@@ -93,7 +93,7 @@ static int vms_load(DSO *dso)
 #  pragma pointer_size save
 #  pragma pointer_size 32
 # else                          /* __INITIAL_POINTER_SIZE == 64 */
-#  define DSO_MALLOC OPENSSL_malloc
+#  define DSO_MALLOC _OPENSSL_malloc
 # endif                         /* __INITIAL_POINTER_SIZE == 64 [else] */
 
     DSO_VMS_INTERNAL *p = NULL;
@@ -444,7 +444,7 @@ static char *vms_merger(DSO *dso, const char *filespec1,
         return NULL;
     }
 
-    merged = OPENSSL_malloc(nam.NAMX_ESL + 1);
+    merged = _OPENSSL_malloc(nam.NAMX_ESL + 1);
     if (merged == NULL)
         goto malloc_err;
     strncpy(merged, nam.NAMX_ESA, nam.NAMX_ESL);
@@ -457,7 +457,7 @@ static char *vms_merger(DSO *dso, const char *filespec1,
 static char *vms_name_converter(DSO *dso, const char *filename)
 {
     int len = strlen(filename);
-    char *not_translated = OPENSSL_malloc(len + 1);
+    char *not_translated = _OPENSSL_malloc(len + 1);
     if (not_translated != NULL)
         strcpy(not_translated, filename);
     return not_translated;

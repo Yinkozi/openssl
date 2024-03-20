@@ -328,7 +328,7 @@ DSO *DSO_dsobyaddr(void *addr, int flags)
     if (len < 0)
         return NULL;
 
-    filename = OPENSSL_malloc(len);
+    filename = _OPENSSL_malloc(len);
     if (filename != NULL
             && DSO_pathbyaddr(addr, filename, len) == len)
         ret = DSO_load(NULL, filename, NULL, flags);

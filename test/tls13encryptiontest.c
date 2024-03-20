@@ -224,7 +224,7 @@ static unsigned char *multihexstr2buf(const char *str[3], size_t *len)
     }
 
     totlen /= 2;
-    outbuf = OPENSSL_malloc(totlen);
+    outbuf = _OPENSSL_malloc(totlen);
     if (outbuf == NULL)
         return NULL;
 
@@ -261,7 +261,7 @@ static int load_record(SSL3_RECORD *rec, RECORD_DATA *recd, unsigned char **key,
     if (*key == NULL || ivtmp == NULL || sq == NULL || pt == NULL)
         goto err;
 
-    rec->data = rec->input = OPENSSL_malloc(ptlen + EVP_GCM_TLS_TAG_LEN);
+    rec->data = rec->input = _OPENSSL_malloc(ptlen + EVP_GCM_TLS_TAG_LEN);
 
     if (rec->data == NULL)
         goto err;

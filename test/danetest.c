@@ -185,7 +185,7 @@ static ossl_ssize_t hexdecode(const char *in, void *result)
     uint8_t byte;
     int nibble = 0;
 
-    if (!TEST_ptr(ret = OPENSSL_malloc(strlen(in) / 2)))
+    if (!TEST_ptr(ret = _OPENSSL_malloc(strlen(in) / 2)))
         return -1;
     cp = ret;
 

@@ -114,7 +114,7 @@ DEFINE_STACK_OF(void)
 
 int CRYPTO_mem_ctrl(int mode);
 
-# define OPENSSL_malloc(num) \
+# define _OPENSSL_malloc(num) \
         CRYPTO_malloc(num, OPENSSL_FILE, OPENSSL_LINE)
 # define OPENSSL_zalloc(num) \
         CRYPTO_zalloc(num, OPENSSL_FILE, OPENSSL_LINE)

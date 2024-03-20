@@ -216,7 +216,7 @@ The following example demonstrates how to use most of the core async APIs:
          printf("Failed to create pipe\n");
          return 0;
      }
-     wptr = OPENSSL_malloc(sizeof(OSSL_ASYNC_FD));
+     wptr = _OPENSSL_malloc(sizeof(OSSL_ASYNC_FD));
      if (wptr == NULL) {
          printf("Failed to malloc\n");
          return 0;

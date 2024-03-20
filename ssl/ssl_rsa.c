@@ -886,7 +886,7 @@ int SSL_CTX_use_serverinfo_ex(SSL_CTX *ctx, unsigned int version,
         unsigned char *sinfo;
         int ret;
 
-        sinfo = OPENSSL_malloc(sinfo_length);
+        sinfo = _OPENSSL_malloc(sinfo_length);
         if (sinfo == NULL) {
             SSLerr(SSL_F_SSL_CTX_USE_SERVERINFO_EX, ERR_R_MALLOC_FAILURE);
             return 0;

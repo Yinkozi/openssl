@@ -65,7 +65,7 @@ It can take noticeably long to complete.
 
 OPENSSL_secure_malloc() allocates C<num> bytes from the heap.
 If CRYPTO_secure_malloc_init() is not called, this is equivalent to
-calling OPENSSL_malloc().
+calling _OPENSSL_malloc().
 It is a macro that expands to
 CRYPTO_secure_malloc() and adds the C<__FILE__> and C<__LINE__> parameters.
 
@@ -119,7 +119,7 @@ OPENSSL_secure_free() and OPENSSL_secure_clear_free() return no values.
 
 =head1 SEE ALSO
 
-L<OPENSSL_malloc(3)>,
+L<_OPENSSL_malloc(3)>,
 L<BN_new(3)>
 
 =head1 HISTORY

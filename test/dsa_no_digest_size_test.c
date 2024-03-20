@@ -128,8 +128,8 @@ static int sign_and_verify(int len)
     int digestlen = BN_num_bytes(DSA_get0_q(dsakey));
     int ok = 0;
 
-    unsigned char *dataToSign = OPENSSL_malloc(len);
-    unsigned char *paddedData = OPENSSL_malloc(digestlen);
+    unsigned char *dataToSign = _OPENSSL_malloc(len);
+    unsigned char *paddedData = _OPENSSL_malloc(digestlen);
     unsigned char *signature = NULL;
     EVP_PKEY_CTX *ctx = NULL;
     EVP_PKEY *pkey = NULL;
@@ -159,7 +159,7 @@ static int sign_and_verify(int len)
         goto end;
     }
 
-    if (!TEST_ptr(signature = OPENSSL_malloc(sigLength)))
+    if (!TEST_ptr(signature = _OPENSSL_malloc(sigLength)))
         goto end;
 
     if (EVP_PKEY_sign(ctx, signature, &sigLength, dataToSign, len) != 1) {

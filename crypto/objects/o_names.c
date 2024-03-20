@@ -222,7 +222,7 @@ int OBJ_NAME_add(const char *name, int type, const char *data)
     alias = type & OBJ_NAME_ALIAS;
     type &= ~OBJ_NAME_ALIAS;
 
-    onp = OPENSSL_malloc(sizeof(*onp));
+    onp = _OPENSSL_malloc(sizeof(*onp));
     if (onp == NULL)
         return 0;
 
@@ -355,7 +355,7 @@ void OBJ_NAME_do_all_sorted(int type,
 
     d.type = type;
     d.names =
-        OPENSSL_malloc(sizeof(*d.names) * lh_OBJ_NAME_num_items(names_lh));
+        _OPENSSL_malloc(sizeof(*d.names) * lh_OBJ_NAME_num_items(names_lh));
     /* Really should return an error if !d.names...but its a void function! */
     if (d.names != NULL) {
         d.n = 0;

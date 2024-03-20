@@ -106,7 +106,7 @@ static UI_STRING *general_allocate_prompt(UI *ui, const char *prompt,
     } else if ((type == UIT_PROMPT || type == UIT_VERIFY
                 || type == UIT_BOOLEAN) && result_buf == NULL) {
         UIerr(UI_F_GENERAL_ALLOCATE_PROMPT, UI_R_NO_RESULT_BUFFER);
-    } else if ((ret = OPENSSL_malloc(sizeof(*ret))) != NULL) {
+    } else if ((ret = _OPENSSL_malloc(sizeof(*ret))) != NULL) {
         ret->out_string = prompt;
         ret->flags = prompt_freeable ? OUT_STRING_FREEABLE : 0;
         ret->input_flags = input_flags;
@@ -374,7 +374,7 @@ char *UI_construct_prompt(UI *ui, const char *object_desc,
             len += sizeof(prompt2) - 1 + strlen(object_name);
         len += sizeof(prompt3) - 1;
 
-        if ((prompt = OPENSSL_malloc(len + 1)) == NULL) {
+        if ((prompt = _OPENSSL_malloc(len + 1)) == NULL) {
             UIerr(UI_F_UI_CONSTRUCT_PROMPT, ERR_R_MALLOC_FAILURE);
             return NULL;
         }

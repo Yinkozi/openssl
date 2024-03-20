@@ -883,7 +883,7 @@ static int test_large_app_data(int tst)
     if (!TEST_ptr(msg))
         goto end;
 
-    buf = OPENSSL_malloc(SSL3_RT_MAX_PLAIN_LENGTH + 1);
+    buf = _OPENSSL_malloc(SSL3_RT_MAX_PLAIN_LENGTH + 1);
     if (!TEST_ptr(buf))
         goto end;
     /* Set whole buffer to all bits set */
@@ -4156,7 +4156,7 @@ static int old_add_cb(SSL *s, unsigned int ext_type, const unsigned char **out,
         clntaddoldcb++;
 
     if (*server != SSL_is_server(s)
-            || (data = OPENSSL_malloc(sizeof(*data))) == NULL)
+            || (data = _OPENSSL_malloc(sizeof(*data))) == NULL)
         return -1;
 
     *data = 1;
@@ -4202,7 +4202,7 @@ static int new_add_cb(SSL *s, unsigned int ext_type, unsigned int context,
         clntaddnewcb++;
 
     if (*server != SSL_is_server(s)
-            || (data = OPENSSL_malloc(sizeof(*data))) == NULL)
+            || (data = _OPENSSL_malloc(sizeof(*data))) == NULL)
         return -1;
 
     *data = 1;

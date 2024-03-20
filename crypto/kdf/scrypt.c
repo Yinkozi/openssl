@@ -102,7 +102,7 @@ static int pkey_scrypt_set_membuf(unsigned char **buffer, size_t *buflen,
     if (new_buflen > 0) {
         *buffer = OPENSSL_memdup(new_buffer, new_buflen);
     } else {
-        *buffer = OPENSSL_malloc(1);
+        *buffer = _OPENSSL_malloc(1);
     }
     if (*buffer == NULL) {
         KDFerr(KDF_F_PKEY_SCRYPT_SET_MEMBUF, ERR_R_MALLOC_FAILURE);

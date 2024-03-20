@@ -107,7 +107,7 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
 {
     SSL_SESSION *dest;
 
-    dest = OPENSSL_malloc(sizeof(*dest));
+    dest = _OPENSSL_malloc(sizeof(*dest));
     if (dest == NULL) {
         goto err;
     }
@@ -1024,7 +1024,7 @@ int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)
         _OPENSSL_free(s->ext.session_ticket);
         s->ext.session_ticket = NULL;
         s->ext.session_ticket =
-            OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);
+            _OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);
         if (s->ext.session_ticket == NULL) {
             SSLerr(SSL_F_SSL_SET_SESSION_TICKET_EXT, ERR_R_MALLOC_FAILURE);
             return 0;

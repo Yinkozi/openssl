@@ -1162,7 +1162,7 @@ static int print_x509v3_exts(BIO *bio, X509 *x, const char *ext_names)
         BIO_printf(bio, "Invalid extension names: %s\n", ext_names);
         goto end;
     }
-    if ((names = OPENSSL_malloc(sizeof(char *) * nn)) == NULL)
+    if ((names = _OPENSSL_malloc(sizeof(char *) * nn)) == NULL)
         goto end;
     parse_ext_names(tmp_ext_names, names);
 

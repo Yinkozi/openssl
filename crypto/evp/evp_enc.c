@@ -700,7 +700,7 @@ int EVP_CIPHER_CTX_copy(EVP_CIPHER_CTX *out, const EVP_CIPHER_CTX *in)
     memcpy(out, in, sizeof(*out));
 
     if (in->cipher_data && in->cipher->ctx_size) {
-        out->cipher_data = OPENSSL_malloc(in->cipher->ctx_size);
+        out->cipher_data = _OPENSSL_malloc(in->cipher->ctx_size);
         if (out->cipher_data == NULL) {
             out->cipher = NULL;
             EVPerr(EVP_F_EVP_CIPHER_CTX_COPY, ERR_R_MALLOC_FAILURE);

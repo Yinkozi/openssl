@@ -533,7 +533,7 @@ static char *ts_get_status_text(STACK_OF(ASN1_UTF8STRING) *text)
         length += ASN1_STRING_length(current);
         length += 1;            /* separator character */
     }
-    if ((result = OPENSSL_malloc(length)) == NULL) {
+    if ((result = _OPENSSL_malloc(length)) == NULL) {
         TSerr(TS_F_TS_GET_STATUS_TEXT, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -588,7 +588,7 @@ static int ts_compute_imprint(BIO *data, TS_TST_INFO *tst_info,
     if (length < 0)
         goto err;
     *imprint_len = length;
-    if ((*imprint = OPENSSL_malloc(*imprint_len)) == NULL) {
+    if ((*imprint = _OPENSSL_malloc(*imprint_len)) == NULL) {
         TSerr(TS_F_TS_COMPUTE_IMPRINT, ERR_R_MALLOC_FAILURE);
         goto err;
     }

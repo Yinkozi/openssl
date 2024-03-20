@@ -41,7 +41,7 @@ int ASN1_i2d_bio(i2d_of_void *i2d, BIO *out, unsigned char *x)
     if (n <= 0)
         return 0;
 
-    b = OPENSSL_malloc(n);
+    b = _OPENSSL_malloc(n);
     if (b == NULL) {
         ASN1err(ASN1_F_ASN1_I2D_BIO, ERR_R_MALLOC_FAILURE);
         return 0;

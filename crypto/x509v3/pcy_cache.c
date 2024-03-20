@@ -89,7 +89,7 @@ static int policy_cache_new(X509 *x)
 
     if (x->policy_cache != NULL)
         return 1;
-    cache = OPENSSL_malloc(sizeof(*cache));
+    cache = _OPENSSL_malloc(sizeof(*cache));
     if (cache == NULL) {
         X509V3err(X509V3_F_POLICY_CACHE_NEW, ERR_R_MALLOC_FAILURE);
         return 0;

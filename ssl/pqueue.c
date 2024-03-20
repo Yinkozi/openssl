@@ -17,7 +17,7 @@ struct pqueue_st {
 
 pitem *pitem_new(unsigned char *prio64be, void *data)
 {
-    pitem *item = OPENSSL_malloc(sizeof(*item));
+    pitem *item = _OPENSSL_malloc(sizeof(*item));
 
     if (item == NULL) {
         SSLerr(SSL_F_PITEM_NEW, ERR_R_MALLOC_FAILURE);

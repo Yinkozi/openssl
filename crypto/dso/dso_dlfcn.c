@@ -238,7 +238,7 @@ static char *dlfcn_merger(DSO *dso, const char *filespec1,
             spec2len--;
             len--;
         }
-        merged = OPENSSL_malloc(len + 2);
+        merged = _OPENSSL_malloc(len + 2);
         if (merged == NULL) {
             DSOerr(DSO_F_DLFCN_MERGER, ERR_R_MALLOC_FAILURE);
             return NULL;
@@ -264,7 +264,7 @@ static char *dlfcn_name_converter(DSO *dso, const char *filename)
         if ((DSO_flags(dso) & DSO_FLAG_NAME_TRANSLATION_EXT_ONLY) == 0)
             rsize += 3;         /* The length of "lib" */
     }
-    translated = OPENSSL_malloc(rsize);
+    translated = _OPENSSL_malloc(rsize);
     if (translated == NULL) {
         DSOerr(DSO_F_DLFCN_NAME_CONVERTER, DSO_R_NAME_TRANSLATION_FAILED);
         return NULL;
@@ -342,7 +342,7 @@ static int dladdr(void *ptr, Dl_info *dl)
     unsigned int found = 0;
     struct ld_info *ldinfos, *next_ldi, *this_ldi;
 
-    if ((ldinfos = OPENSSL_malloc(DLFCN_LDINFO_SIZE)) == NULL) {
+    if ((ldinfos = _OPENSSL_malloc(DLFCN_LDINFO_SIZE)) == NULL) {
         errno = ENOMEM;
         dl->dli_fname = NULL;
         return 0;
@@ -377,7 +377,7 @@ static int dladdr(void *ptr, Dl_info *dl)
             if ((member_len = strlen(member)) > 0)
                 buffer_sz += 1 + member_len + 1;
             found = 1;
-            if ((buffer = OPENSSL_malloc(buffer_sz)) != NULL) {
+            if ((buffer = _OPENSSL_malloc(buffer_sz)) != NULL) {
                 OPENSSL_strlcpy(buffer, this_ldi->ldinfo_filename, buffer_sz);
                 if (member_len > 0) {
                     /*

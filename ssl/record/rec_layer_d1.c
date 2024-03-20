@@ -20,7 +20,7 @@ int DTLS_RECORD_LAYER_new(RECORD_LAYER *rl)
 {
     DTLS_RECORD_LAYER *d;
 
-    if ((d = OPENSSL_malloc(sizeof(*d))) == NULL) {
+    if ((d = _OPENSSL_malloc(sizeof(*d))) == NULL) {
         SSLerr(SSL_F_DTLS_RECORD_LAYER_NEW, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -148,7 +148,7 @@ int dtls1_buffer_record(SSL *s, record_pqueue *queue, unsigned char *priority)
     if (pqueue_size(queue->q) >= 100)
         return 0;
 
-    rdata = OPENSSL_malloc(sizeof(*rdata));
+    rdata = _OPENSSL_malloc(sizeof(*rdata));
     item = pitem_new(priority, rdata);
     if (rdata == NULL || item == NULL) {
         _OPENSSL_free(rdata);

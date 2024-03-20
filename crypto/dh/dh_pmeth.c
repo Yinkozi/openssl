@@ -459,7 +459,7 @@ static int pkey_dh_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
             return 0;
         ret = 0;
         Zlen = DH_size(dh);
-        Z = OPENSSL_malloc(Zlen);
+        Z = _OPENSSL_malloc(Zlen);
         if (Z == NULL) {
             goto err;
         }

@@ -639,7 +639,7 @@ static EVP_PKEY *capi_get_pkey(ENGINE *eng, CAPI_KEY *key)
         return NULL;
     }
 
-    pubkey = OPENSSL_malloc(len);
+    pubkey = _OPENSSL_malloc(len);
 
     if (pubkey == NULL)
         goto memerr;
@@ -953,7 +953,7 @@ int capi_rsa_priv_dec(int flen, const unsigned char *from,
     }
 
     /* Create temp reverse order version of input */
-    if ((tmpbuf = OPENSSL_malloc(flen)) == NULL) {
+    if ((tmpbuf = _OPENSSL_malloc(flen)) == NULL) {
         CAPIerr(CAPI_F_CAPI_RSA_PRIV_DEC, ERR_R_MALLOC_FAILURE);
         return -1;
     }
@@ -1116,7 +1116,7 @@ static char *wide_to_asc(LPCWSTR wstr)
         CAPIerr(CAPI_F_WIDE_TO_ASC, CAPI_R_WIN32_ERROR);
         return NULL;
     }
-    str = OPENSSL_malloc(sz);
+    str = _OPENSSL_malloc(sz);
     if (str == NULL) {
         CAPIerr(CAPI_F_WIDE_TO_ASC, ERR_R_MALLOC_FAILURE);
         return NULL;
@@ -1143,7 +1143,7 @@ static int capi_get_provname(CAPI_CTX *ctx, LPSTR *pname, DWORD *ptype,
         capi_adderror(err);
         return 0;
     }
-    name = OPENSSL_malloc(len);
+    name = _OPENSSL_malloc(len);
     if (name == NULL) {
         CAPIerr(CAPI_F_CAPI_GET_PROVNAME, ERR_R_MALLOC_FAILURE);
         return 0;
@@ -1230,7 +1230,7 @@ static int capi_list_containers(CAPI_CTX *ctx, BIO *out)
     CAPI_trace(ctx, "Got max container len %d\n", buflen);
     if (buflen == 0)
         buflen = 1024;
-    cname = OPENSSL_malloc(buflen);
+    cname = _OPENSSL_malloc(buflen);
     if (cname == NULL) {
         CAPIerr(CAPI_F_CAPI_LIST_CONTAINERS, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -1281,7 +1281,7 @@ static CRYPT_KEY_PROV_INFO *capi_get_prov_info(CAPI_CTX *ctx,
     if (!CertGetCertificateContextProperty(cert, CERT_KEY_PROV_INFO_PROP_ID,
                                            NULL, &len))
         return NULL;
-    pinfo = OPENSSL_malloc(len);
+    pinfo = _OPENSSL_malloc(len);
     if (pinfo == NULL) {
         CAPIerr(CAPI_F_CAPI_GET_PROV_INFO, ERR_R_MALLOC_FAILURE);
         return NULL;
@@ -1329,7 +1329,7 @@ static char *capi_cert_get_fname(CAPI_CTX *ctx, PCCERT_CONTEXT cert)
     if (!CertGetCertificateContextProperty(cert, CERT_FRIENDLY_NAME_PROP_ID,
                                            NULL, &dlen))
         return NULL;
-    wfname = OPENSSL_malloc(dlen);
+    wfname = _OPENSSL_malloc(dlen);
     if (wfname == NULL)
         return NULL;
     if (CertGetCertificateContextProperty(cert, CERT_FRIENDLY_NAME_PROP_ID,
@@ -1480,7 +1480,7 @@ static CAPI_KEY *capi_get_key(CAPI_CTX *ctx, const WCHAR *contname,
                               DWORD keyspec)
 {
     DWORD dwFlags = 0;
-    CAPI_KEY *key = OPENSSL_malloc(sizeof(*key));
+    CAPI_KEY *key = _OPENSSL_malloc(sizeof(*key));
 
     if (key == NULL)
         return NULL;

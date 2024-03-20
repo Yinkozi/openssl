@@ -1193,7 +1193,7 @@ static int dgram_sctp_read(BIO *b, char *out, int outl)
 
             optlen =
                 (socklen_t) (sizeof(sctp_assoc_t) + 256 * sizeof(uint8_t));
-            authchunks = OPENSSL_malloc(optlen);
+            authchunks = _OPENSSL_malloc(optlen);
             if (authchunks == NULL) {
                 BIOerr(BIO_F_DGRAM_SCTP_READ, ERR_R_MALLOC_FAILURE);
                 return -1;
@@ -1409,7 +1409,7 @@ static long dgram_sctp_ctrl(BIO *b, int cmd, long num, void *ptr)
 
         /* Add new key */
         sockopt_len = sizeof(struct sctp_authkey) + 64 * sizeof(uint8_t);
-        authkey = OPENSSL_malloc(sockopt_len);
+        authkey = _OPENSSL_malloc(sockopt_len);
         if (authkey == NULL) {
             ret = -1;
             break;

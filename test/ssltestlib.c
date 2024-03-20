@@ -503,11 +503,11 @@ int mempacket_test_inject(BIO *bio, const char *in, int inl, int pktnum,
     }
 
     for (i = 0; i < (duprec ? 3 : 1); i++) {
-        if (!TEST_ptr(allpkts[i] = OPENSSL_malloc(sizeof(*thispkt))))
+        if (!TEST_ptr(allpkts[i] = _OPENSSL_malloc(sizeof(*thispkt))))
             goto err;
         thispkt = allpkts[i];
 
-        if (!TEST_ptr(thispkt->data = OPENSSL_malloc(inl)))
+        if (!TEST_ptr(thispkt->data = _OPENSSL_malloc(inl)))
             goto err;
         /*
          * If we are duplicating the packet, we duplicate it three times. The

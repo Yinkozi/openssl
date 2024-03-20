@@ -203,7 +203,7 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
     if (*hash != NULL && *hash_len >= SHA256_DIGEST_LENGTH) {
         md = *hash;
     } else {
-        md = OPENSSL_malloc(SHA256_DIGEST_LENGTH);
+        md = _OPENSSL_malloc(SHA256_DIGEST_LENGTH);
         if (md == NULL)
             goto err;
     }

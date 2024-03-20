@@ -4626,7 +4626,7 @@ int ssl_generate_master_secret(SSL *s, unsigned char *pms, size_t pmslen,
             pmslen = psklen;
 
         pskpmslen = 4 + pmslen + psklen;
-        pskpms = OPENSSL_malloc(pskpmslen);
+        pskpms = _OPENSSL_malloc(pskpmslen);
         if (pskpms == NULL)
             goto err;
         t = pskpms;
@@ -4809,7 +4809,7 @@ int ssl_derive(SSL *s, EVP_PKEY *privkey, EVP_PKEY *pubkey, int gensecret)
         goto err;
     }
 
-    pms = OPENSSL_malloc(pmslen);
+    pms = _OPENSSL_malloc(pmslen);
     if (pms == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_DERIVE,
                  ERR_R_MALLOC_FAILURE);

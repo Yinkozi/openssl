@@ -208,7 +208,7 @@ static ERR_STRING_DATA SYS_str_reasons[NUM_SYS_STR_REASONS + 1];
 
 static void build_SYS_str_reasons(void)
 {
-    /* OPENSSL_malloc cannot be used here, use static storage instead */
+    /* _OPENSSL_malloc cannot be used here, use static storage instead */
     static char strerror_pool[SPACE_SYS_STR_REASONS];
     char *cur = strerror_pool;
     size_t cnt = 0;
@@ -881,7 +881,7 @@ void ERR_add_error_vdata(int num, va_list args)
     char *str, *p, *a;
 
     s = 80;
-    if ((str = OPENSSL_malloc(s + 1)) == NULL) {
+    if ((str = _OPENSSL_malloc(s + 1)) == NULL) {
         /* ERRerr(ERR_F_ERR_ADD_ERROR_VDATA, ERR_R_MALLOC_FAILURE); */
         return;
     }

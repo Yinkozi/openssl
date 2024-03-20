@@ -257,7 +257,7 @@ static int test_redirect(void)
         goto err;
 
     len = EVP_PKEY_size(pkey);
-    if (!TEST_ptr(tmp = OPENSSL_malloc(len)))
+    if (!TEST_ptr(tmp = _OPENSSL_malloc(len)))
         goto err;
 
     if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, NULL)))

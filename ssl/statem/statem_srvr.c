@@ -2854,7 +2854,7 @@ int tls_construct_certificate_request(SSL *s, WPACKET *pkt)
         if (s->post_handshake_auth == SSL_PHA_REQUEST_PENDING) {
             _OPENSSL_free(s->pha_context);
             s->pha_context_len = 32;
-            if ((s->pha_context = OPENSSL_malloc(s->pha_context_len)) == NULL) {
+            if ((s->pha_context = _OPENSSL_malloc(s->pha_context_len)) == NULL) {
                 s->pha_context_len = 0;
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                          SSL_F_TLS_CONSTRUCT_CERTIFICATE_REQUEST,
@@ -3037,7 +3037,7 @@ static int tls_process_cke_rsa(SSL *s, PACKET *pkt)
         return 0;
     }
 
-    rsa_decrypt = OPENSSL_malloc(RSA_size(rsa));
+    rsa_decrypt = _OPENSSL_malloc(RSA_size(rsa));
     if (rsa_decrypt == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CKE_RSA,
                  ERR_R_MALLOC_FAILURE);
@@ -3890,7 +3890,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
                  ERR_R_INTERNAL_ERROR);
         goto err;
     }
-    senc = OPENSSL_malloc(slen_full);
+    senc = _OPENSSL_malloc(slen_full);
     if (senc == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                  SSL_F_CONSTRUCT_STATELESS_TICKET, ERR_R_MALLOC_FAILURE);

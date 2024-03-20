@@ -621,7 +621,7 @@ static int bio_make_pair(BIO *bio1, BIO *bio2)
     }
 
     if (b1->buf == NULL) {
-        b1->buf = OPENSSL_malloc(b1->size);
+        b1->buf = _OPENSSL_malloc(b1->size);
         if (b1->buf == NULL) {
             BIOerr(BIO_F_BIO_MAKE_PAIR, ERR_R_MALLOC_FAILURE);
             return 0;
@@ -631,7 +631,7 @@ static int bio_make_pair(BIO *bio1, BIO *bio2)
     }
 
     if (b2->buf == NULL) {
-        b2->buf = OPENSSL_malloc(b2->size);
+        b2->buf = _OPENSSL_malloc(b2->size);
         if (b2->buf == NULL) {
             BIOerr(BIO_F_BIO_MAKE_PAIR, ERR_R_MALLOC_FAILURE);
             return 0;

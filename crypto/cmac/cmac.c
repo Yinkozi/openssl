@@ -47,7 +47,7 @@ CMAC_CTX *CMAC_CTX_new(void)
 {
     CMAC_CTX *ctx;
 
-    if ((ctx = OPENSSL_malloc(sizeof(*ctx))) == NULL) {
+    if ((ctx = _OPENSSL_malloc(sizeof(*ctx))) == NULL) {
         CRYPTOerr(CRYPTO_F_CMAC_CTX_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

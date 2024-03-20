@@ -188,7 +188,7 @@ static SRP_user_pwd *SRP_user_pwd_new(void)
 {
     SRP_user_pwd *ret;
 
-    if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL) {
+    if ((ret = _OPENSSL_malloc(sizeof(*ret))) == NULL) {
         /* SRPerr(SRP_F_SRP_USER_PWD_NEW, ERR_R_MALLOC_FAILURE); */ /*ckerr_ignore*/
         return NULL;
     }
@@ -270,7 +270,7 @@ static SRP_user_pwd *srp_user_pwd_dup(SRP_user_pwd *src)
 
 SRP_VBASE *SRP_VBASE_new(char *seed_key)
 {
-    SRP_VBASE *vb = OPENSSL_malloc(sizeof(*vb));
+    SRP_VBASE *vb = _OPENSSL_malloc(sizeof(*vb));
 
     if (vb == NULL)
         return NULL;
@@ -305,7 +305,7 @@ static SRP_gN_cache *SRP_gN_new_init(const char *ch)
 {
     unsigned char tmp[MAX_LEN];
     int len;
-    SRP_gN_cache *newgN = OPENSSL_malloc(sizeof(*newgN));
+    SRP_gN_cache *newgN = _OPENSSL_malloc(sizeof(*newgN));
 
     if (newgN == NULL)
         return NULL;
@@ -415,7 +415,7 @@ int SRP_VBASE_init(SRP_VBASE *vb, char *verifier_file)
              * we add this couple in the internal Stack
              */
 
-            if ((gN = OPENSSL_malloc(sizeof(*gN))) == NULL)
+            if ((gN = _OPENSSL_malloc(sizeof(*gN))) == NULL)
                 goto err;
 
             if ((gN->id = OPENSSL_strdup(pp[DB_srpid])) == NULL
@@ -636,7 +636,7 @@ char *SRP_create_verifier(const char *user, const char *pass, char **salt,
     if (BN_bn2bin(v, tmp) < 0)
         goto err;
     vfsize = BN_num_bytes(v) * 2;
-    if (((vf = OPENSSL_malloc(vfsize)) == NULL))
+    if (((vf = _OPENSSL_malloc(vfsize)) == NULL))
         goto err;
     if (!t_tob64(vf, tmp, BN_num_bytes(v)))
         goto err;
@@ -644,7 +644,7 @@ char *SRP_create_verifier(const char *user, const char *pass, char **salt,
     if (*salt == NULL) {
         char *tmp_salt;
 
-        if ((tmp_salt = OPENSSL_malloc(SRP_RANDOM_SALT_LEN * 2)) == NULL) {
+        if ((tmp_salt = _OPENSSL_malloc(SRP_RANDOM_SALT_LEN * 2)) == NULL) {
             goto err;
         }
         if (!t_tob64(tmp_salt, tmp2, SRP_RANDOM_SALT_LEN)) {

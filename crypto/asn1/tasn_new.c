@@ -299,7 +299,7 @@ static int asn1_primitive_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
         return 1;
 
     case V_ASN1_ANY:
-        if ((typ = OPENSSL_malloc(sizeof(*typ))) == NULL) {
+        if ((typ = _OPENSSL_malloc(sizeof(*typ))) == NULL) {
             ASN1err(ASN1_F_ASN1_PRIMITIVE_NEW, ERR_R_MALLOC_FAILURE);
             return 0;
         }

@@ -89,7 +89,7 @@ static int single_kat_no_reseed(const struct drbg_kat *td)
     t.noncelen = td->noncelen;
     RAND_DRBG_set_ex_data(drbg, app_data_index, &t);
 
-    buff = OPENSSL_malloc(td->retbyteslen);
+    buff = _OPENSSL_malloc(td->retbyteslen);
     if (buff == NULL)
         goto err;
 
@@ -148,7 +148,7 @@ static int single_kat_pr_false(const struct drbg_kat *td)
     t.noncelen = td->noncelen;
     RAND_DRBG_set_ex_data(drbg, app_data_index, &t);
 
-    buff = OPENSSL_malloc(td->retbyteslen);
+    buff = _OPENSSL_malloc(td->retbyteslen);
     if (buff == NULL)
         goto err;
 
@@ -212,7 +212,7 @@ static int single_kat_pr_true(const struct drbg_kat *td)
     t.entropylen = td->entropyinlen;
     RAND_DRBG_set_ex_data(drbg, app_data_index, &t);
 
-    buff = OPENSSL_malloc(td->retbyteslen);
+    buff = _OPENSSL_malloc(td->retbyteslen);
     if (buff == NULL)
         goto err;
 

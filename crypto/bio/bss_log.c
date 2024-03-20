@@ -196,7 +196,7 @@ static int slg_write(BIO *b, const char *in, int inl)
         /* The default */
     };
 
-    if ((buf = OPENSSL_malloc(inl + 1)) == NULL) {
+    if ((buf = _OPENSSL_malloc(inl + 1)) == NULL) {
         BIOerr(BIO_F_SLG_WRITE, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -315,7 +315,7 @@ static void xsyslog(BIO *bp, int priority, const char *string)
 #   define OPCDEF_MALLOC _malloc32
 #  else                         /* __INITIAL_POINTER_SIZE == 64 */
 #   define OPCDEF_TYPE char *
-#   define OPCDEF_MALLOC OPENSSL_malloc
+#   define OPCDEF_MALLOC _OPENSSL_malloc
 #  endif                        /* __INITIAL_POINTER_SIZE == 64 [else] */
 
     struct opcdef *opcdef_p;

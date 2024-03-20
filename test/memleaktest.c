@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
         CRYPTO_set_mem_debug(1);
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
 
-    lost = OPENSSL_malloc(3);
+    lost = _OPENSSL_malloc(3);
     if (!TEST_ptr(lost))
         return EXIT_FAILURE;
 

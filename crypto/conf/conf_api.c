@@ -194,10 +194,10 @@ CONF_VALUE *_CONF_new_section(CONF *conf, const char *section)
 
     if ((sk = sk_CONF_VALUE_new_null()) == NULL)
         goto err;
-    if ((v = OPENSSL_malloc(sizeof(*v))) == NULL)
+    if ((v = _OPENSSL_malloc(sizeof(*v))) == NULL)
         goto err;
     i = strlen(section) + 1;
-    if ((v->section = OPENSSL_malloc(i)) == NULL)
+    if ((v->section = _OPENSSL_malloc(i)) == NULL)
         goto err;
 
     memcpy(v->section, section, i);

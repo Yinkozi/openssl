@@ -330,7 +330,7 @@ static int cms_RecipientInfo_ktri_encrypt(CMS_ContentInfo *cms,
     if (EVP_PKEY_encrypt(pctx, NULL, &eklen, ec->key, ec->keylen) <= 0)
         goto err;
 
-    ek = OPENSSL_malloc(eklen);
+    ek = _OPENSSL_malloc(eklen);
 
     if (ek == NULL) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_ENCRYPT, ERR_R_MALLOC_FAILURE);
@@ -406,7 +406,7 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
                          ktri->encryptedKey->length) <= 0)
         goto err;
 
-    ek = OPENSSL_malloc(eklen);
+    ek = _OPENSSL_malloc(eklen);
 
     if (ek == NULL) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_DECRYPT, ERR_R_MALLOC_FAILURE);
@@ -651,7 +651,7 @@ static int cms_RecipientInfo_kekri_encrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    wkey = OPENSSL_malloc(ec->keylen + 8);
+    wkey = _OPENSSL_malloc(ec->keylen + 8);
 
     if (wkey == NULL) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_ENCRYPT, ERR_R_MALLOC_FAILURE);
@@ -721,7 +721,7 @@ static int cms_RecipientInfo_kekri_decrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    ukey = OPENSSL_malloc(kekri->encryptedKey->length - 8);
+    ukey = _OPENSSL_malloc(kekri->encryptedKey->length - 8);
 
     if (ukey == NULL) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_DECRYPT, ERR_R_MALLOC_FAILURE);

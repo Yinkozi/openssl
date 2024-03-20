@@ -78,7 +78,7 @@ Sign data using RSA with PKCS#1 padding and SHA256 digest:
  if (EVP_PKEY_sign(ctx, NULL, &siglen, md, mdlen) <= 0)
      /* Error */
 
- sig = OPENSSL_malloc(siglen);
+ sig = _OPENSSL_malloc(siglen);
 
  if (!sig)
      /* malloc failure */

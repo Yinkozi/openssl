@@ -201,17 +201,17 @@ static int dh_test(void)
     cpriv_key = NULL;
 
     alen = DH_size(a);
-    if (!TEST_ptr(abuf = OPENSSL_malloc(alen))
+    if (!TEST_ptr(abuf = _OPENSSL_malloc(alen))
             || !TEST_true((aout = DH_compute_key(abuf, bpub_key, a)) != -1))
         goto err3;
 
     blen = DH_size(b);
-    if (!TEST_ptr(bbuf = OPENSSL_malloc(blen))
+    if (!TEST_ptr(bbuf = _OPENSSL_malloc(blen))
             || !TEST_true((bout = DH_compute_key(bbuf, apub_key, b)) != -1))
         goto err3;
 
     clen = DH_size(c);
-    if (!TEST_ptr(cbuf = OPENSSL_malloc(clen))
+    if (!TEST_ptr(cbuf = _OPENSSL_malloc(clen))
             || !TEST_true((cout = DH_compute_key(cbuf, apub_key, c)) != -1))
         goto err3;
 
@@ -568,8 +568,8 @@ static int rfc5114_test(void)
             || !TEST_uint_eq(td->Z_len, (size_t)DH_size(dhB)))
             goto err;
 
-        if (!TEST_ptr(Z1 = OPENSSL_malloc(DH_size(dhA)))
-                || !TEST_ptr(Z2 = OPENSSL_malloc(DH_size(dhB))))
+        if (!TEST_ptr(Z1 = _OPENSSL_malloc(DH_size(dhA)))
+                || !TEST_ptr(Z2 = _OPENSSL_malloc(DH_size(dhB))))
             goto bad_err;
         /*
          * Work out shared secrets using both sides and compare with expected
@@ -600,7 +600,7 @@ static int rfc5114_test(void)
     /* Now i == OSSL_NELEM(rfctd) */
     /* RFC5114 uses unsafe primes, so now test an invalid y value */
     if (!TEST_ptr(dhA = DH_get_2048_224())
-            || !TEST_ptr(Z1 = OPENSSL_malloc(DH_size(dhA))))
+            || !TEST_ptr(Z1 = _OPENSSL_malloc(DH_size(dhA))))
         goto bad_err;
 
     if (!TEST_ptr(bady = BN_bin2bn(dhtest_rfc5114_2048_224_bad_y,
@@ -680,12 +680,12 @@ static int rfc7919_test(void)
     DH_get0_key(b, &bpub_key, NULL);
 
     alen = DH_size(a);
-    if (!TEST_ptr(abuf = OPENSSL_malloc(alen))
+    if (!TEST_ptr(abuf = _OPENSSL_malloc(alen))
             || !TEST_true((aout = DH_compute_key(abuf, bpub_key, a)) != -1))
         goto err;
 
     blen = DH_size(b);
-    if (!TEST_ptr(bbuf = OPENSSL_malloc(blen))
+    if (!TEST_ptr(bbuf = _OPENSSL_malloc(blen))
             || !TEST_true((bout = DH_compute_key(bbuf, apub_key, b)) != -1))
         goto err;
 

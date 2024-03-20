@@ -262,7 +262,7 @@ EVP_PKEY_CTX *EVP_PKEY_CTX_dup(EVP_PKEY_CTX *pctx)
         return 0;
     }
 #endif
-    rctx = OPENSSL_malloc(sizeof(*rctx));
+    rctx = _OPENSSL_malloc(sizeof(*rctx));
     if (rctx == NULL) {
         EVPerr(EVP_F_EVP_PKEY_CTX_DUP, ERR_R_MALLOC_FAILURE);
         return NULL;

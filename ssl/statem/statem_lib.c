@@ -271,7 +271,7 @@ int tls_construct_cert_verify(SSL *s, WPACKET *pkt)
         goto err;
     }
     siglen = EVP_PKEY_size(pkey);
-    sig = OPENSSL_malloc(siglen);
+    sig = _OPENSSL_malloc(siglen);
     if (sig == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CERT_VERIFY,
                  ERR_R_MALLOC_FAILURE);
@@ -464,7 +464,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
         if (pktype == NID_id_GostR3410_2001
             || pktype == NID_id_GostR3410_2012_256
             || pktype == NID_id_GostR3410_2012_512) {
-            if ((gost_data = OPENSSL_malloc(len)) == NULL) {
+            if ((gost_data = _OPENSSL_malloc(len)) == NULL) {
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                          SSL_F_TLS_PROCESS_CERT_VERIFY, ERR_R_MALLOC_FAILURE);
                 goto err;
@@ -2371,7 +2371,7 @@ size_t construct_key_exchange_tbs(SSL *s, unsigned char **ptbs,
                                   const void *param, size_t paramlen)
 {
     size_t tbslen = 2 * SSL3_RANDOM_SIZE + paramlen;
-    unsigned char *tbs = OPENSSL_malloc(tbslen);
+    unsigned char *tbs = _OPENSSL_malloc(tbslen);
 
     if (tbs == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_CONSTRUCT_KEY_EXCHANGE_TBS,

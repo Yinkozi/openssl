@@ -162,7 +162,7 @@ or using ECDSA_sign():
  int buf_len;
 
  buf_len = ECDSA_size(eckey);
- buffer = OPENSSL_malloc(buf_len);
+ buffer = _OPENSSL_malloc(buf_len);
  pp = buffer;
  if (ECDSA_sign(0, dgst, dgstlen, pp, &buf_len, eckey) == 0)
      /* error */

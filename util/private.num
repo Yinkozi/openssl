@@ -287,7 +287,7 @@ OPENSSL_VERSION_TEXT                    define
 OPENSSL_clear_free                      define
 OPENSSL_clear_realloc                   define
 _OPENSSL_free                            define
-OPENSSL_malloc                          define
+_OPENSSL_malloc                          define
 OPENSSL_malloc_init                     define
 OPENSSL_mem_debug_pop                   define
 OPENSSL_mem_debug_push                  define

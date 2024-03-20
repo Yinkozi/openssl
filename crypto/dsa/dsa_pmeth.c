@@ -31,7 +31,7 @@ typedef struct {
 
 static int pkey_dsa_init(EVP_PKEY_CTX *ctx)
 {
-    DSA_PKEY_CTX *dctx = OPENSSL_malloc(sizeof(*dctx));
+    DSA_PKEY_CTX *dctx = _OPENSSL_malloc(sizeof(*dctx));
 
     if (dctx == NULL)
         return 0;

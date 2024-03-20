@@ -182,16 +182,16 @@ int OBJ_add_object(const ASN1_OBJECT *obj)
             return 0;
     if ((o = OBJ_dup(obj)) == NULL)
         goto err;
-    if ((ao[ADDED_NID] = OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
+    if ((ao[ADDED_NID] = _OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
         goto err2;
     if ((o->length != 0) && (obj->data != NULL))
-        if ((ao[ADDED_DATA] = OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
+        if ((ao[ADDED_DATA] = _OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
             goto err2;
     if (o->sn != NULL)
-        if ((ao[ADDED_SNAME] = OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
+        if ((ao[ADDED_SNAME] = _OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
             goto err2;
     if (o->ln != NULL)
-        if ((ao[ADDED_LNAME] = OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
+        if ((ao[ADDED_LNAME] = _OPENSSL_malloc(sizeof(*ao[0]))) == NULL)
             goto err2;
 
     for (i = ADDED_DATA; i <= ADDED_NID; i++) {
@@ -377,7 +377,7 @@ ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
     if (j < 0)
         return NULL;
 
-    if ((buf = OPENSSL_malloc(j)) == NULL) {
+    if ((buf = _OPENSSL_malloc(j)) == NULL) {
         OBJerr(OBJ_F_OBJ_TXT2OBJ, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

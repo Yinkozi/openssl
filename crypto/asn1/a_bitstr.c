@@ -114,7 +114,7 @@ ASN1_BIT_STRING *c2i_ASN1_BIT_STRING(ASN1_BIT_STRING **a,
     ret->flags |= (ASN1_STRING_FLAG_BITS_LEFT | i); /* set */
 
     if (len-- > 1) {            /* using one because of the bits left byte */
-        s = OPENSSL_malloc((int)len);
+        s = _OPENSSL_malloc((int)len);
         if (s == NULL) {
             i = ERR_R_MALLOC_FAILURE;
             goto err;

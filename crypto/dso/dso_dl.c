@@ -189,7 +189,7 @@ static char *dl_merger(DSO *dso, const char *filespec1, const char *filespec2)
             spec2len--;
             len--;
         }
-        merged = OPENSSL_malloc(len + 2);
+        merged = _OPENSSL_malloc(len + 2);
         if (merged == NULL) {
             DSOerr(DSO_F_DL_MERGER, ERR_R_MALLOC_FAILURE);
             return NULL;
@@ -222,7 +222,7 @@ static char *dl_name_converter(DSO *dso, const char *filename)
         if ((DSO_flags(dso) & DSO_FLAG_NAME_TRANSLATION_EXT_ONLY) == 0)
             rsize += 3;         /* The length of "lib" */
     }
-    translated = OPENSSL_malloc(rsize);
+    translated = _OPENSSL_malloc(rsize);
     if (translated == NULL) {
         DSOerr(DSO_F_DL_NAME_CONVERTER, DSO_R_NAME_TRANSLATION_FAILED);
         return NULL;

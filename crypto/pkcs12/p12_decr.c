@@ -18,7 +18,7 @@
 
 /*
  * Encrypt/Decrypt a buffer based on password and algor, result in a
- * OPENSSL_malloc'ed buffer
+ * _OPENSSL_malloc'ed buffer
  */
 unsigned char *PKCS12_pbe_crypt(const X509_ALGOR *algor,
                                 const char *pass, int passlen,
@@ -42,7 +42,7 @@ unsigned char *PKCS12_pbe_crypt(const X509_ALGOR *algor,
         goto err;
     }
 
-    if ((out = OPENSSL_malloc(inlen + EVP_CIPHER_CTX_block_size(ctx)))
+    if ((out = _OPENSSL_malloc(inlen + EVP_CIPHER_CTX_block_size(ctx)))
             == NULL) {
         PKCS12err(PKCS12_F_PKCS12_PBE_CRYPT, ERR_R_MALLOC_FAILURE);
         goto err;

@@ -47,7 +47,7 @@ void DSA_meth_free(DSA_METHOD *dsam)
 
 DSA_METHOD *DSA_meth_dup(const DSA_METHOD *dsam)
 {
-    DSA_METHOD *ret = OPENSSL_malloc(sizeof(*ret));
+    DSA_METHOD *ret = _OPENSSL_malloc(sizeof(*ret));
 
     if (ret != NULL) {
         memcpy(ret, dsam, sizeof(*dsam));

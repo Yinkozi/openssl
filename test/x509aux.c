@@ -68,7 +68,7 @@ static int test_certs(int num)
             err = 1;
             goto next;
         }
-        if ((buf = bufp = OPENSSL_malloc(len)) == NULL) {
+        if ((buf = bufp = _OPENSSL_malloc(len)) == NULL) {
             TEST_perror("malloc");
             err = 1;
             goto next;

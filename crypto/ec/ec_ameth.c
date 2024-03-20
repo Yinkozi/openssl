@@ -86,7 +86,7 @@ static int eckey_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
     penclen = i2o_ECPublicKey(ec_key, NULL);
     if (penclen <= 0)
         goto err;
-    penc = OPENSSL_malloc(penclen);
+    penc = _OPENSSL_malloc(penclen);
     if (penc == NULL)
         goto err;
     p = penc;
@@ -258,7 +258,7 @@ static int eckey_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
         ECerr(EC_F_ECKEY_PRIV_ENCODE, ERR_R_EC_LIB);
         return 0;
     }
-    ep = OPENSSL_malloc(eplen);
+    ep = _OPENSSL_malloc(eplen);
     if (ep == NULL) {
         if (ptype == V_ASN1_SEQUENCE)
             ASN1_STRING_free(pval);
@@ -860,7 +860,7 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
         penclen = i2o_ECPublicKey(eckey, NULL);
         if (penclen <= 0)
             goto err;
-        penc = OPENSSL_malloc(penclen);
+        penc = _OPENSSL_malloc(penclen);
         if (penc == NULL)
             goto err;
         p = penc;

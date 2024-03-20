@@ -237,7 +237,7 @@ int EVP_PBE_scrypt(const char *pass, size_t passlen,
     if (key == NULL)
         return 1;
 
-    B = OPENSSL_malloc((size_t)(Blen + Vlen));
+    B = _OPENSSL_malloc((size_t)(Blen + Vlen));
     if (B == NULL) {
         EVPerr(EVP_F_EVP_PBE_SCRYPT, ERR_R_MALLOC_FAILURE);
         return 0;

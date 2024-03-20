@@ -176,7 +176,7 @@ static int test_stress(void)
 
     /* insert */
     for (i = 0; i < n; i++) {
-        p = OPENSSL_malloc(sizeof(i));
+        p = _OPENSSL_malloc(sizeof(i));
         if (!TEST_ptr(p)) {
             TEST_info("lhash stress out of memory %d", i);
             goto end;

@@ -253,7 +253,7 @@ end:
 
 static SS *SS_copy(const SS *p)
 {
-    SS *q = OPENSSL_malloc(sizeof(*q));
+    SS *q = _OPENSSL_malloc(sizeof(*q));
 
     if (q != NULL)
         memcpy(q, p, sizeof(*q));
@@ -275,7 +275,7 @@ static int test_SS_stack(void)
 
     /* allocate and push */
     for (i = 0; i < n; i++) {
-        v[i] = OPENSSL_malloc(sizeof(*v[i]));
+        v[i] = _OPENSSL_malloc(sizeof(*v[i]));
 
         if (!TEST_ptr(v[i]))
             goto end;

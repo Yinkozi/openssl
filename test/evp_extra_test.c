@@ -1020,7 +1020,7 @@ static int test_EVP_DigestSignInit(void)
             || !TEST_size_t_eq(sig_len, (size_t)EVP_PKEY_size(pkey)))
         goto out;
 
-    if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
+    if (!TEST_ptr(sig = _OPENSSL_malloc(sig_len))
             || !TEST_true(_EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
         goto out;
 
@@ -1335,7 +1335,7 @@ static int test_EVP_SM2(void)
     if (!TEST_size_t_eq(sig_len, (size_t)EVP_PKEY_size(pkey)))
         goto done;
 
-    if (!TEST_ptr(sig = OPENSSL_malloc(sig_len)))
+    if (!TEST_ptr(sig = _OPENSSL_malloc(sig_len)))
         goto done;
 
     if (!TEST_true(_EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
@@ -1928,7 +1928,7 @@ static int test_signatures_with_engine(int tst)
                 || !TEST_true(_EVP_DigestSignFinal(ctx, NULL, &maclen)))
             goto err;
 
-        if (!TEST_ptr(mac = OPENSSL_malloc(maclen)))
+        if (!TEST_ptr(mac = _OPENSSL_malloc(maclen)))
             goto err;
 
         if (!TEST_true(_EVP_DigestSignFinal(ctx, mac, &maclen)))

@@ -22,7 +22,7 @@ unsigned char *OPENSSL_asc2uni(const char *asc, int asclen,
     if (asclen == -1)
         asclen = strlen(asc);
     ulen = asclen * 2 + 2;
-    if ((unitmp = OPENSSL_malloc(ulen)) == NULL) {
+    if ((unitmp = _OPENSSL_malloc(ulen)) == NULL) {
         PKCS12err(PKCS12_F_OPENSSL_ASC2UNI, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -52,7 +52,7 @@ char *OPENSSL_uni2asc(const unsigned char *uni, int unilen)
     if (!unilen || uni[unilen - 1])
         asclen++;
     uni++;
-    if ((asctmp = OPENSSL_malloc(asclen)) == NULL) {
+    if ((asctmp = _OPENSSL_malloc(asclen)) == NULL) {
         PKCS12err(PKCS12_F_OPENSSL_UNI2ASC, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -114,7 +114,7 @@ unsigned char *OPENSSL_utf82uni(const char *asc, int asclen,
 
     ulen += 2;  /* for trailing UTF16 zero */
 
-    if ((ret = OPENSSL_malloc(ulen)) == NULL) {
+    if ((ret = _OPENSSL_malloc(ulen)) == NULL) {
         PKCS12err(PKCS12_F_OPENSSL_UTF82UNI, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -199,7 +199,7 @@ char *OPENSSL_uni2utf8(const unsigned char *uni, int unilen)
     if (!unilen || (uni[unilen-2]||uni[unilen - 1]))
         asclen++;
 
-    if ((asctmp = OPENSSL_malloc(asclen)) == NULL) {
+    if ((asctmp = _OPENSSL_malloc(asclen)) == NULL) {
         PKCS12err(PKCS12_F_OPENSSL_UNI2UTF8, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

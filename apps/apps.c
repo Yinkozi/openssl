@@ -960,7 +960,7 @@ static int load_certs_crls(const char *file, int format,
 
 void* app_malloc(int sz, const char *what)
 {
-    void *vp = OPENSSL_malloc(sz);
+    void *vp = _OPENSSL_malloc(sz);
 
     if (vp == NULL) {
         BIO_printf(bio_err, "%s: Could not allocate %d bytes for %s\n",

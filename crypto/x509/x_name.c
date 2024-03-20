@@ -355,7 +355,7 @@ static int x509_name_canon(X509_NAME *a)
         goto err;
     a->canon_enclen = len;
 
-    p = OPENSSL_malloc(a->canon_enclen);
+    p = _OPENSSL_malloc(a->canon_enclen);
     if (p == NULL) {
         X509err(X509_F_X509_NAME_CANON, ERR_R_MALLOC_FAILURE);
         goto err;

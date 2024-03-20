@@ -146,7 +146,7 @@ static X509_EXTENSION *do_ext_i2d(const X509V3_EXT_METHOD *method,
         unsigned char *p;
 
         ext_len = method->i2d(ext_struc, NULL);
-        if ((ext_der = OPENSSL_malloc(ext_len)) == NULL)
+        if ((ext_der = _OPENSSL_malloc(ext_len)) == NULL)
             goto merr;
         p = ext_der;
         method->i2d(ext_struc, &p);

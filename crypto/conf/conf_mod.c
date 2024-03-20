@@ -295,7 +295,7 @@ static int module_init(CONF_MODULE *pmod, const char *name, const char *value,
     CONF_IMODULE *imod = NULL;
 
     /* Otherwise add initialized module to list */
-    imod = OPENSSL_malloc(sizeof(*imod));
+    imod = _OPENSSL_malloc(sizeof(*imod));
     if (imod == NULL)
         goto err;
 
@@ -493,7 +493,7 @@ char *CONF_get1_default_config_file(void)
 #endif
     len += strlen(OPENSSL_CONF);
 
-    file = OPENSSL_malloc(len + 1);
+    file = _OPENSSL_malloc(len + 1);
 
     if (file == NULL)
         return NULL;

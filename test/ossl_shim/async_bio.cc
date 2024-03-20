@@ -96,7 +96,7 @@ static long AsyncCtrl(BIO *bio, int cmd, long num, void *ptr) {
 }
 
 static int AsyncNew(BIO *bio) {
-  AsyncBio *a = (AsyncBio *)OPENSSL_malloc(sizeof(*a));
+  AsyncBio *a = (AsyncBio *)_OPENSSL_malloc(sizeof(*a));
   if (a == NULL) {
     return 0;
   }

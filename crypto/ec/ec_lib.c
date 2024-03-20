@@ -215,7 +215,7 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
 
     if (src->seed) {
         _OPENSSL_free(dest->seed);
-        if ((dest->seed = OPENSSL_malloc(src->seed_len)) == NULL) {
+        if ((dest->seed = _OPENSSL_malloc(src->seed_len)) == NULL) {
             ECerr(EC_F_EC_GROUP_COPY, ERR_R_MALLOC_FAILURE);
             return 0;
         }
@@ -485,7 +485,7 @@ size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
     if (!len || !p)
         return 1;
 
-    if ((group->seed = OPENSSL_malloc(len)) == NULL) {
+    if ((group->seed = _OPENSSL_malloc(len)) == NULL) {
         ECerr(EC_F_EC_GROUP_SET_SEED, ERR_R_MALLOC_FAILURE);
         return 0;
     }

@@ -33,7 +33,7 @@ static int ct_base64_decode(const char *in, unsigned char **out)
     }
 
     outlen = (inlen / 4) * 3;
-    outbuf = OPENSSL_malloc(outlen);
+    outbuf = _OPENSSL_malloc(outlen);
     if (outbuf == NULL) {
         CTerr(CT_F_CT_BASE64_DECODE, ERR_R_MALLOC_FAILURE);
         goto err;

@@ -2653,7 +2653,7 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
     s->session->ext.tick = NULL;
     s->session->ext.ticklen = 0;
 
-    s->session->ext.tick = OPENSSL_malloc(ticklen);
+    s->session->ext.tick = _OPENSSL_malloc(ticklen);
     if (s->session->ext.tick == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_NEW_SESSION_TICKET,
                  ERR_R_MALLOC_FAILURE);
@@ -2776,7 +2776,7 @@ int tls_process_cert_status_body(SSL *s, PACKET *pkt)
                  SSL_R_LENGTH_MISMATCH);
         return 0;
     }
-    s->ext.ocsp.resp = OPENSSL_malloc(resplen);
+    s->ext.ocsp.resp = _OPENSSL_malloc(resplen);
     if (s->ext.ocsp.resp == NULL) {
         s->ext.ocsp.resp_len = 0;
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CERT_STATUS_BODY,
@@ -2994,7 +2994,7 @@ static int tls_construct_cke_rsa(SSL *s, WPACKET *pkt)
     }
 
     pmslen = SSL_MAX_MASTER_KEY_LENGTH;
-    pms = OPENSSL_malloc(pmslen);
+    pms = _OPENSSL_malloc(pmslen);
     if (pms == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CKE_RSA,
                  ERR_R_MALLOC_FAILURE);
@@ -3214,7 +3214,7 @@ static int tls_construct_cke_gost(SSL *s, WPACKET *pkt)
 
     /* Otherwise, generate ephemeral key pair */
     pmslen = 32;
-    pms = OPENSSL_malloc(pmslen);
+    pms = _OPENSSL_malloc(pmslen);
     if (pms == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CKE_GOST,
                  ERR_R_MALLOC_FAILURE);

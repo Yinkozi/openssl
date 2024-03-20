@@ -327,7 +327,7 @@
 
   enable-crypto-mdebug
                    Build support for debugging memory allocated via
-                   OPENSSL_malloc() or OPENSSL_zalloc().
+                   _OPENSSL_malloc() or OPENSSL_zalloc().
 
   enable-crypto-mdebug-backtrace
                    As for crypto-mdebug, but additionally provide backtrace

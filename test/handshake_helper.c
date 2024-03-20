@@ -283,7 +283,7 @@ static int server_ocsp_cb(SSL *s, void *arg)
 {
     unsigned char *resp;
 
-    resp = OPENSSL_malloc(1);
+    resp = _OPENSSL_malloc(1);
     if (resp == NULL)
         return SSL_TLSEXT_ERR_ALERT_FATAL;
     /*
@@ -344,7 +344,7 @@ static int parse_protos(const char *protos, unsigned char **out, size_t *outlen)
     /* Should never have reuse. */
     if (!TEST_ptr_null(*out)
             /* Test values are small, so we omit length limit checks. */
-            || !TEST_ptr(*out = OPENSSL_malloc(len + 1)))
+            || !TEST_ptr(*out = _OPENSSL_malloc(len + 1)))
         return 0;
     *outlen = len + 1;
 

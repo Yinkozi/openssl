@@ -46,7 +46,7 @@ OPENSSL_STACK *OPENSSL_sk_dup(const OPENSSL_STACK *sk)
 {
     OPENSSL_STACK *ret;
 
-    if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL) {
+    if ((ret = _OPENSSL_malloc(sizeof(*ret))) == NULL) {
         CRYPTOerr(CRYPTO_F_OPENSSL_SK_DUP, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -61,7 +61,7 @@ OPENSSL_STACK *OPENSSL_sk_dup(const OPENSSL_STACK *sk)
         return ret;
     }
     /* duplicate |sk->data| content */
-    if ((ret->data = OPENSSL_malloc(sizeof(*ret->data) * sk->num_alloc)) == NULL)
+    if ((ret->data = _OPENSSL_malloc(sizeof(*ret->data) * sk->num_alloc)) == NULL)
         goto err;
     memcpy(ret->data, sk->data, sizeof(void *) * sk->num);
     return ret;
@@ -77,7 +77,7 @@ OPENSSL_STACK *OPENSSL_sk_deep_copy(const OPENSSL_STACK *sk,
     OPENSSL_STACK *ret;
     int i;
 
-    if ((ret = OPENSSL_malloc(sizeof(*ret))) == NULL) {
+    if ((ret = _OPENSSL_malloc(sizeof(*ret))) == NULL) {
         CRYPTOerr(CRYPTO_F_OPENSSL_SK_DEEP_COPY, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

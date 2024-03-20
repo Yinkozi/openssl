@@ -109,7 +109,7 @@ static int win32_load(DSO *dso)
         ERR_add_error_data(3, "filename(", filename, ")");
         goto err;
     }
-    p = OPENSSL_malloc(sizeof(*p));
+    p = _OPENSSL_malloc(sizeof(*p));
     if (p == NULL) {
         DSOerr(DSO_F_WIN32_LOAD, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -333,7 +333,7 @@ static char *win32_joiner(DSO *dso, const struct file_st *file_split)
         return NULL;
     }
 
-    result = OPENSSL_malloc(len + 1);
+    result = _OPENSSL_malloc(len + 1);
     if (result == NULL) {
         DSOerr(DSO_F_WIN32_JOINER, ERR_R_MALLOC_FAILURE);
         return NULL;
@@ -461,10 +461,10 @@ static char *win32_name_converter(DSO *dso, const char *filename)
                  (strstr(filename, ":") == NULL));
     if (transform)
         /* We will convert this to "%s.dll" */
-        translated = OPENSSL_malloc(len + 5);
+        translated = _OPENSSL_malloc(len + 5);
     else
         /* We will simply duplicate filename */
-        translated = OPENSSL_malloc(len + 1);
+        translated = _OPENSSL_malloc(len + 1);
     if (translated == NULL) {
         DSOerr(DSO_F_WIN32_NAME_CONVERTER, DSO_R_NAME_TRANSLATION_FAILED);
         return NULL;

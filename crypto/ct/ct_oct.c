@@ -177,7 +177,7 @@ int i2o_SCT_signature(const SCT *sct, unsigned char **out)
             p = *out;
             *out += len;
         } else {
-            pstart = p = OPENSSL_malloc(len);
+            pstart = p = _OPENSSL_malloc(len);
             if (p == NULL) {
                 CTerr(CT_F_I2O_SCT_SIGNATURE, ERR_R_MALLOC_FAILURE);
                 goto err;
@@ -224,7 +224,7 @@ int i2o_SCT(const SCT *sct, unsigned char **out)
         p = *out;
         *out += len;
     } else {
-        pstart = p = OPENSSL_malloc(len);
+        pstart = p = _OPENSSL_malloc(len);
         if (p == NULL) {
             CTerr(CT_F_I2O_SCT, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -330,7 +330,7 @@ int i2o_SCT_LIST(const STACK_OF(SCT) *a, unsigned char **pp)
                 CTerr(CT_F_I2O_SCT_LIST, CT_R_SCT_LIST_INVALID);
                 return -1;
             }
-            if ((*pp = OPENSSL_malloc(len)) == NULL) {
+            if ((*pp = _OPENSSL_malloc(len)) == NULL) {
                 CTerr(CT_F_I2O_SCT_LIST, ERR_R_MALLOC_FAILURE);
                 return -1;
             }

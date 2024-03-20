@@ -288,7 +288,7 @@ char *glue_strings(const char *list[], size_t *out_len)
     if (out_len != NULL)
         *out_len = len;
 
-    if (!TEST_ptr(ret = p = OPENSSL_malloc(len + 1)))
+    if (!TEST_ptr(ret = p = _OPENSSL_malloc(len + 1)))
         return NULL;
 
     for (i = 0; list[i] != NULL; i++)

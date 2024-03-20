@@ -1650,7 +1650,7 @@ static int s390x_aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
                 if (gctx->iv != iv)
                     _OPENSSL_free(gctx->iv);
 
-                if ((gctx->iv = OPENSSL_malloc(len)) == NULL) {
+                if ((gctx->iv = _OPENSSL_malloc(len)) == NULL) {
                     EVPerr(EVP_F_S390X_AES_GCM_CTRL, ERR_R_MALLOC_FAILURE);
                     return 0;
                 }
@@ -1769,7 +1769,7 @@ static int s390x_aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
         } else {
             len = S390X_gcm_ivpadlen(gctx->ivlen);
 
-            if ((gctx_out->iv = OPENSSL_malloc(len)) == NULL) {
+            if ((gctx_out->iv = _OPENSSL_malloc(len)) == NULL) {
                 EVPerr(EVP_F_S390X_AES_GCM_CTRL, ERR_R_MALLOC_FAILURE);
                 return 0;
             }
@@ -2867,7 +2867,7 @@ static int aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
         if ((arg > EVP_MAX_IV_LENGTH) && (arg > gctx->ivlen)) {
             if (gctx->iv != c->iv)
                 _OPENSSL_free(gctx->iv);
-            if ((gctx->iv = OPENSSL_malloc(arg)) == NULL) {
+            if ((gctx->iv = _OPENSSL_malloc(arg)) == NULL) {
                 EVPerr(EVP_F_AES_GCM_CTRL, ERR_R_MALLOC_FAILURE);
                 return 0;
             }
@@ -2968,7 +2968,7 @@ static int aes_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
             if (gctx->iv == c->iv)
                 gctx_out->iv = out->iv;
             else {
-                if ((gctx_out->iv = OPENSSL_malloc(gctx->ivlen)) == NULL) {
+                if ((gctx_out->iv = _OPENSSL_malloc(gctx->ivlen)) == NULL) {
                     EVPerr(EVP_F_AES_GCM_CTRL, ERR_R_MALLOC_FAILURE);
                     return 0;
                 }

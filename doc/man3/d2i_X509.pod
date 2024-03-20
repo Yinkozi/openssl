@@ -566,7 +566,7 @@ mistake is to attempt to use a buffer directly as follows:
  unsigned char *buf;
 
  len = i2d_X509(x, NULL);
- buf = OPENSSL_malloc(len);
+ buf = _OPENSSL_malloc(len);
  ...
  i2d_X509(x, &buf);
  ...
@@ -574,7 +574,7 @@ mistake is to attempt to use a buffer directly as follows:
 
 This code will result in B<buf> apparently containing garbage because
 it was incremented after the call to point after the data just written.
-Also B<buf> will no longer contain the pointer allocated by OPENSSL_malloc()
+Also B<buf> will no longer contain the pointer allocated by _OPENSSL_malloc()
 and the subsequent call to _OPENSSL_free() is likely to crash.
 
 Another trap to avoid is misuse of the B<a> argument to d2i_TYPE():

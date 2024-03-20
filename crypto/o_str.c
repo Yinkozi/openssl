@@ -153,7 +153,7 @@ unsigned char *OPENSSL_hexstr2buf(const char *str, long *len)
     size_t s;
 
     s = strlen(str);
-    if ((hexbuf = OPENSSL_malloc(s >> 1)) == NULL) {
+    if ((hexbuf = _OPENSSL_malloc(s >> 1)) == NULL) {
         CRYPTOerr(CRYPTO_F_OPENSSL_HEXSTR2BUF, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -184,7 +184,7 @@ unsigned char *OPENSSL_hexstr2buf(const char *str, long *len)
 }
 
 /*
- * Given a buffer of length 'len' return a OPENSSL_malloc'ed string with its
+ * Given a buffer of length 'len' return a _OPENSSL_malloc'ed string with its
  * hex representation @@@ (Contents of buffer are always kept in ASCII, also
  * on EBCDIC machines)
  */
@@ -200,7 +200,7 @@ char *OPENSSL_buf2hexstr(const unsigned char *buffer, long len)
         return OPENSSL_zalloc(1);
     }
 
-    if ((tmp = OPENSSL_malloc(len * 3)) == NULL) {
+    if ((tmp = _OPENSSL_malloc(len * 3)) == NULL) {
         CRYPTOerr(CRYPTO_F_OPENSSL_BUF2HEXSTR, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

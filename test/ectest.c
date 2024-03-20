@@ -1145,7 +1145,7 @@ static int hybrid_point_encoding_test(void)
                                                         NULL,
                                                         0,
                                                         NULL)))
-        || !TEST_ptr(buf = OPENSSL_malloc(len))
+        || !TEST_ptr(buf = _OPENSSL_malloc(len))
         || !TEST_size_t_eq(len, EC_POINT_point2oct(group,
                                                    point,
                                                    POINT_CONVERSION_HYBRID,
@@ -2189,7 +2189,7 @@ static int custom_generator_test(int id)
         || !TEST_int_eq(EC_POINT_point2oct(group, Q1,
                                            POINT_CONVERSION_UNCOMPRESSED, NULL,
                                            0, ctx), bsize)
-        || !TEST_ptr(b1 = OPENSSL_malloc(bsize))
+        || !TEST_ptr(b1 = _OPENSSL_malloc(bsize))
         || !TEST_int_eq(EC_POINT_point2oct(group, Q1,
                                            POINT_CONVERSION_UNCOMPRESSED, b1,
                                            bsize, ctx), bsize)
@@ -2206,7 +2206,7 @@ static int custom_generator_test(int id)
         || !TEST_int_eq(EC_POINT_point2oct(group, Q2,
                                            POINT_CONVERSION_UNCOMPRESSED, NULL,
                                            0, ctx), bsize)
-        || !TEST_ptr(b2 = OPENSSL_malloc(bsize))
+        || !TEST_ptr(b2 = _OPENSSL_malloc(bsize))
         || !TEST_int_eq(EC_POINT_point2oct(group, Q2,
                                            POINT_CONVERSION_UNCOMPRESSED, b2,
                                            bsize, ctx), bsize)
@@ -2235,7 +2235,7 @@ int setup_tests(void)
 {
 #ifndef OPENSSL_NO_EC
     crv_len = EC_get_builtin_curves(NULL, 0);
-    if (!TEST_ptr(curves = OPENSSL_malloc(sizeof(*curves) * crv_len))
+    if (!TEST_ptr(curves = _OPENSSL_malloc(sizeof(*curves) * crv_len))
         || !TEST_true(EC_get_builtin_curves(curves, crv_len)))
         return 0;
 

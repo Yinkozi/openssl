@@ -106,7 +106,7 @@ void *OPENSSL_LH_insert(OPENSSL_LHASH *lh, void *data)
     rn = getrn(lh, data, &hash);
 
     if (*rn == NULL) {
-        if ((nn = OPENSSL_malloc(sizeof(*nn))) == NULL) {
+        if ((nn = _OPENSSL_malloc(sizeof(*nn))) == NULL) {
             lh->error++;
             return NULL;
         }

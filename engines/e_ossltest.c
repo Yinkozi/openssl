@@ -592,9 +592,9 @@ int ossltest_aes128_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     unsigned char *tmpbuf;
     int ret;
 
-    tmpbuf = OPENSSL_malloc(inl);
+    tmpbuf = _OPENSSL_malloc(inl);
 
-    /* OPENSSL_malloc will return NULL if inl == 0 */
+    /* _OPENSSL_malloc will return NULL if inl == 0 */
     if (tmpbuf == NULL && inl > 0)
         return -1;
 
@@ -623,9 +623,9 @@ int ossltest_aes128_gcm_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
 int ossltest_aes128_gcm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
                                const unsigned char *in, size_t inl)
 {
-    unsigned char *tmpbuf = OPENSSL_malloc(inl);
+    unsigned char *tmpbuf = _OPENSSL_malloc(inl);
 
-    /* OPENSSL_malloc will return NULL if inl == 0 */
+    /* _OPENSSL_malloc will return NULL if inl == 0 */
     if (tmpbuf == NULL && inl > 0)
         return -1;
 

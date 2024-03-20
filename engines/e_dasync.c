@@ -435,7 +435,7 @@ static void dummy_pause_job(void) {
                               (void **)&writefd)) {
         pipefds[1] = *writefd;
     } else {
-        writefd = OPENSSL_malloc(sizeof(*writefd));
+        writefd = _OPENSSL_malloc(sizeof(*writefd));
         if (writefd == NULL)
             return;
 #if defined(ASYNC_WIN)
@@ -637,7 +637,7 @@ static int dasync_cipher_ctrl_helper(EVP_CIPHER_CTX *ctx, int type, int arg,
                                        ? EVP_aes_128_cbc_hmac_sha1()
                                        : EVP_aes_128_cbc();
             size_t data_size = EVP_CIPHER_impl_ctx_size(cipher);
-            void *cipher_data = OPENSSL_malloc(data_size);
+            void *cipher_data = _OPENSSL_malloc(data_size);
 
             if (cipher_data == NULL)
                 return 0;

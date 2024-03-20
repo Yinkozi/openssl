@@ -55,7 +55,7 @@ static int x509v3_add_len_value(const char *name, const char *value,
         if (tvalue == NULL)
             goto err;
     }
-    if ((vtmp = OPENSSL_malloc(sizeof(*vtmp))) == NULL)
+    if ((vtmp = _OPENSSL_malloc(sizeof(*vtmp))) == NULL)
         goto err;
     if (sk_allocated && (*extlist = sk_CONF_VALUE_new_null()) == NULL)
         goto err;
@@ -145,7 +145,7 @@ static char *bignum_to_string(const BIGNUM *bn)
         return NULL;
 
     len = strlen(tmp) + 3;
-    ret = OPENSSL_malloc(len);
+    ret = _OPENSSL_malloc(len);
     if (ret == NULL) {
         X509V3err(X509V3_F_BIGNUM_TO_STRING, ERR_R_MALLOC_FAILURE);
         _OPENSSL_free(tmp);

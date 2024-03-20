@@ -396,8 +396,8 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
      * definition of how to encode the field elements.
      */
     len = ((size_t)EC_GROUP_get_degree(group) + 7) / 8;
-    if ((a_buf = OPENSSL_malloc(len)) == NULL
-        || (b_buf = OPENSSL_malloc(len)) == NULL) {
+    if ((a_buf = _OPENSSL_malloc(len)) == NULL
+        || (b_buf = _OPENSSL_malloc(len)) == NULL) {
         ECerr(EC_F_EC_ASN1_GROUP2CURVE, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -754,7 +754,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
         /*
          * This happens for instance with
          * fuzz/corpora/asn1/65cf44e85614c62f10cf3b7a7184c26293a19e4a
-         * and causes the OPENSSL_malloc below to choke on the
+         * and causes the _OPENSSL_malloc below to choke on the
          * zero length allocation request.
          */
         if (params->curve->seed->length == 0) {
@@ -762,7 +762,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             goto err;
         }
         _OPENSSL_free(ret->seed);
-        if ((ret->seed = OPENSSL_malloc(params->curve->seed->length)) == NULL) {
+        if ((ret->seed = _OPENSSL_malloc(params->curve->seed->length)) == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -1232,7 +1232,7 @@ int i2o_ECPublicKey(const EC_KEY *a, unsigned char **out)
         return buf_len;
 
     if (*out == NULL) {
-        if ((*out = OPENSSL_malloc(buf_len)) == NULL) {
+        if ((*out = _OPENSSL_malloc(buf_len)) == NULL) {
             ECerr(EC_F_I2O_ECPUBLICKEY, ERR_R_MALLOC_FAILURE);
             return 0;
         }

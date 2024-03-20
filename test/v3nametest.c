@@ -289,7 +289,7 @@ static int run_cert(X509 *crt, const char *nameincert,
     for (; *pname != NULL; ++pname) {
         int samename = strcasecmp(nameincert, *pname) == 0;
         size_t namelen = strlen(*pname);
-        char *name = OPENSSL_malloc(namelen);
+        char *name = _OPENSSL_malloc(namelen);
         int match, ret;
 
         memcpy(name, *pname, namelen);
@@ -660,9 +660,9 @@ static struct gennamedata {
 static int test_GENERAL_NAME_cmp(void)
 {
     size_t i, j;
-    GENERAL_NAME **namesa = OPENSSL_malloc(sizeof(*namesa)
+    GENERAL_NAME **namesa = _OPENSSL_malloc(sizeof(*namesa)
                                            * OSSL_NELEM(gennames));
-    GENERAL_NAME **namesb = OPENSSL_malloc(sizeof(*namesb)
+    GENERAL_NAME **namesb = _OPENSSL_malloc(sizeof(*namesb)
                                            * OSSL_NELEM(gennames));
     int testresult = 0;
 

@@ -463,7 +463,7 @@ X509_CRL_METHOD *X509_CRL_METHOD_new(int (*crl_init) (X509_CRL *crl),
                                      int (*crl_verify) (X509_CRL *crl,
                                                         EVP_PKEY *pk))
 {
-    X509_CRL_METHOD *m = OPENSSL_malloc(sizeof(*m));
+    X509_CRL_METHOD *m = _OPENSSL_malloc(sizeof(*m));
 
     if (m == NULL) {
         X509err(X509_F_X509_CRL_METHOD_NEW, ERR_R_MALLOC_FAILURE);

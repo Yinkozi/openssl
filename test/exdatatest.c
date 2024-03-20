@@ -130,7 +130,7 @@ typedef struct myobj_st {
 static MYOBJ *MYOBJ_new(void)
 {
     static int count = 0;
-    MYOBJ *obj = OPENSSL_malloc(sizeof(*obj));
+    MYOBJ *obj = _OPENSSL_malloc(sizeof(*obj));
 
     obj->id = ++count;
     obj->st = CRYPTO_new_ex_data(CRYPTO_EX_INDEX_APP, obj, &obj->ex_data);
@@ -194,7 +194,7 @@ static int test_exdata(void)
 
     p = OPENSSL_strdup("hello world");
     saved_argl = 21;
-    saved_argp = OPENSSL_malloc(1);
+    saved_argp = _OPENSSL_malloc(1);
     saved_idx = CRYPTO_get_ex_new_index(CRYPTO_EX_INDEX_APP,
                                         saved_argl, saved_argp,
                                         exnew, exdup, exfree);

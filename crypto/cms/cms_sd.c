@@ -606,7 +606,7 @@ static int cms_SignerInfo_content_sign(CMS_ContentInfo *cms,
         if (!EVP_DigestFinal_ex(mctx, md, &mdlen))
             goto err;
         siglen = EVP_PKEY_size(si->pkey);
-        sig = OPENSSL_malloc(siglen);
+        sig = _OPENSSL_malloc(siglen);
         if (sig == NULL) {
             CMSerr(CMS_F_CMS_SIGNERINFO_CONTENT_SIGN, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -619,7 +619,7 @@ static int cms_SignerInfo_content_sign(CMS_ContentInfo *cms,
     } else {
         unsigned char *sig;
         unsigned int siglen;
-        sig = OPENSSL_malloc(EVP_PKEY_size(si->pkey));
+        sig = _OPENSSL_malloc(EVP_PKEY_size(si->pkey));
         if (sig == NULL) {
             CMSerr(CMS_F_CMS_SIGNERINFO_CONTENT_SIGN, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -702,7 +702,7 @@ int CMS_SignerInfo_sign(CMS_SignerInfo *si)
     if (_EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
         goto err;
     _OPENSSL_free(abuf);
-    abuf = OPENSSL_malloc(siglen);
+    abuf = _OPENSSL_malloc(siglen);
     if (abuf == NULL)
         goto err;
     if (_EVP_DigestSignFinal(mctx, abuf, &siglen) <= 0)

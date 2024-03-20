@@ -631,7 +631,7 @@ static size_t make_custom_der(const TEST_CUSTOM_DATA *custom_data,
         1 + der_encode_length(sizeof(t_true) + firstbytes + secondbytes, NULL)
         + sizeof(t_true) + firstbytes + secondbytes;
 
-    *encoding = p = OPENSSL_malloc(seqbytes);
+    *encoding = p = _OPENSSL_malloc(seqbytes);
     if (*encoding == NULL)
         return 0;
 
@@ -714,7 +714,7 @@ static int do_print_item(const TEST_PACKAGE *package)
     int ret;
 
     OPENSSL_assert(package->encode_expectations_elem_size <= DATA_BUF_SIZE);
-    if ((o = OPENSSL_malloc(DATA_BUF_SIZE)) == NULL)
+    if ((o = _OPENSSL_malloc(DATA_BUF_SIZE)) == NULL)
         return 0;
 
     (void)_RAND_bytes((unsigned char*)o,

@@ -350,7 +350,7 @@ int tls1_set_groups(uint16_t **pext, size_t *pextlen,
         SSLerr(SSL_F_TLS1_SET_GROUPS, SSL_R_BAD_LENGTH);
         return 0;
     }
-    if ((glist = OPENSSL_malloc(ngroups * sizeof(*glist))) == NULL) {
+    if ((glist = _OPENSSL_malloc(ngroups * sizeof(*glist))) == NULL) {
         SSLerr(SSL_F_TLS1_SET_GROUPS, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -1470,7 +1470,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     /* Move p after IV to start of encrypted ticket, update length */
     p = etick + TLSEXT_KEYNAME_LENGTH + EVP_CIPHER_CTX_iv_length(ctx);
     eticklen -= TLSEXT_KEYNAME_LENGTH + EVP_CIPHER_CTX_iv_length(ctx);
-    sdec = OPENSSL_malloc(eticklen);
+    sdec = _OPENSSL_malloc(eticklen);
     if (sdec == NULL || _EVP_DecryptUpdate(ctx, sdec, &slen, p,
                                           (int)eticklen) <= 0) {
         _OPENSSL_free(sdec);
@@ -1781,7 +1781,7 @@ static int tls1_set_shared_sigalgs(SSL *s)
     }
     nmatch = tls12_shared_sigalgs(s, NULL, pref, preflen, allow, allowlen);
     if (nmatch) {
-        if ((salgs = OPENSSL_malloc(nmatch * sizeof(*salgs))) == NULL) {
+        if ((salgs = _OPENSSL_malloc(nmatch * sizeof(*salgs))) == NULL) {
             SSLerr(SSL_F_TLS1_SET_SHARED_SIGALGS, ERR_R_MALLOC_FAILURE);
             return 0;
         }
@@ -1808,7 +1808,7 @@ int tls1_save_u16(PACKET *pkt, uint16_t **pdest, size_t *pdestlen)
 
     size >>= 1;
 
-    if ((buf = OPENSSL_malloc(size * sizeof(*buf))) == NULL)  {
+    if ((buf = _OPENSSL_malloc(size * sizeof(*buf))) == NULL)  {
         SSLerr(SSL_F_TLS1_SAVE_U16, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -2038,7 +2038,7 @@ int tls1_set_raw_sigalgs(CERT *c, const uint16_t *psigs, size_t salglen,
 {
     uint16_t *sigalgs;
 
-    if ((sigalgs = OPENSSL_malloc(salglen * sizeof(*sigalgs))) == NULL) {
+    if ((sigalgs = _OPENSSL_malloc(salglen * sizeof(*sigalgs))) == NULL) {
         SSLerr(SSL_F_TLS1_SET_RAW_SIGALGS, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -2064,7 +2064,7 @@ int tls1_set_sigalgs(CERT *c, const int *psig_nids, size_t salglen, int client)
 
     if (salglen & 1)
         return 0;
-    if ((sigalgs = OPENSSL_malloc((salglen / 2) * sizeof(*sigalgs))) == NULL) {
+    if ((sigalgs = _OPENSSL_malloc((salglen / 2) * sizeof(*sigalgs))) == NULL) {
         SSLerr(SSL_F_TLS1_SET_SIGALGS, ERR_R_MALLOC_FAILURE);
         return 0;
     }

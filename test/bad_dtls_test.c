@@ -292,7 +292,7 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     seq[5] = seqnr & 0xff;
 
     pad = 15 - ((len + SHA_DIGEST_LENGTH) % 16);
-    enc = OPENSSL_malloc(len + SHA_DIGEST_LENGTH + 1 + pad);
+    enc = _OPENSSL_malloc(len + SHA_DIGEST_LENGTH + 1 + pad);
     if (enc == NULL)
         return 0;
 

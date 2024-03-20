@@ -247,7 +247,7 @@ EXT_RETURN tls_construct_ctos_session_ticket(SSL *s, WPACKET *pkt,
     } else if (s->session && s->ext.session_ticket != NULL
                && s->ext.session_ticket->data != NULL) {
         ticklen = s->ext.session_ticket->length;
-        s->session->ext.tick = OPENSSL_malloc(ticklen);
+        s->session->ext.tick = _OPENSSL_malloc(ticklen);
         if (s->session->ext.tick == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                      SSL_F_TLS_CONSTRUCT_CTOS_SESSION_TICKET,
@@ -1387,7 +1387,7 @@ int tls_parse_stoc_ec_pt_formats(SSL *s, PACKET *pkt, unsigned int context,
 
         s->ext.peer_ecpointformats_len = 0;
         _OPENSSL_free(s->ext.peer_ecpointformats);
-        s->ext.peer_ecpointformats = OPENSSL_malloc(ecpointformats_len);
+        s->ext.peer_ecpointformats = _OPENSSL_malloc(ecpointformats_len);
         if (s->ext.peer_ecpointformats == NULL) {
             s->ext.peer_ecpointformats_len = 0;
             SSLfatal(s, SSL_AD_INTERNAL_ERROR,
@@ -1506,7 +1506,7 @@ int tls_parse_stoc_sct(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
 
         s->ext.scts_len = (uint16_t)size;
         if (size > 0) {
-            s->ext.scts = OPENSSL_malloc(size);
+            s->ext.scts = _OPENSSL_malloc(size);
             if (s->ext.scts == NULL) {
                 s->ext.scts_len = 0;
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_STOC_SCT,
@@ -1610,7 +1610,7 @@ int tls_parse_stoc_npn(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
      * a single Serverhello
      */
     _OPENSSL_free(s->ext.npn);
-    s->ext.npn = OPENSSL_malloc(selected_len);
+    s->ext.npn = _OPENSSL_malloc(selected_len);
     if (s->ext.npn == NULL) {
         s->ext.npn_len = 0;
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_STOC_NPN,
@@ -1651,7 +1651,7 @@ int tls_parse_stoc_alpn(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
         return 0;
     }
     _OPENSSL_free(s->s3->alpn_selected);
-    s->s3->alpn_selected = OPENSSL_malloc(len);
+    s->s3->alpn_selected = _OPENSSL_malloc(len);
     if (s->s3->alpn_selected == NULL) {
         s->s3->alpn_selected_len = 0;
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_STOC_ALPN,

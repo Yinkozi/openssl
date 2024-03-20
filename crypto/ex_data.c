@@ -174,7 +174,7 @@ int CRYPTO_get_ex_new_index(int class_index, long argl, void *argp,
         }
     }
 
-    a = (EX_CALLBACK *)OPENSSL_malloc(sizeof(*a));
+    a = (EX_CALLBACK *)_OPENSSL_malloc(sizeof(*a));
     if (a == NULL) {
         CRYPTOerr(CRYPTO_F_CRYPTO_GET_EX_NEW_INDEX, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -223,7 +223,7 @@ int CRYPTO_new_ex_data(int class_index, void *obj, CRYPTO_EX_DATA *ad)
         if (mx < (int)OSSL_NELEM(stack))
             storage = stack;
         else
-            storage = OPENSSL_malloc(sizeof(*storage) * mx);
+            storage = _OPENSSL_malloc(sizeof(*storage) * mx);
         if (storage != NULL)
             for (i = 0; i < mx; i++)
                 storage[i] = sk_EX_CALLBACK_value(ip->meth, i);
@@ -274,7 +274,7 @@ int CRYPTO_dup_ex_data(int class_index, CRYPTO_EX_DATA *to,
         if (mx < (int)OSSL_NELEM(stack))
             storage = stack;
         else
-            storage = OPENSSL_malloc(sizeof(*storage) * mx);
+            storage = _OPENSSL_malloc(sizeof(*storage) * mx);
         if (storage != NULL)
             for (i = 0; i < mx; i++)
                 storage[i] = sk_EX_CALLBACK_value(ip->meth, i);
@@ -334,7 +334,7 @@ void CRYPTO_free_ex_data(int class_index, void *obj, CRYPTO_EX_DATA *ad)
         if (mx < (int)OSSL_NELEM(stack))
             storage = stack;
         else
-            storage = OPENSSL_malloc(sizeof(*storage) * mx);
+            storage = _OPENSSL_malloc(sizeof(*storage) * mx);
         if (storage != NULL)
             for (i = 0; i < mx; i++)
                 storage[i] = sk_EX_CALLBACK_value(ip->meth, i);

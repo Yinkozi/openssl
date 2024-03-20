@@ -273,7 +273,7 @@ static unsigned char *next_protos_parse(size_t *outlen,
     if (len >= 65535)
         return NULL;
 
-    out = OPENSSL_malloc(strlen(in) + 1);
+    out = _OPENSSL_malloc(strlen(in) + 1);
     if (!out)
         return NULL;
 
@@ -319,7 +319,7 @@ static int cb_server_alpn(SSL *s, const unsigned char **out,
      * Make a copy of the selected protocol which will be freed in
      * verify_alpn.
      */
-    alpn_selected = OPENSSL_malloc(*outlen);
+    alpn_selected = _OPENSSL_malloc(*outlen);
     memcpy(alpn_selected, *out, *outlen);
     *out = alpn_selected;
 

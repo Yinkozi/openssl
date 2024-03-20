@@ -122,7 +122,7 @@ static int evp_test_buffer_append(const char *value,
 {
     EVP_TEST_BUFFER *db = NULL;
 
-    if (!TEST_ptr(db = OPENSSL_malloc(sizeof(*db))))
+    if (!TEST_ptr(db = _OPENSSL_malloc(sizeof(*db))))
         goto err;
 
     if (!parse_bin(value, &db->buf, &db->buflen))
@@ -161,7 +161,7 @@ static int evp_test_buffer_ncopy(const char *value,
     db = sk_EVP_TEST_BUFFER_value(sk, sk_EVP_TEST_BUFFER_num(sk) - 1);
 
     tbuflen = db->buflen * ncopy;
-    if (!TEST_ptr(tbuf = OPENSSL_malloc(tbuflen)))
+    if (!TEST_ptr(tbuf = _OPENSSL_malloc(tbuflen)))
         return 0;
     for (i = 0, p = tbuf; i < ncopy; i++, p += db->buflen)
         memcpy(p, db->buf, db->buflen);
@@ -236,7 +236,7 @@ static unsigned char* unescape(const char *input, size_t input_len,
     }
 
     /* Escaping is non-expanding; over-allocate original size for simplicity. */
-    if (!TEST_ptr(ret = p = OPENSSL_malloc(input_len)))
+    if (!TEST_ptr(ret = p = _OPENSSL_malloc(input_len)))
         return NULL;
 
     for (i = 0; i < input_len; i++) {
@@ -283,7 +283,7 @@ static int parse_bin(const char *value, unsigned char **buf, size_t *buflen)
          * some tests with empty keys: HMAC_Init_ex() expects a non-NULL key
          * buffer even if the key length is 0, in order to detect key reset.
          */
-        *buf = OPENSSL_malloc(1);
+        *buf = _OPENSSL_malloc(1);
         if (*buf == NULL)
             return 0;
         **buf = 0;
@@ -388,7 +388,7 @@ static int digest_test_run(EVP_TEST *t)
     if (!TEST_ptr(mctx = EVP_MD_CTX_new()))
         goto err;
 
-    got = OPENSSL_malloc(expected->output_len > EVP_MAX_MD_SIZE ?
+    got = _OPENSSL_malloc(expected->output_len > EVP_MAX_MD_SIZE ?
                          expected->output_len : EVP_MAX_MD_SIZE);
     if (!TEST_ptr(got))
         goto err;
@@ -599,7 +599,7 @@ static int cipher_test_enc(EVP_TEST *t, int enc,
         /*
          * Exercise in-place encryption
          */
-        tmp = OPENSSL_malloc(out_misalign + in_len + 2 * EVP_MAX_BLOCK_LENGTH);
+        tmp = _OPENSSL_malloc(out_misalign + in_len + 2 * EVP_MAX_BLOCK_LENGTH);
         if (!tmp)
             goto err;
         in = memcpy(tmp + out_misalign, in, in_len);
@@ -613,7 +613,7 @@ static int cipher_test_enc(EVP_TEST *t, int enc,
          * past inp_misalign in expression below. Output will be written
          * past out_misalign...
          */
-        tmp = OPENSSL_malloc(out_misalign + in_len + 2 * EVP_MAX_BLOCK_LENGTH +
+        tmp = _OPENSSL_malloc(out_misalign + in_len + 2 * EVP_MAX_BLOCK_LENGTH +
                              inp_misalign + in_len);
         if (!tmp)
             goto err;
@@ -1039,7 +1039,7 @@ static int mac_test_run(EVP_TEST *t)
         t->err = "DIGESTSIGNFINAL_LENGTH_ERROR";
         goto err;
     }
-    if (!TEST_ptr(got = OPENSSL_malloc(got_len))) {
+    if (!TEST_ptr(got = _OPENSSL_malloc(got_len))) {
         t->err = "TEST_FAILURE";
         goto err;
     }
@@ -1194,7 +1194,7 @@ static int pkey_test_run(EVP_TEST *t)
 
     if (expected->keyop(expected->ctx, NULL, &got_len,
                         expected->input, expected->input_len) <= 0
-            || !TEST_ptr(got = OPENSSL_malloc(got_len))) {
+            || !TEST_ptr(got = _OPENSSL_malloc(got_len))) {
         t->err = "KEYOP_LENGTH_ERROR";
         goto err;
     }
@@ -1314,7 +1314,7 @@ static int pderive_test_run(EVP_TEST *t)
         t->err = "DERIVE_ERROR";
         goto err;
     }
-    if (!TEST_ptr(got = OPENSSL_malloc(got_len))) {
+    if (!TEST_ptr(got = _OPENSSL_malloc(got_len))) {
         t->err = "DERIVE_ERROR";
         goto err;
     }
@@ -1509,7 +1509,7 @@ static int pbe_test_run(EVP_TEST *t)
     PBE_DATA *expected = t->data;
     unsigned char *key;
 
-    if (!TEST_ptr(key = OPENSSL_malloc(expected->key_len))) {
+    if (!TEST_ptr(key = _OPENSSL_malloc(expected->key_len))) {
         t->err = "INTERNAL_ERROR";
         goto err;
     }
@@ -1643,7 +1643,7 @@ static int encode_test_run(EVP_TEST *t)
 
         if (!TEST_ptr(encode_ctx = EVP_ENCODE_CTX_new())
                 || !TEST_ptr(encode_out =
-                        OPENSSL_malloc(EVP_ENCODE_LENGTH(expected->input_len))))
+                        _OPENSSL_malloc(EVP_ENCODE_LENGTH(expected->input_len))))
             goto err;
 
         EVP_EncodeInit(encode_ctx);
@@ -1663,7 +1663,7 @@ static int encode_test_run(EVP_TEST *t)
     }
 
     if (!TEST_ptr(decode_out =
-                OPENSSL_malloc(EVP_DECODE_LENGTH(expected->output_len))))
+                _OPENSSL_malloc(EVP_DECODE_LENGTH(expected->output_len))))
         goto err;
 
     EVP_DecodeInit(decode_ctx);
@@ -1777,7 +1777,7 @@ static int kdf_test_run(EVP_TEST *t)
     unsigned char *got = NULL;
     size_t got_len = expected->output_len;
 
-    if (!TEST_ptr(got = OPENSSL_malloc(got_len == 0 ? 1 : got_len))) {
+    if (!TEST_ptr(got = _OPENSSL_malloc(got_len == 0 ? 1 : got_len))) {
         t->err = "INTERNAL_ERROR";
         goto err;
     }
@@ -1848,7 +1848,7 @@ static int keypair_test_init(EVP_TEST *t, const char *pair)
         goto end;
     }
 
-    if (!TEST_ptr(data = OPENSSL_malloc(sizeof(*data))))
+    if (!TEST_ptr(data = _OPENSSL_malloc(sizeof(*data))))
         goto end;
     data->privk = pk;
     data->pubk = pubk;
@@ -1954,7 +1954,7 @@ static int keygen_test_init(EVP_TEST *t, const char *alg)
         goto err;
     }
 
-    if (!TEST_ptr(data = OPENSSL_malloc(sizeof(*data))))
+    if (!TEST_ptr(data = _OPENSSL_malloc(sizeof(*data))))
         goto err;
     data->genctx = genctx;
     data->keyname = NULL;
@@ -2008,7 +2008,7 @@ static int keygen_test_run(EVP_TEST *t)
             goto err;
         }
 
-        if (!TEST_ptr(key = OPENSSL_malloc(sizeof(*key))))
+        if (!TEST_ptr(key = _OPENSSL_malloc(sizeof(*key))))
             goto err;
         key->name = keygen->keyname;
         keygen->keyname = NULL;
@@ -2170,7 +2170,7 @@ static int digestsign_test_run(EVP_TEST *t)
         t->err = "DIGESTSIGNFINAL_LENGTH_ERROR";
         goto err;
     }
-    if (!TEST_ptr(got = OPENSSL_malloc(got_len))) {
+    if (!TEST_ptr(got = _OPENSSL_malloc(got_len))) {
         t->err = "MALLOC_FAILURE";
         goto err;
     }
@@ -2247,7 +2247,7 @@ static int oneshot_digestsign_test_run(EVP_TEST *t)
         t->err = "DIGESTSIGN_LENGTH_ERROR";
         goto err;
     }
-    if (!TEST_ptr(got = OPENSSL_malloc(got_len))) {
+    if (!TEST_ptr(got = _OPENSSL_malloc(got_len))) {
         t->err = "MALLOC_FAILURE";
         goto err;
     }
@@ -2607,7 +2607,7 @@ top:
             TEST_info("Duplicate key %s", pp->value);
             return 0;
         }
-        if (!TEST_ptr(key = OPENSSL_malloc(sizeof(*key))))
+        if (!TEST_ptr(key = _OPENSSL_malloc(sizeof(*key))))
             return 0;
         key->name = take_value(pp);
 

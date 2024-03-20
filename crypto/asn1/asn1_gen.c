@@ -192,7 +192,7 @@ static ASN1_TYPE *generate_v3(const char *str, X509V3_CTX *cnf, int depth,
 
     /* Allocate buffer for new encoding */
 
-    new_der = OPENSSL_malloc(len);
+    new_der = _OPENSSL_malloc(len);
     if (new_der == NULL)
         goto err;
 

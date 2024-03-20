@@ -134,7 +134,7 @@ OCB128_CONTEXT *CRYPTO_ocb128_new(void *keyenc, void *keydec,
     OCB128_CONTEXT *octx;
     int ret;
 
-    if ((octx = OPENSSL_malloc(sizeof(*octx))) != NULL) {
+    if ((octx = _OPENSSL_malloc(sizeof(*octx))) != NULL) {
         ret = CRYPTO_ocb128_init(octx, keyenc, keydec, encrypt, decrypt,
                                  stream);
         if (ret)
@@ -155,7 +155,7 @@ int CRYPTO_ocb128_init(OCB128_CONTEXT *ctx, void *keyenc, void *keydec,
     memset(ctx, 0, sizeof(*ctx));
     ctx->l_index = 0;
     ctx->max_l_index = 5;
-    if ((ctx->l = OPENSSL_malloc(ctx->max_l_index * 16)) == NULL) {
+    if ((ctx->l = _OPENSSL_malloc(ctx->max_l_index * 16)) == NULL) {
         CRYPTOerr(CRYPTO_F_CRYPTO_OCB128_INIT, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -202,7 +202,7 @@ int CRYPTO_ocb128_copy_ctx(OCB128_CONTEXT *dest, OCB128_CONTEXT *src,
     if (keydec)
         dest->keydec = keydec;
     if (src->l) {
-        if ((dest->l = OPENSSL_malloc(src->max_l_index * 16)) == NULL) {
+        if ((dest->l = _OPENSSL_malloc(src->max_l_index * 16)) == NULL) {
             CRYPTOerr(CRYPTO_F_CRYPTO_OCB128_COPY_CTX, ERR_R_MALLOC_FAILURE);
             return 0;
         }

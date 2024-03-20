@@ -343,7 +343,7 @@ static int dane_tlsa_add(SSL_DANE *dane,
     t->usage = usage;
     t->selector = selector;
     t->mtype = mtype;
-    t->data = OPENSSL_malloc(dlen);
+    t->data = _OPENSSL_malloc(dlen);
     if (t->data == NULL) {
         tlsa_free(t);
         SSLerr(SSL_F_DANE_TLSA_ADD, ERR_R_MALLOC_FAILURE);
@@ -803,7 +803,7 @@ SSL *SSL_new(SSL_CTX *ctx)
 #endif
 
     if (s->ctx->ext.alpn) {
-        s->ext.alpn = OPENSSL_malloc(s->ctx->ext.alpn_len);
+        s->ext.alpn = _OPENSSL_malloc(s->ctx->ext.alpn_len);
         if (s->ext.alpn == NULL) {
             s->ext.alpn_len = 0;
             goto err;
@@ -5198,7 +5198,7 @@ int SSL_client_hello_get1_extensions_present(SSL *s, int **out, size_t *outlen)
         *outlen = 0;
         return 1;
     }
-    if ((present = OPENSSL_malloc(sizeof(*present) * num)) == NULL) {
+    if ((present = _OPENSSL_malloc(sizeof(*present) * num)) == NULL) {
         SSLerr(SSL_F_SSL_CLIENT_HELLO_GET1_EXTENSIONS_PRESENT,
                ERR_R_MALLOC_FAILURE);
         return 0;
@@ -5292,7 +5292,7 @@ static int nss_keylog_int(const char *prefix,
      */
     prefix_len = strlen(prefix);
     out_len = prefix_len + (2 * parameter_1_len) + (2 * parameter_2_len) + 3;
-    if ((out = cursor = OPENSSL_malloc(out_len)) == NULL) {
+    if ((out = cursor = _OPENSSL_malloc(out_len)) == NULL) {
         SSLfatal(ssl, SSL_AD_INTERNAL_ERROR, SSL_F_NSS_KEYLOG_INT,
                  ERR_R_MALLOC_FAILURE);
         return 0;
@@ -5391,7 +5391,7 @@ int ssl_cache_cipherlist(SSL *s, PACKET *cipher_suites, int sslv2format)
          * slightly over allocate because we won't store those. But that isn't a
          * problem.
          */
-        raw = OPENSSL_malloc(numciphers * TLS_CIPHER_LEN);
+        raw = _OPENSSL_malloc(numciphers * TLS_CIPHER_LEN);
         s->s3->tmp.ciphers_raw = raw;
         if (raw == NULL) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_CACHE_CIPHERLIST,

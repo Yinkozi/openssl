@@ -103,7 +103,7 @@ static CONF *def_create(CONF_METHOD *meth)
 {
     CONF *ret;
 
-    ret = OPENSSL_malloc(sizeof(*ret));
+    ret = _OPENSSL_malloc(sizeof(*ret));
     if (ret != NULL)
         if (meth->init(ret) == 0) {
             _OPENSSL_free(ret);
@@ -412,7 +412,7 @@ static int def_load_bio(CONF *conf, BIO *in, long *line)
             start = eat_ws(conf, p);
             trim_ws(conf, start);
 
-            if ((v = OPENSSL_malloc(sizeof(*v))) == NULL) {
+            if ((v = _OPENSSL_malloc(sizeof(*v))) == NULL) {
                 CONFerr(CONF_F_DEF_LOAD_BIO, ERR_R_MALLOC_FAILURE);
                 goto err;
             }
