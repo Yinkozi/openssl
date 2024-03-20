@@ -34,7 +34,7 @@ static int get_cert_and_key(X509 **cert_out, EVP_PKEY **key_out)
     _BIO_free(certbio);
     if (!TEST_ptr(keybio = BIO_new_file(privkeystr, "r")))
         goto end;
-    key = PEM_read_bio_PrivateKey(keybio, NULL, NULL, NULL);
+    key = _PEM_read_bio_PrivateKey(keybio, NULL, NULL, NULL);
     _BIO_free(keybio);
     if (!TEST_ptr(cert) || !TEST_ptr(key))
         goto end;

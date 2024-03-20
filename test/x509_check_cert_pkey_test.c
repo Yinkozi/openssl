@@ -59,7 +59,7 @@ static int test_x509_check_cert_pkey(void)
     if (!TEST_ptr(bio = BIO_new_file(k, "r")))
         goto failed;
 
-    if (!TEST_ptr(pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL)))
+    if (!TEST_ptr(pkey = _PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL)))
         goto failed;
 
     _BIO_free(bio);

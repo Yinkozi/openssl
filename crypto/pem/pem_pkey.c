@@ -22,7 +22,7 @@
 
 int pem_check_suffix(const char *pem_str, const char *suffix);
 
-EVP_PKEY *PEM_read_bio_PrivateKey(BIO *bp, EVP_PKEY **x, pem_password_cb *cb,
+EVP_PKEY *_PEM_read_bio_PrivateKey(BIO *bp, EVP_PKEY **x, pem_password_cb *cb,
                                   void *u)
 {
     char *nm = NULL;
@@ -180,7 +180,7 @@ EVP_PKEY *PEM_read_PrivateKey(FILE *fp, EVP_PKEY **x, pem_password_cb *cb,
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = PEM_read_bio_PrivateKey(b, x, cb, u);
+    ret = _PEM_read_bio_PrivateKey(b, x, cb, u);
     _BIO_free(b);
     return ret;
 }

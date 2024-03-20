@@ -53,7 +53,7 @@ static const ERR_STRING_DATA PEM_str_functs[] = {
     {ERR_PACK(ERR_LIB_PEM, PEM_F_PEM_READ_BIO_PARAMETERS, 0),
      "PEM_read_bio_Parameters"},
     {ERR_PACK(ERR_LIB_PEM, PEM_F_PEM_READ_BIO_PRIVATEKEY, 0),
-     "PEM_read_bio_PrivateKey"},
+     "_PEM_read_bio_PrivateKey"},
     {ERR_PACK(ERR_LIB_PEM, PEM_F_PEM_READ_DHPARAMS, 0), "PEM_read_DHparams"},
     {ERR_PACK(ERR_LIB_PEM, PEM_F_PEM_READ_PRIVATEKEY, 0),
      "PEM_read_PrivateKey"},

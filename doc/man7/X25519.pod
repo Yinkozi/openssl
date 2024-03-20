@@ -29,7 +29,7 @@ For the B<X448> algorithm a context can be obtained by calling:
 
 X25519 or X448 private keys can be set directly using
 L<EVP_PKEY_new_raw_private_key(3)> or loaded from a PKCS#8 private key file
-using L<PEM_read_bio_PrivateKey(3)> (or similar function). Completely new keys
+using L<_PEM_read_bio_PrivateKey(3)> (or similar function). Completely new keys
 can also be generated (see the example below). Setting a private key also sets
 the associated public key.
 

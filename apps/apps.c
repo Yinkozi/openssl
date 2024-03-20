@@ -762,7 +762,7 @@ EVP_PKEY *load_key(const char *file, int format, int maybe_stdin,
     if (format == FORMAT_ASN1) {
         pkey = d2i_PrivateKey_bio(key, NULL);
     } else if (format == FORMAT_PEM) {
-        pkey = PEM_read_bio_PrivateKey(key, NULL,
+        pkey = _PEM_read_bio_PrivateKey(key, NULL,
                                        (pem_password_cb *)password_callback,
                                        &cb_data);
     } else if (format == FORMAT_PKCS12) {

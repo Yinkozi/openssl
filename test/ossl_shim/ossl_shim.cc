@@ -135,7 +135,7 @@ static bssl::UniquePtr<EVP_PKEY> LoadPrivateKey(const std::string &file) {
     return nullptr;
   }
   return bssl::UniquePtr<EVP_PKEY>(
-      PEM_read_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
+      _PEM_read_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
 }
 
 template<typename T>

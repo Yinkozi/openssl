@@ -40,7 +40,7 @@ IMPLEMENT_PEM_rw(NETSCAPE_CERT_SEQUENCE, NETSCAPE_CERT_SEQUENCE,
 #ifndef OPENSSL_NO_RSA
 /*
  * We treat RSA or DSA private keys as a special case. For private keys we
- * read in an EVP_PKEY structure with PEM_read_bio_PrivateKey() and extract
+ * read in an EVP_PKEY structure with _PEM_read_bio_PrivateKey() and extract
  * the relevant private key: this means can handle "traditional" and PKCS#8
  * formats transparently.
  */
@@ -64,7 +64,7 @@ RSA *PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **rsa, pem_password_cb *cb,
                                 void *u)
 {
     EVP_PKEY *pktmp;
-    pktmp = PEM_read_bio_PrivateKey(bp, NULL, cb, u);
+    pktmp = _PEM_read_bio_PrivateKey(bp, NULL, cb, u);
     return pkey_get_rsa(pktmp, rsa);
 }
 
@@ -108,7 +108,7 @@ DSA *PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **dsa, pem_password_cb *cb,
                                 void *u)
 {
     EVP_PKEY *pktmp;
-    pktmp = PEM_read_bio_PrivateKey(bp, NULL, cb, u);
+    pktmp = _PEM_read_bio_PrivateKey(bp, NULL, cb, u);
     return pkey_get_dsa(pktmp, dsa); /* will free pktmp */
 }
 
@@ -148,7 +148,7 @@ EC_KEY *PEM_read_bio_ECPrivateKey(BIO *bp, EC_KEY **key, pem_password_cb *cb,
                                   void *u)
 {
     EVP_PKEY *pktmp;
-    pktmp = PEM_read_bio_PrivateKey(bp, NULL, cb, u);
+    pktmp = _PEM_read_bio_PrivateKey(bp, NULL, cb, u);
     return pkey_get_eckey(pktmp, key); /* will free pktmp */
 }
 

@@ -2538,7 +2538,7 @@ top:
     klist = NULL;
     pkey = NULL;
     if (strcmp(pp->key, "PrivateKey") == 0) {
-        pkey = PEM_read_bio_PrivateKey(t->s.key, NULL, 0, NULL);
+        pkey = _PEM_read_bio_PrivateKey(t->s.key, NULL, 0, NULL);
         if (pkey == NULL && !key_unsupported()) {
             EVP_PKEY_free(pkey);
             TEST_info("Can't read private key %s", pp->value);

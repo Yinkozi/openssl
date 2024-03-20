@@ -73,7 +73,7 @@ int setup_tests(void)
         cert = NULL;
         return 0;
     }
-    if (!TEST_true(PEM_read_bio_PrivateKey(privkeybio, &privkey, NULL, NULL))) {
+    if (!TEST_true(_PEM_read_bio_PrivateKey(privkeybio, &privkey, NULL, NULL))) {
         _BIO_free(privkeybio);
         X509_free(cert);
         cert = NULL;

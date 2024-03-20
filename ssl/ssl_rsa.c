@@ -250,7 +250,7 @@ int SSL_use_PrivateKey_file(SSL *ssl, const char *file, int type)
     }
     if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        pkey = PEM_read_bio_PrivateKey(in, NULL,
+        pkey = _PEM_read_bio_PrivateKey(in, NULL,
                                        ssl->default_passwd_callback,
                                        ssl->default_passwd_callback_userdata);
     } else if (type == SSL_FILETYPE_ASN1) {
@@ -523,7 +523,7 @@ int SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file, int type)
     }
     if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        pkey = PEM_read_bio_PrivateKey(in, NULL,
+        pkey = _PEM_read_bio_PrivateKey(in, NULL,
                                        ctx->default_passwd_callback,
                                        ctx->default_passwd_callback_userdata);
     } else if (type == SSL_FILETYPE_ASN1) {

@@ -1406,7 +1406,7 @@ GENERAL_NAME_set0_value                 1394	1_1_0	EXIST::FUNCTION:
 X509_ATTRIBUTE_dup                      1395	1_1_0	EXIST::FUNCTION:
 EC_GROUP_check_discriminant             1396	1_1_0	EXIST::FUNCTION:EC
 PKCS12_MAC_DATA_free                    1397	1_1_0	EXIST::FUNCTION:
-PEM_read_bio_PrivateKey                 1398	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_PrivateKey                 1398	1_1_0	EXIST::FUNCTION:
 d2i_PKCS7_ENCRYPT                       1399	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_CTX_ctrl                       1400	1_1_0	EXIST::FUNCTION:
 X509_REQ_set_pubkey                     1401	1_1_0	EXIST::FUNCTION:

@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 
     BIO_reset(tbio);
 
-    skey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey = _PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     _BIO_free(tbio);
 
@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
     BIO_reset(tbio);
 
-    skey2 = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey2 = _PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!scert2 || !skey2)
         goto err;

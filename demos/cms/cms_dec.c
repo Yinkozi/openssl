@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 
     BIO_reset(tbio);
 
-    rkey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    rkey = _PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!rcert || !rkey)
         goto err;

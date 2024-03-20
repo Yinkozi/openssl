@@ -408,7 +408,7 @@ static EVP_PKEY *openssl_load_privkey(ENGINE *eng, const char *key_id,
     in = BIO_new_file(key_id, "r");
     if (!in)
         return NULL;
-    key = PEM_read_bio_PrivateKey(in, NULL, 0, NULL);
+    key = _PEM_read_bio_PrivateKey(in, NULL, 0, NULL);
     _BIO_free(in);
     return key;
 }
