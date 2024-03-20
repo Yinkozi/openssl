@@ -766,7 +766,7 @@ int tls_parse_ctos_cookie(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
     mdin = PACKET_data(&raw);
 
     /* Verify the HMAC of the cookie */
-    hctx = EVP_MD_CTX_create();
+    hctx = _EVP_MD_CTX_create();
     pkey = EVP_PKEY_new_raw_private_key(EVP_PKEY_HMAC, NULL,
                                         s->session_ctx->ext.cookie_hmac_key,
                                         sizeof(s->session_ctx->ext
@@ -1854,7 +1854,7 @@ EXT_RETURN tls_construct_stoc_cookie(SSL *s, WPACKET *pkt, unsigned int context,
     }
 
     /* HMAC the cookie */
-    hctx = EVP_MD_CTX_create();
+    hctx = _EVP_MD_CTX_create();
     pkey = EVP_PKEY_new_raw_private_key(EVP_PKEY_HMAC, NULL,
                                         s->session_ctx->ext.cookie_hmac_key,
                                         sizeof(s->session_ctx->ext
