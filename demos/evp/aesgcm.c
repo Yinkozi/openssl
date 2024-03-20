@@ -105,7 +105,7 @@ void aes_gcm_decrypt(void)
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(gcm_tag),
                         (void *)gcm_tag);
     /* Finalise: note get no output for GCM */
-    rv = EVP_DecryptFinal_ex(ctx, outbuf, &outlen);
+    rv = _EVP_DecryptFinal_ex(ctx, outbuf, &outlen);
     /*
      * Print out return value. If this is not successful authentication
      * failed and plaintext is not trustworthy.

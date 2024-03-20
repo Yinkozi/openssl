@@ -453,7 +453,7 @@ int PEM_do_header(EVP_CIPHER_INFO *cipher, unsigned char *data, long *plen,
     if (ok) {
         /* Squirrel away the length of data decrypted so far. */
         *plen = ilen;
-        ok = EVP_DecryptFinal_ex(ctx, &(data[ilen]), &ilen);
+        ok = _EVP_DecryptFinal_ex(ctx, &(data[ilen]), &ilen);
     }
     if (ok)
         *plen += ilen;

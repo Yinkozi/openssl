@@ -943,7 +943,7 @@ static int EVP_Update_loop(void *args)
         }
     }
     if (decrypt)
-        EVP_DecryptFinal_ex(ctx, buf, &outl);
+        _EVP_DecryptFinal_ex(ctx, buf, &outl);
     else
         _EVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
@@ -981,7 +981,7 @@ static int EVP_Update_loop_ccm(void *args)
         }
     }
     if (decrypt)
-        EVP_DecryptFinal_ex(ctx, buf, &outl);
+        _EVP_DecryptFinal_ex(ctx, buf, &outl);
     else
         _EVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
@@ -1010,7 +1010,7 @@ static int EVP_Update_loop_aead(void *args)
                                 sizeof(faketag), faketag);
             _EVP_DecryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
             _EVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
-            EVP_DecryptFinal_ex(ctx, buf + outl, &outl);
+            _EVP_DecryptFinal_ex(ctx, buf + outl, &outl);
         }
     } else {
         for (count = 0; COND(nb_iter); count++) {

@@ -715,7 +715,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
             goto err;
         if (!_EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
             goto err;
-        if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
+        if (!_EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
             goto err;
         magic = read_ledword((const unsigned char **)&q);
         if (magic != MS_RSA2MAGIC && magic != MS_DSS2MAGIC) {
@@ -725,7 +725,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
                 goto err;
             if (!_EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
                 goto err;
-            if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
+            if (!_EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
                 goto err;
             magic = read_ledword((const unsigned char **)&q);
             if (magic != MS_RSA2MAGIC && magic != MS_DSS2MAGIC) {

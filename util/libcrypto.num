@@ -3566,7 +3566,7 @@ CERTIFICATEPOLICIES_it                  3517	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:
 EVP_MD_CTX_ctrl                         3518	1_1_0	EXIST::FUNCTION:
 PKCS7_final                             3519	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_size                           3520	1_1_0	EXIST::FUNCTION:
-EVP_DecryptFinal_ex                     3521	1_1_0	EXIST::FUNCTION:
+_EVP_DecryptFinal_ex                     3521	1_1_0	EXIST::FUNCTION:
 SCT_get_signature_nid                   3522	1_1_0	EXIST::FUNCTION:CT
 PROXY_CERT_INFO_EXTENSION_new           3523	1_1_0	EXIST::FUNCTION:
 EVP_bf_cbc                              3524	1_1_0	EXIST::FUNCTION:BF

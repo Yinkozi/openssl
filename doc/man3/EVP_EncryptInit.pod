@@ -10,7 +10,7 @@ _EVP_EncryptUpdate,
 _EVP_EncryptFinal_ex,
 _EVP_DecryptInit_ex,
 _EVP_DecryptUpdate,
-EVP_DecryptFinal_ex,
+_EVP_DecryptFinal_ex,
 EVP_CipherInit_ex,
 EVP_CipherUpdate,
 EVP_CipherFinal_ex,
@@ -68,7 +68,7 @@ EVP_enc_null
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
  int _EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
- int EVP_DecryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *outm, int *outl);
+ int _EVP_DecryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *outm, int *outl);
 
  int EVP_CipherInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                        ENGINE *impl, const unsigned char *key, const unsigned char *iv, int enc);
@@ -171,7 +171,7 @@ If padding is disabled then _EVP_EncryptFinal_ex() will not encrypt any more
 data and it will return an error if any data remains in a partial block:
 that is if the total data length is not a multiple of the block size.
 
-_EVP_DecryptInit_ex(), _EVP_DecryptUpdate() and EVP_DecryptFinal_ex() are the
+_EVP_DecryptInit_ex(), _EVP_DecryptUpdate() and _EVP_DecryptFinal_ex() are the
 corresponding decryption operations. EVP_DecryptFinal() will return an
 error code if padding is enabled and the final block is not correctly
 formatted. The parameters and restrictions are identical to the encryption
@@ -197,7 +197,7 @@ similar way to _EVP_EncryptInit_ex(), _EVP_DecryptInit_ex() and
 EVP_CipherInit_ex() except they always use the default cipher implementation.
 
 EVP_EncryptFinal(), EVP_DecryptFinal() and EVP_CipherFinal() are
-identical to _EVP_EncryptFinal_ex(), EVP_DecryptFinal_ex() and
+identical to _EVP_EncryptFinal_ex(), _EVP_DecryptFinal_ex() and
 EVP_CipherFinal_ex(). In previous releases they also cleaned up
 the B<ctx>, but this is no longer done and EVP_CIPHER_CTX_clean()
 must be called to free any context resources.
@@ -292,7 +292,7 @@ _EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and _EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
 _EVP_DecryptInit_ex() and _EVP_DecryptUpdate() return 1 for success and 0 for failure.
-EVP_DecryptFinal_ex() returns 0 if the decrypt failed or 1 for success.
+_EVP_DecryptFinal_ex() returns 0 if the decrypt failed or 1 for success.
 
 EVP_CipherInit_ex() and EVP_CipherUpdate() return 1 for success and 0 for failure.
 EVP_CipherFinal_ex() returns 0 for a decryption failure or 1 for success.
@@ -383,7 +383,7 @@ B<EVP_CTRL_AEAD_SET_TAG>.
 When decrypting, this call sets the expected tag to C<taglen> bytes from C<tag>.
 C<taglen> must be between 1 and 16 inclusive.
 The tag must be set prior to any call to EVP_DecryptFinal() or
-EVP_DecryptFinal_ex().
+_EVP_DecryptFinal_ex().
 
 For GCM, this call is only valid when decrypting data.
 
@@ -495,7 +495,7 @@ the total amount of data decrypted is a multiple of the block size.
 The functions EVP_EncryptInit(), EVP_EncryptFinal(), EVP_DecryptInit(),
 EVP_CipherInit() and EVP_CipherFinal() are obsolete but are retained for
 compatibility with existing code. New code should use _EVP_EncryptInit_ex(),
-_EVP_EncryptFinal_ex(), _EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
+_EVP_EncryptFinal_ex(), _EVP_DecryptInit_ex(), _EVP_DecryptFinal_ex(),
 EVP_CipherInit_ex() and EVP_CipherFinal_ex() because they can reuse an
 existing context without allocating and freeing it up on each call.
 
