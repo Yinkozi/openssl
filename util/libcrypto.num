@@ -3090,7 +3090,7 @@ PKCS7_ENC_CONTENT_it                    3042	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:
 PKCS12_item_pack_safebag                3043	1_1_0	EXIST::FUNCTION:
 i2d_OCSP_RESPDATA                       3044	1_1_0	EXIST::FUNCTION:OCSP
 i2d_X509_PUBKEY                         3045	1_1_0	EXIST::FUNCTION:
-EVP_DecryptUpdate                       3046	1_1_0	EXIST::FUNCTION:
+_EVP_DecryptUpdate                       3046	1_1_0	EXIST::FUNCTION:
 CAST_cbc_encrypt                        3047	1_1_0	EXIST::FUNCTION:CAST
 BN_BLINDING_invert                      3048	1_1_0	EXIST::FUNCTION:
 SHA512_Update                           3049	1_1_0	EXIST::FUNCTION:

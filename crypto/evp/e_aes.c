@@ -4138,7 +4138,7 @@ static int aes_ocb_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         /*
          * Need to ensure we are only passing full blocks to low level OCB
          * routines. We do it here rather than in _EVP_EncryptUpdate/
-         * EVP_DecryptUpdate because we need to pass full blocks of AAD too
+         * _EVP_DecryptUpdate because we need to pass full blocks of AAD too
          * and those routines don't support that
          */
 

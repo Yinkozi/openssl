@@ -104,11 +104,11 @@ void aes_ccm_decrypt(void)
     /* Specify key and IV */
     _EVP_DecryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set ciphertext length: only needed if we have AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_ct));
+    _EVP_DecryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_ct));
     /* Zero or one call to specify any AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
+    _EVP_DecryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
     /* Decrypt plaintext, verify tag: can only be called once */
-    rv = EVP_DecryptUpdate(ctx, outbuf, &outlen, ccm_ct, sizeof(ccm_ct));
+    rv = _EVP_DecryptUpdate(ctx, outbuf, &outlen, ccm_ct, sizeof(ccm_ct));
     /* Output decrypted block: if tag verify failed we get nothing */
     if (rv > 0) {
         printf("Plaintext:\n");

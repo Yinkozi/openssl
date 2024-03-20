@@ -86,7 +86,7 @@
       o Fixed the RSA_padding_check_SSLv23() function and the RSA_SSLV23_PADDING
         padding mode to correctly check for rollback attacks
       o Fixed an overflow in the EVP_CipherUpdate, _EVP_EncryptUpdate and
-        EVP_DecryptUpdate functions (CVE-2021-23840)
+        _EVP_DecryptUpdate functions (CVE-2021-23840)
       o Fixed SRP_Calc_client_key so that it runs in constant time
 
   Major changes between OpenSSL 1.1.1h and OpenSSL 1.1.1i [8 Dec 2020]

@@ -193,22 +193,22 @@ static int kek_unwrap_key(unsigned char *out, size_t *outlen,
         return 0;
     }
     /* setup IV by decrypting last two blocks */
-    if (!EVP_DecryptUpdate(ctx, tmp + inlen - 2 * blocklen, &outl,
+    if (!_EVP_DecryptUpdate(ctx, tmp + inlen - 2 * blocklen, &outl,
                            in + inlen - 2 * blocklen, blocklen * 2)
         /*
          * Do a decrypt of last decrypted block to set IV to correct value
          * output it to start of buffer so we don't corrupt decrypted block
          * this works because buffer is at least two block lengths long.
          */
-        || !EVP_DecryptUpdate(ctx, tmp, &outl,
+        || !_EVP_DecryptUpdate(ctx, tmp, &outl,
                               tmp + inlen - blocklen, blocklen)
         /* Can now decrypt first n - 1 blocks */
-        || !EVP_DecryptUpdate(ctx, tmp, &outl, in, inlen - blocklen)
+        || !_EVP_DecryptUpdate(ctx, tmp, &outl, in, inlen - blocklen)
 
         /* Reset IV to original value */
         || !_EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL)
         /* Decrypt again */
-        || !EVP_DecryptUpdate(ctx, tmp, &outl, tmp, inlen))
+        || !_EVP_DecryptUpdate(ctx, tmp, &outl, tmp, inlen))
         goto err;
     /* Check check bytes */
     if (((tmp[1] ^ tmp[4]) & (tmp[2] ^ tmp[5]) & (tmp[3] ^ tmp[6])) != 0xff) {

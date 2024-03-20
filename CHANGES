@@ -480,7 +480,7 @@
      CVE-2021-23839.
      [Matt Caswell]
 
-  *) Fixed the EVP_CipherUpdate, _EVP_EncryptUpdate and EVP_DecryptUpdate
+  *) Fixed the EVP_CipherUpdate, _EVP_EncryptUpdate and _EVP_DecryptUpdate
      functions. Previously they could overflow the output length argument in some
      cases where the input length is close to the maximum permissable length for
      an integer on the platform. In such cases the return value from the function
@@ -2884,7 +2884,7 @@
      therefore there is no possibility of an overflow. Since all instances are
      one of these two forms, it is believed that there can be no overflows in
      internal code due to this problem. It should be noted that
-     EVP_DecryptUpdate() can call _EVP_EncryptUpdate() in certain code paths.
+     _EVP_DecryptUpdate() can call _EVP_EncryptUpdate() in certain code paths.
      Also EVP_CipherUpdate() is a synonym for _EVP_EncryptUpdate(). All instances
      of these calls have also been analysed too and it is believed there are no
      instances in internal usage where an overflow could occur.

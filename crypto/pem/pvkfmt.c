@@ -713,7 +713,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
         q = enctmp + 8;
         if (!_EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
             goto err;
-        if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
+        if (!_EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
             goto err;
         if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
             goto err;
@@ -723,7 +723,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
             memset(keybuf + 5, 0, 11);
             if (!_EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
                 goto err;
-            if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
+            if (!_EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
                 goto err;
             if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
                 goto err;

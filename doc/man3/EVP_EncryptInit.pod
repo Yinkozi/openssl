@@ -9,7 +9,7 @@ _EVP_EncryptInit_ex,
 _EVP_EncryptUpdate,
 _EVP_EncryptFinal_ex,
 _EVP_DecryptInit_ex,
-EVP_DecryptUpdate,
+_EVP_DecryptUpdate,
 EVP_DecryptFinal_ex,
 EVP_CipherInit_ex,
 EVP_CipherUpdate,
@@ -66,7 +66,7 @@ EVP_enc_null
 
  int _EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
- int EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
+ int _EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
  int EVP_DecryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *outm, int *outl);
 
@@ -171,12 +171,12 @@ If padding is disabled then _EVP_EncryptFinal_ex() will not encrypt any more
 data and it will return an error if any data remains in a partial block:
 that is if the total data length is not a multiple of the block size.
 
-_EVP_DecryptInit_ex(), EVP_DecryptUpdate() and EVP_DecryptFinal_ex() are the
+_EVP_DecryptInit_ex(), _EVP_DecryptUpdate() and EVP_DecryptFinal_ex() are the
 corresponding decryption operations. EVP_DecryptFinal() will return an
 error code if padding is enabled and the final block is not correctly
 formatted. The parameters and restrictions are identical to the encryption
 operations except that if padding is enabled the decrypted data buffer B<out>
-passed to EVP_DecryptUpdate() should have sufficient room for
+passed to _EVP_DecryptUpdate() should have sufficient room for
 (B<inl> + cipher_block_size) bytes unless the cipher block size is 1 in
 which case B<inl> bytes is sufficient.
 
@@ -261,7 +261,7 @@ EVP_CIPHER_param_to_asn1() sets the AlgorithmIdentifier "parameter" based
 on the passed cipher. This will typically include any parameters and an
 IV. The cipher IV (if any) must be set when this call is made. This call
 should be made before the cipher is actually "used" (before any
-_EVP_EncryptUpdate(), EVP_DecryptUpdate() calls for example). This function
+_EVP_EncryptUpdate(), _EVP_DecryptUpdate() calls for example). This function
 may fail if the cipher does not have any ASN1 support.
 
 EVP_CIPHER_asn1_to_param() sets the cipher parameters based on an ASN1
@@ -291,7 +291,7 @@ B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 _EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and _EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
-_EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
+_EVP_DecryptInit_ex() and _EVP_DecryptUpdate() return 1 for success and 0 for failure.
 EVP_DecryptFinal_ex() returns 0 if the decrypt failed or 1 for success.
 
 EVP_CipherInit_ex() and EVP_CipherUpdate() return 1 for success and 0 for failure.
@@ -347,7 +347,7 @@ modes are subtly altered and several additional I<ctrl> operations are supported
 depending on the mode specified.
 
 To specify additional authenticated data (AAD), a call to EVP_CipherUpdate(),
-_EVP_EncryptUpdate() or EVP_DecryptUpdate() should be made with the output
+_EVP_EncryptUpdate() or _EVP_DecryptUpdate() should be made with the output
 parameter B<out> set to B<NULL>.
 
 When decrypting, the return value of EVP_DecryptFinal() or EVP_CipherFinal()
@@ -406,7 +406,7 @@ The EVP interface for CCM mode is similar to that of the GCM mode but with a
 few additional requirements and different I<ctrl> values.
 
 For CCM mode, the total plaintext or ciphertext length B<MUST> be passed to
-EVP_CipherUpdate(), _EVP_EncryptUpdate() or EVP_DecryptUpdate() with the output
+EVP_CipherUpdate(), _EVP_EncryptUpdate() or _EVP_DecryptUpdate() with the output
 and input parameters (B<in> and B<out>) set to B<NULL> and the length passed in
 the B<inl> parameter.
 

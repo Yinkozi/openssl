@@ -33,7 +33,7 @@ typedef struct enc_struct {
     EVP_CIPHER_CTX *cipher;
     unsigned char *read_start, *read_end;
     /*
-     * buf is larger than ENC_BLOCK_SIZE because EVP_DecryptUpdate can return
+     * buf is larger than ENC_BLOCK_SIZE because _EVP_DecryptUpdate can return
      * up to a block more data than is presented to it
      */
     unsigned char buf[BUF_OFFSET + ENC_BLOCK_SIZE];

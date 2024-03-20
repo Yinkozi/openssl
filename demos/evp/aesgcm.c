@@ -95,9 +95,9 @@ void aes_gcm_decrypt(void)
     /* Specify key and IV */
     _EVP_DecryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
+    _EVP_DecryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Decrypt plaintext */
-    EVP_DecryptUpdate(ctx, outbuf, &outlen, gcm_ct, sizeof(gcm_ct));
+    _EVP_DecryptUpdate(ctx, outbuf, &outlen, gcm_ct, sizeof(gcm_ct));
     /* Output decrypted block */
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);

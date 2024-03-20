@@ -1700,16 +1700,16 @@ static int test_decrypt_null_chunks(void)
     tmp = 99;
     if (!TEST_true(_EVP_DecryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL, key,
                                       iv))
-            || !TEST_true(EVP_DecryptUpdate(ctx, plaintext, &ptlen, ciphertext,
+            || !TEST_true(_EVP_DecryptUpdate(ctx, plaintext, &ptlen, ciphertext,
                                             dec_offset))
             /*
              * Deliberately add a zero length update. We also deliberately do
              * this at a different offset than for encryption.
              */
-            || !TEST_true(EVP_DecryptUpdate(ctx, plaintext + ptlen, &tmp, NULL,
+            || !TEST_true(_EVP_DecryptUpdate(ctx, plaintext + ptlen, &tmp, NULL,
                                             0))
             || !TEST_int_eq(tmp, 0)
-            || !TEST_true(EVP_DecryptUpdate(ctx, plaintext + ptlen, &tmp,
+            || !TEST_true(_EVP_DecryptUpdate(ctx, plaintext + ptlen, &tmp,
                                             ciphertext + dec_offset,
                                             ctlen - dec_offset))
             || !TEST_int_eq(ptlen += tmp, sizeof(msg))
