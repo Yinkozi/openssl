@@ -197,7 +197,7 @@ static int tls1_prf_P_hash(const EVP_MD *md,
     mac_key = EVP_PKEY_new_raw_private_key(EVP_PKEY_HMAC, NULL, sec, sec_len);
     if (mac_key == NULL)
         goto err;
-    if (!EVP_DigestSignInit(ctx_init, NULL, md, NULL, mac_key))
+    if (!_EVP_DigestSignInit(ctx_init, NULL, md, NULL, mac_key))
         goto err;
     if (!EVP_MD_CTX_copy_ex(ctx, ctx_init))
         goto err;

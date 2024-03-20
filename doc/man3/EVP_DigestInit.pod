@@ -226,7 +226,7 @@ be freed by the caller.
 =item EVP_MD_CTX_set_pkey_ctx()
 
 Assigns an B<EVP_PKEY_CTX> to B<EVP_MD_CTX>. This is usually used to provide
-a customized B<EVP_PKEY_CTX> to L<EVP_DigestSignInit(3)> or
+a customized B<EVP_PKEY_CTX> to L<_EVP_DigestSignInit(3)> or
 L<_EVP_DigestVerifyInit(3)>. The B<pctx> passed to this function should be freed
 by the caller. A NULL B<pctx> pointer is also allowed to clear the B<EVP_PKEY_CTX>
 assigned to B<ctx>. In such case, freeing the cleared B<EVP_PKEY_CTX> or not

@@ -640,7 +640,7 @@
      was removed.
 
      Code that followed the documentation and thereby check with something
-     like 'EVP_DigestSignInit(...) <= 0' will continue to work undisturbed.
+     like '_EVP_DigestSignInit(...) <= 0' will continue to work undisturbed.
      [Richard Levitte]
 
   *) Fixed an an overflow bug in the x64_64 Montgomery squaring procedure

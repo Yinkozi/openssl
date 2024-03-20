@@ -125,7 +125,7 @@ int ASN1_item_sign(const ASN1_ITEM *it, X509_ALGOR *algor1,
         ASN1err(ASN1_F_ASN1_ITEM_SIGN, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    if (!EVP_DigestSignInit(ctx, NULL, type, NULL, pkey)) {
+    if (!_EVP_DigestSignInit(ctx, NULL, type, NULL, pkey)) {
         EVP_MD_CTX_free(ctx);
         return 0;
     }

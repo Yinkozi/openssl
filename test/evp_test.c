@@ -1020,7 +1020,7 @@ static int mac_test_run(EVP_TEST *t)
         t->err = "INTERNAL_ERROR";
         goto err;
     }
-    if (!EVP_DigestSignInit(mctx, &pctx, md, NULL, key)) {
+    if (!_EVP_DigestSignInit(mctx, &pctx, md, NULL, key)) {
         t->err = "DIGESTSIGNINIT_ERROR";
         goto err;
     }
@@ -2120,7 +2120,7 @@ static int digestsigver_test_parse(EVP_TEST *t,
                 t->err = "DIGESTVERIFYINIT_ERROR";
             return 1;
         }
-        if (!EVP_DigestSignInit(mdata->ctx, &mdata->pctx, mdata->md, NULL,
+        if (!_EVP_DigestSignInit(mdata->ctx, &mdata->pctx, mdata->md, NULL,
                                 pkey))
             t->err = "DIGESTSIGNINIT_ERROR";
         return 1;

@@ -3116,7 +3116,7 @@ int speed_main(int argc, char **argv)
             }
             EVP_PKEY_CTX_free(ed_pctx);
 
-            if (!EVP_DigestSignInit(loopargs[i].eddsa_ctx[testnum], NULL, NULL,
+            if (!_EVP_DigestSignInit(loopargs[i].eddsa_ctx[testnum], NULL, NULL,
                                     NULL, ed_pkey)) {
                 st = 0;
                 EVP_PKEY_free(ed_pkey);

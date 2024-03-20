@@ -562,7 +562,7 @@ BN_GF2m_mod                             561	1_1_0	EXIST::FUNCTION:EC2M
 EC_GROUP_get_pentanomial_basis          562	1_1_0	EXIST::FUNCTION:EC,EC2M
 X509_CINF_free                          563	1_1_0	EXIST::FUNCTION:
 X509_EXTENSION_free                     564	1_1_0	EXIST::FUNCTION:
-EVP_DigestSignInit                      565	1_1_0	EXIST::FUNCTION:
+_EVP_DigestSignInit                      565	1_1_0	EXIST::FUNCTION:
 CT_POLICY_EVAL_CTX_get0_issuer          566	1_1_0	EXIST::FUNCTION:CT
 TLS_FEATURE_new                         567	1_1_0	EXIST::FUNCTION:
 RSA_get_default_method                  568	1_1_0	EXIST::FUNCTION:RSA

@@ -235,7 +235,7 @@ static int test_builtin(int n)
 
     if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
         /* create a signature */
-        || !TEST_true(EVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_true(EVP_DigestSign(mctx, sig, &sig_len, tbs, sizeof(tbs)))
         || !TEST_int_le(sig_len, ECDSA_size(eckey))
         /* negative test, verify with wrong key, 0 return */

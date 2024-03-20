@@ -314,7 +314,7 @@ L<EVP_PKEY_verify_recover_init(3)> and L<EVP_PKEY_verify_recover(3)>.
 
 The signctx_init() and signctx() methods are used to sign a digest present by
 a B<EVP_MD_CTX> object. They are called by the EVP_DigestSign functions. See
-L<EVP_DigestSignInit(3)> for details.
+L<_EVP_DigestSignInit(3)> for details.
 
  int (*verifyctx_init) (EVP_PKEY_CTX *ctx, EVP_MD_CTX *mctx);
  int (*verifyctx) (EVP_PKEY_CTX *ctx, const unsigned char *sig, int siglen,
@@ -376,7 +376,7 @@ The digest_custom() method is used to generate customized digest content before
 the real message is passed to functions like L<EVP_DigestSignUpdate(3)> or
 L<_EVP_DigestVerifyInit(3)>. This is usually required by some public key
 signature algorithms like SM2 which requires a hashed prefix to the message to
-be signed. The digest_custom() function will be called by L<EVP_DigestSignInit(3)>
+be signed. The digest_custom() function will be called by L<_EVP_DigestSignInit(3)>
 and L<_EVP_DigestVerifyInit(3)>.
 
 =head2 Functions

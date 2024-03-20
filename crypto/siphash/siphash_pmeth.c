@@ -136,7 +136,7 @@ static int pkey_siphash_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             key = p2;
             len = p1;
         } else {
-            /* user indirectly setting the key via EVP_DigestSignInit */
+            /* user indirectly setting the key via _EVP_DigestSignInit */
             key = EVP_PKEY_get0_siphash(EVP_PKEY_CTX_get0_pkey(ctx), &len);
         }
         if (key == NULL || len != SIPHASH_KEY_SIZE ||

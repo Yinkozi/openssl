@@ -324,7 +324,7 @@ int dgst_main(int argc, char **argv)
         if (do_verify)
             r = _EVP_DigestVerifyInit(mctx, &pctx, md, impl, sigkey);
         else
-            r = EVP_DigestSignInit(mctx, &pctx, md, impl, sigkey);
+            r = _EVP_DigestSignInit(mctx, &pctx, md, impl, sigkey);
         if (!r) {
             BIO_printf(bio_err, "Error setting context\n");
             ERR_print_errors(bio_err);

@@ -1011,7 +1011,7 @@ static int test_EVP_DigestSignInit(void)
             || !TEST_ptr(pkey = load_example_rsa_key()))
         goto out;
 
-    if (!TEST_true(EVP_DigestSignInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
+    if (!TEST_true(_EVP_DigestSignInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
             || !TEST_true(EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
         goto out;
 
@@ -1322,7 +1322,7 @@ static int test_EVP_SM2(void)
     if (!TEST_int_gt(EVP_PKEY_CTX_set1_id(sctx, sm2_id, sizeof(sm2_id)), 0))
         goto done;
 
-    if (!TEST_true(EVP_DigestSignInit(md_ctx, NULL, EVP_sm3(), NULL, pkey)))
+    if (!TEST_true(_EVP_DigestSignInit(md_ctx, NULL, EVP_sm3(), NULL, pkey)))
         goto done;
 
     if(!TEST_true(EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
@@ -1918,7 +1918,7 @@ static int test_signatures_with_engine(int tst)
     if (!TEST_ptr(ctx = EVP_MD_CTX_new()))
         goto err;
 
-    ret = EVP_DigestSignInit(ctx, NULL, tst == 2 ? NULL : _EVP_sha256(), NULL,
+    ret = _EVP_DigestSignInit(ctx, NULL, tst == 2 ? NULL : _EVP_sha256(), NULL,
                              pkey);
     if (tst == 0) {
         if (!TEST_true(ret))

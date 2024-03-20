@@ -1628,7 +1628,7 @@ static int do_sign_init(EVP_MD_CTX *ctx, EVP_PKEY *pkey,
         /* The signing algorithm requires there to be no digest */
         md = NULL;
     }
-    if (!EVP_DigestSignInit(ctx, &pkctx, md, NULL, pkey))
+    if (!_EVP_DigestSignInit(ctx, &pkctx, md, NULL, pkey))
         return 0;
     for (i = 0; i < sk_OPENSSL_STRING_num(sigopts); i++) {
         char *sigopt = sk_OPENSSL_STRING_value(sigopts, i);

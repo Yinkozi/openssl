@@ -30,7 +30,7 @@ B<sig> and the amount of data written to B<siglen>.
 
 EVP_PKEY_sign() does not hash the data to be signed, and therefore is
 normally used to sign digests. For signing arbitrary messages, see the
-L<EVP_DigestSignInit(3)> and
+L<_EVP_DigestSignInit(3)> and
 L<EVP_SignInit(3)> signing interfaces instead.
 
 After the call to EVP_PKEY_sign_init() algorithm specific control
