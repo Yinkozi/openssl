@@ -7,7 +7,7 @@ PEM_read_bio_PrivateKey, PEM_read_PrivateKey, PEM_write_bio_PrivateKey,
 PEM_write_bio_PrivateKey_traditional, PEM_write_PrivateKey,
 PEM_write_bio_PKCS8PrivateKey, PEM_write_PKCS8PrivateKey,
 PEM_write_bio_PKCS8PrivateKey_nid, PEM_write_PKCS8PrivateKey_nid,
-PEM_read_bio_PUBKEY, PEM_read_PUBKEY, PEM_write_bio_PUBKEY, PEM_write_PUBKEY,
+_PEM_read_bio_PUBKEY, PEM_read_PUBKEY, PEM_write_bio_PUBKEY, PEM_write_PUBKEY,
 PEM_read_bio_RSAPrivateKey, PEM_read_RSAPrivateKey,
 PEM_write_bio_RSAPrivateKey, PEM_write_RSAPrivateKey,
 PEM_read_bio_RSAPublicKey, PEM_read_RSAPublicKey, PEM_write_bio_RSAPublicKey,
@@ -61,7 +61,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
                                    char *kstr, int klen,
                                    pem_password_cb *cb, void *u);
 
- EVP_PKEY *PEM_read_bio_PUBKEY(BIO *bp, EVP_PKEY **x,
+ EVP_PKEY *_PEM_read_bio_PUBKEY(BIO *bp, EVP_PKEY **x,
                                pem_password_cb *cb, void *u);
  EVP_PKEY *PEM_read_PUBKEY(FILE *fp, EVP_PKEY **x,
                            pem_password_cb *cb, void *u);

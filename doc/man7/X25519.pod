@@ -35,7 +35,7 @@ the associated public key.
 
 X25519 or X448 public keys can be set directly using
 L<EVP_PKEY_new_raw_public_key(3)> or loaded from a SubjectPublicKeyInfo
-structure in a PEM file using L<PEM_read_bio_PUBKEY(3)> (or similar function).
+structure in a PEM file using L<_PEM_read_bio_PUBKEY(3)> (or similar function).
 
 =head1 EXAMPLES
 

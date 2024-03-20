@@ -36,7 +36,7 @@ EVP_cast5_ofb                           35	1_1_0	EXIST::FUNCTION:CAST
 d2i_PUBKEY_fp                           36	1_1_0	EXIST::FUNCTION:STDIO
 PKCS7_set_cipher                        37	1_1_0	EXIST::FUNCTION:
 BF_decrypt                              38	1_1_0	EXIST::FUNCTION:BF
-PEM_read_bio_PUBKEY                     39	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_PUBKEY                     39	1_1_0	EXIST::FUNCTION:
 X509_NAME_delete_entry                  40	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_meth_set_verify_recover        41	1_1_0	EXIST::FUNCTION:
 UI_set_method                           42	1_1_0	EXIST::FUNCTION:

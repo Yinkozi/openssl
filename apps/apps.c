@@ -861,7 +861,7 @@ EVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
 #endif
             pkey = NULL;
     } else if (format == FORMAT_PEM) {
-        pkey = PEM_read_bio_PUBKEY(key, NULL,
+        pkey = _PEM_read_bio_PUBKEY(key, NULL,
                                    (pem_password_cb *)password_callback,
                                    &cb_data);
 #if !defined(OPENSSL_NO_RSA) && !defined(OPENSSL_NO_DSA)

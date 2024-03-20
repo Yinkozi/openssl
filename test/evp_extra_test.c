@@ -1222,7 +1222,7 @@ static int test_EVP_SM2_verify(void)
     if (!TEST_true(bio != NULL))
         goto done;
 
-    pkey = PEM_read_bio_PUBKEY(bio, NULL, NULL, NULL);
+    pkey = _PEM_read_bio_PUBKEY(bio, NULL, NULL, NULL);
     if (!TEST_true(pkey != NULL))
         goto done;
 
