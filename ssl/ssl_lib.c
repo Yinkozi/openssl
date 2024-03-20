@@ -3096,11 +3096,11 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     if (ret->param == NULL)
         goto err;
 
-    if ((ret->md5 = EVP_get_digestbyname("ssl3-md5")) == NULL) {
+    if ((ret->md5 = _EVP_get_digestbyname("ssl3-md5")) == NULL) {
         SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_MD5_ROUTINES);
         goto err2;
     }
-    if ((ret->sha1 = EVP_get_digestbyname("ssl3-sha1")) == NULL) {
+    if ((ret->sha1 = _EVP_get_digestbyname("ssl3-sha1")) == NULL) {
         SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_SHA1_ROUTINES);
         goto err2;
     }

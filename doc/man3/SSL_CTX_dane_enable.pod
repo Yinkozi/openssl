@@ -362,7 +362,7 @@ L<SSL_get0_peername(3)>,
 L<X509_verify_cert(3)>,
 L<X509_up_ref(3)>,
 L<X509_free(3)>,
-L<EVP_get_digestbyname(3)>,
+L<_EVP_get_digestbyname(3)>,
 L<EVP_PKEY_up_ref(3)>,
 L<_EVP_PKEY_free(3)>
 

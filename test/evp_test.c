@@ -333,7 +333,7 @@ static int digest_test_init(EVP_TEST *t, const char *alg)
     DIGEST_DATA *mdat;
     const EVP_MD *digest;
 
-    if ((digest = EVP_get_digestbyname(alg)) == NULL) {
+    if ((digest = _EVP_get_digestbyname(alg)) == NULL) {
         /* If alg has an OID assume disabled algorithm */
         if (OBJ_sn2nid(alg) != NID_undef || OBJ_ln2nid(alg) != NID_undef) {
             t->skip = 1;
@@ -1011,7 +1011,7 @@ static int mac_test_run(EVP_TEST *t)
     }
 
     if (expected->type == EVP_PKEY_HMAC) {
-        if (!TEST_ptr(md = EVP_get_digestbyname(expected->alg))) {
+        if (!TEST_ptr(md = _EVP_get_digestbyname(expected->alg))) {
             t->err = "MAC_ALGORITHM_SET_ERROR";
             goto err;
         }
@@ -1426,7 +1426,7 @@ static int pbkdf2_test_parse(EVP_TEST *t,
         return 1;
     }
     if (strcmp(keyword, "MD") == 0) {
-        pdata->md = EVP_get_digestbyname(value);
+        pdata->md = _EVP_get_digestbyname(value);
         if (pdata->md == NULL)
             return -1;
         return 1;
@@ -2058,7 +2058,7 @@ static int digestsigver_test_init(EVP_TEST *t, const char *alg, int is_verify,
     DIGESTSIGN_DATA *mdat;
 
     if (strcmp(alg, "NULL") != 0) {
-        if ((md = EVP_get_digestbyname(alg)) == NULL) {
+        if ((md = _EVP_get_digestbyname(alg)) == NULL) {
             /* If alg has an OID assume disabled algorithm */
             if (OBJ_sn2nid(alg) != NID_undef || OBJ_ln2nid(alg) != NID_undef) {
                 t->skip = 1;

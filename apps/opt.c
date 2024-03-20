@@ -286,7 +286,7 @@ int opt_cipher(const char *name, const EVP_CIPHER **cipherp)
  */
 int opt_md(const char *name, const EVP_MD **mdp)
 {
-    *mdp = EVP_get_digestbyname(name);
+    *mdp = _EVP_get_digestbyname(name);
     if (*mdp != NULL)
         return 1;
     BIO_printf(bio_err, "%s: Unrecognized flag %s\n", prog, name);

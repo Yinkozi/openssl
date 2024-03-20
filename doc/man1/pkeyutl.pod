@@ -184,7 +184,7 @@ and its implementation. The OpenSSL operations and options are indicated below.
 Unless otherwise mentioned all algorithms support the B<digest:alg> option
 which specifies the digest in use for sign, verify and verifyrecover operations.
 The value B<alg> should represent a digest name as used in the
-EVP_get_digestbyname() function for example B<sha1>. This value is not used to
+_EVP_get_digestbyname() function for example B<sha1>. This value is not used to
 hash the input data. It is used (by some algorithms) for sanity-checking the
 lengths of data passed in to the B<pkeyutl> and for creating the structures that
 make up the signature (e.g. B<DigestInfo> in RSASSA PKCS#1 v1.5 signatures).

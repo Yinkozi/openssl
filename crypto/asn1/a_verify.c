@@ -36,7 +36,7 @@ int ASN1_verify(i2d_of_void *i2d, X509_ALGOR *a, ASN1_BIT_STRING *signature,
         goto err;
     }
     i = OBJ_obj2nid(a->algorithm);
-    type = EVP_get_digestbyname(OBJ_nid2sn(i));
+    type = _EVP_get_digestbyname(OBJ_nid2sn(i));
     if (type == NULL) {
         ASN1err(ASN1_F_ASN1_VERIFY, ASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
         goto err;

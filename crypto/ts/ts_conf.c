@@ -265,7 +265,7 @@ int TS_CONF_set_signer_digest(CONF *conf, const char *section,
         ts_CONF_lookup_fail(section, ENV_SIGNER_DIGEST);
         goto err;
     }
-    sign_md = EVP_get_digestbyname(md);
+    sign_md = _EVP_get_digestbyname(md);
     if (sign_md == NULL) {
         ts_CONF_invalid(section, ENV_SIGNER_DIGEST);
         goto err;
@@ -358,7 +358,7 @@ int TS_CONF_set_digests(CONF *conf, const char *section, TS_RESP_CTX *ctx)
         const char *extval = val->value ? val->value : val->name;
         const EVP_MD *md;
 
-        if ((md = EVP_get_digestbyname(extval)) == NULL) {
+        if ((md = _EVP_get_digestbyname(extval)) == NULL) {
             ts_CONF_invalid(section, ENV_DIGESTS);
             goto err;
         }
@@ -478,7 +478,7 @@ int TS_CONF_set_ess_cert_id_digest(CONF *conf, const char *section,
     if (md == NULL)
         md = "sha1";
 
-    cert_md = EVP_get_digestbyname(md);
+    cert_md = _EVP_get_digestbyname(md);
     if (cert_md == NULL) {
         ts_CONF_invalid(section, ENV_ESS_CERT_ID_ALG);
         goto err;

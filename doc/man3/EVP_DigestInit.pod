@@ -11,7 +11,7 @@ EVP_MD_type, EVP_MD_pkey_type, EVP_MD_size, EVP_MD_block_size, EVP_MD_flags,
 EVP_MD_CTX_md, EVP_MD_CTX_type, EVP_MD_CTX_size, EVP_MD_CTX_block_size,
 EVP_MD_CTX_md_data, EVP_MD_CTX_update_fn, EVP_MD_CTX_set_update_fn,
 EVP_md_null,
-EVP_get_digestbyname, EVP_get_digestbynid, EVP_get_digestbyobj,
+_EVP_get_digestbyname, EVP_get_digestbynid, EVP_get_digestbyobj,
 EVP_MD_CTX_pkey_ctx, EVP_MD_CTX_set_pkey_ctx - EVP digest routines
 
 =head1 SYNOPSIS
@@ -59,7 +59,7 @@ EVP_MD_CTX_pkey_ctx, EVP_MD_CTX_set_pkey_ctx - EVP digest routines
 
  const EVP_MD *EVP_md_null(void);
 
- const EVP_MD *EVP_get_digestbyname(const char *name);
+ const EVP_MD *_EVP_get_digestbyname(const char *name);
  const EVP_MD *EVP_get_digestbynid(int type);
  const EVP_MD *EVP_get_digestbyobj(const ASN1_OBJECT *o);
 
@@ -211,7 +211,7 @@ longer linked this function is only retained for compatibility reasons.
 A "null" message digest that does nothing: i.e. the hash it returns is of zero
 length.
 
-=item EVP_get_digestbyname(),
+=item _EVP_get_digestbyname(),
 EVP_get_digestbynid(),
 EVP_get_digestbyobj()
 
@@ -323,7 +323,7 @@ Returns the digest or block size in bytes.
 
 Returns a pointer to the B<EVP_MD> structure of the "null" message digest.
 
-=item EVP_get_digestbyname(),
+=item _EVP_get_digestbyname(),
 EVP_get_digestbynid(),
 EVP_get_digestbyobj()
 
@@ -388,7 +388,7 @@ digest name passed on the command line.
          exit(1);
      }
 
-     md = EVP_get_digestbyname(argv[1]);
+     md = _EVP_get_digestbyname(argv[1]);
      if (md == NULL) {
          printf("Unknown message digest %s\n", argv[1]);
          exit(1);

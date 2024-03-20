@@ -2462,7 +2462,7 @@ X509V3_EXT_add_nconf_sk                 2431	1_1_0	EXIST::FUNCTION:
 i2d_TS_MSG_IMPRINT_fp                   2432	1_1_0	EXIST::FUNCTION:STDIO,TS
 PKCS12_new                              2433	1_1_0	EXIST::FUNCTION:
 X509_REVOKED_set_serialNumber           2434	1_1_0	EXIST::FUNCTION:
-EVP_get_digestbyname                    2435	1_1_0	EXIST::FUNCTION:
+_EVP_get_digestbyname                    2435	1_1_0	EXIST::FUNCTION:
 X509_CRL_get_lastUpdate                 2436	1_1_0	EXIST::FUNCTION:DEPRECATEDIN_1_1_0
 OBJ_create_objects                      2437	1_1_0	EXIST::FUNCTION:
 EVP_enc_null                            2438	1_1_0	EXIST::FUNCTION:

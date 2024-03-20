@@ -1567,7 +1567,7 @@ int speed_main(int argc, char **argv)
             evp_md = NULL;
             evp_cipher = EVP_get_cipherbyname(opt_arg());
             if (evp_cipher == NULL)
-                evp_md = EVP_get_digestbyname(opt_arg());
+                evp_md = _EVP_get_digestbyname(opt_arg());
             if (evp_cipher == NULL && evp_md == NULL) {
                 BIO_printf(bio_err,
                            "%s: %s is an unknown cipher or digest\n",

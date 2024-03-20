@@ -66,7 +66,7 @@ const EVP_CIPHER *EVP_get_cipherbyname(const char *name)
     return cp;
 }
 
-const EVP_MD *EVP_get_digestbyname(const char *name)
+const EVP_MD *_EVP_get_digestbyname(const char *name)
 {
     const EVP_MD *cp;
 

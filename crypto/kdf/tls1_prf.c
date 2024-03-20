@@ -100,7 +100,7 @@ static int pkey_tls1_prf_ctrl_str(EVP_PKEY_CTX *ctx,
     if (strcmp(type, "md") == 0) {
         TLS1_PRF_PKEY_CTX *kctx = ctx->data;
 
-        const EVP_MD *md = EVP_get_digestbyname(value);
+        const EVP_MD *md = _EVP_get_digestbyname(value);
         if (md == NULL) {
             KDFerr(KDF_F_PKEY_TLS1_PRF_CTRL_STR, KDF_R_INVALID_DIGEST);
             return 0;

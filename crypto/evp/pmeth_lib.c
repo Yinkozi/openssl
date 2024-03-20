@@ -449,7 +449,7 @@ int EVP_PKEY_CTX_md(EVP_PKEY_CTX *ctx, int optype, int cmd, const char *md)
 {
     const EVP_MD *m;
 
-    if (md == NULL || (m = EVP_get_digestbyname(md)) == NULL) {
+    if (md == NULL || (m = _EVP_get_digestbyname(md)) == NULL) {
         EVPerr(EVP_F_EVP_PKEY_CTX_MD, EVP_R_INVALID_DIGEST);
         return 0;
     }

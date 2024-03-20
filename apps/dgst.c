@@ -103,7 +103,7 @@ int dgst_main(int argc, char **argv)
 
     prog = opt_progname(argv[0]);
     buf = app_malloc(BUFSIZE, "I/O buffer");
-    md = EVP_get_digestbyname(prog);
+    md = _EVP_get_digestbyname(prog);
 
     prog = opt_init(argc, argv, dgst_options);
     while ((o = opt_next()) != OPT_EOF) {
@@ -444,7 +444,7 @@ static void show_digests(const OBJ_NAME *name, void *arg)
         return;
 
     /* Filter out message digests that we cannot use */
-    md = EVP_get_digestbyname(name->name);
+    md = _EVP_get_digestbyname(name->name);
     if (md == NULL)
         return;
 
