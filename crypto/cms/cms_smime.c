@@ -158,7 +158,7 @@ CMS_ContentInfo *CMS_digest_create(BIO *in, const EVP_MD *md,
 {
     CMS_ContentInfo *cms;
     if (!md)
-        md = EVP_sha1();
+        md = _EVP_sha1();
     cms = cms_DigestedData_create(md);
     if (!cms)
         return NULL;

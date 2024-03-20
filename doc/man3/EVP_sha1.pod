@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-EVP_sha1
+_EVP_sha1
 - SHA-1 For EVP
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_MD *EVP_sha1(void);
+ const EVP_MD *_EVP_sha1(void);
 
 =head1 DESCRIPTION
 
@@ -19,7 +19,7 @@ Security Agency and initially published in 1995.
 
 =over 4
 
-=item EVP_sha1()
+=item _EVP_sha1()
 
 The SHA-1 algorithm which produces a 160-bit output from a given input.
 

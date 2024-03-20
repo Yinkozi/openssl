@@ -69,7 +69,7 @@ int crl_main(int argc, char **argv)
     X509_LOOKUP *lookup = NULL;
     X509_OBJECT *xobj = NULL;
     EVP_PKEY *pkey;
-    const EVP_MD *digest = EVP_sha1();
+    const EVP_MD *digest = _EVP_sha1();
     char *infile = NULL, *outfile = NULL, *crldiff = NULL, *keyfile = NULL;
     const char *CAfile = NULL, *CApath = NULL, *prog;
     OPTION_CHOICE o;

@@ -794,7 +794,7 @@ int generate_cookie_callback(SSL *ssl, unsigned char *cookie,
     BIO_ADDR_rawaddress(peer, buffer + sizeof(port), NULL);
 
     /* Calculate HMAC of buffer using the secret */
-    HMAC(EVP_sha1(), cookie_secret, COOKIE_SECRET_LENGTH,
+    HMAC(_EVP_sha1(), cookie_secret, COOKIE_SECRET_LENGTH,
          buffer, length, cookie, cookie_len);
 
     OPENSSL_free(buffer);

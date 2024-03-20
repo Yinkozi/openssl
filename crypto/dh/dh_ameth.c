@@ -697,7 +697,7 @@ static int dh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
     if (EVP_PKEY_CTX_set_dh_kdf_type(pctx, EVP_PKEY_DH_KDF_X9_42) <= 0)
         goto err;
 
-    if (EVP_PKEY_CTX_set_dh_kdf_md(pctx, EVP_sha1()) <= 0)
+    if (EVP_PKEY_CTX_set_dh_kdf_md(pctx, _EVP_sha1()) <= 0)
         goto err;
 
     if (alg->parameter->type != V_ASN1_SEQUENCE)
@@ -836,7 +836,7 @@ static int dh_cms_encrypt(CMS_RecipientInfo *ri)
         goto err;
     if (kdf_md == NULL) {
         /* Only SHA1 supported */
-        kdf_md = EVP_sha1();
+        kdf_md = _EVP_sha1();
         if (EVP_PKEY_CTX_set_dh_kdf_md(pctx, kdf_md) <= 0)
             goto err;
     } else if (EVP_MD_type(kdf_md) != NID_sha1)

@@ -899,7 +899,7 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
         goto err;
     if (kdf_md == NULL) {
         /* Fixme later for better MD */
-        kdf_md = EVP_sha1();
+        kdf_md = _EVP_sha1();
         if (EVP_PKEY_CTX_set_ecdh_kdf_md(pctx, kdf_md) <= 0)
             goto err;
     }

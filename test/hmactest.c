@@ -115,7 +115,7 @@ static int test_hmac_bad(void)
         || !TEST_ptr_null(HMAC_CTX_get_md(ctx))
         || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
         || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len))
-        || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, EVP_sha1(), NULL))
+        || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, _EVP_sha1(), NULL))
         || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len)))
         goto err;
 
@@ -140,10 +140,10 @@ static int test_hmac_run(void)
         || !TEST_ptr_null(HMAC_CTX_get_md(ctx))
         || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
         || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len))
-        || !TEST_false(HMAC_Init_ex(ctx, test[4].key, -1, EVP_sha1(), NULL)))
+        || !TEST_false(HMAC_Init_ex(ctx, test[4].key, -1, _EVP_sha1(), NULL)))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[4].key, test[4].key_len, EVP_sha1(), NULL))
+    if (!TEST_true(HMAC_Init_ex(ctx, test[4].key, test[4].key_len, _EVP_sha1(), NULL))
         || !TEST_true(HMAC_Update(ctx, test[4].data, test[4].data_len))
         || !TEST_true(HMAC_Final(ctx, buf, &len)))
         goto err;
@@ -206,7 +206,7 @@ static int test_hmac_single_shot(void)
     char *p;
 
     /* Test single-shot with an empty key. */
-    p = pt(HMAC(EVP_sha1(), NULL, 0, test[4].data, test[4].data_len,
+    p = pt(HMAC(_EVP_sha1(), NULL, 0, test[4].data, test[4].data_len,
                 NULL, NULL), SHA_DIGEST_LENGTH);
     if (!TEST_str_eq(p, (char *)test[4].digest))
         return 0;
@@ -228,7 +228,7 @@ static int test_hmac_copy(void)
     if (!TEST_ptr(ctx) || !TEST_ptr(ctx2))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[7].key, test[7].key_len, EVP_sha1(), NULL))
+    if (!TEST_true(HMAC_Init_ex(ctx, test[7].key, test[7].key_len, _EVP_sha1(), NULL))
         || !TEST_true(HMAC_Update(ctx, test[7].data, test[7].data_len))
         || !TEST_true(HMAC_CTX_copy(ctx2, ctx))
         || !TEST_true(HMAC_Final(ctx2, buf, &len)))

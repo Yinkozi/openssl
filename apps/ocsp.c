@@ -433,7 +433,7 @@ int ocsp_main(int argc, char **argv)
             if (cert == NULL)
                 goto end;
             if (cert_id_md == NULL)
-                cert_id_md = EVP_sha1();
+                cert_id_md = _EVP_sha1();
             if (!add_ocsp_cert(&req, cert, cert_id_md, issuer, ids))
                 goto end;
             if (!sk_OPENSSL_STRING_push(reqnames, opt_arg()))
@@ -442,7 +442,7 @@ int ocsp_main(int argc, char **argv)
             break;
         case OPT_SERIAL:
             if (cert_id_md == NULL)
-                cert_id_md = EVP_sha1();
+                cert_id_md = _EVP_sha1();
             if (!add_ocsp_serial(&req, opt_arg(), cert_id_md, issuer, ids))
                 goto end;
             if (!sk_OPENSSL_STRING_push(reqnames, opt_arg()))

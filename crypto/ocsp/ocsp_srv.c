@@ -265,7 +265,7 @@ int OCSP_RESPID_set_by_key(OCSP_RESPID *respid, X509 *cert)
     unsigned char md[SHA_DIGEST_LENGTH];
 
     /* RFC2560 requires SHA1 */
-    if (!X509_pubkey_digest(cert, EVP_sha1(), md, NULL))
+    if (!X509_pubkey_digest(cert, _EVP_sha1(), md, NULL))
         return 0;
 
     byKey = ASN1_OCTET_STRING_new();
@@ -292,7 +292,7 @@ int OCSP_RESPID_match(OCSP_RESPID *respid, X509 *cert)
             return 0;
 
         /* RFC2560 requires SHA1 */
-        if (!X509_pubkey_digest(cert, EVP_sha1(), md, NULL))
+        if (!X509_pubkey_digest(cert, _EVP_sha1(), md, NULL))
             return 0;
 
         return (ASN1_STRING_length(respid->value.byKey) == SHA_DIGEST_LENGTH)

@@ -2688,7 +2688,7 @@ X509_EXTENSION_create_by_OBJ            2651	1_1_0	EXIST::FUNCTION:
 EVP_aes_256_cbc_hmac_sha1               2652	1_1_0	EXIST::FUNCTION:
 SCT_validate                            2653	1_1_0	EXIST::FUNCTION:CT
 EC_GROUP_dup                            2654	1_1_0	EXIST::FUNCTION:EC
-EVP_sha1                                2655	1_1_0	EXIST::FUNCTION:
+_EVP_sha1                                2655	1_1_0	EXIST::FUNCTION:
 OPENSSL_sk_new                          2656	1_1_0	EXIST::FUNCTION:
 BN_dup                                  2657	1_1_0	EXIST::FUNCTION:
 TS_MSG_IMPRINT_print_bio                2658	1_1_0	EXIST::FUNCTION:TS

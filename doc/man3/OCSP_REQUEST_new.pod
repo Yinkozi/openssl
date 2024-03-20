@@ -86,7 +86,7 @@ B<issuer>:
  req = OCSP_REQUEST_new();
  if (req == NULL)
     /* error */
- cid = OCSP_cert_to_id(EVP_sha1(), cert, issuer);
+ cid = OCSP_cert_to_id(_EVP_sha1(), cert, issuer);
  if (cid == NULL)
     /* error */
 

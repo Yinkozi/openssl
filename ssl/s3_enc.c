@@ -47,7 +47,7 @@ static int ssl3_generate_key_block(SSL *s, unsigned char *km, int num)
         for (j = 0; j < k; j++)
             buf[j] = c;
         c++;
-        if (!EVP_DigestInit_ex(s1, EVP_sha1(), NULL)
+        if (!EVP_DigestInit_ex(s1, _EVP_sha1(), NULL)
             || !EVP_DigestUpdate(s1, buf, k)
             || !EVP_DigestUpdate(s1, s->session->master_key,
                                  s->session->master_key_length)

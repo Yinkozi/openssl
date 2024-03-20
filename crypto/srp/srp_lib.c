@@ -35,7 +35,7 @@ static BIGNUM *srp_Calc_xy(const BIGNUM *x, const BIGNUM *y, const BIGNUM *N)
         goto err;
     if (BN_bn2binpad(x, tmp, numN) < 0
         || BN_bn2binpad(y, tmp + numN, numN) < 0
-        || !EVP_Digest(tmp, numN * 2, digest, NULL, EVP_sha1(), NULL))
+        || !EVP_Digest(tmp, numN * 2, digest, NULL, _EVP_sha1(), NULL))
         goto err;
     res = BN_bin2bn(digest, sizeof(digest), NULL);
  err:
@@ -133,12 +133,12 @@ BIGNUM *SRP_Calc_x(const BIGNUM *s, const char *user, const char *pass)
     if ((cs = OPENSSL_malloc(BN_num_bytes(s))) == NULL)
         goto err;
 
-    if (!EVP_DigestInit_ex(ctxt, EVP_sha1(), NULL)
+    if (!EVP_DigestInit_ex(ctxt, _EVP_sha1(), NULL)
         || !EVP_DigestUpdate(ctxt, user, strlen(user))
         || !EVP_DigestUpdate(ctxt, ":", 1)
         || !EVP_DigestUpdate(ctxt, pass, strlen(pass))
         || !EVP_DigestFinal_ex(ctxt, dig, NULL)
-        || !EVP_DigestInit_ex(ctxt, EVP_sha1(), NULL))
+        || !EVP_DigestInit_ex(ctxt, _EVP_sha1(), NULL))
         goto err;
     if (BN_bn2bin(s, cs) < 0)
         goto err;

@@ -51,7 +51,7 @@ int RSA_padding_add_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
     int mdlen, dbmask_len = 0;
 
     if (md == NULL)
-        md = EVP_sha1();
+        md = _EVP_sha1();
     if (mgf1md == NULL)
         mgf1md = md;
 
@@ -131,7 +131,7 @@ int RSA_padding_check_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
     int mdlen;
 
     if (md == NULL)
-        md = EVP_sha1();
+        md = _EVP_sha1();
     if (mgf1md == NULL)
         mgf1md = md;
 

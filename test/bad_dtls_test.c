@@ -301,7 +301,7 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
 
     /* Append HMAC to data */
     ctx = HMAC_CTX_new();
-    HMAC_Init_ex(ctx, mac_key, 20, EVP_sha1(), NULL);
+    HMAC_Init_ex(ctx, mac_key, 20, _EVP_sha1(), NULL);
     HMAC_Update(ctx, epoch, 2);
     HMAC_Update(ctx, seq, 6);
     HMAC_Update(ctx, &type, 1);

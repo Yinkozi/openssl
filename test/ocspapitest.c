@@ -123,7 +123,7 @@ static int test_resp_signer(void)
         || !TEST_ptr(extra_certs)
         || !TEST_true(get_cert_and_key(&signer, &key))
         || !TEST_true(sk_X509_push(extra_certs, signer))
-        || !TEST_true(OCSP_basic_sign(bs, signer, key, EVP_sha1(),
+        || !TEST_true(OCSP_basic_sign(bs, signer, key, _EVP_sha1(),
                                       NULL, OCSP_NOCERTS)))
         goto err;
     if (!TEST_true(OCSP_resp_get0_signer(bs, &tmp, extra_certs))
@@ -135,7 +135,7 @@ static int test_resp_signer(void)
     bs = make_dummy_resp();
     tmp = NULL;
     if (!TEST_ptr(bs)
-        || !TEST_true(OCSP_basic_sign(bs, signer, key, EVP_sha1(),
+        || !TEST_true(OCSP_basic_sign(bs, signer, key, _EVP_sha1(),
                                       NULL, 0)))
         goto err;
     if (!TEST_true(OCSP_resp_get0_signer(bs, &tmp, NULL))

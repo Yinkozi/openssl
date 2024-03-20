@@ -106,7 +106,7 @@ static const EVP_MD sha1_md = {
     ctrl
 };
 
-const EVP_MD *EVP_sha1(void)
+const EVP_MD *_EVP_sha1(void)
 {
     return &sha1_md;
 }

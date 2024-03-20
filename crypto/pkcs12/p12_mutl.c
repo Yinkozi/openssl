@@ -181,7 +181,7 @@ int PKCS12_set_mac(PKCS12 *p12, const char *pass, int passlen,
     ASN1_OCTET_STRING *macoct;
 
     if (!md_type)
-        md_type = EVP_sha1();
+        md_type = _EVP_sha1();
     if (PKCS12_setup_mac(p12, iter, salt, saltlen, md_type) == PKCS12_ERROR) {
         PKCS12err(PKCS12_F_PKCS12_SET_MAC, PKCS12_R_MAC_SETUP_ERROR);
         return 0;

@@ -82,7 +82,7 @@ checking has been omitted for clarity.
 
  bio = BIO_new(BIO_s_null());
  mdtmp = BIO_new(BIO_f_md());
- BIO_set_md(mdtmp, EVP_sha1());
+ BIO_set_md(mdtmp, _EVP_sha1());
  /*
   * For BIO_push() we want to append the sink BIO and keep a note of
   * the start of the chain.
@@ -102,7 +102,7 @@ The next example digests data by reading through a chain instead:
 
  bio = BIO_new_file(file, "rb");
  mdtmp = BIO_new(BIO_f_md());
- BIO_set_md(mdtmp, EVP_sha1());
+ BIO_set_md(mdtmp, _EVP_sha1());
  bio = BIO_push(mdtmp, bio);
  mdtmp = BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, EVP_md5());

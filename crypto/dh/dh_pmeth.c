@@ -307,7 +307,7 @@ static DSA *dsa_dh_generate(DH_PKEY_CTX *dctx, BN_GENCB *pcb)
         if (prime_len >= 2048)
             md = EVP_sha256();
         else
-            md = EVP_sha1();
+            md = _EVP_sha1();
     }
     if (dctx->use_dsa == 1)
         rv = dsa_builtin_paramgen(ret, prime_len, subprime_len, md,

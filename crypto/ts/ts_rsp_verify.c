@@ -292,7 +292,7 @@ static int ts_find_cert(STACK_OF(ESS_CERT_ID) *cert_ids, X509 *cert)
     /* Recompute SHA1 hash of certificate if necessary (side effect). */
     X509_check_purpose(cert, -1, 0);
 
-    if (!X509_digest(cert, EVP_sha1(), cert_sha1, NULL))
+    if (!X509_digest(cert, _EVP_sha1(), cert_sha1, NULL))
         return -1;
 
     /* Look for cert in the cert_ids vector. */

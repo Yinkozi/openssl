@@ -12,7 +12,7 @@
  * also Appendix 2.2 of FIPS PUB 186-1 (i.e. use SHA as defined in FIPS PUB
  * 180-1)
  */
-#define xxxHASH    EVP_sha1()
+#define xxxHASH    _EVP_sha1()
 
 #include <openssl/opensslconf.h>
 #include <stdio.h>
@@ -32,7 +32,7 @@ int DSA_generate_parameters_ex(DSA *ret, int bits,
         return ret->meth->dsa_paramgen(ret, bits, seed_in, seed_len,
                                        counter_ret, h_ret, cb);
     else {
-        const EVP_MD *evpmd = bits >= 2048 ? EVP_sha256() : EVP_sha1();
+        const EVP_MD *evpmd = bits >= 2048 ? EVP_sha256() : _EVP_sha1();
         size_t qbits = EVP_MD_size(evpmd) * 8;
 
         return dsa_builtin_paramgen(ret, bits, qbits, evpmd,
@@ -66,7 +66,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
 
     if (evpmd == NULL) {
         if (qsize == SHA_DIGEST_LENGTH)
-            evpmd = EVP_sha1();
+            evpmd = _EVP_sha1();
         else if (qsize == SHA224_DIGEST_LENGTH)
             evpmd = EVP_sha224();
         else
@@ -334,7 +334,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
 
     if (evpmd == NULL) {
         if (N == 160)
-            evpmd = EVP_sha1();
+            evpmd = _EVP_sha1();
         else if (N == 224)
             evpmd = EVP_sha224();
         else

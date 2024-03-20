@@ -8350,7 +8350,7 @@
          EVP_MD_CTX md;
 
          EVP_MD_CTX_init(&md);             /* new function call */
-         EVP_DigestInit(&md, EVP_sha1());
+         EVP_DigestInit(&md, _EVP_sha1());
          EVP_DigestUpdate(&md, in, len);
          EVP_DigestFinal(&md, out, NULL);
          EVP_MD_CTX_cleanup(&md);          /* new function call */

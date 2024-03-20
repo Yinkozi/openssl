@@ -393,7 +393,7 @@ static void x509v3_cache_extensions(X509 *x)
         return;
     }
 
-    if (!X509_digest(x, EVP_sha1(), x->sha1_hash, NULL))
+    if (!X509_digest(x, _EVP_sha1(), x->sha1_hash, NULL))
         x->ex_flags |= (EXFLAG_NO_FINGERPRINT | EXFLAG_INVALID);
 
     /* V1 should mean no extensions ... */

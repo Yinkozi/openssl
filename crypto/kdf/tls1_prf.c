@@ -261,7 +261,7 @@ static int tls1_prf_alg(const EVP_MD *md,
             KDFerr(KDF_F_TLS1_PRF_ALG, ERR_R_MALLOC_FAILURE);
             return 0;
         }
-        if (!tls1_prf_P_hash(EVP_sha1(), sec + slen/2, slen/2 + (slen & 1),
+        if (!tls1_prf_P_hash(_EVP_sha1(), sec + slen/2, slen/2 + (slen & 1),
                          seed, seed_len, tmp, olen)) {
             OPENSSL_clear_free(tmp, olen);
             return 0;

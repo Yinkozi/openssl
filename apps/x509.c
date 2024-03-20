@@ -777,7 +777,7 @@ int x509_main(int argc, char **argv)
                 const EVP_MD *fdig = digest;
 
                 if (fdig == NULL)
-                    fdig = EVP_sha1();
+                    fdig = _EVP_sha1();
 
                 if (!X509_digest(x, fdig, md, &n)) {
                     BIO_printf(bio_err, "out of memory\n");

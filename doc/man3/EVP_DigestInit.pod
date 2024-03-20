@@ -109,7 +109,7 @@ If B<impl> is NULL the default implementation of digest B<type> is used.
 =item EVP_DigestInit_ex()
 
 Sets up digest context B<ctx> to use a digest B<type> from ENGINE B<impl>.
-B<type> will typically be supplied by a function such as EVP_sha1().  If
+B<type> will typically be supplied by a function such as _EVP_sha1().  If
 B<impl> is NULL then the default implementation of digest B<type> is used.
 
 =item EVP_DigestUpdate()
@@ -171,7 +171,7 @@ B<EVP_MD_CTX> structure.
 EVP_MD_CTX_type()
 
 Return the NID of the OBJECT IDENTIFIER representing the given message digest
-when passed an B<EVP_MD> structure.  For example, C<EVP_MD_type(EVP_sha1())>
+when passed an B<EVP_MD> structure.  For example, C<EVP_MD_type(_EVP_sha1())>
 returns B<NID_sha1>. This function is normally used when setting ASN1 OIDs.
 
 =item EVP_MD_CTX_md_data()
@@ -202,7 +202,7 @@ ones. See L<EVP_MD_meth_set_flags(3)> for more information.
 =item EVP_MD_pkey_type()
 
 Returns the NID of the public key signing algorithm associated with this
-digest. For example EVP_sha1() is associated with RSA so this will return
+digest. For example _EVP_sha1() is associated with RSA so this will return
 B<NID_sha1WithRSAEncryption>. Since digests and signature algorithms are no
 longer linked this function is only retained for compatibility reasons.
 
@@ -423,7 +423,7 @@ L<EVP_md4(3)>,
 L<EVP_md5(3)>,
 L<EVP_mdc2(3)>,
 L<EVP_ripemd160(3)>,
-L<EVP_sha1(3)>,
+L<_EVP_sha1(3)>,
 L<EVP_sha224(3)>,
 L<EVP_sha3_224(3)>,
 L<EVP_sm3(3)>,
@@ -435,7 +435,7 @@ The EVP_MD_CTX_create() and EVP_MD_CTX_destroy() functions were renamed to
 EVP_MD_CTX_new() and EVP_MD_CTX_free() in OpenSSL 1.1.0, respectively.
 
 The link between digests and signing algorithms was fixed in OpenSSL 1.0 and
-later, so now EVP_sha1() can be used with RSA and DSA.
+later, so now _EVP_sha1() can be used with RSA and DSA.
 
 The EVP_dss1() function was removed in OpenSSL 1.1.0.
 
