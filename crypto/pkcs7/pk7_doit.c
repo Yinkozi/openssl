@@ -848,7 +848,7 @@ int PKCS7_SIGNER_INFO_sign(PKCS7_SIGNER_INFO *si)
                          ASN1_ITEM_rptr(PKCS7_ATTR_SIGN));
     if (!abuf)
         goto err;
-    if (EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
+    if (_EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
         goto err;
     OPENSSL_free(abuf);
     abuf = NULL;

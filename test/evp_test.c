@@ -1031,7 +1031,7 @@ static int mac_test_run(EVP_TEST *t)
             t->err = "EVPPKEYCTXCTRL_ERROR";
             goto err;
         }
-    if (!EVP_DigestSignUpdate(mctx, expected->input, expected->input_len)) {
+    if (!_EVP_DigestSignUpdate(mctx, expected->input, expected->input_len)) {
         t->err = "DIGESTSIGNUPDATE_ERROR";
         goto err;
     }
@@ -2151,7 +2151,7 @@ static int digestsigver_test_parse(EVP_TEST *t,
 static int digestsign_update_fn(void *ctx, const unsigned char *buf,
                                 size_t buflen)
 {
-    return EVP_DigestSignUpdate(ctx, buf, buflen);
+    return _EVP_DigestSignUpdate(ctx, buf, buflen);
 }
 
 static int digestsign_test_run(EVP_TEST *t)

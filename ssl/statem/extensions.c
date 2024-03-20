@@ -1627,7 +1627,7 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
 
     bindersize = hashsize;
     if (_EVP_DigestSignInit(mctx, NULL, md, NULL, mackey) <= 0
-            || EVP_DigestSignUpdate(mctx, hash, hashsize) <= 0
+            || _EVP_DigestSignUpdate(mctx, hash, hashsize) <= 0
             || EVP_DigestSignFinal(mctx, binderout, &bindersize) <= 0
             || bindersize != hashsize) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,

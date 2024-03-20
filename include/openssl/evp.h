@@ -504,7 +504,7 @@ void *EVP_CIPHER_CTX_set_cipher_data(EVP_CIPHER_CTX *ctx, void *cipher_data);
 # define EVP_VerifyUpdate(a,b,c)         EVP_DigestUpdate(a,b,c)
 # define EVP_OpenUpdate(a,b,c,d,e)       _EVP_DecryptUpdate(a,b,c,d,e)
 # define EVP_SealUpdate(a,b,c,d,e)       _EVP_EncryptUpdate(a,b,c,d,e)
-# define EVP_DigestSignUpdate(a,b,c)     EVP_DigestUpdate(a,b,c)
+# define _EVP_DigestSignUpdate(a,b,c)     EVP_DigestUpdate(a,b,c)
 # define _EVP_DigestVerifyUpdate(a,b,c)   EVP_DigestUpdate(a,b,c)
 
 # ifdef CONST_STRICT

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-_EVP_DigestSignInit, EVP_DigestSignUpdate, EVP_DigestSignFinal,
+_EVP_DigestSignInit, _EVP_DigestSignUpdate, EVP_DigestSignFinal,
 EVP_DigestSign - EVP signing functions
 
 =head1 SYNOPSIS
@@ -11,7 +11,7 @@ EVP_DigestSign - EVP signing functions
 
  int _EVP_DigestSignInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                         const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey);
- int EVP_DigestSignUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
+ int _EVP_DigestSignUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
  int EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sig, size_t *siglen);
 
  int EVP_DigestSign(EVP_MD_CTX *ctx, unsigned char *sigret,
@@ -84,7 +84,7 @@ Will ignore any digest provided.
 
 If RSA-PSS is used and restrictions apply then the digest must match.
 
-EVP_DigestSignUpdate() hashes B<cnt> bytes of data at B<d> into the
+_EVP_DigestSignUpdate() hashes B<cnt> bytes of data at B<d> into the
 signature context B<ctx>. This function can be called several times on the
 same B<ctx> to include additional data. This function is currently implemented
 using a macro.
@@ -102,7 +102,7 @@ EVP_DigestSignFinal().
 
 =head1 RETURN VALUES
 
-_EVP_DigestSignInit(), EVP_DigestSignUpdate(), EVP_DigestSignFinal() and
+_EVP_DigestSignInit(), _EVP_DigestSignUpdate(), EVP_DigestSignFinal() and
 EVP_DigestSign() return 1 for success and 0 for failure.
 
 The error codes can be obtained from L<ERR_get_error(3)>.
@@ -115,7 +115,7 @@ transparent to the algorithm used and much more flexible.
 
 EVP_DigestSign() is a one shot operation which signs a single block of data
 in one function. For algorithms that support streaming it is equivalent to
-calling EVP_DigestSignUpdate() and EVP_DigestSignFinal(). For algorithms which
+calling _EVP_DigestSignUpdate() and EVP_DigestSignFinal(). For algorithms which
 do not support streaming (e.g. PureEdDSA) it is the only way to sign data.
 
 In previous versions of OpenSSL there was a link between message digest types
@@ -128,7 +128,7 @@ If the automatic seeding or reseeding of the OpenSSL CSPRNG fails due to
 external circumstances (see L<RAND(7)>), the operation will fail.
 
 The call to EVP_DigestSignFinal() internally finalizes a copy of the digest
-context. This means that calls to EVP_DigestSignUpdate() and
+context. This means that calls to _EVP_DigestSignUpdate() and
 EVP_DigestSignFinal() can be called later to digest and sign additional data.
 
 Since only a copy of the digest context is ever finalized, the context must
@@ -151,7 +151,7 @@ L<RAND(7)>
 
 =head1 HISTORY
 
-_EVP_DigestSignInit(), EVP_DigestSignUpdate() and EVP_DigestSignFinal()
+_EVP_DigestSignInit(), _EVP_DigestSignUpdate() and EVP_DigestSignFinal()
 were added in OpenSSL 1.0.0.
 
 =head1 COPYRIGHT

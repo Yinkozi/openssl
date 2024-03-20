@@ -697,7 +697,7 @@ int CMS_SignerInfo_sign(CMS_SignerInfo *si)
                          ASN1_ITEM_rptr(CMS_Attributes_Sign));
     if (!abuf)
         goto err;
-    if (EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
+    if (_EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
         goto err;
     if (EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
         goto err;

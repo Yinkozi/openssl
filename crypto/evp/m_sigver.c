@@ -165,7 +165,7 @@ int EVP_DigestSign(EVP_MD_CTX *ctx, unsigned char *sigret, size_t *siglen,
 {
     if (ctx->pctx->pmeth->digestsign != NULL)
         return ctx->pctx->pmeth->digestsign(ctx, sigret, siglen, tbs, tbslen);
-    if (sigret != NULL && EVP_DigestSignUpdate(ctx, tbs, tbslen) <= 0)
+    if (sigret != NULL && _EVP_DigestSignUpdate(ctx, tbs, tbslen) <= 0)
         return 0;
     return EVP_DigestSignFinal(ctx, sigret, siglen);
 }

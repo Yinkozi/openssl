@@ -1012,7 +1012,7 @@ static int test_EVP_DigestSignInit(void)
         goto out;
 
     if (!TEST_true(_EVP_DigestSignInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
-            || !TEST_true(EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
+            || !TEST_true(_EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
         goto out;
 
     /* Determine the size of the signature. */
@@ -1325,7 +1325,7 @@ static int test_EVP_SM2(void)
     if (!TEST_true(_EVP_DigestSignInit(md_ctx, NULL, EVP_sm3(), NULL, pkey)))
         goto done;
 
-    if(!TEST_true(EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
+    if(!TEST_true(_EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
         goto done;
 
     /* Determine the size of the signature. */
@@ -1924,7 +1924,7 @@ static int test_signatures_with_engine(int tst)
         if (!TEST_true(ret))
             goto err;
 
-        if (!TEST_true(EVP_DigestSignUpdate(ctx, msg, sizeof(msg)))
+        if (!TEST_true(_EVP_DigestSignUpdate(ctx, msg, sizeof(msg)))
                 || !TEST_true(EVP_DigestSignFinal(ctx, NULL, &maclen)))
             goto err;
 

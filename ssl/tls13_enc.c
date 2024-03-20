@@ -322,7 +322,7 @@ size_t tls13_final_finish_mac(SSL *s, const char *str, size_t slen,
     if (key == NULL
             || ctx == NULL
             || _EVP_DigestSignInit(ctx, NULL, md, NULL, key) <= 0
-            || EVP_DigestSignUpdate(ctx, hash, hashlen) <= 0
+            || _EVP_DigestSignUpdate(ctx, hash, hashlen) <= 0
             || EVP_DigestSignFinal(ctx, out, &hashlen) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS13_FINAL_FINISH_MAC,
                  ERR_R_INTERNAL_ERROR);

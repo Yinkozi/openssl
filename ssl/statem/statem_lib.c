@@ -294,7 +294,7 @@ int tls_construct_cert_verify(SSL *s, WPACKET *pkt)
         }
     }
     if (s->version == SSL3_VERSION) {
-        if (EVP_DigestSignUpdate(mctx, hdata, hdatalen) <= 0
+        if (_EVP_DigestSignUpdate(mctx, hdata, hdatalen) <= 0
             || !EVP_MD_CTX_ctrl(mctx, EVP_CTRL_SSL3_MASTER_SECRET,
                                 (int)s->session->master_key_length,
                                 s->session->master_key)

@@ -373,7 +373,7 @@ L<EVP_PKEY_param_check(3)> respectively.
  int (*digest_custom) (EVP_PKEY_CTX *ctx, EVP_MD_CTX *mctx);
 
 The digest_custom() method is used to generate customized digest content before
-the real message is passed to functions like L<EVP_DigestSignUpdate(3)> or
+the real message is passed to functions like L<_EVP_DigestSignUpdate(3)> or
 L<_EVP_DigestVerifyInit(3)>. This is usually required by some public key
 signature algorithms like SM2 which requires a hashed prefix to the message to
 be signed. The digest_custom() function will be called by L<_EVP_DigestSignInit(3)>
