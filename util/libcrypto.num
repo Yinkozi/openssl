@@ -3337,7 +3337,7 @@ d2i_DIST_POINT                          3289	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_CTX_free                       3290	1_1_0	EXIST::FUNCTION:
 PBEPARAM_free                           3291	1_1_0	EXIST::FUNCTION:
 NETSCAPE_SPKI_set_pubkey                3292	1_1_0	EXIST::FUNCTION:
-EVP_sha512                              3293	1_1_0	EXIST::FUNCTION:
+_EVP_sha512                              3293	1_1_0	EXIST::FUNCTION:
 X509_CRL_match                          3294	1_1_0	EXIST::FUNCTION:
 i2s_ASN1_IA5STRING                      3295	1_1_0	EXIST::FUNCTION:
 EC_KEY_get_default_method               3296	1_1_0	EXIST::FUNCTION:EC

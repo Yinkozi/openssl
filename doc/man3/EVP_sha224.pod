@@ -7,7 +7,7 @@ _EVP_sha256,
 EVP_sha512_224,
 EVP_sha512_256,
 EVP_sha384,
-EVP_sha512
+_EVP_sha512
 - SHA-2 For EVP
 
 =head1 SYNOPSIS
@@ -19,7 +19,7 @@ EVP_sha512
  const EVP_MD *EVP_sha512_224(void);
  const EVP_MD *EVP_sha512_256(void);
  const EVP_MD *EVP_sha384(void);
- const EVP_MD *EVP_sha512(void);
+ const EVP_MD *_EVP_sha512(void);
 
 =head1 DESCRIPTION
 
@@ -33,7 +33,7 @@ _EVP_sha256(),
 EVP_sha512_224,
 EVP_sha512_256,
 EVP_sha384(),
-EVP_sha512()
+_EVP_sha512()
 
 The SHA-2 SHA-224, SHA-256, SHA-512/224, SHA512/256, SHA-384 and SHA-512
 algorithms, which generate 224, 256, 224, 256, 384 and 512 bits

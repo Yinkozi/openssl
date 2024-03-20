@@ -394,7 +394,7 @@ static int run_tlsatest(void)
             || !TEST_ptr(ctx = SSL_CTX_new(TLS_client_method()))
             || !TEST_int_gt(SSL_CTX_dane_enable(ctx), 0)
             || !TEST_true(SSL_CTX_load_verify_locations(ctx, CAfile, NULL))
-            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, EVP_sha512(), 2, 1),
+            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, _EVP_sha512(), 2, 1),
                             0)
             || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, _EVP_sha256(), 1, 2),
                             0)

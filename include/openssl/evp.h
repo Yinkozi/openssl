@@ -710,7 +710,7 @@ const EVP_MD *_EVP_sha1(void);
 const EVP_MD *EVP_sha224(void);
 const EVP_MD *_EVP_sha256(void);
 const EVP_MD *EVP_sha384(void);
-const EVP_MD *EVP_sha512(void);
+const EVP_MD *_EVP_sha512(void);
 const EVP_MD *EVP_sha512_224(void);
 const EVP_MD *EVP_sha512_256(void);
 const EVP_MD *EVP_sha3_224(void);

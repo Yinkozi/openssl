@@ -534,7 +534,7 @@ static char *shacrypt(const char *passwd, const char *magic, const char *salt)
         buf_size = 32;
         break;
     case '6':
-        sha = EVP_sha512();
+        sha = _EVP_sha512();
         buf_size = 64;
         break;
     default:

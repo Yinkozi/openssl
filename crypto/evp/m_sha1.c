@@ -291,7 +291,7 @@ static const EVP_MD sha512_md = {
     sizeof(EVP_MD *) + sizeof(SHA512_CTX),
 };
 
-const EVP_MD *EVP_sha512(void)
+const EVP_MD *_EVP_sha512(void)
 {
     return &sha512_md;
 }

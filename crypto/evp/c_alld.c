@@ -38,7 +38,7 @@ void openssl_add_all_digests_int(void)
     EVP_add_digest(EVP_sha224());
     EVP_add_digest(_EVP_sha256());
     EVP_add_digest(EVP_sha384());
-    EVP_add_digest(EVP_sha512());
+    EVP_add_digest(_EVP_sha512());
     EVP_add_digest(EVP_sha512_224());
     EVP_add_digest(EVP_sha512_256());
 #ifndef OPENSSL_NO_WHIRLPOOL

@@ -58,7 +58,7 @@ Matching type Full(0) cannot be modified or disabled.
 By default, matching type C<SHA2-256(1)> (see RFC7218 for definitions
 of the DANE TLSA parameter acronyms) is mapped to C<_EVP_sha256()>
 with a strength ordinal of C<1> and matching type C<SHA2-512(2)>
-is mapped to C<EVP_sha512()> with a strength ordinal of C<2>.
+is mapped to C<_EVP_sha512()> with a strength ordinal of C<2>.
 
 SSL_dane_enable() must be called before the SSL handshake is initiated with
 L<SSL_connect(3)> if (and only if) you want to enable DANE for that connection.
