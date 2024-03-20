@@ -62,7 +62,7 @@ int SSL_use_certificate_file(SSL *ssl, const char *file, int type)
         x = d2i_X509_bio(in, NULL);
     } else if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        x = PEM_read_bio_X509(in, NULL, ssl->default_passwd_callback,
+        x = _PEM_read_bio_X509(in, NULL, ssl->default_passwd_callback,
                               ssl->default_passwd_callback_userdata);
     } else {
         SSLerr(SSL_F_SSL_USE_CERTIFICATE_FILE, SSL_R_BAD_SSL_FILETYPE);
@@ -184,7 +184,7 @@ int SSL_use_RSAPrivateKey_file(SSL *ssl, const char *file, int type)
         rsa = d2i_RSAPrivateKey_bio(in, NULL);
     } else if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        rsa = PEM_read_bio_RSAPrivateKey(in, NULL,
+        rsa = _PEM_read_bio_RSAPrivateKey(in, NULL,
                                          ssl->default_passwd_callback,
                                          ssl->default_passwd_callback_userdata);
     } else {
@@ -376,7 +376,7 @@ int SSL_CTX_use_certificate_file(SSL_CTX *ctx, const char *file, int type)
         x = d2i_X509_bio(in, NULL);
     } else if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        x = PEM_read_bio_X509(in, NULL, ctx->default_passwd_callback,
+        x = _PEM_read_bio_X509(in, NULL, ctx->default_passwd_callback,
                               ctx->default_passwd_callback_userdata);
     } else {
         SSLerr(SSL_F_SSL_CTX_USE_CERTIFICATE_FILE, SSL_R_BAD_SSL_FILETYPE);
@@ -459,7 +459,7 @@ int SSL_CTX_use_RSAPrivateKey_file(SSL_CTX *ctx, const char *file, int type)
         rsa = d2i_RSAPrivateKey_bio(in, NULL);
     } else if (type == SSL_FILETYPE_PEM) {
         j = ERR_R_PEM_LIB;
-        rsa = PEM_read_bio_RSAPrivateKey(in, NULL,
+        rsa = _PEM_read_bio_RSAPrivateKey(in, NULL,
                                          ctx->default_passwd_callback,
                                          ctx->default_passwd_callback_userdata);
     } else {
@@ -597,7 +597,7 @@ static int use_certificate_chain_file(SSL_CTX *ctx, SSL *ssl, const char *file)
         goto end;
     }
 
-    x = PEM_read_bio_X509_AUX(in, NULL, passwd_callback,
+    x = _PEM_read_bio_X509_AUX(in, NULL, passwd_callback,
                               passwd_callback_userdata);
     if (x == NULL) {
         SSLerr(SSL_F_USE_CERTIFICATE_CHAIN_FILE, ERR_R_PEM_LIB);
@@ -631,7 +631,7 @@ static int use_certificate_chain_file(SSL_CTX *ctx, SSL *ssl, const char *file)
             goto end;
         }
 
-        while ((ca = PEM_read_bio_X509(in, NULL, passwd_callback,
+        while ((ca = _PEM_read_bio_X509(in, NULL, passwd_callback,
                                        passwd_callback_userdata))
                != NULL) {
             if (ctx)

@@ -2985,7 +2985,7 @@ static DH *load_dh_param(const char *dhfile)
 
     if ((bio = BIO_new_file(dhfile, "r")) == NULL)
         goto err;
-    ret = PEM_read_bio_DHparams(bio, NULL, NULL, NULL);
+    ret = _PEM_read_bio_DHparams(bio, NULL, NULL, NULL);
  err:
     _BIO_free(bio);
     return ret;

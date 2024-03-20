@@ -705,7 +705,7 @@ static int execute_test_large_message(const SSL_METHOD *smeth,
 
     if (!TEST_ptr(certbio = BIO_new_file(cert, "r")))
         goto end;
-    chaincert = PEM_read_bio_X509(certbio, NULL, NULL, NULL);
+    chaincert = _PEM_read_bio_X509(certbio, NULL, NULL, NULL);
     _BIO_free(certbio);
     certbio = NULL;
     if (!TEST_ptr(chaincert))
@@ -1086,7 +1086,7 @@ static int test_tlsext_status_type(void)
     if (!TEST_ptr(certbio = BIO_new_file(cert, "r"))
             || !TEST_ptr(id = OCSP_RESPID_new())
             || !TEST_ptr(ids = sk_OCSP_RESPID_new_null())
-            || !TEST_ptr(ocspcert = PEM_read_bio_X509(certbio,
+            || !TEST_ptr(ocspcert = _PEM_read_bio_X509(certbio,
                                                       NULL, NULL, NULL))
             || !TEST_true(OCSP_RESPID_set_by_key(id, ocspcert))
             || !TEST_true(sk_OCSP_RESPID_push(ids, id)))
@@ -6307,14 +6307,14 @@ static int cert_cb(SSL *s, void *arg)
             goto out;
         if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, rootfile), 0)
-                || !TEST_ptr(rootx = PEM_read_bio_X509(in, NULL, NULL, NULL))
+                || !TEST_ptr(rootx = _PEM_read_bio_X509(in, NULL, NULL, NULL))
                 || !TEST_true(sk_X509_push(chain, rootx)))
             goto out;
         rootx = NULL;
         _BIO_free(in);
         if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsacert), 0)
-                || !TEST_ptr(x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
+                || !TEST_ptr(x509 = _PEM_read_bio_X509(in, NULL, NULL, NULL)))
             goto out;
         _BIO_free(in);
         if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
@@ -6462,7 +6462,7 @@ static int client_cert_cb(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     if (!TEST_ptr(in))
         return 0;
 
-    xcert = PEM_read_bio_X509(in, NULL, NULL, NULL);
+    xcert = _PEM_read_bio_X509(in, NULL, NULL, NULL);
     _BIO_free(in);
     if (!TEST_ptr(xcert))
         return 0;

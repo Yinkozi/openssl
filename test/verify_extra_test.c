@@ -33,7 +33,7 @@ static X509 *load_cert_pem(const char *file)
     if (!TEST_ptr(bio = _BIO_new(BIO_s_file())))
         return NULL;
     if (TEST_int_gt(BIO_read_filename(bio, file), 0))
-        (void)TEST_ptr(cert = PEM_read_bio_X509(bio, NULL, NULL, NULL));
+        (void)TEST_ptr(cert = _PEM_read_bio_X509(bio, NULL, NULL, NULL));
 
     _BIO_free(bio);
     return cert;
@@ -59,7 +59,7 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
 
     ERR_set_mark();
     do {
-        x = PEM_read_bio_X509(bio, NULL, 0, NULL);
+        x = _PEM_read_bio_X509(bio, NULL, 0, NULL);
         if (x != NULL && !sk_X509_push(certs, x)) {
             sk_X509_pop_free(certs, X509_free);
             _BIO_free(bio);
@@ -133,7 +133,7 @@ static int test_alt_chains_cert_forgery(void)
     if ((bio = BIO_new_file(bad_f, "r")) == NULL)
         goto err;
 
-    if ((x = PEM_read_bio_X509(bio, NULL, 0, NULL)) == NULL)
+    if ((x = _PEM_read_bio_X509(bio, NULL, 0, NULL)) == NULL)
         goto err;
 
     sctx = X509_STORE_CTX_new();
@@ -181,7 +181,7 @@ static int test_store_ctx(void)
     if (bio == NULL)
         goto err;
 
-    x = PEM_read_bio_X509(bio, NULL, 0, NULL);
+    x = _PEM_read_bio_X509(bio, NULL, 0, NULL);
     if (x == NULL)
         goto err;
 

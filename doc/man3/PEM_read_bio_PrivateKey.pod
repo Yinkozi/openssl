@@ -8,22 +8,22 @@ PEM_write_bio_PrivateKey_traditional, PEM_write_PrivateKey,
 PEM_write_bio_PKCS8PrivateKey, PEM_write_PKCS8PrivateKey,
 PEM_write_bio_PKCS8PrivateKey_nid, PEM_write_PKCS8PrivateKey_nid,
 _PEM_read_bio_PUBKEY, PEM_read_PUBKEY, PEM_write_bio_PUBKEY, PEM_write_PUBKEY,
-PEM_read_bio_RSAPrivateKey, PEM_read_RSAPrivateKey,
+_PEM_read_bio_RSAPrivateKey, PEM_read_RSAPrivateKey,
 PEM_write_bio_RSAPrivateKey, PEM_write_RSAPrivateKey,
-PEM_read_bio_RSAPublicKey, PEM_read_RSAPublicKey, PEM_write_bio_RSAPublicKey,
+_PEM_read_bio_RSAPublicKey, PEM_read_RSAPublicKey, PEM_write_bio_RSAPublicKey,
 PEM_write_RSAPublicKey, PEM_read_bio_RSA_PUBKEY, PEM_read_RSA_PUBKEY,
 PEM_write_bio_RSA_PUBKEY, PEM_write_RSA_PUBKEY, PEM_read_bio_DSAPrivateKey,
 PEM_read_DSAPrivateKey, PEM_write_bio_DSAPrivateKey, PEM_write_DSAPrivateKey,
 PEM_read_bio_DSA_PUBKEY, PEM_read_DSA_PUBKEY, PEM_write_bio_DSA_PUBKEY,
 PEM_write_DSA_PUBKEY, PEM_read_bio_Parameters, PEM_write_bio_Parameters,
 PEM_read_bio_DSAparams, PEM_read_DSAparams,
-PEM_write_bio_DSAparams, PEM_write_DSAparams, PEM_read_bio_DHparams,
+PEM_write_bio_DSAparams, PEM_write_DSAparams, _PEM_read_bio_DHparams,
 PEM_read_DHparams, PEM_write_bio_DHparams, PEM_write_DHparams,
-PEM_read_bio_X509, PEM_read_X509, PEM_write_bio_X509, PEM_write_X509,
-PEM_read_bio_X509_AUX, PEM_read_X509_AUX, PEM_write_bio_X509_AUX,
+_PEM_read_bio_X509, PEM_read_X509, PEM_write_bio_X509, PEM_write_X509,
+_PEM_read_bio_X509_AUX, PEM_read_X509_AUX, PEM_write_bio_X509_AUX,
 PEM_write_X509_AUX, PEM_read_bio_X509_REQ, PEM_read_X509_REQ,
 PEM_write_bio_X509_REQ, PEM_write_X509_REQ, PEM_write_bio_X509_REQ_NEW,
-PEM_write_X509_REQ_NEW, PEM_read_bio_X509_CRL, PEM_read_X509_CRL,
+PEM_write_X509_REQ_NEW, _PEM_read_bio_X509_CRL, PEM_read_X509_CRL,
 PEM_write_bio_X509_CRL, PEM_write_X509_CRL, PEM_read_bio_PKCS7, PEM_read_PKCS7,
 PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
 
@@ -68,7 +68,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_PUBKEY(BIO *bp, EVP_PKEY *x);
  int PEM_write_PUBKEY(FILE *fp, EVP_PKEY *x);
 
- RSA *PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **x,
+ RSA *_PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **x,
                                  pem_password_cb *cb, void *u);
  RSA *PEM_read_RSAPrivateKey(FILE *fp, RSA **x,
                              pem_password_cb *cb, void *u);
@@ -79,7 +79,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
                              unsigned char *kstr, int klen,
                              pem_password_cb *cb, void *u);
 
- RSA *PEM_read_bio_RSAPublicKey(BIO *bp, RSA **x,
+ RSA *_PEM_read_bio_RSAPublicKey(BIO *bp, RSA **x,
                                 pem_password_cb *cb, void *u);
  RSA *PEM_read_RSAPublicKey(FILE *fp, RSA **x,
                             pem_password_cb *cb, void *u);
@@ -119,17 +119,17 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_DSAparams(BIO *bp, DSA *x);
  int PEM_write_DSAparams(FILE *fp, DSA *x);
 
- DH *PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u);
+ DH *_PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u);
  DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_DHparams(BIO *bp, DH *x);
  int PEM_write_DHparams(FILE *fp, DH *x);
 
- X509 *PEM_read_bio_X509(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
+ X509 *_PEM_read_bio_X509(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
  X509 *PEM_read_X509(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_X509(BIO *bp, X509 *x);
  int PEM_write_X509(FILE *fp, X509 *x);
 
- X509 *PEM_read_bio_X509_AUX(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
+ X509 *_PEM_read_bio_X509_AUX(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
  X509 *PEM_read_X509_AUX(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_X509_AUX(BIO *bp, X509 *x);
  int PEM_write_X509_AUX(FILE *fp, X509 *x);
@@ -143,7 +143,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_X509_REQ_NEW(BIO *bp, X509_REQ *x);
  int PEM_write_X509_REQ_NEW(FILE *fp, X509_REQ *x);
 
- X509_CRL *PEM_read_bio_X509_CRL(BIO *bp, X509_CRL **x,
+ X509_CRL *_PEM_read_bio_X509_CRL(BIO *bp, X509_CRL **x,
                                  pem_password_cb *cb, void *u);
  X509_CRL *PEM_read_X509_CRL(FILE *fp, X509_CRL **x,
                              pem_password_cb *cb, void *u);
@@ -325,7 +325,7 @@ this:
 
  X509 *x;
 
- PEM_read_bio_X509(bp, &x, 0, NULL);
+ _PEM_read_bio_X509(bp, &x, 0, NULL);
 
 this is a bug because an attempt will be made to reuse the data at B<x>
 which is an uninitialised pointer.
@@ -389,12 +389,12 @@ The pseudo code to derive the key would look similar to:
 The PEM read routines in some versions of OpenSSL will not correctly reuse
 an existing structure. Therefore, the following:
 
- PEM_read_bio_X509(bp, &x, 0, NULL);
+ _PEM_read_bio_X509(bp, &x, 0, NULL);
 
 where B<x> already contains a valid certificate, may not work, whereas:
 
  X509_free(x);
- x = PEM_read_bio_X509(bp, NULL, 0, NULL);
+ x = _PEM_read_bio_X509(bp, NULL, 0, NULL);
 
 is guaranteed to work.
 
@@ -414,7 +414,7 @@ Read a certificate in PEM format from a BIO:
 
  X509 *x;
 
- x = PEM_read_bio_X509(bp, NULL, 0, NULL);
+ x = _PEM_read_bio_X509(bp, NULL, 0, NULL);
  if (x == NULL)
      /* Error */
 
@@ -422,7 +422,7 @@ Alternative method:
 
  X509 *x = NULL;
 
- if (!PEM_read_bio_X509(bp, &x, 0, NULL))
+ if (!_PEM_read_bio_X509(bp, &x, 0, NULL))
      /* Error */
 
 Write a certificate to a BIO:

@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    cacert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    cacert = _PEM_read_bio_X509(tbio, NULL, 0, NULL);
 
     if (!cacert)
         goto err;

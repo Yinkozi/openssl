@@ -102,7 +102,7 @@ int crl2pkcs7_main(int argc, char **argv)
         if (informat == FORMAT_ASN1)
             crl = d2i_X509_CRL_bio(in, NULL);
         else if (informat == FORMAT_PEM)
-            crl = PEM_read_bio_X509_CRL(in, NULL, NULL, NULL);
+            crl = _PEM_read_bio_X509_CRL(in, NULL, NULL, NULL);
         if (crl == NULL) {
             BIO_printf(bio_err, "unable to load CRL\n");
             ERR_print_errors(bio_err);

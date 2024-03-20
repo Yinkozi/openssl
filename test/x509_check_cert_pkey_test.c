@@ -70,7 +70,7 @@ static int test_x509_check_cert_pkey(void)
 
     switch (type) {
     case 1:
-        x509 = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+        x509 = _PEM_read_bio_X509(bio, NULL, NULL, NULL);
         if (x509 == NULL) {
             TEST_error("read PEM x509 failed");
             goto failed;

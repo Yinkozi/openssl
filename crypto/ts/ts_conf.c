@@ -48,7 +48,7 @@ X509 *TS_CONF_load_cert(const char *file)
 
     if ((cert = BIO_new_file(file, "r")) == NULL)
         goto end;
-    x = PEM_read_bio_X509_AUX(cert, NULL, NULL, NULL);
+    x = _PEM_read_bio_X509_AUX(cert, NULL, NULL, NULL);
  end:
     if (x == NULL)
         TSerr(TS_F_TS_CONF_LOAD_CERT, TS_R_CANNOT_LOAD_CERT);

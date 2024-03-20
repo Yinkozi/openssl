@@ -77,7 +77,7 @@ int nseq_main(int argc, char **argv)
         seq->certs = sk_X509_new_null();
         if (seq->certs == NULL)
             goto end;
-        while ((x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
+        while ((x509 = _PEM_read_bio_X509(in, NULL, NULL, NULL)))
             sk_X509_push(seq->certs, x509);
 
         if (!sk_X509_num(seq->certs)) {

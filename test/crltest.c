@@ -202,7 +202,7 @@ static X509_CRL *CRL_from_strings(const char **pem)
 {
     char *p;
     BIO *b = glue2bio(pem, &p);
-    X509_CRL *crl = PEM_read_bio_X509_CRL(b, NULL, NULL, NULL);
+    X509_CRL *crl = _PEM_read_bio_X509_CRL(b, NULL, NULL, NULL);
 
     _OPENSSL_free(p);
     _BIO_free(b);
@@ -216,7 +216,7 @@ static X509 *X509_from_strings(const char **pem)
 {
     char *p;
     BIO *b = glue2bio(pem, &p);
-    X509 *x = PEM_read_bio_X509(b, NULL, NULL, NULL);
+    X509 *x = _PEM_read_bio_X509(b, NULL, NULL, NULL);
 
     _OPENSSL_free(p);
     _BIO_free(b);
@@ -363,7 +363,7 @@ static int test_reuse_crl(void)
     char *p;
     BIO *b = glue2bio(kRevokedCRL, &p);
 
-    reused_crl = PEM_read_bio_X509_CRL(b, &reused_crl, NULL, NULL);
+    reused_crl = _PEM_read_bio_X509_CRL(b, &reused_crl, NULL, NULL);
 
     _OPENSSL_free(p);
     _BIO_free(b);

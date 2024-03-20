@@ -28,7 +28,7 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert = _PEM_read_bio_X509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert2 = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert2 = _PEM_read_bio_X509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 

@@ -784,7 +784,7 @@ DSA_verify                              782	1_1_0	EXIST::FUNCTION:DSA
 i2a_ASN1_OBJECT                         783	1_1_0	EXIST::FUNCTION:
 i2d_PKEY_USAGE_PERIOD                   784	1_1_0	EXIST::FUNCTION:
 DSA_new                                 785	1_1_0	EXIST::FUNCTION:DSA
-PEM_read_bio_X509_CRL                   786	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_X509_CRL                   786	1_1_0	EXIST::FUNCTION:
 PKCS7_dataDecode                        787	1_1_0	EXIST::FUNCTION:
 DSA_up_ref                              788	1_1_0	EXIST::FUNCTION:DSA
 _EVP_DecryptInit_ex                      789	1_1_0	EXIST::FUNCTION:
@@ -1083,7 +1083,7 @@ DES_is_weak_key                         1076	1_1_0	EXIST::FUNCTION:DES
 EVP_PKEY_verify                         1077	1_1_0	EXIST::FUNCTION:
 ERR_load_BIO_strings                    1078	1_1_0	EXIST::FUNCTION:
 BIO_nread                               1079	1_1_0	EXIST::FUNCTION:
-PEM_read_bio_RSAPrivateKey              1080	1_1_0	EXIST::FUNCTION:RSA
+_PEM_read_bio_RSAPrivateKey              1080	1_1_0	EXIST::FUNCTION:RSA
 OBJ_nid2obj                             1081	1_1_0	EXIST::FUNCTION:
 CRYPTO_ofb128_encrypt                   1082	1_1_0	EXIST::FUNCTION:
 ENGINE_set_init_function                1083	1_1_0	EXIST::FUNCTION:ENGINE
@@ -1615,7 +1615,7 @@ EVP_PKEY_asn1_get0                      1602	1_1_0	EXIST::FUNCTION:
 X509_verify                             1603	1_1_0	EXIST::FUNCTION:
 TS_RESP_CTX_get_request                 1604	1_1_0	EXIST::FUNCTION:TS
 EVP_cast5_cbc                           1605	1_1_0	EXIST::FUNCTION:CAST
-PEM_read_bio_X509_AUX                   1606	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_X509_AUX                   1606	1_1_0	EXIST::FUNCTION:
 TS_ext_print_bio                        1607	1_1_0	EXIST::FUNCTION:TS
 SCT_set1_log_id                         1608	1_1_0	EXIST::FUNCTION:CT
 _X509_get0_pubkey_bitstr                 1609	1_1_0	EXIST::FUNCTION:
@@ -2592,7 +2592,7 @@ i2s_ASN1_INTEGER                        2560	1_1_0	EXIST::FUNCTION:
 d2i_EC_PUBKEY_fp                        2561	1_1_0	EXIST::FUNCTION:EC,STDIO
 i2d_OCSP_SIGNATURE                      2562	1_1_0	EXIST::FUNCTION:OCSP
 i2d_X509_EXTENSION                      2563	1_1_0	EXIST::FUNCTION:
-PEM_read_bio_X509                       2564	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_X509                       2564	1_1_0	EXIST::FUNCTION:
 DES_key_sched                           2565	1_1_0	EXIST::FUNCTION:DES
 GENERAL_NAME_dup                        2566	1_1_0	EXIST::FUNCTION:
 X509_STORE_CTX_get1_crls                2567	1_1_0	EXIST::FUNCTION:
@@ -3052,7 +3052,7 @@ DH_KDF_X9_42                            3005	1_1_0	EXIST::FUNCTION:CMS,DH
 EVP_PKEY_meth_set_signctx               3006	1_1_0	EXIST::FUNCTION:
 X509_CRL_get_version                    3007	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_meth_get0_info                 3008	1_1_0	EXIST::FUNCTION:
-PEM_read_bio_RSAPublicKey               3009	1_1_0	EXIST::FUNCTION:RSA
+_PEM_read_bio_RSAPublicKey               3009	1_1_0	EXIST::FUNCTION:RSA
 EVP_PKEY_asn1_set_private               3010	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_get0_RSA                       3011	1_1_0	EXIST::FUNCTION:RSA
 DES_ede3_cfb64_encrypt                  3012	1_1_0	EXIST::FUNCTION:DES
@@ -3304,7 +3304,7 @@ X509_set1_notBefore                     3255	1_1_0	EXIST::FUNCTION:
 MD4                                     3256	1_1_0	EXIST::FUNCTION:MD4
 EVP_PKEY_CTX_dup                        3257	1_1_0	EXIST::FUNCTION:
 ENGINE_setup_bsd_cryptodev              3258	1_1_0	EXIST:__FreeBSD__:FUNCTION:DEPRECATEDIN_1_1_0,ENGINE
-PEM_read_bio_DHparams                   3259	1_1_0	EXIST::FUNCTION:DH
+_PEM_read_bio_DHparams                   3259	1_1_0	EXIST::FUNCTION:DH
 CMS_SharedInfo_encode                   3260	1_1_0	EXIST::FUNCTION:CMS
 ASN1_OBJECT_create                      3261	1_1_0	EXIST::FUNCTION:
 i2d_ECParameters                        3262	1_1_0	EXIST::FUNCTION:EC

@@ -572,7 +572,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, ECDSACertPEM, sizeof(ECDSACertPEM)) == sizeof(ECDSACertPEM));
-    cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
+    cert = _PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
     _BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);
@@ -596,7 +596,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, DSACertPEM, sizeof(DSACertPEM)) == sizeof(DSACertPEM));
-    cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
+    cert = _PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
     _BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);

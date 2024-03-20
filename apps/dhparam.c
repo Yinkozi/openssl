@@ -248,7 +248,7 @@ int dhparam_main(int argc, char **argv)
                     dh = d2i_DHxparams_bio(in, NULL);
             } else {
                 /* informat == FORMAT_PEM */
-                dh = PEM_read_bio_DHparams(in, NULL, NULL, NULL);
+                dh = _PEM_read_bio_DHparams(in, NULL, NULL, NULL);
             }
 
             if (dh == NULL) {

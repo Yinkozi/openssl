@@ -87,7 +87,7 @@ int X509_load_cert_file(X509_LOOKUP *ctx, const char *file, int type)
 
     if (type == X509_FILETYPE_PEM) {
         for (;;) {
-            x = PEM_read_bio_X509_AUX(in, NULL, NULL, "");
+            x = _PEM_read_bio_X509_AUX(in, NULL, NULL, "");
             if (x == NULL) {
                 if ((ERR_GET_REASON(ERR_peek_last_error()) ==
                      PEM_R_NO_START_LINE) && (count > 0)) {
@@ -144,7 +144,7 @@ int X509_load_crl_file(X509_LOOKUP *ctx, const char *file, int type)
 
     if (type == X509_FILETYPE_PEM) {
         for (;;) {
-            x = PEM_read_bio_X509_CRL(in, NULL, NULL, "");
+            x = _PEM_read_bio_X509_CRL(in, NULL, NULL, "");
             if (x == NULL) {
                 if ((ERR_GET_REASON(ERR_peek_last_error()) ==
                      PEM_R_NO_START_LINE) && (count > 0)) {

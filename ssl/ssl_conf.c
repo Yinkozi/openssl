@@ -544,7 +544,7 @@ static int cmd_DHParameters(SSL_CONF_CTX *cctx, const char *value)
             goto end;
         if (BIO_read_filename(in, value) <= 0)
             goto end;
-        dh = PEM_read_bio_DHparams(in, NULL, NULL, NULL);
+        dh = _PEM_read_bio_DHparams(in, NULL, NULL, NULL);
         if (dh == NULL)
             goto end;
     } else

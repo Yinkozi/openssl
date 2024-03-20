@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    rcert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    rcert = _PEM_read_bio_X509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 

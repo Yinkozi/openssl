@@ -25,10 +25,10 @@
 #include <openssl/err.h>
 #include <openssl/crypto.h>
 
-static int _BIO_new(BIO *bio);
-static int _BIO_free(BIO *bio);
+static int bio_new(BIO *bio);
+static int bio_free(BIO *bio);
 static int bio_read(BIO *bio, char *buf, int size);
-static int _BIO_write(BIO *bio, const char *buf, int num);
+static int bio_write(BIO *bio, const char *buf, int num);
 static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr);
 static int bio_puts(BIO *bio, const char *str);
 
@@ -40,15 +40,15 @@ static const BIO_METHOD methods_biop = {
     "BIO pair",
     /* TODO: Convert to new style write function */
     bwrite_conv,
-    _BIO_write,
+    bio_write,
     /* TODO: Convert to new style read function */
     bread_conv,
     bio_read,
     bio_puts,
     NULL /* no bio_gets */ ,
     bio_ctrl,
-    _BIO_new,
-    _BIO_free,
+    bio_new,
+    bio_free,
     NULL                        /* no bio_callback_ctrl */
 };
 
@@ -75,7 +75,7 @@ struct bio_bio_st {
                                  * warrants. */
 };
 
-static int _BIO_new(BIO *bio)
+static int bio_new(BIO *bio)
 {
     struct bio_bio_st *b = OPENSSL_zalloc(sizeof(*b));
 
@@ -89,7 +89,7 @@ static int _BIO_new(BIO *bio)
     return 1;
 }
 
-static int _BIO_free(BIO *bio)
+static int bio_free(BIO *bio)
 {
     struct bio_bio_st *b;
 
@@ -267,7 +267,7 @@ static ossl_ssize_t bio_nread(BIO *bio, char **buf, size_t num_)
     return num;
 }
 
-static int _BIO_write(BIO *bio, const char *buf, int num_)
+static int bio_write(BIO *bio, const char *buf, int num_)
 {
     size_t num = num_;
     size_t rest;

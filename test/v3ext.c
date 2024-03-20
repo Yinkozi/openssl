@@ -27,7 +27,7 @@ static int test_pathlen(void)
     int ret = 0;
 
     if (!TEST_ptr(b = BIO_new_file(infile, "r"))
-            || !TEST_ptr(x = PEM_read_bio_X509(b, NULL, NULL, NULL))
+            || !TEST_ptr(x = _PEM_read_bio_X509(b, NULL, NULL, NULL))
             || !TEST_int_eq(pathlen = X509_get_pathlen(x), 6))
         goto end;
 

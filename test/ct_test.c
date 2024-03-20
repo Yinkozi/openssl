@@ -96,7 +96,7 @@ static X509 *load_pem_cert(const char *dir, const char *file)
         BIO *cert_io = BIO_new_file(file_path, "r");
 
         if (cert_io != NULL)
-            cert = PEM_read_bio_X509(cert_io, NULL, NULL, NULL);
+            cert = _PEM_read_bio_X509(cert_io, NULL, NULL, NULL);
         _BIO_free(cert_io);
     }
 

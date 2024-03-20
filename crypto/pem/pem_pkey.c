@@ -207,7 +207,7 @@ int PEM_write_PrivateKey(FILE *fp, EVP_PKEY *x, const EVP_CIPHER *enc,
 
 /* Transparently read in PKCS#3 or X9.42 DH parameters */
 
-DH *PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u)
+DH *_PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u)
 {
     char *nm = NULL;
     const unsigned char *p = NULL;
@@ -242,7 +242,7 @@ DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u)
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = PEM_read_bio_DHparams(b, x, cb, u);
+    ret = _PEM_read_bio_DHparams(b, x, cb, u);
     _BIO_free(b);
     return ret;
 }

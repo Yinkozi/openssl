@@ -866,7 +866,7 @@ int cert_load(BIO *in, STACK_OF(X509) *sk)
     int ret;
     X509 *cert;
     ret = 0;
-    while ((cert = PEM_read_bio_X509(in, NULL, NULL, NULL))) {
+    while ((cert = _PEM_read_bio_X509(in, NULL, NULL, NULL))) {
         ret = 1;
         sk_X509_push(sk, cert);
     }

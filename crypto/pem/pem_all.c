@@ -60,7 +60,7 @@ static RSA *pkey_get_rsa(EVP_PKEY *key, RSA **rsa)
     return rtmp;
 }
 
-RSA *PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **rsa, pem_password_cb *cb,
+RSA *_PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **rsa, pem_password_cb *cb,
                                 void *u)
 {
     EVP_PKEY *pktmp;

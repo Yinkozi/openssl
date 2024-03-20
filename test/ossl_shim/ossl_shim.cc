@@ -126,7 +126,7 @@ static bssl::UniquePtr<X509> LoadCertificate(const std::string &file) {
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }
-  return bssl::UniquePtr<X509>(PEM_read_bio_X509(bio.get(), NULL, NULL, NULL));
+  return bssl::UniquePtr<X509>(_PEM_read_bio_X509(bio.get(), NULL, NULL, NULL));
 }
 
 static bssl::UniquePtr<EVP_PKEY> LoadPrivateKey(const std::string &file) {

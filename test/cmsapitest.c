@@ -61,7 +61,7 @@ int setup_tests(void)
     certbio = BIO_new_file(certin, "r");
     if (!TEST_ptr(certbio))
         return 0;
-    if (!TEST_true(PEM_read_bio_X509(certbio, &cert, NULL, NULL))) {
+    if (!TEST_true(_PEM_read_bio_X509(certbio, &cert, NULL, NULL))) {
         _BIO_free(certbio);
         return 0;
     }

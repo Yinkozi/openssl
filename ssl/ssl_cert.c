@@ -618,7 +618,7 @@ STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file)
         goto err;
 
     for (;;) {
-        if (PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
+        if (_PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
             break;
         if (ret == NULL) {
             ret = sk_X509_NAME_new_null();
@@ -680,7 +680,7 @@ int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
         goto err;
 
     for (;;) {
-        if (PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
+        if (_PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
             break;
         if ((xn = X509_get_subject_name(x)) == NULL)
             goto err;
