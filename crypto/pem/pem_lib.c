@@ -447,7 +447,7 @@ int PEM_do_header(EVP_CIPHER_INFO *cipher, unsigned char *data, long *plen,
     if (ctx == NULL)
         return 0;
 
-    ok = EVP_DecryptInit_ex(ctx, cipher->cipher, NULL, key, &(cipher->iv[0]));
+    ok = _EVP_DecryptInit_ex(ctx, cipher->cipher, NULL, key, &(cipher->iv[0]));
     if (ok)
         ok = EVP_DecryptUpdate(ctx, data, &ilen, data, ilen);
     if (ok) {

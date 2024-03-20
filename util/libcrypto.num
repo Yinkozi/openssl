@@ -787,7 +787,7 @@ DSA_new                                 785	1_1_0	EXIST::FUNCTION:DSA
 PEM_read_bio_X509_CRL                   786	1_1_0	EXIST::FUNCTION:
 PKCS7_dataDecode                        787	1_1_0	EXIST::FUNCTION:
 DSA_up_ref                              788	1_1_0	EXIST::FUNCTION:DSA
-EVP_DecryptInit_ex                      789	1_1_0	EXIST::FUNCTION:
+_EVP_DecryptInit_ex                      789	1_1_0	EXIST::FUNCTION:
 CONF_get1_default_config_file           790	1_1_0	EXIST::FUNCTION:
 CRYPTO_ocb128_encrypt                   791	1_1_0	EXIST::FUNCTION:OCB
 EXTENDED_KEY_USAGE_new                  792	1_1_0	EXIST::FUNCTION:

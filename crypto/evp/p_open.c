@@ -27,7 +27,7 @@ int EVP_OpenInit(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
 
     if (type) {
         EVP_CIPHER_CTX_reset(ctx);
-        if (!EVP_DecryptInit_ex(ctx, type, NULL, NULL, NULL))
+        if (!_EVP_DecryptInit_ex(ctx, type, NULL, NULL, NULL))
             return 0;
     }
 
@@ -52,7 +52,7 @@ int EVP_OpenInit(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
         /* ERROR */
         goto err;
     }
-    if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
+    if (!_EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
         goto err;
 
     ret = 1;
@@ -67,7 +67,7 @@ int EVP_OpenFinal(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 
     i = EVP_DecryptFinal_ex(ctx, out, outl);
     if (i)
-        i = EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL);
+        i = _EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL);
     return i;
 }
 #endif

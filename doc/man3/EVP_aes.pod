@@ -164,7 +164,7 @@ The XTS implementation in OpenSSL does not support streaming. That is there must
 only be one L<_EVP_EncryptUpdate(3)> call per L<_EVP_EncryptInit_ex(3)> call (and
 similarly with the "Decrypt" functions).
 
-The I<iv> parameter to L<_EVP_EncryptInit_ex(3)> or L<EVP_DecryptInit_ex(3)> is
+The I<iv> parameter to L<_EVP_EncryptInit_ex(3)> or L<_EVP_DecryptInit_ex(3)> is
 the XTS "tweak" value.
 
 =back

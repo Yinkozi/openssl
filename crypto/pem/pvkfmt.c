@@ -711,7 +711,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
         }
         inlen = keylen - 8;
         q = enctmp + 8;
-        if (!EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+        if (!_EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
             goto err;
         if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
             goto err;
@@ -721,7 +721,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
         if (magic != MS_RSA2MAGIC && magic != MS_DSS2MAGIC) {
             q = enctmp + 8;
             memset(keybuf + 5, 0, 11);
-            if (!EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+            if (!_EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
                 goto err;
             if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
                 goto err;

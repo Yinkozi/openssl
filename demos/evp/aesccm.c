@@ -94,7 +94,7 @@ void aes_ccm_decrypt(void)
     BIO_dump_fp(stdout, ccm_ct, sizeof(ccm_ct));
     ctx = _EVP_CIPHER_CTX_new();
     /* Select cipher */
-    EVP_DecryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
+    _EVP_DecryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length, omit for 96 bits */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
                         NULL);
@@ -102,7 +102,7 @@ void aes_ccm_decrypt(void)
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG,
                         sizeof(ccm_tag), (void *)ccm_tag);
     /* Specify key and IV */
-    EVP_DecryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
+    _EVP_DecryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set ciphertext length: only needed if we have AAD */
     EVP_DecryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_ct));
     /* Zero or one call to specify any AAD */

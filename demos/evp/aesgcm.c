@@ -89,11 +89,11 @@ void aes_gcm_decrypt(void)
     BIO_dump_fp(stdout, gcm_ct, sizeof(gcm_ct));
     ctx = _EVP_CIPHER_CTX_new();
     /* Select cipher */
-    EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    _EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length, omit for 96 bits */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
     /* Specify key and IV */
-    EVP_DecryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
+    _EVP_DecryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
     EVP_DecryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Decrypt plaintext */

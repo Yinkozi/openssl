@@ -968,7 +968,7 @@ static int EVP_Update_loop_ccm(void *args)
         for (count = 0; COND(nb_iter); count++) {
             EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(tag), tag);
             /* reset iv */
-            EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            _EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
             /* counter is reset on every update */
             EVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
         }
@@ -1005,7 +1005,7 @@ static int EVP_Update_loop_aead(void *args)
 #endif
     if (decrypt) {
         for (count = 0; COND(nb_iter); count++) {
-            EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            _EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
             EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG,
                                 sizeof(faketag), faketag);
             EVP_DecryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));

@@ -186,7 +186,7 @@ EVP_CIPHER_meth_set_init() sets the cipher init function for
 B<cipher>.
 The cipher init function is called by EVP_CipherInit(),
 EVP_CipherInit_ex(), EVP_EncryptInit(), _EVP_EncryptInit_ex(),
-EVP_DecryptInit(), EVP_DecryptInit_ex().
+EVP_DecryptInit(), _EVP_DecryptInit_ex().
 
 EVP_CIPHER_meth_set_do_cipher() sets the cipher function for
 B<cipher>.

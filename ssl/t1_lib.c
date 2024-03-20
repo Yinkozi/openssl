@@ -1429,7 +1429,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
         if (HMAC_Init_ex(hctx, tctx->ext.secure->tick_hmac_key,
                          sizeof(tctx->ext.secure->tick_hmac_key),
                          _EVP_sha256(), NULL) <= 0
-            || EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL,
+            || _EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL,
                                   tctx->ext.secure->tick_aes_key,
                                   etick + TLSEXT_KEYNAME_LENGTH) <= 0) {
             ret = SSL_TICKET_FATAL_ERR_OTHER;

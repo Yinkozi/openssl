@@ -8,7 +8,7 @@ _EVP_CIPHER_CTX_free,
 _EVP_EncryptInit_ex,
 _EVP_EncryptUpdate,
 _EVP_EncryptFinal_ex,
-EVP_DecryptInit_ex,
+_EVP_DecryptInit_ex,
 EVP_DecryptUpdate,
 EVP_DecryptFinal_ex,
 EVP_CipherInit_ex,
@@ -64,7 +64,7 @@ EVP_enc_null
                        int *outl, const unsigned char *in, int inl);
  int _EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl);
 
- int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
+ int _EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
  int EVP_DecryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
@@ -171,7 +171,7 @@ If padding is disabled then _EVP_EncryptFinal_ex() will not encrypt any more
 data and it will return an error if any data remains in a partial block:
 that is if the total data length is not a multiple of the block size.
 
-EVP_DecryptInit_ex(), EVP_DecryptUpdate() and EVP_DecryptFinal_ex() are the
+_EVP_DecryptInit_ex(), EVP_DecryptUpdate() and EVP_DecryptFinal_ex() are the
 corresponding decryption operations. EVP_DecryptFinal() will return an
 error code if padding is enabled and the final block is not correctly
 formatted. The parameters and restrictions are identical to the encryption
@@ -193,7 +193,7 @@ for another EVP_CipherInit() / EVP_CipherUpdate() / EVP_CipherFinal()
 series of calls.
 
 EVP_EncryptInit(), EVP_DecryptInit() and EVP_CipherInit() behave in a
-similar way to _EVP_EncryptInit_ex(), EVP_DecryptInit_ex() and
+similar way to _EVP_EncryptInit_ex(), _EVP_DecryptInit_ex() and
 EVP_CipherInit_ex() except they always use the default cipher implementation.
 
 EVP_EncryptFinal(), EVP_DecryptFinal() and EVP_CipherFinal() are
@@ -213,7 +213,7 @@ IDENTIFIER.
 
 EVP_CIPHER_CTX_set_padding() enables or disables padding. This
 function should be called after the context is set up for encryption
-or decryption with _EVP_EncryptInit_ex(), EVP_DecryptInit_ex() or
+or decryption with _EVP_EncryptInit_ex(), _EVP_DecryptInit_ex() or
 EVP_CipherInit_ex(). By default encryption operations are padded using
 standard block padding and the padding is checked and removed when
 decrypting. If the B<pad> parameter is zero then no padding is
@@ -291,7 +291,7 @@ B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 _EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and _EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
-EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
+_EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
 EVP_DecryptFinal_ex() returns 0 if the decrypt failed or 1 for success.
 
 EVP_CipherInit_ex() and EVP_CipherUpdate() return 1 for success and 0 for failure.
@@ -495,7 +495,7 @@ the total amount of data decrypted is a multiple of the block size.
 The functions EVP_EncryptInit(), EVP_EncryptFinal(), EVP_DecryptInit(),
 EVP_CipherInit() and EVP_CipherFinal() are obsolete but are retained for
 compatibility with existing code. New code should use _EVP_EncryptInit_ex(),
-_EVP_EncryptFinal_ex(), EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
+_EVP_EncryptFinal_ex(), _EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
 EVP_CipherInit_ex() and EVP_CipherFinal_ex() because they can reuse an
 existing context without allocating and freeing it up on each call.
 

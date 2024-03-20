@@ -206,7 +206,7 @@ static int kek_unwrap_key(unsigned char *out, size_t *outlen,
         || !EVP_DecryptUpdate(ctx, tmp, &outl, in, inlen - blocklen)
 
         /* Reset IV to original value */
-        || !EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL)
+        || !_EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL)
         /* Decrypt again */
         || !EVP_DecryptUpdate(ctx, tmp, &outl, tmp, inlen))
         goto err;

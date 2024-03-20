@@ -1698,7 +1698,7 @@ static int test_decrypt_null_chunks(void)
 
     /* Deliberately initialise tmp to a non zero value */
     tmp = 99;
-    if (!TEST_true(EVP_DecryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL, key,
+    if (!TEST_true(_EVP_DecryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL, key,
                                       iv))
             || !TEST_true(EVP_DecryptUpdate(ctx, plaintext, &ptlen, ciphertext,
                                             dec_offset))

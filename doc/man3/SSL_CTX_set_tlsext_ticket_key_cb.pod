@@ -62,7 +62,7 @@ of parameters. In this case I<name> and I<iv> have already been parsed out of
 the session ticket. The OpenSSL library expects that the I<name> will be used
 to retrieve a cryptographic parameters and that the cryptographic context
 I<ctx> will be set with the retrieved parameters and the initialization vector
-I<iv>. using a function like L<EVP_DecryptInit_ex(3)>. The I<hctx> needs to be
+I<iv>. using a function like L<_EVP_DecryptInit_ex(3)>. The I<hctx> needs to be
 set using L<HMAC_Init_ex(3)>.
 
 If the I<name> is still valid but a renewal of the ticket is required the
@@ -169,7 +169,7 @@ Reference Implementation:
              return 0;
 
          HMAC_Init_ex(&hctx, key->hmac_key, 32, _EVP_sha256(), NULL);
-         EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
+         _EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
 
          if (key->expire < t - RENEW_TIME) { /* RENEW_TIME: implement */
              /*
