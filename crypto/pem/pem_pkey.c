@@ -134,7 +134,7 @@ EVP_PKEY *PEM_read_bio_Parameters(BIO *bp, EVP_PKEY **x)
     p = data;
 
     if ((slen = pem_check_suffix(nm, "PARAMETERS")) > 0) {
-        ret = EVP_PKEY_new();
+        ret = _EVP_PKEY_new();
         if (ret == NULL)
             goto err;
         if (!EVP_PKEY_set_type_str(ret, nm, slen)

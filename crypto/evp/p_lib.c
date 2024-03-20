@@ -137,7 +137,7 @@ int EVP_PKEY_cmp(const EVP_PKEY *a, const EVP_PKEY *b)
     return -2;
 }
 
-EVP_PKEY *EVP_PKEY_new(void)
+EVP_PKEY *_EVP_PKEY_new(void)
 {
     EVP_PKEY *ret = OPENSSL_zalloc(sizeof(*ret));
 
@@ -229,7 +229,7 @@ EVP_PKEY *EVP_PKEY_new_raw_private_key(int type, ENGINE *e,
                                        const unsigned char *priv,
                                        size_t len)
 {
-    EVP_PKEY *ret = EVP_PKEY_new();
+    EVP_PKEY *ret = _EVP_PKEY_new();
 
     if (ret == NULL
             || !pkey_set_type(ret, e, type, NULL, -1)) {
@@ -259,7 +259,7 @@ EVP_PKEY *EVP_PKEY_new_raw_public_key(int type, ENGINE *e,
                                       const unsigned char *pub,
                                       size_t len)
 {
-    EVP_PKEY *ret = EVP_PKEY_new();
+    EVP_PKEY *ret = _EVP_PKEY_new();
 
     if (ret == NULL
             || !pkey_set_type(ret, e, type, NULL, -1)) {
@@ -323,7 +323,7 @@ EVP_PKEY *EVP_PKEY_new_CMAC_key(ENGINE *e, const unsigned char *priv,
                                 size_t len, const EVP_CIPHER *cipher)
 {
 #ifndef OPENSSL_NO_CMAC
-    EVP_PKEY *ret = EVP_PKEY_new();
+    EVP_PKEY *ret = _EVP_PKEY_new();
     CMAC_CTX *cmctx = CMAC_CTX_new();
 
     if (ret == NULL

@@ -36,7 +36,7 @@ EVP_PKEY_meth_get0_info() does not return a value.
 
 =head1 SEE ALSO
 
-L<EVP_PKEY_new(3)>
+L<_EVP_PKEY_new(3)>
 
 =head1 COPYRIGHT
 

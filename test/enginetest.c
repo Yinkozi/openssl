@@ -225,7 +225,7 @@ static EVP_PKEY *get_test_pkey(void)
     static unsigned char e[] = "\x11";
 
     RSA *rsa = RSA_new();
-    EVP_PKEY *pk = EVP_PKEY_new();
+    EVP_PKEY *pk = _EVP_PKEY_new();
 
     if (rsa == NULL || pk == NULL || !EVP_PKEY_assign_RSA(pk, rsa)) {
         RSA_free(rsa);

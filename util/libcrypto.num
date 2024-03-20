@@ -3035,7 +3035,7 @@ CMS_set_detached                        2988	1_1_0	EXIST::FUNCTION:CMS
 X509_REQ_get_attr_by_OBJ                2989	1_1_0	EXIST::FUNCTION:
 i2d_ASRange                             2990	1_1_0	EXIST::FUNCTION:RFC3779
 EC_GROUP_set_asn1_flag                  2991	1_1_0	EXIST::FUNCTION:EC
-EVP_PKEY_new                            2992	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_new                            2992	1_1_0	EXIST::FUNCTION:
 i2d_POLICYINFO                          2993	1_1_0	EXIST::FUNCTION:
 BN_get_flags                            2994	1_1_0	EXIST::FUNCTION:
 SHA384                                  2995	1_1_0	EXIST::FUNCTION:

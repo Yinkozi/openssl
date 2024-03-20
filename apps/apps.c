@@ -835,7 +835,7 @@ EVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
         RSA *rsa;
         rsa = d2i_RSAPublicKey_bio(key, NULL);
         if (rsa) {
-            pkey = EVP_PKEY_new();
+            pkey = _EVP_PKEY_new();
             if (pkey != NULL)
                 EVP_PKEY_set1_RSA(pkey, rsa);
             RSA_free(rsa);
@@ -851,7 +851,7 @@ EVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
                                         (pem_password_cb *)password_callback,
                                         &cb_data);
         if (rsa != NULL) {
-            pkey = EVP_PKEY_new();
+            pkey = _EVP_PKEY_new();
             if (pkey != NULL)
                 EVP_PKEY_set1_RSA(pkey, rsa);
             RSA_free(rsa);

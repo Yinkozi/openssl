@@ -51,7 +51,7 @@ int EVP_PKEY_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
         return -1;
 
     if (*ppkey == NULL)
-        *ppkey = EVP_PKEY_new();
+        *ppkey = _EVP_PKEY_new();
 
     if (*ppkey == NULL) {
         EVPerr(EVP_F_EVP_PKEY_PARAMGEN, ERR_R_MALLOC_FAILURE);
@@ -101,7 +101,7 @@ int EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
         return -1;
 
     if (*ppkey == NULL)
-        *ppkey = EVP_PKEY_new();
+        *ppkey = _EVP_PKEY_new();
     if (*ppkey == NULL)
         return -1;
 

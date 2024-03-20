@@ -692,7 +692,7 @@ static int ecdh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
         goto err;
     if (!o2i_ECPublicKey(&ecpeer, &p, plen))
         goto err;
-    pkpeer = EVP_PKEY_new();
+    pkpeer = _EVP_PKEY_new();
     if (pkpeer == NULL)
         goto err;
     EVP_PKEY_set1_EC_KEY(pkpeer, ecpeer);

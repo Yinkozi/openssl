@@ -145,7 +145,7 @@ static int sign_and_verify(int len)
     else
         memcpy(paddedData + digestlen - len, dataToSign, len);
 
-    if (!TEST_ptr(pkey = EVP_PKEY_new()))
+    if (!TEST_ptr(pkey = _EVP_PKEY_new()))
         goto end;
     EVP_PKEY_set1_DSA(pkey, dsakey);
 

@@ -25,7 +25,7 @@ EVP_PKEY *d2i_PublicKey(int type, EVP_PKEY **a, const unsigned char **pp,
     EVP_PKEY *ret;
 
     if ((a == NULL) || (*a == NULL)) {
-        if ((ret = EVP_PKEY_new()) == NULL) {
+        if ((ret = _EVP_PKEY_new()) == NULL) {
             ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_EVP_LIB);
             return NULL;
         }

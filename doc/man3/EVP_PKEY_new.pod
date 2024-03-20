@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-EVP_PKEY_new,
+_EVP_PKEY_new,
 EVP_PKEY_up_ref,
 EVP_PKEY_free,
 EVP_PKEY_new_raw_private_key,
@@ -17,7 +17,7 @@ EVP_PKEY_get_raw_public_key
 
  #include <openssl/evp.h>
 
- EVP_PKEY *EVP_PKEY_new(void);
+ EVP_PKEY *_EVP_PKEY_new(void);
  int EVP_PKEY_up_ref(EVP_PKEY *key);
  void EVP_PKEY_free(EVP_PKEY *key);
 
@@ -37,7 +37,7 @@ EVP_PKEY_get_raw_public_key
 
 =head1 DESCRIPTION
 
-The EVP_PKEY_new() function allocates an empty B<EVP_PKEY> structure which is
+The _EVP_PKEY_new() function allocates an empty B<EVP_PKEY> structure which is
 used by OpenSSL to store public and private keys. The reference count is set to
 B<1>.
 
@@ -97,14 +97,14 @@ B<EVP_PKEY_ED448>.
 The B<EVP_PKEY> structure is used by various OpenSSL functions which require a
 general private key without reference to any particular algorithm.
 
-The structure returned by EVP_PKEY_new() is empty. To add a private or public
+The structure returned by _EVP_PKEY_new() is empty. To add a private or public
 key to this empty structure use the appropriate functions described in
 L<EVP_PKEY_set1_RSA(3)>, L<EVP_PKEY_set1_DSA>, L<EVP_PKEY_set1_DH> or
 L<EVP_PKEY_set1_EC_KEY>.
 
 =head1 RETURN VALUES
 
-EVP_PKEY_new(), EVP_PKEY_new_raw_private_key(), EVP_PKEY_new_raw_public_key(),
+_EVP_PKEY_new(), EVP_PKEY_new_raw_private_key(), EVP_PKEY_new_raw_public_key(),
 EVP_PKEY_new_CMAC_key() and EVP_PKEY_new_mac_key() return either the newly
 allocated B<EVP_PKEY> structure or B<NULL> if an error occurred.
 
@@ -119,7 +119,7 @@ L<EVP_PKEY_set1_EC_KEY>
 =head1 HISTORY
 
 The
-EVP_PKEY_new() and EVP_PKEY_free() functions exist in all versions of OpenSSL.
+_EVP_PKEY_new() and EVP_PKEY_free() functions exist in all versions of OpenSSL.
 
 The EVP_PKEY_up_ref() function was added in OpenSSL 1.1.0.
 

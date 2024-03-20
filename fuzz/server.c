@@ -543,7 +543,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     bufp = kRSAPrivateKeyDER;
     privkey = d2i_RSAPrivateKey(NULL, &bufp, sizeof(kRSAPrivateKeyDER));
     OPENSSL_assert(privkey != NULL);
-    pkey = EVP_PKEY_new();
+    pkey = _EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pkey, privkey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
@@ -564,7 +564,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(ecdsakey != NULL);
     _BIO_free(bio_buf);
-    pkey = EVP_PKEY_new();
+    pkey = _EVP_PKEY_new();
     EVP_PKEY_assign_EC_KEY(pkey, ecdsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
@@ -588,7 +588,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(dsakey != NULL);
     _BIO_free(bio_buf);
-    pkey = EVP_PKEY_new();
+    pkey = _EVP_PKEY_new();
     EVP_PKEY_assign_DSA(pkey, dsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);

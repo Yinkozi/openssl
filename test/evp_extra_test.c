@@ -940,7 +940,7 @@ static EVP_PKEY *load_example_rsa_key(void)
     if (!TEST_true(d2i_RSAPrivateKey(&rsa, &derp, sizeof(kExampleRSAKeyDER))))
         return NULL;
 
-    if (!TEST_ptr(pkey = EVP_PKEY_new())
+    if (!TEST_ptr(pkey = _EVP_PKEY_new())
             || !TEST_true(EVP_PKEY_set1_RSA(pkey, rsa)))
         goto end;
 
@@ -1532,14 +1532,14 @@ static int test_EVP_PKEY_check(int i)
     case 1:
         if (!TEST_ptr(pubkey = BIO_new_mem_buf(input, input_len))
             || !TEST_ptr(eckey = d2i_EC_PUBKEY_bio(pubkey, NULL))
-            || !TEST_ptr(pkey = EVP_PKEY_new())
+            || !TEST_ptr(pkey = _EVP_PKEY_new())
             || !TEST_true(EVP_PKEY_assign_EC_KEY(pkey, eckey)))
             goto done;
         break;
     case 2:
         if (!TEST_ptr(eckey = d2i_ECParameters(NULL, &p, input_len))
             || !TEST_ptr_eq(p, input + input_len)
-            || !TEST_ptr(pkey = EVP_PKEY_new())
+            || !TEST_ptr(pkey = _EVP_PKEY_new())
             || !TEST_true(EVP_PKEY_assign_EC_KEY(pkey, eckey)))
             goto done;
         break;
@@ -1734,8 +1734,8 @@ static int test_EVP_PKEY_set1_DH(void)
 
     x942dh = DH_get_2048_256();
     pkcs3dh = DH_new_by_nid(NID_ffdhe2048);
-    pkey1 = EVP_PKEY_new();
-    pkey2 = EVP_PKEY_new();
+    pkey1 = _EVP_PKEY_new();
+    pkey2 = _EVP_PKEY_new();
     if (!TEST_ptr(x942dh)
             || !TEST_ptr(pkcs3dh)
             || !TEST_ptr(pkey1)

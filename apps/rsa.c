@@ -264,7 +264,7 @@ int rsa_main(int argc, char **argv)
 #ifndef OPENSSL_NO_DSA
     } else if (outformat == FORMAT_MSBLOB || outformat == FORMAT_PVK) {
         EVP_PKEY *pk;
-        pk = EVP_PKEY_new();
+        pk = _EVP_PKEY_new();
         if (pk == NULL)
             goto end;
 

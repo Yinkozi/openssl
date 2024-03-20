@@ -27,7 +27,7 @@ EVP_PKEY *EVP_PKCS82PKEY(const PKCS8_PRIV_KEY_INFO *p8)
     if (!PKCS8_pkey_get0(&algoid, NULL, NULL, NULL, p8))
         return NULL;
 
-    if ((pkey = EVP_PKEY_new()) == NULL) {
+    if ((pkey = _EVP_PKEY_new()) == NULL) {
         EVPerr(EVP_F_EVP_PKCS82PKEY, ERR_R_MALLOC_FAILURE);
         return NULL;
     }

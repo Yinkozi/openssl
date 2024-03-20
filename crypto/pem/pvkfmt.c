@@ -255,7 +255,7 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
     nbyte = (bitlen + 7) >> 3;
 
     dsa = DSA_new();
-    ret = EVP_PKEY_new();
+    ret = _EVP_PKEY_new();
     if (dsa == NULL || ret == NULL)
         goto memerr;
     if (!read_lebn(&p, nbyte, &pbn))
@@ -328,7 +328,7 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
     nbyte = (bitlen + 7) >> 3;
     hnbyte = (bitlen + 15) >> 4;
     rsa = RSA_new();
-    ret = EVP_PKEY_new();
+    ret = _EVP_PKEY_new();
     if (rsa == NULL || ret == NULL)
         goto memerr;
     e = BN_new();

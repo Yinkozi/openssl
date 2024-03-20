@@ -103,7 +103,7 @@ int X509_PUBKEY_set(X509_PUBKEY **x, EVP_PKEY *pkey)
 
 static int x509_pubkey_decode(EVP_PKEY **ppkey, X509_PUBKEY *key)
 {
-    EVP_PKEY *pkey = EVP_PKEY_new();
+    EVP_PKEY *pkey = _EVP_PKEY_new();
 
     if (pkey == NULL) {
         X509err(X509_F_X509_PUBKEY_DECODE, ERR_R_MALLOC_FAILURE);
@@ -247,7 +247,7 @@ int i2d_RSA_PUBKEY(RSA *a, unsigned char **pp)
     int ret;
     if (!a)
         return 0;
-    pktmp = EVP_PKEY_new();
+    pktmp = _EVP_PKEY_new();
     if (pktmp == NULL) {
         ASN1err(ASN1_F_I2D_RSA_PUBKEY, ERR_R_MALLOC_FAILURE);
         return -1;
@@ -287,7 +287,7 @@ int i2d_DSA_PUBKEY(DSA *a, unsigned char **pp)
     int ret;
     if (!a)
         return 0;
-    pktmp = EVP_PKEY_new();
+    pktmp = _EVP_PKEY_new();
     if (pktmp == NULL) {
         ASN1err(ASN1_F_I2D_DSA_PUBKEY, ERR_R_MALLOC_FAILURE);
         return -1;
@@ -327,7 +327,7 @@ int i2d_EC_PUBKEY(EC_KEY *a, unsigned char **pp)
     int ret;
     if (!a)
         return 0;
-    if ((pktmp = EVP_PKEY_new()) == NULL) {
+    if ((pktmp = _EVP_PKEY_new()) == NULL) {
         ASN1err(ASN1_F_I2D_EC_PUBKEY, ERR_R_MALLOC_FAILURE);
         return -1;
     }

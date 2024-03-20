@@ -107,7 +107,7 @@ int SSL_use_RSAPrivateKey(SSL *ssl, RSA *rsa)
         SSLerr(SSL_F_SSL_USE_RSAPRIVATEKEY, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
-    if ((pkey = EVP_PKEY_new()) == NULL) {
+    if ((pkey = _EVP_PKEY_new()) == NULL) {
         SSLerr(SSL_F_SSL_USE_RSAPRIVATEKEY, ERR_R_EVP_LIB);
         return 0;
     }
@@ -421,7 +421,7 @@ int SSL_CTX_use_RSAPrivateKey(SSL_CTX *ctx, RSA *rsa)
         SSLerr(SSL_F_SSL_CTX_USE_RSAPRIVATEKEY, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
-    if ((pkey = EVP_PKEY_new()) == NULL) {
+    if ((pkey = _EVP_PKEY_new()) == NULL) {
         SSLerr(SSL_F_SSL_CTX_USE_RSAPRIVATEKEY, ERR_R_EVP_LIB);
         return 0;
     }

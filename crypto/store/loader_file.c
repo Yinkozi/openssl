@@ -564,7 +564,7 @@ static OSSL_STORE_INFO *try_decode_params(const char *pem_name,
     }
 
     if (slen > 0) {
-        if ((pkey = EVP_PKEY_new()) == NULL) {
+        if ((pkey = _EVP_PKEY_new()) == NULL) {
             OSSL_STOREerr(OSSL_STORE_F_TRY_DECODE_PARAMS, ERR_R_EVP_LIB);
             return NULL;
         }
@@ -582,7 +582,7 @@ static OSSL_STORE_INFO *try_decode_params(const char *pem_name,
         for (i = 0; i < EVP_PKEY_asn1_get_count(); i++) {
             const unsigned char *tmp_blob = blob;
 
-            if (tmp_pkey == NULL && (tmp_pkey = EVP_PKEY_new()) == NULL) {
+            if (tmp_pkey == NULL && (tmp_pkey = _EVP_PKEY_new()) == NULL) {
                 OSSL_STOREerr(OSSL_STORE_F_TRY_DECODE_PARAMS, ERR_R_EVP_LIB);
                 break;
             }

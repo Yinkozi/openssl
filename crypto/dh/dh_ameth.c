@@ -654,7 +654,7 @@ static int dh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
         goto err;
     }
 
-    pkpeer = EVP_PKEY_new();
+    pkpeer = _EVP_PKEY_new();
     if (pkpeer == NULL)
         goto err;
 

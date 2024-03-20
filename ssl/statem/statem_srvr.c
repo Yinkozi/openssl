@@ -2532,7 +2532,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
 
         if (s->cert->dh_tmp_auto) {
             DH *dhp = ssl_get_auto_dh(s);
-            pkdh = EVP_PKEY_new();
+            pkdh = _EVP_PKEY_new();
             if (pkdh == NULL || dhp == NULL) {
                 DH_free(dhp);
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
@@ -3199,7 +3199,7 @@ static int tls_process_cke_dhe(SSL *s, PACKET *pkt)
                  ERR_R_INTERNAL_ERROR);
         goto err;
     }
-    ckey = EVP_PKEY_new();
+    ckey = _EVP_PKEY_new();
     if (ckey == NULL || EVP_PKEY_copy_parameters(ckey, skey) == 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CKE_DHE,
                  SSL_R_BN_LIB);
@@ -3268,7 +3268,7 @@ static int tls_process_cke_ecdhe(SSL *s, PACKET *pkt)
             goto err;
         }
 
-        ckey = EVP_PKEY_new();
+        ckey = _EVP_PKEY_new();
         if (ckey == NULL || EVP_PKEY_copy_parameters(ckey, skey) <= 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CKE_ECDHE,
                      ERR_R_EVP_LIB);

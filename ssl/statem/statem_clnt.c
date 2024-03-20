@@ -2102,7 +2102,7 @@ static int tls_process_ske_dhe(SSL *s, PACKET *pkt, EVP_PKEY **pkey)
         return 0;
     }
 
-    peer_tmp = EVP_PKEY_new();
+    peer_tmp = _EVP_PKEY_new();
     dh = DH_new();
 
     if (peer_tmp == NULL || dh == NULL) {

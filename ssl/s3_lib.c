@@ -4760,7 +4760,7 @@ EVP_PKEY *ssl_generate_param_group(uint16_t id)
         goto err;
 
     if ((ginf->flags & TLS_CURVE_TYPE) == TLS_CURVE_CUSTOM) {
-        pkey = EVP_PKEY_new();
+        pkey = _EVP_PKEY_new();
         if (pkey != NULL && EVP_PKEY_set_type(pkey, ginf->nid))
             return pkey;
         EVP_PKEY_free(pkey);
@@ -4860,7 +4860,7 @@ EVP_PKEY *ssl_dh_to_pkey(DH *dh)
     EVP_PKEY *ret;
     if (dh == NULL)
         return NULL;
-    ret = EVP_PKEY_new();
+    ret = _EVP_PKEY_new();
     if (EVP_PKEY_set1_DH(ret, dh) <= 0) {
         EVP_PKEY_free(ret);
         return NULL;
