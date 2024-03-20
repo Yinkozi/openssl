@@ -212,7 +212,7 @@ int EVP_DigestVerify(EVP_MD_CTX *ctx, const unsigned char *sigret,
 {
     if (ctx->pctx->pmeth->digestverify != NULL)
         return ctx->pctx->pmeth->digestverify(ctx, sigret, siglen, tbs, tbslen);
-    if (EVP_DigestVerifyUpdate(ctx, tbs, tbslen) <= 0)
+    if (_EVP_DigestVerifyUpdate(ctx, tbs, tbslen) <= 0)
         return -1;
     return EVP_DigestVerifyFinal(ctx, sigret, siglen);
 }

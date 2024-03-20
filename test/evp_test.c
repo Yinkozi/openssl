@@ -2205,7 +2205,7 @@ static int digestverify_test_init(EVP_TEST *t, const char *alg)
 static int digestverify_update_fn(void *ctx, const unsigned char *buf,
                                   size_t buflen)
 {
-    return EVP_DigestVerifyUpdate(ctx, buf, buflen);
+    return _EVP_DigestVerifyUpdate(ctx, buf, buflen);
 }
 
 static int digestverify_test_run(EVP_TEST *t)

@@ -187,7 +187,7 @@ ERR_PACK                                define
 ERR_free_strings                        define deprecated 1.1.0
 ERR_load_crypto_strings                 define deprecated 1.1.0
 EVP_DigestSignUpdate                    define
-EVP_DigestVerifyUpdate                  define
+_EVP_DigestVerifyUpdate                  define
 EVP_MD_CTX_block_size                   define
 EVP_MD_CTX_size                         define
 EVP_MD_CTX_type                         define

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-_EVP_DigestVerifyInit, EVP_DigestVerifyUpdate, EVP_DigestVerifyFinal,
+_EVP_DigestVerifyInit, _EVP_DigestVerifyUpdate, EVP_DigestVerifyFinal,
 EVP_DigestVerify - EVP signature verification functions
 
 =head1 SYNOPSIS
@@ -11,7 +11,7 @@ EVP_DigestVerify - EVP signature verification functions
 
  int _EVP_DigestVerifyInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                           const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey);
- int EVP_DigestVerifyUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
+ int _EVP_DigestVerifyUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
  int EVP_DigestVerifyFinal(EVP_MD_CTX *ctx, const unsigned char *sig,
                            size_t siglen);
  int EVP_DigestVerify(EVP_MD_CTX *ctx, const unsigned char *sigret,
@@ -35,7 +35,7 @@ EVP_MD_CTX is freed).
 No B<EVP_PKEY_CTX> will be created by EVP_DigestSignInit() if the passed B<ctx>
 has already been assigned one via L<EVP_MD_CTX_set_pkey_ctx(3)>. See also L<SM2(7)>.
 
-EVP_DigestVerifyUpdate() hashes B<cnt> bytes of data at B<d> into the
+_EVP_DigestVerifyUpdate() hashes B<cnt> bytes of data at B<d> into the
 verification context B<ctx>. This function can be called several times on the
 same B<ctx> to include additional data. This function is currently implemented
 using a macro.
@@ -48,7 +48,7 @@ in B<sig> of length B<siglen>.
 
 =head1 RETURN VALUES
 
-_EVP_DigestVerifyInit() and EVP_DigestVerifyUpdate() return 1 for success and 0
+_EVP_DigestVerifyInit() and _EVP_DigestVerifyUpdate() return 1 for success and 0
 for failure.
 
 EVP_DigestVerifyFinal() and EVP_DigestVerify() return 1 for success; any other
@@ -67,7 +67,7 @@ transparent to the algorithm used and much more flexible.
 
 EVP_DigestVerify() is a one shot operation which verifies a single block of
 data in one function. For algorithms that support streaming it is equivalent
-to calling EVP_DigestVerifyUpdate() and EVP_DigestVerifyFinal(). For
+to calling _EVP_DigestVerifyUpdate() and EVP_DigestVerifyFinal(). For
 algorithms which do not support streaming (e.g. PureEdDSA) it is the only way
 to verify data.
 
@@ -99,7 +99,7 @@ L<RAND(7)>
 
 =head1 HISTORY
 
-_EVP_DigestVerifyInit(), EVP_DigestVerifyUpdate() and EVP_DigestVerifyFinal()
+_EVP_DigestVerifyInit(), _EVP_DigestVerifyUpdate() and EVP_DigestVerifyFinal()
 were added in OpenSSL 1.0.0.
 
 =head1 COPYRIGHT

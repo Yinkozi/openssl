@@ -485,7 +485,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
         }
     }
     if (s->version == SSL3_VERSION) {
-        if (EVP_DigestVerifyUpdate(mctx, hdata, hdatalen) <= 0
+        if (_EVP_DigestVerifyUpdate(mctx, hdata, hdatalen) <= 0
                 || !EVP_MD_CTX_ctrl(mctx, EVP_CTRL_SSL3_MASTER_SECRET,
                                     (int)s->session->master_key_length,
                                     s->session->master_key)) {

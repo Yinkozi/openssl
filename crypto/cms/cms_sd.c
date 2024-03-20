@@ -764,7 +764,7 @@ int CMS_SignerInfo_verify(CMS_SignerInfo *si)
                          ASN1_ITEM_rptr(CMS_Attributes_Verify));
     if (!abuf)
         goto err;
-    r = EVP_DigestVerifyUpdate(mctx, abuf, alen);
+    r = _EVP_DigestVerifyUpdate(mctx, abuf, alen);
     OPENSSL_free(abuf);
     if (r <= 0) {
         r = -1;
