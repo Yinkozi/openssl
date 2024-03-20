@@ -2708,7 +2708,7 @@ static int run_file_tests(int i)
 
     free_key_list(public_keys);
     free_key_list(private_keys);
-    BIO_free(t->s.key);
+    _BIO_free(t->s.key);
     c = t->s.errors;
     OPENSSL_free(t);
     return c == 0;

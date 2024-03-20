@@ -491,7 +491,7 @@ CONF *app_load_config(const char *filename)
         return NULL;
 
     conf = app_load_config_bio(in, filename);
-    BIO_free(in);
+    _BIO_free(in);
     return conf;
 }
 
@@ -505,7 +505,7 @@ CONF *app_load_config_quiet(const char *filename)
         return NULL;
 
     conf = app_load_config_bio(in, filename);
-    BIO_free(in);
+    _BIO_free(in);
     return conf;
 }
 
@@ -680,7 +680,7 @@ X509 *load_cert(const char *file, int format, const char *cert_descrip)
         BIO_printf(bio_err, "unable to load certificate\n");
         ERR_print_errors(bio_err);
     }
-    BIO_free(cert);
+    _BIO_free(cert);
     return x;
 }
 
@@ -714,7 +714,7 @@ X509_CRL *load_crl(const char *infile, int format)
     }
 
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return x;
 }
 
@@ -782,7 +782,7 @@ EVP_PKEY *load_key(const char *file, int format, int maybe_stdin,
         goto end;
     }
  end:
-    BIO_free(key);
+    _BIO_free(key);
     if (pkey == NULL) {
         BIO_printf(bio_err, "unable to load %s\n", key_descrip);
         ERR_print_errors(bio_err);
@@ -870,7 +870,7 @@ EVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
 #endif
     }
  end:
-    BIO_free(key);
+    _BIO_free(key);
     if (pkey == NULL)
         BIO_printf(bio_err, "unable to load %s\n", key_descrip);
     return pkey;
@@ -904,7 +904,7 @@ static int load_certs_crls(const char *file, int format,
                                  (pem_password_cb *)password_callback,
                                  &cb_data);
 
-    BIO_free(bio);
+    _BIO_free(bio);
 
     if (pcerts != NULL && *pcerts == NULL) {
         *pcerts = sk_X509_new_null();
@@ -1427,7 +1427,7 @@ BIGNUM *load_serial(const char *serialfile, int *exists, int create,
  err:
     if (ret == NULL)
         ERR_print_errors(bio_err);
-    BIO_free(in);
+    _BIO_free(in);
     ASN1_INTEGER_free(ai);
     return ret;
 }
@@ -1667,7 +1667,7 @@ int save_index(const char *dbfile, const char *suffix, CA_DB *db)
         goto err;
     }
     j = TXT_DB_write(out, db->db);
-    BIO_free(out);
+    _BIO_free(out);
     if (j <= 0)
         goto err;
 
@@ -1679,7 +1679,7 @@ int save_index(const char *dbfile, const char *suffix, CA_DB *db)
     }
     BIO_printf(out, "unique_subject = %s\n",
                db->attributes.unique_subject ? "yes" : "no");
-    BIO_free(out);
+    _BIO_free(out);
 
     return 1;
  err:
@@ -1897,13 +1897,13 @@ int bio_to_mem(unsigned char **out, int maxlen, BIO *in)
             len = 1024;
         len = BIO_read(in, tbuf, len);
         if (len < 0) {
-            BIO_free(mem);
+            _BIO_free(mem);
             return -1;
         }
         if (len == 0)
             break;
         if (_BIO_write(mem, tbuf, len) != len) {
-            BIO_free(mem);
+            _BIO_free(mem);
             return -1;
         }
         maxlen -= len;
@@ -1913,7 +1913,7 @@ int bio_to_mem(unsigned char **out, int maxlen, BIO *in)
     }
     ret = BIO_get_mem_data(mem, (char **)out);
     BIO_set_flags(mem, BIO_FLAGS_MEM_RDONLY);
-    BIO_free(mem);
+    _BIO_free(mem);
     return ret;
 }
 

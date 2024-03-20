@@ -126,7 +126,7 @@ Write to a file:
  if (!out)
      /* Error */
  BIO_printf(out, "Hello World\n");
- BIO_free(out);
+ _BIO_free(out);
 
 Alternative technique:
 
@@ -138,7 +138,7 @@ Alternative technique:
  if (!BIO_write_filename(out, "filename.txt"))
      /* Error */
  BIO_printf(out, "Hello World\n");
- BIO_free(out);
+ _BIO_free(out);
 
 =head1 BUGS
 

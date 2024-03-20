@@ -26,7 +26,7 @@ int ECPKParameters_print_fp(FILE *fp, const EC_GROUP *x, int off)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = ECPKParameters_print(b, x, off);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 
@@ -41,7 +41,7 @@ int EC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = EC_KEY_print(b, x, off);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 
@@ -56,7 +56,7 @@ int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = ECParameters_print(b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

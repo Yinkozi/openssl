@@ -24,7 +24,7 @@ int SSL_SESSION_print_fp(FILE *fp, const SSL_SESSION *x)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = SSL_SESSION_print(b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

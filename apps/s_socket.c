@@ -142,7 +142,7 @@ int init_client(int *sock, const char *host, const char *port,
                 ERR_print_errors(bio_err);
                 return 0;
             }
-            BIO_free(tmpbio);
+            _BIO_free(tmpbio);
         }
 #endif
 
@@ -287,7 +287,7 @@ int do_server(int *accept_sock, const char *host, const char *port,
             ERR_print_errors(bio_err);
             goto end;
         }
-        BIO_free(tmpbio);
+        _BIO_free(tmpbio);
     }
 #endif
 

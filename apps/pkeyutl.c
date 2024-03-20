@@ -270,7 +270,7 @@ int pkeyutl_main(int argc, char **argv)
             goto end;
         }
         siglen = bio_to_mem(&sig, keysize * 10, sigbio);
-        BIO_free(sigbio);
+        _BIO_free(sigbio);
         if (siglen < 0) {
             BIO_printf(bio_err, "Error reading signature data\n");
             goto end;
@@ -352,7 +352,7 @@ int pkeyutl_main(int argc, char **argv)
  end:
     EVP_PKEY_CTX_free(ctx);
     release_engine(e);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     OPENSSL_free(buf_in);
     OPENSSL_free(buf_out);

@@ -60,6 +60,6 @@ void ERR_print_errors_fp(FILE *fp)
         return;
 
     ERR_print_errors_cb(print_bio, bio);
-    BIO_free(bio);
+    _BIO_free(bio);
 }
 #endif

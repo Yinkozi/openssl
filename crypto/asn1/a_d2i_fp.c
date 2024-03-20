@@ -29,7 +29,7 @@ void *ASN1_d2i_fp(void *(*xnew) (void), d2i_of_void *d2i, FILE *in, void **x)
     }
     BIO_set_fp(b, in, BIO_NOCLOSE);
     ret = ASN1_d2i_bio(xnew, d2i, b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 # endif
@@ -84,7 +84,7 @@ void *ASN1_item_d2i_fp(const ASN1_ITEM *it, FILE *in, void *x)
     }
     BIO_set_fp(b, in, BIO_NOCLOSE);
     ret = ASN1_item_d2i_bio(it, b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

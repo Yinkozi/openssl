@@ -235,7 +235,7 @@ int pkey_main(int argc, char **argv)
     EVP_PKEY_free(pkey);
     release_engine(e);
     BIO_free_all(out);
-    BIO_free(in);
+    _BIO_free(in);
     OPENSSL_free(passin);
     OPENSSL_free(passout);
 

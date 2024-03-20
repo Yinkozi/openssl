@@ -222,7 +222,7 @@ Set a time structure to one hour after the current time and print it out:
  b = BIO_new_fp(stdout, BIO_NOCLOSE);
  ASN1_TIME_print(b, tm);
  ASN1_STRING_free(tm);
- BIO_free(b);
+ _BIO_free(b);
 
 Determine if one time is later or sooner than the current time:
 

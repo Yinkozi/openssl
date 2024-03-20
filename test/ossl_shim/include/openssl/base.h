@@ -95,7 +95,7 @@ class StackAllocated {
 template <typename T>
 using UniquePtr = std::unique_ptr<T, internal::Deleter<T>>;
 
-BORINGSSL_MAKE_DELETER(BIO, BIO_free)
+BORINGSSL_MAKE_DELETER(BIO, _BIO_free)
 BORINGSSL_MAKE_DELETER(EVP_PKEY, EVP_PKEY_free)
 BORINGSSL_MAKE_DELETER(DH, DH_free)
 BORINGSSL_MAKE_DELETER(X509, X509_free)

@@ -847,10 +847,10 @@ int create_ssl_objects(SSL_CTX *serverctx, SSL_CTX *clientctx, SSL **sssl,
  error:
     SSL_free(serverssl);
     SSL_free(clientssl);
-    BIO_free(s_to_c_bio);
-    BIO_free(c_to_s_bio);
-    BIO_free(s_to_c_fbio);
-    BIO_free(c_to_s_fbio);
+    _BIO_free(s_to_c_bio);
+    _BIO_free(c_to_s_bio);
+    _BIO_free(s_to_c_fbio);
+    _BIO_free(c_to_s_fbio);
 
     return 0;
 }

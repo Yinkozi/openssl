@@ -52,7 +52,7 @@ X509 *TS_CONF_load_cert(const char *file)
  end:
     if (x == NULL)
         TSerr(TS_F_TS_CONF_LOAD_CERT, TS_R_CANNOT_LOAD_CERT);
-    BIO_free(cert);
+    _BIO_free(cert);
     return x;
 }
 
@@ -80,7 +80,7 @@ STACK_OF(X509) *TS_CONF_load_certs(const char *file)
     if (othercerts == NULL)
         TSerr(TS_F_TS_CONF_LOAD_CERTS, TS_R_CANNOT_LOAD_CERT);
     sk_X509_INFO_pop_free(allcerts, X509_INFO_free);
-    BIO_free(certs);
+    _BIO_free(certs);
     return othercerts;
 }
 
@@ -95,7 +95,7 @@ EVP_PKEY *TS_CONF_load_key(const char *file, const char *pass)
  end:
     if (pkey == NULL)
         TSerr(TS_F_TS_CONF_LOAD_KEY, TS_R_CANNOT_LOAD_KEY);
-    BIO_free(key);
+    _BIO_free(key);
     return pkey;
 }
 

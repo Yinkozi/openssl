@@ -152,7 +152,7 @@ static int test_certs(int num)
         OPENSSL_free(header);
         OPENSSL_free(data);
     }
-    BIO_free(fp);
+    _BIO_free(fp);
 
     if (ERR_GET_REASON(ERR_peek_last_error()) == PEM_R_NO_START_LINE) {
         /* Reached end of PEM file */

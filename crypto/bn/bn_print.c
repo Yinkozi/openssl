@@ -296,7 +296,7 @@ int BN_print_fp(FILE *fp, const BIGNUM *a)
         return 0;
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = BN_print(b, a);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 # endif

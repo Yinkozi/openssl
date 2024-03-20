@@ -323,8 +323,8 @@ static int test_tls13ccs(int tst)
     c_to_s_fbio = _BIO_new(bio_f_watchccs_filter());
     if (!TEST_ptr(s_to_c_fbio)
             || !TEST_ptr(c_to_s_fbio)) {
-        BIO_free(s_to_c_fbio);
-        BIO_free(c_to_s_fbio);
+        _BIO_free(s_to_c_fbio);
+        _BIO_free(c_to_s_fbio);
         goto err;
     }
 

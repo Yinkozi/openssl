@@ -80,7 +80,7 @@ int i2d_ASN1_bio_stream(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
         /* Free up successive BIOs until we hit the old output BIO */
         do {
             tbio = BIO_pop(bio);
-            BIO_free(bio);
+            _BIO_free(bio);
             bio = tbio;
         } while (bio != out);
     }
@@ -112,7 +112,7 @@ static int B64_write_ASN1(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
     r = i2d_ASN1_bio_stream(out, val, in, flags, it);
     (void)BIO_flush(out);
     BIO_pop(out);
-    BIO_free(b64);
+    _BIO_free(b64);
     return r;
 }
 
@@ -143,7 +143,7 @@ static ASN1_VALUE *b64_read_asn1(BIO *bio, const ASN1_ITEM *it)
         ASN1err(ASN1_F_B64_READ_ASN1, ASN1_R_DECODE_ERROR);
     (void)BIO_flush(bio);
     BIO_pop(bio);
-    BIO_free(b64);
+    _BIO_free(b64);
     return val;
 }
 
@@ -361,7 +361,7 @@ static int asn1_output_data(BIO *out, BIO *data, ASN1_VALUE *val, int flags,
 
     while (sarg.ndef_bio != out) {
         tmpbio = BIO_pop(sarg.ndef_bio);
-        BIO_free(sarg.ndef_bio);
+        _BIO_free(sarg.ndef_bio);
         sarg.ndef_bio = tmpbio;
     }
 
@@ -455,7 +455,7 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
 
         if (bcont) {
             *bcont = sk_BIO_value(parts, 0);
-            BIO_free(asnin);
+            _BIO_free(asnin);
             sk_BIO_free(parts);
         } else
             sk_BIO_pop_free(parts, BIO_vfree);
@@ -526,7 +526,7 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
     }
     ret = BIO_flush(out);
     BIO_pop(out);
-    BIO_free(bf);
+    _BIO_free(bf);
     if (ret <= 0)
         return 0;
 
@@ -594,7 +594,7 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
             part++;
         } else if (state == 2) {
             if (!sk_BIO_push(parts, bpart)) {
-                BIO_free(bpart);
+                _BIO_free(bpart);
                 return 0;
             }
             return 1;
@@ -605,7 +605,7 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
                 first = 0;
                 if (bpart)
                     if (!sk_BIO_push(parts, bpart)) {
-                        BIO_free(bpart);
+                        _BIO_free(bpart);
                         return 0;
                     }
                 bpart = _BIO_new(_BIO_s_mem());
@@ -619,7 +619,7 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
                 _BIO_write(bpart, linebuf, len);
         }
     }
-    BIO_free(bpart);
+    _BIO_free(bpart);
     return 0;
 }
 

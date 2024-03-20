@@ -34,7 +34,7 @@ static int test_pathlen(void)
     ret = 1;
 
 end:
-    BIO_free(b);
+    _BIO_free(b);
     X509_free(x);
     return ret;
 }
@@ -290,7 +290,7 @@ static int test_ext_syntax(void)
 
         conf = NCONF_new(NULL);
         if (!TEST_ptr(conf)) {
-            BIO_free(extbio);
+            _BIO_free(extbio);
             return 0;
         }
         if (!TEST_long_gt(NCONF_load_bio(conf, extbio, &eline), 0)) {
@@ -317,7 +317,7 @@ static int test_ext_syntax(void)
                 }
             }
         }
-        BIO_free(extbio);
+        _BIO_free(extbio);
         NCONF_free(conf);
     }
 

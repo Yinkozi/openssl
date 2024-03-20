@@ -204,7 +204,7 @@ int X509V3_EXT_print_fp(FILE *fp, X509_EXTENSION *ext, int flag, int indent)
     if ((bio_tmp = BIO_new_fp(fp, BIO_NOCLOSE)) == NULL)
         return 0;
     ret = X509V3_EXT_print(bio_tmp, ext, flag, indent);
-    BIO_free(bio_tmp);
+    _BIO_free(bio_tmp);
     return ret;
 }
 #endif

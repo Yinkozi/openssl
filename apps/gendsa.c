@@ -105,7 +105,7 @@ int gendsa_main(int argc, char **argv)
         BIO_printf(bio_err, "unable to load DSA parameter file\n");
         goto end;
     }
-    BIO_free(in);
+    _BIO_free(in);
     in = NULL;
 
     out = bio_open_owner(outfile, FORMAT_PEM, private);
@@ -132,7 +132,7 @@ int gendsa_main(int argc, char **argv)
     if (ret != 0)
         ERR_print_errors(bio_err);
  end2:
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     DSA_free(dsa);
     release_engine(e);

@@ -24,7 +24,7 @@ int DHparams_print_fp(FILE *fp, const DH *x)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = DHparams_print(b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

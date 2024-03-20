@@ -857,7 +857,7 @@ static int new_session_cb(SSL *s, SSL_SESSION *sess)
             BIO_printf(bio_err, "Error writing session file %s\n", sess_out);
         } else {
             PEM_write_bio_SSL_SESSION(stmp, sess);
-            BIO_free(stmp);
+            _BIO_free(stmp);
         }
     }
 
@@ -1849,7 +1849,7 @@ int s_client_main(int argc, char **argv)
             goto end;
         }
         psksess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
-        BIO_free(stmp);
+        _BIO_free(stmp);
         if (psksess == NULL) {
             BIO_printf(bio_err, "Can't read PSK session file %s\n", psksessf);
             ERR_print_errors(bio_err);
@@ -2003,7 +2003,7 @@ int s_client_main(int argc, char **argv)
             goto end;
         }
         sess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
-        BIO_free(stmp);
+        _BIO_free(stmp);
         if (sess == NULL) {
             BIO_printf(bio_err, "Can't open session file %s\n", sess_in);
             ERR_print_errors(bio_err);
@@ -2116,13 +2116,13 @@ int s_client_main(int argc, char **argv)
             if (socket_mtu < DTLS_get_link_min_mtu(con)) {
                 BIO_printf(bio_err, "MTU too small. Must be at least %ld\n",
                            DTLS_get_link_min_mtu(con));
-                BIO_free(sbio);
+                _BIO_free(sbio);
                 goto shut;
             }
             SSL_set_options(con, SSL_OP_NO_QUERY_MTU);
             if (!DTLS_set_link_mtu(con, socket_mtu)) {
                 BIO_printf(bio_err, "Failed to set MTU\n");
-                BIO_free(sbio);
+                _BIO_free(sbio);
                 goto shut;
             }
         } else {
@@ -2226,7 +2226,7 @@ int s_client_main(int argc, char **argv)
             } while (mbuf_len > 3 && mbuf[3] == '-');
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (!foundit)
                 BIO_printf(bio_err,
                            "Didn't find STARTTLS in server response,"
@@ -2265,7 +2265,7 @@ int s_client_main(int argc, char **argv)
             while (mbuf_len > 3 && mbuf[0] != '.');
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (!foundit)
                 BIO_printf(bio_err,
                            "Didn't find STARTTLS in server response,"
@@ -2286,7 +2286,7 @@ int s_client_main(int argc, char **argv)
             while (mbuf_len > 3 && (!isdigit(mbuf[0]) || !isdigit(mbuf[1]) || !isdigit(mbuf[2]) || mbuf[3] != ' '));
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             BIO_printf(sbio, "AUTH TLS\r\n");
             BIO_read(sbio, sbuf, BUFSIZZ);
         }
@@ -2386,7 +2386,7 @@ int s_client_main(int argc, char **argv)
                            "from proxy (got %d octets)\n", prog, mbuf_len);
                 (void)BIO_flush(fbio);
                 BIO_pop(fbio);
-                BIO_free(fbio);
+                _BIO_free(fbio);
                 goto shut;
             }
             if (mbuf[8] != ' ') {
@@ -2408,7 +2408,7 @@ int s_client_main(int argc, char **argv)
             }
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (foundit != success) {
                 goto shut;
             }
@@ -2468,7 +2468,7 @@ int s_client_main(int argc, char **argv)
 
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (numeric != 670) {
                 BIO_printf(bio_err, "Server does not support STARTTLS.\n");
                 ret = 1;
@@ -2592,7 +2592,7 @@ int s_client_main(int argc, char **argv)
             } while (mbuf_len > 1 && mbuf[0] != '.');
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (!foundit)
                 BIO_printf(bio_err,
                            "Didn't find STARTTLS in server response,"
@@ -2631,7 +2631,7 @@ int s_client_main(int argc, char **argv)
             } while (mbuf_len > 1 && mbuf[0] == '"');
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
-            BIO_free(fbio);
+            _BIO_free(fbio);
             if (!foundit)
                 BIO_printf(bio_err,
                            "Didn't find STARTTLS in server response,"
@@ -2675,12 +2675,12 @@ int s_client_main(int argc, char **argv)
             CONF *cnf = NCONF_new(NULL);
 
             if (cnf == NULL) {
-                BIO_free(ldapbio);
+                _BIO_free(ldapbio);
                 goto end;
             }
             BIO_puts(ldapbio, ldap_tls_genconf);
             if (NCONF_load_bio(cnf, ldapbio, &errline) <= 0) {
-                BIO_free(ldapbio);
+                _BIO_free(ldapbio);
                 NCONF_free(cnf);
                 if (errline <= 0) {
                     BIO_printf(bio_err, "NCONF_load_bio failed\n");
@@ -2690,7 +2690,7 @@ int s_client_main(int argc, char **argv)
                     goto end;
                 }
             }
-            BIO_free(ldapbio);
+            _BIO_free(ldapbio);
             genstr = NCONF_get_string(cnf, "default", "asn1");
             if (genstr == NULL) {
                 NCONF_free(cnf);
@@ -2757,14 +2757,14 @@ int s_client_main(int argc, char **argv)
                     continue;
                 default:
                     BIO_printf(bio_err, "Error writing early data\n");
-                    BIO_free(edfile);
+                    _BIO_free(edfile);
                     ERR_print_errors(bio_err);
                     goto shut;
                 }
             }
         }
 
-        BIO_free(edfile);
+        _BIO_free(edfile);
     }
 
     for (;;) {
@@ -3175,9 +3175,9 @@ int s_client_main(int argc, char **argv)
     OPENSSL_clear_free(sbuf, BUFSIZZ);
     OPENSSL_clear_free(mbuf, BUFSIZZ);
     release_engine(e);
-    BIO_free(bio_c_out);
+    _BIO_free(bio_c_out);
     bio_c_out = NULL;
-    BIO_free(bio_c_msg);
+    _BIO_free(bio_c_msg);
     bio_c_msg = NULL;
     return ret;
 }

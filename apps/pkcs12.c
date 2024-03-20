@@ -584,7 +584,7 @@ int pkcs12_main(int argc, char **argv)
  end:
     PKCS12_free(p12);
     release_engine(e);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     sk_OPENSSL_STRING_free(canames);
     OPENSSL_free(badpass);

@@ -112,7 +112,7 @@ static void BIO_ACCEPT_free(BIO_ACCEPT *a)
     OPENSSL_free(a->cache_accepting_serv);
     OPENSSL_free(a->cache_peer_name);
     OPENSSL_free(a->cache_peer_serv);
-    BIO_free(a->bio_chain);
+    _BIO_free(a->bio_chain);
     OPENSSL_free(a);
 }
 
@@ -348,7 +348,7 @@ static int acpt_state(BIO *b, BIO_ACCEPT *c)
 
   exit_loop:
     if (bio != NULL)
-        BIO_free(bio);
+        _BIO_free(bio);
     else if (s >= 0)
         BIO_closesocket(s);
   end:
@@ -441,7 +441,7 @@ static long acpt_ctrl(BIO *b, int cmd, long num, void *ptr)
             } else if (num == 2) {
                 data->bind_mode |= BIO_SOCK_NONBLOCK;
             } else if (num == 3) {
-                BIO_free(data->bio_chain);
+                _BIO_free(data->bio_chain);
                 data->bio_chain = (BIO *)ptr;
             } else if (num == 4) {
                 data->accept_family = *(int *)ptr;
@@ -561,7 +561,7 @@ BIO *BIO_new_accept(const char *str)
         return NULL;
     if (BIO_set_accept_name(ret, str))
         return ret;
-    BIO_free(ret);
+    _BIO_free(ret);
     return NULL;
 }
 

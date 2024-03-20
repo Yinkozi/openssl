@@ -749,7 +749,7 @@ int cms_main(int argc, char **argv)
             goto end;
         }
         if (contfile != NULL) {
-            BIO_free(indata);
+            _BIO_free(indata);
             if ((indata = BIO_new_file(contfile, "rb")) == NULL) {
                 BIO_printf(bio_err, "Can't read content file %s\n", contfile);
                 goto end;
@@ -1106,9 +1106,9 @@ int cms_main(int argc, char **argv)
     CMS_ContentInfo_free(cms);
     CMS_ContentInfo_free(rcms);
     release_engine(e);
-    BIO_free(rctin);
-    BIO_free(in);
-    BIO_free(indata);
+    _BIO_free(rctin);
+    _BIO_free(in);
+    _BIO_free(indata);
     BIO_free_all(out);
     OPENSSL_free(passin);
     return ret;
@@ -1125,7 +1125,7 @@ static int save_certs(char *signerfile, STACK_OF(X509) *signers)
         return 0;
     for (i = 0; i < sk_X509_num(signers); i++)
         PEM_write_bio_X509(tmp, sk_X509_value(signers, i));
-    BIO_free(tmp);
+    _BIO_free(tmp);
     return 1;
 }
 

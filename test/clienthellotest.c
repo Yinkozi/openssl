@@ -167,8 +167,8 @@ static int test_client_hello(int currtest)
     rbio = _BIO_new(_BIO_s_mem());
     wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
-        BIO_free(rbio);
-        BIO_free(wbio);
+        _BIO_free(rbio);
+        _BIO_free(wbio);
         goto end;
     }
 
@@ -242,7 +242,7 @@ end:
     SSL_free(con);
     SSL_CTX_free(ctx);
     SSL_SESSION_free(sess);
-    BIO_free(sessbio);
+    _BIO_free(sessbio);
 
     return testresult;
 }

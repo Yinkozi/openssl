@@ -235,7 +235,7 @@ int dsaparam_main(int argc, char **argv)
     ret = 0;
  end:
     BN_GENCB_free(cb);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     DSA_free(dsa);
     release_engine(e);

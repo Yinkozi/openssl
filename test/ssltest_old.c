@@ -844,7 +844,7 @@ static SSL_SESSION *read_session(const char *filename)
         BIO_printf(bio_err, "Can't parse session file %s\n", filename);
         ERR_print_errors(bio_err);
     }
-    BIO_free(f);
+    _BIO_free(f);
     return sess;
 }
 
@@ -864,7 +864,7 @@ static int write_session(const char *filename, SSL_SESSION *sess)
         return 0;
     }
     PEM_write_bio_SSL_SESSION(f, sess);
-    BIO_free(f);
+    _BIO_free(f);
     return 1;
 }
 
@@ -1895,7 +1895,7 @@ int main(int argc, char *argv[])
     SSL_CONF_CTX_free(c_cctx);
     sk_OPENSSL_STRING_free(conf_args);
 
-    BIO_free(bio_stdout);
+    _BIO_free(bio_stdout);
 
     SSL_SESSION_free(server_sess);
     SSL_SESSION_free(client_sess);
@@ -1904,7 +1904,7 @@ int main(int argc, char *argv[])
     if (CRYPTO_mem_leaks(bio_err) <= 0)
         ret = EXIT_FAILURE;
 #endif
-    BIO_free(bio_err);
+    _BIO_free(bio_err);
     EXIT(ret);
 }
 
@@ -2175,10 +2175,10 @@ int doit_localhost(SSL *s_ssl, SSL *c_ssl, int family, long count,
     ERR_print_errors(bio_err);
 
     BIO_free_all(acpt);
-    BIO_free(server);
-    BIO_free(client);
-    BIO_free(s_ssl_bio);
-    BIO_free(c_ssl_bio);
+    _BIO_free(server);
+    _BIO_free(client);
+    _BIO_free(s_ssl_bio);
+    _BIO_free(c_ssl_bio);
 
     if (should_negotiate != NULL && strcmp(should_negotiate, "fail-client") == 0)
         ret = (err_in_client != 0) ? EXIT_SUCCESS : EXIT_FAILURE;
@@ -2548,12 +2548,12 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
  err:
     ERR_print_errors(bio_err);
 
-    BIO_free(server);
-    BIO_free(server_io);
-    BIO_free(client);
-    BIO_free(client_io);
-    BIO_free(s_ssl_bio);
-    BIO_free(c_ssl_bio);
+    _BIO_free(server);
+    _BIO_free(server_io);
+    _BIO_free(client);
+    _BIO_free(client_io);
+    _BIO_free(s_ssl_bio);
+    _BIO_free(c_ssl_bio);
 
     if (should_negotiate != NULL && strcmp(should_negotiate, "fail-client") == 0)
         ret = (err_in_client != 0) ? EXIT_SUCCESS : EXIT_FAILURE;
@@ -2835,8 +2835,8 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
     }
     ret = EXIT_SUCCESS;
  err:
-    BIO_free(c_to_s);
-    BIO_free(s_to_c);
+    _BIO_free(c_to_s);
+    _BIO_free(s_to_c);
     BIO_free_all(c_bio);
     BIO_free_all(s_bio);
     OPENSSL_free(cbuf);

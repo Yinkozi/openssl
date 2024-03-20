@@ -337,10 +337,10 @@ int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,
     if (flags & PKCS7_TEXT) {
         if (!SMIME_text(tmpout, out)) {
             PKCS7err(PKCS7_F_PKCS7_VERIFY, PKCS7_R_SMIME_TEXT_ERROR);
-            BIO_free(tmpout);
+            _BIO_free(tmpout);
             goto err;
         }
-        BIO_free(tmpout);
+        _BIO_free(tmpout);
     }
 
     /* Now Verify All Signatures */

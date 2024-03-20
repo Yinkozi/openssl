@@ -124,7 +124,7 @@ int X509_load_cert_file(X509_LOOKUP *ctx, const char *file, int type)
         X509err(X509_F_X509_LOAD_CERT_FILE, X509_R_NO_CERTIFICATE_FOUND);
  err:
     X509_free(x);
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -181,7 +181,7 @@ int X509_load_crl_file(X509_LOOKUP *ctx, const char *file, int type)
         X509err(X509_F_X509_LOAD_CRL_FILE, X509_R_NO_CRL_FOUND);
  err:
     X509_CRL_free(x);
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -200,7 +200,7 @@ int X509_load_cert_crl_file(X509_LOOKUP *ctx, const char *file, int type)
         return 0;
     }
     inf = PEM_X509_INFO_read_bio(in, NULL, NULL, "");
-    BIO_free(in);
+    _BIO_free(in);
     if (!inf) {
         X509err(X509_F_X509_LOAD_CERT_CRL_FILE, ERR_R_PEM_LIB);
         return 0;

@@ -187,8 +187,8 @@ to retrieve a page and copy the result to standard output.
          break;
      _BIO_write(out, tmpbuf, len);
  }
- BIO_free(cbio);
- BIO_free(out);
+ _BIO_free(cbio);
+ _BIO_free(out);
 
 
 =head1 SEE ALSO

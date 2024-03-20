@@ -369,7 +369,7 @@ int dgst_main(int argc, char **argv)
         siglen = EVP_PKEY_size(sigkey);
         sigbuf = app_malloc(siglen, "signature buffer");
         siglen = BIO_read(sigbio, sigbuf, siglen);
-        BIO_free(sigbio);
+        _BIO_free(sigbio);
         if (siglen <= 0) {
             BIO_printf(bio_err, "Error reading signature file %s\n", sigfile);
             ERR_print_errors(bio_err);
@@ -419,14 +419,14 @@ int dgst_main(int argc, char **argv)
     }
  end:
     OPENSSL_clear_free(buf, BUFSIZE);
-    BIO_free(in);
+    _BIO_free(in);
     OPENSSL_free(passin);
     BIO_free_all(out);
     EVP_PKEY_free(sigkey);
     sk_OPENSSL_STRING_free(sigopts);
     sk_OPENSSL_STRING_free(macopts);
     OPENSSL_free(sigbuf);
-    BIO_free(bmd);
+    _BIO_free(bmd);
     release_engine(e);
     return ret;
 }

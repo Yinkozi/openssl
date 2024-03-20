@@ -1528,7 +1528,7 @@ X509_ATTRIBUTE_create                   1514	1_1_0	EXIST::FUNCTION:
 SCT_get_source                          1515	1_1_0	EXIST::FUNCTION:CT
 EVP_PKEY_verify_init                    1516	1_1_0	EXIST::FUNCTION:
 ASN1_TIME_set_string                    1517	1_1_0	EXIST::FUNCTION:
-BIO_free                                1518	1_1_0	EXIST::FUNCTION:
+_BIO_free                                1518	1_1_0	EXIST::FUNCTION:
 i2d_X509_ALGOR                          1519	1_1_0	EXIST::FUNCTION:
 X509_STORE_CTX_set0_crls                1520	1_1_0	EXIST::FUNCTION:
 ASYNC_pause_job                         1521	1_1_0	EXIST::FUNCTION:

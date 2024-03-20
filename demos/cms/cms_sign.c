@@ -81,8 +81,8 @@ int main(int argc, char **argv)
     CMS_ContentInfo_free(cms);
     X509_free(scert);
     EVP_PKEY_free(skey);
-    BIO_free(in);
-    BIO_free(out);
-    BIO_free(tbio);
+    _BIO_free(in);
+    _BIO_free(out);
+    _BIO_free(tbio);
     return ret;
 }

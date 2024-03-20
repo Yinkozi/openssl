@@ -662,7 +662,7 @@ int CRYPTO_mem_leaks_fp(FILE *fp)
         return -1;
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = CRYPTO_mem_leaks_cb(print_bio, b);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 # endif

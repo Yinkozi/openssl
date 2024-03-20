@@ -89,7 +89,7 @@ static void tree_print(char *str, X509_POLICY_TREE *tree,
         if (plev->anyPolicy)
             X509_POLICY_NODE_print(err, plev->anyPolicy, 2);
     }
-    BIO_free(err);
+    _BIO_free(err);
 }
 #endif
 

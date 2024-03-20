@@ -520,7 +520,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
     else
         ret = MSG_PROCESS_CONTINUE_READING;
  err:
-    BIO_free(s->s3->handshake_buffer);
+    _BIO_free(s->s3->handshake_buffer);
     s->s3->handshake_buffer = NULL;
     EVP_MD_CTX_free(mctx);
 #ifndef OPENSSL_NO_GOST

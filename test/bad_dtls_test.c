@@ -570,8 +570,8 @@ static int test_bad_dtls(void)
     testresult = 1;
 
  end:
-    BIO_free(rbio);
-    BIO_free(wbio);
+    _BIO_free(rbio);
+    _BIO_free(wbio);
     SSL_free(con);
     SSL_CTX_free(ctx);
     EVP_MD_CTX_free(handshake_md);

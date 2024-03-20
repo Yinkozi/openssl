@@ -79,7 +79,7 @@ static int PKCS7_bio_add_digest(BIO **pbio, X509_ALGOR *alg)
     return 1;
 
  err:
-    BIO_free(btmp);
+    _BIO_free(btmp);
     return 0;
 
 }

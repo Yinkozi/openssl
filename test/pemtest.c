@@ -51,7 +51,7 @@ static int test_b64(int idx)
         goto err;
     ret = 1;
  err:
-    BIO_free(b);
+    _BIO_free(b);
     OPENSSL_free(name);
     OPENSSL_free(header);
     OPENSSL_free(data);
@@ -73,10 +73,10 @@ static int test_invalid(void)
         /* Expected to fail due to non-base64 character */
         || TEST_true(PEM_read_bio_ex(b, &name, &header, &data, &len,
                                      PEM_FLAG_ONLY_B64))) {
-        BIO_free(b);
+        _BIO_free(b);
         return 0;
     }
-    BIO_free(b);
+    _BIO_free(b);
     OPENSSL_free(name);
     OPENSSL_free(header);
     OPENSSL_free(data);
@@ -108,7 +108,7 @@ static int test_empty_payload(void)
     OPENSSL_free(name);
     OPENSSL_free(header);
     OPENSSL_free(data);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 

@@ -563,7 +563,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     ecdsakey = PEM_read_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(ecdsakey != NULL);
-    BIO_free(bio_buf);
+    _BIO_free(bio_buf);
     pkey = EVP_PKEY_new();
     EVP_PKEY_assign_EC_KEY(pkey, ecdsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
@@ -574,7 +574,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     OPENSSL_assert((size_t)_BIO_write(bio_buf, ECDSACertPEM, sizeof(ECDSACertPEM)) == sizeof(ECDSACertPEM));
     cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
-    BIO_free(bio_buf);
+    _BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);
     OPENSSL_assert(ret == 1);
     X509_free(cert);
@@ -587,7 +587,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     dsakey = PEM_read_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(dsakey != NULL);
-    BIO_free(bio_buf);
+    _BIO_free(bio_buf);
     pkey = EVP_PKEY_new();
     EVP_PKEY_assign_DSA(pkey, dsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
@@ -598,7 +598,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     OPENSSL_assert((size_t)_BIO_write(bio_buf, DSACertPEM, sizeof(DSACertPEM)) == sizeof(DSACertPEM));
     cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
-    BIO_free(bio_buf);
+    _BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);
     OPENSSL_assert(ret == 1);
     X509_free(cert);

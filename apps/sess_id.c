@@ -186,6 +186,6 @@ static SSL_SESSION *load_sess_id(char *infile, int format)
     }
 
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return x;
 }

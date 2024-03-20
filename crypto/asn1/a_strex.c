@@ -578,7 +578,7 @@ int X509_NAME_print_ex_fp(FILE *fp, const X509_NAME *nm, int indent,
         if (!btmp)
             return -1;
         ret = X509_NAME_print(btmp, nm, indent);
-        BIO_free(btmp);
+        _BIO_free(btmp);
         return ret;
     }
     return do_name_ex(send_fp_chars, fp, nm, indent, flags);

@@ -122,7 +122,7 @@ be passed as a parameter to the function.
 
 BIO_meth_get_destroy() and BIO_meth_set_destroy() get and set the function used
 for destroying an instance of a BIO respectively. This function will be
-called in response to the application calling BIO_free(). A pointer to the BIO
+called in response to the application calling _BIO_free(). A pointer to the BIO
 to be destroyed is passed as a parameter. The destroy function should be used
 for BIO specific clean up. The memory for the BIO itself should not be freed by
 this function.

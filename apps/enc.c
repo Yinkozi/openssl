@@ -227,7 +227,7 @@ int enc_main(int argc, char **argv)
             if (in == NULL)
                 goto opthelp;
             i = BIO_gets(in, buf, sizeof(buf));
-            BIO_free(in);
+            _BIO_free(in);
             in = NULL;
             if (i <= 0) {
                 BIO_printf(bio_err,
@@ -610,12 +610,12 @@ int enc_main(int argc, char **argv)
     ERR_print_errors(bio_err);
     OPENSSL_free(strbuf);
     OPENSSL_free(buff);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
-    BIO_free(benc);
-    BIO_free(b64);
+    _BIO_free(benc);
+    _BIO_free(b64);
 #ifdef ZLIB
-    BIO_free(bzl);
+    _BIO_free(bzl);
 #endif
     release_engine(e);
     OPENSSL_free(pass);

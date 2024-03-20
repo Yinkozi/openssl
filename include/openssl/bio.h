@@ -547,7 +547,7 @@ BIO *BIO_new_file(const char *filename, const char *mode);
 BIO *BIO_new_fp(FILE *stream, int close_flag);
 # endif
 BIO *_BIO_new(const BIO_METHOD *type);
-int BIO_free(BIO *a);
+int _BIO_free(BIO *a);
 void BIO_set_data(BIO *a, void *ptr);
 void *BIO_get_data(BIO *a);
 void BIO_set_init(BIO *a, int init);

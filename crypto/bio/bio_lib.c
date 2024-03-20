@@ -107,7 +107,7 @@ err:
     return NULL;
 }
 
-int BIO_free(BIO *a)
+int _BIO_free(BIO *a)
 {
     int ret;
 
@@ -172,7 +172,7 @@ int BIO_get_shutdown(BIO *a)
 
 void BIO_vfree(BIO *a)
 {
-    BIO_free(a);
+    _BIO_free(a);
 }
 
 int BIO_up_ref(BIO *a)
@@ -688,7 +688,7 @@ void BIO_free_all(BIO *bio)
         b = bio;
         ref = b->references;
         bio = bio->next_bio;
-        BIO_free(b);
+        _BIO_free(b);
         /* Since ref count > 1, don't free anyone else. */
         if (ref > 1)
             break;
@@ -713,14 +713,14 @@ BIO *BIO_dup_chain(BIO *in)
         new_bio->num = bio->num;
 
         if (!BIO_dup_state(bio, (char *)new_bio)) {
-            BIO_free(new_bio);
+            _BIO_free(new_bio);
             goto err;
         }
 
         /* copy app data */
         if (!CRYPTO_dup_ex_data(CRYPTO_EX_INDEX_BIO, &new_bio->ex_data,
                                 &bio->ex_data)) {
-            BIO_free(new_bio);
+            _BIO_free(new_bio);
             goto err;
         }
 

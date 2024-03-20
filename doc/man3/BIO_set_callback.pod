@@ -102,7 +102,7 @@ function that is called.
 
 =over 4
 
-=item B<BIO_free(b)>
+=item B<_BIO_free(b)>
 
  callback_ex(b, BIO_CB_FREE, NULL, 0, 0, 0L, 1L, NULL)
 

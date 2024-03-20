@@ -12761,7 +12761,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
   *) Updated some demos.
      [Sean O Riordain, Wade Scholine]
 
-  *) Add missing BIO_free at exit of pkcs12 application.
+  *) Add missing _BIO_free at exit of pkcs12 application.
      [Wu Zhigang]
 
   *) Fix memory leak in conf.c.

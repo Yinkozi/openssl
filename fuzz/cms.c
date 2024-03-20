@@ -40,11 +40,11 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         BIO *out = _BIO_new(BIO_s_null());
 
         i2d_CMS_bio(out, cms);
-        BIO_free(out);
+        _BIO_free(out);
         CMS_ContentInfo_free(cms);
     }
 
-    BIO_free(in);
+    _BIO_free(in);
     ERR_clear_error();
 
     return 0;

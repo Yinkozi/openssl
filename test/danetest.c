@@ -403,7 +403,7 @@ static int run_tlsatest(void)
     ret = 1;
 
 end:
-    BIO_free(f);
+    _BIO_free(f);
     SSL_CTX_free(ctx);
 
     return ret;

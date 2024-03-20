@@ -148,8 +148,8 @@ Extract the BUF_MEM structure from a memory BIO and then free up the BIO:
  BUF_MEM *bptr;
 
  BIO_get_mem_ptr(mem, &bptr);
- BIO_set_close(mem, BIO_NOCLOSE); /* So BIO_free() leaves BUF_MEM alone */
- BIO_free(mem);
+ BIO_set_close(mem, BIO_NOCLOSE); /* So _BIO_free() leaves BUF_MEM alone */
+ _BIO_free(mem);
 
 
 =head1 COPYRIGHT

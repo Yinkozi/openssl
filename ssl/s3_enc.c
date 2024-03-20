@@ -339,7 +339,7 @@ int ssl3_init_finished_mac(SSL *s)
 
 void ssl3_free_digest_list(SSL *s)
 {
-    BIO_free(s->s3->handshake_buffer);
+    _BIO_free(s->s3->handshake_buffer);
     s->s3->handshake_buffer = NULL;
     EVP_MD_CTX_free(s->s3->handshake_dgst);
     s->s3->handshake_dgst = NULL;
@@ -403,7 +403,7 @@ int ssl3_digest_cached_records(SSL *s, int keep)
         }
     }
     if (keep == 0) {
-        BIO_free(s->s3->handshake_buffer);
+        _BIO_free(s->s3->handshake_buffer);
         s->s3->handshake_buffer = NULL;
     }
 

@@ -97,7 +97,7 @@ static X509 *load_pem_cert(const char *dir, const char *file)
 
         if (cert_io != NULL)
             cert = PEM_read_bio_X509(cert_io, NULL, NULL, NULL);
-        BIO_free(cert_io);
+        _BIO_free(cert_io);
     }
 
     OPENSSL_free(file_path);
@@ -115,7 +115,7 @@ static int read_text_file(const char *dir, const char *file,
 
         if (file_io != NULL)
             len = BIO_read(file_io, buffer, buffer_length);
-        BIO_free(file_io);
+        _BIO_free(file_io);
     }
 
     OPENSSL_free(file_path);
@@ -144,7 +144,7 @@ static int compare_sct_list_printout(STACK_OF(SCT) *sct,
     result = 1;
 
 end:
-    BIO_free(text_buffer);
+    _BIO_free(text_buffer);
     return result;
 }
 
@@ -171,7 +171,7 @@ static int compare_extension_printout(X509_EXTENSION *extension,
     result = 1;
 
 end:
-    BIO_free(text_buffer);
+    _BIO_free(text_buffer);
     return result;
 }
 

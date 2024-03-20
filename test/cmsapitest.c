@@ -42,8 +42,8 @@ static int test_encrypt_decrypt(void)
     testresult = 1;
  end:
     sk_X509_free(certstack);
-    BIO_free(msgbio);
-    BIO_free(outmsgbio);
+    _BIO_free(msgbio);
+    _BIO_free(outmsgbio);
     CMS_ContentInfo_free(content);
 
     return testresult;
@@ -62,10 +62,10 @@ int setup_tests(void)
     if (!TEST_ptr(certbio))
         return 0;
     if (!TEST_true(PEM_read_bio_X509(certbio, &cert, NULL, NULL))) {
-        BIO_free(certbio);
+        _BIO_free(certbio);
         return 0;
     }
-    BIO_free(certbio);
+    _BIO_free(certbio);
 
     privkeybio = BIO_new_file(privkeyin, "r");
     if (!TEST_ptr(privkeybio)) {
@@ -74,12 +74,12 @@ int setup_tests(void)
         return 0;
     }
     if (!TEST_true(PEM_read_bio_PrivateKey(privkeybio, &privkey, NULL, NULL))) {
-        BIO_free(privkeybio);
+        _BIO_free(privkeybio);
         X509_free(cert);
         cert = NULL;
         return 0;
     }
-    BIO_free(privkeybio);
+    _BIO_free(privkeybio);
 
     ADD_TEST(test_encrypt_decrypt);
 

@@ -192,7 +192,7 @@ int pkcs7_main(int argc, char **argv)
  end:
     PKCS7_free(p7);
     release_engine(e);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     return ret;
 }

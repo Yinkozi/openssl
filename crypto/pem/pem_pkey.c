@@ -181,7 +181,7 @@ EVP_PKEY *PEM_read_PrivateKey(FILE *fp, EVP_PKEY **x, pem_password_cb *cb,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_read_bio_PrivateKey(b, x, cb, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 
@@ -197,7 +197,7 @@ int PEM_write_PrivateKey(FILE *fp, EVP_PKEY *x, const EVP_CIPHER *enc,
         return 0;
     }
     ret = PEM_write_bio_PrivateKey(b, x, enc, kstr, klen, cb, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 
@@ -243,7 +243,7 @@ DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_read_bio_DHparams(b, x, cb, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 # endif

@@ -34,7 +34,7 @@ int X509_print_ex_fp(FILE *fp, X509 *x, unsigned long nmflag,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = X509_print_ex(b, x, nmflag, cflag);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

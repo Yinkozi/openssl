@@ -431,8 +431,8 @@ BIO *BIO_new_buffer_ssl_connect(SSL_CTX *ctx)
         goto err;
     return ret;
  err:
-    BIO_free(buf);
-    BIO_free(ssl);
+    _BIO_free(buf);
+    _BIO_free(ssl);
 #endif
     return NULL;
 }
@@ -450,8 +450,8 @@ BIO *BIO_new_ssl_connect(SSL_CTX *ctx)
         goto err;
     return ret;
  err:
-    BIO_free(ssl);
-    BIO_free(con);
+    _BIO_free(ssl);
+    _BIO_free(con);
 #endif
     return NULL;
 }
@@ -464,7 +464,7 @@ BIO *BIO_new_ssl(SSL_CTX *ctx, int client)
     if ((ret = _BIO_new(BIO_f_ssl())) == NULL)
         return NULL;
     if ((ssl = SSL_new(ctx)) == NULL) {
-        BIO_free(ret);
+        _BIO_free(ret);
         return NULL;
     }
     if (client)

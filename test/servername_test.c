@@ -105,8 +105,8 @@ static int client_setup_sni_before_state(void)
     rbio = _BIO_new(_BIO_s_mem());
     wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
-        BIO_free(rbio);
-        BIO_free(wbio);
+        _BIO_free(rbio);
+        _BIO_free(wbio);
         goto end;
     }
 
@@ -150,8 +150,8 @@ static int client_setup_sni_after_state(void)
     rbio = _BIO_new(_BIO_s_mem());
     wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
-        BIO_free(rbio);
-        BIO_free(wbio);
+        _BIO_free(rbio);
+        _BIO_free(wbio);
         goto end;
     }
 

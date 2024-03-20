@@ -453,7 +453,7 @@ end_of_options:
             ERR_clear_error();
         } else {
             OBJ_create_objects(oid_bio);
-            BIO_free(oid_bio);
+            _BIO_free(oid_bio);
         }
     }
     if (!add_oid_section(conf)) {
@@ -1327,7 +1327,7 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
 
  end:
     X509_REQ_free(req);
-    BIO_free(in);
+    _BIO_free(in);
     return ok;
 }
 

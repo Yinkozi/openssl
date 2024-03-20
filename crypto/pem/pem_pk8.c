@@ -186,7 +186,7 @@ static int do_pk8pkey_fp(FILE *fp, EVP_PKEY *x, int isder, int nid,
         return 0;
     }
     ret = do_pk8pkey(bp, x, isder, nid, enc, kstr, klen, cb, u);
-    BIO_free(bp);
+    _BIO_free(bp);
     return ret;
 }
 
@@ -201,7 +201,7 @@ EVP_PKEY *d2i_PKCS8PrivateKey_fp(FILE *fp, EVP_PKEY **x, pem_password_cb *cb,
         return NULL;
     }
     ret = d2i_PKCS8PrivateKey_bio(bp, x, cb, u);
-    BIO_free(bp);
+    _BIO_free(bp);
     return ret;
 }
 

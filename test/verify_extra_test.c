@@ -35,7 +35,7 @@ static X509 *load_cert_pem(const char *file)
     if (TEST_int_gt(BIO_read_filename(bio, file), 0))
         (void)TEST_ptr(cert = PEM_read_bio_X509(bio, NULL, NULL, NULL));
 
-    BIO_free(bio);
+    _BIO_free(bio);
     return cert;
 }
 
@@ -53,7 +53,7 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
 
     certs = sk_X509_new_null();
     if (certs == NULL) {
-        BIO_free(bio);
+        _BIO_free(bio);
         return NULL;
     }
 
@@ -62,7 +62,7 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
         x = PEM_read_bio_X509(bio, NULL, 0, NULL);
         if (x != NULL && !sk_X509_push(certs, x)) {
             sk_X509_pop_free(certs, X509_free);
-            BIO_free(bio);
+            _BIO_free(bio);
             return NULL;
         } else if (x == NULL) {
             /*
@@ -73,7 +73,7 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
         }
     } while (x != NULL);
 
-    BIO_free(bio);
+    _BIO_free(bio);
 
     return certs;
 }
@@ -164,7 +164,7 @@ static int test_alt_chains_cert_forgery(void)
  err:
     X509_STORE_CTX_free(sctx);
     X509_free(x);
-    BIO_free(bio);
+    _BIO_free(bio);
     sk_X509_pop_free(untrusted, X509_free);
     X509_STORE_free(store);
     return ret;
@@ -203,7 +203,7 @@ static int test_store_ctx(void)
  err:
     X509_STORE_CTX_free(sctx);
     X509_free(x);
-    BIO_free(bio);
+    _BIO_free(bio);
     return testresult;
 }
 

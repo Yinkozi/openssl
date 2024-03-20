@@ -480,7 +480,7 @@ static int test_x509_time_print(int idx)
 
     ret = 1;
  err:
-    BIO_free(m);
+    _BIO_free(m);
     return ret;
 }
 

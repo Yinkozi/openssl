@@ -70,7 +70,7 @@ static int cms_copy_content(BIO *out, BIO *in, unsigned int flags)
 
  err:
     if (tmpout != out)
-        BIO_free(tmpout);
+        _BIO_free(tmpout);
     return r;
 
 }
@@ -91,7 +91,7 @@ static void do_free_upto(BIO *f, BIO *upto)
         BIO *tbio;
         do {
             tbio = BIO_pop(f);
-            BIO_free(f);
+            _BIO_free(f);
             f = tbio;
         }
         while (f && f != upto);
@@ -403,7 +403,7 @@ int CMS_verify(CMS_ContentInfo *cms, STACK_OF(X509) *certs,
     if (!(flags & SMIME_BINARY) && dcont) {
         do_free_upto(cmsbio, tmpout);
         if (tmpin != dcont)
-            BIO_free(tmpin);
+            _BIO_free(tmpin);
     } else {
         if (dcont && (tmpin == dcont))
             do_free_upto(cmsbio, dcont);
@@ -536,7 +536,7 @@ CMS_ContentInfo *CMS_sign_receipt(CMS_SignerInfo *si,
     r = 1;
 
  err:
-    BIO_free(rct_cont);
+    _BIO_free(rct_cont);
     if (r)
         return cms;
     CMS_ContentInfo_free(cms);

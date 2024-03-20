@@ -4040,7 +4040,7 @@ int ssl_init_wbio_buffer(SSL *s)
 
     bbio = _BIO_new(BIO_f_buffer());
     if (bbio == NULL || !BIO_set_read_buffer_size(bbio, 1)) {
-        BIO_free(bbio);
+        _BIO_free(bbio);
         SSLerr(SSL_F_SSL_INIT_WBIO_BUFFER, ERR_R_BUF_LIB);
         return 0;
     }
@@ -4057,7 +4057,7 @@ int ssl_free_wbio_buffer(SSL *s)
         return 1;
 
     s->wbio = BIO_pop(s->wbio);
-    BIO_free(s->bbio);
+    _BIO_free(s->bbio);
     s->bbio = NULL;
 
     return 1;

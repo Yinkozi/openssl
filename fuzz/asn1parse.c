@@ -39,5 +39,5 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
 void FuzzerCleanup(void)
 {
-    BIO_free(bio_out);
+    _BIO_free(bio_out);
 }

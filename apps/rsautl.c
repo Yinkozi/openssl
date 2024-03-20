@@ -268,7 +268,7 @@ int rsautl_main(int argc, char **argv)
  end:
     RSA_free(rsa);
     release_engine(e);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     OPENSSL_free(rsa_in);
     OPENSSL_free(rsa_out);

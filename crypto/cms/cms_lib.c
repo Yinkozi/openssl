@@ -100,7 +100,7 @@ BIO *CMS_dataInit(CMS_ContentInfo *cms, BIO *icont)
 
 err:
     if (!icont)
-        BIO_free(cont);
+        _BIO_free(cont);
     return NULL;
 
 }
@@ -303,7 +303,7 @@ BIO *cms_DigestAlgorithm_init_bio(X509_ALGOR *digestAlgorithm)
     }
     return mdbio;
  err:
-    BIO_free(mdbio);
+    _BIO_free(mdbio);
     return NULL;
 }
 

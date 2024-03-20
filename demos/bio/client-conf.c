@@ -114,7 +114,7 @@ int main(int argc, char **argv)
  end:
     SSL_CONF_CTX_free(cctx);
     BIO_free_all(sbio);
-    BIO_free(out);
+    _BIO_free(out);
     NCONF_free(conf);
     return 0;
 }

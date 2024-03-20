@@ -898,7 +898,7 @@ BIO *cms_EnvelopedData_init_bio(CMS_ContentInfo *cms)
     ec->keylen = 0;
     if (ok)
         return ret;
-    BIO_free(ret);
+    _BIO_free(ret);
     return NULL;
 
 }

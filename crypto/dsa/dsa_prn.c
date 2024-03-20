@@ -24,7 +24,7 @@ int DSA_print_fp(FILE *fp, const DSA *x, int off)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = DSA_print(b, x, off);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 
@@ -39,7 +39,7 @@ int DSAparams_print_fp(FILE *fp, const DSA *x)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = DSAparams_print(b, x);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

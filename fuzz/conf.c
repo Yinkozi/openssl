@@ -37,7 +37,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     OPENSSL_assert((size_t)_BIO_write(in, buf, len) == len);
     NCONF_load_bio(conf, in, &eline);
     NCONF_free(conf);
-    BIO_free(in);
+    _BIO_free(in);
     ERR_clear_error();
 
     return 0;

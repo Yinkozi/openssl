@@ -76,8 +76,8 @@ int main(int argc, char **argv)
     }
     PKCS7_free(p7);
     X509_free(cacert);
-    BIO_free(in);
-    BIO_free(out);
-    BIO_free(tbio);
+    _BIO_free(in);
+    _BIO_free(out);
+    _BIO_free(tbio);
     return ret;
 }

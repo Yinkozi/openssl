@@ -24,7 +24,7 @@ int RSA_print_fp(FILE *fp, const RSA *x, int off)
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = RSA_print(b, x, off);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

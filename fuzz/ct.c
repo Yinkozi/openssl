@@ -33,7 +33,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     if (scts != NULL) {
         BIO *bio = _BIO_new(BIO_s_null());
         SCT_LIST_print(scts, bio, 4, "\n", NULL);
-        BIO_free(bio);
+        _BIO_free(bio);
 
         if (i2d_SCT_LIST(scts, &der)) {
             /* Silence unused result warning */

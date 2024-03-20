@@ -38,7 +38,7 @@ static int test_bio_memleak(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
+    _BIO_free(bio);
     return ok;
 }
 
@@ -58,14 +58,14 @@ static int test_bio_get_mem(void)
         goto finish;
     if (!TEST_int_gt(BIO_set_close(bio, BIO_NOCLOSE), 0))
         goto finish;
-    BIO_free(bio);
+    _BIO_free(bio);
     bio = NULL;
     if (!TEST_mem_eq(bufmem->data, bufmem->length, "Hello World\n", 12))
         goto finish;
     ok = 1;
 
  finish:
-    BIO_free(bio);
+    _BIO_free(bio);
     BUF_MEM_free(bufmem);
     return ok;
 }
@@ -101,7 +101,7 @@ static int test_bio_new_mem_buf(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
+    _BIO_free(bio);
     return ok;
 }
 
@@ -142,8 +142,8 @@ static int test_bio_rdonly_mem_buf(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
-    BIO_free(bio2);
+    _BIO_free(bio);
+    _BIO_free(bio2);
     return ok;
 }
 
@@ -179,7 +179,7 @@ static int test_bio_rdwr_rdonly(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
+    _BIO_free(bio);
     return ok;
 }
 
@@ -219,7 +219,7 @@ static int test_bio_nonclear_rst(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
+    _BIO_free(bio);
     return ok;
 }
 
@@ -278,8 +278,8 @@ static int test_bio_i2d_ASN1_mime(void)
     ok = 1;
 
  finish:
-    BIO_free(bio);
-    BIO_free(out);
+    _BIO_free(bio);
+    _BIO_free(out);
     PKCS7_free(p7);
     return ok;
 }

@@ -650,7 +650,7 @@ STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file)
     sk_X509_NAME_pop_free(ret, X509_NAME_free);
     ret = NULL;
  done:
-    BIO_free(in);
+    _BIO_free(in);
     X509_free(x);
     lh_X509_NAME_free(name_hash);
     if (ret != NULL)
@@ -702,7 +702,7 @@ int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
  err:
     ret = 0;
  done:
-    BIO_free(in);
+    _BIO_free(in);
     X509_free(x);
     (void)sk_X509_NAME_set_cmp_func(stack, oldcmp);
     return ret;

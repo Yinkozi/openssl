@@ -23,7 +23,7 @@ interface between the B<ssl> and B<fd>. The BIO and hence the SSL engine
 inherit the behaviour of B<fd>. If B<fd> is nonblocking, the B<ssl> will
 also have nonblocking behaviour.
 
-If there was already a BIO connected to B<ssl>, BIO_free() will be called
+If there was already a BIO connected to B<ssl>, _BIO_free() will be called
 (for both the reading and writing side, if different).
 
 SSL_set_rfd() and SSL_set_wfd() perform the respective action, but only

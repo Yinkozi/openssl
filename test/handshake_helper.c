@@ -1317,7 +1317,7 @@ static int set_sock_as_sctp(int sock)
 
     if (tmpbio == NULL)
         return 0;
-    BIO_free(tmpbio);
+    _BIO_free(tmpbio);
 
     return 1;
 }

@@ -540,7 +540,7 @@ int ocsp_main(int argc, char **argv)
         if (derbio == NULL)
             goto end;
         req = d2i_OCSP_REQUEST_bio(derbio, NULL);
-        BIO_free(derbio);
+        _BIO_free(derbio);
         if (req == NULL) {
             BIO_printf(bio_err, "Error reading OCSP request\n");
             goto end;
@@ -676,7 +676,7 @@ redo_accept:
         if (derbio == NULL)
             goto end;
         i2d_OCSP_REQUEST_bio(derbio, req);
-        BIO_free(derbio);
+        _BIO_free(derbio);
     }
 
     if (rdb != NULL) {
@@ -700,7 +700,7 @@ redo_accept:
         if (derbio == NULL)
             goto end;
         resp = d2i_OCSP_RESPONSE_bio(derbio, NULL);
-        BIO_free(derbio);
+        _BIO_free(derbio);
         if (resp == NULL) {
             BIO_printf(bio_err, "Error reading OCSP response\n");
             goto end;
@@ -717,7 +717,7 @@ redo_accept:
         if (derbio == NULL)
             goto end;
         i2d_OCSP_RESPONSE_bio(derbio, resp);
-        BIO_free(derbio);
+        _BIO_free(derbio);
     }
 
     i = OCSP_response_status(resp);
@@ -1317,7 +1317,7 @@ static BIO *init_responder(const char *port)
 
  err:
     BIO_free_all(acbio);
-    BIO_free(bufbio);
+    _BIO_free(bufbio);
     return NULL;
 #endif
 }

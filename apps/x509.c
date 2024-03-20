@@ -524,7 +524,7 @@ int x509_main(int argc, char **argv)
         if (in == NULL)
             goto end;
         req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
-        BIO_free(in);
+        _BIO_free(in);
 
         if (req == NULL) {
             ERR_print_errors(bio_err);

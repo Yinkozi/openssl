@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
     skey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
 
-    BIO_free(tbio);
+    _BIO_free(tbio);
 
     tbio = BIO_new_file("signer2.pem", "r");
 
@@ -89,8 +89,8 @@ int main(int argc, char **argv)
     EVP_PKEY_free(skey);
     X509_free(scert2);
     EVP_PKEY_free(skey2);
-    BIO_free(in);
-    BIO_free(out);
-    BIO_free(tbio);
+    _BIO_free(in);
+    _BIO_free(out);
+    _BIO_free(tbio);
     return ret;
 }

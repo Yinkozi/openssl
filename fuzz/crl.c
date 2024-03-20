@@ -30,7 +30,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     if (crl != NULL) {
         BIO *bio = _BIO_new(BIO_s_null());
         X509_CRL_print(bio, crl);
-        BIO_free(bio);
+        _BIO_free(bio);
 
         i2d_X509_CRL(crl, &der);
         OPENSSL_free(der);

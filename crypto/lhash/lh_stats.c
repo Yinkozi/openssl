@@ -30,7 +30,7 @@ void OPENSSL_LH_stats(const OPENSSL_LHASH *lh, FILE *fp)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
     OPENSSL_LH_stats_bio(lh, bp);
-    BIO_free(bp);
+    _BIO_free(bp);
 }
 
 void OPENSSL_LH_node_stats(const OPENSSL_LHASH *lh, FILE *fp)
@@ -42,7 +42,7 @@ void OPENSSL_LH_node_stats(const OPENSSL_LHASH *lh, FILE *fp)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
     OPENSSL_LH_node_stats_bio(lh, bp);
-    BIO_free(bp);
+    _BIO_free(bp);
 }
 
 void OPENSSL_LH_node_usage_stats(const OPENSSL_LHASH *lh, FILE *fp)
@@ -54,7 +54,7 @@ void OPENSSL_LH_node_usage_stats(const OPENSSL_LHASH *lh, FILE *fp)
         return;
     BIO_set_fp(bp, fp, BIO_NOCLOSE);
     OPENSSL_LH_node_usage_stats_bio(lh, bp);
-    BIO_free(bp);
+    _BIO_free(bp);
 }
 
 # endif

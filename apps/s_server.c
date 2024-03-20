@@ -637,7 +637,7 @@ static int cert_status_cb(SSL *s, void *arg)
             goto err;
         }
         resp = d2i_OCSP_RESPONSE_bio(derbio, NULL);
-        BIO_free(derbio);
+        _BIO_free(derbio);
         if (resp == NULL) {
             BIO_puts(bio_err, "cert_status: Error reading OCSP response\n");
             goto err;
@@ -2065,7 +2065,7 @@ int s_server_main(int argc, char *argv[])
             goto end;
         }
         psksess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
-        BIO_free(stmp);
+        _BIO_free(stmp);
         if (psksess == NULL) {
             BIO_printf(bio_err, "Can't read PSK session file %s\n", psksessf);
             ERR_print_errors(bio_err);
@@ -2198,9 +2198,9 @@ int s_server_main(int argc, char *argv[])
     sk_OPENSSL_STRING_free(ssl_args);
     SSL_CONF_CTX_free(cctx);
     release_engine(engine);
-    BIO_free(bio_s_out);
+    _BIO_free(bio_s_out);
     bio_s_out = NULL;
-    BIO_free(bio_s_msg);
+    _BIO_free(bio_s_msg);
     bio_s_msg = NULL;
 #ifdef CHARSET_EBCDIC
     BIO_meth_free(methods_ebcdic);
@@ -2337,14 +2337,14 @@ static int sv_body(int s, int stype, int prot, unsigned char *context)
                 BIO_printf(bio_err, "MTU too small. Must be at least %ld\n",
                            DTLS_get_link_min_mtu(con));
                 ret = -1;
-                BIO_free(sbio);
+                _BIO_free(sbio);
                 goto err;
             }
             SSL_set_options(con, SSL_OP_NO_QUERY_MTU);
             if (!DTLS_set_link_mtu(con, socket_mtu)) {
                 BIO_printf(bio_err, "Failed to set MTU\n");
                 ret = -1;
-                BIO_free(sbio);
+                _BIO_free(sbio);
                 goto err;
             }
         } else
@@ -2987,7 +2987,7 @@ static DH *load_dh_param(const char *dhfile)
         goto err;
     ret = PEM_read_bio_DHparams(bio, NULL, NULL, NULL);
  err:
-    BIO_free(bio);
+    _BIO_free(bio);
     return ret;
 }
 #endif
@@ -3051,7 +3051,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
     SSL_set_bio(con, sbio, sbio);
     SSL_set_accept_state(con);
 
-    /* No need to free |con| after this. Done by BIO_free(ssl_bio) */
+    /* No need to free |con| after this. Done by _BIO_free(ssl_bio) */
     BIO_set_ssl(ssl_bio, con, BIO_CLOSE);
     BIO_push(io, ssl_bio);
 #ifdef CHARSET_EBCDIC
@@ -3362,7 +3362,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
                 }
             }
  write_error:
-            BIO_free(file);
+            _BIO_free(file);
             break;
         }
     }
@@ -3422,7 +3422,7 @@ static int rev_body(int s, int stype, int prot, unsigned char *context)
     SSL_set_bio(con, sbio, sbio);
     SSL_set_accept_state(con);
 
-    /* No need to free |con| after this. Done by BIO_free(ssl_bio) */
+    /* No need to free |con| after this. Done by _BIO_free(ssl_bio) */
     BIO_set_ssl(ssl_bio, con, BIO_CLOSE);
     BIO_push(io, ssl_bio);
 #ifdef CHARSET_EBCDIC

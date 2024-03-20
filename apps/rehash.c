@@ -258,7 +258,7 @@ static int do_file(const char *filename, const char *fullpath, enum Hash h)
         goto end;
     }
     inf = PEM_X509_INFO_read_bio(b, NULL, NULL, NULL);
-    BIO_free(b);
+    _BIO_free(b);
     if (inf == NULL)
         goto end;
 

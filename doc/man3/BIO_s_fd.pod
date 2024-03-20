@@ -76,7 +76,7 @@ This is a file descriptor BIO version of "Hello World":
 
  out = BIO_new_fd(fileno(stdout), BIO_NOCLOSE);
  BIO_printf(out, "Hello World\n");
- BIO_free(out);
+ _BIO_free(out);
 
 =head1 SEE ALSO
 

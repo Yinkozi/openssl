@@ -147,7 +147,7 @@ static int test_bio_callback(void)
         goto err;
 
     my_param_count = 0;
-    i = BIO_free(bio);
+    i = _BIO_free(bio);
     if (!TEST_int_eq(i, 1)
             || !TEST_int_eq(my_param_count, 1)
             || !TEST_ptr_eq(my_param_b[0], bio)
@@ -162,7 +162,7 @@ static int test_bio_callback(void)
     goto finish;
 
 err:
-    BIO_free(bio);
+    _BIO_free(bio);
 
 finish:
     /* This helps finding memory leaks with ASAN */

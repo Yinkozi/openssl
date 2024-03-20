@@ -77,7 +77,7 @@ int SSL_use_certificate_file(SSL *ssl, const char *file, int type)
     ret = SSL_use_certificate(ssl, x);
  end:
     X509_free(x);
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -198,7 +198,7 @@ int SSL_use_RSAPrivateKey_file(SSL *ssl, const char *file, int type)
     ret = SSL_use_RSAPrivateKey(ssl, rsa);
     RSA_free(rsa);
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -267,7 +267,7 @@ int SSL_use_PrivateKey_file(SSL *ssl, const char *file, int type)
     ret = SSL_use_PrivateKey(ssl, pkey);
     EVP_PKEY_free(pkey);
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -391,7 +391,7 @@ int SSL_CTX_use_certificate_file(SSL_CTX *ctx, const char *file, int type)
     ret = SSL_CTX_use_certificate(ctx, x);
  end:
     X509_free(x);
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -473,7 +473,7 @@ int SSL_CTX_use_RSAPrivateKey_file(SSL_CTX *ctx, const char *file, int type)
     ret = SSL_CTX_use_RSAPrivateKey(ctx, rsa);
     RSA_free(rsa);
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -540,7 +540,7 @@ int SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file, int type)
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     EVP_PKEY_free(pkey);
  end:
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -660,7 +660,7 @@ static int use_certificate_chain_file(SSL_CTX *ctx, SSL *ssl, const char *file)
 
  end:
     X509_free(x);
-    BIO_free(in);
+    _BIO_free(in);
     return ret;
 }
 
@@ -1052,7 +1052,7 @@ int SSL_CTX_use_serverinfo_file(SSL_CTX *ctx, const char *file)
     OPENSSL_free(header);
     OPENSSL_free(extension);
     OPENSSL_free(serverinfo);
-    BIO_free(bin);
+    _BIO_free(bin);
     return ret;
 }
 

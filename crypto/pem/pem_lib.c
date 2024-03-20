@@ -115,7 +115,7 @@ void *PEM_ASN1_read(d2i_of_void *d2i, const char *name, FILE *fp, void **x,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_ASN1_read_bio(d2i, name, b, x, cb, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif
@@ -300,7 +300,7 @@ int PEM_ASN1_write(i2d_of_void *i2d, const char *name, FILE *fp,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_ASN1_write_bio(i2d, name, b, x, enc, kstr, klen, callback, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif
@@ -594,7 +594,7 @@ int PEM_write(FILE *fp, const char *name, const char *header,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_write_bio(b, name, header, data, len);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif
@@ -674,7 +674,7 @@ int PEM_read(FILE *fp, char **name, char **header, unsigned char **data,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_read_bio(b, name, header, data, len);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif
@@ -973,8 +973,8 @@ int PEM_read_bio_ex(BIO *bp, char **name_out, char **header,
 end:
     EVP_ENCODE_CTX_free(ctx);
     pem_free(name, flags, 0);
-    BIO_free(headerB);
-    BIO_free(dataB);
+    _BIO_free(headerB);
+    _BIO_free(dataB);
     return ret;
 }
 

@@ -465,7 +465,7 @@ int req_main(int argc, char **argv)
                 */
             } else {
                 OBJ_create_objects(oid_bio);
-                BIO_free(oid_bio);
+                _BIO_free(oid_bio);
             }
         }
     }
@@ -680,7 +680,7 @@ int req_main(int argc, char **argv)
             }
             goto end;
         }
-        BIO_free(out);
+        _BIO_free(out);
         out = NULL;
         BIO_printf(bio_err, "-----\n");
     }
@@ -962,8 +962,8 @@ int req_main(int argc, char **argv)
     }
     NCONF_free(req_conf);
     NCONF_free(addext_conf);
-    BIO_free(addext_bio);
-    BIO_free(in);
+    _BIO_free(addext_bio);
+    _BIO_free(in);
     BIO_free_all(out);
     EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(genctx);
@@ -1526,7 +1526,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
             }
         }
 
-        BIO_free(pbio);
+        _BIO_free(pbio);
 
         if (param == NULL) {
             BIO_printf(bio_err, "Error reading parameter file %s\n", paramfile);

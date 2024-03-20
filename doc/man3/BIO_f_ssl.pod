@@ -195,7 +195,7 @@ unencrypted example in L<BIO_s_connect(3)>.
      _BIO_write(out, tmpbuf, len);
  }
  BIO_free_all(sbio);
- BIO_free(out);
+ _BIO_free(out);
 
 Here is a simple server example. It makes use of a buffering
 BIO to allow lines to be read from the SSL BIO using BIO_gets.

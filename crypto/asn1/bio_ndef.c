@@ -121,7 +121,7 @@ BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
  err:
     /* BIO_pop() is NULL safe */
     (void)BIO_pop(pop_bio);
-    BIO_free(asn_bio);
+    _BIO_free(asn_bio);
     OPENSSL_free(ndef_aux);
     return NULL;
 }

@@ -62,7 +62,7 @@ static int test_x509_check_cert_pkey(void)
     if (!TEST_ptr(pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL)))
         goto failed;
 
-    BIO_free(bio);
+    _BIO_free(bio);
 
     /* process cert or cert request, use the same local var */
     if (!TEST_ptr(bio = BIO_new_file(c, "r")))
@@ -99,7 +99,7 @@ static int test_x509_check_cert_pkey(void)
 
     ret = 1;
 failed:
-    BIO_free(bio);
+    _BIO_free(bio);
     X509_free(x509);
     X509_REQ_free(x509_req);
     EVP_PKEY_free(pkey);

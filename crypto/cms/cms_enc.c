@@ -163,7 +163,7 @@ BIO *cms_EncryptedContent_init_bio(CMS_EncryptedContentInfo *ec)
     OPENSSL_clear_free(tkey, tkeylen);
     if (ok)
         return b;
-    BIO_free(b);
+    _BIO_free(b);
     return NULL;
 }
 

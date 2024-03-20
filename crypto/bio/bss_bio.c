@@ -26,7 +26,7 @@
 #include <openssl/crypto.h>
 
 static int _BIO_new(BIO *bio);
-static int bio_free(BIO *bio);
+static int _BIO_free(BIO *bio);
 static int bio_read(BIO *bio, char *buf, int size);
 static int _BIO_write(BIO *bio, const char *buf, int num);
 static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr);
@@ -48,7 +48,7 @@ static const BIO_METHOD methods_biop = {
     NULL /* no bio_gets */ ,
     bio_ctrl,
     _BIO_new,
-    bio_free,
+    _BIO_free,
     NULL                        /* no bio_callback_ctrl */
 };
 
@@ -89,7 +89,7 @@ static int _BIO_new(BIO *bio)
     return 1;
 }
 
-static int bio_free(BIO *bio)
+static int _BIO_free(BIO *bio)
 {
     struct bio_bio_st *b;
 
@@ -462,7 +462,7 @@ static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr)
     case BIO_C_DESTROY_BIO_PAIR:
         /*
          * Affects both BIOs in the pair -- call just once! Or let
-         * BIO_free(bio1); BIO_free(bio2); do the job.
+         * _BIO_free(bio1); _BIO_free(bio2); do the job.
          */
         bio_destroy_pair(bio);
         ret = 1;
@@ -714,9 +714,9 @@ int BIO_new_bio_pair(BIO **bio1_p, size_t writebuf1,
 
  err:
     if (ret == 0) {
-        BIO_free(bio1);
+        _BIO_free(bio1);
         bio1 = NULL;
-        BIO_free(bio2);
+        _BIO_free(bio2);
         bio2 = NULL;
     }
 

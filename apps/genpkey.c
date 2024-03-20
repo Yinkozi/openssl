@@ -202,7 +202,7 @@ int genpkey_main(int argc, char **argv)
     EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(ctx);
     BIO_free_all(out);
-    BIO_free(in);
+    _BIO_free(in);
     release_engine(e);
     OPENSSL_free(pass);
     return ret;
@@ -225,7 +225,7 @@ static int init_keygen_file(EVP_PKEY_CTX **pctx, const char *file, ENGINE *e)
     }
 
     pkey = PEM_read_bio_Parameters(pbio, NULL);
-    BIO_free(pbio);
+    _BIO_free(pbio);
 
     if (!pkey) {
         BIO_printf(bio_err, "Error reading parameter file %s\n", file);

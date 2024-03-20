@@ -368,7 +368,7 @@ static int capi_ctrl(ENGINE *e, int cmd, long i, void *p, void (*f) (void))
     case CAPI_CMD_LOOKUP_METHOD:
         if (i < 1 || i > 3) {
             CAPIerr(CAPI_F_CAPI_CTRL, CAPI_R_INVALID_LOOKUP_METHOD);
-            BIO_free(out);
+            _BIO_free(out);
             return 0;
         }
         ctx->lookup_method = i;
@@ -387,7 +387,7 @@ static int capi_ctrl(ENGINE *e, int cmd, long i, void *p, void (*f) (void))
         ret = 0;
     }
 
-    BIO_free(out);
+    _BIO_free(out);
     return ret;
 
 }
@@ -1080,7 +1080,7 @@ static void capi_vtrace(CAPI_CTX *ctx, int level, char *format,
         return;
     }
     BIO_vprintf(out, format, argptr);
-    BIO_free(out);
+    _BIO_free(out);
 }
 
 static void CAPI_trace(CAPI_CTX *ctx, char *format, ...)

@@ -75,7 +75,7 @@ BIO_set_write_buf_size() to create a connected pair of BIOs B<bio1>, B<bio2>
 with write buffer sizes B<writebuf1> and B<writebuf2>. If either size is
 zero then the default size is used.  BIO_new_bio_pair() does not check whether
 B<bio1> or B<bio2> do point to some other BIO, the values are overwritten,
-BIO_free() is not called.
+_BIO_free() is not called.
 
 BIO_get_write_guarantee() and BIO_ctrl_get_write_guarantee() return the maximum
 length of data that can be currently written to the BIO. Writes larger than this
@@ -163,7 +163,7 @@ without having to go through the SSL-interface.
 
   ...
   SSL_free(ssl);                /* implicitly frees internal_bio */
-  BIO_free(network_bio);
+  _BIO_free(network_bio);
   ...
 
 As the BIO pair will only buffer the data and never directly access the

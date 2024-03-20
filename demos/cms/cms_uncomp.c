@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     }
 
     CMS_ContentInfo_free(cms);
-    BIO_free(in);
-    BIO_free(out);
+    _BIO_free(in);
+    _BIO_free(out);
     return ret;
 }

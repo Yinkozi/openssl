@@ -135,7 +135,7 @@ After this call B<connection> will contain a BIO for the recently
 established connection and B<accept> will now be a single BIO
 again which can be used to await further incoming connections.
 If no further connections will be accepted the B<accept> can
-be freed using BIO_free().
+be freed using _BIO_free().
 
 If only a single connection will be processed it is possible to
 perform I/O using the accept BIO itself. This is often undesirable
@@ -212,15 +212,15 @@ down each and finally closes both down.
 
  /* Close accept BIO to refuse further connections */
  cbio2 = BIO_pop(abio);
- BIO_free(abio);
+ _BIO_free(abio);
  BIO_puts(cbio2, "Connection 2: Sending out Data on second\n");
  fprintf(stderr, "Sent out data on connection 2\n");
 
  BIO_puts(cbio, "Connection 1: Second connection established\n");
 
  /* Close the two established connections */
- BIO_free(cbio);
- BIO_free(cbio2);
+ _BIO_free(cbio);
+ _BIO_free(cbio2);
 
 =head1 COPYRIGHT
 

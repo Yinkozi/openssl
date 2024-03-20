@@ -161,7 +161,7 @@ int asn1parse_main(int argc, char **argv)
         if (in == NULL)
             goto end;
         OBJ_create_objects(in);
-        BIO_free(in);
+        _BIO_free(in);
     }
 
     if ((in = bio_open_default(infile, 'r', informat)) == NULL)
@@ -295,9 +295,9 @@ int asn1parse_main(int argc, char **argv)
     }
     ret = 0;
  end:
-    BIO_free(derout);
-    BIO_free(in);
-    BIO_free(b64);
+    _BIO_free(derout);
+    _BIO_free(in);
+    _BIO_free(b64);
     if (ret != 0)
         ERR_print_errors(bio_err);
     BUF_MEM_free(buf);

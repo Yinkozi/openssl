@@ -205,7 +205,7 @@ static X509_CRL *CRL_from_strings(const char **pem)
     X509_CRL *crl = PEM_read_bio_X509_CRL(b, NULL, NULL, NULL);
 
     OPENSSL_free(p);
-    BIO_free(b);
+    _BIO_free(b);
     return crl;
 }
 
@@ -219,7 +219,7 @@ static X509 *X509_from_strings(const char **pem)
     X509 *x = PEM_read_bio_X509(b, NULL, NULL, NULL);
 
     OPENSSL_free(p);
-    BIO_free(b);
+    _BIO_free(b);
     return x;
 }
 
@@ -366,7 +366,7 @@ static int test_reuse_crl(void)
     reused_crl = PEM_read_bio_X509_CRL(b, &reused_crl, NULL, NULL);
 
     OPENSSL_free(p);
-    BIO_free(b);
+    _BIO_free(b);
     X509_CRL_free(reused_crl);
     return 1;
 }

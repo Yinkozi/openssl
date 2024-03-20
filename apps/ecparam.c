@@ -438,7 +438,7 @@ int ecparam_main(int argc, char **argv)
     OPENSSL_free(buffer);
     EC_GROUP_free(group);
     release_engine(e);
-    BIO_free(in);
+    _BIO_free(in);
     BIO_free_all(out);
     return ret;
 }

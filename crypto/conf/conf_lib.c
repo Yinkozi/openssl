@@ -59,7 +59,7 @@ LHASH_OF(CONF_VALUE) *CONF_load(LHASH_OF(CONF_VALUE) *conf, const char *file,
     }
 
     ltmp = CONF_load_bio(conf, in, eline);
-    BIO_free(in);
+    _BIO_free(in);
 
     return ltmp;
 }
@@ -75,7 +75,7 @@ LHASH_OF(CONF_VALUE) *CONF_load_fp(LHASH_OF(CONF_VALUE) *conf, FILE *fp,
         return NULL;
     }
     ltmp = CONF_load_bio(conf, btmp, eline);
-    BIO_free(btmp);
+    _BIO_free(btmp);
     return ltmp;
 }
 #endif
@@ -154,7 +154,7 @@ int CONF_dump_fp(LHASH_OF(CONF_VALUE) *conf, FILE *out)
         return 0;
     }
     ret = CONF_dump_bio(conf, btmp);
-    BIO_free(btmp);
+    _BIO_free(btmp);
     return ret;
 }
 #endif
@@ -224,7 +224,7 @@ int NCONF_load_fp(CONF *conf, FILE *fp, long *eline)
         return 0;
     }
     ret = NCONF_load_bio(conf, btmp, eline);
-    BIO_free(btmp);
+    _BIO_free(btmp);
     return ret;
 }
 #endif
@@ -333,7 +333,7 @@ int NCONF_dump_fp(const CONF *conf, FILE *out)
         return 0;
     }
     ret = NCONF_dump_bio(conf, btmp);
-    BIO_free(btmp);
+    _BIO_free(btmp);
     return ret;
 }
 #endif

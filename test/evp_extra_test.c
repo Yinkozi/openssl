@@ -1146,7 +1146,7 @@ static int test_invalide_ec_char2_pub_range_decode(int id)
           || TEST_ptr_null(eckey);
 err:
     EC_KEY_free(eckey);
-    BIO_free(bio);
+    _BIO_free(bio);
     return ret;
 }
 
@@ -1252,7 +1252,7 @@ static int test_EVP_SM2_verify(void)
     rc = 1;
 
  done:
-    BIO_free(bio);
+    _BIO_free(bio);
     EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(pctx);
     EVP_MD_CTX_free(mctx);
@@ -1580,7 +1580,7 @@ static int test_EVP_PKEY_check(int i)
     EVP_PKEY_CTX_free(ctx);
     EVP_PKEY_CTX_free(ctx2);
     EVP_PKEY_free(pkey);
-    BIO_free(pubkey);
+    _BIO_free(pubkey);
     return ret;
 }
 

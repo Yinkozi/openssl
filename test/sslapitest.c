@@ -706,7 +706,7 @@ static int execute_test_large_message(const SSL_METHOD *smeth,
     if (!TEST_ptr(certbio = BIO_new_file(cert, "r")))
         goto end;
     chaincert = PEM_read_bio_X509(certbio, NULL, NULL, NULL);
-    BIO_free(certbio);
+    _BIO_free(certbio);
     certbio = NULL;
     if (!TEST_ptr(chaincert))
         goto end;
@@ -1096,7 +1096,7 @@ static int test_tlsext_status_type(void)
     /* Control has been transferred */
     ids = NULL;
 
-    BIO_free(certbio);
+    _BIO_free(certbio);
     certbio = NULL;
 
     if (!TEST_true(create_ssl_connection(serverssl, clientssl,
@@ -1114,7 +1114,7 @@ static int test_tlsext_status_type(void)
     SSL_CTX_free(cctx);
     sk_OCSP_RESPID_pop_free(ids, OCSP_RESPID_free);
     OCSP_RESPID_free(id);
-    BIO_free(certbio);
+    _BIO_free(certbio);
     X509_free(ocspcert);
     ocspcert = NULL;
 
@@ -1923,8 +1923,8 @@ static int test_ssl_set_bio(int idx)
     testresult = 1;
 
  end:
-    BIO_free(bio1);
-    BIO_free(bio2);
+    _BIO_free(bio1);
+    _BIO_free(bio2);
 
     /*
      * This test is checking that the ref counting for SSL_set_bio is correct.
@@ -1982,8 +1982,8 @@ static int execute_test_ssl_bio(int pop_ssl, bio_change_t change_bio)
 
     testresult = 1;
  end:
-    BIO_free(membio1);
-    BIO_free(sslbio);
+    _BIO_free(membio1);
+    _BIO_free(sslbio);
     SSL_free(ssl);
     SSL_CTX_free(ctx);
 
@@ -4993,8 +4993,8 @@ static int test_key_update_in_write(int tst)
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
-    BIO_free(bretry);
-    BIO_free(tmp);
+    _BIO_free(bretry);
+    _BIO_free(tmp);
 
     return testresult;
 }
@@ -5133,8 +5133,8 @@ static int test_max_fragment_len_ext(int idx_tst)
     rbio = _BIO_new(_BIO_s_mem());
     wbio = _BIO_new(_BIO_s_mem());
     if (!TEST_ptr(rbio)|| !TEST_ptr(wbio)) {
-        BIO_free(rbio);
-        BIO_free(wbio);
+        _BIO_free(rbio);
+        _BIO_free(wbio);
         goto end;
     }
 
@@ -5305,8 +5305,8 @@ static int create_new_vfile(char *userid, char *password, const char *filename)
             OPENSSL_free(row[i]);
     }
     OPENSSL_free(row);
-    BIO_free(dummy);
-    BIO_free(out);
+    _BIO_free(dummy);
+    _BIO_free(out);
     TXT_DB_free(db);
 
     return ret;
@@ -6311,12 +6311,12 @@ static int cert_cb(SSL *s, void *arg)
                 || !TEST_true(sk_X509_push(chain, rootx)))
             goto out;
         rootx = NULL;
-        BIO_free(in);
+        _BIO_free(in);
         if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsacert), 0)
                 || !TEST_ptr(x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
             goto out;
-        BIO_free(in);
+        _BIO_free(in);
         if (!TEST_ptr(in = _BIO_new(BIO_s_file()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsakey), 0)
                 || !TEST_ptr(pkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL)))
@@ -6342,7 +6342,7 @@ static int cert_cb(SSL *s, void *arg)
     OPENSSL_free(ecdsacert);
     OPENSSL_free(ecdsakey);
     OPENSSL_free(rootfile);
-    BIO_free(in);
+    _BIO_free(in);
     EVP_PKEY_free(pkey);
     X509_free(x509);
     X509_free(rootx);
@@ -6463,7 +6463,7 @@ static int client_cert_cb(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
         return 0;
 
     xcert = PEM_read_bio_X509(in, NULL, NULL, NULL);
-    BIO_free(in);
+    _BIO_free(in);
     if (!TEST_ptr(xcert))
         return 0;
 
@@ -6474,7 +6474,7 @@ static int client_cert_cb(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
     }
 
     privpkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL);
-    BIO_free(in);
+    _BIO_free(in);
     if (!TEST_ptr(privpkey)) {
         X509_free(xcert);
         return 0;

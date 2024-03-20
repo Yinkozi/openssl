@@ -30,7 +30,7 @@ STACK_OF(X509_INFO) *PEM_X509_INFO_read(FILE *fp, STACK_OF(X509_INFO) *sk,
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = PEM_X509_INFO_read_bio(b, sk, cb, u);
-    BIO_free(b);
+    _BIO_free(b);
     return ret;
 }
 #endif

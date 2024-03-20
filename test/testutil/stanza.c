@@ -31,7 +31,7 @@ int test_end_file(STANZA *s)
 {
     TEST_info("Completed %d tests with %d errors and %d skipped",
               s->numtests, s->errors, s->numskip);
-    BIO_free(s->fp);
+    _BIO_free(s->fp);
     return 1;
 }
 
