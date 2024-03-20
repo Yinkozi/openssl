@@ -8956,7 +8956,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) Various new functions. _EVP_Digest() combines _EVP_Digest{Init,Update,Final}()
-     in a single operation. X509_get0_pubkey_bitstr() extracts the public_key
+     in a single operation. _X509_get0_pubkey_bitstr() extracts the public_key
      structure from a certificate. X509_pubkey_digest() digests the public_key
      contents: this is used in various key identifiers.
      [Steve Henson]

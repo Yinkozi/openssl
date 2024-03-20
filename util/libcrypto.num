@@ -1618,7 +1618,7 @@ EVP_cast5_cbc                           1605	1_1_0	EXIST::FUNCTION:CAST
 PEM_read_bio_X509_AUX                   1606	1_1_0	EXIST::FUNCTION:
 TS_ext_print_bio                        1607	1_1_0	EXIST::FUNCTION:TS
 SCT_set1_log_id                         1608	1_1_0	EXIST::FUNCTION:CT
-X509_get0_pubkey_bitstr                 1609	1_1_0	EXIST::FUNCTION:
+_X509_get0_pubkey_bitstr                 1609	1_1_0	EXIST::FUNCTION:
 ENGINE_register_all_RAND                1610	1_1_0	EXIST::FUNCTION:ENGINE
 EVP_MD_meth_get_result_size             1612	1_1_0	EXIST::FUNCTION:
 BIO_ADDRINFO_address                    1613	1_1_0	EXIST::FUNCTION:SOCK

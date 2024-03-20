@@ -254,7 +254,7 @@ int X509_ocspid_print(BIO *bp, X509 *x)
     if (BIO_printf(bp, "\n        Public key OCSP hash: ") <= 0)
         goto err;
 
-    keybstr = X509_get0_pubkey_bitstr(x);
+    keybstr = _X509_get0_pubkey_bitstr(x);
 
     if (keybstr == NULL)
         goto err;

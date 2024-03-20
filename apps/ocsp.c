@@ -1054,7 +1054,7 @@ static int add_ocsp_serial(OCSP_REQUEST **req, char *serial,
     if (*req == NULL)
         goto err;
     iname = X509_get_subject_name(issuer);
-    ikey = X509_get0_pubkey_bitstr(issuer);
+    ikey = _X509_get0_pubkey_bitstr(issuer);
     sno = s2i_ASN1_INTEGER(NULL, serial);
     if (sno == NULL) {
         BIO_printf(bio_err, "Error converting serial number %s\n", serial);

@@ -34,7 +34,7 @@ OCSP_CERTID *OCSP_cert_to_id(const EVP_MD *dgst, const X509 *subject,
         iname = X509_get_subject_name(issuer);
         serial = NULL;
     }
-    ikey = X509_get0_pubkey_bitstr(issuer);
+    ikey = _X509_get0_pubkey_bitstr(issuer);
     return OCSP_cert_id_new(dgst, iname, ikey, serial);
 }
 

@@ -370,7 +370,7 @@ int X509_PUBKEY_get0_param(ASN1_OBJECT **ppkalg,
     return 1;
 }
 
-ASN1_BIT_STRING *X509_get0_pubkey_bitstr(const X509 *x)
+ASN1_BIT_STRING *_X509_get0_pubkey_bitstr(const X509 *x)
 {
     if (x == NULL)
         return NULL;
