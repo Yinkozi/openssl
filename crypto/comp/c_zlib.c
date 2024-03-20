@@ -457,7 +457,7 @@ static int bio_zlib_write(BIO *b, const char *in, int inl)
     for (;;) {
         /* If data in output buffer write it first */
         while (ctx->ocount) {
-            ret = BIO_write(next, ctx->optr, ctx->ocount);
+            ret = _BIO_write(next, ctx->optr, ctx->ocount);
             if (ret <= 0) {
                 /* Total data written */
                 int tot = inl - zout->avail_in;
@@ -510,7 +510,7 @@ static int bio_zlib_flush(BIO *b)
     for (;;) {
         /* If data in output buffer write it first */
         while (ctx->ocount) {
-            ret = BIO_write(next, ctx->optr, ctx->ocount);
+            ret = _BIO_write(next, ctx->optr, ctx->ocount);
             if (ret <= 0) {
                 BIO_copy_next_retry(b);
                 return ret;

@@ -135,7 +135,7 @@ static int compare_sct_list_printout(STACK_OF(SCT) *sct,
     SCT_LIST_print(sct, text_buffer, 0, "\n", NULL);
 
     /* Append \0 because we're about to use the buffer contents as a string. */
-    if (!TEST_true(BIO_write(text_buffer, "\0", 1)))
+    if (!TEST_true(_BIO_write(text_buffer, "\0", 1)))
         goto end;
 
     BIO_get_mem_data(text_buffer, &actual_output);
@@ -161,7 +161,7 @@ static int compare_extension_printout(X509_EXTENSION *extension,
         goto end;
 
     /* Append \0 because we're about to use the buffer contents as a string. */
-    if (!TEST_true(BIO_write(text_buffer, "\0", 1)))
+    if (!TEST_true(_BIO_write(text_buffer, "\0", 1)))
         goto end;
 
     BIO_get_mem_data(text_buffer, &actual_output);

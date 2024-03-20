@@ -404,7 +404,7 @@ static int ebcdic_write(BIO *b, const char *in, int inl)
 
     ebcdic2ascii(wbuf->buff, in, inl);
 
-    ret = BIO_write(next, wbuf->buff, inl);
+    ret = _BIO_write(next, wbuf->buff, inl);
 
     return ret;
 }
@@ -706,11 +706,11 @@ static int alpn_cb(SSL *s, const unsigned char **out, unsigned char *outlen,
         BIO_printf(bio_s_out, "ALPN protocols advertised by the client: ");
         for (i = 0; i < inlen;) {
             if (i)
-                BIO_write(bio_s_out, ", ", 2);
-            BIO_write(bio_s_out, &in[i + 1], in[i]);
+                _BIO_write(bio_s_out, ", ", 2);
+            _BIO_write(bio_s_out, &in[i + 1], in[i]);
             i += in[i] + 1;
         }
-        BIO_write(bio_s_out, "\n", 1);
+        _BIO_write(bio_s_out, "\n", 1);
     }
 
     if (SSL_select_next_proto
@@ -721,8 +721,8 @@ static int alpn_cb(SSL *s, const unsigned char **out, unsigned char *outlen,
 
     if (!s_quiet) {
         BIO_printf(bio_s_out, "ALPN protocols selected: ");
-        BIO_write(bio_s_out, *out, *outlen);
-        BIO_write(bio_s_out, "\n", 1);
+        _BIO_write(bio_s_out, *out, *outlen);
+        _BIO_write(bio_s_out, "\n", 1);
     }
 
     return SSL_TLSEXT_ERR_OK;
@@ -2586,7 +2586,7 @@ static int sv_body(int s, int stype, int prot, unsigned char *context)
                 }
                 if (buf[0] == 'P') {
                     static const char *str = "Lets print some clear text\n";
-                    BIO_write(SSL_get_wbio(con), str, strlen(str));
+                    _BIO_write(SSL_get_wbio(con), str, strlen(str));
                 }
                 if (buf[0] == 'S') {
                     print_stats(bio_s_out, SSL_get_SSL_CTX(con));
@@ -2933,7 +2933,7 @@ static void print_connection_info(SSL *con)
     SSL_get0_next_proto_negotiated(con, &next_proto_neg, &next_proto_neg_len);
     if (next_proto_neg) {
         BIO_printf(bio_s_out, "NEXTPROTO is ");
-        BIO_write(bio_s_out, next_proto_neg, next_proto_neg_len);
+        _BIO_write(bio_s_out, next_proto_neg, next_proto_neg_len);
         BIO_printf(bio_s_out, "\n");
     }
 #endif
@@ -3169,10 +3169,10 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
                         BIO_puts(io, "&amp;");
                         break;
                     default:
-                        BIO_write(io, myp, 1);
+                        _BIO_write(io, myp, 1);
                         break;
                     }
-                BIO_write(io, " ", 1);
+                _BIO_write(io, " ", 1);
             }
             BIO_puts(io, "\n");
 
@@ -3202,12 +3202,12 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
                 j = i = 0;
                 while (*p) {
                     if (*p == ':') {
-                        BIO_write(io, space, 26 - j);
+                        _BIO_write(io, space, 26 - j);
                         i++;
                         j = 0;
-                        BIO_write(io, ((i % 3) ? " " : "\n"), 1);
+                        _BIO_write(io, ((i % 3) ? " " : "\n"), 1);
                     } else {
-                        BIO_write(io, p, 1);
+                        _BIO_write(io, p, 1);
                         j++;
                     }
                     p++;
@@ -3348,7 +3348,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
                         SSL_renegotiate(con);
                     }
 #endif
-                    k = BIO_write(io, &(buf[j]), i - j);
+                    k = _BIO_write(io, &(buf[j]), i - j);
                     if (k <= 0) {
                         if (!BIO_should_retry(io)
                             && !SSL_waiting_for_async(con))
@@ -3519,7 +3519,7 @@ static int rev_body(int s, int stype, int prot, unsigned char *context)
             }
             BUF_reverse((unsigned char *)buf, NULL, i);
             buf[i] = '\n';
-            BIO_write(io, buf, i + 1);
+            _BIO_write(io, buf, i + 1);
             for (;;) {
                 i = BIO_flush(io);
                 if (i > 0)

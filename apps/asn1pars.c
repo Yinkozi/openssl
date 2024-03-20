@@ -268,7 +268,7 @@ int asn1parse_main(int argc, char **argv)
     if (length == 0 || length > (unsigned int)num)
         length = (unsigned int)num;
     if (derout != NULL) {
-        if (BIO_write(derout, str + offset, length) != (int)length) {
+        if (_BIO_write(derout, str + offset, length) != (int)length) {
             BIO_printf(bio_err, "Error writing output\n");
             ERR_print_errors(bio_err);
             goto end;

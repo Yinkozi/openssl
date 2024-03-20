@@ -10683,9 +10683,9 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
 
   *) For consistency with other BIO_puts implementations, call
      buffer_write(b, ...) directly in buffer_puts instead of calling
-     BIO_write(b, ...).
+     _BIO_write(b, ...).
 
-     In BIO_puts, increment b->num_write as in BIO_write.
+     In BIO_puts, increment b->num_write as in _BIO_write.
      [Peter.Sylvester@EdelWeb.fr]
 
   *) Fix BN_mul_word for the case where the word is 0. (We have to use

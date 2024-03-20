@@ -164,7 +164,7 @@ int X509V3_extensions_print(BIO *bp, const char *title,
             BIO_printf(bp, "%*s", indent + 4, "");
             ASN1_STRING_print(bp, X509_EXTENSION_get_data(ex));
         }
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             return 0;
     }
     return 1;

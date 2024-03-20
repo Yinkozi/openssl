@@ -336,11 +336,11 @@ static int asn1_print_fsname(BIO *out, int indent,
     static const int nspaces = sizeof(spaces) - 1;
 
     while (indent > nspaces) {
-        if (BIO_write(out, spaces, nspaces) != nspaces)
+        if (_BIO_write(out, spaces, nspaces) != nspaces)
             return 0;
         indent -= nspaces;
     }
-    if (BIO_write(out, spaces, indent) != indent)
+    if (_BIO_write(out, spaces, indent) != indent)
         return 0;
     if (pctx->flags & ASN1_PCTX_FLAGS_NO_STRUCT_NAME)
         sname = NULL;
@@ -361,7 +361,7 @@ static int asn1_print_fsname(BIO *out, int indent,
                 return 0;
         }
     }
-    if (BIO_write(out, ": ", 2) != 2)
+    if (_BIO_write(out, ": ", 2) != 2)
         return 0;
     return 1;
 }

@@ -616,14 +616,14 @@ int PEM_write_bio(BIO *bp, const char *name, const char *header,
     EVP_EncodeInit(ctx);
     nlen = strlen(name);
 
-    if ((BIO_write(bp, "-----BEGIN ", 11) != 11) ||
-        (BIO_write(bp, name, nlen) != nlen) ||
-        (BIO_write(bp, "-----\n", 6) != 6))
+    if ((_BIO_write(bp, "-----BEGIN ", 11) != 11) ||
+        (_BIO_write(bp, name, nlen) != nlen) ||
+        (_BIO_write(bp, "-----\n", 6) != 6))
         goto err;
 
     i = header != NULL ? strlen(header) : 0;
     if (i > 0) {
-        if ((BIO_write(bp, header, i) != i) || (BIO_write(bp, "\n", 1) != 1))
+        if ((_BIO_write(bp, header, i) != i) || (_BIO_write(bp, "\n", 1) != 1))
             goto err;
     }
 
@@ -638,18 +638,18 @@ int PEM_write_bio(BIO *bp, const char *name, const char *header,
         n = (int)((len > (PEM_BUFSIZE * 5)) ? (PEM_BUFSIZE * 5) : len);
         if (!EVP_EncodeUpdate(ctx, buf, &outl, &(data[j]), n))
             goto err;
-        if ((outl) && (BIO_write(bp, (char *)buf, outl) != outl))
+        if ((outl) && (_BIO_write(bp, (char *)buf, outl) != outl))
             goto err;
         i += outl;
         len -= n;
         j += n;
     }
     EVP_EncodeFinal(ctx, buf, &outl);
-    if ((outl > 0) && (BIO_write(bp, (char *)buf, outl) != outl))
+    if ((outl > 0) && (_BIO_write(bp, (char *)buf, outl) != outl))
         goto err;
-    if ((BIO_write(bp, "-----END ", 9) != 9) ||
-        (BIO_write(bp, name, nlen) != nlen) ||
-        (BIO_write(bp, "-----\n", 6) != 6))
+    if ((_BIO_write(bp, "-----END ", 9) != 9) ||
+        (_BIO_write(bp, name, nlen) != nlen) ||
+        (_BIO_write(bp, "-----\n", 6) != 6))
         goto err;
     retval = i + outl;
 

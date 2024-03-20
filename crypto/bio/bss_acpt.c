@@ -388,7 +388,7 @@ static int acpt_write(BIO *b, const char *in, int inl)
             return ret;
     }
 
-    ret = BIO_write(b->next_bio, in, inl);
+    ret = _BIO_write(b->next_bio, in, inl);
     BIO_copy_next_retry(b);
     return ret;
 }

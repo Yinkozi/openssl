@@ -630,7 +630,7 @@ int CRYPTO_mem_leaks_cb(int (*cb) (const char *str, size_t len, void *u),
 
 static int print_bio(const char *str, size_t len, void *b)
 {
-    return BIO_write((BIO *)b, str, len);
+    return _BIO_write((BIO *)b, str, len);
 }
 
 int CRYPTO_mem_leaks(BIO *b)

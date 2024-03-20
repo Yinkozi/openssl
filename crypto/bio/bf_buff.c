@@ -189,7 +189,7 @@ static int buffer_write(BIO *b, const char *in, int inl)
         }
         /* we now have a full buffer needing flushing */
         for (;;) {
-            i = BIO_write(b->next_bio, &(ctx->obuf[ctx->obuf_off]),
+            i = _BIO_write(b->next_bio, &(ctx->obuf[ctx->obuf_off]),
                           ctx->obuf_len);
             if (i <= 0) {
                 BIO_copy_next_retry(b);
@@ -213,7 +213,7 @@ static int buffer_write(BIO *b, const char *in, int inl)
 
     /* we now have inl bytes to write */
     while (inl >= ctx->obuf_size) {
-        i = BIO_write(b->next_bio, in, inl);
+        i = _BIO_write(b->next_bio, in, inl);
         if (i <= 0) {
             BIO_copy_next_retry(b);
             if (i < 0)
@@ -364,7 +364,7 @@ static long buffer_ctrl(BIO *b, int cmd, long num, void *ptr)
         for (;;) {
             BIO_clear_retry_flags(b);
             if (ctx->obuf_len > 0) {
-                r = BIO_write(b->next_bio,
+                r = _BIO_write(b->next_bio,
                               &(ctx->obuf[ctx->obuf_off]), ctx->obuf_len);
                 BIO_copy_next_retry(b);
                 if (r <= 0)

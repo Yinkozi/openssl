@@ -28,7 +28,7 @@
 static int _BIO_new(BIO *bio);
 static int bio_free(BIO *bio);
 static int bio_read(BIO *bio, char *buf, int size);
-static int bio_write(BIO *bio, const char *buf, int num);
+static int _BIO_write(BIO *bio, const char *buf, int num);
 static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr);
 static int bio_puts(BIO *bio, const char *str);
 
@@ -40,7 +40,7 @@ static const BIO_METHOD methods_biop = {
     "BIO pair",
     /* TODO: Convert to new style write function */
     bwrite_conv,
-    bio_write,
+    _BIO_write,
     /* TODO: Convert to new style read function */
     bread_conv,
     bio_read,
@@ -267,7 +267,7 @@ static ossl_ssize_t bio_nread(BIO *bio, char **buf, size_t num_)
     return num;
 }
 
-static int bio_write(BIO *bio, const char *buf, int num_)
+static int _BIO_write(BIO *bio, const char *buf, int num_)
 {
     size_t num = num_;
     size_t rest;
@@ -602,7 +602,7 @@ static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr)
 
 static int bio_puts(BIO *bio, const char *str)
 {
-    return bio_write(bio, str, strlen(str));
+    return _BIO_write(bio, str, strlen(str));
 }
 
 static int bio_make_pair(BIO *bio1, BIO *bio2)

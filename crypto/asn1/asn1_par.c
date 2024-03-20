@@ -32,7 +32,7 @@ static int asn1_print_info(BIO *bp, int tag, int xclass, int constructed,
         p = "cons: ";
     else
         p = "prim: ";
-    if (BIO_write(bp, p, 6) < 6)
+    if (_BIO_write(bp, p, 6) < 6)
         goto err;
     BIO_indent(bp, indent, 128);
 
@@ -92,7 +92,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
         op = p;
         j = ASN1_get_object(&p, &len, &tag, &xclass, length);
         if (j & 0x80) {
-            if (BIO_write(bp, "Error in encoding\n", 18) <= 0)
+            if (_BIO_write(bp, "Error in encoding\n", 18) <= 0)
                 goto end;
             ret = 0;
             goto end;
@@ -120,7 +120,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
             const unsigned char *sp = p;
 
             ep = p + len;
-            if (BIO_write(bp, "\n", 1) <= 0)
+            if (_BIO_write(bp, "\n", 1) <= 0)
                 goto end;
             if (len > length) {
                 BIO_printf(bp, "length is greater than %ld\n", length);
@@ -158,7 +158,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
             }
         } else if (xclass != 0) {
             p += len;
-            if (BIO_write(bp, "\n", 1) <= 0)
+            if (_BIO_write(bp, "\n", 1) <= 0)
                 goto end;
         } else {
             nl = 0;
@@ -169,15 +169,15 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 (tag == V_ASN1_NUMERICSTRING) ||
                 (tag == V_ASN1_UTF8STRING) ||
                 (tag == V_ASN1_UTCTIME) || (tag == V_ASN1_GENERALIZEDTIME)) {
-                if (BIO_write(bp, ":", 1) <= 0)
+                if (_BIO_write(bp, ":", 1) <= 0)
                     goto end;
-                if ((len > 0) && BIO_write(bp, (const char *)p, (int)len)
+                if ((len > 0) && _BIO_write(bp, (const char *)p, (int)len)
                     != (int)len)
                     goto end;
             } else if (tag == V_ASN1_OBJECT) {
                 opp = op;
                 if (d2i_ASN1_OBJECT(&o, &opp, len + hl) != NULL) {
-                    if (BIO_write(bp, ":", 1) <= 0)
+                    if (_BIO_write(bp, ":", 1) <= 0)
                         goto end;
                     i2a_ASN1_OBJECT(bp, o);
                 } else {
@@ -217,16 +217,16 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                     if (printable)
                         /* printable string */
                     {
-                        if (BIO_write(bp, ":", 1) <= 0)
+                        if (_BIO_write(bp, ":", 1) <= 0)
                             goto end;
-                        if (BIO_write(bp, (const char *)opp, os->length) <= 0)
+                        if (_BIO_write(bp, (const char *)opp, os->length) <= 0)
                             goto end;
                     } else if (!dump)
                         /*
                          * not printable => print octet string as hex dump
                          */
                     {
-                        if (BIO_write(bp, "[HEX DUMP]:", 11) <= 0)
+                        if (_BIO_write(bp, "[HEX DUMP]:", 11) <= 0)
                             goto end;
                         for (i = 0; i < os->length; i++) {
                             if (BIO_printf(bp, "%02X", opp[i]) <= 0)
@@ -236,7 +236,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                         /* print the normal dump */
                     {
                         if (!nl) {
-                            if (BIO_write(bp, "\n", 1) <= 0)
+                            if (_BIO_write(bp, "\n", 1) <= 0)
                                 goto end;
                         }
                         if (BIO_dump_indent(bp,
@@ -257,17 +257,17 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 opp = op;
                 ai = d2i_ASN1_INTEGER(NULL, &opp, len + hl);
                 if (ai != NULL) {
-                    if (BIO_write(bp, ":", 1) <= 0)
+                    if (_BIO_write(bp, ":", 1) <= 0)
                         goto end;
                     if (ai->type == V_ASN1_NEG_INTEGER)
-                        if (BIO_write(bp, "-", 1) <= 0)
+                        if (_BIO_write(bp, "-", 1) <= 0)
                             goto end;
                     for (i = 0; i < ai->length; i++) {
                         if (BIO_printf(bp, "%02X", ai->data[i]) <= 0)
                             goto end;
                     }
                     if (ai->length == 0) {
-                        if (BIO_write(bp, "00", 2) <= 0)
+                        if (_BIO_write(bp, "00", 2) <= 0)
                             goto end;
                     }
                 } else {
@@ -283,17 +283,17 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 opp = op;
                 ae = d2i_ASN1_ENUMERATED(NULL, &opp, len + hl);
                 if (ae != NULL) {
-                    if (BIO_write(bp, ":", 1) <= 0)
+                    if (_BIO_write(bp, ":", 1) <= 0)
                         goto end;
                     if (ae->type == V_ASN1_NEG_ENUMERATED)
-                        if (BIO_write(bp, "-", 1) <= 0)
+                        if (_BIO_write(bp, "-", 1) <= 0)
                             goto end;
                     for (i = 0; i < ae->length; i++) {
                         if (BIO_printf(bp, "%02X", ae->data[i]) <= 0)
                             goto end;
                     }
                     if (ae->length == 0) {
-                        if (BIO_write(bp, "00", 2) <= 0)
+                        if (_BIO_write(bp, "00", 2) <= 0)
                             goto end;
                     }
                 } else {
@@ -305,7 +305,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 ae = NULL;
             } else if (len > 0 && dump) {
                 if (!nl) {
-                    if (BIO_write(bp, "\n", 1) <= 0)
+                    if (_BIO_write(bp, "\n", 1) <= 0)
                         goto end;
                 }
                 if (BIO_dump_indent(bp, (const char *)p,
@@ -329,7 +329,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
             }
 
             if (!nl) {
-                if (BIO_write(bp, "\n", 1) <= 0)
+                if (_BIO_write(bp, "\n", 1) <= 0)
                     goto end;
             }
             p += len;

@@ -34,7 +34,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         return 0;
 
     in = _BIO_new(_BIO_s_mem());
-    OPENSSL_assert((size_t)BIO_write(in, buf, len) == len);
+    OPENSSL_assert((size_t)_BIO_write(in, buf, len) == len);
     cms = d2i_CMS_bio(in, NULL);
     if (cms != NULL) {
         BIO *out = _BIO_new(BIO_s_null());

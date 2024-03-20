@@ -277,7 +277,7 @@ static int ok_write(BIO *b, const char *in, int inl)
         BIO_clear_retry_flags(b);
         n = ctx->buf_len - ctx->buf_off;
         while (ctx->blockout && n > 0) {
-            i = BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
+            i = _BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
             if (i <= 0) {
                 BIO_copy_next_retry(b);
                 if (!BIO_should_retry(b))

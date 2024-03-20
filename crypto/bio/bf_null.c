@@ -66,7 +66,7 @@ static int nullf_write(BIO *b, const char *in, int inl)
         return 0;
     if (b->next_bio == NULL)
         return 0;
-    ret = BIO_write(b->next_bio, in, inl);
+    ret = _BIO_write(b->next_bio, in, inl);
     BIO_clear_retry_flags(b);
     BIO_copy_next_retry(b);
     return ret;

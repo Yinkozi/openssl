@@ -192,7 +192,7 @@ unencrypted example in L<BIO_s_connect(3)>.
      len = BIO_read(sbio, tmpbuf, 1024);
      if (len <= 0)
          break;
-     BIO_write(out, tmpbuf, len);
+     _BIO_write(out, tmpbuf, len);
  }
  BIO_free_all(sbio);
  BIO_free(out);
@@ -269,8 +269,8 @@ a client and also echoes the request to standard output.
      len = BIO_gets(sbio, tmpbuf, 1024);
      if (len <= 0)
          break;
-     BIO_write(sbio, tmpbuf, len);
-     BIO_write(out, tmpbuf, len);
+     _BIO_write(sbio, tmpbuf, len);
+     _BIO_write(out, tmpbuf, len);
      /* Look for blank line signifying end of headers*/
      if (tmpbuf[0] == '\r' || tmpbuf[0] == '\n')
          break;

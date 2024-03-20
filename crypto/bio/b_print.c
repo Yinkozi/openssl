@@ -905,10 +905,10 @@ int BIO_vprintf(BIO *bio, const char *format, va_list args)
         return -1;
     }
     if (dynbuf) {
-        ret = BIO_write(bio, dynbuf, (int)retlen);
+        ret = _BIO_write(bio, dynbuf, (int)retlen);
         OPENSSL_free(dynbuf);
     } else {
-        ret = BIO_write(bio, hugebuf, (int)retlen);
+        ret = _BIO_write(bio, hugebuf, (int)retlen);
     }
     return ret;
 }

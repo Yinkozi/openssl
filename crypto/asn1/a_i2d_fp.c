@@ -51,7 +51,7 @@ int ASN1_i2d_bio(i2d_of_void *i2d, BIO *out, unsigned char *x)
     i2d(x, &p);
 
     for (;;) {
-        i = BIO_write(out, &(b[j]), n);
+        i = _BIO_write(out, &(b[j]), n);
         if (i == n)
             break;
         if (i <= 0) {
@@ -96,7 +96,7 @@ int ASN1_item_i2d_bio(const ASN1_ITEM *it, BIO *out, void *x)
     }
 
     for (;;) {
-        i = BIO_write(out, &(b[j]), n);
+        i = _BIO_write(out, &(b[j]), n);
         if (i == n)
             break;
         if (i <= 0) {

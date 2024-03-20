@@ -64,9 +64,9 @@ int X509_print_ex(BIO *bp, X509 *x, unsigned long nmflags,
         nmindent = 16;
 
     if (!(cflag & X509_FLAG_NO_HEADER)) {
-        if (BIO_write(bp, "Certificate:\n", 13) <= 0)
+        if (_BIO_write(bp, "Certificate:\n", 13) <= 0)
             goto err;
-        if (BIO_write(bp, "    Data:\n", 10) <= 0)
+        if (_BIO_write(bp, "    Data:\n", 10) <= 0)
             goto err;
     }
     if (!(cflag & X509_FLAG_NO_VERSION)) {
@@ -81,7 +81,7 @@ int X509_print_ex(BIO *bp, X509 *x, unsigned long nmflags,
     }
     if (!(cflag & X509_FLAG_NO_SERIAL)) {
 
-        if (BIO_write(bp, "        Serial Number:", 22) <= 0)
+        if (_BIO_write(bp, "        Serial Number:", 22) <= 0)
             goto err;
 
         bs = X509_get_serialNumber(x);
@@ -132,21 +132,21 @@ int X509_print_ex(BIO *bp, X509 *x, unsigned long nmflags,
         if (X509_NAME_print_ex(bp, X509_get_issuer_name(x), nmindent, nmflags)
             < 0)
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (!(cflag & X509_FLAG_NO_VALIDITY)) {
-        if (BIO_write(bp, "        Validity\n", 17) <= 0)
+        if (_BIO_write(bp, "        Validity\n", 17) <= 0)
             goto err;
-        if (BIO_write(bp, "            Not Before: ", 24) <= 0)
+        if (_BIO_write(bp, "            Not Before: ", 24) <= 0)
             goto err;
         if (!ASN1_TIME_print(bp, X509_get0_notBefore(x)))
             goto err;
-        if (BIO_write(bp, "\n            Not After : ", 25) <= 0)
+        if (_BIO_write(bp, "\n            Not After : ", 25) <= 0)
             goto err;
         if (!ASN1_TIME_print(bp, X509_get0_notAfter(x)))
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (!(cflag & X509_FLAG_NO_SUBJECT)) {
@@ -155,14 +155,14 @@ int X509_print_ex(BIO *bp, X509 *x, unsigned long nmflags,
         if (X509_NAME_print_ex
             (bp, X509_get_subject_name(x), nmindent, nmflags) < 0)
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (!(cflag & X509_FLAG_NO_PUBKEY)) {
         X509_PUBKEY *xpkey = X509_get_X509_PUBKEY(x);
         ASN1_OBJECT *xpoid;
         X509_PUBKEY_get0_param(&xpoid, NULL, NULL, NULL, xpkey);
-        if (BIO_write(bp, "        Subject Public Key Info:\n", 33) <= 0)
+        if (_BIO_write(bp, "        Subject Public Key Info:\n", 33) <= 0)
             goto err;
         if (BIO_printf(bp, "%12sPublic Key Algorithm: ", "") <= 0)
             goto err;
@@ -284,7 +284,7 @@ int X509_signature_dump(BIO *bp, const ASN1_STRING *sig, int indent)
     s = sig->data;
     for (i = 0; i < n; i++) {
         if ((i % 18) == 0) {
-            if (BIO_write(bp, "\n", 1) <= 0)
+            if (_BIO_write(bp, "\n", 1) <= 0)
                 return 0;
             if (BIO_indent(bp, indent, indent) <= 0)
                 return 0;
@@ -292,7 +292,7 @@ int X509_signature_dump(BIO *bp, const ASN1_STRING *sig, int indent)
         if (BIO_printf(bp, "%02x%s", s[i], ((i + 1) == n) ? "" : ":") <= 0)
             return 0;
     }
-    if (BIO_write(bp, "\n", 1) != 1)
+    if (_BIO_write(bp, "\n", 1) != 1)
         return 0;
 
     return 1;
@@ -373,7 +373,7 @@ int X509_aux_print(BIO *out, X509 *x, int indent)
         BIO_printf(out, "%*sKey Id: ", indent, "");
         for (i = 0; i < keyidlen; i++)
             BIO_printf(out, "%s%02X", i ? ":" : "", keyid[i]);
-        BIO_write(out, "\n", 1);
+        _BIO_write(out, "\n", 1);
     }
     return 1;
 }

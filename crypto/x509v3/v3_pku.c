@@ -39,13 +39,13 @@ static int i2r_PKEY_USAGE_PERIOD(X509V3_EXT_METHOD *method,
 {
     BIO_printf(out, "%*s", indent, "");
     if (usage->notBefore) {
-        BIO_write(out, "Not Before: ", 12);
+        _BIO_write(out, "Not Before: ", 12);
         ASN1_GENERALIZEDTIME_print(out, usage->notBefore);
         if (usage->notAfter)
-            BIO_write(out, ", ", 2);
+            _BIO_write(out, ", ", 2);
     }
     if (usage->notAfter) {
-        BIO_write(out, "Not After: ", 11);
+        _BIO_write(out, "Not After: ", 11);
         ASN1_GENERALIZEDTIME_print(out, usage->notAfter);
     }
     return 1;

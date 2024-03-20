@@ -92,7 +92,7 @@ checking has been omitted for clarity.
  BIO_set_md(mdtmp, EVP_md5());
  bio = BIO_push(mdtmp, bio);
  /* Note: mdtmp can now be discarded */
- BIO_write(bio, message, strlen(message));
+ _BIO_write(bio, message, strlen(message));
 
 The next example digests data by reading through a chain instead:
 

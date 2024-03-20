@@ -198,7 +198,7 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
             break;
 
         case ASN1_STATE_HEADER_COPY:
-            ret = BIO_write(next, ctx->buf + ctx->bufpos, ctx->buflen);
+            ret = _BIO_write(next, ctx->buf + ctx->bufpos, ctx->buflen);
             if (ret <= 0)
                 goto done;
 
@@ -218,7 +218,7 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
                 wrmax = ctx->copylen;
             else
                 wrmax = inl;
-            ret = BIO_write(next, in, wrmax);
+            ret = _BIO_write(next, in, wrmax);
             if (ret <= 0)
                 goto done;
             wrlen += ret;
@@ -259,7 +259,7 @@ static int asn1_bio_flush_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
     if (ctx->ex_len <= 0)
         return 1;
     for (;;) {
-        ret = BIO_write(BIO_next(b), ctx->ex_buf + ctx->ex_pos, ctx->ex_len);
+        ret = _BIO_write(BIO_next(b), ctx->ex_buf + ctx->ex_pos, ctx->ex_len);
         if (ret <= 0)
             break;
         ctx->ex_len -= ret;

@@ -161,13 +161,13 @@ static int verify_npn(SSL *client, SSL *server)
 
     if (client_len) {
         BIO_printf(bio_stdout, "Client NPN: ");
-        BIO_write(bio_stdout, client_s, client_len);
+        _BIO_write(bio_stdout, client_s, client_len);
         BIO_printf(bio_stdout, "\n");
     }
 
     if (server_len) {
         BIO_printf(bio_stdout, "Server NPN: ");
-        BIO_write(bio_stdout, server_s, server_len);
+        _BIO_write(bio_stdout, server_s, server_len);
         BIO_printf(bio_stdout, "\n");
     }
 
@@ -366,9 +366,9 @@ static int verify_alpn(SSL *client, SSL *server)
 
  err:
     BIO_printf(bio_stdout, "ALPN results: client: '");
-    BIO_write(bio_stdout, client_proto, client_proto_len);
+    _BIO_write(bio_stdout, client_proto, client_proto_len);
     BIO_printf(bio_stdout, "', server: '");
-    BIO_write(bio_stdout, server_proto, server_proto_len);
+    _BIO_write(bio_stdout, server_proto, server_proto_len);
     BIO_printf(bio_stdout, "'\n");
     BIO_printf(bio_stdout, "ALPN configured: client: '%s', server: '",
                    alpn_client);
@@ -2024,7 +2024,7 @@ int doit_localhost(SSL *s_ssl, SSL *c_ssl, int family, long count,
                     i = sizeof(cbuf);
                 else
                     i = (int)cw_num;
-                r = BIO_write(c_ssl_bio, cbuf, i);
+                r = _BIO_write(c_ssl_bio, cbuf, i);
                 if (r < 0) {
                     if (!BIO_should_retry(c_ssl_bio)) {
                         fprintf(stderr, "ERROR in CLIENT\n");
@@ -2033,7 +2033,7 @@ int doit_localhost(SSL *s_ssl, SSL *c_ssl, int family, long count,
                     }
                     /*
                      * BIO_should_retry(...) can just be ignored here. The
-                     * library expects us to call BIO_write with the same
+                     * library expects us to call _BIO_write with the same
                      * arguments again, and that's what we will do in the
                      * next iteration.
                      */
@@ -2103,7 +2103,7 @@ int doit_localhost(SSL *s_ssl, SSL *c_ssl, int family, long count,
                     i = sizeof(sbuf);
                 else
                     i = (int)sw_num;
-                r = BIO_write(s_ssl_bio, sbuf, i);
+                r = _BIO_write(s_ssl_bio, sbuf, i);
                 if (r < 0) {
                     if (!BIO_should_retry(s_ssl_bio)) {
                         fprintf(stderr, "ERROR in SERVER\n");
@@ -2286,7 +2286,7 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
                     i = sizeof(cbuf);
                 else
                     i = (int)cw_num;
-                r = BIO_write(c_ssl_bio, cbuf, i);
+                r = _BIO_write(c_ssl_bio, cbuf, i);
                 if (r < 0) {
                     if (!BIO_should_retry(c_ssl_bio)) {
                         fprintf(stderr, "ERROR in CLIENT\n");
@@ -2295,7 +2295,7 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
                     }
                     /*
                      * BIO_should_retry(...) can just be ignored here. The
-                     * library expects us to call BIO_write with the same
+                     * library expects us to call _BIO_write with the same
                      * arguments again, and that's what we will do in the
                      * next iteration.
                      */
@@ -2365,7 +2365,7 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
                     i = sizeof(sbuf);
                 else
                     i = (int)sw_num;
-                r = BIO_write(s_ssl_bio, sbuf, i);
+                r = _BIO_write(s_ssl_bio, sbuf, i);
                 if (r < 0) {
                     if (!BIO_should_retry(s_ssl_bio)) {
                         fprintf(stderr, "ERROR in SERVER\n");
@@ -2414,7 +2414,7 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
             BIO *io1 = server_io, *io2 = client_io;
             /*
              * we use the non-copying interface for io1 and the standard
-             * BIO_write/BIO_read interface for io2
+             * _BIO_write/BIO_read interface for io2
              */
 
             static int prev_progress = 1;
@@ -2444,9 +2444,9 @@ int doit_biopair(SSL *s_ssl, SSL *c_ssl, long count,
                      * possibly r < num (non-contiguous data)
                      */
                     num = r;
-                    r = BIO_write(io2, dataptr, (int)num);
+                    r = _BIO_write(io2, dataptr, (int)num);
                     if (r != (int)num) { /* can't happen */
-                        fprintf(stderr, "ERROR: BIO_write could not write "
+                        fprintf(stderr, "ERROR: _BIO_write could not write "
                                 "BIO_ctrl_get_write_guarantee() bytes");
                         goto err;
                     }
@@ -2679,7 +2679,7 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
         if (do_client && !(done & C_DONE)) {
             if (c_write) {
                 j = (cw_num > bufsiz) ? (int)bufsiz : (int)cw_num;
-                i = BIO_write(c_bio, cbuf, j);
+                i = _BIO_write(c_bio, cbuf, j);
                 if (i < 0) {
                     c_r = 0;
                     c_w = 0;
@@ -2781,7 +2781,7 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
                 }
             } else {
                 j = (sw_num > bufsiz) ? (int)bufsiz : (int)sw_num;
-                i = BIO_write(s_bio, sbuf, j);
+                i = _BIO_write(s_bio, sbuf, j);
                 if (i < 0) {
                     s_r = 0;
                     s_w = 0;

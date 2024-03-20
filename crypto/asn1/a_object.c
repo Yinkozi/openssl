@@ -188,7 +188,7 @@ int i2a_ASN1_OBJECT(BIO *bp, const ASN1_OBJECT *a)
     int i;
 
     if ((a == NULL) || (a->data == NULL))
-        return BIO_write(bp, "NULL", 4);
+        return _BIO_write(bp, "NULL", 4);
     i = i2t_ASN1_OBJECT(buf, sizeof(buf), a);
     if (i > (int)(sizeof(buf) - 1)) {
         if ((p = OPENSSL_malloc(i + 1)) == NULL) {
@@ -198,11 +198,11 @@ int i2a_ASN1_OBJECT(BIO *bp, const ASN1_OBJECT *a)
         i2t_ASN1_OBJECT(p, i + 1, a);
     }
     if (i <= 0) {
-        i = BIO_write(bp, "<INVALID>", 9);
+        i = _BIO_write(bp, "<INVALID>", 9);
         i += BIO_dump(bp, (const char *)a->data, a->length);
         return i;
     }
-    BIO_write(bp, p, i);
+    _BIO_write(bp, p, i);
     if (p != buf)
         OPENSSL_free(p);
     return i;

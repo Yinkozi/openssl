@@ -115,7 +115,7 @@ static int md_write(BIO *b, const char *in, int inl)
     ctx = BIO_get_data(b);
     next = BIO_next(b);
     if ((ctx != NULL) && (next != NULL))
-        ret = BIO_write(next, in, inl);
+        ret = _BIO_write(next, in, inl);
 
     if (BIO_get_init(b)) {
         if (ret > 0) {

@@ -346,7 +346,7 @@ int pkeyutl_main(int argc, char **argv)
     } else if (hexdump) {
         BIO_dump(out, (char *)buf_out, buf_outlen);
     } else {
-        BIO_write(out, buf_out, buf_outlen);
+        _BIO_write(out, buf_out, buf_outlen);
     }
 
  end:

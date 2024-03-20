@@ -235,7 +235,7 @@ static int tls_dump_write(BIO *bio, const char *in, int inl)
     int ret;
     BIO *next = BIO_next(bio);
 
-    ret = BIO_write(next, in, inl);
+    ret = _BIO_write(next, in, inl);
     copy_flags(bio);
 
     return ret;

@@ -26,8 +26,8 @@ int TS_ASN1_INTEGER_print_bio(BIO *bio, const ASN1_INTEGER *num)
     if (num_bn == NULL)
         return -1;
     if ((hex = BN_bn2hex(num_bn))) {
-        result = BIO_write(bio, "0x", 2) > 0;
-        result = result && BIO_write(bio, hex, strlen(hex)) > 0;
+        result = _BIO_write(bio, "0x", 2) > 0;
+        result = result && _BIO_write(bio, hex, strlen(hex)) > 0;
         OPENSSL_free(hex);
     }
     BN_free(num_bn);
@@ -64,7 +64,7 @@ int TS_ext_print_bio(BIO *bio, const STACK_OF(X509_EXTENSION) *extensions)
             BIO_printf(bio, "%4s", "");
             ASN1_STRING_print(bio, X509_EXTENSION_get_data(ex));
         }
-        BIO_write(bio, "\n", 1);
+        _BIO_write(bio, "\n", 1);
     }
 
     return 1;

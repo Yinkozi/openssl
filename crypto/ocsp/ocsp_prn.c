@@ -93,17 +93,17 @@ int OCSP_REQUEST_print(BIO *bp, OCSP_REQUEST *o, unsigned long flags)
     OCSP_REQINFO *inf = &o->tbsRequest;
     OCSP_SIGNATURE *sig = o->optionalSignature;
 
-    if (BIO_write(bp, "OCSP Request Data:\n", 19) <= 0)
+    if (_BIO_write(bp, "OCSP Request Data:\n", 19) <= 0)
         goto err;
     l = ASN1_INTEGER_get(inf->version);
     if (BIO_printf(bp, "    Version: %lu (0x%lx)", l + 1, l) <= 0)
         goto err;
     if (inf->requestorName != NULL) {
-        if (BIO_write(bp, "\n    Requestor Name: ", 21) <= 0)
+        if (_BIO_write(bp, "\n    Requestor Name: ", 21) <= 0)
             goto err;
         GENERAL_NAME_print(bp, inf->requestorName);
     }
-    if (BIO_write(bp, "\n    Requestor List:\n", 21) <= 0)
+    if (_BIO_write(bp, "\n    Requestor List:\n", 21) <= 0)
         goto err;
     for (i = 0; i < sk_OCSP_ONEREQ_num(inf->requestList); i++) {
         one = sk_OCSP_ONEREQ_value(inf->requestList, i);
@@ -219,13 +219,13 @@ int OCSP_RESPONSE_print(BIO *bp, OCSP_RESPONSE *o, unsigned long flags)
             if (!ASN1_GENERALIZEDTIME_print(bp, single->nextUpdate))
                 goto err;
         }
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
         if (!X509V3_extensions_print(bp,
                                      "Response Single Extensions",
                                      single->singleExtensions, flags, 8))
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (!X509V3_extensions_print(bp, "Response Extensions",

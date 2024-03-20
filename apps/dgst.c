@@ -556,7 +556,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
     }
 
     if (binout) {
-        BIO_write(out, buf, len);
+        _BIO_write(out, buf, len);
     } else if (sep == 2) {
         file = newline_escape_filename(file, &backslash);
 

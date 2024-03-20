@@ -44,7 +44,7 @@ void ERR_print_errors_cb(int (*cb) (const char *str, size_t len, void *u),
 
 static int print_bio(const char *str, size_t len, void *bp)
 {
-    return BIO_write((BIO *)bp, str, len);
+    return _BIO_write((BIO *)bp, str, len);
 }
 
 void ERR_print_errors(BIO *bp)

@@ -247,7 +247,7 @@ static int enc_write(BIO *b, const char *in, int inl)
     BIO_clear_retry_flags(b);
     n = ctx->buf_len - ctx->buf_off;
     while (n > 0) {
-        i = BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
+        i = _BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
         if (i <= 0) {
             BIO_copy_next_retry(b);
             return i;
@@ -276,7 +276,7 @@ static int enc_write(BIO *b, const char *in, int inl)
         ctx->buf_off = 0;
         n = ctx->buf_len;
         while (n > 0) {
-            i = BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
+            i = _BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
             if (i <= 0) {
                 BIO_copy_next_retry(b);
                 return (ret == inl) ? i : ret - inl;

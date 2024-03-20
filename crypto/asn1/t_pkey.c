@@ -37,7 +37,7 @@ int ASN1_buf_print(BIO *bp, const unsigned char *buf, size_t buflen, int indent)
                        (i == buflen - 1) ? "" : ":") <= 0)
                 return 0;
     }
-    if (BIO_write(bp, "\n", 1) <= 0)
+    if (_BIO_write(bp, "\n", 1) <= 0)
         return 0;
     return 1;
 }

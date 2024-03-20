@@ -212,7 +212,7 @@ static int send_hello_verify(BIO *rbio)
 
     memcpy(hello_verify + HV_COOKIE_OFS, cookie, sizeof(cookie));
 
-    BIO_write(rbio, hello_verify, sizeof(hello_verify));
+    _BIO_write(rbio, hello_verify, sizeof(hello_verify));
 
     return 1;
 }
@@ -261,8 +261,8 @@ static int send_server_hello(BIO *rbio)
                           sizeof(server_hello) - MAC_OFFSET))
         return 0;
 
-    BIO_write(rbio, server_hello, sizeof(server_hello));
-    BIO_write(rbio, change_cipher_spec, sizeof(change_cipher_spec));
+    _BIO_write(rbio, server_hello, sizeof(server_hello));
+    _BIO_write(rbio, change_cipher_spec, sizeof(change_cipher_spec));
 
     return 1;
 }
@@ -327,16 +327,16 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     _EVP_CIPHER_CTX_free(enc_ctx);
 
     /* Finally write header (from fragmented variables), IV and encrypted record */
-    BIO_write(rbio, &type, 1);
-    BIO_write(rbio, ver, 2);
-    BIO_write(rbio, epoch, 2);
-    BIO_write(rbio, seq, 6);
+    _BIO_write(rbio, &type, 1);
+    _BIO_write(rbio, ver, 2);
+    _BIO_write(rbio, epoch, 2);
+    _BIO_write(rbio, seq, 6);
     lenbytes[0] = (unsigned char)((len + sizeof(iv)) >> 8);
     lenbytes[1] = (unsigned char)(len + sizeof(iv));
-    BIO_write(rbio, lenbytes, 2);
+    _BIO_write(rbio, lenbytes, 2);
 
-    BIO_write(rbio, iv, sizeof(iv));
-    BIO_write(rbio, enc, len);
+    _BIO_write(rbio, iv, sizeof(iv));
+    _BIO_write(rbio, enc, len);
 
     OPENSSL_free(enc);
     return 1;

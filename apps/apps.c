@@ -1902,7 +1902,7 @@ int bio_to_mem(unsigned char **out, int maxlen, BIO *in)
         }
         if (len == 0)
             break;
-        if (BIO_write(mem, tbuf, len) != len) {
+        if (_BIO_write(mem, tbuf, len) != len) {
             BIO_free(mem);
             return -1;
         }

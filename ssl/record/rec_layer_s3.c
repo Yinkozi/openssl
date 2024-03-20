@@ -1170,7 +1170,7 @@ int ssl3_write_pending(SSL *s, int type, const unsigned char *buf, size_t len,
         if (s->wbio != NULL) {
             s->rwstate = SSL_WRITING;
             /* TODO(size_t): Convert this call */
-            i = BIO_write(s->wbio, (char *)
+            i = _BIO_write(s->wbio, (char *)
                           &(SSL3_BUFFER_get_buf(&wb[currbuf])
                             [SSL3_BUFFER_get_offset(&wb[currbuf])]),
                           (unsigned int)SSL3_BUFFER_get_left(&wb[currbuf]));

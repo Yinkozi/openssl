@@ -101,7 +101,7 @@ int main(int argc, char **argv)
         len = BIO_read(sbio, tmpbuf, 1024);
         if (len <= 0)
             break;
-        BIO_write(out, tmpbuf, len);
+        _BIO_write(out, tmpbuf, len);
     }
  end:
     SSL_CONF_CTX_free(cctx);

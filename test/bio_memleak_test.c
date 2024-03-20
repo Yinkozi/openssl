@@ -86,7 +86,7 @@ static int test_bio_new_mem_buf(void)
         goto finish;
     if (!TEST_int_gt(BIO_get_mem_ptr(bio, &bufmem), 0))
         goto finish;
-    if (!TEST_int_lt(BIO_write(bio, "test", 4), 0))
+    if (!TEST_int_lt(_BIO_write(bio, "test", 4), 0))
         goto finish;
     if (!TEST_int_eq(BIO_read(bio, data, 16), 7))
         goto finish;

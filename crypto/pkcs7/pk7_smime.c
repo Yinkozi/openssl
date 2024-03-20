@@ -331,7 +331,7 @@ int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,
         if (i <= 0)
             break;
         if (tmpout)
-            BIO_write(tmpout, buf, i);
+            _BIO_write(tmpout, buf, i);
     }
 
     if (flags & PKCS7_TEXT) {
@@ -538,7 +538,7 @@ int PKCS7_decrypt(PKCS7 *p7, EVP_PKEY *pkey, X509 *cert, BIO *data, int flags)
 
             break;
         }
-        if (BIO_write(data, buf, i) != i) {
+        if (_BIO_write(data, buf, i) != i) {
             break;
         }
     }

@@ -480,7 +480,7 @@ static int do_i2b_bio(BIO *out, EVP_PKEY *pk, int ispub)
     outlen = do_i2b(&tmp, pk, ispub);
     if (outlen < 0)
         return -1;
-    wrlen = BIO_write(out, tmp, outlen);
+    wrlen = _BIO_write(out, tmp, outlen);
     OPENSSL_free(tmp);
     if (wrlen == outlen)
         return outlen;
@@ -872,7 +872,7 @@ int i2b_PVK_bio(BIO *out, EVP_PKEY *pk, int enclevel,
     outlen = i2b_PVK(&tmp, pk, enclevel, cb, u);
     if (outlen < 0)
         return -1;
-    wrlen = BIO_write(out, tmp, outlen);
+    wrlen = _BIO_write(out, tmp, outlen);
     OPENSSL_free(tmp);
     if (wrlen == outlen) {
         return outlen;

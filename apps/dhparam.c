@@ -368,7 +368,7 @@ static int dh_cb(int p, int n, BN_GENCB *cb)
     static const char symbols[] = ".+*\n";
     char c = (p >= 0 && (size_t)p < sizeof(symbols) - 1) ? symbols[p] : '?';
 
-    BIO_write(BN_GENCB_get_arg(cb), &c, 1);
+    _BIO_write(BN_GENCB_get_arg(cb), &c, 1);
     (void)BIO_flush(BN_GENCB_get_arg(cb));
     return 1;
 }

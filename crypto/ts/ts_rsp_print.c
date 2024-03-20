@@ -135,18 +135,18 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a)
         BIO_printf(bio, "unspecified");
     else
         TS_ASN1_INTEGER_print_bio(bio, a->serial);
-    BIO_write(bio, "\n", 1);
+    _BIO_write(bio, "\n", 1);
 
     BIO_printf(bio, "Time stamp: ");
     ASN1_GENERALIZEDTIME_print(bio, a->time);
-    BIO_write(bio, "\n", 1);
+    _BIO_write(bio, "\n", 1);
 
     BIO_printf(bio, "Accuracy: ");
     if (a->accuracy == NULL)
         BIO_printf(bio, "unspecified");
     else
         ts_ACCURACY_print_bio(bio, a->accuracy);
-    BIO_write(bio, "\n", 1);
+    _BIO_write(bio, "\n", 1);
 
     BIO_printf(bio, "Ordering: %s\n", a->ordering ? "yes" : "no");
 
@@ -155,7 +155,7 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a)
         BIO_printf(bio, "unspecified");
     else
         TS_ASN1_INTEGER_print_bio(bio, a->nonce);
-    BIO_write(bio, "\n", 1);
+    _BIO_write(bio, "\n", 1);
 
     BIO_printf(bio, "TSA: ");
     if (a->tsa == NULL)
@@ -166,7 +166,7 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a)
             X509V3_EXT_val_prn(bio, nval, 0, 0);
         sk_CONF_VALUE_pop_free(nval, X509V3_conf_free);
     }
-    BIO_write(bio, "\n", 1);
+    _BIO_write(bio, "\n", 1);
 
     TS_ext_print_bio(bio, a->extensions);
 

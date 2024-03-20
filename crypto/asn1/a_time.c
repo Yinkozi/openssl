@@ -509,7 +509,7 @@ int ASN1_TIME_print(BIO *bp, const ASN1_TIME *tm)
                           (gmt ? " GMT" : "")) > 0;
     }
  err:
-    BIO_write(bp, "Bad time value", 14);
+    _BIO_write(bp, "Bad time value", 14);
     return 0;
 }
 

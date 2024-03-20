@@ -325,7 +325,7 @@ static int do_dh_print(BIO *bp, const DH *x, int indent, int ptype)
                            ((i + 1) == x->seedlen) ? "" : ":") <= 0)
                 goto err;
         }
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             return 0;
     }
     if (x->counter && !ASN1_bn_print(bp, "counter:", x->counter, NULL, indent))

@@ -203,7 +203,7 @@ static int watchccs_write(BIO *bio, const char *in, int inl)
             badvers = 1;
     }
 
-    ret = BIO_write(next, in, inl);
+    ret = _BIO_write(next, in, inl);
     if (ret <= 0 && BIO_should_write(next))
         BIO_set_retry_write(bio);
 

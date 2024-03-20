@@ -446,7 +446,7 @@ static int dsa_sig_print(BIO *bp, const X509_ALGOR *sigalg,
 
         DSA_SIG_get0(dsa_sig, &r, &s);
 
-        if (BIO_write(bp, "\n", 1) != 1)
+        if (_BIO_write(bp, "\n", 1) != 1)
             goto err;
 
         if (!ASN1_bn_print(bp, "r:   ", r, NULL, indent))

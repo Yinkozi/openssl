@@ -155,7 +155,7 @@ static int linebuffer_write(BIO *b, const char *in, int inl)
                     num += i;
                 }
             }
-            i = BIO_write(b->next_bio, ctx->obuf, ctx->obuf_len);
+            i = _BIO_write(b->next_bio, ctx->obuf, ctx->obuf_len);
             if (i <= 0) {
                 ctx->obuf_len = orig_olen;
                 BIO_copy_next_retry(b);
@@ -175,7 +175,7 @@ static int linebuffer_write(BIO *b, const char *in, int inl)
          * if a NL was found and there is anything to write.
          */
         if ((foundnl || p - in > ctx->obuf_size) && p - in > 0) {
-            i = BIO_write(b->next_bio, in, p - in);
+            i = _BIO_write(b->next_bio, in, p - in);
             if (i <= 0) {
                 BIO_copy_next_retry(b);
                 if (i < 0)
@@ -268,7 +268,7 @@ static long linebuffer_ctrl(BIO *b, int cmd, long num, void *ptr)
         for (;;) {
             BIO_clear_retry_flags(b);
             if (ctx->obuf_len > 0) {
-                r = BIO_write(b->next_bio, ctx->obuf, ctx->obuf_len);
+                r = _BIO_write(b->next_bio, ctx->obuf, ctx->obuf_len);
                 BIO_copy_next_retry(b);
                 if (r <= 0)
                     return (long)r;

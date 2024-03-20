@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-BIO_read_ex, BIO_write_ex, BIO_read, BIO_write, BIO_gets, BIO_puts
+BIO_read_ex, BIO_write_ex, BIO_read, _BIO_write, BIO_gets, BIO_puts
 - BIO I/O functions
 
 =head1 SYNOPSIS
@@ -14,7 +14,7 @@ BIO_read_ex, BIO_write_ex, BIO_read, BIO_write, BIO_gets, BIO_puts
 
  int BIO_read(BIO *b, void *data, int dlen);
  int BIO_gets(BIO *b, char *buf, int size);
- int BIO_write(BIO *b, const void *data, int dlen);
+ int _BIO_write(BIO *b, const void *data, int dlen);
  int BIO_puts(BIO *b, const char *buf);
 
 =head1 DESCRIPTION
@@ -37,7 +37,7 @@ return the digest and other BIOs may not support BIO_gets() at all.
 The returned string is always NUL-terminated and the '\n' is preserved
 if present in the input data.
 
-BIO_write() attempts to write B<len> bytes from B<buf> to BIO B<b>.
+_BIO_write() attempts to write B<len> bytes from B<buf> to BIO B<b>.
 
 BIO_puts() attempts to write a NUL-terminated string B<buf> to BIO B<b>.
 

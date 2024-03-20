@@ -219,7 +219,7 @@ static int async_write(BIO *bio, const char *in, int inl)
                     smallrec[VERSIONHIPOS] = versionhi;
                     smallrec[VERSIONLOPOS] = versionlo;
                     smallrec[DATAPOS] = data;
-                    ret = BIO_write(next, smallrec, MIN_RECORD_LEN);
+                    ret = _BIO_write(next, smallrec, MIN_RECORD_LEN);
                     if (ret <= 0)
                         return -1;
                     written++;
@@ -239,7 +239,7 @@ static int async_write(BIO *bio, const char *in, int inl)
         /* Write any data we have left after fragmenting */
         ret = 0;
         if ((int)written < inl) {
-            ret = BIO_write(next, in + written, inl - written);
+            ret = _BIO_write(next, in + written, inl - written);
         }
 
         if (ret <= 0 && BIO_should_write(next))

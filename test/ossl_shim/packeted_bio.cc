@@ -92,14 +92,14 @@ static int PacketedWrite(BIO *bio, const char *in, int inl) {
   header[2] = (inl >> 16) & 0xff;
   header[3] = (inl >> 8) & 0xff;
   header[4] = inl & 0xff;
-  int ret = BIO_write(BIO_next(bio), header, sizeof(header));
+  int ret = _BIO_write(BIO_next(bio), header, sizeof(header));
   if (ret <= 0) {
     BIO_copy_next_retry(bio);
     return ret;
   }
 
   // Write the buffer.
-  ret = BIO_write(BIO_next(bio), in, inl);
+  ret = _BIO_write(BIO_next(bio), in, inl);
   if (ret < 0 || (inl > 0 && ret == 0)) {
     BIO_copy_next_retry(bio);
     return ret;
@@ -160,7 +160,7 @@ static int PacketedRead(BIO *bio, char *out, int outl) {
       data->timeout.tv_sec = timeout / 1000000;
 
       // Send an ACK to the peer.
-      ret = BIO_write(BIO_next(bio), &kOpcodeTimeoutAck, 1);
+      ret = _BIO_write(BIO_next(bio), &kOpcodeTimeoutAck, 1);
       if (ret <= 0) {
         return ret;
       }

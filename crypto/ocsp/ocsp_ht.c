@@ -165,12 +165,12 @@ int OCSP_REQ_CTX_add1_header(OCSP_REQ_CTX *rctx,
     if (BIO_puts(rctx->mem, name) <= 0)
         return 0;
     if (value) {
-        if (BIO_write(rctx->mem, ": ", 2) != 2)
+        if (_BIO_write(rctx->mem, ": ", 2) != 2)
             return 0;
         if (BIO_puts(rctx->mem, value) <= 0)
             return 0;
     }
-    if (BIO_write(rctx->mem, "\r\n", 2) != 2)
+    if (_BIO_write(rctx->mem, "\r\n", 2) != 2)
         return 0;
     rctx->state = OHS_HTTP_HEADER;
     return 1;
@@ -285,14 +285,14 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
 
         /* Write data to memory BIO */
 
-        if (BIO_write(rctx->mem, rctx->iobuf, n) != n)
+        if (_BIO_write(rctx->mem, rctx->iobuf, n) != n)
             return 0;
     }
 
     switch (rctx->state) {
     case OHS_HTTP_HEADER:
         /* Last operation was adding headers: need a final \r\n */
-        if (BIO_write(rctx->mem, "\r\n", 2) != 2) {
+        if (_BIO_write(rctx->mem, "\r\n", 2) != 2) {
             rctx->state = OHS_ERROR;
             return 0;
         }
@@ -307,7 +307,7 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
     case OHS_ASN1_WRITE:
         n = BIO_get_mem_data(rctx->mem, &p);
 
-        i = BIO_write(rctx->io, p + (n - rctx->asn1_len), rctx->asn1_len);
+        i = _BIO_write(rctx->io, p + (n - rctx->asn1_len), rctx->asn1_len);
 
         if (i <= 0) {
             if (BIO_should_retry(rctx->io))

@@ -45,10 +45,10 @@ static int tls_corrupt_write(BIO *bio, const char *in, int inl)
             return 0;
         /* corrupt last bit of application data */
         copy[inl-1] ^= 1;
-        ret = BIO_write(next, copy, inl);
+        ret = _BIO_write(next, copy, inl);
         OPENSSL_free(copy);
     } else {
-        ret = BIO_write(next, in, inl);
+        ret = _BIO_write(next, in, inl);
     }
     copy_flags(bio);
 

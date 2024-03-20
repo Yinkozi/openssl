@@ -36,7 +36,7 @@ static int AsyncWrite(BIO *bio, const char *in, int inl) {
   }
 
   if (!a->enforce_write_quota) {
-    return BIO_write(BIO_next(bio), in, inl);
+    return _BIO_write(BIO_next(bio), in, inl);
   }
 
   BIO_clear_retry_flags(bio);
@@ -50,7 +50,7 @@ static int AsyncWrite(BIO *bio, const char *in, int inl) {
   if (!a->datagram && (size_t)inl > a->write_quota) {
     inl = a->write_quota;
   }
-  int ret = BIO_write(BIO_next(bio), in, inl);
+  int ret = _BIO_write(BIO_next(bio), in, inl);
   if (ret <= 0) {
     BIO_copy_next_retry(bio);
   } else {

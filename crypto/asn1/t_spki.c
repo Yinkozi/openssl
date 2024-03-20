@@ -47,10 +47,10 @@ int NETSCAPE_SPKI_print(BIO *out, NETSCAPE_SPKI *spki)
     s = (char *)spki->signature->data;
     for (i = 0; i < n; i++) {
         if ((i % 18) == 0)
-            BIO_write(out, "\n      ", 7);
+            _BIO_write(out, "\n      ", 7);
         BIO_printf(out, "%02x%s", (unsigned char)s[i],
                    ((i + 1) == n) ? "" : ":");
     }
-    BIO_write(out, "\n", 1);
+    _BIO_write(out, "\n", 1);
     return 1;
 }

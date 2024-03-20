@@ -2645,7 +2645,7 @@ ENGINE_get_ssl_client_cert_function     2612	1_1_0	EXIST::FUNCTION:ENGINE
 OPENSSL_LH_node_usage_stats             2613	1_1_0	EXIST::FUNCTION:STDIO
 DIRECTORYSTRING_it                      2614	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 DIRECTORYSTRING_it                      2614	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
-BIO_write                               2615	1_1_0	EXIST::FUNCTION:
+_BIO_write                               2615	1_1_0	EXIST::FUNCTION:
 OCSP_ONEREQ_get_ext_by_OBJ              2616	1_1_0	EXIST::FUNCTION:OCSP
 SEED_encrypt                            2617	1_1_0	EXIST::FUNCTION:SEED
 IPAddressRange_it                       2618	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:RFC3779

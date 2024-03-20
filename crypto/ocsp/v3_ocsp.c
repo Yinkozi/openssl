@@ -116,7 +116,7 @@ static int i2r_ocsp_crlid(const X509V3_EXT_METHOD *method, void *in, BIO *bp,
             goto err;
         if (!ASN1_STRING_print(bp, (ASN1_STRING *)a->crlUrl))
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (a->crlNum) {
@@ -124,7 +124,7 @@ static int i2r_ocsp_crlid(const X509V3_EXT_METHOD *method, void *in, BIO *bp,
             goto err;
         if (i2a_ASN1_INTEGER(bp, a->crlNum) <= 0)
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     if (a->crlTime) {
@@ -132,7 +132,7 @@ static int i2r_ocsp_crlid(const X509V3_EXT_METHOD *method, void *in, BIO *bp,
             goto err;
         if (!ASN1_GENERALIZEDTIME_print(bp, a->crlTime))
             goto err;
-        if (BIO_write(bp, "\n", 1) <= 0)
+        if (_BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
     return 1;

@@ -140,7 +140,7 @@ static int nbiof_write(BIO *b, const char *in, int inl)
         ret = -1;
         BIO_set_retry_write(b);
     } else {
-        ret = BIO_write(b->next_bio, in, inl);
+        ret = _BIO_write(b->next_bio, in, inl);
         if (ret < 0) {
             BIO_copy_next_retry(b);
             nt->lwn = inl;

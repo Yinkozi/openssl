@@ -52,7 +52,7 @@ static const ERR_STRING_DATA BIO_str_functs[] = {
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_SOCKET_NBIO, 0), "BIO_socket_nbio"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_SOCK_INFO, 0), "BIO_sock_info"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_SOCK_INIT, 0), "BIO_sock_init"},
-    {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_WRITE, 0), "BIO_write"},
+    {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_WRITE, 0), "_BIO_write"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_WRITE_EX, 0), "BIO_write_ex"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BIO_WRITE_INTERN, 0), "bio_write_intern"},
     {ERR_PACK(ERR_LIB_BIO, BIO_F_BUFFER_CTRL, 0), "buffer_ctrl"},

@@ -55,7 +55,7 @@ static int cms_copy_content(BIO *out, BIO *in, unsigned int flags)
             break;
         }
 
-        if (tmpout && (BIO_write(tmpout, buf, i) != i))
+        if (tmpout && (_BIO_write(tmpout, buf, i) != i))
             goto err;
     }
 

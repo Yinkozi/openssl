@@ -108,7 +108,7 @@ int rand_main(int argc, char **argv)
         if (r <= 0)
             goto end;
         if (format != FORMAT_TEXT) {
-            if (BIO_write(out, buf, chunk) != chunk)
+            if (_BIO_write(out, buf, chunk) != chunk)
                 goto end;
         } else {
             for (i = 0; i < chunk; i++)

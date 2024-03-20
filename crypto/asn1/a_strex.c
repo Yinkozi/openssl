@@ -39,7 +39,7 @@ static int send_bio_chars(void *arg, const void *buf, int len)
 {
     if (!arg)
         return 1;
-    if (BIO_write(arg, buf, len) != len)
+    if (_BIO_write(arg, buf, len) != len)
         return 0;
     return 1;
 }

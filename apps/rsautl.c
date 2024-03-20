@@ -263,7 +263,7 @@ int rsautl_main(int argc, char **argv)
     } else if (hexdump) {
         BIO_dump(out, (char *)rsa_out, rsa_outlen);
     } else {
-        BIO_write(out, rsa_out, rsa_outlen);
+        _BIO_write(out, rsa_out, rsa_outlen);
     }
  end:
     RSA_free(rsa);

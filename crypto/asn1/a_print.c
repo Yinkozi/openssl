@@ -84,13 +84,13 @@ int ASN1_STRING_print(BIO *bp, const ASN1_STRING *v)
             buf[n] = p[i];
         n++;
         if (n >= 80) {
-            if (BIO_write(bp, buf, n) <= 0)
+            if (_BIO_write(bp, buf, n) <= 0)
                 return 0;
             n = 0;
         }
     }
     if (n > 0)
-        if (BIO_write(bp, buf, n) <= 0)
+        if (_BIO_write(bp, buf, n) <= 0)
             return 0;
     return 1;
 }

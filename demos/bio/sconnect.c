@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
     off = 0;
     for (;;) {
-        i = BIO_write(out, &(p[off]), len);
+        i = _BIO_write(out, &(p[off]), len);
         if (i <= 0) {
             if (BIO_should_retry(out)) {
                 fprintf(stderr, "write DELAY\n");

@@ -131,7 +131,7 @@ or
 
 after.
 
-=item B<BIO_write(b, data, dlen, written)>
+=item B<_BIO_write(b, data, dlen, written)>
 
  callback_ex(b, BIO_CB_WRITE, data, dlen, 0, 0L, 1L, NULL)
 

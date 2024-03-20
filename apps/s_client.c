@@ -391,11 +391,11 @@ static int next_proto_cb(SSL *s, unsigned char **out, unsigned char *outlen,
         BIO_printf(bio_c_out, "Protocols advertised by server: ");
         for (i = 0; i < inlen;) {
             if (i)
-                BIO_write(bio_c_out, ", ", 2);
-            BIO_write(bio_c_out, &in[i + 1], in[i]);
+                _BIO_write(bio_c_out, ", ", 2);
+            _BIO_write(bio_c_out, &in[i + 1], in[i]);
             i += in[i] + 1;
         }
-        BIO_write(bio_c_out, "\n", 1);
+        _BIO_write(bio_c_out, "\n", 1);
     }
 
     ctx->status =
@@ -2352,8 +2352,8 @@ int s_client_main(int argc, char **argv)
             if (bytes != 3 || memcmp(mbuf, tls_do, 3) != 0)
                 goto shut;
             /* Agree to issue START_TLS and send the FOLLOWS sub-command */
-            BIO_write(sbio, tls_will, 3);
-            BIO_write(sbio, tls_follows, 6);
+            _BIO_write(sbio, tls_will, 3);
+            _BIO_write(sbio, tls_follows, 6);
             (void)BIO_flush(sbio);
             /* Telnet server also sent the FOLLOWS sub-command */
             bytes = BIO_read(sbio, mbuf, BUFSIZZ);
@@ -2552,7 +2552,7 @@ int s_client_main(int argc, char **argv)
             }
 
             /* Sending SSL Handshake packet. */
-            BIO_write(sbio, ssl_req, sizeof(ssl_req));
+            _BIO_write(sbio, ssl_req, sizeof(ssl_req));
             (void)BIO_flush(sbio);
         }
         break;
@@ -2565,7 +2565,7 @@ int s_client_main(int argc, char **argv)
             int bytes;
 
             /* Send SSLRequest packet */
-            BIO_write(sbio, ssl_request, 8);
+            _BIO_write(sbio, ssl_request, 8);
             (void)BIO_flush(sbio);
 
             /* Reply will be a single S if SSL is enabled */
@@ -2706,7 +2706,7 @@ int s_client_main(int argc, char **argv)
             NCONF_free(cnf);
 
             /* Send SSLRequest packet */
-            BIO_write(sbio, atyp->value.sequence->data,
+            _BIO_write(sbio, atyp->value.sequence->data,
                       atyp->value.sequence->length);
             (void)BIO_flush(sbio);
             ASN1_TYPE_free(atyp);
@@ -2795,7 +2795,7 @@ int s_client_main(int argc, char **argv)
                     full_log--;
 
                 if (starttls_proto) {
-                    BIO_write(bio_err, mbuf, mbuf_len);
+                    _BIO_write(bio_err, mbuf, mbuf_len);
                     /* We don't need to know any more */
                     if (!reconnect)
                         starttls_proto = PROTO_OFF;
@@ -3318,8 +3318,8 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         unsigned int proto_len;
         SSL_get0_next_proto_negotiated(s, &proto, &proto_len);
         BIO_printf(bio, "Next protocol: (%d) ", next_proto.status);
-        BIO_write(bio, proto, proto_len);
-        BIO_write(bio, "\n", 1);
+        _BIO_write(bio, proto, proto_len);
+        _BIO_write(bio, "\n", 1);
     }
 #endif
     {
@@ -3328,8 +3328,8 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         SSL_get0_alpn_selected(s, &proto, &proto_len);
         if (proto_len > 0) {
             BIO_printf(bio, "ALPN protocol: ");
-            BIO_write(bio, proto, proto_len);
-            BIO_write(bio, "\n", 1);
+            _BIO_write(bio, proto, proto_len);
+            _BIO_write(bio, "\n", 1);
         } else
             BIO_printf(bio, "No ALPN negotiated\n");
     }

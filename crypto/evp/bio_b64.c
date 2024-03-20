@@ -353,7 +353,7 @@ static int b64_write(BIO *b, const char *in, int inl)
     OPENSSL_assert(ctx->buf_len >= ctx->buf_off);
     n = ctx->buf_len - ctx->buf_off;
     while (n > 0) {
-        i = BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
+        i = _BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
         if (i <= 0) {
             BIO_copy_next_retry(b);
             return i;
@@ -428,7 +428,7 @@ static int b64_write(BIO *b, const char *in, int inl)
         ctx->buf_off = 0;
         n = ctx->buf_len;
         while (n > 0) {
-            i = BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
+            i = _BIO_write(next, &(ctx->buf[ctx->buf_off]), n);
             if (i <= 0) {
                 BIO_copy_next_retry(b);
                 return ((ret == 0) ? i : ret);

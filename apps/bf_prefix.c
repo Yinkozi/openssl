@@ -173,5 +173,5 @@ static int prefix_gets(BIO *b, char *buf, int size)
 
 static int prefix_puts(BIO *b, const char *str)
 {
-    return BIO_write(b, str, strlen(str));
+    return _BIO_write(b, str, strlen(str));
 }

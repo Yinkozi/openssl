@@ -54,7 +54,7 @@ static int test_bio_callback(void)
         goto err;
 
     BIO_set_callback(bio, my_bio_callback);
-    i = BIO_write(bio, test1, test1len);
+    i = _BIO_write(bio, test1, test1len);
     if (!TEST_int_eq(i, test1len)
             || !TEST_int_eq(my_param_count, 2)
             || !TEST_ptr_eq(my_param_b[0], bio)

@@ -60,7 +60,7 @@ static int test_fatalerr(void)
     ERR_clear_error();
 
     /* Inject a plaintext record from client to server */
-    if (!TEST_int_gt(BIO_write(wbio, dummyrec, sizeof(dummyrec)), 0))
+    if (!TEST_int_gt(_BIO_write(wbio, dummyrec, sizeof(dummyrec)), 0))
         goto err;
 
     /* SSL_read()/SSL_write should fail because of a previous fatal error */

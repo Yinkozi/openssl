@@ -157,7 +157,7 @@ static int asn1_write_micalg(BIO *out, STACK_OF(X509_ALGOR) *mdalgs)
     write_comma = 0;
     for (i = 0; i < sk_X509_ALGOR_num(mdalgs); i++) {
         if (write_comma)
-            BIO_write(out, ",", 1);
+            _BIO_write(out, ",", 1);
         write_comma = 1;
         md_nid = OBJ_obj2nid(sk_X509_ALGOR_value(mdalgs, i)->algorithm);
         md = EVP_get_digestbynid(md_nid);
@@ -500,7 +500,7 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
     out = BIO_push(bf, out);
     if (flags & SMIME_BINARY) {
         while ((len = BIO_read(in, linebuf, MAX_SMLEN)) > 0)
-            BIO_write(out, linebuf, len);
+            _BIO_write(out, linebuf, len);
     } else {
         int eolcnt = 0;
         if (flags & SMIME_TEXT)
@@ -512,16 +512,16 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
                 if (flags & SMIME_ASCIICRLF) {
                     int i;
                     for (i = 0; i < eolcnt; i++)
-                        BIO_write(out, "\r\n", 2);
+                        _BIO_write(out, "\r\n", 2);
                     eolcnt = 0;
                 }
-                BIO_write(out, linebuf, len);
+                _BIO_write(out, linebuf, len);
                 if (eol)
-                    BIO_write(out, "\r\n", 2);
+                    _BIO_write(out, "\r\n", 2);
             } else if (flags & SMIME_ASCIICRLF)
                 eolcnt++;
             else if (eol)
-                BIO_write(out, "\r\n", 2);
+                _BIO_write(out, "\r\n", 2);
         }
     }
     ret = BIO_flush(out);
@@ -559,7 +559,7 @@ int SMIME_text(BIO *in, BIO *out)
     }
     sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
     while ((len = BIO_read(in, iobuf, sizeof(iobuf))) > 0)
-        BIO_write(out, iobuf, len);
+        _BIO_write(out, iobuf, len);
     if (len < 0)
         return 0;
     return 1;
@@ -613,10 +613,10 @@ static int multi_split(BIO *bio, const char *bound, STACK_OF(BIO) **ret)
                     return 0;
                 BIO_set_mem_eof_return(bpart, 0);
             } else if (eol)
-                BIO_write(bpart, "\r\n", 2);
+                _BIO_write(bpart, "\r\n", 2);
             eol = next_eol;
             if (len)
-                BIO_write(bpart, linebuf, len);
+                _BIO_write(bpart, linebuf, len);
         }
     }
     BIO_free(bpart);

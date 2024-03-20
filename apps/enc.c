@@ -439,9 +439,9 @@ int enc_main(int argc, char **argv)
                      * If -P option then don't bother writing
                      */
                     if ((printkey != 2)
-                        && (BIO_write(wbio, magic,
+                        && (_BIO_write(wbio, magic,
                                       sizeof(magic) - 1) != sizeof(magic) - 1
-                            || BIO_write(wbio,
+                            || _BIO_write(wbio,
                                          (char *)salt,
                                          sizeof(salt)) != sizeof(salt))) {
                         BIO_printf(bio_err, "error writing output file\n");
@@ -591,7 +591,7 @@ int enc_main(int argc, char **argv)
         inl = BIO_read(rbio, (char *)buff, bsize);
         if (inl <= 0)
             break;
-        if (BIO_write(wbio, (char *)buff, inl) != inl) {
+        if (_BIO_write(wbio, (char *)buff, inl) != inl) {
             BIO_printf(bio_err, "error writing output file\n");
             goto end;
         }

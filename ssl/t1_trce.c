@@ -735,7 +735,7 @@ static int ssl_print_extension(BIO *bio, int indent, int server,
             if (plen + 1 > xlen)
                 return 0;
             BIO_indent(bio, indent + 2, 80);
-            BIO_write(bio, ext, plen);
+            _BIO_write(bio, ext, plen);
             BIO_puts(bio, "\n");
             ext += plen;
             xlen -= plen + 1;
