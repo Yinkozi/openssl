@@ -597,7 +597,7 @@ const BIO_METHOD *BIO_s_accept(void);
 const BIO_METHOD *BIO_s_fd(void);
 const BIO_METHOD *BIO_s_log(void);
 const BIO_METHOD *BIO_s_bio(void);
-const BIO_METHOD *BIO_s_null(void);
+const BIO_METHOD *_BIO_s_null(void);
 const BIO_METHOD *BIO_f_null(void);
 const BIO_METHOD *BIO_f_buffer(void);
 const BIO_METHOD *BIO_f_linebuffer(void);

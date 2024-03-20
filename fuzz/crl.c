@@ -28,7 +28,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 
     X509_CRL *crl = d2i_X509_CRL(NULL, &p, len);
     if (crl != NULL) {
-        BIO *bio = _BIO_new(BIO_s_null());
+        BIO *bio = _BIO_new(_BIO_s_null());
         X509_CRL_print(bio, crl);
         _BIO_free(bio);
 

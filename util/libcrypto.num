@@ -3470,7 +3470,7 @@ UI_ctrl                                 3421	1_1_0	EXIST::FUNCTION:
 i2d_X509_REQ_fp                         3422	1_1_0	EXIST::FUNCTION:STDIO
 BN_BLINDING_convert_ex                  3423	1_1_0	EXIST::FUNCTION:
 ASN1_GENERALIZEDTIME_print              3424	1_1_0	EXIST::FUNCTION:
-BIO_s_null                              3425	1_1_0	EXIST::FUNCTION:
+_BIO_s_null                              3425	1_1_0	EXIST::FUNCTION:
 PEM_ASN1_read                           3426	1_1_0	EXIST::FUNCTION:STDIO
 SCT_get_log_entry_type                  3427	1_1_0	EXIST::FUNCTION:CT
 EVP_CIPHER_meth_get_init                3428	1_1_0	EXIST::FUNCTION:

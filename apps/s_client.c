@@ -1713,7 +1713,7 @@ int s_client_main(int argc, char **argv)
 
     if (bio_c_out == NULL) {
         if (c_quiet && !c_debug) {
-            bio_c_out = _BIO_new(BIO_s_null());
+            bio_c_out = _BIO_new(_BIO_s_null());
             if (c_msg && bio_c_msg == NULL)
                 bio_c_msg = dup_bio_out(FORMAT_TEXT);
         } else if (bio_c_out == NULL)

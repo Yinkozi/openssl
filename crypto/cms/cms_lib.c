@@ -43,7 +43,7 @@ BIO *cms_content_bio(CMS_ContentInfo *cms)
         return NULL;
     /* If content detached data goes nowhere: create NULL BIO */
     if (!*pos)
-        return _BIO_new(BIO_s_null());
+        return _BIO_new(_BIO_s_null());
     /*
      * If content not detached and created return memory BIO
      */

@@ -211,7 +211,7 @@ static ASN1_PCTX *pctx;
     \
     if (type != NULL) { \
         int len2; \
-        BIO *bio = _BIO_new(BIO_s_null()); \
+        BIO *bio = _BIO_new(_BIO_s_null()); \
         \
         PRINT(bio, type); \
         _BIO_free(bio); \
@@ -228,7 +228,7 @@ static ASN1_PCTX *pctx;
     TYPE *type = D2I(NULL, &p, len); \
     \
     if (type != NULL) { \
-        BIO *bio = _BIO_new(BIO_s_null()); \
+        BIO *bio = _BIO_new(_BIO_s_null()); \
         \
         PRINT(bio, type, 0); \
         _BIO_free(bio); \
@@ -244,7 +244,7 @@ static ASN1_PCTX *pctx;
     TYPE *type = D2I(NULL, &p, len); \
     \
     if (type != NULL) { \
-        BIO *bio = _BIO_new(BIO_s_null()); \
+        BIO *bio = _BIO_new(_BIO_s_null()); \
         \
         PRINT(bio, type, 0, pctx); \
         _BIO_free(bio); \
@@ -261,7 +261,7 @@ static ASN1_PCTX *pctx;
     TYPE *type = D2I(NULL, &p, len); \
     \
     if (type != NULL) { \
-        BIO *bio = _BIO_new(BIO_s_null()); \
+        BIO *bio = _BIO_new(_BIO_s_null()); \
         \
         _BIO_free(bio); \
         I2D(type, &der); \
@@ -301,7 +301,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         ASN1_VALUE *o = ASN1_item_d2i(NULL, &b, len, i);
 
         if (o != NULL) {
-            BIO *bio = _BIO_new(BIO_s_null());
+            BIO *bio = _BIO_new(_BIO_s_null());
 
             ASN1_item_print(bio, o, 4, i, pctx);
             _BIO_free(bio);

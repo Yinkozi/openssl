@@ -80,7 +80,7 @@ checking has been omitted for clarity.
  BIO *bio, *mdtmp;
  char message[] = "Hello World";
 
- bio = _BIO_new(BIO_s_null());
+ bio = _BIO_new(_BIO_s_null());
  mdtmp = _BIO_new(BIO_f_md());
  BIO_set_md(mdtmp, _EVP_sha1());
  /*

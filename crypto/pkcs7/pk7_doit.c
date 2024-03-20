@@ -320,7 +320,7 @@ BIO *PKCS7_dataInit(PKCS7 *p7, BIO *bio)
 
     if (bio == NULL) {
         if (PKCS7_is_detached(p7)) {
-            bio = _BIO_new(BIO_s_null());
+            bio = _BIO_new(_BIO_s_null());
         } else if (os && os->length > 0) {
             bio = _BIO_new_mem_buf(os->data, os->length);
         } else {

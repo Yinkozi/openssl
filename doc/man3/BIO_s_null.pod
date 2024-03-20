@@ -2,17 +2,17 @@
 
 =head1 NAME
 
-BIO_s_null - null data sink
+_BIO_s_null - null data sink
 
 =head1 SYNOPSIS
 
  #include <openssl/bio.h>
 
- const BIO_METHOD *BIO_s_null(void);
+ const BIO_METHOD *_BIO_s_null(void);
 
 =head1 DESCRIPTION
 
-BIO_s_null() returns the null sink BIO method. Data written to
+_BIO_s_null() returns the null sink BIO method. Data written to
 the null sink is discarded, reads return EOF.
 
 =head1 NOTES
@@ -30,7 +30,7 @@ by adding a null sink BIO to the end of the chain
 
 =head1 RETURN VALUES
 
-BIO_s_null() returns the null sink BIO method.
+_BIO_s_null() returns the null sink BIO method.
 
 =head1 COPYRIGHT
 
