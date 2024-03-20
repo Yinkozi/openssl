@@ -4,7 +4,7 @@
 
 _EVP_CIPHER_CTX_new,
 EVP_CIPHER_CTX_reset,
-EVP_CIPHER_CTX_free,
+_EVP_CIPHER_CTX_free,
 _EVP_EncryptInit_ex,
 _EVP_EncryptUpdate,
 _EVP_EncryptFinal_ex,
@@ -56,7 +56,7 @@ EVP_enc_null
 
  EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void);
  int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx);
- void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx);
+ void _EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx);
 
  int _EVP_EncryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
@@ -125,7 +125,7 @@ symmetric ciphers.
 
 _EVP_CIPHER_CTX_new() creates a cipher context.
 
-EVP_CIPHER_CTX_free() clears all information from a cipher context
+_EVP_CIPHER_CTX_free() clears all information from a cipher context
 and free up any allocated memory associate with it, including B<ctx>
 itself. This function should be called after all operations using a
 cipher are complete so sensitive information does not remain in
@@ -544,7 +544,7 @@ Encrypt a string using IDEA:
 
      if (!_EVP_EncryptUpdate(ctx, outbuf, &outlen, intext, strlen(intext))) {
          /* Error */
-         EVP_CIPHER_CTX_free(ctx);
+         _EVP_CIPHER_CTX_free(ctx);
          return 0;
      }
      /*
@@ -553,11 +553,11 @@ Encrypt a string using IDEA:
       */
      if (!_EVP_EncryptFinal_ex(ctx, outbuf + outlen, &tmplen)) {
          /* Error */
-         EVP_CIPHER_CTX_free(ctx);
+         _EVP_CIPHER_CTX_free(ctx);
          return 0;
      }
      outlen += tmplen;
-     EVP_CIPHER_CTX_free(ctx);
+     _EVP_CIPHER_CTX_free(ctx);
      /*
       * Need binary mode for fopen because encrypted data is
       * binary data. Also cannot use strlen() on it because
@@ -612,19 +612,19 @@ with a 128-bit key:
              break;
          if (!EVP_CipherUpdate(ctx, outbuf, &outlen, inbuf, inlen)) {
              /* Error */
-             EVP_CIPHER_CTX_free(ctx);
+             _EVP_CIPHER_CTX_free(ctx);
              return 0;
          }
          fwrite(outbuf, 1, outlen, out);
      }
      if (!EVP_CipherFinal_ex(ctx, outbuf, &outlen)) {
          /* Error */
-         EVP_CIPHER_CTX_free(ctx);
+         _EVP_CIPHER_CTX_free(ctx);
          return 0;
      }
      fwrite(outbuf, 1, outlen, out);
 
-     EVP_CIPHER_CTX_free(ctx);
+     _EVP_CIPHER_CTX_free(ctx);
      return 1;
  }
 

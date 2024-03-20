@@ -738,7 +738,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
 
     ret = b2i_PrivateKey(&p, keylen);
  err:
-    EVP_CIPHER_CTX_free(cctx);
+    _EVP_CIPHER_CTX_free(cctx);
     if (enctmp != NULL) {
         OPENSSL_cleanse(keybuf, sizeof(keybuf));
         OPENSSL_free(enctmp);
@@ -850,7 +850,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
             goto error;
     }
 
-    EVP_CIPHER_CTX_free(cctx);
+    _EVP_CIPHER_CTX_free(cctx);
 
     if (*out == NULL)
         *out = start;
@@ -858,7 +858,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
     return outlen;
 
  error:
-    EVP_CIPHER_CTX_free(cctx);
+    _EVP_CIPHER_CTX_free(cctx);
     if (*out == NULL)
         OPENSSL_free(start);
     return -1;

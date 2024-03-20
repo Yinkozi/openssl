@@ -770,7 +770,7 @@ WORK_STATE ossl_statem_client_post_work(SSL *s, WORK_STATE wst)
          * We set the enc_write_ctx back to NULL because we may end up writing
          * in cleartext again if we get a HelloRetryRequest from the server.
          */
-        EVP_CIPHER_CTX_free(s->enc_write_ctx);
+        _EVP_CIPHER_CTX_free(s->enc_write_ctx);
         s->enc_write_ctx = NULL;
         break;
 
@@ -1761,7 +1761,7 @@ static MSG_PROCESS_RETURN tls_process_as_hello_retry_request(SSL *s,
      * If we were sending early_data then the enc_write_ctx is now invalid and
      * should not be used.
      */
-    EVP_CIPHER_CTX_free(s->enc_write_ctx);
+    _EVP_CIPHER_CTX_free(s->enc_write_ctx);
     s->enc_write_ctx = NULL;
 
     if (!tls_collect_extensions(s, extpkt, SSL_EXT_TLS1_3_HELLO_RETRY_REQUEST,

@@ -90,7 +90,7 @@ static int test_afalg_aes_cbc(int keysize_idx)
     ret = 1;
 
  end:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return ret;
 }
 
@@ -107,7 +107,7 @@ static int test_pr16743(void)
     if (cipher != NULL && ctx != NULL)
         ret = _EVP_EncryptInit_ex(ctx, cipher, e, NULL, NULL);
     TEST_true(ret);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     ENGINE_finish(e);
     return ret;
 }

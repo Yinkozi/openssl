@@ -2660,7 +2660,7 @@ int speed_main(int argc, char **argv)
                 count = run_benchmark(async_jobs, loopfunc, loopargs);
                 d = Time_F(STOP);
                 for (k = 0; k < loopargs_len; k++) {
-                    EVP_CIPHER_CTX_free(loopargs[k].ctx);
+                    _EVP_CIPHER_CTX_free(loopargs[k].ctx);
                 }
                 print_result(D_EVP, testnum, count, d);
             }
@@ -3719,5 +3719,5 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
 
     OPENSSL_free(inp);
     OPENSSL_free(out);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 }

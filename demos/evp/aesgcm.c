@@ -76,7 +76,7 @@ void aes_gcm_encrypt(void)
     /* Output tag */
     printf("Tag:\n");
     BIO_dump_fp(stdout, outbuf, 16);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 }
 
 void aes_gcm_decrypt(void)
@@ -111,7 +111,7 @@ void aes_gcm_decrypt(void)
      * failed and plaintext is not trustworthy.
      */
     printf("Tag Verify %s\n", rv > 0 ? "Successful!" : "Failed!");
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 }
 
 int main(int argc, char **argv)

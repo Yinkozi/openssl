@@ -624,7 +624,7 @@
       o Cipher string fixes.
       o Fixes for VC++ 2005.
       o Updated ECC cipher suite support.
-      o New functions _EVP_CIPHER_CTX_new() and EVP_CIPHER_CTX_free().
+      o New functions _EVP_CIPHER_CTX_new() and _EVP_CIPHER_CTX_free().
       o Zlib compression usage fixes.
       o Built in dynamic engine compilation support on Win32.
       o Fixes auto dynamic engine loading in Win32.

@@ -399,7 +399,7 @@ int PEM_ASN1_write_bio(i2d_of_void *i2d, const char *name, BIO *bp,
  err:
     OPENSSL_cleanse(key, sizeof(key));
     OPENSSL_cleanse(iv, sizeof(iv));
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     OPENSSL_cleanse(buf, PEM_BUFSIZE);
     OPENSSL_clear_free(data, (unsigned int)dsize);
     return ret;
@@ -460,7 +460,7 @@ int PEM_do_header(EVP_CIPHER_INFO *cipher, unsigned char *data, long *plen,
     else
         PEMerr(PEM_F_PEM_DO_HEADER, PEM_R_BAD_DECRYPT);
 
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     OPENSSL_cleanse((char *)buf, sizeof(buf));
     OPENSSL_cleanse((char *)key, sizeof(key));
     return ok;

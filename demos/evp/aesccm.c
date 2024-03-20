@@ -81,7 +81,7 @@ void aes_ccm_encrypt(void)
     /* Output tag */
     printf("Tag:\n");
     BIO_dump_fp(stdout, outbuf, 16);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 }
 
 void aes_ccm_decrypt(void)
@@ -115,7 +115,7 @@ void aes_ccm_decrypt(void)
         BIO_dump_fp(stdout, outbuf, outlen);
     } else
         printf("Plaintext not available: tag verify failed.\n");
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 }
 
 int main(int argc, char **argv)

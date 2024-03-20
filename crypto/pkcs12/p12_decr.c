@@ -69,7 +69,7 @@ unsigned char *PKCS12_pbe_crypt(const X509_ALGOR *algor,
     if (data)
         *data = out;
  err:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return out;
 
 }

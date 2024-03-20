@@ -202,7 +202,7 @@ Note that the cleanup function is passed a B<EVP_CIPHER_CTX *>, the
 private data structure is then available with
 EVP_CIPHER_CTX_get_cipher_data().
 This cleanup function is called by EVP_CIPHER_CTX_reset() and
-EVP_CIPHER_CTX_free().
+_EVP_CIPHER_CTX_free().
 
 EVP_CIPHER_meth_set_set_asn1_params() sets the function for B<cipher>
 to set the AlgorithmIdentifier "parameter" based on the passed cipher.

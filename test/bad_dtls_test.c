@@ -324,7 +324,7 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     enc_ctx = _EVP_CIPHER_CTX_new();
     EVP_CipherInit_ex(enc_ctx, EVP_aes_128_cbc(), NULL, enc_key, iv, 1);
     EVP_Cipher(enc_ctx, enc, enc, len);
-    EVP_CIPHER_CTX_free(enc_ctx);
+    _EVP_CIPHER_CTX_free(enc_ctx);
 
     /* Finally write header (from fragmented variables), IV and encrypted record */
     BIO_write(rbio, &type, 1);

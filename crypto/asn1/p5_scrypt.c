@@ -98,7 +98,7 @@ X509_ALGOR *PKCS5_pbe2_set_scrypt(const EVP_CIPHER *cipher,
                 ASN1_R_ERROR_SETTING_CIPHER_PARAMS);
         goto err;
     }
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     ctx = NULL;
 
     /* If its RC2 then we'd better setup the key length */
@@ -140,7 +140,7 @@ X509_ALGOR *PKCS5_pbe2_set_scrypt(const EVP_CIPHER *cipher,
  err:
     PBE2PARAM_free(pbe2);
     X509_ALGOR_free(ret);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
 
     return NULL;
 }

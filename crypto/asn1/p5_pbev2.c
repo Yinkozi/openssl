@@ -91,7 +91,7 @@ X509_ALGOR *PKCS5_pbe2_set_iv(const EVP_CIPHER *cipher, int iter,
         ERR_clear_error();
         prf_nid = NID_hmacWithSHA256;
     }
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     ctx = NULL;
 
     /* If its RC2 then we'd better setup the key length */
@@ -132,7 +132,7 @@ X509_ALGOR *PKCS5_pbe2_set_iv(const EVP_CIPHER *cipher, int iter,
     ASN1err(ASN1_F_PKCS5_PBE2_SET_IV, ERR_R_MALLOC_FAILURE);
 
  err:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     PBE2PARAM_free(pbe2);
     /* Note 'scheme' is freed as part of pbe2 */
     X509_ALGOR_free(ret);

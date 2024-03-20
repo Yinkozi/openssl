@@ -3952,11 +3952,11 @@ SSL *SSL_dup(SSL *s)
 void ssl_clear_cipher_ctx(SSL *s)
 {
     if (s->enc_read_ctx != NULL) {
-        EVP_CIPHER_CTX_free(s->enc_read_ctx);
+        _EVP_CIPHER_CTX_free(s->enc_read_ctx);
         s->enc_read_ctx = NULL;
     }
     if (s->enc_write_ctx != NULL) {
-        EVP_CIPHER_CTX_free(s->enc_write_ctx);
+        _EVP_CIPHER_CTX_free(s->enc_write_ctx);
         s->enc_write_ctx = NULL;
     }
 #ifndef OPENSSL_NO_COMP

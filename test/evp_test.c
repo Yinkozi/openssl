@@ -767,7 +767,7 @@ static int cipher_test_enc(EVP_TEST *t, int enc,
     ok = 1;
  err:
     OPENSSL_free(tmp);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return ok;
 }
 

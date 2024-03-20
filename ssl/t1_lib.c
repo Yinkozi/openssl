@@ -1519,7 +1519,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     ret = SSL_TICKET_NO_DECRYPT;
 
  end:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     HMAC_CTX_free(hctx);
 
     /*

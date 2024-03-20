@@ -109,7 +109,7 @@ CMS_RecipientInfo *CMS_add0_recipient_password(CMS_ContentInfo *cms,
 
     encalg->algorithm = OBJ_nid2obj(EVP_CIPHER_CTX_type(ctx));
 
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     ctx = NULL;
 
     /* Initialize recipient info */
@@ -160,7 +160,7 @@ CMS_RecipientInfo *CMS_add0_recipient_password(CMS_ContentInfo *cms,
  merr:
     CMSerr(CMS_F_CMS_ADD0_RECIPIENT_PASSWORD, ERR_R_MALLOC_FAILURE);
  err:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     if (ri)
         M_ASN1_free_of(ri, CMS_RecipientInfo);
     X509_ALGOR_free(encalg);
@@ -383,7 +383,7 @@ int cms_RecipientInfo_pwri_crypt(CMS_ContentInfo *cms, CMS_RecipientInfo *ri,
 
  err:
 
-    EVP_CIPHER_CTX_free(kekctx);
+    _EVP_CIPHER_CTX_free(kekctx);
 
     if (!r)
         OPENSSL_free(key);

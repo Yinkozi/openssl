@@ -167,7 +167,7 @@ static int cms_kari_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
         kari->pctx = NULL;
     } else if (operation == ASN1_OP_FREE_POST) {
         EVP_PKEY_CTX_free(kari->pctx);
-        EVP_CIPHER_CTX_free(kari->ctx);
+        _EVP_CIPHER_CTX_free(kari->ctx);
     }
     return 1;
 }

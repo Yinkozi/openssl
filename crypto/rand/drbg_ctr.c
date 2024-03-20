@@ -391,9 +391,9 @@ __owur static int drbg_ctr_generate(RAND_DRBG *drbg,
 
 static int drbg_ctr_uninstantiate(RAND_DRBG *drbg)
 {
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ecb);
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ctr);
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_df);
+    _EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ecb);
+    _EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ctr);
+    _EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_df);
     OPENSSL_cleanse(&drbg->data.ctr, sizeof(drbg->data.ctr));
     return 1;
 }

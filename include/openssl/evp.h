@@ -678,7 +678,7 @@ int EVP_DecodeBlock(unsigned char *t, const unsigned char *f, int n);
 # endif
 EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void);
 int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *c);
-void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *c);
+void _EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *c);
 int EVP_CIPHER_CTX_set_key_length(EVP_CIPHER_CTX *x, int keylen);
 int EVP_CIPHER_CTX_set_padding(EVP_CIPHER_CTX *c, int pad);
 int EVP_CIPHER_CTX_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg, void *ptr);

@@ -2231,7 +2231,7 @@ CMAC_resume                             2203	1_1_0	EXIST::FUNCTION:CMAC
 TS_ACCURACY_set_millis                  2204	1_1_0	EXIST::FUNCTION:TS
 X509V3_EXT_conf                         2205	1_1_0	EXIST::FUNCTION:
 i2d_DHxparams                           2206	1_1_0	EXIST::FUNCTION:DH
-EVP_CIPHER_CTX_free                     2207	1_1_0	EXIST::FUNCTION:
+_EVP_CIPHER_CTX_free                     2207	1_1_0	EXIST::FUNCTION:
 WHIRLPOOL_BitUpdate                     2208	1_1_0	EXIST::FUNCTION:WHIRLPOOL
 EVP_idea_ecb                            2209	1_1_0	EXIST::FUNCTION:IDEA
 i2d_TS_ACCURACY                         2210	1_1_0	EXIST::FUNCTION:TS

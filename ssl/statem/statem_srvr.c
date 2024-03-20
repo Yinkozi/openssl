@@ -3960,7 +3960,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
                 goto err;
             }
             OPENSSL_free(senc);
-            EVP_CIPHER_CTX_free(ctx);
+            _EVP_CIPHER_CTX_free(ctx);
             HMAC_CTX_free(hctx);
             return 1;
         }
@@ -4032,7 +4032,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
     ok = 1;
  err:
     OPENSSL_free(senc);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     HMAC_CTX_free(hctx);
     return ok;
 }

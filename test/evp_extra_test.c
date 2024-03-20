@@ -584,7 +584,7 @@ static int test_evp_init_seq(int idx)
  err:
     if (errmsg != NULL)
         TEST_info("evp_init_test %d: %s", idx, errmsg);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return testresult;
 }
 
@@ -669,7 +669,7 @@ static int test_evp_reset(int idx)
  err:
     if (errmsg != NULL)
         TEST_info("test_evp_reset %d: %s", idx, errmsg);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return testresult;
 }
 
@@ -795,7 +795,7 @@ static int test_gcm_reinit(int idx)
  err:
     if (errmsg != NULL)
         TEST_info("evp_init_test %d: %s", idx, errmsg);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return testresult;
 }
 
@@ -906,7 +906,7 @@ static int test_evp_updated_iv(int idx)
  err:
     if (errmsg != NULL)
         TEST_info("test_evp_updated_iv %d: %s", idx, errmsg);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return testresult;
 }
 
@@ -993,7 +993,7 @@ static int test_EVP_Enveloped(void)
 err:
     OPENSSL_free(kek);
     EVP_PKEY_free(keypair);
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return ret;
 }
 
@@ -1720,7 +1720,7 @@ static int test_decrypt_null_chunks(void)
 
     ret = 1;
  err:
-    EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx);
     return ret;
 }
 #endif /* !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305) */
@@ -1989,8 +1989,8 @@ static int test_cipher_with_engine(void)
 
     testresult = 1;
  err:
-    EVP_CIPHER_CTX_free(ctx);
-    EVP_CIPHER_CTX_free(ctx2);
+    _EVP_CIPHER_CTX_free(ctx);
+    _EVP_CIPHER_CTX_free(ctx2);
     ENGINE_finish(e);
     ENGINE_free(e);
 
