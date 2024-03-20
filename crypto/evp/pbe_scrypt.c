@@ -196,8 +196,8 @@ int EVP_PBE_scrypt(const char *pass, size_t passlen,
      */
     Blen = p * 128 * r;
     /*
-     * Yet we pass it as integer to PKCS5_PBKDF2_HMAC... [This would
-     * have to be revised when/if PKCS5_PBKDF2_HMAC accepts size_t.]
+     * Yet we pass it as integer to _PKCS5_PBKDF2_HMAC... [This would
+     * have to be revised when/if _PKCS5_PBKDF2_HMAC accepts size_t.]
      */
     if (Blen > INT_MAX) {
         EVPerr(EVP_F_EVP_PBE_SCRYPT, EVP_R_MEMORY_LIMIT_EXCEEDED);
@@ -245,14 +245,14 @@ int EVP_PBE_scrypt(const char *pass, size_t passlen,
     X = (uint32_t *)(B + Blen);
     T = X + 32 * r;
     V = T + 32 * r;
-    if (PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, 1, _EVP_sha256(),
+    if (_PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, 1, _EVP_sha256(),
                           (int)Blen, B) == 0)
         goto err;
 
     for (i = 0; i < p; i++)
         scryptROMix(B + 128 * r * i, r, N, X, T, V);
 
-    if (PKCS5_PBKDF2_HMAC(pass, passlen, B, (int)Blen, 1, _EVP_sha256(),
+    if (_PKCS5_PBKDF2_HMAC(pass, passlen, B, (int)Blen, 1, _EVP_sha256(),
                           keylen, key) == 0)
         goto err;
     rv = 1;

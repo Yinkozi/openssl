@@ -470,9 +470,9 @@ int enc_main(int argc, char **argv)
                 int ivlen = EVP_CIPHER_iv_length(cipher);
                 /* not needed if HASH_UPDATE() is fixed : */
                 int islen = (sptr != NULL ? sizeof(salt) : 0);
-                if (!PKCS5_PBKDF2_HMAC(str, str_len, sptr, islen,
+                if (!_PKCS5_PBKDF2_HMAC(str, str_len, sptr, islen,
                                        iter, dgst, iklen+ivlen, tmpkeyiv)) {
-                    BIO_printf(bio_err, "PKCS5_PBKDF2_HMAC failed\n");
+                    BIO_printf(bio_err, "_PKCS5_PBKDF2_HMAC failed\n");
                     goto end;
                 }
                 /* split and move data back to global buffer */

@@ -2656,7 +2656,7 @@ ASN1_PCTX_free                          2621	1_1_0	EXIST::FUNCTION:
 ESS_SIGNING_CERT_new                    2622	1_1_0	EXIST::FUNCTION:TS
 X509V3_EXT_conf_nid                     2623	1_1_0	EXIST::FUNCTION:
 EC_KEY_check_key                        2624	1_1_0	EXIST::FUNCTION:EC
-PKCS5_PBKDF2_HMAC                       2625	1_1_0	EXIST::FUNCTION:
+_PKCS5_PBKDF2_HMAC                       2625	1_1_0	EXIST::FUNCTION:
 CONF_get_section                        2626	1_1_0	EXIST::FUNCTION:
 CMS_RecipientInfo_kari_decrypt          2627	1_1_0	EXIST::FUNCTION:CMS
 OBJ_add_sigid                           2628	1_1_0	EXIST::FUNCTION:

@@ -28,7 +28,7 @@ static void h__dump(const unsigned char *p, int len);
  * posted by Peter Gutmann to the PKCS-TNG mailing list.
  */
 
-int PKCS5_PBKDF2_HMAC(const char *pass, int passlen,
+int _PKCS5_PBKDF2_HMAC(const char *pass, int passlen,
                       const unsigned char *salt, int saltlen, int iter,
                       const EVP_MD *digest, int keylen, unsigned char *out)
 {
@@ -125,7 +125,7 @@ int PKCS5_PBKDF2_HMAC_SHA1(const char *pass, int passlen,
                            const unsigned char *salt, int saltlen, int iter,
                            int keylen, unsigned char *out)
 {
-    return PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, iter, _EVP_sha1(),
+    return _PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, iter, _EVP_sha1(),
                              keylen, out);
 }
 
@@ -245,7 +245,7 @@ int PKCS5_v2_PBKDF2_keyivgen(EVP_CIPHER_CTX *ctx, const char *pass,
     salt = kdf->salt->value.octet_string->data;
     saltlen = kdf->salt->value.octet_string->length;
     iter = ASN1_INTEGER_get(kdf->iter);
-    if (!PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, iter, prfmd,
+    if (!_PKCS5_PBKDF2_HMAC(pass, passlen, salt, saltlen, iter, prfmd,
                            keylen, key))
         goto err;
     rv = EVP_CipherInit_ex(ctx, NULL, NULL, key, NULL, en_de);

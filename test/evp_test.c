@@ -1514,7 +1514,7 @@ static int pbe_test_run(EVP_TEST *t)
         goto err;
     }
     if (expected->pbe_type == PBE_TYPE_PBKDF2) {
-        if (PKCS5_PBKDF2_HMAC((char *)expected->pass, expected->pass_len,
+        if (_PKCS5_PBKDF2_HMAC((char *)expected->pass, expected->pass_len,
                               expected->salt, expected->salt_len,
                               expected->iter, expected->md,
                               expected->key_len, key) == 0) {

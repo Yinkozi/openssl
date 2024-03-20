@@ -37,7 +37,7 @@ B<MD5> is used then the derivation algorithm is compatible with PKCS#5 v1.5
 otherwise a non standard extension is used to derive the extra data.
 
 Newer applications should use a more modern algorithm such as PBKDF2 as
-defined in PKCS#5v2.1 and provided by PKCS5_PBKDF2_HMAC.
+defined in PKCS#5v2.1 and provided by _PKCS5_PBKDF2_HMAC.
 
 =head1 KEY DERIVATION ALGORITHM
 
@@ -63,7 +63,7 @@ or 0 on error.
 =head1 SEE ALSO
 
 L<evp(7)>, L<_RAND_bytes(3)>,
-L<PKCS5_PBKDF2_HMAC(3)>,
+L<_PKCS5_PBKDF2_HMAC(3)>,
 L<EVP_EncryptInit(3)>
 
 =head1 COPYRIGHT
