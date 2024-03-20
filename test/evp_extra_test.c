@@ -1682,13 +1682,13 @@ static int test_decrypt_null_chunks(void)
     if (!TEST_ptr(ctx = _EVP_CIPHER_CTX_new())
             || !TEST_true(_EVP_EncryptInit_ex(ctx, EVP_chacha20_poly1305(), NULL,
                                              key, iv))
-            || !TEST_true(EVP_EncryptUpdate(ctx, ciphertext, &ctlen, msg,
+            || !TEST_true(_EVP_EncryptUpdate(ctx, ciphertext, &ctlen, msg,
                                             enc_offset))
             /* Deliberate add a zero length update */
-            || !TEST_true(EVP_EncryptUpdate(ctx, ciphertext + ctlen, &tmp, NULL,
+            || !TEST_true(_EVP_EncryptUpdate(ctx, ciphertext + ctlen, &tmp, NULL,
                                             0))
             || !TEST_int_eq(tmp, 0)
-            || !TEST_true(EVP_EncryptUpdate(ctx, ciphertext + ctlen, &tmp,
+            || !TEST_true(_EVP_EncryptUpdate(ctx, ciphertext + ctlen, &tmp,
                                             msg + enc_offset,
                                             sizeof(msg) - enc_offset))
             || !TEST_int_eq(ctlen += tmp, sizeof(msg))
@@ -1983,7 +1983,7 @@ static int test_cipher_with_engine(void)
     if (!TEST_true(EVP_CIPHER_CTX_copy(ctx2, ctx)))
         goto err;
 
-    if (!TEST_true(EVP_EncryptUpdate(ctx2, buf, &len, msg, sizeof(msg)))
+    if (!TEST_true(_EVP_EncryptUpdate(ctx2, buf, &len, msg, sizeof(msg)))
             || !TEST_true(EVP_EncryptFinal_ex(ctx2, buf + len, &len)))
         goto err;
 

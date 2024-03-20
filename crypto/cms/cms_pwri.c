@@ -261,8 +261,8 @@ static int kek_wrap_key(unsigned char *out, size_t *outlen,
             && RAND_bytes(out + 4 + inlen, olen - 4 - inlen) <= 0)
             return 0;
         /* Encrypt twice */
-        if (!EVP_EncryptUpdate(ctx, out, &dummy, out, olen)
-            || !EVP_EncryptUpdate(ctx, out, &dummy, out, olen))
+        if (!_EVP_EncryptUpdate(ctx, out, &dummy, out, olen)
+            || !_EVP_EncryptUpdate(ctx, out, &dummy, out, olen))
             return 0;
     }
 

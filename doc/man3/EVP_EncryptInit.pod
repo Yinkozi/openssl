@@ -6,7 +6,7 @@ _EVP_CIPHER_CTX_new,
 EVP_CIPHER_CTX_reset,
 EVP_CIPHER_CTX_free,
 _EVP_EncryptInit_ex,
-EVP_EncryptUpdate,
+_EVP_EncryptUpdate,
 EVP_EncryptFinal_ex,
 EVP_DecryptInit_ex,
 EVP_DecryptUpdate,
@@ -60,7 +60,7 @@ EVP_enc_null
 
  int _EVP_EncryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
- int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
+ int _EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
  int EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl);
 
@@ -143,7 +143,7 @@ the remaining parameters in subsequent calls, all of which have B<type>
 set to NULL. This is done when the default cipher parameters are not
 appropriate.
 
-EVP_EncryptUpdate() encrypts B<inl> bytes from the buffer B<in> and
+_EVP_EncryptUpdate() encrypts B<inl> bytes from the buffer B<in> and
 writes the encrypted version to B<out>. This function can be called
 multiple times to encrypt successive blocks of data. The amount
 of data written depends on the block alignment of the encrypted data.
@@ -165,7 +165,7 @@ the NOTES section, below. The encrypted
 final data is written to B<out> which should have sufficient space for
 one cipher block. The number of bytes written is placed in B<outl>. After
 this function is called the encryption operation is finished and no further
-calls to EVP_EncryptUpdate() should be made.
+calls to _EVP_EncryptUpdate() should be made.
 
 If padding is disabled then EVP_EncryptFinal_ex() will not encrypt any more
 data and it will return an error if any data remains in a partial block:
@@ -261,7 +261,7 @@ EVP_CIPHER_param_to_asn1() sets the AlgorithmIdentifier "parameter" based
 on the passed cipher. This will typically include any parameters and an
 IV. The cipher IV (if any) must be set when this call is made. This call
 should be made before the cipher is actually "used" (before any
-EVP_EncryptUpdate(), EVP_DecryptUpdate() calls for example). This function
+_EVP_EncryptUpdate(), EVP_DecryptUpdate() calls for example). This function
 may fail if the cipher does not have any ASN1 support.
 
 EVP_CIPHER_asn1_to_param() sets the cipher parameters based on an ASN1
@@ -288,7 +288,7 @@ buffer at least as big as the value returned by EVP_CIPHER_CTX_key_length().
 _EVP_CIPHER_CTX_new() returns a pointer to a newly created
 B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 
-_EVP_EncryptInit_ex(), EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
+_EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
 EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
@@ -347,7 +347,7 @@ modes are subtly altered and several additional I<ctrl> operations are supported
 depending on the mode specified.
 
 To specify additional authenticated data (AAD), a call to EVP_CipherUpdate(),
-EVP_EncryptUpdate() or EVP_DecryptUpdate() should be made with the output
+_EVP_EncryptUpdate() or EVP_DecryptUpdate() should be made with the output
 parameter B<out> set to B<NULL>.
 
 When decrypting, the return value of EVP_DecryptFinal() or EVP_CipherFinal()
@@ -406,7 +406,7 @@ The EVP interface for CCM mode is similar to that of the GCM mode but with a
 few additional requirements and different I<ctrl> values.
 
 For CCM mode, the total plaintext or ciphertext length B<MUST> be passed to
-EVP_CipherUpdate(), EVP_EncryptUpdate() or EVP_DecryptUpdate() with the output
+EVP_CipherUpdate(), _EVP_EncryptUpdate() or EVP_DecryptUpdate() with the output
 and input parameters (B<in> and B<out>) set to B<NULL> and the length passed in
 the B<inl> parameter.
 
@@ -542,7 +542,7 @@ Encrypt a string using IDEA:
      ctx = _EVP_CIPHER_CTX_new();
      _EVP_EncryptInit_ex(ctx, EVP_idea_cbc(), NULL, key, iv);
 
-     if (!EVP_EncryptUpdate(ctx, outbuf, &outlen, intext, strlen(intext))) {
+     if (!_EVP_EncryptUpdate(ctx, outbuf, &outlen, intext, strlen(intext))) {
          /* Error */
          EVP_CIPHER_CTX_free(ctx);
          return 0;

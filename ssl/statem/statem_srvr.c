@@ -4001,7 +4001,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
             || !WPACKET_reserve_bytes(pkt, slen + EVP_MAX_BLOCK_LENGTH,
                                       &encdata1)
                /* Encrypt session data */
-            || !EVP_EncryptUpdate(ctx, encdata1, &len, senc, slen)
+            || !_EVP_EncryptUpdate(ctx, encdata1, &len, senc, slen)
             || !WPACKET_allocate_bytes(pkt, len, &encdata2)
             || encdata1 != encdata2
             || !EVP_EncryptFinal(ctx, encdata1 + len, &lenfinal)

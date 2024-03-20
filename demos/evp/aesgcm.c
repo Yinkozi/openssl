@@ -63,9 +63,9 @@ void aes_gcm_encrypt(void)
     /* Initialise key and IV */
     _EVP_EncryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
+    _EVP_EncryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Encrypt plaintext */
-    EVP_EncryptUpdate(ctx, outbuf, &outlen, gcm_pt, sizeof(gcm_pt));
+    _EVP_EncryptUpdate(ctx, outbuf, &outlen, gcm_pt, sizeof(gcm_pt));
     /* Output encrypted block */
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);

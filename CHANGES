@@ -480,7 +480,7 @@
      CVE-2021-23839.
      [Matt Caswell]
 
-  *) Fixed the EVP_CipherUpdate, EVP_EncryptUpdate and EVP_DecryptUpdate
+  *) Fixed the EVP_CipherUpdate, _EVP_EncryptUpdate and EVP_DecryptUpdate
      functions. Previously they could overflow the output length argument in some
      cases where the input length is close to the maximum permissable length for
      an integer on the platform. In such cases the return value from the function
@@ -1789,7 +1789,7 @@
      all else fails we fall back to C:\.
      [Matt Caswell]
 
-  *) The EVP_EncryptUpdate() function has had its return type changed from void
+  *) The _EVP_EncryptUpdate() function has had its return type changed from void
      to int. A return of 0 indicates and error while a return of 1 indicates
      success.
      [Matt Caswell]
@@ -2870,22 +2870,22 @@
      (CVE-2016-2105)
      [Matt Caswell]
 
-  *) Fix EVP_EncryptUpdate overflow
+  *) Fix _EVP_EncryptUpdate overflow
 
-     An overflow can occur in the EVP_EncryptUpdate() function. If an attacker
+     An overflow can occur in the _EVP_EncryptUpdate() function. If an attacker
      is able to supply very large amounts of input data after a previous call to
-     EVP_EncryptUpdate() with a partial block then a length check can overflow
+     _EVP_EncryptUpdate() with a partial block then a length check can overflow
      resulting in a heap corruption. Following an analysis of all OpenSSL
-     internal usage of the EVP_EncryptUpdate() function all usage is one of two
-     forms. The first form is where the EVP_EncryptUpdate() call is known to be
+     internal usage of the _EVP_EncryptUpdate() function all usage is one of two
+     forms. The first form is where the _EVP_EncryptUpdate() call is known to be
      the first called function after an EVP_EncryptInit(), and therefore that
      specific call must be safe. The second form is where the length passed to
-     EVP_EncryptUpdate() can be seen from the code to be some small value and
+     _EVP_EncryptUpdate() can be seen from the code to be some small value and
      therefore there is no possibility of an overflow. Since all instances are
      one of these two forms, it is believed that there can be no overflows in
      internal code due to this problem. It should be noted that
-     EVP_DecryptUpdate() can call EVP_EncryptUpdate() in certain code paths.
-     Also EVP_CipherUpdate() is a synonym for EVP_EncryptUpdate(). All instances
+     EVP_DecryptUpdate() can call _EVP_EncryptUpdate() in certain code paths.
+     Also EVP_CipherUpdate() is a synonym for _EVP_EncryptUpdate(). All instances
      of these calls have also been analysed too and it is believed there are no
      instances in internal usage where an overflow could occur.
 
@@ -11035,7 +11035,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      differently it can set the EVP_CIPH_CUSTOM_IV or EVP_CIPH_ALWAYS_CALL_INIT
      flags.
 
-     Change lots of functions like EVP_EncryptUpdate() to now return a
+     Change lots of functions like _EVP_EncryptUpdate() to now return a
      value: although software versions of the algorithms cannot fail
      any installed hardware versions can.
      [Steve Henson]

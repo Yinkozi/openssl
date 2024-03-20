@@ -85,7 +85,7 @@
         function (CVE-2021-23841)
       o Fixed the RSA_padding_check_SSLv23() function and the RSA_SSLV23_PADDING
         padding mode to correctly check for rollback attacks
-      o Fixed an overflow in the EVP_CipherUpdate, EVP_EncryptUpdate and
+      o Fixed an overflow in the EVP_CipherUpdate, _EVP_EncryptUpdate and
         EVP_DecryptUpdate functions (CVE-2021-23840)
       o Fixed SRP_Calc_client_key so that it runs in constant time
 
@@ -299,7 +299,7 @@
 
       o Prevent padding oracle in AES-NI CBC MAC check (CVE-2016-2107)
       o Fix EVP_EncodeUpdate overflow (CVE-2016-2105)
-      o Fix EVP_EncryptUpdate overflow (CVE-2016-2106)
+      o Fix _EVP_EncryptUpdate overflow (CVE-2016-2106)
       o Prevent ASN.1 BIO excessive memory allocation (CVE-2016-2109)
       o EBCDIC overread (CVE-2016-2176)
       o Modify behavior of ALPN to invoke callback after SNI/servername

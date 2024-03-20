@@ -211,7 +211,7 @@ int EVP_CipherUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl,
                      const unsigned char *in, int inl)
 {
     if (ctx->encrypt)
-        return EVP_EncryptUpdate(ctx, out, outl, in, inl);
+        return _EVP_EncryptUpdate(ctx, out, outl, in, inl);
     else
         return EVP_DecryptUpdate(ctx, out, outl, in, inl);
 }
@@ -395,7 +395,7 @@ static int evp_EncryptDecryptUpdate(EVP_CIPHER_CTX *ctx,
 }
 
 
-int EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl,
+int _EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl,
                       const unsigned char *in, int inl)
 {
     /* Prevent accidental use of decryption context when encrypting */

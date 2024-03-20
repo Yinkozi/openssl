@@ -66,11 +66,11 @@ void aes_ccm_encrypt(void)
     /* Initialise key and IV */
     _EVP_EncryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set plaintext length: only needed if AAD is used */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_pt));
+    _EVP_EncryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_pt));
     /* Zero or one call to specify any AAD */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
+    _EVP_EncryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
     /* Encrypt plaintext: can only be called once */
-    EVP_EncryptUpdate(ctx, outbuf, &outlen, ccm_pt, sizeof(ccm_pt));
+    _EVP_EncryptUpdate(ctx, outbuf, &outlen, ccm_pt, sizeof(ccm_pt));
     /* Output encrypted block */
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);

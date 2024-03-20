@@ -332,7 +332,7 @@ BIO_new_dgram_sctp                      332	1_1_0	EXIST::FUNCTION:DGRAM,SCTP
 d2i_RSAPrivateKey_fp                    333	1_1_0	EXIST::FUNCTION:RSA,STDIO
 s2i_ASN1_IA5STRING                      334	1_1_0	EXIST::FUNCTION:
 UI_get_ex_data                          335	1_1_0	EXIST::FUNCTION:
-EVP_EncryptUpdate                       336	1_1_0	EXIST::FUNCTION:
+_EVP_EncryptUpdate                       336	1_1_0	EXIST::FUNCTION:
 SRP_create_verifier                     337	1_1_0	EXIST::FUNCTION:SRP
 TS_TST_INFO_print_bio                   338	1_1_0	EXIST::FUNCTION:TS
 X509_NAME_get_index_by_OBJ              339	1_1_0	EXIST::FUNCTION:

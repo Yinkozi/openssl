@@ -24,7 +24,7 @@ algorithm/mode pair are;
 (i) directly;
      const EVP_CIPHER *cipher = EVP_des_cbc();
      EVP_EncryptInit(&ctx, cipher, key, iv);
-     [ ... use EVP_EncryptUpdate() and EVP_EncryptFinal() ...]
+     [ ... use _EVP_EncryptUpdate() and EVP_EncryptFinal() ...]
 
 (ii) indirectly;
      OpenSSL_add_all_ciphers();
