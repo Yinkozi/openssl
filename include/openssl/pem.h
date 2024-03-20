@@ -195,7 +195,7 @@ int PEM_write_bio_##name(BIO *bp, type *x, const EVP_CIPHER *enc, \
 # endif
 
 #  define DECLARE_PEM_read_bio(name, type) \
-        type *PEM_read_bio_##name(BIO *bp, type **x, pem_password_cb *cb, void *u);
+        type *_PEM_read_bio_##name(BIO *bp, type **x, pem_password_cb *cb, void *u);
 
 #  define DECLARE_PEM_write_bio(name, type) \
         int PEM_write_bio_##name(BIO *bp, type *x);
