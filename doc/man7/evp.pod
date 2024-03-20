@@ -17,7 +17,7 @@ The L<B<EVP_Seal>I<XXX>|EVP_SealInit(3)> and L<B<EVP_Open>I<XXX>|EVP_OpenInit(3)
 functions provide public key encryption and decryption to implement digital "envelopes".
 
 The L<B<EVP_DigestSign>I<XXX>|EVP_DigestSignInit(3)> and
-L<B<EVP_DigestVerify>I<XXX>|EVP_DigestVerifyInit(3)> functions implement
+L<B<EVP_DigestVerify>I<XXX>|_EVP_DigestVerifyInit(3)> functions implement
 digital signatures and Message Authentication Codes (MACs). Also see the older
 L<B<EVP_Sign>I<XXX>|EVP_SignInit(3)> and L<B<EVP_Verify>I<XXX>|EVP_VerifyInit(3)>
 functions.

@@ -600,7 +600,7 @@ RSAPublicKey_it                         601	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:F
 ISSUING_DIST_POINT_new                  602	1_1_0	EXIST::FUNCTION:
 X509_VAL_it                             603	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 X509_VAL_it                             603	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
-EVP_DigestVerifyInit                    604	1_1_0	EXIST::FUNCTION:
+_EVP_DigestVerifyInit                    604	1_1_0	EXIST::FUNCTION:
 i2d_IPAddressChoice                     605	1_1_0	EXIST::FUNCTION:RFC3779
 EVP_md5                                 606	1_1_0	EXIST::FUNCTION:MD5
 ASRange_new                             607	1_1_0	EXIST::FUNCTION:RFC3779

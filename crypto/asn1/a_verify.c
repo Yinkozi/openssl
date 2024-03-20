@@ -145,7 +145,7 @@ int ASN1_item_verify(const ASN1_ITEM *it, X509_ALGOR *a,
             goto err;
         }
 
-        if (!EVP_DigestVerifyInit(ctx, NULL, type, NULL, pkey)) {
+        if (!_EVP_DigestVerifyInit(ctx, NULL, type, NULL, pkey)) {
             ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_EVP_LIB);
             ret = 0;
             goto err;

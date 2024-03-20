@@ -518,7 +518,7 @@ static int ecd_item_verify(EVP_MD_CTX *ctx, const ASN1_ITEM *it, void *asn,
         return 0;
     }
 
-    if (!EVP_DigestVerifyInit(ctx, NULL, NULL, NULL, pkey))
+    if (!_EVP_DigestVerifyInit(ctx, NULL, NULL, NULL, pkey))
         return 0;
 
     return 2;

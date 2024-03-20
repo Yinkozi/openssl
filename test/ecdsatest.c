@@ -240,28 +240,28 @@ static int test_builtin(int n)
         || !TEST_int_le(sig_len, ECDSA_size(eckey))
         /* negative test, verify with wrong key, 0 return */
         || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey_neg))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey_neg))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0)
         /* negative test, verify with wrong signature length, -1 return */
         || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len - 1, tbs, sizeof(tbs)), -1)
         /* positive test, verify with correct key, 1 return */
         || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 
     /* muck with the message, test it fails with 0 return */
     tbs[0] ^= 1;
     if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0))
         goto err;
     /* un-muck and test it verifies */
     tbs[0] ^= 1;
     if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 
@@ -295,13 +295,13 @@ static int test_builtin(int n)
     dirt = tbs[1] ? tbs[1] : 1;
     sig[offset] ^= dirt;
     if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_ne(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
     /* un-muck and test it verifies */
     sig[offset] ^= dirt;
     if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(_EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 

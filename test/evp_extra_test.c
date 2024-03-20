@@ -1025,7 +1025,7 @@ static int test_EVP_DigestSignInit(void)
         goto out;
 
     /* Ensure that the signature round-trips. */
-    if (!TEST_true(EVP_DigestVerifyInit(md_ctx_verify, NULL, _EVP_sha256(),
+    if (!TEST_true(_EVP_DigestVerifyInit(md_ctx_verify, NULL, _EVP_sha256(),
                                         NULL, pkey))
             || !TEST_true(EVP_DigestVerifyUpdate(md_ctx_verify,
                                                  kMsg, sizeof(kMsg)))
@@ -1053,7 +1053,7 @@ static int test_EVP_DigestVerifyInit(void)
             || !TEST_ptr(pkey = load_example_rsa_key()))
         goto out;
 
-    if (!TEST_true(EVP_DigestVerifyInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
+    if (!TEST_true(_EVP_DigestVerifyInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
             || !TEST_true(EVP_DigestVerifyUpdate(md_ctx, kMsg, sizeof(kMsg)))
             || !TEST_true(EVP_DigestVerifyFinal(md_ctx, kSignature,
                                                  sizeof(kSignature))))
@@ -1241,7 +1241,7 @@ static int test_EVP_SM2_verify(void)
 
     EVP_MD_CTX_set_pkey_ctx(mctx, pctx);
 
-    if (!TEST_true(EVP_DigestVerifyInit(mctx, NULL, EVP_sm3(), NULL, pkey)))
+    if (!TEST_true(_EVP_DigestVerifyInit(mctx, NULL, EVP_sm3(), NULL, pkey)))
         goto done;
 
     if (!TEST_true(EVP_DigestVerifyUpdate(mctx, msg, strlen(msg))))
@@ -1343,7 +1343,7 @@ static int test_EVP_SM2(void)
 
     /* Ensure that the signature round-trips. */
 
-    if (!TEST_true(EVP_DigestVerifyInit(md_ctx_verify, NULL, EVP_sm3(), NULL, pkey)))
+    if (!TEST_true(_EVP_DigestVerifyInit(md_ctx_verify, NULL, EVP_sm3(), NULL, pkey)))
         goto done;
 
     if (!TEST_true(EVP_DigestVerifyUpdate(md_ctx_verify, kMsg, sizeof(kMsg))))

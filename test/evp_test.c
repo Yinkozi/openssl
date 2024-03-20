@@ -2115,7 +2115,7 @@ static int digestsigver_test_parse(EVP_TEST *t,
             return 1;
         }
         if (mdata->is_verify) {
-            if (!EVP_DigestVerifyInit(mdata->ctx, &mdata->pctx, mdata->md,
+            if (!_EVP_DigestVerifyInit(mdata->ctx, &mdata->pctx, mdata->md,
                                       NULL, pkey))
                 t->err = "DIGESTVERIFYINIT_ERROR";
             return 1;

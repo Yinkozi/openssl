@@ -453,7 +453,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
     fprintf(stderr, "Using client verify alg %s\n",
             md == NULL ? "n/a" : EVP_MD_name(md));
 #endif
-    if (EVP_DigestVerifyInit(mctx, &pctx, md, NULL, pkey) <= 0) {
+    if (_EVP_DigestVerifyInit(mctx, &pctx, md, NULL, pkey) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CERT_VERIFY,
                  ERR_R_EVP_LIB);
         goto err;

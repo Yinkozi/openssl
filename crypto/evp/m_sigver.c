@@ -91,7 +91,7 @@ int EVP_DigestSignInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
     return do_sigver_init(ctx, pctx, type, e, pkey, 0);
 }
 
-int EVP_DigestVerifyInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
+int _EVP_DigestVerifyInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                          const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey)
 {
     return do_sigver_init(ctx, pctx, type, e, pkey, 1);

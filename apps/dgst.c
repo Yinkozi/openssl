@@ -322,7 +322,7 @@ int dgst_main(int argc, char **argv)
             goto end;
         }
         if (do_verify)
-            r = EVP_DigestVerifyInit(mctx, &pctx, md, impl, sigkey);
+            r = _EVP_DigestVerifyInit(mctx, &pctx, md, impl, sigkey);
         else
             r = EVP_DigestSignInit(mctx, &pctx, md, impl, sigkey);
         if (!r) {
