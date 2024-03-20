@@ -991,7 +991,7 @@ static int test_EVP_Enveloped(void)
 
     ret = 1;
 err:
-    OPENSSL_free(kek);
+    _OPENSSL_free(kek);
     EVP_PKEY_free(keypair);
     _EVP_CIPHER_CTX_free(ctx);
     return ret;
@@ -1038,7 +1038,7 @@ static int test_EVP_DigestSignInit(void)
     EVP_MD_CTX_free(md_ctx);
     EVP_MD_CTX_free(md_ctx_verify);
     EVP_PKEY_free(pkey);
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
 
     return ret;
 }
@@ -1385,7 +1385,7 @@ done:
     EVP_PKEY_free(params);
     EVP_MD_CTX_free(md_ctx);
     EVP_MD_CTX_free(md_ctx_verify);
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
     return ret;
 }
 
@@ -1942,7 +1942,7 @@ static int test_signatures_with_engine(int tst)
     testresult = 1;
  err:
     EVP_MD_CTX_free(ctx);
-    OPENSSL_free(mac);
+    _OPENSSL_free(mac);
     EVP_PKEY_free(pkey);
     ENGINE_finish(e);
     ENGINE_free(e);

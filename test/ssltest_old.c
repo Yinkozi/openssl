@@ -280,7 +280,7 @@ static unsigned char *next_protos_parse(size_t *outlen,
     for (i = 0; i <= len; ++i) {
         if (i == len || in[i] == ',') {
             if (i - start > 255) {
-                OPENSSL_free(out);
+                _OPENSSL_free(out);
                 return NULL;
             }
             out[start] = (unsigned char)(i - start);
@@ -311,7 +311,7 @@ static int cb_server_alpn(SSL *s, const unsigned char **out,
     if (SSL_select_next_proto
         ((unsigned char **)out, outlen, protos, protos_len, in,
          inlen) != OPENSSL_NPN_NEGOTIATED) {
-        OPENSSL_free(protos);
+        _OPENSSL_free(protos);
         return SSL_TLSEXT_ERR_NOACK;
     }
 
@@ -323,7 +323,7 @@ static int cb_server_alpn(SSL *s, const unsigned char **out,
     memcpy(alpn_selected, *out, *outlen);
     *out = alpn_selected;
 
-    OPENSSL_free(protos);
+    _OPENSSL_free(protos);
     return SSL_TLSEXT_ERR_OK;
 }
 
@@ -334,7 +334,7 @@ static int verify_alpn(SSL *client, SSL *server)
     SSL_get0_alpn_selected(client, &client_proto, &client_proto_len);
     SSL_get0_alpn_selected(server, &server_proto, &server_proto_len);
 
-    OPENSSL_free(alpn_selected);
+    _OPENSSL_free(alpn_selected);
     alpn_selected = NULL;
 
     if (client_proto_len != server_proto_len) {
@@ -1724,10 +1724,10 @@ int main(int argc, char *argv[])
         /* Returns 0 on success!! */
         if (SSL_CTX_set_alpn_protos(c_ctx, alpn, alpn_len)) {
             BIO_printf(bio_err, "Error setting ALPN\n");
-            OPENSSL_free(alpn);
+            _OPENSSL_free(alpn);
             goto end;
         }
-        OPENSSL_free(alpn);
+        _OPENSSL_free(alpn);
     }
 
     if (server_sess_in != NULL) {
@@ -1749,7 +1749,7 @@ int main(int argc, char *argv[])
         size = SSL_CTX_set_tlsext_ticket_keys(s_ctx, NULL, 0);
         keys = OPENSSL_zalloc(size);
         SSL_CTX_set_tlsext_ticket_keys(s_ctx, keys, size);
-        OPENSSL_free(keys);
+        _OPENSSL_free(keys);
     }
 
     if (sn_server1 != NULL || sn_server2 != NULL)
@@ -2839,8 +2839,8 @@ int doit(SSL *s_ssl, SSL *c_ssl, long count)
     _BIO_free(s_to_c);
     BIO_free_all(c_bio);
     BIO_free_all(s_bio);
-    OPENSSL_free(cbuf);
-    OPENSSL_free(sbuf);
+    _OPENSSL_free(cbuf);
+    _OPENSSL_free(sbuf);
 
     if (should_negotiate != NULL && strcmp(should_negotiate, "fail-client") == 0)
         ret = (err_in_client != 0) ? EXIT_SUCCESS : EXIT_FAILURE;

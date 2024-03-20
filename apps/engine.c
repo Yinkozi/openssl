@@ -62,7 +62,7 @@ static int append_buf(char **buf, int *size, const char *s)
             *size = ((len + expand - 1) / expand) * expand;
             p = OPENSSL_realloc(p, *size);
             if (p == NULL) {
-                OPENSSL_free(*buf);
+                _OPENSSL_free(*buf);
                 *buf = NULL;
                 return 0;
             }
@@ -210,9 +210,9 @@ static int util_verbose(ENGINE *e, int verbose, BIO *out, const char *indent)
                 xpos = 0;
             }
         }
-        OPENSSL_free(name);
+        _OPENSSL_free(name);
         name = NULL;
-        OPENSSL_free(desc);
+        _OPENSSL_free(desc);
         desc = NULL;
         /* Move to the next command */
         num = ENGINE_ctrl(e, ENGINE_CTRL_GET_NEXT_CMD_TYPE, num, NULL, NULL);
@@ -222,8 +222,8 @@ static int util_verbose(ENGINE *e, int verbose, BIO *out, const char *indent)
     ret = 1;
  err:
     sk_OPENSSL_STRING_free(cmds);
-    OPENSSL_free(name);
-    OPENSSL_free(desc);
+    _OPENSSL_free(name);
+    _OPENSSL_free(desc);
     return ret;
 }
 
@@ -447,7 +447,7 @@ int engine_main(int argc, char **argv)
                 if (cap_buf != NULL && (*cap_buf != '\0'))
                     BIO_printf(out, " [%s]\n", cap_buf);
 
-                OPENSSL_free(cap_buf);
+                _OPENSSL_free(cap_buf);
             }
             if (test_avail) {
                 BIO_printf(out, "%s", indent);

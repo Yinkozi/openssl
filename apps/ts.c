@@ -318,7 +318,7 @@ int ts_main(int argc, char **argv)
  end:
     X509_VERIFY_PARAM_free(vpm);
     NCONF_free(conf);
-    OPENSSL_free(password);
+    _OPENSSL_free(password);
     return ret;
 }
 
@@ -469,7 +469,7 @@ static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
     }
     TS_MSG_IMPRINT_free(msg_imprint);
     X509_ALGOR_free(algo);
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
     ASN1_OBJECT_free(policy_obj);
     ASN1_INTEGER_free(nonce_asn1);
     return ts_req;
@@ -507,7 +507,7 @@ static int create_digest(BIO *input, const char *digest, const EVP_MD *md,
         long digest_len;
         *md_value = OPENSSL_hexstr2buf(digest, &digest_len);
         if (!*md_value || md_value_len != digest_len) {
-            OPENSSL_free(*md_value);
+            _OPENSSL_free(*md_value);
             *md_value = NULL;
             BIO_printf(bio_err, "bad digest, %d bytes "
                        "must be specified\n", md_value_len);
@@ -537,7 +537,7 @@ static ASN1_INTEGER *create_nonce(int bits)
         continue;
     if ((nonce = ASN1_INTEGER_new()) == NULL)
         goto err;
-    OPENSSL_free(nonce->data);
+    _OPENSSL_free(nonce->data);
     nonce->length = len - i;
     nonce->data = app_malloc(nonce->length + 1, "nonce buffer");
     memcpy(nonce->data, buf + i, nonce->length);

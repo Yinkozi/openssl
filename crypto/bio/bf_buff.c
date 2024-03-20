@@ -53,14 +53,14 @@ static int buffer_new(BIO *bi)
     ctx->ibuf_size = DEFAULT_BUFFER_SIZE;
     ctx->ibuf = OPENSSL_malloc(DEFAULT_BUFFER_SIZE);
     if (ctx->ibuf == NULL) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
     ctx->obuf_size = DEFAULT_BUFFER_SIZE;
     ctx->obuf = OPENSSL_malloc(DEFAULT_BUFFER_SIZE);
     if (ctx->obuf == NULL) {
-        OPENSSL_free(ctx->ibuf);
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx->ibuf);
+        _OPENSSL_free(ctx);
         return 0;
     }
 
@@ -77,9 +77,9 @@ static int buffer_free(BIO *a)
     if (a == NULL)
         return 0;
     b = (BIO_F_BUFFER_CTX *)a->ptr;
-    OPENSSL_free(b->ibuf);
-    OPENSSL_free(b->obuf);
-    OPENSSL_free(a->ptr);
+    _OPENSSL_free(b->ibuf);
+    _OPENSSL_free(b->obuf);
+    _OPENSSL_free(a->ptr);
     a->ptr = NULL;
     a->init = 0;
     a->flags = 0;
@@ -292,7 +292,7 @@ static long buffer_ctrl(BIO *b, int cmd, long num, void *ptr)
             p1 = OPENSSL_malloc((int)num);
             if (p1 == NULL)
                 goto malloc_error;
-            OPENSSL_free(ctx->ibuf);
+            _OPENSSL_free(ctx->ibuf);
             ctx->ibuf = p1;
         }
         ctx->ibuf_off = 0;
@@ -326,19 +326,19 @@ static long buffer_ctrl(BIO *b, int cmd, long num, void *ptr)
             p2 = OPENSSL_malloc((int)num);
             if (p2 == NULL) {
                 if (p1 != ctx->ibuf)
-                    OPENSSL_free(p1);
+                    _OPENSSL_free(p1);
                 goto malloc_error;
             }
         }
         if (ctx->ibuf != p1) {
-            OPENSSL_free(ctx->ibuf);
+            _OPENSSL_free(ctx->ibuf);
             ctx->ibuf = p1;
             ctx->ibuf_off = 0;
             ctx->ibuf_len = 0;
             ctx->ibuf_size = ibs;
         }
         if (ctx->obuf != p2) {
-            OPENSSL_free(ctx->obuf);
+            _OPENSSL_free(ctx->obuf);
             ctx->obuf = p2;
             ctx->obuf_off = 0;
             ctx->obuf_len = 0;

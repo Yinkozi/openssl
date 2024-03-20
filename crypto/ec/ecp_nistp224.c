@@ -1244,7 +1244,7 @@ static NISTP224_PRE_COMP *nistp224_pre_comp_new(void)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         ECerr(EC_F_NISTP224_PRE_COMP_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -1272,7 +1272,7 @@ void EC_nistp224_pre_comp_free(NISTP224_PRE_COMP *p)
     REF_ASSERT_ISNT(i < 0);
 
     CRYPTO_THREAD_lock_free(p->lock);
-    OPENSSL_free(p);
+    _OPENSSL_free(p);
 }
 
 /******************************************************************************/
@@ -1593,9 +1593,9 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
  err:
     BN_CTX_end(ctx);
     EC_POINT_free(generator);
-    OPENSSL_free(secrets);
-    OPENSSL_free(pre_comp);
-    OPENSSL_free(tmp_felems);
+    _OPENSSL_free(secrets);
+    _OPENSSL_free(pre_comp);
+    _OPENSSL_free(tmp_felems);
     return ret;
 }
 

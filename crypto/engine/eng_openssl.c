@@ -440,7 +440,7 @@ static int ossl_hmac_init(EVP_PKEY_CTX *ctx)
     hctx->ktmp.type = V_ASN1_OCTET_STRING;
     hctx->ctx = HMAC_CTX_new();
     if (hctx->ctx == NULL) {
-        OPENSSL_free(hctx);
+        _OPENSSL_free(hctx);
         return 0;
     }
     EVP_PKEY_CTX_set_data(ctx, hctx);
@@ -484,7 +484,7 @@ static void ossl_hmac_cleanup(EVP_PKEY_CTX *ctx)
     if (hctx) {
         HMAC_CTX_free(hctx->ctx);
         OPENSSL_clear_free(hctx->ktmp.data, hctx->ktmp.length);
-        OPENSSL_free(hctx);
+        _OPENSSL_free(hctx);
         EVP_PKEY_CTX_set_data(ctx, NULL);
     }
 }
@@ -587,7 +587,7 @@ static int ossl_hmac_ctrl_str(EVP_PKEY_CTX *ctx,
         if (!key)
             return 0;
         r = ossl_hmac_ctrl(ctx, EVP_PKEY_CTRL_SET_MAC_KEY, keylen, key);
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
         return r;
     }
     return -2;

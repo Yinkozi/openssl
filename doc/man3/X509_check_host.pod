@@ -44,7 +44,7 @@ B<X509_CHECK_FLAG_SINGLE_LABEL_SUBDOMAINS> below).
 When the certificate is matched, and B<peername> is not NULL, a
 pointer to a copy of the matching SAN or CN from the peer certificate
 is stored at the address passed in B<peername>.  The application
-is responsible for freeing the peername via OPENSSL_free() when it
+is responsible for freeing the peername via _OPENSSL_free() when it
 is no longer needed.
 
 X509_check_email() checks if the certificate matches the specified

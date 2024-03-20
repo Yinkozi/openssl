@@ -61,7 +61,7 @@ int ASN1_i2d_bio(i2d_of_void *i2d, BIO *out, unsigned char *x)
         j += i;
         n -= i;
     }
-    OPENSSL_free(b);
+    _OPENSSL_free(b);
     return ret;
 }
 
@@ -106,6 +106,6 @@ int ASN1_item_i2d_bio(const ASN1_ITEM *it, BIO *out, void *x)
         j += i;
         n -= i;
     }
-    OPENSSL_free(b);
+    _OPENSSL_free(b);
     return ret;
 }

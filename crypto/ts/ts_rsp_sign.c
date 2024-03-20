@@ -151,7 +151,7 @@ void TS_RESP_CTX_free(TS_RESP_CTX *ctx)
     ASN1_INTEGER_free(ctx->seconds);
     ASN1_INTEGER_free(ctx->millis);
     ASN1_INTEGER_free(ctx->micros);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int TS_RESP_CTX_set_signer_cert(TS_RESP_CTX *ctx, X509 *signer)
@@ -849,14 +849,14 @@ static int ess_add_signing_cert(PKCS7_SIGNER_INFO *si, ESS_SIGNING_CERT *sc)
         TSerr(TS_F_ESS_ADD_SIGNING_CERT, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    OPENSSL_free(pp);
+    _OPENSSL_free(pp);
     pp = NULL;
     return PKCS7_add_signed_attribute(si,
                                       NID_id_smime_aa_signingCertificate,
                                       V_ASN1_SEQUENCE, seq);
  err:
     ASN1_STRING_free(seq);
-    OPENSSL_free(pp);
+    _OPENSSL_free(pp);
 
     return 0;
 }
@@ -974,14 +974,14 @@ static int ess_add_signing_cert_v2(PKCS7_SIGNER_INFO *si,
         goto err;
     }
 
-    OPENSSL_free(pp);
+    _OPENSSL_free(pp);
     pp = NULL;
     return PKCS7_add_signed_attribute(si,
                                       NID_id_smime_aa_signingCertificateV2,
                                       V_ASN1_SEQUENCE, seq);
  err:
     ASN1_STRING_free(seq);
-    OPENSSL_free(pp);
+    _OPENSSL_free(pp);
     return 0;
 }
 

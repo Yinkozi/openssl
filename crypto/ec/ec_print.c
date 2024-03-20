@@ -26,7 +26,7 @@ BIGNUM *EC_POINT_point2bn(const EC_GROUP *group,
 
     ret = BN_bin2bn(buf, buf_len, ret);
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
 
     return ret;
 }
@@ -46,13 +46,13 @@ EC_POINT *EC_POINT_bn2point(const EC_GROUP *group,
     }
 
     if (!BN_bn2binpad(bn, buf, buf_len)) {
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return NULL;
     }
 
     if (point == NULL) {
         if ((ret = EC_POINT_new(group)) == NULL) {
-            OPENSSL_free(buf);
+            _OPENSSL_free(buf);
             return NULL;
         }
     } else
@@ -61,17 +61,17 @@ EC_POINT *EC_POINT_bn2point(const EC_GROUP *group,
     if (!EC_POINT_oct2point(group, ret, buf, buf_len, ctx)) {
         if (ret != point)
             EC_POINT_clear_free(ret);
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return NULL;
     }
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return ret;
 }
 
 static const char *HEX_DIGITS = "0123456789ABCDEF";
 
-/* the return value must be freed (using OPENSSL_free()) */
+/* the return value must be freed (using _OPENSSL_free()) */
 char *EC_POINT_point2hex(const EC_GROUP *group,
                          const EC_POINT *point,
                          point_conversion_form_t form, BN_CTX *ctx)
@@ -87,7 +87,7 @@ char *EC_POINT_point2hex(const EC_GROUP *group,
 
     ret = OPENSSL_malloc(buf_len * 2 + 2);
     if (ret == NULL) {
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return NULL;
     }
     p = ret;
@@ -99,7 +99,7 @@ char *EC_POINT_point2hex(const EC_GROUP *group,
     }
     *p = '\0';
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
 
     return ret;
 }

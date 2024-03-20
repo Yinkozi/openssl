@@ -38,7 +38,7 @@ ENGINE *ENGINE_new(void)
     ret->struct_ref = 1;
     engine_ref_debug(ret, 0, 1);
     if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_ENGINE, ret, &ret->ex_data)) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -95,7 +95,7 @@ int engine_free_util(ENGINE *e, int not_locked)
         e->destroy(e);
     engine_remove_dynamic_id(e, not_locked);
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_ENGINE, e, &e->ex_data);
-    OPENSSL_free(e);
+    _OPENSSL_free(e);
     return 1;
 }
 
@@ -154,7 +154,7 @@ void engine_cleanup_add_last(ENGINE_CLEANUP_CB *cb)
     item = int_cleanup_item(cb);
     if (item != NULL) {
         if (sk_ENGINE_CLEANUP_ITEM_push(cleanup_stack, item) <= 0)
-            OPENSSL_free(item);
+            _OPENSSL_free(item);
     }
 }
 
@@ -162,7 +162,7 @@ void engine_cleanup_add_last(ENGINE_CLEANUP_CB *cb)
 static void engine_cleanup_cb_free(ENGINE_CLEANUP_ITEM *item)
 {
     (*(item->cb)) ();
-    OPENSSL_free(item);
+    _OPENSSL_free(item);
 }
 
 void engine_cleanup_int(void)

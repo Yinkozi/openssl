@@ -34,7 +34,7 @@ static void tear_down(CIPHERLIST_TEST_FIXTURE *fixture)
         SSL_CTX_free(fixture->server);
         SSL_CTX_free(fixture->client);
         fixture->server = fixture->client = NULL;
-        OPENSSL_free(fixture);
+        _OPENSSL_free(fixture);
     }
 }
 

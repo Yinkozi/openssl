@@ -103,7 +103,7 @@ opthelp:
             goto end;
         }
         BIO_printf(bio_out, "%s\n", s);
-        OPENSSL_free(s);
+        _OPENSSL_free(s);
     } else {
         for ( ; *argv; argv++) {
             int r;

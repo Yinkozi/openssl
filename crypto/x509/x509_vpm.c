@@ -30,7 +30,7 @@ static char *str_copy(const char *s)
 
 static void str_free(char *s)
 {
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
 }
 
 static int int_x509_param_set_hosts(X509_VERIFY_PARAM *vpm, int mode,
@@ -62,12 +62,12 @@ static int int_x509_param_set_hosts(X509_VERIFY_PARAM *vpm, int mode,
 
     if (vpm->hosts == NULL &&
         (vpm->hosts = sk_OPENSSL_STRING_new_null()) == NULL) {
-        OPENSSL_free(copy);
+        _OPENSSL_free(copy);
         return 0;
     }
 
     if (!sk_OPENSSL_STRING_push(vpm->hosts, copy)) {
-        OPENSSL_free(copy);
+        _OPENSSL_free(copy);
         if (sk_OPENSSL_STRING_num(vpm->hosts) == 0) {
             sk_OPENSSL_STRING_free(vpm->hosts);
             vpm->hosts = NULL;
@@ -101,10 +101,10 @@ void X509_VERIFY_PARAM_free(X509_VERIFY_PARAM *param)
         return;
     sk_ASN1_OBJECT_pop_free(param->policies, ASN1_OBJECT_free);
     sk_OPENSSL_STRING_pop_free(param->hosts, str_free);
-    OPENSSL_free(param->peername);
-    OPENSSL_free(param->email);
-    OPENSSL_free(param->ip);
-    OPENSSL_free(param);
+    _OPENSSL_free(param->peername);
+    _OPENSSL_free(param->email);
+    _OPENSSL_free(param->ip);
+    _OPENSSL_free(param);
 }
 
 /*-
@@ -251,7 +251,7 @@ static int int_x509_param_set1(char **pdest, size_t *pdestlen,
         tmp = NULL;
         srclen = 0;
     }
-    OPENSSL_free(*pdest);
+    _OPENSSL_free(*pdest);
     *pdest = tmp;
     if (pdestlen != NULL)
         *pdestlen = srclen;
@@ -260,7 +260,7 @@ static int int_x509_param_set1(char **pdest, size_t *pdestlen,
 
 int X509_VERIFY_PARAM_set1_name(X509_VERIFY_PARAM *param, const char *name)
 {
-    OPENSSL_free(param->name);
+    _OPENSSL_free(param->name);
     param->name = OPENSSL_strdup(name);
     if (param->name)
         return 1;
@@ -414,7 +414,7 @@ void X509_VERIFY_PARAM_move_peername(X509_VERIFY_PARAM *to,
     char *peername = (from != NULL) ? from->peername : NULL;
 
     if (to->peername != peername) {
-        OPENSSL_free(to->peername);
+        _OPENSSL_free(to->peername);
         to->peername = peername;
     }
     if (from)

@@ -49,7 +49,7 @@ unsigned char *PKCS12_pbe_crypt(const X509_ALGOR *algor,
     }
 
     if (!EVP_CipherUpdate(ctx, out, &i, in, inlen)) {
-        OPENSSL_free(out);
+        _OPENSSL_free(out);
         out = NULL;
         PKCS12err(PKCS12_F_PKCS12_PBE_CRYPT, ERR_R_EVP_LIB);
         goto err;
@@ -57,7 +57,7 @@ unsigned char *PKCS12_pbe_crypt(const X509_ALGOR *algor,
 
     outlen = i;
     if (!EVP_CipherFinal_ex(ctx, out + i, &i)) {
-        OPENSSL_free(out);
+        _OPENSSL_free(out);
         out = NULL;
         PKCS12err(PKCS12_F_PKCS12_PBE_CRYPT,
                   PKCS12_R_PKCS12_CIPHERFINAL_ERROR);
@@ -112,7 +112,7 @@ void *PKCS12_item_decrypt_d2i(const X509_ALGOR *algor, const ASN1_ITEM *it,
         OPENSSL_cleanse(out, outlen);
     if (!ret)
         PKCS12err(PKCS12_F_PKCS12_ITEM_DECRYPT_D2I, PKCS12_R_DECODE_ERROR);
-    OPENSSL_free(out);
+    _OPENSSL_free(out);
     return ret;
 }
 
@@ -142,12 +142,12 @@ ASN1_OCTET_STRING *PKCS12_item_i2d_encrypt(X509_ALGOR *algor,
     if (!PKCS12_pbe_crypt(algor, pass, passlen, in, inlen, &oct->data,
                           &oct->length, 1)) {
         PKCS12err(PKCS12_F_PKCS12_ITEM_I2D_ENCRYPT, PKCS12_R_ENCRYPT_ERROR);
-        OPENSSL_free(in);
+        _OPENSSL_free(in);
         goto err;
     }
     if (zbuf)
         OPENSSL_cleanse(in, inlen);
-    OPENSSL_free(in);
+    _OPENSSL_free(in);
     return oct;
  err:
     ASN1_OCTET_STRING_free(oct);

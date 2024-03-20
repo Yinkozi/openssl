@@ -35,7 +35,7 @@ static int pkey_hmac_init(EVP_PKEY_CTX *ctx)
     hctx->ktmp.type = V_ASN1_OCTET_STRING;
     hctx->ctx = HMAC_CTX_new();
     if (hctx->ctx == NULL) {
-        OPENSSL_free(hctx);
+        _OPENSSL_free(hctx);
         return 0;
     }
 
@@ -78,7 +78,7 @@ static void pkey_hmac_cleanup(EVP_PKEY_CTX *ctx)
     if (hctx != NULL) {
         HMAC_CTX_free(hctx->ctx);
         OPENSSL_clear_free(hctx->ktmp.data, hctx->ktmp.length);
-        OPENSSL_free(hctx);
+        _OPENSSL_free(hctx);
         EVP_PKEY_CTX_set_data(ctx, NULL);
     }
 }

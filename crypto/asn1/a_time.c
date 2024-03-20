@@ -429,7 +429,7 @@ int ASN1_TIME_set_string_X509(ASN1_TIME *s, const char *str)
         rv = 1;
 
     if (t.data != (unsigned char *)str)
-        OPENSSL_free(t.data);
+        _OPENSSL_free(t.data);
 out:
     return rv;
 }

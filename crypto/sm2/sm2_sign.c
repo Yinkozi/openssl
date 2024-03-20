@@ -130,7 +130,7 @@ int sm2_compute_z_digest(uint8_t *out,
     rc = 1;
 
  done:
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     BN_CTX_free(ctx);
     EVP_MD_CTX_free(hash);
     return rc;
@@ -177,7 +177,7 @@ static BIGNUM *sm2_compute_msg_hash(const EVP_MD *digest,
         SM2err(SM2_F_SM2_COMPUTE_MSG_HASH, ERR_R_INTERNAL_ERROR);
 
  done:
-    OPENSSL_free(z);
+    _OPENSSL_free(z);
     EVP_MD_CTX_free(hash);
     return e;
 }
@@ -472,7 +472,7 @@ int sm2_verify(const unsigned char *dgst, int dgstlen,
     ret = sm2_sig_verify(eckey, s, e);
 
  done:
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     BN_free(e);
     ECDSA_SIG_free(s);
     return ret;

@@ -257,9 +257,9 @@ int main(int argc, char *argv[])
     }
     ret = 1;
  end:
-    OPENSSL_free(default_config_file);
+    _OPENSSL_free(default_config_file);
     lh_FUNCTION_free(prog);
-    OPENSSL_free(arg.argv);
+    _OPENSSL_free(arg.argv);
     app_RAND_write();
 
     _BIO_free(bio_in);

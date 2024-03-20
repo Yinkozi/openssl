@@ -897,7 +897,7 @@ int SSL_CTX_use_serverinfo_ex(SSL_CTX *ctx, unsigned int version,
         ret = SSL_CTX_use_serverinfo_ex(ctx, SSL_SERVERINFOV2, sinfo,
                                         sinfo_length);
 
-        OPENSSL_free(sinfo);
+        _OPENSSL_free(sinfo);
         return ret;
     }
     if (!serverinfo_process_buffer(version, serverinfo, serverinfo_length,
@@ -1036,11 +1036,11 @@ int SSL_CTX_use_serverinfo_file(SSL_CTX *ctx, const char *file)
                          serverinfo + serverinfo_length);
         serverinfo_length += append_length;
 
-        OPENSSL_free(name);
+        _OPENSSL_free(name);
         name = NULL;
-        OPENSSL_free(header);
+        _OPENSSL_free(header);
         header = NULL;
-        OPENSSL_free(extension);
+        _OPENSSL_free(extension);
         extension = NULL;
     }
 
@@ -1048,10 +1048,10 @@ int SSL_CTX_use_serverinfo_file(SSL_CTX *ctx, const char *file)
                                     serverinfo_length);
  end:
     /* SSL_CTX_use_serverinfo makes a local copy of the serverinfo. */
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(extension);
-    OPENSSL_free(serverinfo);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(extension);
+    _OPENSSL_free(serverinfo);
     _BIO_free(bin);
     return ret;
 }

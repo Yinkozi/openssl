@@ -291,9 +291,9 @@ int ocsp_main(int argc, char **argv)
 #endif
             break;
         case OPT_URL:
-            OPENSSL_free(thost);
-            OPENSSL_free(tport);
-            OPENSSL_free(tpath);
+            _OPENSSL_free(thost);
+            _OPENSSL_free(tport);
+            _OPENSSL_free(tpath);
             thost = tport = tpath = NULL;
             if (!OCSP_parse_url(opt_arg(), &host, &port, &path, &use_ssl)) {
                 BIO_printf(bio_err, "%s Error parsing URL\n", prog);
@@ -824,9 +824,9 @@ redo_accept:
     sk_X509_pop_free(sign_other, X509_free);
     sk_X509_pop_free(verify_other, X509_free);
     sk_CONF_VALUE_pop_free(headers, X509V3_conf_free);
-    OPENSSL_free(thost);
-    OPENSSL_free(tport);
-    OPENSSL_free(tpath);
+    _OPENSSL_free(thost);
+    _OPENSSL_free(tport);
+    _OPENSSL_free(tpath);
 
     return ret;
 }
@@ -890,7 +890,7 @@ static void killall(int ret, pid_t *kidpids)
     for (i = 0; i < multi; ++i)
         if (kidpids[i] != 0)
             (void)kill(kidpids[i], SIGTERM);
-    OPENSSL_free(kidpids);
+    _OPENSSL_free(kidpids);
     sleep(1);
     exit(ret);
 }
@@ -978,7 +978,7 @@ static void spawn_loop(void)
             sleep(30);
             break;
         case 0:             /* child */
-            OPENSSL_free(kidpids);
+            _OPENSSL_free(kidpids);
             signal(SIGINT, SIG_DFL);
             signal(SIGTERM, SIG_DFL);
             if (termsig)
@@ -1280,7 +1280,7 @@ static char **lookup_serial(CA_DB *db, ASN1_INTEGER *ser)
     row[DB_serial] = itmp;
     BN_free(bn);
     rrow = TXT_DB_get_by_index(db->db, DB_serial, row);
-    OPENSSL_free(itmp);
+    _OPENSSL_free(itmp);
     return rrow;
 }
 

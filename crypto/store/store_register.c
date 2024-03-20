@@ -122,7 +122,7 @@ int OSSL_STORE_LOADER_set_close(OSSL_STORE_LOADER *loader,
 
 void OSSL_STORE_LOADER_free(OSSL_STORE_LOADER *loader)
 {
-    OPENSSL_free(loader);
+    _OPENSSL_free(loader);
 }
 
 /*

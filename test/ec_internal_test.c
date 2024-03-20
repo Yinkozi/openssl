@@ -279,7 +279,7 @@ static int decoded_flag_test(void)
         goto err;
     EC_GROUP_free(grp_copy);
     grp_copy = NULL;
-    OPENSSL_free(encodedparams);
+    _OPENSSL_free(encodedparams);
     encodedparams = NULL;
 
     /* Asn1 flag stays set to explicit with EC_GROUP_new_from_ecpkparameters */
@@ -311,7 +311,7 @@ static int decoded_flag_test(void)
     EC_GROUP_free(grp_copy);
     ECPARAMETERS_free(ecparams);
     ECPKPARAMETERS_free(ecpkparams);
-    OPENSSL_free(encodedparams);
+    _OPENSSL_free(encodedparams);
 
     return testresult;
 }
@@ -379,5 +379,5 @@ int setup_tests(void)
 
 void cleanup_tests(void)
 {
-    OPENSSL_free(curves);
+    _OPENSSL_free(curves);
 }

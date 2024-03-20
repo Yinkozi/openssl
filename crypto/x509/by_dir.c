@@ -114,13 +114,13 @@ static int new_dir(X509_LOOKUP *lu)
     return 1;
 
  err:
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
     return 0;
 }
 
 static void by_dir_hash_free(BY_DIR_HASH *hash)
 {
-    OPENSSL_free(hash);
+    _OPENSSL_free(hash);
 }
 
 static int by_dir_hash_cmp(const BY_DIR_HASH *const *a,
@@ -135,9 +135,9 @@ static int by_dir_hash_cmp(const BY_DIR_HASH *const *a,
 
 static void by_dir_entry_free(BY_DIR_ENTRY *ent)
 {
-    OPENSSL_free(ent->dir);
+    _OPENSSL_free(ent->dir);
     sk_BY_DIR_HASH_pop_free(ent->hashes, by_dir_hash_free);
-    OPENSSL_free(ent);
+    _OPENSSL_free(ent);
 }
 
 static void free_dir(X509_LOOKUP *lu)
@@ -147,7 +147,7 @@ static void free_dir(X509_LOOKUP *lu)
     sk_BY_DIR_ENTRY_pop_free(a->dirs, by_dir_entry_free);
     BUF_MEM_free(a->buffer);
     CRYPTO_THREAD_lock_free(a->lock);
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 static int add_cert_dir(BY_DIR *ctx, const char *dir, int type)
@@ -361,7 +361,7 @@ static int get_cert_by_subject(X509_LOOKUP *xl, X509_LOOKUP_TYPE type,
                 hent->suffix = k;
                 if (!sk_BY_DIR_HASH_push(ent->hashes, hent)) {
                     CRYPTO_THREAD_unlock(ctx->lock);
-                    OPENSSL_free(hent);
+                    _OPENSSL_free(hent);
                     X509err(X509_F_GET_CERT_BY_SUBJECT, ERR_R_MALLOC_FAILURE);
                     ok = 0;
                     goto finish;

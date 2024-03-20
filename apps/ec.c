@@ -272,7 +272,7 @@ int ec_main(int argc, char **argv)
     BIO_free_all(out);
     EC_KEY_free(eckey);
     release_engine(e);
-    OPENSSL_free(passin);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passin);
+    _OPENSSL_free(passout);
     return ret;
 }

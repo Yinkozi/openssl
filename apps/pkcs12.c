@@ -561,7 +561,7 @@ int pkcs12_main(int argc, char **argv)
             if (utmp == NULL)
                 goto end;
             badpass = OPENSSL_uni2utf8(utmp, utmplen);
-            OPENSSL_free(utmp);
+            _OPENSSL_free(utmp);
             if (!PKCS12_verify_mac(p12, badpass, -1)) {
                 BIO_printf(bio_err, "Mac verify error: invalid password?\n");
                 ERR_print_errors(bio_err);
@@ -587,9 +587,9 @@ int pkcs12_main(int argc, char **argv)
     _BIO_free(in);
     BIO_free_all(out);
     sk_OPENSSL_STRING_free(canames);
-    OPENSSL_free(badpass);
-    OPENSSL_free(passin);
-    OPENSSL_free(passout);
+    _OPENSSL_free(badpass);
+    _OPENSSL_free(passin);
+    _OPENSSL_free(passout);
     return ret;
 }
 
@@ -886,7 +886,7 @@ void print_attribute(BIO *out, const ASN1_TYPE *av)
         value = OPENSSL_uni2asc(av->value.bmpstring->data,
                                 av->value.bmpstring->length);
         BIO_printf(out, "%s\n", value);
-        OPENSSL_free(value);
+        _OPENSSL_free(value);
         break;
 
     case V_ASN1_OCTET_STRING:

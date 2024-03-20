@@ -79,7 +79,7 @@ static int async_free(BIO *bio)
     if (bio == NULL)
         return 0;
     ctrs = BIO_get_data(bio);
-    OPENSSL_free(ctrs);
+    _OPENSSL_free(ctrs);
     BIO_set_data(bio, NULL);
     BIO_set_init(bio, 0);
 

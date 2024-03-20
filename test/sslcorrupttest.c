@@ -46,7 +46,7 @@ static int tls_corrupt_write(BIO *bio, const char *in, int inl)
         /* corrupt last bit of application data */
         copy[inl-1] ^= 1;
         ret = _BIO_write(next, copy, inl);
-        OPENSSL_free(copy);
+        _OPENSSL_free(copy);
     } else {
         ret = _BIO_write(next, in, inl);
     }
@@ -263,5 +263,5 @@ int setup_tests(void)
 void cleanup_tests(void)
 {
     bio_f_tls_corrupt_filter_free();
-    OPENSSL_free(cipher_list);
+    _OPENSSL_free(cipher_list);
 }

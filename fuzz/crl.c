@@ -33,7 +33,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         _BIO_free(bio);
 
         i2d_X509_CRL(crl, &der);
-        OPENSSL_free(der);
+        _OPENSSL_free(der);
 
         X509_CRL_free(crl);
     }

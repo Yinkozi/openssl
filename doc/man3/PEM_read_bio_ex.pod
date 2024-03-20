@@ -44,7 +44,7 @@ these options are not compatible with each other.
 
 The caller must release the storage allocated for *name, *header, and *data.
 If PEM_FLAG_SECURE was set, use OPENSSL_secure_free(); otherwise,
-OPENSSL_free() is used.
+_OPENSSL_free() is used.
 
 =head1 RETURN VALUES
 

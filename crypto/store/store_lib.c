@@ -224,7 +224,7 @@ int OSSL_STORE_close(OSSL_STORE_CTX *ctx)
         return 1;
     loader_ret = ctx->loader->close(ctx->loader_ctx);
 
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
     return loader_ret;
 }
 
@@ -449,11 +449,11 @@ void OSSL_STORE_INFO_free(OSSL_STORE_INFO *info)
         switch (info->type) {
         case OSSL_STORE_INFO_EMBEDDED:
             BUF_MEM_free(info->_.embedded.blob);
-            OPENSSL_free(info->_.embedded.pem_name);
+            _OPENSSL_free(info->_.embedded.pem_name);
             break;
         case OSSL_STORE_INFO_NAME:
-            OPENSSL_free(info->_.name.name);
-            OPENSSL_free(info->_.name.desc);
+            _OPENSSL_free(info->_.name.name);
+            _OPENSSL_free(info->_.name.desc);
             break;
         case OSSL_STORE_INFO_PARAMS:
             EVP_PKEY_free(info->_.params);
@@ -468,7 +468,7 @@ void OSSL_STORE_INFO_free(OSSL_STORE_INFO *info)
             X509_CRL_free(info->_.crl);
             break;
         }
-        OPENSSL_free(info);
+        _OPENSSL_free(info);
     }
 }
 
@@ -564,7 +564,7 @@ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_alias(const char *alias)
 /* Search term destructor */
 void OSSL_STORE_SEARCH_free(OSSL_STORE_SEARCH *search)
 {
-    OPENSSL_free(search);
+    _OPENSSL_free(search);
 }
 
 /* Search term accessors */
@@ -680,6 +680,6 @@ int ossl_store_detach_pem_bio(OSSL_STORE_CTX *ctx)
 {
     int loader_ret = ossl_store_file_detach_pem_bio_int(ctx->loader_ctx);
 
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
     return loader_ret;
 }

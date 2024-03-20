@@ -165,10 +165,10 @@ int PKCS12_key_gen_uni(unsigned char *pass, int passlen, unsigned char *salt,
     PKCS12err(PKCS12_F_PKCS12_KEY_GEN_UNI, ERR_R_MALLOC_FAILURE);
 
  end:
-    OPENSSL_free(Ai);
-    OPENSSL_free(B);
-    OPENSSL_free(D);
-    OPENSSL_free(I);
+    _OPENSSL_free(Ai);
+    _OPENSSL_free(B);
+    _OPENSSL_free(D);
+    _OPENSSL_free(I);
     EVP_MD_CTX_free(ctx);
     return ret;
 }

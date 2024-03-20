@@ -197,7 +197,7 @@ int dsaparam_main(int argc, char **argv)
                             "        return NULL;\n"
                             "    }\n"
                             "    return dsa;\n}\n");
-        OPENSSL_free(data);
+        _OPENSSL_free(data);
     }
 
     if (outformat == FORMAT_ASN1 && genkey)

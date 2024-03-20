@@ -214,7 +214,7 @@ int X509_print_ex(BIO *bp, X509 *x, unsigned long nmflags,
     }
     ret = 1;
  err:
-    OPENSSL_free(m);
+    _OPENSSL_free(m);
     return ret;
 }
 
@@ -245,7 +245,7 @@ int X509_ocspid_print(BIO *bp, X509 *x)
         if (BIO_printf(bp, "%02X", SHA1md[i]) <= 0)
             goto err;
     }
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     der = NULL;
 
     /*
@@ -271,7 +271,7 @@ int X509_ocspid_print(BIO *bp, X509 *x)
 
     return 1;
  err:
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     return 0;
 }
 

@@ -32,7 +32,7 @@ pitem *pitem_new(unsigned char *prio64be, void *data)
 
 void pitem_free(pitem *item)
 {
-    OPENSSL_free(item);
+    _OPENSSL_free(item);
 }
 
 pqueue *pqueue_new(void)
@@ -47,7 +47,7 @@ pqueue *pqueue_new(void)
 
 void pqueue_free(pqueue *pq)
 {
-    OPENSSL_free(pq);
+    _OPENSSL_free(pq);
 }
 
 pitem *pqueue_insert(pqueue *pq, pitem *item)

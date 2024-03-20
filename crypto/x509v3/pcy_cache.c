@@ -181,7 +181,7 @@ void policy_cache_free(X509_POLICY_CACHE *cache)
         return;
     policy_data_free(cache->anyPolicy);
     sk_X509_POLICY_DATA_pop_free(cache->data, policy_data_free);
-    OPENSSL_free(cache);
+    _OPENSSL_free(cache);
 }
 
 const X509_POLICY_CACHE *policy_cache_set(X509 *x)

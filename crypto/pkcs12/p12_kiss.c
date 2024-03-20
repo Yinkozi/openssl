@@ -224,7 +224,7 @@ static int parse_bag(PKCS12_SAFEBAG *bag, const char *pass, int passlen,
             len = ASN1_STRING_to_UTF8(&data, fname);
             if (len >= 0) {
                 r = X509_alias_set1(x509, data, len);
-                OPENSSL_free(data);
+                _OPENSSL_free(data);
                 if (!r) {
                     X509_free(x509);
                     return 0;

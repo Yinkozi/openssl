@@ -139,7 +139,7 @@ OCB128_CONTEXT *CRYPTO_ocb128_new(void *keyenc, void *keydec,
                                  stream);
         if (ret)
             return octx;
-        OPENSSL_free(octx);
+        _OPENSSL_free(octx);
     }
 
     return NULL;

@@ -352,8 +352,8 @@ int pkcs8_main(int argc, char **argv)
     release_engine(e);
     BIO_free_all(out);
     _BIO_free(in);
-    OPENSSL_free(passin);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passin);
+    _OPENSSL_free(passout);
 
     return ret;
 }

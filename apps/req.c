@@ -165,7 +165,7 @@ static int ext_name_cmp(const OPENSSL_STRING *a, const OPENSSL_STRING *b)
 
 static void exts_cleanup(OPENSSL_STRING *x)
 {
-    OPENSSL_free((char *)x);
+    _OPENSSL_free((char *)x);
 }
 
 /*
@@ -194,7 +194,7 @@ static int duplicated(LHASH_OF(OPENSSL_STRING) *addexts, char *kv)
         if (!isspace(p[-1]))
             break;
     if (p == kv) {
-        OPENSSL_free(kv);
+        _OPENSSL_free(kv);
         return 1;
     }
     *p = '\0';
@@ -202,10 +202,10 @@ static int duplicated(LHASH_OF(OPENSSL_STRING) *addexts, char *kv)
     /* Finally have a clean "key"; see if it's there [by attempt to add it]. */
     p = (char *)lh_OPENSSL_STRING_insert(addexts, (OPENSSL_STRING*)kv);
     if (p != NULL) {
-        OPENSSL_free(p);
+        _OPENSSL_free(p);
         return 1;
     } else if (lh_OPENSSL_STRING_error(addexts)) {
-        OPENSSL_free(kv);
+        _OPENSSL_free(kv);
         return -1;
     }
 
@@ -974,15 +974,15 @@ int req_main(int argc, char **argv)
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_free(gen_eng);
 #endif
-    OPENSSL_free(keyalgstr);
+    _OPENSSL_free(keyalgstr);
     X509_REQ_free(req);
     X509_free(x509ss);
     ASN1_INTEGER_free(serial);
     release_engine(e);
     if (passin != nofree_passin)
-        OPENSSL_free(passin);
+        _OPENSSL_free(passin);
     if (passout != nofree_passout)
-        OPENSSL_free(passout);
+        _OPENSSL_free(passout);
     return ret;
 }
 

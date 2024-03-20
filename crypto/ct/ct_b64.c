@@ -56,7 +56,7 @@ static int ct_base64_decode(const char *in, unsigned char **out)
     *out = outbuf;
     return outlen;
 err:
-    OPENSSL_free(outbuf);
+    _OPENSSL_free(outbuf);
     return -1;
 }
 
@@ -110,7 +110,7 @@ SCT *SCT_new_from_base64(unsigned char version, const char *logid_base64,
     p = dec;
     if (o2i_SCT_signature(sct, &p, declen) <= 0)
         goto err;
-    OPENSSL_free(dec);
+    _OPENSSL_free(dec);
     dec = NULL;
 
     SCT_set_timestamp(sct, timestamp);
@@ -121,7 +121,7 @@ SCT *SCT_new_from_base64(unsigned char version, const char *logid_base64,
     return sct;
 
  err:
-    OPENSSL_free(dec);
+    _OPENSSL_free(dec);
     SCT_free(sct);
     return NULL;
 }
@@ -152,7 +152,7 @@ int CTLOG_new_from_base64(CTLOG **ct_log, const char *pkey_base64, const char *n
 
     p = pkey_der;
     pkey = d2i_PUBKEY(NULL, &p, pkey_der_len);
-    OPENSSL_free(pkey_der);
+    _OPENSSL_free(pkey_der);
     if (pkey == NULL) {
         CTerr(CT_F_CTLOG_NEW_FROM_BASE64, CT_R_LOG_CONF_INVALID_KEY);
         return 0;

@@ -34,11 +34,11 @@ void ASYNC_WAIT_CTX_free(ASYNC_WAIT_CTX *ctx)
         }
         /* Always free the fd_lookup_st */
         next = curr->next;
-        OPENSSL_free(curr);
+        _OPENSSL_free(curr);
         curr = next;
     }
 
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 int ASYNC_WAIT_CTX_set_wait_fd(ASYNC_WAIT_CTX *ctx, const void *key,
                                OSSL_ASYNC_FD fd, void *custom_data,
@@ -162,7 +162,7 @@ int ASYNC_WAIT_CTX_clear_fd(ASYNC_WAIT_CTX *ctx, const void *key)
                 /* It is responsibility of the caller to cleanup before calling
                  * ASYNC_WAIT_CTX_clear_fd
                  */
-                OPENSSL_free(curr);
+                _OPENSSL_free(curr);
                 ctx->numadd--;
                 return 1;
             }
@@ -197,7 +197,7 @@ void async_wait_ctx_reset_counts(ASYNC_WAIT_CTX *ctx)
                 ctx->fds = curr->next;
             else
                 prev->next = curr->next;
-            OPENSSL_free(curr);
+            _OPENSSL_free(curr);
             if (prev == NULL)
                 curr = ctx->fds;
             else

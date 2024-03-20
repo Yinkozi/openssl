@@ -145,8 +145,8 @@ static int dane_ctx_enable(struct dane_ctx_st *dctx)
     mdord = OPENSSL_zalloc(n * sizeof(*mdord));
 
     if (mdord == NULL || mdevp == NULL) {
-        OPENSSL_free(mdord);
-        OPENSSL_free(mdevp);
+        _OPENSSL_free(mdord);
+        _OPENSSL_free(mdevp);
         SSLerr(SSL_F_DANE_CTX_ENABLE, ERR_R_MALLOC_FAILURE);
         return 0;
     }
@@ -171,10 +171,10 @@ static int dane_ctx_enable(struct dane_ctx_st *dctx)
 
 static void dane_ctx_final(struct dane_ctx_st *dctx)
 {
-    OPENSSL_free(dctx->mdevp);
+    _OPENSSL_free(dctx->mdevp);
     dctx->mdevp = NULL;
 
-    OPENSSL_free(dctx->mdord);
+    _OPENSSL_free(dctx->mdord);
     dctx->mdord = NULL;
     dctx->mdmax = 0;
 }
@@ -183,9 +183,9 @@ static void tlsa_free(danetls_record *t)
 {
     if (t == NULL)
         return;
-    OPENSSL_free(t->data);
+    _OPENSSL_free(t->data);
     EVP_PKEY_free(t->spki);
-    OPENSSL_free(t);
+    _OPENSSL_free(t);
 }
 
 static void dane_final(SSL_DANE *dane)
@@ -587,7 +587,7 @@ int SSL_clear(SSL *s)
     }
     SSL_SESSION_free(s->psksession);
     s->psksession = NULL;
-    OPENSSL_free(s->psksession_id);
+    _OPENSSL_free(s->psksession_id);
     s->psksession_id = NULL;
     s->psksession_id_len = 0;
     s->hello_retry_request = 0;
@@ -629,7 +629,7 @@ int SSL_clear(SSL *s)
     X509_VERIFY_PARAM_move_peername(s->param, NULL);
 
     /* Clear any shared connection state */
-    OPENSSL_free(s->shared_sigalgs);
+    _OPENSSL_free(s->shared_sigalgs);
     s->shared_sigalgs = NULL;
     s->shared_sigalgslen = 0;
 
@@ -695,7 +695,7 @@ SSL *SSL_new(SSL_CTX *ctx)
     s->references = 1;
     s->lock = CRYPTO_THREAD_lock_new();
     if (s->lock == NULL) {
-        OPENSSL_free(s);
+        _OPENSSL_free(s);
         s = NULL;
         goto err;
     }
@@ -1179,21 +1179,21 @@ void SSL_free(SSL *s)
         SSL_SESSION_free(s->session);
     }
     SSL_SESSION_free(s->psksession);
-    OPENSSL_free(s->psksession_id);
+    _OPENSSL_free(s->psksession_id);
 
     clear_ciphers(s);
 
     ssl_cert_free(s->cert);
-    OPENSSL_free(s->shared_sigalgs);
+    _OPENSSL_free(s->shared_sigalgs);
     /* Free up if allocated */
 
-    OPENSSL_free(s->ext.hostname);
+    _OPENSSL_free(s->ext.hostname);
     SSL_CTX_free(s->session_ctx);
 #ifndef OPENSSL_NO_EC
-    OPENSSL_free(s->ext.ecpointformats);
-    OPENSSL_free(s->ext.peer_ecpointformats);
-    OPENSSL_free(s->ext.supportedgroups);
-    OPENSSL_free(s->ext.peer_supportedgroups);
+    _OPENSSL_free(s->ext.ecpointformats);
+    _OPENSSL_free(s->ext.peer_ecpointformats);
+    _OPENSSL_free(s->ext.supportedgroups);
+    _OPENSSL_free(s->ext.peer_supportedgroups);
 #endif                          /* OPENSSL_NO_EC */
     sk_X509_EXTENSION_pop_free(s->ext.ocsp.exts, X509_EXTENSION_free);
 #ifndef OPENSSL_NO_OCSP
@@ -1201,15 +1201,15 @@ void SSL_free(SSL *s)
 #endif
 #ifndef OPENSSL_NO_CT
     SCT_LIST_free(s->scts);
-    OPENSSL_free(s->ext.scts);
+    _OPENSSL_free(s->ext.scts);
 #endif
-    OPENSSL_free(s->ext.ocsp.resp);
-    OPENSSL_free(s->ext.alpn);
-    OPENSSL_free(s->ext.tls13_cookie);
+    _OPENSSL_free(s->ext.ocsp.resp);
+    _OPENSSL_free(s->ext.alpn);
+    _OPENSSL_free(s->ext.tls13_cookie);
     if (s->clienthello != NULL)
-        OPENSSL_free(s->clienthello->pre_proc_exts);
-    OPENSSL_free(s->clienthello);
-    OPENSSL_free(s->pha_context);
+        _OPENSSL_free(s->clienthello->pre_proc_exts);
+    _OPENSSL_free(s->clienthello);
+    _OPENSSL_free(s->pha_context);
     EVP_MD_CTX_free(s->pha_dgst);
 
     sk_X509_NAME_pop_free(s->ca_names, X509_NAME_free);
@@ -1227,7 +1227,7 @@ void SSL_free(SSL *s)
     ASYNC_WAIT_CTX_free(s->waitctx);
 
 #if !defined(OPENSSL_NO_NEXTPROTONEG)
-    OPENSSL_free(s->ext.npn);
+    _OPENSSL_free(s->ext.npn);
 #endif
 
 #ifndef OPENSSL_NO_SRTP
@@ -1236,7 +1236,7 @@ void SSL_free(SSL *s)
 
     CRYPTO_THREAD_lock_free(s->lock);
 
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
 }
 
 void SSL_set0_rbio(SSL *s, BIO *rbio)
@@ -2875,7 +2875,7 @@ int SSL_CTX_set_alpn_protos(SSL_CTX *ctx, const unsigned char *protos,
     unsigned char *alpn;
 
     if (protos_len == 0 || protos == NULL) {
-        OPENSSL_free(ctx->ext.alpn);
+        _OPENSSL_free(ctx->ext.alpn);
         ctx->ext.alpn = NULL;
         ctx->ext.alpn_len = 0;
         return 0;
@@ -2889,7 +2889,7 @@ int SSL_CTX_set_alpn_protos(SSL_CTX *ctx, const unsigned char *protos,
         SSLerr(SSL_F_SSL_CTX_SET_ALPN_PROTOS, ERR_R_MALLOC_FAILURE);
         return 1;
     }
-    OPENSSL_free(ctx->ext.alpn);
+    _OPENSSL_free(ctx->ext.alpn);
     ctx->ext.alpn = alpn;
     ctx->ext.alpn_len = protos_len;
 
@@ -2907,7 +2907,7 @@ int SSL_set_alpn_protos(SSL *ssl, const unsigned char *protos,
     unsigned char *alpn;
 
     if (protos_len == 0 || protos == NULL) {
-        OPENSSL_free(ssl->ext.alpn);
+        _OPENSSL_free(ssl->ext.alpn);
         ssl->ext.alpn = NULL;
         ssl->ext.alpn_len = 0;
         return 0;
@@ -2921,7 +2921,7 @@ int SSL_set_alpn_protos(SSL *ssl, const unsigned char *protos,
         SSLerr(SSL_F_SSL_SET_ALPN_PROTOS, ERR_R_MALLOC_FAILURE);
         return 1;
     }
-    OPENSSL_free(ssl->ext.alpn);
+    _OPENSSL_free(ssl->ext.alpn);
     ssl->ext.alpn = alpn;
     ssl->ext.alpn_len = protos_len;
 
@@ -3060,7 +3060,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         SSLerr(SSL_F_SSL_CTX_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     ret->max_cert_list = SSL_MAX_CERT_LIST_DEFAULT;
@@ -3282,15 +3282,15 @@ void SSL_CTX_free(SSL_CTX *a)
 #endif
 
 #ifndef OPENSSL_NO_EC
-    OPENSSL_free(a->ext.ecpointformats);
-    OPENSSL_free(a->ext.supportedgroups);
+    _OPENSSL_free(a->ext.ecpointformats);
+    _OPENSSL_free(a->ext.supportedgroups);
 #endif
-    OPENSSL_free(a->ext.alpn);
+    _OPENSSL_free(a->ext.alpn);
     OPENSSL_secure_free(a->ext.secure);
 
     CRYPTO_THREAD_lock_free(a->lock);
 
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 void SSL_CTX_set_default_passwd_cb(SSL_CTX *ctx, pem_password_cb *cb)
@@ -4337,7 +4337,7 @@ int SSL_CTX_use_psk_identity_hint(SSL_CTX *ctx, const char *identity_hint)
         SSLerr(SSL_F_SSL_CTX_USE_PSK_IDENTITY_HINT, SSL_R_DATA_LENGTH_TOO_LONG);
         return 0;
     }
-    OPENSSL_free(ctx->cert->psk_identity_hint);
+    _OPENSSL_free(ctx->cert->psk_identity_hint);
     if (identity_hint != NULL) {
         ctx->cert->psk_identity_hint = OPENSSL_strdup(identity_hint);
         if (ctx->cert->psk_identity_hint == NULL)
@@ -4356,7 +4356,7 @@ int SSL_use_psk_identity_hint(SSL *s, const char *identity_hint)
         SSLerr(SSL_F_SSL_USE_PSK_IDENTITY_HINT, SSL_R_DATA_LENGTH_TOO_LONG);
         return 0;
     }
-    OPENSSL_free(s->cert->psk_identity_hint);
+    _OPENSSL_free(s->cert->psk_identity_hint);
     if (identity_hint != NULL) {
         s->cert->psk_identity_hint = OPENSSL_strdup(identity_hint);
         if (s->cert->psk_identity_hint == NULL)
@@ -5215,7 +5215,7 @@ int SSL_client_hello_get1_extensions_present(SSL *s, int **out, size_t *outlen)
     *outlen = num;
     return 1;
  err:
-    OPENSSL_free(present);
+    _OPENSSL_free(present);
     return 0;
 }
 
@@ -5374,7 +5374,7 @@ int ssl_cache_cipherlist(SSL *s, PACKET *cipher_suites, int sslv2format)
         return 0;
     }
 
-    OPENSSL_free(s->s3->tmp.ciphers_raw);
+    _OPENSSL_free(s->s3->tmp.ciphers_raw);
     s->s3->tmp.ciphers_raw = NULL;
     s->s3->tmp.ciphers_rawlen = 0;
 
@@ -5409,7 +5409,7 @@ int ssl_cache_cipherlist(SSL *s, PACKET *cipher_suites, int sslv2format)
                         && !PACKET_forward(&sslv2ciphers, TLS_CIPHER_LEN))) {
                 SSLfatal(s, SSL_AD_DECODE_ERROR, SSL_F_SSL_CACHE_CIPHERLIST,
                          SSL_R_BAD_PACKET);
-                OPENSSL_free(s->s3->tmp.ciphers_raw);
+                _OPENSSL_free(s->s3->tmp.ciphers_raw);
                 s->s3->tmp.ciphers_raw = NULL;
                 s->s3->tmp.ciphers_rawlen = 0;
                 return 0;

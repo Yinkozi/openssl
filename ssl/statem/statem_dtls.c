@@ -67,7 +67,7 @@ static hm_fragment *dtls1_hm_fragment_new(size_t frag_len, int reassembly)
     if (frag_len) {
         if ((buf = OPENSSL_malloc(frag_len)) == NULL) {
             SSLerr(SSL_F_DTLS1_HM_FRAGMENT_NEW, ERR_R_MALLOC_FAILURE);
-            OPENSSL_free(frag);
+            _OPENSSL_free(frag);
             return NULL;
         }
     }
@@ -80,8 +80,8 @@ static hm_fragment *dtls1_hm_fragment_new(size_t frag_len, int reassembly)
         bitmask = OPENSSL_zalloc(RSMBLY_BITMASK_SIZE(frag_len));
         if (bitmask == NULL) {
             SSLerr(SSL_F_DTLS1_HM_FRAGMENT_NEW, ERR_R_MALLOC_FAILURE);
-            OPENSSL_free(buf);
-            OPENSSL_free(frag);
+            _OPENSSL_free(buf);
+            _OPENSSL_free(frag);
             return NULL;
         }
     }
@@ -100,9 +100,9 @@ void dtls1_hm_fragment_free(hm_fragment *frag)
                             saved_retransmit_state.enc_write_ctx);
         EVP_MD_CTX_free(frag->msg_header.saved_retransmit_state.write_hash);
     }
-    OPENSSL_free(frag->fragment);
-    OPENSSL_free(frag->reassembly);
-    OPENSSL_free(frag);
+    _OPENSSL_free(frag->fragment);
+    _OPENSSL_free(frag->reassembly);
+    _OPENSSL_free(frag);
 }
 
 /*
@@ -606,7 +606,7 @@ dtls1_reassemble_fragment(SSL *s, const struct hm_header_st *msg_hdr)
                                is_complete);
 
     if (is_complete) {
-        OPENSSL_free(frag->reassembly);
+        _OPENSSL_free(frag->reassembly);
         frag->reassembly = NULL;
     }
 

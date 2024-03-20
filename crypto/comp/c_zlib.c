@@ -54,7 +54,7 @@ static void *zlib_zalloc(void *opaque, unsigned int no, unsigned int size)
 
 static void zlib_zfree(void *opaque, void *address)
 {
-    OPENSSL_free(address);
+    _OPENSSL_free(address);
 }
 
 
@@ -150,7 +150,7 @@ static int zlib_stateful_init(COMP_CTX *ctx)
     ctx->data = state;
     return 1;
  err:
-    OPENSSL_free(state);
+    _OPENSSL_free(state);
     return 0;
 }
 
@@ -159,7 +159,7 @@ static void zlib_stateful_finish(COMP_CTX *ctx)
     struct zlib_state *state = ctx->data;
     inflateEnd(&state->istream);
     deflateEnd(&state->ostream);
-    OPENSSL_free(state);
+    _OPENSSL_free(state);
 }
 
 static int zlib_stateful_compress_block(COMP_CTX *ctx, unsigned char *out,
@@ -352,14 +352,14 @@ static int bio_zlib_free(BIO *bi)
     if (ctx->ibuf) {
         /* Destroy decompress context */
         inflateEnd(&ctx->zin);
-        OPENSSL_free(ctx->ibuf);
+        _OPENSSL_free(ctx->ibuf);
     }
     if (ctx->obuf) {
         /* Destroy compress context */
         deflateEnd(&ctx->zout);
-        OPENSSL_free(ctx->obuf);
+        _OPENSSL_free(ctx->obuf);
     }
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
     BIO_set_data(bi, NULL);
     BIO_set_init(bi, 0);
 
@@ -579,13 +579,13 @@ static long bio_zlib_ctrl(BIO *b, int cmd, long num, void *ptr)
         }
 
         if (ibs != -1) {
-            OPENSSL_free(ctx->ibuf);
+            _OPENSSL_free(ctx->ibuf);
             ctx->ibuf = NULL;
             ctx->ibufsize = ibs;
         }
 
         if (obs != -1) {
-            OPENSSL_free(ctx->obuf);
+            _OPENSSL_free(ctx->obuf);
             ctx->obuf = NULL;
             ctx->obufsize = obs;
         }

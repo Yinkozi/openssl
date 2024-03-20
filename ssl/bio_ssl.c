@@ -84,7 +84,7 @@ static int ssl_free(BIO *a)
         BIO_clear_flags(a, ~0); /* Clear all flags */
         BIO_set_init(a, 0);
     }
-    OPENSSL_free(bs);
+    _OPENSSL_free(bs);
     return 1;
 }
 

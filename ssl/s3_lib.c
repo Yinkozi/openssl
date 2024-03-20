@@ -3324,15 +3324,15 @@ void ssl3_free(SSL *s)
     s->s3->tmp.pkey = NULL;
 #endif
 
-    OPENSSL_free(s->s3->tmp.ctype);
+    _OPENSSL_free(s->s3->tmp.ctype);
     sk_X509_NAME_pop_free(s->s3->tmp.peer_ca_names, X509_NAME_free);
-    OPENSSL_free(s->s3->tmp.ciphers_raw);
+    _OPENSSL_free(s->s3->tmp.ciphers_raw);
     OPENSSL_clear_free(s->s3->tmp.pms, s->s3->tmp.pmslen);
-    OPENSSL_free(s->s3->tmp.peer_sigalgs);
-    OPENSSL_free(s->s3->tmp.peer_cert_sigalgs);
+    _OPENSSL_free(s->s3->tmp.peer_sigalgs);
+    _OPENSSL_free(s->s3->tmp.peer_cert_sigalgs);
     ssl3_free_digest_list(s);
-    OPENSSL_free(s->s3->alpn_selected);
-    OPENSSL_free(s->s3->alpn_proposed);
+    _OPENSSL_free(s->s3->alpn_selected);
+    _OPENSSL_free(s->s3->alpn_proposed);
 
 #ifndef OPENSSL_NO_SRP
     SSL_SRP_CTX_free(s);
@@ -3344,12 +3344,12 @@ void ssl3_free(SSL *s)
 int ssl3_clear(SSL *s)
 {
     ssl3_cleanup_key_block(s);
-    OPENSSL_free(s->s3->tmp.ctype);
+    _OPENSSL_free(s->s3->tmp.ctype);
     sk_X509_NAME_pop_free(s->s3->tmp.peer_ca_names, X509_NAME_free);
-    OPENSSL_free(s->s3->tmp.ciphers_raw);
+    _OPENSSL_free(s->s3->tmp.ciphers_raw);
     OPENSSL_clear_free(s->s3->tmp.pms, s->s3->tmp.pmslen);
-    OPENSSL_free(s->s3->tmp.peer_sigalgs);
-    OPENSSL_free(s->s3->tmp.peer_cert_sigalgs);
+    _OPENSSL_free(s->s3->tmp.peer_sigalgs);
+    _OPENSSL_free(s->s3->tmp.peer_cert_sigalgs);
 
 #if !defined(OPENSSL_NO_EC) || !defined(OPENSSL_NO_DH)
     EVP_PKEY_free(s->s3->tmp.pkey);
@@ -3358,8 +3358,8 @@ int ssl3_clear(SSL *s)
 
     ssl3_free_digest_list(s);
 
-    OPENSSL_free(s->s3->alpn_selected);
-    OPENSSL_free(s->s3->alpn_proposed);
+    _OPENSSL_free(s->s3->alpn_selected);
+    _OPENSSL_free(s->s3->alpn_proposed);
 
     /* NULL/zero-out everything in the s3 struct */
     memset(s->s3, 0, sizeof(*s->s3));
@@ -3370,7 +3370,7 @@ int ssl3_clear(SSL *s)
     s->version = SSL3_VERSION;
 
 #if !defined(OPENSSL_NO_NEXTPROTONEG)
-    OPENSSL_free(s->ext.npn);
+    _OPENSSL_free(s->ext.npn);
     s->ext.npn = NULL;
     s->ext.npn_len = 0;
 #endif
@@ -3478,7 +3478,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
         if (larg == TLSEXT_NAMETYPE_host_name) {
             size_t len;
 
-            OPENSSL_free(s->ext.hostname);
+            _OPENSSL_free(s->ext.hostname);
             s->ext.hostname = NULL;
 
             ret = 1;
@@ -3540,7 +3540,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
         return (long)s->ext.ocsp.resp_len;
 
     case SSL_CTRL_SET_TLSEXT_STATUS_REQ_OCSP_RESP:
-        OPENSSL_free(s->ext.ocsp.resp);
+        _OPENSSL_free(s->ext.ocsp.resp);
         s->ext.ocsp.resp = parg;
         s->ext.ocsp.resp_len = larg;
         ret = 1;
@@ -3887,7 +3887,7 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
 #ifndef OPENSSL_NO_SRP
     case SSL_CTRL_SET_TLS_EXT_SRP_USERNAME:
         ctx->srp_ctx.srp_Mask |= SSL_kSRP;
-        OPENSSL_free(ctx->srp_ctx.login);
+        _OPENSSL_free(ctx->srp_ctx.login);
         ctx->srp_ctx.login = NULL;
         if (parg == NULL)
             break;
@@ -3904,7 +3904,7 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
         ctx->srp_ctx.SRP_give_srp_client_pwd_callback =
             srp_password_from_info_cb;
         if (ctx->srp_ctx.info != NULL)
-            OPENSSL_free(ctx->srp_ctx.info);
+            _OPENSSL_free(ctx->srp_ctx.info);
         if ((ctx->srp_ctx.info = BUF_strdup((char *)parg)) == NULL) {
             SSLerr(SSL_F_SSL3_CTX_CTRL, ERR_R_INTERNAL_ERROR);
             return 0;
@@ -4389,7 +4389,7 @@ int ssl3_get_req_cert_type(SSL *s, WPACKET *pkt)
 
 static int ssl3_set_req_cert_type(CERT *c, const unsigned char *p, size_t len)
 {
-    OPENSSL_free(c->ctype);
+    _OPENSSL_free(c->ctype);
     c->ctype = NULL;
     c->ctype_len = 0;
     if (p == NULL || len == 0)

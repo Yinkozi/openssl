@@ -135,7 +135,7 @@ static int dh_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
         return 1;
 
  err:
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     ASN1_STRING_free(str);
 
     return 0;
@@ -240,7 +240,7 @@ static int dh_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
     return 1;
 
  err:
-    OPENSSL_free(dp);
+    _OPENSSL_free(dp);
     ASN1_STRING_free(params);
     ASN1_STRING_clear_free(prkey);
     return 0;
@@ -404,7 +404,7 @@ static int int_dh_param_copy(DH *to, const DH *from, int is_x942)
             return 0;
         if (!int_dh_bn_cpy(&to->j, from->j))
             return 0;
-        OPENSSL_free(to->seed);
+        _OPENSSL_free(to->seed);
         to->seed = NULL;
         to->seedlen = 0;
         if (from->seed) {
@@ -742,7 +742,7 @@ static int dh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
     rv = 1;
  err:
     X509_ALGOR_free(kekalg);
-    OPENSSL_free(dukm);
+    _OPENSSL_free(dukm);
     return rv;
 }
 
@@ -902,9 +902,9 @@ static int dh_cms_encrypt(CMS_RecipientInfo *ri)
     rv = 1;
 
  err:
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     X509_ALGOR_free(wrap_alg);
-    OPENSSL_free(dukm);
+    _OPENSSL_free(dukm);
     return rv;
 }
 

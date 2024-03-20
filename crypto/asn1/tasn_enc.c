@@ -402,7 +402,7 @@ static int asn1_set_seq_out(STACK_OF(ASN1_VALUE) *sk, unsigned char **out,
                 return 0;
             tmpdat = OPENSSL_malloc(skcontlen);
             if (tmpdat == NULL) {
-                OPENSSL_free(derlst);
+                _OPENSSL_free(derlst);
                 return 0;
             }
         }
@@ -439,8 +439,8 @@ static int asn1_set_seq_out(STACK_OF(ASN1_VALUE) *sk, unsigned char **out,
         for (i = 0, tder = derlst; i < sk_ASN1_VALUE_num(sk); i++, tder++)
             (void)sk_ASN1_VALUE_set(sk, i, tder->field);
     }
-    OPENSSL_free(derlst);
-    OPENSSL_free(tmpdat);
+    _OPENSSL_free(derlst);
+    _OPENSSL_free(tmpdat);
     return 1;
 }
 

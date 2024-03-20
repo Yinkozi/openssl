@@ -901,12 +901,12 @@ int BIO_vprintf(BIO *bio, const char *format, va_list args)
     dynbuf = NULL;
     if (!_dopr(&hugebufp, &dynbuf, &hugebufsize, &retlen, &ignored, format,
                 args)) {
-        OPENSSL_free(dynbuf);
+        _OPENSSL_free(dynbuf);
         return -1;
     }
     if (dynbuf) {
         ret = _BIO_write(bio, dynbuf, (int)retlen);
-        OPENSSL_free(dynbuf);
+        _OPENSSL_free(dynbuf);
     } else {
         ret = _BIO_write(bio, hugebuf, (int)retlen);
     }

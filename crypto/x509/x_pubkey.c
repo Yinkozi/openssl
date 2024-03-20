@@ -345,7 +345,7 @@ int X509_PUBKEY_set0_param(X509_PUBKEY *pub, ASN1_OBJECT *aobj,
     if (!X509_ALGOR_set0(pub->algor, aobj, ptype, pval))
         return 0;
     if (penc) {
-        OPENSSL_free(pub->public_key->data);
+        _OPENSSL_free(pub->public_key->data);
         pub->public_key->data = penc;
         pub->public_key->length = penclen;
         /* Set number of unused bits to zero */

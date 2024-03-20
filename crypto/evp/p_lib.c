@@ -152,7 +152,7 @@ EVP_PKEY *_EVP_PKEY_new(void)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         EVPerr(EVP_F_EVP_PKEY_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -612,7 +612,7 @@ void EVP_PKEY_free(EVP_PKEY *x)
     EVP_PKEY_free_it(x);
     CRYPTO_THREAD_lock_free(x->lock);
     sk_X509_ATTRIBUTE_pop_free(x->attributes, X509_ATTRIBUTE_free);
-    OPENSSL_free(x);
+    _OPENSSL_free(x);
 }
 
 static void EVP_PKEY_free_it(EVP_PKEY *x)

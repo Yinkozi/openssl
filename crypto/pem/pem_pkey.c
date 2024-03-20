@@ -152,8 +152,8 @@ EVP_PKEY *PEM_read_bio_Parameters(BIO *bp, EVP_PKEY **x)
  err:
     if (ret == NULL)
         PEMerr(PEM_F_PEM_READ_BIO_PARAMETERS, ERR_R_ASN1_LIB);
-    OPENSSL_free(nm);
-    OPENSSL_free(data);
+    _OPENSSL_free(nm);
+    _OPENSSL_free(data);
     return ret;
 }
 
@@ -226,8 +226,8 @@ DH *PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u)
 
     if (ret == NULL)
         PEMerr(PEM_F_PEM_READ_BIO_DHPARAMS, ERR_R_ASN1_LIB);
-    OPENSSL_free(nm);
-    OPENSSL_free(data);
+    _OPENSSL_free(nm);
+    _OPENSSL_free(data);
     return ret;
 }
 

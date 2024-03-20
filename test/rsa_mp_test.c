@@ -168,9 +168,9 @@ static int key2048p3(RSA *key)
         goto err;
 
  ret:
-    OPENSSL_free(pris);
-    OPENSSL_free(exps);
-    OPENSSL_free(coeffs);
+    _OPENSSL_free(pris);
+    _OPENSSL_free(exps);
+    _OPENSSL_free(coeffs);
     return rv;
  err:
     if (pris != NULL)

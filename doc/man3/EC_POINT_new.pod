@@ -199,12 +199,12 @@ will still return the required buffer length.
 The function EC_POINT_point2buf() allocates a buffer of suitable length and
 writes an EC_POINT to it in octet format. The allocated buffer is written to
 B<*pbuf> and its length is returned. The caller must free up the allocated
-buffer with a call to OPENSSL_free(). Since the allocated buffer value is
+buffer with a call to _OPENSSL_free(). Since the allocated buffer value is
 written to B<*pbuf> the B<pbuf> parameter B<MUST NOT> be B<NULL>.
 
 The function EC_POINT_point2hex() will allocate sufficient memory to store the
 hexadecimal string. It is the caller's responsibility to free this memory with
-a subsequent call to OPENSSL_free().
+a subsequent call to _OPENSSL_free().
 
 =head1 RETURN VALUES
 

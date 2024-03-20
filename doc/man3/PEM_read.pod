@@ -59,7 +59,7 @@ When an object is successfully retrieved, the type name from the "----BEGIN
 are returned in B<header> and the base64-decoded content and its length are
 returned via B<data> and B<len> respectively.
 The B<name>, B<header> and B<data> pointers are allocated via OPENSSL_malloc()
-and should be freed by the caller via OPENSSL_free() when no longer needed.
+and should be freed by the caller via _OPENSSL_free() when no longer needed.
 
 PEM_get_EVP_CIPHER_INFO() can be used to determine the B<data> returned by
 PEM_read() or PEM_read_bio() is encrypted and to retrieve the associated cipher

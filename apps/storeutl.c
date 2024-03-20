@@ -308,14 +308,14 @@ int storeutl_main(int argc, char *argv[])
                   text, noout, recursive, 0, out, prog);
 
  end:
-    OPENSSL_free(fingerprint);
-    OPENSSL_free(alias);
+    _OPENSSL_free(fingerprint);
+    _OPENSSL_free(alias);
     ASN1_INTEGER_free(serial);
     X509_NAME_free(subject);
     X509_NAME_free(issuer);
     OSSL_STORE_SEARCH_free(search);
     BIO_free_all(out);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     release_engine(e);
     return ret;
 }

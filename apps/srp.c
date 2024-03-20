@@ -101,7 +101,7 @@ static int update_index(CA_DB *db, char **row)
     if (!TXT_DB_insert(db->db, irow)) {
         BIO_printf(bio_err, "failed to update srpvfile\n");
         BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
-        OPENSSL_free(irow);
+        _OPENSSL_free(irow);
         return 0;
     }
     return 1;
@@ -145,7 +145,7 @@ static char *srp_verify_user(const char *user, const char *srp_verifier,
         } else {
             if (strcmp(verifier, srp_verifier))
                 gNid = NULL;
-            OPENSSL_free(verifier);
+            _OPENSSL_free(verifier);
         }
         OPENSSL_cleanse(password, len);
     }
@@ -451,12 +451,12 @@ int srp_main(int argc, char **argv)
                     || (userinfo
                         && ((row[DB_srpinfo] = OPENSSL_strdup(userinfo)) == NULL))
                     || !update_index(db, row)) {
-                    OPENSSL_free(row[DB_srpid]);
-                    OPENSSL_free(row[DB_srpgN]);
-                    OPENSSL_free(row[DB_srpinfo]);
-                    OPENSSL_free(row[DB_srptype]);
-                    OPENSSL_free(row[DB_srpverifier]);
-                    OPENSSL_free(row[DB_srpsalt]);
+                    _OPENSSL_free(row[DB_srpid]);
+                    _OPENSSL_free(row[DB_srpgN]);
+                    _OPENSSL_free(row[DB_srpinfo]);
+                    _OPENSSL_free(row[DB_srptype]);
+                    _OPENSSL_free(row[DB_srpverifier]);
+                    _OPENSSL_free(row[DB_srpsalt]);
                     goto end;
                 }
                 doupdatedb = 1;
@@ -597,8 +597,8 @@ int srp_main(int argc, char **argv)
     if (verbose)
         BIO_printf(bio_err, "SRP terminating with code %d.\n", ret);
 
-    OPENSSL_free(passin);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passin);
+    _OPENSSL_free(passout);
     if (ret)
         ERR_print_errors(bio_err);
     NCONF_free(conf);

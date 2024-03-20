@@ -46,14 +46,14 @@ static void ssl_module_free(CONF_IMODULE *md)
     for (i = 0; i < ssl_names_count; i++) {
         struct ssl_conf_name_st *tname = ssl_names + i;
 
-        OPENSSL_free(tname->name);
+        _OPENSSL_free(tname->name);
         for (j = 0; j < tname->cmd_count; j++) {
-            OPENSSL_free(tname->cmds[j].cmd);
-            OPENSSL_free(tname->cmds[j].arg);
+            _OPENSSL_free(tname->cmds[j].cmd);
+            _OPENSSL_free(tname->cmds[j].arg);
         }
-        OPENSSL_free(tname->cmds);
+        _OPENSSL_free(tname->cmds);
     }
-    OPENSSL_free(ssl_names);
+    _OPENSSL_free(ssl_names);
     ssl_names = NULL;
     ssl_names_count = 0;
 }

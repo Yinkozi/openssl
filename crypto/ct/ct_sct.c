@@ -38,11 +38,11 @@ void SCT_free(SCT *sct)
     if (sct == NULL)
         return;
 
-    OPENSSL_free(sct->log_id);
-    OPENSSL_free(sct->ext);
-    OPENSSL_free(sct->sig);
-    OPENSSL_free(sct->sct);
-    OPENSSL_free(sct);
+    _OPENSSL_free(sct->log_id);
+    _OPENSSL_free(sct->ext);
+    _OPENSSL_free(sct->sig);
+    _OPENSSL_free(sct->sct);
+    _OPENSSL_free(sct);
 }
 
 void SCT_LIST_free(STACK_OF(SCT) *a)
@@ -84,7 +84,7 @@ int SCT_set0_log_id(SCT *sct, unsigned char *log_id, size_t log_id_len)
         return 0;
     }
 
-    OPENSSL_free(sct->log_id);
+    _OPENSSL_free(sct->log_id);
     sct->log_id = log_id;
     sct->log_id_len = log_id_len;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -98,7 +98,7 @@ int SCT_set1_log_id(SCT *sct, const unsigned char *log_id, size_t log_id_len)
         return 0;
     }
 
-    OPENSSL_free(sct->log_id);
+    _OPENSSL_free(sct->log_id);
     sct->log_id = NULL;
     sct->log_id_len = 0;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -142,7 +142,7 @@ int SCT_set_signature_nid(SCT *sct, int nid)
 
 void SCT_set0_extensions(SCT *sct, unsigned char *ext, size_t ext_len)
 {
-    OPENSSL_free(sct->ext);
+    _OPENSSL_free(sct->ext);
     sct->ext = ext;
     sct->ext_len = ext_len;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -150,7 +150,7 @@ void SCT_set0_extensions(SCT *sct, unsigned char *ext, size_t ext_len)
 
 int SCT_set1_extensions(SCT *sct, const unsigned char *ext, size_t ext_len)
 {
-    OPENSSL_free(sct->ext);
+    _OPENSSL_free(sct->ext);
     sct->ext = NULL;
     sct->ext_len = 0;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -168,7 +168,7 @@ int SCT_set1_extensions(SCT *sct, const unsigned char *ext, size_t ext_len)
 
 void SCT_set0_signature(SCT *sct, unsigned char *sig, size_t sig_len)
 {
-    OPENSSL_free(sct->sig);
+    _OPENSSL_free(sct->sig);
     sct->sig = sig;
     sct->sig_len = sig_len;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -176,7 +176,7 @@ void SCT_set0_signature(SCT *sct, unsigned char *sig, size_t sig_len)
 
 int SCT_set1_signature(SCT *sct, const unsigned char *sig, size_t sig_len)
 {
-    OPENSSL_free(sct->sig);
+    _OPENSSL_free(sct->sig);
     sct->sig = NULL;
     sct->sig_len = 0;
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;

@@ -172,12 +172,12 @@ static unsigned int psk_server_cb(SSL *ssl, const char *identity,
         BIO_printf(bio_err,
                    "psk buffer of callback is too small (%d) for key (%ld)\n",
                    max_psk_len, key_len);
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
         return 0;
     }
 
     memcpy(psk, key, key_len);
-    OPENSSL_free(key);
+    _OPENSSL_free(key);
 
     if (s_debug)
         BIO_printf(bio_s_out, "fetched PSK len=%ld\n", key_len);
@@ -222,7 +222,7 @@ static int psk_find_session_cb(SSL *ssl, const unsigned char *identity,
     cipher = SSL_CIPHER_find(ssl, tls13_aes128gcmsha256_id);
     if (cipher == NULL) {
         BIO_printf(bio_err, "Error finding suitable ciphersuite\n");
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
         return 0;
     }
 
@@ -231,10 +231,10 @@ static int psk_find_session_cb(SSL *ssl, const unsigned char *identity,
             || !SSL_SESSION_set1_master_key(tmpsess, key, key_len)
             || !SSL_SESSION_set_cipher(tmpsess, cipher)
             || !SSL_SESSION_set_protocol_version(tmpsess, SSL_version(ssl))) {
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
         return 0;
     }
-    OPENSSL_free(key);
+    _OPENSSL_free(key);
     *sess = tmpsess;
 
     return 1;
@@ -352,7 +352,7 @@ static int ebcdic_free(BIO *a)
     if (a == NULL)
         return 0;
     wbuf = BIO_get_data(a);
-    OPENSSL_free(wbuf);
+    _OPENSSL_free(wbuf);
     BIO_set_data(a, NULL);
     BIO_set_init(a, 0);
 
@@ -393,7 +393,7 @@ static int ebcdic_write(BIO *b, const char *in, int inl)
         num = num + num;        /* double the size */
         if (num < inl)
             num = inl;
-        OPENSSL_free(wbuf);
+        _OPENSSL_free(wbuf);
         wbuf = app_malloc(sizeof(*wbuf) + num, "grow ebcdic wbuf");
 
         wbuf->alloced = num;
@@ -603,9 +603,9 @@ static int get_ocsp_resp_from_responder(SSL *s, tlsextstatusctx *srctx,
      * don't
      */
     if (aia != NULL) {
-        OPENSSL_free(host);
-        OPENSSL_free(path);
-        OPENSSL_free(port);
+        _OPENSSL_free(host);
+        _OPENSSL_free(path);
+        _OPENSSL_free(port);
         X509_email_free(aia);
     }
     OCSP_CERTID_free(id);
@@ -1108,8 +1108,8 @@ int s_server_main(int argc, char *argv[])
         case OPT_4:
 #ifdef AF_UNIX
             if (socket_family == AF_UNIX) {
-                OPENSSL_free(host); host = NULL;
-                OPENSSL_free(port); port = NULL;
+                _OPENSSL_free(host); host = NULL;
+                _OPENSSL_free(port); port = NULL;
             }
 #endif
             socket_family = AF_INET;
@@ -1119,8 +1119,8 @@ int s_server_main(int argc, char *argv[])
 #ifdef AF_INET6
 #ifdef AF_UNIX
                 if (socket_family == AF_UNIX) {
-                    OPENSSL_free(host); host = NULL;
-                    OPENSSL_free(port); port = NULL;
+                    _OPENSSL_free(host); host = NULL;
+                    _OPENSSL_free(port); port = NULL;
                 }
 #endif
                 socket_family = AF_INET6;
@@ -1136,8 +1136,8 @@ int s_server_main(int argc, char *argv[])
                 socket_family = AF_UNSPEC;
             }
 #endif
-            OPENSSL_free(port); port = NULL;
-            OPENSSL_free(host); host = NULL;
+            _OPENSSL_free(port); port = NULL;
+            _OPENSSL_free(host); host = NULL;
             if (BIO_parse_hostserv(opt_arg(), NULL, &port, BIO_PARSE_PRIO_SERV) < 1) {
                 BIO_printf(bio_err,
                            "%s: -port argument malformed or ambiguous\n",
@@ -1151,8 +1151,8 @@ int s_server_main(int argc, char *argv[])
                 socket_family = AF_UNSPEC;
             }
 #endif
-            OPENSSL_free(port); port = NULL;
-            OPENSSL_free(host); host = NULL;
+            _OPENSSL_free(port); port = NULL;
+            _OPENSSL_free(host); host = NULL;
             if (BIO_parse_hostserv(opt_arg(), &host, &port, BIO_PARSE_PRIO_SERV) < 1) {
                 BIO_printf(bio_err,
                            "%s: -accept argument malformed or ambiguous\n",
@@ -1163,8 +1163,8 @@ int s_server_main(int argc, char *argv[])
 #ifdef AF_UNIX
         case OPT_UNIX:
             socket_family = AF_UNIX;
-            OPENSSL_free(host); host = BUF_strdup(opt_arg());
-            OPENSSL_free(port); port = NULL;
+            _OPENSSL_free(host); host = BUF_strdup(opt_arg());
+            _OPENSSL_free(port); port = NULL;
             break;
         case OPT_UNLINK:
             unlink_unix_path = 1;
@@ -2178,22 +2178,22 @@ int s_server_main(int argc, char *argv[])
     EVP_PKEY_free(s_dkey);
     sk_X509_pop_free(s_chain, X509_free);
     sk_X509_pop_free(s_dchain, X509_free);
-    OPENSSL_free(pass);
-    OPENSSL_free(dpass);
-    OPENSSL_free(host);
-    OPENSSL_free(port);
+    _OPENSSL_free(pass);
+    _OPENSSL_free(dpass);
+    _OPENSSL_free(host);
+    _OPENSSL_free(port);
     X509_VERIFY_PARAM_free(vpm);
     free_sessions();
-    OPENSSL_free(tlscstatp.host);
-    OPENSSL_free(tlscstatp.port);
-    OPENSSL_free(tlscstatp.path);
+    _OPENSSL_free(tlscstatp.host);
+    _OPENSSL_free(tlscstatp.port);
+    _OPENSSL_free(tlscstatp.path);
     SSL_CTX_free(ctx2);
     X509_free(s_cert2);
     EVP_PKEY_free(s_key2);
 #ifndef OPENSSL_NO_NEXTPROTONEG
-    OPENSSL_free(next_proto.data);
+    _OPENSSL_free(next_proto.data);
 #endif
-    OPENSSL_free(alpn_ctx.data);
+    _OPENSSL_free(alpn_ctx.data);
     ssl_excert_free(exc);
     sk_OPENSSL_STRING_free(ssl_args);
     SSL_CONF_CTX_free(cctx);
@@ -2971,7 +2971,7 @@ static void print_connection_info(SSL *con)
                 BIO_printf(bio_s_out, "%02X", exportedkeymat[i]);
             BIO_printf(bio_s_out, "\n");
         }
-        OPENSSL_free(exportedkeymat);
+        _OPENSSL_free(exportedkeymat);
     }
 
     (void)BIO_flush(bio_s_out);
@@ -3380,7 +3380,7 @@ static int www_body(int s, int stype, int prot, unsigned char *context)
     SSL_set_shutdown(con, SSL_SENT_SHUTDOWN | SSL_RECEIVED_SHUTDOWN);
 
  err:
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     BIO_free_all(io);
     return ret;
 }
@@ -3535,7 +3535,7 @@ static int rev_body(int s, int stype, int prot, unsigned char *context)
 
  err:
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     BIO_free_all(io);
     return ret;
 }
@@ -3592,7 +3592,7 @@ static int add_session(SSL *ssl, SSL_SESSION *session)
     sess->derlen = i2d_SSL_SESSION(session, NULL);
     if (sess->derlen < 0) {
         BIO_printf(bio_err, "Error encoding session\n");
-        OPENSSL_free(sess);
+        _OPENSSL_free(sess);
         return 0;
     }
 
@@ -3600,9 +3600,9 @@ static int add_session(SSL *ssl, SSL_SESSION *session)
     sess->der = app_malloc(sess->derlen, "get session buffer");
     if (!sess->id) {
         BIO_printf(bio_err, "Out of memory adding to external cache\n");
-        OPENSSL_free(sess->id);
-        OPENSSL_free(sess->der);
-        OPENSSL_free(sess);
+        _OPENSSL_free(sess->id);
+        _OPENSSL_free(sess->der);
+        _OPENSSL_free(sess);
         return 0;
     }
     p = sess->der;
@@ -3610,9 +3610,9 @@ static int add_session(SSL *ssl, SSL_SESSION *session)
     /* Assume it still works. */
     if (i2d_SSL_SESSION(session, &p) != sess->derlen) {
         BIO_printf(bio_err, "Unexpected session encoding length\n");
-        OPENSSL_free(sess->id);
-        OPENSSL_free(sess->der);
-        OPENSSL_free(sess);
+        _OPENSSL_free(sess->id);
+        _OPENSSL_free(sess->der);
+        _OPENSSL_free(sess);
         return 0;
     }
 
@@ -3650,9 +3650,9 @@ static void del_session(SSL_CTX *sctx, SSL_SESSION *session)
                 prev->next = sess->next;
             else
                 first = sess->next;
-            OPENSSL_free(sess->id);
-            OPENSSL_free(sess->der);
-            OPENSSL_free(sess);
+            _OPENSSL_free(sess->id);
+            _OPENSSL_free(sess->der);
+            _OPENSSL_free(sess);
             return;
         }
         prev = sess;
@@ -3673,11 +3673,11 @@ static void free_sessions(void)
 {
     simple_ssl_session *sess, *tsess;
     for (sess = first; sess;) {
-        OPENSSL_free(sess->id);
-        OPENSSL_free(sess->der);
+        _OPENSSL_free(sess->id);
+        _OPENSSL_free(sess->der);
         tsess = sess;
         sess = sess->next;
-        OPENSSL_free(tsess);
+        _OPENSSL_free(tsess);
     }
     first = NULL;
 }

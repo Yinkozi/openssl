@@ -261,7 +261,7 @@ static SS *SS_copy(const SS *p)
 }
 
 static void SS_free(SS *p) {
-    OPENSSL_free(p);
+    _OPENSSL_free(p);
 }
 
 static int test_SS_stack(void)

@@ -409,7 +409,7 @@ static void wait_cleanup(ASYNC_WAIT_CTX *ctx, const void *key,
     close(readfd);
     close(*pwritefd);
 #endif
-    OPENSSL_free(pwritefd);
+    _OPENSSL_free(pwritefd);
 }
 
 #define DUMMY_CHAR 'X'
@@ -440,12 +440,12 @@ static void dummy_pause_job(void) {
             return;
 #if defined(ASYNC_WIN)
         if (CreatePipe(&pipefds[0], &pipefds[1], NULL, 256) == 0) {
-            OPENSSL_free(writefd);
+            _OPENSSL_free(writefd);
             return;
         }
 #elif defined(ASYNC_POSIX)
         if (pipe(pipefds) != 0) {
-            OPENSSL_free(writefd);
+            _OPENSSL_free(writefd);
             return;
         }
 #endif

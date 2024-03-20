@@ -82,13 +82,13 @@ SSL_SESSION *SSL_SESSION_new(void)
     ss->lock = CRYPTO_THREAD_lock_new();
     if (ss->lock == NULL) {
         SSLerr(SSL_F_SSL_SESSION_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ss);
+        _OPENSSL_free(ss);
         return NULL;
     }
 
     if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_SSL_SESSION, ss, &ss->ex_data)) {
         CRYPTO_THREAD_lock_free(ss->lock);
-        OPENSSL_free(ss);
+        _OPENSSL_free(ss);
         return NULL;
     }
     return ss;
@@ -140,7 +140,7 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
 
     dest->lock = CRYPTO_THREAD_lock_new();
     if (dest->lock == NULL) {
-        OPENSSL_free(dest);
+        _OPENSSL_free(dest);
         dest = NULL;
         goto err;
     }
@@ -765,17 +765,17 @@ void SSL_SESSION_free(SSL_SESSION *ss)
     OPENSSL_cleanse(ss->session_id, sizeof(ss->session_id));
     X509_free(ss->peer);
     sk_X509_pop_free(ss->peer_chain, X509_free);
-    OPENSSL_free(ss->ext.hostname);
-    OPENSSL_free(ss->ext.tick);
+    _OPENSSL_free(ss->ext.hostname);
+    _OPENSSL_free(ss->ext.tick);
 #ifndef OPENSSL_NO_PSK
-    OPENSSL_free(ss->psk_identity_hint);
-    OPENSSL_free(ss->psk_identity);
+    _OPENSSL_free(ss->psk_identity_hint);
+    _OPENSSL_free(ss->psk_identity);
 #endif
 #ifndef OPENSSL_NO_SRP
-    OPENSSL_free(ss->srp_username);
+    _OPENSSL_free(ss->srp_username);
 #endif
-    OPENSSL_free(ss->ext.alpn_selected);
-    OPENSSL_free(ss->ticket_appdata);
+    _OPENSSL_free(ss->ext.alpn_selected);
+    _OPENSSL_free(ss->ticket_appdata);
     CRYPTO_THREAD_lock_free(ss->lock);
     OPENSSL_clear_free(ss, sizeof(*ss));
 }
@@ -883,7 +883,7 @@ const char *SSL_SESSION_get0_hostname(const SSL_SESSION *s)
 
 int SSL_SESSION_set1_hostname(SSL_SESSION *s, const char *hostname)
 {
-    OPENSSL_free(s->ext.hostname);
+    _OPENSSL_free(s->ext.hostname);
     if (hostname == NULL) {
         s->ext.hostname = NULL;
         return 1;
@@ -934,7 +934,7 @@ void SSL_SESSION_get0_alpn_selected(const SSL_SESSION *s,
 int SSL_SESSION_set1_alpn_selected(SSL_SESSION *s, const unsigned char *alpn,
                                    size_t len)
 {
-    OPENSSL_free(s->ext.alpn_selected);
+    _OPENSSL_free(s->ext.alpn_selected);
     if (alpn == NULL || len == 0) {
         s->ext.alpn_selected = NULL;
         s->ext.alpn_selected_len = 0;
@@ -1021,7 +1021,7 @@ int SSL_set_session_ticket_ext_cb(SSL *s, tls_session_ticket_ext_cb_fn cb,
 int SSL_set_session_ticket_ext(SSL *s, void *ext_data, int ext_len)
 {
     if (s->version >= TLS1_VERSION) {
-        OPENSSL_free(s->ext.session_ticket);
+        _OPENSSL_free(s->ext.session_ticket);
         s->ext.session_ticket = NULL;
         s->ext.session_ticket =
             OPENSSL_malloc(sizeof(TLS_SESSION_TICKET_EXT) + ext_len);
@@ -1241,7 +1241,7 @@ void SSL_CTX_set_cookie_verify_cb(SSL_CTX *ctx,
 
 int SSL_SESSION_set1_ticket_appdata(SSL_SESSION *ss, const void *data, size_t len)
 {
-    OPENSSL_free(ss->ticket_appdata);
+    _OPENSSL_free(ss->ticket_appdata);
     ss->ticket_appdata_len = 0;
     if (data == NULL || len == 0) {
         ss->ticket_appdata = NULL;

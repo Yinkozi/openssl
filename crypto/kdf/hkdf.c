@@ -64,7 +64,7 @@ static void pkey_hkdf_cleanup(EVP_PKEY_CTX *ctx)
     OPENSSL_clear_free(kctx->salt, kctx->salt_len);
     OPENSSL_clear_free(kctx->key, kctx->key_len);
     OPENSSL_cleanse(kctx->info, kctx->info_len);
-    OPENSSL_free(kctx);
+    _OPENSSL_free(kctx);
 }
 
 static int pkey_hkdf_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)

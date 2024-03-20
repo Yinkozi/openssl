@@ -233,9 +233,9 @@ static int dh_test(void)
     BN_free(priv_key);
  err3:
  success:
-    OPENSSL_free(abuf);
-    OPENSSL_free(bbuf);
-    OPENSSL_free(cbuf);
+    _OPENSSL_free(abuf);
+    _OPENSSL_free(bbuf);
+    _OPENSSL_free(cbuf);
     DH_free(b);
     DH_free(a);
     DH_free(c);
@@ -591,9 +591,9 @@ static int rfc5114_test(void)
         dhA = NULL;
         DH_free(dhB);
         dhB = NULL;
-        OPENSSL_free(Z1);
+        _OPENSSL_free(Z1);
         Z1 = NULL;
-        OPENSSL_free(Z2);
+        _OPENSSL_free(Z2);
         Z2 = NULL;
     }
 
@@ -622,7 +622,7 @@ static int rfc5114_test(void)
     ERR_clear_error();
     BN_free(bady);
     DH_free(dhA);
-    OPENSSL_free(Z1);
+    _OPENSSL_free(Z1);
     return 1;
 
  bad_err:
@@ -631,8 +631,8 @@ static int rfc5114_test(void)
     DH_free(dhB);
     BN_free(pub_key);
     BN_free(priv_key);
-    OPENSSL_free(Z1);
-    OPENSSL_free(Z2);
+    _OPENSSL_free(Z1);
+    _OPENSSL_free(Z2);
     TEST_error("Initialisation error RFC5114 set %d\n", i + 1);
     return 0;
 
@@ -640,8 +640,8 @@ static int rfc5114_test(void)
     BN_free(bady);
     DH_free(dhA);
     DH_free(dhB);
-    OPENSSL_free(Z1);
-    OPENSSL_free(Z2);
+    _OPENSSL_free(Z1);
+    _OPENSSL_free(Z2);
     TEST_error("Test failed RFC5114 set %d\n", i + 1);
     return 0;
 }
@@ -696,8 +696,8 @@ static int rfc7919_test(void)
     ret = 1;
 
  err:
-    OPENSSL_free(abuf);
-    OPENSSL_free(bbuf);
+    _OPENSSL_free(abuf);
+    _OPENSSL_free(bbuf);
     DH_free(a);
     DH_free(b);
     return ret;

@@ -3354,8 +3354,8 @@ int speed_main(int argc, char **argv)
  end:
     ERR_print_errors(bio_err);
     for (i = 0; i < loopargs_len; i++) {
-        OPENSSL_free(loopargs[i].buf_malloc);
-        OPENSSL_free(loopargs[i].buf2_malloc);
+        _OPENSSL_free(loopargs[i].buf_malloc);
+        _OPENSSL_free(loopargs[i].buf2_malloc);
 
 #ifndef OPENSSL_NO_RSA
         for (k = 0; k < RSA_NUM; k++)
@@ -3372,8 +3372,8 @@ int speed_main(int argc, char **argv)
             EVP_PKEY_CTX_free(loopargs[i].ecdh_ctx[k]);
         for (k = 0; k < EdDSA_NUM; k++)
             EVP_MD_CTX_free(loopargs[i].eddsa_ctx[k]);
-        OPENSSL_free(loopargs[i].secret_a);
-        OPENSSL_free(loopargs[i].secret_b);
+        _OPENSSL_free(loopargs[i].secret_a);
+        _OPENSSL_free(loopargs[i].secret_b);
 #endif
     }
 
@@ -3385,7 +3385,7 @@ int speed_main(int argc, char **argv)
     if (async_init) {
         ASYNC_cleanup_thread();
     }
-    OPENSSL_free(loopargs);
+    _OPENSSL_free(loopargs);
     release_engine(e);
     return ret;
 }
@@ -3494,7 +3494,7 @@ static int do_multi(int multi, int size_num)
             close(fd[1]);
             mr = 1;
             usertime = 0;
-            OPENSSL_free(fds);
+            _OPENSSL_free(fds);
             return 0;
         }
         printf("Forked child %d\n", n);
@@ -3607,7 +3607,7 @@ static int do_multi(int multi, int size_num)
 
         fclose(f);
     }
-    OPENSSL_free(fds);
+    _OPENSSL_free(fds);
     return 1;
 }
 #endif
@@ -3717,7 +3717,7 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
         fprintf(stdout, "\n");
     }
 
-    OPENSSL_free(inp);
-    OPENSSL_free(out);
+    _OPENSSL_free(inp);
+    _OPENSSL_free(out);
     _EVP_CIPHER_CTX_free(ctx);
 }

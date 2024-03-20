@@ -435,7 +435,7 @@ static int cmd_Certificate(SSL_CONF_CTX *cctx, const char *value)
     }
     if (rv > 0 && c && cctx->flags & SSL_CONF_FLAG_REQUIRE_PRIVATE) {
         char **pfilename = &cctx->cert_filename[c->key - c->pkeys];
-        OPENSSL_free(*pfilename);
+        _OPENSSL_free(*pfilename);
         *pfilename = OPENSSL_strdup(value);
         if (!*pfilename)
             rv = 0;
@@ -925,10 +925,10 @@ void SSL_CONF_CTX_free(SSL_CONF_CTX *cctx)
     if (cctx) {
         size_t i;
         for (i = 0; i < SSL_PKEY_NUM; i++)
-            OPENSSL_free(cctx->cert_filename[i]);
-        OPENSSL_free(cctx->prefix);
+            _OPENSSL_free(cctx->cert_filename[i]);
+        _OPENSSL_free(cctx->prefix);
         sk_X509_NAME_pop_free(cctx->canames, X509_NAME_free);
-        OPENSSL_free(cctx);
+        _OPENSSL_free(cctx);
     }
 }
 
@@ -952,7 +952,7 @@ int SSL_CONF_CTX_set1_prefix(SSL_CONF_CTX *cctx, const char *pre)
         if (tmp == NULL)
             return 0;
     }
-    OPENSSL_free(cctx->prefix);
+    _OPENSSL_free(cctx->prefix);
     cctx->prefix = tmp;
     if (tmp)
         cctx->prefixlen = strlen(tmp);

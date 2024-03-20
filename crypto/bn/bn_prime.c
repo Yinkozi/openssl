@@ -135,7 +135,7 @@ int BN_generate_prime_ex(BIGNUM *ret, int bits, int safe,
     /* we have a prime :-) */
     found = 1;
  err:
-    OPENSSL_free(mods);
+    _OPENSSL_free(mods);
     BN_CTX_end(ctx);
     BN_CTX_free(ctx);
     bn_check_top(ret);

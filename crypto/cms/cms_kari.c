@@ -217,7 +217,7 @@ static int cms_kek_cipher(unsigned char **pout, size_t *poutlen,
  err:
     OPENSSL_cleanse(kek, keklen);
     if (!rv)
-        OPENSSL_free(out);
+        _OPENSSL_free(out);
     EVP_CIPHER_CTX_reset(kari->ctx);
     /* FIXME: WHY IS kari->pctx freed here?  /RL */
     EVP_PKEY_CTX_free(kari->pctx);
@@ -249,7 +249,7 @@ int CMS_RecipientInfo_kari_decrypt(CMS_ContentInfo *cms,
     cek = NULL;
     rv = 1;
  err:
-    OPENSSL_free(cek);
+    _OPENSSL_free(cek);
     return rv;
 }
 

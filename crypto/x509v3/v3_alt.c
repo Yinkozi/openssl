@@ -579,7 +579,7 @@ static int do_othername(GENERAL_NAME *gen, const char *value, X509V3_CTX *ctx)
     if (objtmp == NULL)
         return 0;
     gen->d.otherName->type_id = OBJ_txt2obj(objtmp, 0);
-    OPENSSL_free(objtmp);
+    _OPENSSL_free(objtmp);
     if (!gen->d.otherName->type_id)
         return 0;
     return 1;

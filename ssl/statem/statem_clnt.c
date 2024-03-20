@@ -1745,10 +1745,10 @@ MSG_PROCESS_RETURN tls_process_server_hello(SSL *s, PACKET *pkt)
         goto err;
     }
 
-    OPENSSL_free(extensions);
+    _OPENSSL_free(extensions);
     return MSG_PROCESS_CONTINUE_READING;
  err:
-    OPENSSL_free(extensions);
+    _OPENSSL_free(extensions);
     return MSG_PROCESS_ERROR;
 }
 
@@ -1772,7 +1772,7 @@ static MSG_PROCESS_RETURN tls_process_as_hello_retry_request(SSL *s,
         goto err;
     }
 
-    OPENSSL_free(extensions);
+    _OPENSSL_free(extensions);
     extensions = NULL;
 
     if (s->ext.tls13_cookie_len == 0
@@ -1813,7 +1813,7 @@ static MSG_PROCESS_RETURN tls_process_as_hello_retry_request(SSL *s,
 
     return MSG_PROCESS_FINISHED_READING;
  err:
-    OPENSSL_free(extensions);
+    _OPENSSL_free(extensions);
     return MSG_PROCESS_ERROR;
 }
 
@@ -1884,11 +1884,11 @@ MSG_PROCESS_RETURN tls_process_server_certificate(SSL *s, PACKET *pkt)
                 || !tls_parse_all_extensions(s, SSL_EXT_TLS1_3_CERTIFICATE,
                                              rawexts, x, chainidx,
                                              PACKET_remaining(pkt) == 0)) {
-                OPENSSL_free(rawexts);
+                _OPENSSL_free(rawexts);
                 /* SSLfatal already called */
                 goto err;
             }
-            OPENSSL_free(rawexts);
+            _OPENSSL_free(rawexts);
         }
 
         if (!sk_X509_push(sk, x)) {
@@ -2017,7 +2017,7 @@ static int tls_process_ske_psk_preamble(SSL *s, PACKET *pkt)
     }
 
     if (PACKET_remaining(&psk_identity_hint) == 0) {
-        OPENSSL_free(s->session->psk_identity_hint);
+        _OPENSSL_free(s->session->psk_identity_hint);
         s->session->psk_identity_hint = NULL;
     } else if (!PACKET_strndup(&psk_identity_hint,
                                &s->session->psk_identity_hint)) {
@@ -2407,7 +2407,7 @@ MSG_PROCESS_RETURN tls_process_key_exchange(SSL *s, PACKET *pkt)
 
         rv = EVP_DigestVerify(md_ctx, PACKET_data(&signature),
                               PACKET_remaining(&signature), tbs, tbslen);
-        OPENSSL_free(tbs);
+        _OPENSSL_free(tbs);
         if (rv <= 0) {
             SSLfatal(s, SSL_AD_DECRYPT_ERROR, SSL_F_TLS_PROCESS_KEY_EXCHANGE,
                      SSL_R_BAD_SIGNATURE);
@@ -2463,10 +2463,10 @@ MSG_PROCESS_RETURN tls_process_certificate_request(SSL *s, PACKET *pkt)
         }
 
         /* Free and zero certificate types: it is not present in TLS 1.3 */
-        OPENSSL_free(s->s3->tmp.ctype);
+        _OPENSSL_free(s->s3->tmp.ctype);
         s->s3->tmp.ctype = NULL;
         s->s3->tmp.ctype_len = 0;
-        OPENSSL_free(s->pha_context);
+        _OPENSSL_free(s->pha_context);
         s->pha_context = NULL;
         s->pha_context_len = 0;
 
@@ -2490,10 +2490,10 @@ MSG_PROCESS_RETURN tls_process_certificate_request(SSL *s, PACKET *pkt)
             || !tls_parse_all_extensions(s, SSL_EXT_TLS1_3_CERTIFICATE_REQUEST,
                                          rawexts, NULL, 0, 1)) {
             /* SSLfatal() already called */
-            OPENSSL_free(rawexts);
+            _OPENSSL_free(rawexts);
             return MSG_PROCESS_ERROR;
         }
-        OPENSSL_free(rawexts);
+        _OPENSSL_free(rawexts);
         if (!tls1_process_sigalgs(s)) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                      SSL_F_TLS_PROCESS_CERTIFICATE_REQUEST,
@@ -2649,7 +2649,7 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
      */
     s->session->time = (long)time(NULL);
 
-    OPENSSL_free(s->session->ext.tick);
+    _OPENSSL_free(s->session->ext.tick);
     s->session->ext.tick = NULL;
     s->session->ext.ticklen = 0;
 
@@ -2744,14 +2744,14 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
         }
         s->session->master_key_length = hashlen;
 
-        OPENSSL_free(exts);
+        _OPENSSL_free(exts);
         ssl_update_cache(s, SSL_SESS_CACHE_CLIENT);
         return MSG_PROCESS_FINISHED_READING;
     }
 
     return MSG_PROCESS_CONTINUE_READING;
  err:
-    OPENSSL_free(exts);
+    _OPENSSL_free(exts);
     return MSG_PROCESS_ERROR;
 }
 
@@ -2937,11 +2937,11 @@ static int tls_construct_cke_psk_preamble(SSL *s, WPACKET *pkt)
         goto err;
     }
 
-    OPENSSL_free(s->s3->tmp.psk);
+    _OPENSSL_free(s->s3->tmp.psk);
     s->s3->tmp.psk = tmppsk;
     s->s3->tmp.psklen = psklen;
     tmppsk = NULL;
-    OPENSSL_free(s->session->psk_identity);
+    _OPENSSL_free(s->session->psk_identity);
     s->session->psk_identity = tmpidentity;
     tmpidentity = NULL;
 
@@ -3163,7 +3163,7 @@ static int tls_construct_cke_ecdhe(SSL *s, WPACKET *pkt)
 
     ret = 1;
  err:
-    OPENSSL_free(encodedPoint);
+    _OPENSSL_free(encodedPoint);
     EVP_PKEY_free(ckey);
     return ret;
 #else
@@ -3304,7 +3304,7 @@ static int tls_construct_cke_srp(SSL *s, WPACKET *pkt)
     }
     BN_bn2bin(s->srp_ctx.A, abytes);
 
-    OPENSSL_free(s->session->srp_username);
+    _OPENSSL_free(s->session->srp_username);
     s->session->srp_username = OPENSSL_strdup(s->srp_ctx.login);
     if (s->session->srp_username == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CKE_SRP,
@@ -3708,11 +3708,11 @@ static MSG_PROCESS_RETURN tls_process_encrypted_extensions(SSL *s, PACKET *pkt)
         goto err;
     }
 
-    OPENSSL_free(rawexts);
+    _OPENSSL_free(rawexts);
     return MSG_PROCESS_CONTINUE_READING;
 
  err:
-    OPENSSL_free(rawexts);
+    _OPENSSL_free(rawexts);
     return MSG_PROCESS_ERROR;
 }
 

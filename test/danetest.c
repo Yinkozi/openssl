@@ -130,9 +130,9 @@ static STACK_OF(X509) *load_chain(BIO *fp, int nelem)
             goto err;
         }
 
-        OPENSSL_free(name);
-        OPENSSL_free(header);
-        OPENSSL_free(data);
+        _OPENSSL_free(name);
+        _OPENSSL_free(header);
+        _OPENSSL_free(data);
         name = header = NULL;
         data = NULL;
     }
@@ -143,9 +143,9 @@ static STACK_OF(X509) *load_chain(BIO *fp, int nelem)
     }
 
 err:
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(data);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(data);
     sk_X509_pop_free(chain, X509_free);
     return NULL;
 }
@@ -196,7 +196,7 @@ static ossl_ssize_t hexdecode(const char *in, void *result)
             continue;
         x = OPENSSL_hexchar2int(*in);
         if (x < 0) {
-            OPENSSL_free(ret);
+            _OPENSSL_free(ret);
             return 0;
         }
         byte |= (char)x;
@@ -208,7 +208,7 @@ static ossl_ssize_t hexdecode(const char *in, void *result)
         }
     }
     if (nibble != 0) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return 0;
     }
 
@@ -269,7 +269,7 @@ static int tlsa_import_rr(SSL *ssl, const char *rrdata)
     }
 
     ret = SSL_dane_tlsa_add(ssl, usage, selector, mtype, data, len);
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
     if (ret == 0) {
         TEST_info("unusable TLSA rrdata: %s", rrdata);
         return 0;

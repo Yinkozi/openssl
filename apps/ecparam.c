@@ -178,7 +178,7 @@ int ecparam_main(int argc, char **argv)
 
         curves = app_malloc((int)sizeof(*curves) * crv_len, "list curves");
         if (!EC_get_builtin_curves(curves, crv_len)) {
-            OPENSSL_free(curves);
+            _OPENSSL_free(curves);
             goto end;
         }
 
@@ -196,7 +196,7 @@ int ecparam_main(int argc, char **argv)
             BIO_printf(out, "%s\n", comment);
         }
 
-        OPENSSL_free(curves);
+        _OPENSSL_free(curves);
         ret = 0;
         goto end;
     }
@@ -435,7 +435,7 @@ int ecparam_main(int argc, char **argv)
     BN_free(ec_gen);
     BN_free(ec_order);
     BN_free(ec_cofactor);
-    OPENSSL_free(buffer);
+    _OPENSSL_free(buffer);
     EC_GROUP_free(group);
     release_engine(e);
     _BIO_free(in);

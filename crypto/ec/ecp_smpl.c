@@ -1351,7 +1351,7 @@ int ec_GFp_simple_points_make_affine(const EC_GROUP *group, size_t num,
                 break;
             BN_clear_free(prod_Z[i]);
         }
-        OPENSSL_free(prod_Z);
+        _OPENSSL_free(prod_Z);
     }
     return ret;
 }

@@ -282,8 +282,8 @@ struct mempacket_st {
 static void mempacket_free(MEMPACKET *pkt)
 {
     if (pkt->data != NULL)
-        OPENSSL_free(pkt->data);
-    OPENSSL_free(pkt);
+        _OPENSSL_free(pkt->data);
+    _OPENSSL_free(pkt);
 }
 
 typedef struct mempacket_test_ctx_st {
@@ -336,7 +336,7 @@ static int mempacket_test_new(BIO *bio)
     if (!TEST_ptr(ctx = OPENSSL_zalloc(sizeof(*ctx))))
         return 0;
     if (!TEST_ptr(ctx->pkts = sk_MEMPACKET_new_null())) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
     ctx->dropepoch = 0;
@@ -351,7 +351,7 @@ static int mempacket_test_free(BIO *bio)
     MEMPACKET_TEST_CTX *ctx = BIO_get_data(bio);
 
     sk_MEMPACKET_pop_free(ctx->pkts, mempacket_free);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
     BIO_set_data(bio, NULL);
     BIO_set_init(bio, 0);
     return 1;

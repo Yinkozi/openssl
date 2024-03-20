@@ -147,7 +147,7 @@ static void cleanup3_doall(ADDED_OBJ *a)
 {
     if (--a->obj->nid == 0)
         ASN1_OBJECT_free(a->obj);
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 void obj_cleanup_int(void)
@@ -200,7 +200,7 @@ int OBJ_add_object(const ASN1_OBJECT *obj)
             ao[i]->obj = o;
             aop = lh_ADDED_OBJ_insert(added, ao[i]);
             /* memory leak, but should not normally matter */
-            OPENSSL_free(aop);
+            _OPENSSL_free(aop);
         }
     }
     o->flags &=
@@ -212,7 +212,7 @@ int OBJ_add_object(const ASN1_OBJECT *obj)
     OBJerr(OBJ_F_OBJ_ADD_OBJECT, ERR_R_MALLOC_FAILURE);
  err:
     for (i = ADDED_DATA; i <= ADDED_NID; i++)
-        OPENSSL_free(ao[i]);
+        _OPENSSL_free(ao[i]);
     ASN1_OBJECT_free(o);
     return NID_undef;
 }
@@ -390,7 +390,7 @@ ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
 
     cp = buf;
     op = d2i_ASN1_OBJECT(NULL, &cp, j);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return op;
 }
 
@@ -520,7 +520,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
             }
             n++;
             n += i;
-            OPENSSL_free(bndec);
+            _OPENSSL_free(bndec);
         } else {
             BIO_snprintf(tbuf, sizeof(tbuf), ".%lu", l);
             i = strlen(tbuf);

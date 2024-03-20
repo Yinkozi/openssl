@@ -139,7 +139,7 @@ int CONF_modules_load_file(const char *filename, const char *appname,
 
  err:
     if (filename == NULL)
-        OPENSSL_free(file);
+        _OPENSSL_free(file);
     NCONF_free(conf);
 
     if (flags & CONF_MFLAGS_IGNORE_RETURN_CODES)
@@ -245,13 +245,13 @@ static CONF_MODULE *module_add(DSO *dso, const char *name,
     tmod->init = ifunc;
     tmod->finish = ffunc;
     if (tmod->name == NULL) {
-        OPENSSL_free(tmod);
+        _OPENSSL_free(tmod);
         return NULL;
     }
 
     if (!sk_CONF_MODULE_push(supported_modules, tmod)) {
-        OPENSSL_free(tmod->name);
-        OPENSSL_free(tmod);
+        _OPENSSL_free(tmod->name);
+        _OPENSSL_free(tmod);
         return NULL;
     }
 
@@ -341,9 +341,9 @@ static int module_init(CONF_MODULE *pmod, const char *name, const char *value,
 
  memerr:
     if (imod) {
-        OPENSSL_free(imod->name);
-        OPENSSL_free(imod->value);
-        OPENSSL_free(imod);
+        _OPENSSL_free(imod->name);
+        _OPENSSL_free(imod->value);
+        _OPENSSL_free(imod);
     }
 
     return -1;
@@ -381,8 +381,8 @@ void CONF_modules_unload(int all)
 static void module_free(CONF_MODULE *md)
 {
     DSO_free(md->dso);
-    OPENSSL_free(md->name);
-    OPENSSL_free(md);
+    _OPENSSL_free(md->name);
+    _OPENSSL_free(md);
 }
 
 /* finish and free up all modules instances */
@@ -407,9 +407,9 @@ static void module_finish(CONF_IMODULE *imod)
     if (imod->pmod->finish)
         imod->pmod->finish(imod);
     imod->pmod->links--;
-    OPENSSL_free(imod->name);
-    OPENSSL_free(imod->value);
-    OPENSSL_free(imod);
+    _OPENSSL_free(imod->name);
+    _OPENSSL_free(imod->value);
+    _OPENSSL_free(imod);
 }
 
 /* Add a static module to OpenSSL */

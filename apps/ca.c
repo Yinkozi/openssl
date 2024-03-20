@@ -854,7 +854,7 @@ end_of_options:
                     if ((f = BN_bn2hex(serial)) == NULL)
                         goto end;
                     BIO_printf(bio_err, "next serial number is %s\n", f);
-                    OPENSSL_free(f);
+                    _OPENSSL_free(f);
                 }
             }
         }
@@ -1240,7 +1240,7 @@ end_of_options:
     sk_X509_pop_free(cert_sk, X509_free);
 
     if (free_key)
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
     BN_free(serial);
     BN_free(crlnumber);
     free_index(db);
@@ -1749,7 +1749,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
          * unique_subject is in use then we don't want different entries with
          * empty subjects matching each other.
          */
-        OPENSSL_free(row[DB_name]);
+        _OPENSSL_free(row[DB_name]);
         row[DB_name] = OPENSSL_strdup(row[DB_serial]);
         if (row[DB_name] == NULL) {
             BIO_printf(bio_err, "Memory allocation failure\n");
@@ -1885,9 +1885,9 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
  end:
     if (ok != 1) {
         for (i = 0; i < DB_NUMBER; i++)
-            OPENSSL_free(row[i]);
+            _OPENSSL_free(row[i]);
     }
-    OPENSSL_free(irow);
+    _OPENSSL_free(irow);
 
     X509_NAME_free(CAname);
     X509_NAME_free(subject);
@@ -2072,7 +2072,7 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
     BN_free(bn);
     if (row[DB_name] != NULL && row[DB_name][0] == '\0') {
         /* Entries with empty Subjects actually use the serial number instead */
-        OPENSSL_free(row[DB_name]);
+        _OPENSSL_free(row[DB_name]);
         row[DB_name] = OPENSSL_strdup(row[DB_serial]);
     }
     if ((row[DB_name] == NULL) || (row[DB_serial] == NULL)) {
@@ -2111,7 +2111,7 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
         if (!TXT_DB_insert(db->db, irow)) {
             BIO_printf(bio_err, "failed to update database\n");
             BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
-            OPENSSL_free(irow);
+            _OPENSSL_free(irow);
             goto end;
         }
 
@@ -2152,7 +2152,7 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
     ok = 1;
  end:
     for (i = 0; i < DB_NUMBER; i++)
-        OPENSSL_free(row[i]);
+        _OPENSSL_free(row[i]);
     return ok;
 }
 
@@ -2218,7 +2218,7 @@ static int get_certificate_status(const char *serial, CA_DB *db)
     }
  end:
     for (i = 0; i < DB_NUMBER; i++) {
-        OPENSSL_free(row[i]);
+        _OPENSSL_free(row[i]);
     }
     return ok;
 }
@@ -2435,7 +2435,7 @@ static int make_revoked(X509_REVOKED *rev, const char *str)
 
  end:
 
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     ASN1_OBJECT_free(hold);
     ASN1_GENERALIZEDTIME_free(comp_time);
     ASN1_ENUMERATED_free(rtmp);
@@ -2590,7 +2590,7 @@ int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
 
  end:
 
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     ASN1_GENERALIZEDTIME_free(comp_time);
 
     return ret;

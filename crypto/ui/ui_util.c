@@ -80,7 +80,7 @@ static int ui_dup_method_data(CRYPTO_EX_DATA *to, const CRYPTO_EX_DATA *from,
 static void ui_free_method_data(void *parent, void *ptr, CRYPTO_EX_DATA *ad,
                                 int idx, long argl, void *argp)
 {
-    OPENSSL_free(ptr);
+    _OPENSSL_free(ptr);
 }
 
 static CRYPTO_ONCE get_index_once = CRYPTO_ONCE_STATIC_INIT;
@@ -151,7 +151,7 @@ UI_METHOD *UI_UTIL_wrap_read_pem_callback(pem_password_cb *cb, int rwflag)
         || !RUN_ONCE(&get_index_once, ui_method_data_index_init)
         || UI_method_set_ex_data(ui_method, ui_method_data_index, data) < 0) {
         UI_destroy_method(ui_method);
-        OPENSSL_free(data);
+        _OPENSSL_free(data);
         return NULL;
     }
     data->rwflag = rwflag;

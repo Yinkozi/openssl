@@ -107,11 +107,11 @@ DH *d2i_DHxparams(DH **a, const unsigned char **pp, long length)
         dh->counter = dhx->vparams->counter;
         dhx->vparams->seed->data = NULL;
         ASN1_BIT_STRING_free(dhx->vparams->seed);
-        OPENSSL_free(dhx->vparams);
+        _OPENSSL_free(dhx->vparams);
         dhx->vparams = NULL;
     }
 
-    OPENSSL_free(dhx);
+    _OPENSSL_free(dhx);
     return dh;
 }
 

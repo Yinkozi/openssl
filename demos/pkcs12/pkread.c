@@ -102,7 +102,7 @@ int main(int argc, char **argv)
     ret = EXIT_SUCCESS;
 
  err:
-    OPENSSL_free(name);
+    _OPENSSL_free(name);
     X509_free(cert);
     EVP_PKEY_free(pkey);
     sk_X509_pop_free(ca, X509_free);

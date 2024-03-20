@@ -78,7 +78,7 @@ static void exnew2(void *parent, void *ptr, CRYPTO_EX_DATA *ad,
         || !TEST_ptr(ex_data)
         || !TEST_true(CRYPTO_set_ex_data(ad, saved_idx2, ex_data))) {
         gbl_result = 0;
-        OPENSSL_free(ex_data);
+        _OPENSSL_free(ex_data);
     } else {
         ex_data->new = 1;
     }
@@ -112,7 +112,7 @@ static void exfree2(void *parent, void *ptr, CRYPTO_EX_DATA *ad,
             int idx, long argl, void *argp)
 {
     MYOBJ_EX_DATA *ex_data = CRYPTO_get_ex_data(ad, saved_idx2);
-    OPENSSL_free(ex_data);
+    _OPENSSL_free(ex_data);
     if (!TEST_int_eq(idx, saved_idx2)
         || !TEST_long_eq(argl, saved_argl)
         || !TEST_ptr_eq(argp, saved_argp)
@@ -171,7 +171,7 @@ static char *MYOBJ_gethello2(MYOBJ *obj)
 static void MYOBJ_free(MYOBJ *obj)
 {
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_APP, obj, &obj->ex_data);
-    OPENSSL_free(obj);
+    _OPENSSL_free(obj);
 }
 
 static MYOBJ *MYOBJ_dup(MYOBJ *in)
@@ -249,8 +249,8 @@ static int test_exdata(void)
     MYOBJ_free(t1);
     MYOBJ_free(t2);
     MYOBJ_free(t3);
-    OPENSSL_free(saved_argp);
-    OPENSSL_free(p);
+    _OPENSSL_free(saved_argp);
+    _OPENSSL_free(p);
 
     if (gbl_result)
       return 1;

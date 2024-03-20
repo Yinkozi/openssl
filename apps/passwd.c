@@ -293,8 +293,8 @@ int passwd_main(int argc, char **argv)
 #if 0
     ERR_print_errors(bio_err);
 #endif
-    OPENSSL_free(salt_malloc);
-    OPENSSL_free(passwd_malloc);
+    _OPENSSL_free(salt_malloc);
+    _OPENSSL_free(passwd_malloc);
     _BIO_free(in);
     return ret;
 }
@@ -479,7 +479,7 @@ static char *md5crypt(const char *passwd, const char *magic, const char *salt)
     return out_buf;
 
  err:
-    OPENSSL_free(ascii_passwd);
+    _OPENSSL_free(ascii_passwd);
     EVP_MD_CTX_free(md2);
     EVP_MD_CTX_free(md);
     return NULL;
@@ -695,8 +695,8 @@ static char *shacrypt(const char *passwd, const char *magic, const char *salt)
     EVP_MD_CTX_free(md);
     md2 = NULL;
     md = NULL;
-    OPENSSL_free(p_bytes);
-    OPENSSL_free(s_bytes);
+    _OPENSSL_free(p_bytes);
+    _OPENSSL_free(s_bytes);
     p_bytes = NULL;
     s_bytes = NULL;
 
@@ -765,9 +765,9 @@ static char *shacrypt(const char *passwd, const char *magic, const char *salt)
  err:
     EVP_MD_CTX_free(md2);
     EVP_MD_CTX_free(md);
-    OPENSSL_free(p_bytes);
-    OPENSSL_free(s_bytes);
-    OPENSSL_free(ascii_passwd);
+    _OPENSSL_free(p_bytes);
+    _OPENSSL_free(s_bytes);
+    _OPENSSL_free(ascii_passwd);
     return NULL;
 }
 

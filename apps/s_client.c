@@ -157,12 +157,12 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
         BIO_printf(bio_err,
                    "psk buffer of callback is too small (%d) for key (%ld)\n",
                    max_psk_len, key_len);
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
         return 0;
     }
 
     memcpy(psk, key, key_len);
-    OPENSSL_free(key);
+    _OPENSSL_free(key);
 
     if (c_debug)
         BIO_printf(bio_c_out, "created PSK len=%ld\n", key_len);
@@ -202,7 +202,7 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
         cipher = SSL_CIPHER_find(s, tls13_aes128gcmsha256_id);
         if (cipher == NULL) {
             BIO_printf(bio_err, "Error finding suitable ciphersuite\n");
-            OPENSSL_free(key);
+            _OPENSSL_free(key);
             return 0;
         }
 
@@ -211,10 +211,10 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
                 || !SSL_SESSION_set1_master_key(usesess, key, key_len)
                 || !SSL_SESSION_set_cipher(usesess, cipher)
                 || !SSL_SESSION_set_protocol_version(usesess, TLS1_3_VERSION)) {
-            OPENSSL_free(key);
+            _OPENSSL_free(key);
             goto err;
         }
-        OPENSSL_free(key);
+        _OPENSSL_free(key);
     }
 
     cipher = SSL_SESSION_get0_cipher(usesess);
@@ -359,7 +359,7 @@ static char *ssl_give_srp_client_pwd_cb(SSL *s, void *arg)
     cb_tmp.prompt_info = "SRP user";
     if ((l = password_callback(pass, PWD_STRLEN, 0, &cb_tmp)) < 0) {
         BIO_printf(bio_err, "Can't read Password\n");
-        OPENSSL_free(pass);
+        _OPENSSL_free(pass);
         return NULL;
     }
     *(pass + l) = '\0';
@@ -448,7 +448,7 @@ static ossl_ssize_t hexdecode(const char **inptr, void *result)
             continue;
         x = OPENSSL_hexchar2int(*in);
         if (x < 0) {
-            OPENSSL_free(ret);
+            _OPENSSL_free(ret);
             return 0;
         }
         byte |= (char)x;
@@ -460,7 +460,7 @@ static ossl_ssize_t hexdecode(const char **inptr, void *result)
         }
     }
     if (nibble != 0) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return 0;
     }
     *inptr = in;
@@ -531,7 +531,7 @@ static int tlsa_import_rr(SSL *con, const char *rrdata)
     }
     /* The data field is last, so len is its length */
     ret = SSL_dane_tlsa_add(con, usage, selector, mtype, data, len);
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
 
     if (ret == 0) {
         ERR_print_errors(bio_err);
@@ -841,7 +841,7 @@ static const OPT_PAIR services[] = {
 /* Free |*dest| and optionally set it to a copy of |source|. */
 static void freeandcopy(char **dest, const char *source)
 {
-    OPENSSL_free(*dest);
+    _OPENSSL_free(*dest);
     *dest = NULL;
     if (source != NULL)
         *dest = OPENSSL_strdup(source);
@@ -1581,9 +1581,9 @@ int s_client_main(int argc, char **argv)
         }
         res = BIO_parse_hostserv(proxystr, &host, &port, BIO_PARSE_PRIO_HOST);
         if (tmp_host != host)
-            OPENSSL_free(tmp_host);
+            _OPENSSL_free(tmp_host);
         if (tmp_port != port)
-            OPENSSL_free(tmp_port);
+            _OPENSSL_free(tmp_port);
         if (!res) {
             BIO_printf(bio_err,
                        "%s: -proxy argument malformed or ambiguous\n", prog);
@@ -1605,9 +1605,9 @@ int s_client_main(int argc, char **argv)
             res = BIO_parse_hostserv(connectstr, &host, &port,
                                      BIO_PARSE_PRIO_HOST);
         if (tmp_host != host)
-            OPENSSL_free(tmp_host);
+            _OPENSSL_free(tmp_host);
         if (tmp_port != port)
-            OPENSSL_free(tmp_port);
+            _OPENSSL_free(tmp_port);
         if (!res) {
             BIO_printf(bio_err,
                        "%s: -connect argument or target parameter malformed or ambiguous\n",
@@ -1890,7 +1890,7 @@ int s_client_main(int argc, char **argv)
             BIO_printf(bio_err, "Error setting ALPN\n");
             goto end;
         }
-        OPENSSL_free(alpn);
+        _OPENSSL_free(alpn);
     }
 
     for (i = 0; i < serverinfo_count; i++) {
@@ -3147,7 +3147,7 @@ int s_client_main(int argc, char **argv)
     }
     SSL_SESSION_free(psksess);
 #if !defined(OPENSSL_NO_NEXTPROTONEG)
-    OPENSSL_free(next_proto.data);
+    _OPENSSL_free(next_proto.data);
 #endif
     SSL_CTX_free(ctx);
     set_keylog_file(NULL, NULL);
@@ -3155,17 +3155,17 @@ int s_client_main(int argc, char **argv)
     sk_X509_CRL_pop_free(crls, X509_CRL_free);
     EVP_PKEY_free(key);
     sk_X509_pop_free(chain, X509_free);
-    OPENSSL_free(pass);
+    _OPENSSL_free(pass);
 #ifndef OPENSSL_NO_SRP
-    OPENSSL_free(srp_arg.srppassin);
+    _OPENSSL_free(srp_arg.srppassin);
 #endif
-    OPENSSL_free(sname_alloc);
-    OPENSSL_free(connectstr);
-    OPENSSL_free(bindstr);
-    OPENSSL_free(bindhost);
-    OPENSSL_free(bindport);
-    OPENSSL_free(host);
-    OPENSSL_free(port);
+    _OPENSSL_free(sname_alloc);
+    _OPENSSL_free(connectstr);
+    _OPENSSL_free(bindstr);
+    _OPENSSL_free(bindhost);
+    _OPENSSL_free(bindport);
+    _OPENSSL_free(host);
+    _OPENSSL_free(port);
     X509_VERIFY_PARAM_free(vpm);
     ssl_excert_free(exc);
     sk_OPENSSL_STRING_free(ssl_args);
@@ -3391,7 +3391,7 @@ static void print_stuff(BIO *bio, SSL *s, int full)
                 BIO_printf(bio, "%02X", exportedkeymat[i]);
             BIO_printf(bio, "\n");
         }
-        OPENSSL_free(exportedkeymat);
+        _OPENSSL_free(exportedkeymat);
     }
     BIO_printf(bio, "---\n");
     X509_free(peer);

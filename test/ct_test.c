@@ -73,7 +73,7 @@ static CT_TEST_FIXTURE *set_up(const char *const test_case_name)
 end:
     if (fixture != NULL)
         CTLOG_STORE_free(fixture->ctlog_store);
-    OPENSSL_free(fixture);
+    _OPENSSL_free(fixture);
     TEST_error("Failed to setup");
     return NULL;
 }
@@ -84,7 +84,7 @@ static void tear_down(CT_TEST_FIXTURE *fixture)
         CTLOG_STORE_free(fixture->ctlog_store);
         SCT_LIST_free(fixture->sct_list);
     }
-    OPENSSL_free(fixture);
+    _OPENSSL_free(fixture);
 }
 
 static X509 *load_pem_cert(const char *dir, const char *file)
@@ -100,7 +100,7 @@ static X509 *load_pem_cert(const char *dir, const char *file)
         _BIO_free(cert_io);
     }
 
-    OPENSSL_free(file_path);
+    _OPENSSL_free(file_path);
     return cert;
 }
 
@@ -118,7 +118,7 @@ static int read_text_file(const char *dir, const char *file,
         _BIO_free(file_io);
     }
 
-    OPENSSL_free(file_path);
+    _OPENSSL_free(file_path);
     return len;
 }
 
@@ -321,7 +321,7 @@ end:
     SCT_LIST_free(scts);
     SCT_free(sct);
     CT_POLICY_EVAL_CTX_free(ct_policy_ctx);
-    OPENSSL_free(tls_sct_list);
+    _OPENSSL_free(tls_sct_list);
     return success;
 }
 

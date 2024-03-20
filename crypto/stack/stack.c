@@ -95,7 +95,7 @@ OPENSSL_STACK *OPENSSL_sk_deep_copy(const OPENSSL_STACK *sk,
     ret->num_alloc = sk->num > min_nodes ? sk->num : min_nodes;
     ret->data = OPENSSL_zalloc(sizeof(*ret->data) * ret->num_alloc);
     if (ret->data == NULL) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -373,8 +373,8 @@ void OPENSSL_sk_free(OPENSSL_STACK *st)
 {
     if (st == NULL)
         return;
-    OPENSSL_free(st->data);
-    OPENSSL_free(st);
+    _OPENSSL_free(st->data);
+    _OPENSSL_free(st);
 }
 
 int OPENSSL_sk_num(const OPENSSL_STACK *st)

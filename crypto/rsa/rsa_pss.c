@@ -128,7 +128,7 @@ int RSA_verify_PKCS1_PSS_mgf1(RSA *rsa, const unsigned char *mHash,
     }
 
  err:
-    OPENSSL_free(DB);
+    _OPENSSL_free(DB);
     EVP_MD_CTX_free(ctx);
 
     return ret;

@@ -23,8 +23,8 @@ int SSL_CTX_SRP_CTX_free(struct ssl_ctx_st *ctx)
 {
     if (ctx == NULL)
         return 0;
-    OPENSSL_free(ctx->srp_ctx.login);
-    OPENSSL_free(ctx->srp_ctx.info);
+    _OPENSSL_free(ctx->srp_ctx.login);
+    _OPENSSL_free(ctx->srp_ctx.info);
     BN_free(ctx->srp_ctx.N);
     BN_free(ctx->srp_ctx.g);
     BN_free(ctx->srp_ctx.s);
@@ -42,8 +42,8 @@ int SSL_SRP_CTX_free(struct ssl_st *s)
 {
     if (s == NULL)
         return 0;
-    OPENSSL_free(s->srp_ctx.login);
-    OPENSSL_free(s->srp_ctx.info);
+    _OPENSSL_free(s->srp_ctx.login);
+    _OPENSSL_free(s->srp_ctx.info);
     BN_free(s->srp_ctx.N);
     BN_free(s->srp_ctx.g);
     BN_free(s->srp_ctx.s);
@@ -112,8 +112,8 @@ int SSL_SRP_CTX_init(struct ssl_st *s)
 
     return 1;
  err:
-    OPENSSL_free(s->srp_ctx.login);
-    OPENSSL_free(s->srp_ctx.info);
+    _OPENSSL_free(s->srp_ctx.login);
+    _OPENSSL_free(s->srp_ctx.info);
     BN_free(s->srp_ctx.N);
     BN_free(s->srp_ctx.g);
     BN_free(s->srp_ctx.s);
@@ -234,7 +234,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
     }
     if (info != NULL) {
         if (s->srp_ctx.info)
-            OPENSSL_free(s->srp_ctx.info);
+            _OPENSSL_free(s->srp_ctx.info);
         if ((s->srp_ctx.info = BUF_strdup(info)) == NULL)
             return -1;
     }

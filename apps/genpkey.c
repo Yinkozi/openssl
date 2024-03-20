@@ -204,7 +204,7 @@ int genpkey_main(int argc, char **argv)
     BIO_free_all(out);
     _BIO_free(in);
     release_engine(e);
-    OPENSSL_free(pass);
+    _OPENSSL_free(pass);
     return ret;
 }
 

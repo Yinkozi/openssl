@@ -123,7 +123,7 @@ static int dsa_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
         return 1;
 
  err:
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     ASN1_STRING_free(str);
 
     return 0;
@@ -246,7 +246,7 @@ static int dsa_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
     return 1;
 
  err:
-    OPENSSL_free(dp);
+    _OPENSSL_free(dp);
     ASN1_STRING_free(params);
     ASN1_STRING_clear_free(prkey);
     return 0;

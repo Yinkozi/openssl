@@ -173,10 +173,10 @@ int X509_PURPOSE_add(int id, int trust, int flags,
     } else
         ptmp = X509_PURPOSE_get0(idx);
 
-    /* OPENSSL_free existing name if dynamic */
+    /* _OPENSSL_free existing name if dynamic */
     if (ptmp->flags & X509_PURPOSE_DYNAMIC_NAME) {
-        OPENSSL_free(ptmp->name);
-        OPENSSL_free(ptmp->sname);
+        _OPENSSL_free(ptmp->name);
+        _OPENSSL_free(ptmp->sname);
     }
     /* dup supplied name */
     ptmp->name = OPENSSL_strdup(name);
@@ -210,9 +210,9 @@ int X509_PURPOSE_add(int id, int trust, int flags,
     return 1;
  err:
     if (idx == -1) {
-        OPENSSL_free(ptmp->name);
-        OPENSSL_free(ptmp->sname);
-        OPENSSL_free(ptmp);
+        _OPENSSL_free(ptmp->name);
+        _OPENSSL_free(ptmp->sname);
+        _OPENSSL_free(ptmp);
     }
     return 0;
 }
@@ -223,10 +223,10 @@ static void xptable_free(X509_PURPOSE *p)
         return;
     if (p->flags & X509_PURPOSE_DYNAMIC) {
         if (p->flags & X509_PURPOSE_DYNAMIC_NAME) {
-            OPENSSL_free(p->name);
-            OPENSSL_free(p->sname);
+            _OPENSSL_free(p->name);
+            _OPENSSL_free(p->sname);
         }
-        OPENSSL_free(p);
+        _OPENSSL_free(p);
     }
 }
 

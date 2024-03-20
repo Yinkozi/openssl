@@ -1170,7 +1170,7 @@ err:
     BN_free(y);
     EC_GROUP_free(group);
     EC_POINT_free(point);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return r;
 }
 #endif
@@ -1855,7 +1855,7 @@ static int parameter_test(void)
         || !TEST_mem_eq(buf, len, p521_named, sizeof(p521_named)))
         goto err;
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     buf = NULL;
 
     /*
@@ -1872,7 +1872,7 @@ err:
     EC_GROUP_free(group);
     EC_GROUP_free(group2);
     ECPARAMETERS_free(ecparameters);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return r;
 }
 
@@ -2093,7 +2093,7 @@ int ec_point_hex2point_test_helper(const EC_GROUP *group, const EC_POINT *P,
 
  err:
     EC_POINT_free(Pinf);
-    OPENSSL_free(hex);
+    _OPENSSL_free(hex);
     EC_POINT_free(Q);
 
     return ret;
@@ -2223,8 +2223,8 @@ static int custom_generator_test(int id)
     EC_POINT_free(G2);
     EC_GROUP_free(group);
     BN_CTX_free(ctx);
-    OPENSSL_free(b1);
-    OPENSSL_free(b2);
+    _OPENSSL_free(b1);
+    _OPENSSL_free(b2);
 
     return ret;
 }
@@ -2265,6 +2265,6 @@ int setup_tests(void)
 void cleanup_tests(void)
 {
 #ifndef OPENSSL_NO_EC
-    OPENSSL_free(curves);
+    _OPENSSL_free(curves);
 #endif
 }

@@ -128,7 +128,7 @@ void asn1_enc_free(ASN1_VALUE **pval, const ASN1_ITEM *it)
     ASN1_ENCODING *enc;
     enc = asn1_get_enc_ptr(pval, it);
     if (enc) {
-        OPENSSL_free(enc->enc);
+        _OPENSSL_free(enc->enc);
         enc->enc = NULL;
         enc->len = 0;
         enc->modified = 1;
@@ -143,7 +143,7 @@ int asn1_enc_save(ASN1_VALUE **pval, const unsigned char *in, int inlen,
     if (!enc)
         return 1;
 
-    OPENSSL_free(enc->enc);
+    _OPENSSL_free(enc->enc);
     if ((enc->enc = OPENSSL_malloc(inlen)) == NULL) {
         ASN1err(ASN1_F_ASN1_ENC_SAVE, ERR_R_MALLOC_FAILURE);
         return 0;

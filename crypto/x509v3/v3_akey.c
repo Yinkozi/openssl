@@ -49,11 +49,11 @@ static STACK_OF(CONF_VALUE) *i2v_AUTHORITY_KEYID(X509V3_EXT_METHOD *method,
             return NULL;
         }
         if (!X509V3_add_value("keyid", tmp, &extlist)) {
-            OPENSSL_free(tmp);
+            _OPENSSL_free(tmp);
             X509V3err(X509V3_F_I2V_AUTHORITY_KEYID, ERR_R_X509_LIB);
             goto err;
         }
-        OPENSSL_free(tmp);
+        _OPENSSL_free(tmp);
     }
     if (akeyid->issuer) {
         tmpextlist = i2v_GENERAL_NAMES(NULL, akeyid->issuer, extlist);
@@ -70,11 +70,11 @@ static STACK_OF(CONF_VALUE) *i2v_AUTHORITY_KEYID(X509V3_EXT_METHOD *method,
             goto err;
         }
         if (!X509V3_add_value("serial", tmp, &extlist)) {
-            OPENSSL_free(tmp);
+            _OPENSSL_free(tmp);
             X509V3err(X509V3_F_I2V_AUTHORITY_KEYID, ERR_R_X509_LIB);
             goto err;
         }
-        OPENSSL_free(tmp);
+        _OPENSSL_free(tmp);
     }
     return extlist;
  err:

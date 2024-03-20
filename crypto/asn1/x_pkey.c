@@ -42,6 +42,6 @@ void X509_PKEY_free(X509_PKEY *x)
     ASN1_OCTET_STRING_free(x->enc_pkey);
     EVP_PKEY_free(x->dec_pkey);
     if (x->key_free)
-        OPENSSL_free(x->key_data);
-    OPENSSL_free(x);
+        _OPENSSL_free(x->key_data);
+    _OPENSSL_free(x);
 }

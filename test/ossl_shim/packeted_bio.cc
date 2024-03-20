@@ -205,7 +205,7 @@ static int PacketedRead(BIO *bio, char *out, int outl) {
       outl = len;
     }
     memcpy(out, buf, outl);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return outl;
   }
 }

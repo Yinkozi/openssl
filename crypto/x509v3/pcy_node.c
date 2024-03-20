@@ -129,7 +129,7 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
 
 void policy_node_free(X509_POLICY_NODE *node)
 {
-    OPENSSL_free(node);
+    _OPENSSL_free(node);
 }
 
 /*

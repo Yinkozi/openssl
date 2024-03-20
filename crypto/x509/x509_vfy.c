@@ -744,7 +744,7 @@ static int check_hosts(X509 *x, X509_VERIFY_PARAM *vpm)
     char *name;
 
     if (vpm->peername != NULL) {
-        OPENSSL_free(vpm->peername);
+        _OPENSSL_free(vpm->peername);
         vpm->peername = NULL;
     }
     for (i = 0; i < n; ++i) {
@@ -2270,7 +2270,7 @@ void X509_STORE_CTX_free(X509_STORE_CTX *ctx)
         return;
 
     X509_STORE_CTX_cleanup(ctx);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int X509_STORE_CTX_init(X509_STORE_CTX *ctx, X509_STORE *store, X509 *x509,
@@ -2709,7 +2709,7 @@ static int dane_match(X509_STORE_CTX *ctx, X509 *cert, int depth)
             selector = t->selector;
 
             /* Update per-selector state */
-            OPENSSL_free(i2dbuf);
+            _OPENSSL_free(i2dbuf);
             i2dbuf = dane_i2d(cert, selector, &i2dlen);
             if (i2dbuf == NULL)
                 return -1;
@@ -2761,7 +2761,7 @@ static int dane_match(X509_STORE_CTX *ctx, X509 *cert, int depth)
             if (matched || dane->mdpth < 0) {
                 dane->mdpth = depth;
                 dane->mtlsa = t;
-                OPENSSL_free(dane->mcert);
+                _OPENSSL_free(dane->mcert);
                 dane->mcert = cert;
                 X509_up_ref(cert);
             }
@@ -2770,7 +2770,7 @@ static int dane_match(X509_STORE_CTX *ctx, X509 *cert, int depth)
     }
 
     /* Clear the one-element DER cache */
-    OPENSSL_free(i2dbuf);
+    _OPENSSL_free(i2dbuf);
     return matched;
 }
 

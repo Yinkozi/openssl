@@ -196,7 +196,7 @@ int OCSP_parse_url(const char *url, char **phost, char **pport, char **ppath,
     if (!*phost)
         goto mem_err;
 
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
 
     return 1;
 
@@ -208,12 +208,12 @@ int OCSP_parse_url(const char *url, char **phost, char **pport, char **ppath,
     OCSPerr(OCSP_F_OCSP_PARSE_URL, OCSP_R_ERROR_PARSING_URL);
 
  err:
-    OPENSSL_free(buf);
-    OPENSSL_free(*ppath);
+    _OPENSSL_free(buf);
+    _OPENSSL_free(*ppath);
     *ppath = NULL;
-    OPENSSL_free(*pport);
+    _OPENSSL_free(*pport);
     *pport = NULL;
-    OPENSSL_free(*phost);
+    _OPENSSL_free(*phost);
     *phost = NULL;
     return 0;
 

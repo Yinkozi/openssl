@@ -33,7 +33,7 @@ static DSO *DSO_new_method(DSO_METHOD *meth)
     if (ret->meth_data == NULL) {
         /* sk_new doesn't generate any errors so we do */
         DSOerr(DSO_F_DSO_NEW_METHOD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     ret->meth = default_DSO_meth;
@@ -42,7 +42,7 @@ static DSO *DSO_new_method(DSO_METHOD *meth)
     if (ret->lock == NULL) {
         DSOerr(DSO_F_DSO_NEW_METHOD, ERR_R_MALLOC_FAILURE);
         sk_void_free(ret->meth_data);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -87,10 +87,10 @@ int DSO_free(DSO *dso)
     }
 
     sk_void_free(dso->meth_data);
-    OPENSSL_free(dso->filename);
-    OPENSSL_free(dso->loaded_filename);
+    _OPENSSL_free(dso->filename);
+    _OPENSSL_free(dso->loaded_filename);
     CRYPTO_THREAD_lock_free(dso->lock);
-    OPENSSL_free(dso);
+    _OPENSSL_free(dso);
     return 1;
 }
 
@@ -255,7 +255,7 @@ int DSO_set_filename(DSO *dso, const char *filename)
         DSOerr(DSO_F_DSO_SET_FILENAME, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    OPENSSL_free(dso->filename);
+    _OPENSSL_free(dso->filename);
     dso->filename = copied;
     return 1;
 }
@@ -333,7 +333,7 @@ DSO *DSO_dsobyaddr(void *addr, int flags)
             && DSO_pathbyaddr(addr, filename, len) == len)
         ret = DSO_load(NULL, filename, NULL, flags);
 
-    OPENSSL_free(filename);
+    _OPENSSL_free(filename);
     return ret;
 }
 

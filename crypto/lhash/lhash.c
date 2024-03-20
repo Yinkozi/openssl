@@ -68,8 +68,8 @@ OPENSSL_LHASH *OPENSSL_LH_new(OPENSSL_LH_HASHFUNC h, OPENSSL_LH_COMPFUNC c)
     return ret;
 
 err:
-    OPENSSL_free(ret->b);
-    OPENSSL_free(ret);
+    _OPENSSL_free(ret->b);
+    _OPENSSL_free(ret);
     return NULL;
 }
 
@@ -85,12 +85,12 @@ void OPENSSL_LH_free(OPENSSL_LHASH *lh)
         n = lh->b[i];
         while (n != NULL) {
             nn = n->next;
-            OPENSSL_free(n);
+            _OPENSSL_free(n);
             n = nn;
         }
     }
-    OPENSSL_free(lh->b);
-    OPENSSL_free(lh);
+    _OPENSSL_free(lh->b);
+    _OPENSSL_free(lh);
 }
 
 void *OPENSSL_LH_insert(OPENSSL_LHASH *lh, void *data)
@@ -141,7 +141,7 @@ void *OPENSSL_LH_delete(OPENSSL_LHASH *lh, const void *data)
         nn = *rn;
         *rn = nn->next;
         ret = nn->data;
-        OPENSSL_free(nn);
+        _OPENSSL_free(nn);
         lh->num_delete++;
     }
 

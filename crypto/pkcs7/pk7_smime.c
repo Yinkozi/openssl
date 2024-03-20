@@ -359,7 +359,7 @@ int PKCS7_verify(PKCS7 *p7, STACK_OF(X509) *certs, X509_STORE *store,
 
  err:
     X509_STORE_CTX_free(cert_ctx);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     if (tmpin == indata) {
         if (indata)
             BIO_pop(p7bio);
@@ -543,7 +543,7 @@ int PKCS7_decrypt(PKCS7 *p7, EVP_PKEY *pkey, X509 *cert, BIO *data, int flags)
         }
     }
 err:
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     BIO_free_all(tmpmem);
     return ret;
 }

@@ -102,8 +102,8 @@ static int _BIO_free(BIO *bio)
     if (b->peer)
         bio_destroy_pair(bio);
 
-    OPENSSL_free(b->buf);
-    OPENSSL_free(b);
+    _OPENSSL_free(b->buf);
+    _OPENSSL_free(b);
 
     return 1;
 }
@@ -436,7 +436,7 @@ static long bio_ctrl(BIO *bio, int cmd, long num, void *ptr)
             size_t new_size = num;
 
             if (b->size != new_size) {
-                OPENSSL_free(b->buf);
+                _OPENSSL_free(b->buf);
                 b->buf = NULL;
                 b->size = new_size;
             }

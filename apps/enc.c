@@ -608,8 +608,8 @@ int enc_main(int argc, char **argv)
     }
  end:
     ERR_print_errors(bio_err);
-    OPENSSL_free(strbuf);
-    OPENSSL_free(buff);
+    _OPENSSL_free(strbuf);
+    _OPENSSL_free(buff);
     _BIO_free(in);
     BIO_free_all(out);
     _BIO_free(benc);
@@ -618,7 +618,7 @@ int enc_main(int argc, char **argv)
     _BIO_free(bzl);
 #endif
     release_engine(e);
-    OPENSSL_free(pass);
+    _OPENSSL_free(pass);
     return ret;
 }
 

@@ -981,7 +981,7 @@ static void *v2i_IPAddrBlocks(const struct v3_ext_method *method,
                 X509V3_conf_err(val);
                 goto err;
             }
-            OPENSSL_free(s);
+            _OPENSSL_free(s);
             s = NULL;
             continue;
         }
@@ -1053,7 +1053,7 @@ static void *v2i_IPAddrBlocks(const struct v3_ext_method *method,
             goto err;
         }
 
-        OPENSSL_free(s);
+        _OPENSSL_free(s);
         s = NULL;
     }
 
@@ -1065,7 +1065,7 @@ static void *v2i_IPAddrBlocks(const struct v3_ext_method *method,
     return addr;
 
  err:
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
     sk_IPAddressFamily_pop_free(addr, IPAddressFamily_free);
     return NULL;
 }

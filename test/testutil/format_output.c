@@ -354,7 +354,7 @@ static void test_fail_bignum_common(const char *prefix, const char *file,
 fin:
     test_flush_stderr();
     if (bufp != buffer)
-        OPENSSL_free(bufp);
+        _OPENSSL_free(bufp);
 }
 
 /*

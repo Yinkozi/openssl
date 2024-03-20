@@ -335,7 +335,7 @@ static int run_cert(X509 *crt, const char *nameincert,
             match = 1;
         if (!TEST_true(check_message(fn, "email", nameincert, match, *pname)))
             failed = 1;
-        OPENSSL_free(name);
+        _OPENSSL_free(name);
     }
 
     return failed == 0;
@@ -704,8 +704,8 @@ static int test_GENERAL_NAME_cmp(void)
         if (namesb != NULL)
             GENERAL_NAME_free(namesb[i]);
     }
-    OPENSSL_free(namesa);
-    OPENSSL_free(namesb);
+    _OPENSSL_free(namesa);
+    _OPENSSL_free(namesb);
 
     return testresult;
 }

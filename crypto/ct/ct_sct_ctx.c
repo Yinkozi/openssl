@@ -35,11 +35,11 @@ void SCT_CTX_free(SCT_CTX *sctx)
     if (sctx == NULL)
         return;
     EVP_PKEY_free(sctx->pkey);
-    OPENSSL_free(sctx->pkeyhash);
-    OPENSSL_free(sctx->ihash);
-    OPENSSL_free(sctx->certder);
-    OPENSSL_free(sctx->preder);
-    OPENSSL_free(sctx);
+    _OPENSSL_free(sctx->pkeyhash);
+    _OPENSSL_free(sctx->ihash);
+    _OPENSSL_free(sctx->certder);
+    _OPENSSL_free(sctx->preder);
+    _OPENSSL_free(sctx);
 }
 
 /*
@@ -175,18 +175,18 @@ int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner)
 
     X509_free(pretmp);
 
-    OPENSSL_free(sctx->certder);
+    _OPENSSL_free(sctx->certder);
     sctx->certder = certder;
     sctx->certderlen = certderlen;
 
-    OPENSSL_free(sctx->preder);
+    _OPENSSL_free(sctx->preder);
     sctx->preder = preder;
     sctx->prederlen = prederlen;
 
     return 1;
 err:
-    OPENSSL_free(certder);
-    OPENSSL_free(preder);
+    _OPENSSL_free(certder);
+    _OPENSSL_free(preder);
     X509_free(pretmp);
     return 0;
 }
@@ -217,7 +217,7 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
         goto err;
 
     if (md != *hash) {
-        OPENSSL_free(*hash);
+        _OPENSSL_free(*hash);
         *hash = md;
         *hash_len = SHA256_DIGEST_LENGTH;
     }
@@ -225,8 +225,8 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
     md = NULL;
     ret = 1;
  err:
-    OPENSSL_free(md);
-    OPENSSL_free(der);
+    _OPENSSL_free(md);
+    _OPENSSL_free(der);
     return ret;
 }
 

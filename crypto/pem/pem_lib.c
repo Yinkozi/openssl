@@ -220,7 +220,7 @@ static void pem_free(void *p, unsigned int flags, size_t num)
     if (flags & PEM_FLAG_SECURE)
         OPENSSL_secure_clear_free(p, num);
     else
-        OPENSSL_free(p);
+        _OPENSSL_free(p);
 }
 
 static void *pem_malloc(int num, unsigned int flags)

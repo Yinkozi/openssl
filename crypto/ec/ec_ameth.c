@@ -99,7 +99,7 @@ static int eckey_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
  err:
     if (ptype == V_ASN1_SEQUENCE)
         ASN1_STRING_free(pval);
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     return 0;
 }
 
@@ -420,7 +420,7 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
     if (!ret)
         ECerr(EC_F_DO_EC_KEY_PRINT, ERR_R_EC_LIB);
     OPENSSL_clear_free(priv, privlen);
-    OPENSSL_free(pub);
+    _OPENSSL_free(pub);
     return ret;
 }
 
@@ -793,7 +793,7 @@ static int ecdh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
     rv = 1;
  err:
     X509_ALGOR_free(kekalg);
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     return rv;
 }
 
@@ -961,7 +961,7 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
     rv = 1;
 
  err:
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     X509_ALGOR_free(wrap_alg);
     return rv;
 }

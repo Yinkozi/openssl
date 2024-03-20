@@ -112,7 +112,7 @@ static int AsyncFree(BIO *bio) {
     return 0;
   }
 
-  OPENSSL_free(BIO_get_data(bio));
+  _OPENSSL_free(BIO_get_data(bio));
   BIO_set_data(bio, NULL);
   BIO_set_init(bio, 0);
   return 1;

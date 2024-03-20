@@ -36,7 +36,7 @@ int DTLS_RECORD_LAYER_new(RECORD_LAYER *rl)
         pqueue_free(d->unprocessed_rcds.q);
         pqueue_free(d->processed_rcds.q);
         pqueue_free(d->buffered_app_data.q);
-        OPENSSL_free(d);
+        _OPENSSL_free(d);
         rl->d = NULL;
         return 0;
     }
@@ -53,7 +53,7 @@ void DTLS_RECORD_LAYER_free(RECORD_LAYER *rl)
     pqueue_free(rl->d->unprocessed_rcds.q);
     pqueue_free(rl->d->processed_rcds.q);
     pqueue_free(rl->d->buffered_app_data.q);
-    OPENSSL_free(rl->d);
+    _OPENSSL_free(rl->d);
     rl->d = NULL;
 }
 
@@ -70,22 +70,22 @@ void DTLS_RECORD_LAYER_clear(RECORD_LAYER *rl)
 
     while ((item = pqueue_pop(d->unprocessed_rcds.q)) != NULL) {
         rdata = (DTLS1_RECORD_DATA *)item->data;
-        OPENSSL_free(rdata->rbuf.buf);
-        OPENSSL_free(item->data);
+        _OPENSSL_free(rdata->rbuf.buf);
+        _OPENSSL_free(item->data);
         pitem_free(item);
     }
 
     while ((item = pqueue_pop(d->processed_rcds.q)) != NULL) {
         rdata = (DTLS1_RECORD_DATA *)item->data;
-        OPENSSL_free(rdata->rbuf.buf);
-        OPENSSL_free(item->data);
+        _OPENSSL_free(rdata->rbuf.buf);
+        _OPENSSL_free(item->data);
         pitem_free(item);
     }
 
     while ((item = pqueue_pop(d->buffered_app_data.q)) != NULL) {
         rdata = (DTLS1_RECORD_DATA *)item->data;
-        OPENSSL_free(rdata->rbuf.buf);
-        OPENSSL_free(item->data);
+        _OPENSSL_free(rdata->rbuf.buf);
+        _OPENSSL_free(item->data);
         pitem_free(item);
     }
 
@@ -151,7 +151,7 @@ int dtls1_buffer_record(SSL *s, record_pqueue *queue, unsigned char *priority)
     rdata = OPENSSL_malloc(sizeof(*rdata));
     item = pitem_new(priority, rdata);
     if (rdata == NULL || item == NULL) {
-        OPENSSL_free(rdata);
+        _OPENSSL_free(rdata);
         pitem_free(item);
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_DTLS1_BUFFER_RECORD,
                  ERR_R_INTERNAL_ERROR);
@@ -182,16 +182,16 @@ int dtls1_buffer_record(SSL *s, record_pqueue *queue, unsigned char *priority)
 
     if (!ssl3_setup_buffers(s)) {
         /* SSLfatal() already called */
-        OPENSSL_free(rdata->rbuf.buf);
-        OPENSSL_free(rdata);
+        _OPENSSL_free(rdata->rbuf.buf);
+        _OPENSSL_free(rdata);
         pitem_free(item);
         return -1;
     }
 
     if (pqueue_insert(queue->q, item) == NULL) {
         /* Must be a duplicate so ignore it */
-        OPENSSL_free(rdata->rbuf.buf);
-        OPENSSL_free(rdata);
+        _OPENSSL_free(rdata->rbuf.buf);
+        _OPENSSL_free(rdata);
         pitem_free(item);
     }
 
@@ -206,7 +206,7 @@ int dtls1_retrieve_buffered_record(SSL *s, record_pqueue *queue)
     if (item) {
         dtls1_copy_record(s, item);
 
-        OPENSSL_free(item->data);
+        _OPENSSL_free(item->data);
         pitem_free(item);
 
         return 1;
@@ -403,7 +403,7 @@ int dtls1_read_bytes(SSL *s, int type, int *recvd_type, unsigned char *buf,
 
             dtls1_copy_record(s, item);
 
-            OPENSSL_free(item->data);
+            _OPENSSL_free(item->data);
             pitem_free(item);
         }
     }

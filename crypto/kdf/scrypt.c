@@ -83,7 +83,7 @@ static void pkey_scrypt_cleanup(EVP_PKEY_CTX *ctx)
 
     OPENSSL_clear_free(kctx->salt, kctx->salt_len);
     OPENSSL_clear_free(kctx->pass, kctx->pass_len);
-    OPENSSL_free(kctx);
+    _OPENSSL_free(kctx);
 }
 
 static int pkey_scrypt_set_membuf(unsigned char **buffer, size_t *buflen,

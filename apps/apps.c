@@ -351,7 +351,7 @@ int password_callback(char *buf, int bufsiz, int verify, PW_CB_DATA *cb_tmp)
             res = 0;
         }
         UI_free(ui);
-        OPENSSL_free(prompt);
+        _OPENSSL_free(prompt);
     }
     return res;
 }
@@ -628,9 +628,9 @@ static int load_cert_crl_http(const char *url, X509 **pcert, X509_CRL **pcrl)
     }
 
  err:
-    OPENSSL_free(host);
-    OPENSSL_free(path);
-    OPENSSL_free(port);
+    _OPENSSL_free(host);
+    _OPENSSL_free(path);
+    _OPENSSL_free(port);
     BIO_free_all(bio);
     OCSP_REQ_CTX_free(rctx);
     if (rv != 1) {
@@ -1187,7 +1187,7 @@ void print_name(BIO *out, const char *title, X509_NAME *nm,
         buf = X509_NAME_oneline(nm, 0, 0);
         BIO_puts(out, buf);
         BIO_puts(out, "\n");
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
     } else {
         if (mline)
             BIO_puts(out, "\n");
@@ -1756,8 +1756,8 @@ void free_index(CA_DB *db)
 {
     if (db) {
         TXT_DB_free(db->db);
-        OPENSSL_free(db->dbfname);
-        OPENSSL_free(db);
+        _OPENSSL_free(db->dbfname);
+        _OPENSSL_free(db);
     }
 }
 
@@ -1867,12 +1867,12 @@ X509_NAME *parse_name(const char *cp, long chtype, int canmulti)
             goto err;
     }
 
-    OPENSSL_free(work);
+    _OPENSSL_free(work);
     return n;
 
  err:
     X509_NAME_free(n);
-    OPENSSL_free(work);
+    _OPENSSL_free(work);
     return NULL;
 }
 
@@ -1930,7 +1930,7 @@ int pkey_ctrl_string(EVP_PKEY_CTX *ctx, const char *value)
         vtmp++;
     }
     rv = EVP_PKEY_CTX_ctrl_str(ctx, stmp, vtmp);
-    OPENSSL_free(stmp);
+    _OPENSSL_free(stmp);
     return rv;
 }
 
@@ -2003,7 +2003,7 @@ unsigned char *next_protos_parse(size_t *outlen, const char *in)
                 continue;
             }
             if (i - start > 255) {
-                OPENSSL_free(out);
+                _OPENSSL_free(out);
                 return NULL;
             }
             out[start-skipped] = (unsigned char)(i - start);
@@ -2014,7 +2014,7 @@ unsigned char *next_protos_parse(size_t *outlen, const char *in)
     }
 
     if (len <= skipped) {
-        OPENSSL_free(out);
+        _OPENSSL_free(out);
         return NULL;
     }
 
@@ -2717,7 +2717,7 @@ void wait_for_async(SSL *s)
         return;
     fds = app_malloc(sizeof(OSSL_ASYNC_FD) * numfds, "allocate async fds");
     if (!SSL_get_all_async_fds(s, fds, &numfds)) {
-        OPENSSL_free(fds);
+        _OPENSSL_free(fds);
         return;
     }
 
@@ -2728,7 +2728,7 @@ void wait_for_async(SSL *s)
         openssl_fdset((int)fds[i], &asyncfds);
     }
     select(width, (void *)&asyncfds, NULL, NULL, NULL);
-    OPENSSL_free(fds);
+    _OPENSSL_free(fds);
 #endif
 }
 

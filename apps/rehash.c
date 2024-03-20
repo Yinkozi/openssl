@@ -305,7 +305,7 @@ end:
 
 static void str_free(char *s)
 {
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
 }
 
 static int ends_with_dirsep(const char *path)
@@ -359,7 +359,7 @@ static int do_dir(const char *dirname, enum Hash h)
     while ((filename = OPENSSL_DIR_read(&d, dirname)) != NULL) {
         if ((copy = OPENSSL_strdup(filename)) == NULL
                 || sk_OPENSSL_STRING_push(files, copy) == 0) {
-            OPENSSL_free(copy);
+            _OPENSSL_free(copy);
             BIO_puts(bio_err, "out of memory\n");
             errs = 1;
             goto err;
@@ -439,17 +439,17 @@ static int do_dir(const char *dirname, enum Hash h)
                         errs++;
                     }
                 }
-                OPENSSL_free(ep->filename);
-                OPENSSL_free(ep);
+                _OPENSSL_free(ep->filename);
+                _OPENSSL_free(ep);
             }
-            OPENSSL_free(bp);
+            _OPENSSL_free(bp);
         }
         hash_table[i] = NULL;
     }
 
  err:
     sk_OPENSSL_STRING_pop_free(files, str_free);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return errs;
 }
 
@@ -517,7 +517,7 @@ int rehash_main(int argc, char **argv)
         m = OPENSSL_strdup(env);
         for (e = strtok(m, lsc); e != NULL; e = strtok(NULL, lsc))
             errs += do_dir(e, h);
-        OPENSSL_free(m);
+        _OPENSSL_free(m);
     } else {
         errs += do_dir(X509_get_default_cert_dir(), h);
     }

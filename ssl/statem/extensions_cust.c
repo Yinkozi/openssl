@@ -327,10 +327,10 @@ void custom_exts_free(custom_ext_methods *exts)
             continue;
 
         /* Old style API wrapper. Need to free the arguments too */
-        OPENSSL_free(meth->add_arg);
-        OPENSSL_free(meth->parse_arg);
+        _OPENSSL_free(meth->add_arg);
+        _OPENSSL_free(meth->parse_arg);
     }
-    OPENSSL_free(exts->meths);
+    _OPENSSL_free(exts->meths);
 }
 
 /* Return true if a client custom extension exists, false otherwise */
@@ -420,8 +420,8 @@ static int add_old_custom_ext(SSL_CTX *ctx, ENDPOINT role,
     int ret;
 
     if (add_cb_wrap == NULL || parse_cb_wrap == NULL) {
-        OPENSSL_free(add_cb_wrap);
-        OPENSSL_free(parse_cb_wrap);
+        _OPENSSL_free(add_cb_wrap);
+        _OPENSSL_free(parse_cb_wrap);
         return 0;
     }
 
@@ -440,8 +440,8 @@ static int add_old_custom_ext(SSL_CTX *ctx, ENDPOINT role,
                                 parse_cb_wrap);
 
     if (!ret) {
-        OPENSSL_free(add_cb_wrap);
-        OPENSSL_free(parse_cb_wrap);
+        _OPENSSL_free(add_cb_wrap);
+        _OPENSSL_free(parse_cb_wrap);
     }
 
     return ret;

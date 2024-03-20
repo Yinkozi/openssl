@@ -133,7 +133,7 @@ int a2d_ASN1_OBJECT(unsigned char *out, int olen, const char *buf, int num)
             blsize = (blsize + 6) / 7;
             if (blsize > tmpsize) {
                 if (tmp != ftmp)
-                    OPENSSL_free(tmp);
+                    _OPENSSL_free(tmp);
                 tmpsize = blsize + 32;
                 tmp = OPENSSL_malloc(tmpsize);
                 if (tmp == NULL)
@@ -167,12 +167,12 @@ int a2d_ASN1_OBJECT(unsigned char *out, int olen, const char *buf, int num)
             len += i;
     }
     if (tmp != ftmp)
-        OPENSSL_free(tmp);
+        _OPENSSL_free(tmp);
     BN_free(bl);
     return len;
  err:
     if (tmp != ftmp)
-        OPENSSL_free(tmp);
+        _OPENSSL_free(tmp);
     BN_free(bl);
     return 0;
 }
@@ -204,7 +204,7 @@ int i2a_ASN1_OBJECT(BIO *bp, const ASN1_OBJECT *a)
     }
     _BIO_write(bp, p, i);
     if (p != buf)
-        OPENSSL_free(p);
+        _OPENSSL_free(p);
     return i;
 }
 
@@ -301,7 +301,7 @@ ASN1_OBJECT *c2i_ASN1_OBJECT(ASN1_OBJECT **a, const unsigned char **pp,
     /* once detached we can change it */
     if ((data == NULL) || (ret->length < length)) {
         ret->length = 0;
-        OPENSSL_free(data);
+        _OPENSSL_free(data);
         data = OPENSSL_malloc(length);
         if (data == NULL) {
             i = ERR_R_MALLOC_FAILURE;
@@ -312,8 +312,8 @@ ASN1_OBJECT *c2i_ASN1_OBJECT(ASN1_OBJECT **a, const unsigned char **pp,
     memcpy(data, p, length);
     /* If there are dynamic strings, free them here, and clear the flag */
     if ((ret->flags & ASN1_OBJECT_FLAG_DYNAMIC_STRINGS) != 0) {
-        OPENSSL_free((char *)ret->sn);
-        OPENSSL_free((char *)ret->ln);
+        _OPENSSL_free((char *)ret->sn);
+        _OPENSSL_free((char *)ret->ln);
         ret->flags &= ~ASN1_OBJECT_FLAG_DYNAMIC_STRINGS;
     }
     /* reattach data to object, after which it remains const */
@@ -356,18 +356,18 @@ void ASN1_OBJECT_free(ASN1_OBJECT *a)
 #ifndef CONST_STRICT            /* disable purely for compile-time strict
                                  * const checking. Doing this on a "real"
                                  * compile will cause memory leaks */
-        OPENSSL_free((void*)a->sn);
-        OPENSSL_free((void*)a->ln);
+        _OPENSSL_free((void*)a->sn);
+        _OPENSSL_free((void*)a->ln);
 #endif
         a->sn = a->ln = NULL;
     }
     if (a->flags & ASN1_OBJECT_FLAG_DYNAMIC_DATA) {
-        OPENSSL_free((void*)a->data);
+        _OPENSSL_free((void*)a->data);
         a->data = NULL;
         a->length = 0;
     }
     if (a->flags & ASN1_OBJECT_FLAG_DYNAMIC)
-        OPENSSL_free(a);
+        _OPENSSL_free(a);
 }
 
 ASN1_OBJECT *ASN1_OBJECT_create(int nid, unsigned char *data, int len,

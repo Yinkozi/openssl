@@ -101,7 +101,7 @@ static int test_bad_asn1(void)
         && !TEST_false(ERR_GET_REASON(ERR_peek_error()) == ERR_R_MALLOC_FAILURE))
         ret = 0;
     _BIO_free(bio);
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     ASN1_item_free(value, item_type);
     return ret;
 }

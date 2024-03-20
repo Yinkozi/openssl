@@ -112,7 +112,7 @@ int OBJ_add_sigid(int signid, int dig_id, int pkey_id)
     ntr->pkey_id = pkey_id;
 
     if (!sk_nid_triple_push(sig_app, ntr)) {
-        OPENSSL_free(ntr);
+        _OPENSSL_free(ntr);
         return 0;
     }
 
@@ -127,7 +127,7 @@ int OBJ_add_sigid(int signid, int dig_id, int pkey_id)
 
 static void sid_free(nid_triple *tt)
 {
-    OPENSSL_free(tt);
+    _OPENSSL_free(tt);
 }
 
 void OBJ_sigid_free(void)

@@ -109,8 +109,8 @@ struct evp_test_buffer_st {
 static void evp_test_buffer_free(EVP_TEST_BUFFER *db)
 {
     if (db != NULL) {
-        OPENSSL_free(db->buf);
-        OPENSSL_free(db);
+        _OPENSSL_free(db->buf);
+        _OPENSSL_free(db);
     }
 }
 
@@ -166,7 +166,7 @@ static int evp_test_buffer_ncopy(const char *value,
     for (i = 0, p = tbuf; i < ncopy; i++, p += db->buflen)
         memcpy(p, db->buf, db->buflen);
 
-    OPENSSL_free(db->buf);
+    _OPENSSL_free(db->buf);
     db->buf = tbuf;
     db->buflen = tbuflen;
     return 1;
@@ -257,7 +257,7 @@ static unsigned char* unescape(const char *input, size_t input_len,
     return ret;
 
  err:
-    OPENSSL_free(ret);
+    _OPENSSL_free(ret);
     return NULL;
 }
 
@@ -353,7 +353,7 @@ static void digest_test_cleanup(EVP_TEST *t)
     DIGEST_DATA *mdat = t->data;
 
     sk_EVP_TEST_BUFFER_pop_free(mdat->input, evp_test_buffer_free);
-    OPENSSL_free(mdat->output);
+    _OPENSSL_free(mdat->output);
 }
 
 static int digest_test_parse(EVP_TEST *t,
@@ -448,7 +448,7 @@ static int digest_test_run(EVP_TEST *t)
     t->err = NULL;
 
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     EVP_MD_CTX_free(mctx);
     return 1;
 }
@@ -522,12 +522,12 @@ static void cipher_test_cleanup(EVP_TEST *t)
 {
     CIPHER_DATA *cdat = t->data;
 
-    OPENSSL_free(cdat->key);
-    OPENSSL_free(cdat->iv);
-    OPENSSL_free(cdat->ciphertext);
-    OPENSSL_free(cdat->plaintext);
-    OPENSSL_free(cdat->aad);
-    OPENSSL_free(cdat->tag);
+    _OPENSSL_free(cdat->key);
+    _OPENSSL_free(cdat->iv);
+    _OPENSSL_free(cdat->ciphertext);
+    _OPENSSL_free(cdat->plaintext);
+    _OPENSSL_free(cdat->aad);
+    _OPENSSL_free(cdat->tag);
 }
 
 static int cipher_test_parse(EVP_TEST *t, const char *keyword,
@@ -766,7 +766,7 @@ static int cipher_test_enc(EVP_TEST *t, int enc,
     t->err = NULL;
     ok = 1;
  err:
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     _EVP_CIPHER_CTX_free(ctx);
     return ok;
 }
@@ -918,21 +918,21 @@ static int mac_test_init(EVP_TEST *t, const char *alg)
     return 1;
 }
 
-/* Because OPENSSL_free is a macro, it can't be passed as a function pointer */
-static void openssl_free(char *m)
+/* Because _OPENSSL_free is a macro, it can't be passed as a function pointer */
+static void _OPENSSL_free(char *m)
 {
-    OPENSSL_free(m);
+    _OPENSSL_free(m);
 }
 
 static void mac_test_cleanup(EVP_TEST *t)
 {
     MAC_DATA *mdat = t->data;
 
-    sk_OPENSSL_STRING_pop_free(mdat->controls, openssl_free);
-    OPENSSL_free(mdat->alg);
-    OPENSSL_free(mdat->key);
-    OPENSSL_free(mdat->input);
-    OPENSSL_free(mdat->output);
+    sk_OPENSSL_STRING_pop_free(mdat->controls, _OPENSSL_free);
+    _OPENSSL_free(mdat->alg);
+    _OPENSSL_free(mdat->key);
+    _OPENSSL_free(mdat->input);
+    _OPENSSL_free(mdat->output);
 }
 
 static int mac_test_parse(EVP_TEST *t,
@@ -976,7 +976,7 @@ static int mac_test_ctrl_pkey(EVP_TEST *t, EVP_PKEY_CTX *pctx,
         t->err = "PKEY_CTRL_ERROR";
     else
         rv = 1;
-    OPENSSL_free(tmpval);
+    _OPENSSL_free(tmpval);
     return rv > 0;
 }
 
@@ -1053,7 +1053,7 @@ static int mac_test_run(EVP_TEST *t)
     t->err = NULL;
  err:
     EVP_MD_CTX_free(mctx);
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     EVP_PKEY_CTX_free(genctx);
     EVP_PKEY_free(key);
     return 1;
@@ -1120,7 +1120,7 @@ static int pkey_test_init(EVP_TEST *t, const char *name,
     kdata->keyop = keyop;
     if (!TEST_ptr(kdata->ctx = EVP_PKEY_CTX_new(pkey, NULL))) {
         EVP_PKEY_free(pkey);
-        OPENSSL_free(kdata);
+        _OPENSSL_free(kdata);
         return 0;
     }
     if (keyopinit(kdata->ctx) <= 0)
@@ -1133,8 +1133,8 @@ static void pkey_test_cleanup(EVP_TEST *t)
 {
     PKEY_DATA *kdata = t->data;
 
-    OPENSSL_free(kdata->input);
-    OPENSSL_free(kdata->output);
+    _OPENSSL_free(kdata->input);
+    _OPENSSL_free(kdata->output);
     EVP_PKEY_CTX_free(kdata->ctx);
 }
 
@@ -1169,7 +1169,7 @@ static int pkey_test_ctrl(EVP_TEST *t, EVP_PKEY_CTX *pctx,
             rv = 1;
         }
     }
-    OPENSSL_free(tmpval);
+    _OPENSSL_free(tmpval);
     return rv > 0;
 }
 
@@ -1210,7 +1210,7 @@ static int pkey_test_run(EVP_TEST *t)
 
     t->err = NULL;
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     return 1;
 }
 
@@ -1329,7 +1329,7 @@ static int pderive_test_run(EVP_TEST *t)
 
     t->err = NULL;
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     return 1;
 }
 
@@ -1477,9 +1477,9 @@ static void pbe_test_cleanup(EVP_TEST *t)
 {
     PBE_DATA *pdat = t->data;
 
-    OPENSSL_free(pdat->pass);
-    OPENSSL_free(pdat->salt);
-    OPENSSL_free(pdat->key);
+    _OPENSSL_free(pdat->pass);
+    _OPENSSL_free(pdat->salt);
+    _OPENSSL_free(pdat->key);
 }
 
 static int pbe_test_parse(EVP_TEST *t,
@@ -1546,7 +1546,7 @@ static int pbe_test_run(EVP_TEST *t)
 
     t->err = NULL;
 err:
-    OPENSSL_free(key);
+    _OPENSSL_free(key);
     return 1;
 }
 
@@ -1602,7 +1602,7 @@ static int encode_test_init(EVP_TEST *t, const char *encoding)
     t->data = edata;
     return 1;
 err:
-    OPENSSL_free(edata);
+    _OPENSSL_free(edata);
     return 0;
 }
 
@@ -1610,8 +1610,8 @@ static void encode_test_cleanup(EVP_TEST *t)
 {
     ENCODE_DATA *edata = t->data;
 
-    OPENSSL_free(edata->input);
-    OPENSSL_free(edata->output);
+    _OPENSSL_free(edata->input);
+    _OPENSSL_free(edata->output);
     memset(edata, 0, sizeof(*edata));
 }
 
@@ -1690,8 +1690,8 @@ static int encode_test_run(EVP_TEST *t)
 
     t->err = NULL;
  err:
-    OPENSSL_free(encode_out);
-    OPENSSL_free(decode_out);
+    _OPENSSL_free(encode_out);
+    _OPENSSL_free(decode_out);
     EVP_ENCODE_CTX_free(decode_ctx);
     EVP_ENCODE_CTX_free(encode_ctx);
     return 1;
@@ -1740,12 +1740,12 @@ static int kdf_test_init(EVP_TEST *t, const char *name)
         return 0;
     kdata->ctx = _EVP_PKEY_CTX_new_id(kdf_nid, NULL);
     if (kdata->ctx == NULL) {
-        OPENSSL_free(kdata);
+        _OPENSSL_free(kdata);
         return 0;
     }
     if (EVP_PKEY_derive_init(kdata->ctx) <= 0) {
         EVP_PKEY_CTX_free(kdata->ctx);
-        OPENSSL_free(kdata);
+        _OPENSSL_free(kdata);
         return 0;
     }
     t->data = kdata;
@@ -1755,7 +1755,7 @@ static int kdf_test_init(EVP_TEST *t, const char *name)
 static void kdf_test_cleanup(EVP_TEST *t)
 {
     KDF_DATA *kdata = t->data;
-    OPENSSL_free(kdata->output);
+    _OPENSSL_free(kdata->output);
     EVP_PKEY_CTX_free(kdata->ctx);
 }
 
@@ -1793,7 +1793,7 @@ static int kdf_test_run(EVP_TEST *t)
     t->err = NULL;
 
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     return 1;
 }
 
@@ -1857,13 +1857,13 @@ static int keypair_test_init(EVP_TEST *t, const char *pair)
     t->err = NULL;
 
 end:
-    OPENSSL_free(priv);
+    _OPENSSL_free(priv);
     return rv;
 }
 
 static void keypair_test_cleanup(EVP_TEST *t)
 {
-    OPENSSL_free(t->data);
+    _OPENSSL_free(t->data);
     t->data = NULL;
 }
 
@@ -1972,8 +1972,8 @@ static void keygen_test_cleanup(EVP_TEST *t)
     KEYGEN_TEST_DATA *keygen = t->data;
 
     EVP_PKEY_CTX_free(keygen->genctx);
-    OPENSSL_free(keygen->keyname);
-    OPENSSL_free(t->data);
+    _OPENSSL_free(keygen->keyname);
+    _OPENSSL_free(t->data);
     t->data = NULL;
 }
 
@@ -2071,7 +2071,7 @@ static int digestsigver_test_init(EVP_TEST *t, const char *alg, int is_verify,
         return 0;
     mdat->md = md;
     if (!TEST_ptr(mdat->ctx = EVP_MD_CTX_new())) {
-        OPENSSL_free(mdat);
+        _OPENSSL_free(mdat);
         return 0;
     }
     mdat->is_verify = is_verify;
@@ -2091,9 +2091,9 @@ static void digestsigver_test_cleanup(EVP_TEST *t)
 
     EVP_MD_CTX_free(mdata->ctx);
     sk_EVP_TEST_BUFFER_pop_free(mdata->input, evp_test_buffer_free);
-    OPENSSL_free(mdata->osin);
-    OPENSSL_free(mdata->output);
-    OPENSSL_free(mdata);
+    _OPENSSL_free(mdata->osin);
+    _OPENSSL_free(mdata->output);
+    _OPENSSL_free(mdata);
     t->data = NULL;
 }
 
@@ -2185,7 +2185,7 @@ static int digestsign_test_run(EVP_TEST *t)
 
     t->err = NULL;
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     return 1;
 }
 
@@ -2263,7 +2263,7 @@ static int oneshot_digestsign_test_run(EVP_TEST *t)
 
     t->err = NULL;
  err:
-    OPENSSL_free(got);
+    _OPENSSL_free(got);
     return 1;
 }
 
@@ -2342,14 +2342,14 @@ static void clear_test(EVP_TEST *t)
     if (t->data != NULL) {
         if (t->meth != NULL)
             t->meth->cleanup(t);
-        OPENSSL_free(t->data);
+        _OPENSSL_free(t->data);
         t->data = NULL;
     }
-    OPENSSL_free(t->expected_err);
+    _OPENSSL_free(t->expected_err);
     t->expected_err = NULL;
-    OPENSSL_free(t->func);
+    _OPENSSL_free(t->func);
     t->func = NULL;
-    OPENSSL_free(t->reason);
+    _OPENSSL_free(t->reason);
     t->reason = NULL;
 
     /* Text literal. */
@@ -2470,8 +2470,8 @@ static void free_key_list(KEY_LIST *lst)
         KEY_LIST *next = lst->next;
 
         EVP_PKEY_free(lst->key);
-        OPENSSL_free(lst->name);
-        OPENSSL_free(lst);
+        _OPENSSL_free(lst->name);
+        _OPENSSL_free(lst);
         lst = next;
     }
 }
@@ -2594,11 +2594,11 @@ top:
             pkey = EVP_PKEY_new_raw_public_key(nid, NULL, keybin, keylen);
         if (pkey == NULL && !key_unsupported()) {
             TEST_info("Can't read %s data", pp->key);
-            OPENSSL_free(keybin);
+            _OPENSSL_free(keybin);
             TEST_openssl_errors();
             return 0;
         }
-        OPENSSL_free(keybin);
+        _OPENSSL_free(keybin);
     }
 
     /* If we have a key add to list */
@@ -2690,7 +2690,7 @@ static int run_file_tests(int i)
     if (!TEST_ptr(t = OPENSSL_zalloc(sizeof(*t))))
         return 0;
     if (!test_start_file(&t->s, testfile)) {
-        OPENSSL_free(t);
+        _OPENSSL_free(t);
         return 0;
     }
 
@@ -2710,7 +2710,7 @@ static int run_file_tests(int i)
     free_key_list(private_keys);
     _BIO_free(t->s.key);
     c = t->s.errors;
-    OPENSSL_free(t);
+    _OPENSSL_free(t);
     return c == 0;
 }
 

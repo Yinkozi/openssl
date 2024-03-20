@@ -125,7 +125,7 @@ int OBJ_NAME_new_index(unsigned long (*hash_func) (const char *),
 
         if (!push) {
             OBJerr(OBJ_F_OBJ_NAME_NEW_INDEX, ERR_R_MALLOC_FAILURE);
-            OPENSSL_free(name_funcs);
+            _OPENSSL_free(name_funcs);
             ret = 0;
             goto out;
         }
@@ -246,11 +246,11 @@ int OBJ_NAME_add(const char *name, int type, const char *data)
                                 ret->type)->free_func(ret->name, ret->type,
                                                       ret->data);
         }
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
     } else {
         if (lh_OBJ_NAME_error(names_lh)) {
             /* ERROR */
-            OPENSSL_free(onp);
+            _OPENSSL_free(onp);
             goto unlock;
         }
     }
@@ -288,7 +288,7 @@ int OBJ_NAME_remove(const char *name, int type)
                                 ret->type)->free_func(ret->name, ret->type,
                                                       ret->data);
         }
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         ok = 1;
     }
 
@@ -366,7 +366,7 @@ void OBJ_NAME_do_all_sorted(int type,
         for (n = 0; n < d.n; ++n)
             fn(d.names[n], arg);
 
-        OPENSSL_free((void *)d.names);
+        _OPENSSL_free((void *)d.names);
     }
 }
 
@@ -383,7 +383,7 @@ static void names_lh_free_doall(OBJ_NAME *onp)
 
 static void name_funcs_free(NAME_FUNCS *ptr)
 {
-    OPENSSL_free(ptr);
+    _OPENSSL_free(ptr);
 }
 
 void OBJ_NAME_cleanup(int type)

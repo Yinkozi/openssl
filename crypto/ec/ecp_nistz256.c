@@ -775,9 +775,9 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
 
     ret = 1;
  err:
-    OPENSSL_free(table_storage);
-    OPENSSL_free(p_str);
-    OPENSSL_free(scalars);
+    _OPENSSL_free(table_storage);
+    _OPENSSL_free(p_str);
+    _OPENSSL_free(scalars);
     return ret;
 }
 
@@ -923,7 +923,7 @@ __owur static int ecp_nistz256_mult_precompute(EC_GROUP *group, BN_CTX *ctx)
     BN_CTX_free(new_ctx);
 
     EC_nistz256_pre_comp_free(pre_comp);
-    OPENSSL_free(precomp_storage);
+    _OPENSSL_free(precomp_storage);
     EC_POINT_free(P);
     EC_POINT_free(T);
     return ret;
@@ -1163,8 +1163,8 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
 
 err:
     BN_CTX_end(ctx);
-    OPENSSL_free(new_points);
-    OPENSSL_free(new_scalars);
+    _OPENSSL_free(new_points);
+    _OPENSSL_free(new_scalars);
     return ret;
 }
 
@@ -1233,7 +1233,7 @@ static NISTZ256_PRE_COMP *ecp_nistz256_pre_comp_new(const EC_GROUP *group)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         ECerr(EC_F_ECP_NISTZ256_PRE_COMP_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -1260,9 +1260,9 @@ void EC_nistz256_pre_comp_free(NISTZ256_PRE_COMP *pre)
         return;
     REF_ASSERT_ISNT(i < 0);
 
-    OPENSSL_free(pre->precomp_storage);
+    _OPENSSL_free(pre->precomp_storage);
     CRYPTO_THREAD_lock_free(pre->lock);
-    OPENSSL_free(pre);
+    _OPENSSL_free(pre);
 }
 
 

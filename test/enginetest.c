@@ -166,8 +166,8 @@ static int test_engines(void)
         ENGINE_free(ptr);
     }
     for (loop = 0; loop < NUMTOADD; loop++) {
-        OPENSSL_free((void *)ENGINE_get_id(block[loop]));
-        OPENSSL_free((void *)ENGINE_get_name(block[loop]));
+        _OPENSSL_free((void *)ENGINE_get_id(block[loop]));
+        _OPENSSL_free((void *)ENGINE_get_name(block[loop]));
     }
     to_return = 1;
 
@@ -345,7 +345,7 @@ static int test_redirect(void)
     EVP_PKEY_CTX_free(ctx);
     EVP_PKEY_free(pkey);
     ENGINE_free(e);
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     return to_return;
 }
 #endif

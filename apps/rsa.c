@@ -305,7 +305,7 @@ int rsa_main(int argc, char **argv)
     release_engine(e);
     BIO_free_all(out);
     RSA_free(rsa);
-    OPENSSL_free(passin);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passin);
+    _OPENSSL_free(passout);
     return ret;
 }

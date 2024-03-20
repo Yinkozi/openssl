@@ -193,7 +193,7 @@ int i2o_SCT_signature(const SCT *sct, unsigned char **out)
 
     return len;
 err:
-    OPENSSL_free(pstart);
+    _OPENSSL_free(pstart);
     return -1;
 }
 
@@ -250,7 +250,7 @@ int i2o_SCT(const SCT *sct, unsigned char **out)
 
     return len;
 err:
-    OPENSSL_free(pstart);
+    _OPENSSL_free(pstart);
     return -1;
 }
 
@@ -367,7 +367,7 @@ int i2o_SCT_LIST(const STACK_OF(SCT) *a, unsigned char **pp)
 
  err:
     if (is_pp_new) {
-        OPENSSL_free(*pp);
+        _OPENSSL_free(*pp);
         *pp = NULL;
     }
     return -1;
@@ -402,6 +402,6 @@ int i2d_SCT_LIST(const STACK_OF(SCT) *a, unsigned char **out)
         return -1;
 
     len = i2d_ASN1_OCTET_STRING(&oct, out);
-    OPENSSL_free(oct.data);
+    _OPENSSL_free(oct.data);
     return len;
 }

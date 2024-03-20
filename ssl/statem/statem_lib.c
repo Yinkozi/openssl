@@ -333,11 +333,11 @@ int tls_construct_cert_verify(SSL *s, WPACKET *pkt)
         goto err;
     }
 
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
     EVP_MD_CTX_free(mctx);
     return 1;
  err:
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
     EVP_MD_CTX_free(mctx);
     return 0;
 }
@@ -524,7 +524,7 @@ MSG_PROCESS_RETURN tls_process_cert_verify(SSL *s, PACKET *pkt)
     s->s3->handshake_buffer = NULL;
     EVP_MD_CTX_free(mctx);
 #ifndef OPENSSL_NO_GOST
-    OPENSSL_free(gost_data);
+    _OPENSSL_free(gost_data);
 #endif
     return ret;
 }

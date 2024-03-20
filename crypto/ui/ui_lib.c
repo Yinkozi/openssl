@@ -32,7 +32,7 @@ UI *UI_new_method(const UI_METHOD *method)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         UIerr(UI_F_UI_NEW_METHOD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -43,7 +43,7 @@ UI *UI_new_method(const UI_METHOD *method)
     ret->meth = method;
 
     if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_UI, ret, &ret->ex_data)) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -52,12 +52,12 @@ UI *UI_new_method(const UI_METHOD *method)
 static void free_string(UI_STRING *uis)
 {
     if (uis->flags & OUT_STRING_FREEABLE) {
-        OPENSSL_free((char *)uis->out_string);
+        _OPENSSL_free((char *)uis->out_string);
         switch (uis->type) {
         case UIT_BOOLEAN:
-            OPENSSL_free((char *)uis->_.boolean_data.action_desc);
-            OPENSSL_free((char *)uis->_.boolean_data.ok_chars);
-            OPENSSL_free((char *)uis->_.boolean_data.cancel_chars);
+            _OPENSSL_free((char *)uis->_.boolean_data.action_desc);
+            _OPENSSL_free((char *)uis->_.boolean_data.ok_chars);
+            _OPENSSL_free((char *)uis->_.boolean_data.cancel_chars);
             break;
         case UIT_NONE:
         case UIT_PROMPT:
@@ -67,7 +67,7 @@ static void free_string(UI_STRING *uis)
             break;
         }
     }
-    OPENSSL_free(uis);
+    _OPENSSL_free(uis);
 }
 
 void UI_free(UI *ui)
@@ -80,7 +80,7 @@ void UI_free(UI *ui)
     sk_UI_STRING_pop_free(ui->strings, free_string);
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_UI, ui, &ui->ex_data);
     CRYPTO_THREAD_lock_free(ui->lock);
-    OPENSSL_free(ui);
+    _OPENSSL_free(ui);
 }
 
 static int allocate_string_stack(UI *ui)
@@ -304,10 +304,10 @@ int UI_dup_input_boolean(UI *ui, const char *prompt, const char *action_desc,
                                     ok_chars_copy, cancel_chars_copy, 1,
                                     UIT_BOOLEAN, flags, result_buf);
  err:
-    OPENSSL_free(prompt_copy);
-    OPENSSL_free(action_desc_copy);
-    OPENSSL_free(ok_chars_copy);
-    OPENSSL_free(cancel_chars_copy);
+    _OPENSSL_free(prompt_copy);
+    _OPENSSL_free(action_desc_copy);
+    _OPENSSL_free(ok_chars_copy);
+    _OPENSSL_free(cancel_chars_copy);
     return -1;
 }
 
@@ -607,8 +607,8 @@ UI_METHOD *UI_create_method(const char *name)
         || !CRYPTO_new_ex_data(CRYPTO_EX_INDEX_UI_METHOD, ui_method,
                                &ui_method->ex_data)) {
         if (ui_method)
-            OPENSSL_free(ui_method->name);
-        OPENSSL_free(ui_method);
+            _OPENSSL_free(ui_method->name);
+        _OPENSSL_free(ui_method);
         UIerr(UI_F_UI_CREATE_METHOD, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -626,9 +626,9 @@ void UI_destroy_method(UI_METHOD *ui_method)
         return;
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_UI_METHOD, ui_method,
                         &ui_method->ex_data);
-    OPENSSL_free(ui_method->name);
+    _OPENSSL_free(ui_method->name);
     ui_method->name = NULL;
-    OPENSSL_free(ui_method);
+    _OPENSSL_free(ui_method);
 }
 
 int UI_method_set_opener(UI_METHOD *method, int (*opener) (UI *ui))

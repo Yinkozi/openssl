@@ -160,7 +160,7 @@ void HMAC_CTX_free(HMAC_CTX *ctx)
         EVP_MD_CTX_free(ctx->i_ctx);
         EVP_MD_CTX_free(ctx->o_ctx);
         EVP_MD_CTX_free(ctx->md_ctx);
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
     }
 }
 

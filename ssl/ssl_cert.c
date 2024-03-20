@@ -64,7 +64,7 @@ CERT *ssl_cert_new(void)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         SSLerr(SSL_F_SSL_CERT_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -86,7 +86,7 @@ CERT *ssl_cert_dup(CERT *cert)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         SSLerr(SSL_F_SSL_CERT_DUP, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 #ifndef OPENSSL_NO_DH
@@ -213,7 +213,7 @@ void ssl_cert_clear_certs(CERT *c)
         cpk->privatekey = NULL;
         sk_X509_pop_free(cpk->chain, X509_free);
         cpk->chain = NULL;
-        OPENSSL_free(cpk->serverinfo);
+        _OPENSSL_free(cpk->serverinfo);
         cpk->serverinfo = NULL;
         cpk->serverinfo_length = 0;
     }
@@ -236,17 +236,17 @@ void ssl_cert_free(CERT *c)
 #endif
 
     ssl_cert_clear_certs(c);
-    OPENSSL_free(c->conf_sigalgs);
-    OPENSSL_free(c->client_sigalgs);
-    OPENSSL_free(c->ctype);
+    _OPENSSL_free(c->conf_sigalgs);
+    _OPENSSL_free(c->client_sigalgs);
+    _OPENSSL_free(c->ctype);
     X509_STORE_free(c->verify_store);
     X509_STORE_free(c->chain_store);
     custom_exts_free(&c->custext);
 #ifndef OPENSSL_NO_PSK
-    OPENSSL_free(c->psk_identity_hint);
+    _OPENSSL_free(c->psk_identity_hint);
 #endif
     CRYPTO_THREAD_lock_free(c->lock);
-    OPENSSL_free(c);
+    _OPENSSL_free(c);
 }
 
 int ssl_cert_set0_chain(SSL *s, SSL_CTX *ctx, STACK_OF(X509) *chain)
@@ -585,8 +585,8 @@ static int xname_cmp(const X509_NAME *a, const X509_NAME *b)
     else /* alen == blen */
         ret = memcmp(abuf, bbuf, alen);
 
-    OPENSSL_free(abuf);
-    OPENSSL_free(bbuf);
+    _OPENSSL_free(abuf);
+    _OPENSSL_free(bbuf);
 
     return ret;
 }

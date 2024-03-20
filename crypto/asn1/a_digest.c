@@ -39,10 +39,10 @@ int ASN1_digest(i2d_of_void *i2d, const EVP_MD *type, char *data,
     i2d(data, &p);
 
     if (!_EVP_Digest(str, inl, md, len, type, NULL)) {
-        OPENSSL_free(str);
+        _OPENSSL_free(str);
         return 0;
     }
-    OPENSSL_free(str);
+    _OPENSSL_free(str);
     return 1;
 }
 
@@ -59,9 +59,9 @@ int ASN1_item_digest(const ASN1_ITEM *it, const EVP_MD *type, void *asn,
         return 0;
 
     if (!_EVP_Digest(str, i, md, len, type, NULL)) {
-        OPENSSL_free(str);
+        _OPENSSL_free(str);
         return 0;
     }
-    OPENSSL_free(str);
+    _OPENSSL_free(str);
     return 1;
 }

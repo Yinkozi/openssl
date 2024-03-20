@@ -54,7 +54,7 @@ EC_GROUP *EC_GROUP_new(const EC_METHOD *meth)
  err:
     BN_free(ret->order);
     BN_free(ret->cofactor);
-    OPENSSL_free(ret);
+    _OPENSSL_free(ret);
     return NULL;
 }
 
@@ -104,8 +104,8 @@ void EC_GROUP_free(EC_GROUP *group)
     EC_POINT_free(group->generator);
     BN_free(group->order);
     BN_free(group->cofactor);
-    OPENSSL_free(group->seed);
-    OPENSSL_free(group);
+    _OPENSSL_free(group->seed);
+    _OPENSSL_free(group);
 }
 
 void EC_GROUP_clear_free(EC_GROUP *group)
@@ -214,7 +214,7 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
     dest->decoded_from_explicit_params = src->decoded_from_explicit_params;
 
     if (src->seed) {
-        OPENSSL_free(dest->seed);
+        _OPENSSL_free(dest->seed);
         if ((dest->seed = OPENSSL_malloc(src->seed_len)) == NULL) {
             ECerr(EC_F_EC_GROUP_COPY, ERR_R_MALLOC_FAILURE);
             return 0;
@@ -223,7 +223,7 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
             return 0;
         dest->seed_len = src->seed_len;
     } else {
-        OPENSSL_free(dest->seed);
+        _OPENSSL_free(dest->seed);
         dest->seed = NULL;
         dest->seed_len = 0;
     }
@@ -478,7 +478,7 @@ point_conversion_form_t EC_GROUP_get_point_conversion_form(const EC_GROUP
 
 size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
 {
-    OPENSSL_free(group->seed);
+    _OPENSSL_free(group->seed);
     group->seed = NULL;
     group->seed_len = 0;
 
@@ -670,7 +670,7 @@ EC_POINT *EC_POINT_new(const EC_GROUP *group)
     ret->curve_name = group->curve_name;
 
     if (!ret->meth->point_init(ret)) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -684,7 +684,7 @@ void EC_POINT_free(EC_POINT *point)
 
     if (point->meth->point_finish != 0)
         point->meth->point_finish(point);
-    OPENSSL_free(point);
+    _OPENSSL_free(point);
 }
 
 void EC_POINT_clear_free(EC_POINT *point)

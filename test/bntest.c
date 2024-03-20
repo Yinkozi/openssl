@@ -74,7 +74,7 @@ static int parse_bigBN(BIGNUM **out, const char *bn_strings[])
     char *bigstring = glue_strings(bn_strings, NULL);
     int ret = BN_hex2bn(out, bigstring);
 
-    OPENSSL_free(bigstring);
+    _OPENSSL_free(bigstring);
     return ret;
 }
 
@@ -2761,7 +2761,7 @@ static int test_mod_exp(int i)
     res = 1;
 
  err:
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
     BN_free(result);
     BN_free(base);
     BN_free(exponent);
@@ -2799,7 +2799,7 @@ static int test_mod_exp_consttime(int i)
     res = 1;
 
  err:
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
     BN_free(result);
     BN_free(base);
     BN_free(exponent);
@@ -2893,7 +2893,7 @@ static int run_file_tests(int i)
     if (!TEST_ptr(s = OPENSSL_zalloc(sizeof(*s))))
         return 0;
     if (!test_start_file(s, testfile)) {
-        OPENSSL_free(s);
+        _OPENSSL_free(s);
         return 0;
     }
 
@@ -2908,7 +2908,7 @@ static int run_file_tests(int i)
     }
     test_end_file(s);
     c = s->errors;
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
 
     return c == 0;
 }

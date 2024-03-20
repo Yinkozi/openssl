@@ -353,7 +353,7 @@ static int cn2dnsid(ASN1_STRING *cn, unsigned char **dnsid, size_t *idlen)
 
     /* Reject *embedded* NULs */
     if (memchr(utf8_value, 0, utf8_length) != NULL) {
-        OPENSSL_free(utf8_value);
+        _OPENSSL_free(utf8_value);
         return X509_V_ERR_UNSUPPORTED_NAME_SYNTAX;
     }
 
@@ -401,7 +401,7 @@ static int cn2dnsid(ASN1_STRING *cn, unsigned char **dnsid, size_t *idlen)
         *idlen = (size_t)utf8_length;
         return X509_V_OK;
     }
-    OPENSSL_free(utf8_value);
+    _OPENSSL_free(utf8_value);
     return X509_V_OK;
 }
 
@@ -443,7 +443,7 @@ int NAME_CONSTRAINTS_check_CN(X509 *x, NAME_CONSTRAINTS *nc)
         stmp.length = idlen;
         stmp.data = idval;
         r = nc_match(&gntmp, nc);
-        OPENSSL_free(idval);
+        _OPENSSL_free(idval);
         if (r != X509_V_OK)
             return r;
     }

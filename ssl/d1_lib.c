@@ -92,7 +92,7 @@ int dtls1_new(SSL *s)
     if (d1->buffered_messages == NULL || d1->sent_messages == NULL) {
         pqueue_free(d1->buffered_messages);
         pqueue_free(d1->sent_messages);
-        OPENSSL_free(d1);
+        _OPENSSL_free(d1);
         ssl3_free(s);
         return 0;
     }
@@ -148,7 +148,7 @@ void dtls1_free(SSL *s)
         pqueue_free(s->d1->sent_messages);
     }
 
-    OPENSSL_free(s->d1);
+    _OPENSSL_free(s->d1);
     s->d1 = NULL;
 }
 

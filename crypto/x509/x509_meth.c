@@ -32,15 +32,15 @@ X509_LOOKUP_METHOD *X509_LOOKUP_meth_new(const char *name)
     return method;
 
 err:
-    OPENSSL_free(method);
+    _OPENSSL_free(method);
     return NULL;
 }
 
 void X509_LOOKUP_meth_free(X509_LOOKUP_METHOD *method)
 {
     if (method != NULL)
-        OPENSSL_free(method->name);
-    OPENSSL_free(method);
+        _OPENSSL_free(method->name);
+    _OPENSSL_free(method);
 }
 
 int X509_LOOKUP_meth_set_new_item(X509_LOOKUP_METHOD *method,

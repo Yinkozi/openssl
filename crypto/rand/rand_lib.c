@@ -471,7 +471,7 @@ RAND_POOL *rand_pool_new(int entropy_requested, int secure,
     return pool;
 
 err:
-    OPENSSL_free(pool);
+    _OPENSSL_free(pool);
     return NULL;
 }
 
@@ -528,7 +528,7 @@ void rand_pool_free(RAND_POOL *pool)
             OPENSSL_clear_free(pool->buffer, pool->alloc_len);
     }
 
-    OPENSSL_free(pool);
+    _OPENSSL_free(pool);
 }
 
 /*

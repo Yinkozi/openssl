@@ -26,7 +26,7 @@ X509_LOOKUP *X509_LOOKUP_new(X509_LOOKUP_METHOD *method)
 
     ret->method = method;
     if (method->new_item != NULL && method->new_item(ret) == 0) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
     return ret;
@@ -38,7 +38,7 @@ void X509_LOOKUP_free(X509_LOOKUP *ctx)
         return;
     if ((ctx->method != NULL) && (ctx->method->free != NULL))
         (*ctx->method->free) (ctx);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int X509_STORE_lock(X509_STORE *s)
@@ -197,7 +197,7 @@ err:
     X509_VERIFY_PARAM_free(ret->param);
     sk_X509_OBJECT_free(ret->objs);
     sk_X509_LOOKUP_free(ret->get_cert_methods);
-    OPENSSL_free(ret);
+    _OPENSSL_free(ret);
     return NULL;
 }
 
@@ -227,7 +227,7 @@ void X509_STORE_free(X509_STORE *vfy)
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_X509_STORE, vfy, &vfy->ex_data);
     X509_VERIFY_PARAM_free(vfy->param);
     CRYPTO_THREAD_lock_free(vfy->lock);
-    OPENSSL_free(vfy);
+    _OPENSSL_free(vfy);
 }
 
 int X509_STORE_up_ref(X509_STORE *vfy)
@@ -468,7 +468,7 @@ int X509_OBJECT_set1_X509_CRL(X509_OBJECT *a, X509_CRL *obj)
 void X509_OBJECT_free(X509_OBJECT *a)
 {
     x509_object_free_internal(a);
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 static int x509_object_idx_cnt(STACK_OF(X509_OBJECT) *h, X509_LOOKUP_TYPE type,

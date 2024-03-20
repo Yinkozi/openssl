@@ -529,10 +529,10 @@ static int full_client_hello_callback(SSL *s, int *al, void *arg)
     if (len != OSSL_NELEM(expected_extensions) ||
         memcmp(exts, expected_extensions, len * sizeof(*exts)) != 0) {
         printf("ClientHello callback expected extensions mismatch\n");
-        OPENSSL_free(exts);
+        _OPENSSL_free(exts);
         return SSL_CLIENT_HELLO_ERROR;
     }
-    OPENSSL_free(exts);
+    _OPENSSL_free(exts);
     return SSL_CLIENT_HELLO_SUCCESS;
 }
 
@@ -935,8 +935,8 @@ static int test_large_app_data(int tst)
 
     testresult = 1;
 end:
-    OPENSSL_free(msg);
-    OPENSSL_free(buf);
+    _OPENSSL_free(msg);
+    _OPENSSL_free(buf);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -4168,7 +4168,7 @@ static int old_add_cb(SSL *s, unsigned int ext_type, const unsigned char **out,
 static void old_free_cb(SSL *s, unsigned int ext_type, const unsigned char *out,
                         void *add_arg)
 {
-    OPENSSL_free((unsigned char *)out);
+    _OPENSSL_free((unsigned char *)out);
 }
 
 static int old_parse_cb(SSL *s, unsigned int ext_type, const unsigned char *in,
@@ -4214,7 +4214,7 @@ static int new_add_cb(SSL *s, unsigned int ext_type, unsigned int context,
 static void new_free_cb(SSL *s, unsigned int ext_type, unsigned int context,
                         const unsigned char *out, void *add_arg)
 {
-    OPENSSL_free((unsigned char *)out);
+    _OPENSSL_free((unsigned char *)out);
 }
 
 static int new_parse_cb(SSL *s, unsigned int ext_type, unsigned int context,
@@ -5302,9 +5302,9 @@ static int create_new_vfile(char *userid, char *password, const char *filename)
  end:
     if (row != NULL) {
         for (i = 0; i < DB_NUMBER; i++)
-            OPENSSL_free(row[i]);
+            _OPENSSL_free(row[i]);
     }
-    OPENSSL_free(row);
+    _OPENSSL_free(row);
     _BIO_free(dummy);
     _BIO_free(out);
     TXT_DB_free(db);
@@ -6339,9 +6339,9 @@ static int cert_cb(SSL *s, void *arg)
 
     /* Abort the handshake */
  out:
-    OPENSSL_free(ecdsacert);
-    OPENSSL_free(ecdsakey);
-    OPENSSL_free(rootfile);
+    _OPENSSL_free(ecdsacert);
+    _OPENSSL_free(ecdsakey);
+    _OPENSSL_free(rootfile);
     _BIO_free(in);
     EVP_PKEY_free(pkey);
     X509_free(x509);
@@ -7317,7 +7317,7 @@ int setup_tests(void)
 
     privkey = test_mk_file_path(certsdir, "serverkey.pem");
     if (privkey == NULL) {
-        OPENSSL_free(cert);
+        _OPENSSL_free(cert);
         return 0;
     }
 
@@ -7427,8 +7427,8 @@ int setup_tests(void)
 
 void cleanup_tests(void)
 {
-    OPENSSL_free(cert);
-    OPENSSL_free(privkey);
+    _OPENSSL_free(cert);
+    _OPENSSL_free(privkey);
     bio_s_mempacket_test_free();
     bio_s_always_retry_free();
 }

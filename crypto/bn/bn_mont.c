@@ -257,7 +257,7 @@ void BN_MONT_CTX_free(BN_MONT_CTX *mont)
     BN_clear_free(&mont->N);
     BN_clear_free(&mont->Ni);
     if (mont->flags & BN_FLG_MALLOCED)
-        OPENSSL_free(mont);
+        _OPENSSL_free(mont);
 }
 
 int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)

@@ -145,7 +145,7 @@ will just return the required buffer length.
 The function EC_KEY_priv2buf() allocates a buffer of suitable length and writes
 an EC_KEY to it in octet format. The allocated buffer is written to B<*pbuf>
 and its length is returned. The caller must free up the allocated buffer with a
-call to OPENSSL_free(). Since the allocated buffer value is written to B<*pbuf>
+call to _OPENSSL_free(). Since the allocated buffer value is written to B<*pbuf>
 the B<pbuf> parameter B<MUST NOT> be B<NULL>.
 
 EC_KEY_priv2buf() converts an EC_KEY private key into an allocated buffer.

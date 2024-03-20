@@ -24,7 +24,7 @@ free this directly (but see below).
 The EVP_CIPHER_CTX_set_cipher_data() function allows an application or engine to
 replace the cipher data with new data. A pointer to any existing cipher data is
 returned from this function. If the old data is no longer required then it
-should be freed through a call to OPENSSL_free().
+should be freed through a call to _OPENSSL_free().
 
 =head1 RETURN VALUES
 

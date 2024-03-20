@@ -199,9 +199,9 @@ end:
     EVP_PKEY_CTX_free(ctx);
     EVP_PKEY_free(pkey);
 
-    OPENSSL_free(signature);
-    OPENSSL_free(paddedData);
-    OPENSSL_free(dataToSign);
+    _OPENSSL_free(signature);
+    _OPENSSL_free(paddedData);
+    _OPENSSL_free(dataToSign);
 
     return ok;
 }

@@ -466,7 +466,7 @@ static void print_notice(BIO *out, USERNOTICE *notice, int indent)
                 if (tmp == NULL)
                     return;
                 BIO_puts(out, tmp);
-                OPENSSL_free(tmp);
+                _OPENSSL_free(tmp);
             }
         }
         BIO_puts(out, "\n");

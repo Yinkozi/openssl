@@ -114,7 +114,7 @@ int tls1_new(SSL *s)
 
 void tls1_free(SSL *s)
 {
-    OPENSSL_free(s->ext.session_ticket);
+    _OPENSSL_free(s->ext.session_ticket);
     ssl3_free(s);
 }
 
@@ -361,13 +361,13 @@ int tls1_set_groups(uint16_t **pext, size_t *pextlen,
         id = tls1_nid2group_id(groups[i]);
         idmask = 1L << id;
         if (!id || (dup_list & idmask)) {
-            OPENSSL_free(glist);
+            _OPENSSL_free(glist);
             return 0;
         }
         dup_list |= idmask;
         glist[i] = id;
     }
-    OPENSSL_free(*pext);
+    _OPENSSL_free(*pext);
     *pext = glist;
     *pextlen = ngroups;
     return 1;
@@ -1250,7 +1250,7 @@ int tls1_set_server_sigalgs(SSL *s)
     size_t i;
 
     /* Clear any shared signature algorithms */
-    OPENSSL_free(s->shared_sigalgs);
+    _OPENSSL_free(s->shared_sigalgs);
     s->shared_sigalgs = NULL;
     s->shared_sigalgslen = 0;
     /* Clear certificate validity flags */
@@ -1473,12 +1473,12 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     sdec = OPENSSL_malloc(eticklen);
     if (sdec == NULL || _EVP_DecryptUpdate(ctx, sdec, &slen, p,
                                           (int)eticklen) <= 0) {
-        OPENSSL_free(sdec);
+        _OPENSSL_free(sdec);
         ret = SSL_TICKET_FATAL_ERR_OTHER;
         goto end;
     }
     if (EVP_DecryptFinal(ctx, sdec + slen, &declen) <= 0) {
-        OPENSSL_free(sdec);
+        _OPENSSL_free(sdec);
         ret = SSL_TICKET_NO_DECRYPT;
         goto end;
     }
@@ -1487,7 +1487,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
 
     sess = d2i_SSL_SESSION(NULL, &p, slen);
     slen -= p - sdec;
-    OPENSSL_free(sdec);
+    _OPENSSL_free(sdec);
     if (sess) {
         /* Some additional consistency checks */
         if (slen != 0) {
@@ -1756,7 +1756,7 @@ static int tls1_set_shared_sigalgs(SSL *s)
     CERT *c = s->cert;
     unsigned int is_suiteb = tls1_suiteb(s);
 
-    OPENSSL_free(s->shared_sigalgs);
+    _OPENSSL_free(s->shared_sigalgs);
     s->shared_sigalgs = NULL;
     s->shared_sigalgslen = 0;
     /* If client use client signature algorithms if not NULL */
@@ -1816,11 +1816,11 @@ int tls1_save_u16(PACKET *pkt, uint16_t **pdest, size_t *pdestlen)
         buf[i] = stmp;
 
     if (i != size) {
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return 0;
     }
 
-    OPENSSL_free(*pdest);
+    _OPENSSL_free(*pdest);
     *pdest = buf;
     *pdestlen = size;
 
@@ -2045,11 +2045,11 @@ int tls1_set_raw_sigalgs(CERT *c, const uint16_t *psigs, size_t salglen,
     memcpy(sigalgs, psigs, salglen * sizeof(*sigalgs));
 
     if (client) {
-        OPENSSL_free(c->client_sigalgs);
+        _OPENSSL_free(c->client_sigalgs);
         c->client_sigalgs = sigalgs;
         c->client_sigalgslen = salglen;
     } else {
-        OPENSSL_free(c->conf_sigalgs);
+        _OPENSSL_free(c->conf_sigalgs);
         c->conf_sigalgs = sigalgs;
         c->conf_sigalgslen = salglen;
     }
@@ -2087,11 +2087,11 @@ int tls1_set_sigalgs(CERT *c, const int *psig_nids, size_t salglen, int client)
     }
 
     if (client) {
-        OPENSSL_free(c->client_sigalgs);
+        _OPENSSL_free(c->client_sigalgs);
         c->client_sigalgs = sigalgs;
         c->client_sigalgslen = salglen / 2;
     } else {
-        OPENSSL_free(c->conf_sigalgs);
+        _OPENSSL_free(c->conf_sigalgs);
         c->conf_sigalgs = sigalgs;
         c->conf_sigalgslen = salglen / 2;
     }
@@ -2099,7 +2099,7 @@ int tls1_set_sigalgs(CERT *c, const int *psig_nids, size_t salglen, int client)
     return 1;
 
  err:
-    OPENSSL_free(sigalgs);
+    _OPENSSL_free(sigalgs);
     return 0;
 }
 

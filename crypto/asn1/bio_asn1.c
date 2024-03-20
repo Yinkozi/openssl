@@ -105,7 +105,7 @@ static int asn1_bio_new(BIO *b)
     if (ctx == NULL)
         return 0;
     if (!asn1_bio_init(ctx, DEFAULT_ASN1_BUF_SIZE)) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
     BIO_set_data(b, ctx);
@@ -143,8 +143,8 @@ static int asn1_bio_free(BIO *b)
     if (ctx->suffix_free != NULL)
         ctx->suffix_free(b, &ctx->ex_buf, &ctx->ex_len, &ctx->ex_arg);
 
-    OPENSSL_free(ctx->buf);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx->buf);
+    _OPENSSL_free(ctx);
     BIO_set_data(b, NULL);
     BIO_set_init(b, 0);
 

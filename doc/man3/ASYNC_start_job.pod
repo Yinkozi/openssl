@@ -190,7 +190,7 @@ The following example demonstrates how to use most of the core async APIs:
 
      close(r);
      close(*w);
-     OPENSSL_free(w);
+     _OPENSSL_free(w);
  }
 
  int jobfunc(void *arg)

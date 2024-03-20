@@ -50,7 +50,7 @@ void BUF_MEM_free(BUF_MEM *a)
         else
             OPENSSL_clear_free(a->data, a->max);
     }
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 /* Allocate a block of secure memory; copy over old data if there

@@ -252,10 +252,10 @@ void BIO_CONNECT_free(BIO_CONNECT *a)
 {
     if (a == NULL)
         return;
-    OPENSSL_free(a->param_hostname);
-    OPENSSL_free(a->param_service);
+    _OPENSSL_free(a->param_hostname);
+    _OPENSSL_free(a->param_service);
     BIO_ADDRINFO_free(a->addr_first);
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 }
 
 const BIO_METHOD *BIO_s_connect(void)
@@ -423,16 +423,16 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
                  * parse it, which might or might not affect the service
                  */
 
-                OPENSSL_free(data->param_hostname);
+                _OPENSSL_free(data->param_hostname);
                 data->param_hostname = NULL;
                 ret = BIO_parse_hostserv(ptr,
                                          &data->param_hostname,
                                          &data->param_service,
                                          BIO_PARSE_PRIO_HOST);
                 if (hold_service != data->param_service)
-                    OPENSSL_free(hold_service);
+                    _OPENSSL_free(hold_service);
             } else if (num == 1) { /* BIO_set_conn_port */
-                OPENSSL_free(data->param_service);
+                _OPENSSL_free(data->param_service);
                 if ((data->param_service = OPENSSL_strdup(ptr)) == NULL)
                     ret = 0;
             } else if (num == 2) { /* BIO_set_conn_address */
@@ -442,16 +442,16 @@ static long conn_ctrl(BIO *b, int cmd, long num, void *ptr)
 
                 ret = host != NULL && service != NULL;
                 if (ret) {
-                    OPENSSL_free(data->param_hostname);
+                    _OPENSSL_free(data->param_hostname);
                     data->param_hostname = host;
-                    OPENSSL_free(data->param_service);
+                    _OPENSSL_free(data->param_service);
                     data->param_service = service;
                     BIO_ADDRINFO_free(data->addr_first);
                     data->addr_first = NULL;
                     data->addr_iter = NULL;
                 } else {
-                    OPENSSL_free(host);
-                    OPENSSL_free(service);
+                    _OPENSSL_free(host);
+                    _OPENSSL_free(service);
                 }
             } else if (num == 3) { /* BIO_set_conn_ip_family */
                 data->connect_family = *(int *)ptr;

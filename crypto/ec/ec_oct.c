@@ -142,7 +142,7 @@ size_t EC_POINT_point2buf(const EC_GROUP *group, const EC_POINT *point,
     }
     len = EC_POINT_point2oct(group, point, form, buf, len, ctx);
     if (len == 0) {
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return 0;
     }
     *pbuf = buf;

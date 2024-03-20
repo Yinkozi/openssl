@@ -167,9 +167,9 @@ static int x9_62_tests(int n)
     if (!TEST_true(restore_rand()))
         ret = 0;
 
-    OPENSSL_free(message);
-    OPENSSL_free(pbuf);
-    OPENSSL_free(qbuf);
+    _OPENSSL_free(message);
+    _OPENSSL_free(pbuf);
+    _OPENSSL_free(qbuf);
     EC_KEY_free(key);
     ECDSA_SIG_free(signature);
     BN_free(r);
@@ -310,7 +310,7 @@ static int test_builtin(int n)
     EVP_PKEY_free(pkey);
     EVP_PKEY_free(pkey_neg);
     EVP_MD_CTX_free(mctx);
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
     return ret;
 }
 #endif
@@ -334,6 +334,6 @@ int setup_tests(void)
 void cleanup_tests(void)
 {
 #ifndef OPENSSL_NO_EC
-    OPENSSL_free(curves);
+    _OPENSSL_free(curves);
 #endif
 }

@@ -112,7 +112,7 @@ static void app_info_free(APP_INFO *inf)
         return;
     if (--(inf->references) <= 0) {
         app_info_free(inf->next);
-        OPENSSL_free(inf);
+        _OPENSSL_free(inf);
     }
 }
 #endif
@@ -259,7 +259,7 @@ static int pop_info(void)
             current->next = NULL;
             if (next != NULL)
                 next->references--;
-            OPENSSL_free(current);
+            _OPENSSL_free(current);
         }
         return 1;
     }
@@ -330,14 +330,14 @@ void CRYPTO_mem_debug_malloc(void *addr, size_t num, int before_p,
 
             if (!RUN_ONCE(&memdbg_init, do_memdbg_init)
                 || (m = OPENSSL_malloc(sizeof(*m))) == NULL) {
-                OPENSSL_free(addr);
+                _OPENSSL_free(addr);
                 CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
                 return;
             }
             if (mh == NULL) {
                 if ((mh = lh_MEM_new(mem_hash, mem_cmp)) == NULL) {
-                    OPENSSL_free(addr);
-                    OPENSSL_free(m);
+                    _OPENSSL_free(addr);
+                    _OPENSSL_free(m);
                     addr = NULL;
                     goto err;
                 }
@@ -369,7 +369,7 @@ void CRYPTO_mem_debug_malloc(void *addr, size_t num, int before_p,
                 if (mm->app_info != NULL) {
                     mm->app_info->references--;
                 }
-                OPENSSL_free(mm);
+                _OPENSSL_free(mm);
             }
  err:
             CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
@@ -396,7 +396,7 @@ void CRYPTO_mem_debug_free(void *addr, int before_p,
             mp = lh_MEM_delete(mh, &m);
             if (mp != NULL) {
                 app_info_free(mp->app_info);
-                OPENSSL_free(mp);
+                _OPENSSL_free(mp);
             }
 
             CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);

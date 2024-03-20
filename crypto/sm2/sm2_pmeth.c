@@ -48,8 +48,8 @@ static void pkey_sm2_cleanup(EVP_PKEY_CTX *ctx)
 
     if (smctx != NULL) {
         EC_GROUP_free(smctx->gen_group);
-        OPENSSL_free(smctx->id);
-        OPENSSL_free(smctx);
+        _OPENSSL_free(smctx->id);
+        _OPENSSL_free(smctx);
         ctx->data = NULL;
     }
 }
@@ -201,11 +201,11 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
                 return 0;
             }
             memcpy(tmp_id, p2, p1);
-            OPENSSL_free(smctx->id);
+            _OPENSSL_free(smctx->id);
             smctx->id = tmp_id;
         } else {
             /* set null-ID */
-            OPENSSL_free(smctx->id);
+            _OPENSSL_free(smctx->id);
             smctx->id = NULL;
         }
         smctx->id_len = (size_t)p1;

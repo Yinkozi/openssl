@@ -439,7 +439,7 @@ __owur static ossl_inline int PACKET_copy_all(const PACKET *pkt,
 /*
  * Copy |pkt| bytes to a newly allocated buffer and store a pointer to the
  * result in |*data|, and the length in |len|.
- * If |*data| is not NULL, the old data is OPENSSL_free'd.
+ * If |*data| is not NULL, the old data is _OPENSSL_free'd.
  * If the packet is empty, or malloc fails, |*data| will be set to NULL.
  * Returns 1 if the malloc succeeds and 0 otherwise.
  * Does not forward PACKET position (because it is typically the last thing
@@ -450,7 +450,7 @@ __owur static ossl_inline int PACKET_memdup(const PACKET *pkt,
 {
     size_t length;
 
-    OPENSSL_free(*data);
+    _OPENSSL_free(*data);
     *data = NULL;
     *len = 0;
 
@@ -470,7 +470,7 @@ __owur static ossl_inline int PACKET_memdup(const PACKET *pkt,
 /*
  * Read a C string from |pkt| and copy to a newly allocated, NUL-terminated
  * buffer. Store a pointer to the result in |*data|.
- * If |*data| is not NULL, the old data is OPENSSL_free'd.
+ * If |*data| is not NULL, the old data is _OPENSSL_free'd.
  * If the data in |pkt| does not contain a NUL-byte, the entire data is
  * copied and NUL-terminated.
  * Returns 1 if the malloc succeeds and 0 otherwise.
@@ -479,7 +479,7 @@ __owur static ossl_inline int PACKET_memdup(const PACKET *pkt,
  */
 __owur static ossl_inline int PACKET_strndup(const PACKET *pkt, char **data)
 {
-    OPENSSL_free(*data);
+    _OPENSSL_free(*data);
 
     /* This will succeed on an empty packet, unless pkt->curr == NULL. */
     *data = OPENSSL_strndup((const char *)pkt->curr, PACKET_remaining(pkt));

@@ -111,7 +111,7 @@ void X509V3_EXT_cleanup(void)
 static void ext_list_free(X509V3_EXT_METHOD *ext)
 {
     if (ext->ext_flags & X509V3_EXT_DYNAMIC)
-        OPENSSL_free(ext);
+        _OPENSSL_free(ext);
 }
 
 /*

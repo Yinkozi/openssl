@@ -174,7 +174,7 @@ static int dgram_free(BIO *a)
         return 0;
 
     data = (bio_dgram_data *)a->ptr;
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
 
     return 1;
 }
@@ -875,7 +875,7 @@ BIO *BIO_new_dgram_sctp(int fd, int close_flag)
     ret = getsockopt(fd, IPPROTO_SCTP, SCTP_LOCAL_AUTH_CHUNKS, authchunks,
                    &sockopt_len);
     if (ret < 0) {
-        OPENSSL_free(authchunks);
+        _OPENSSL_free(authchunks);
         BIO_vfree(bio);
         return NULL;
     }
@@ -889,7 +889,7 @@ BIO *BIO_new_dgram_sctp(int fd, int close_flag)
             auth_forward = 1;
     }
 
-    OPENSSL_free(authchunks);
+    _OPENSSL_free(authchunks);
 
     if (!auth_data || !auth_forward) {
         BIO_vfree(bio);
@@ -983,7 +983,7 @@ static int dgram_sctp_free(BIO *a)
 
     data = (bio_dgram_sctp_data *) a->ptr;
     if (data != NULL)
-        OPENSSL_free(data);
+        _OPENSSL_free(data);
 
     return 1;
 }
@@ -1212,7 +1212,7 @@ static int dgram_sctp_read(BIO *b, char *out, int outl)
                         auth_forward = 1;
                 }
 
-            OPENSSL_free(authchunks);
+            _OPENSSL_free(authchunks);
 
             if (!auth_data || !auth_forward) {
                 BIOerr(BIO_F_DGRAM_SCTP_READ, BIO_R_CONNECT_ERROR);
@@ -1428,7 +1428,7 @@ static long dgram_sctp_ctrl(BIO *b, int cmd, long num, void *ptr)
         ret =
             setsockopt(b->num, IPPROTO_SCTP, SCTP_AUTH_KEY, authkey,
                        sockopt_len);
-        OPENSSL_free(authkey);
+        _OPENSSL_free(authkey);
         authkey = NULL;
         if (ret < 0)
             break;

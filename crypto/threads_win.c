@@ -27,7 +27,7 @@ CRYPTO_RWLOCK *CRYPTO_THREAD_lock_new(void)
 # if !defined(_WIN32_WCE)
     /* 0x400 is the spin count value suggested in the documentation */
     if (!InitializeCriticalSectionAndSpinCount(lock, 0x400)) {
-        OPENSSL_free(lock);
+        _OPENSSL_free(lock);
         return NULL;
     }
 # else
@@ -61,7 +61,7 @@ void CRYPTO_THREAD_lock_free(CRYPTO_RWLOCK *lock)
         return;
 
     DeleteCriticalSection(lock);
-    OPENSSL_free(lock);
+    _OPENSSL_free(lock);
 
     return;
 }

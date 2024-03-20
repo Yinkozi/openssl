@@ -265,7 +265,7 @@ static int aria_gcm_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
         /* Allocate memory for IV if needed */
         if ((arg > EVP_MAX_IV_LENGTH) && (arg > gctx->ivlen)) {
             if (gctx->iv != EVP_CIPHER_CTX_iv_noconst(c))
-                OPENSSL_free(gctx->iv);
+                _OPENSSL_free(gctx->iv);
             if ((gctx->iv = OPENSSL_malloc(arg)) == NULL) {
                 EVPerr(EVP_F_ARIA_GCM_CTRL, ERR_R_MALLOC_FAILURE);
                 return 0;
@@ -495,7 +495,7 @@ static int aria_gcm_cleanup(EVP_CIPHER_CTX *ctx)
     EVP_ARIA_GCM_CTX *gctx = EVP_C_DATA(EVP_ARIA_GCM_CTX, ctx);
 
     if (gctx->iv != EVP_CIPHER_CTX_iv_noconst(ctx))
-        OPENSSL_free(gctx->iv);
+        _OPENSSL_free(gctx->iv);
 
     return 1;
 }

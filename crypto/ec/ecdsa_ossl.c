@@ -309,7 +309,7 @@ int ossl_ecdsa_verify(int type, const unsigned char *dgst, int dgst_len,
         goto err;
     ret = ECDSA_do_verify(dgst, dgst_len, s, eckey);
  err:
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     ECDSA_SIG_free(s);
     return ret;
 }

@@ -39,7 +39,7 @@ void BN_RECP_CTX_free(BN_RECP_CTX *recp)
     BN_free(&recp->N);
     BN_free(&recp->Nr);
     if (recp->flags & BN_FLG_MALLOCED)
-        OPENSSL_free(recp);
+        _OPENSSL_free(recp);
 }
 
 int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *d, BN_CTX *ctx)

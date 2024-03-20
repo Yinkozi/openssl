@@ -71,9 +71,9 @@ static int x509v3_add_len_value(const char *name, const char *value,
         sk_CONF_VALUE_free(*extlist);
         *extlist = NULL;
     }
-    OPENSSL_free(vtmp);
-    OPENSSL_free(tname);
-    OPENSSL_free(tvalue);
+    _OPENSSL_free(vtmp);
+    _OPENSSL_free(tname);
+    _OPENSSL_free(tvalue);
     return 0;
 }
 
@@ -105,10 +105,10 @@ void X509V3_conf_free(CONF_VALUE *conf)
 {
     if (!conf)
         return;
-    OPENSSL_free(conf->name);
-    OPENSSL_free(conf->value);
-    OPENSSL_free(conf->section);
-    OPENSSL_free(conf);
+    _OPENSSL_free(conf->name);
+    _OPENSSL_free(conf->value);
+    _OPENSSL_free(conf->section);
+    _OPENSSL_free(conf);
 }
 
 int X509V3_add_value_bool(const char *name, int asn1_bool,
@@ -148,7 +148,7 @@ static char *bignum_to_string(const BIGNUM *bn)
     ret = OPENSSL_malloc(len);
     if (ret == NULL) {
         X509V3err(X509V3_F_BIGNUM_TO_STRING, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(tmp);
+        _OPENSSL_free(tmp);
         return NULL;
     }
 
@@ -160,7 +160,7 @@ static char *bignum_to_string(const BIGNUM *bn)
         OPENSSL_strlcpy(ret, "0x", len);
         OPENSSL_strlcat(ret, tmp, len);
     }
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     return ret;
 }
 
@@ -256,7 +256,7 @@ int X509V3_add_value_int(const char *name, const ASN1_INTEGER *aint,
     if ((strtmp = i2s_ASN1_INTEGER(NULL, aint)) == NULL)
         return 0;
     ret = X509V3_add_value(name, strtmp, extlist);
-    OPENSSL_free(strtmp);
+    _OPENSSL_free(strtmp);
     return ret;
 }
 
@@ -388,11 +388,11 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
         }
         X509V3_add_value(ntmp, NULL, &values);
     }
-    OPENSSL_free(linebuf);
+    _OPENSSL_free(linebuf);
     return values;
 
  err:
-    OPENSSL_free(linebuf);
+    _OPENSSL_free(linebuf);
     sk_CONF_VALUE_pop_free(values, X509V3_conf_free);
     return NULL;
 
@@ -519,7 +519,7 @@ static STACK_OF(OPENSSL_STRING) *get_email(X509_NAME *name,
 
 static void str_free(OPENSSL_STRING str)
 {
-    OPENSSL_free(str);
+    _OPENSSL_free(str);
 }
 
 static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email)
@@ -546,11 +546,11 @@ static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email
 
     /* Don't add duplicates */
     if (sk_OPENSSL_STRING_find(*sk, emtmp) != -1) {
-        OPENSSL_free(emtmp);
+        _OPENSSL_free(emtmp);
         return 1;
     }
     if (!sk_OPENSSL_STRING_push(*sk, emtmp)) {
-        OPENSSL_free(emtmp); /* free on push failure */
+        _OPENSSL_free(emtmp); /* free on push failure */
         X509_email_free(*sk);
         *sk = NULL;
         return 0;
@@ -851,11 +851,11 @@ static int do_check_string(const ASN1_STRING *a, int cmp_type, equal_fn equal,
         if (rv > 0 && peername != NULL) {
             *peername = OPENSSL_strndup((char *)astr, astrlen);
             if (*peername == NULL) {
-                OPENSSL_free(astr);
+                _OPENSSL_free(astr);
                 return -1;
             }
         }
-        OPENSSL_free(astr);
+        _OPENSSL_free(astr);
     }
     return rv;
 }
@@ -1050,7 +1050,7 @@ ASN1_OCTET_STRING *a2i_IPADDRESS_NC(const char *ipasc)
 
     iplen2 = a2i_ipadd(ipout + iplen1, p);
 
-    OPENSSL_free(iptmp);
+    _OPENSSL_free(iptmp);
     iptmp = NULL;
 
     if (!iplen2 || (iplen1 != iplen2))
@@ -1065,7 +1065,7 @@ ASN1_OCTET_STRING *a2i_IPADDRESS_NC(const char *ipasc)
     return ret;
 
  err:
-    OPENSSL_free(iptmp);
+    _OPENSSL_free(iptmp);
     ASN1_OCTET_STRING_free(ret);
     return NULL;
 }

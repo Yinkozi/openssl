@@ -165,13 +165,13 @@ unsigned char *OPENSSL_hexstr2buf(const char *str, long *len)
         if (!cl) {
             CRYPTOerr(CRYPTO_F_OPENSSL_HEXSTR2BUF,
                       CRYPTO_R_ODD_NUMBER_OF_DIGITS);
-            OPENSSL_free(hexbuf);
+            _OPENSSL_free(hexbuf);
             return NULL;
         }
         cli = OPENSSL_hexchar2int(cl);
         chi = OPENSSL_hexchar2int(ch);
         if (cli < 0 || chi < 0) {
-            OPENSSL_free(hexbuf);
+            _OPENSSL_free(hexbuf);
             CRYPTOerr(CRYPTO_F_OPENSSL_HEXSTR2BUF, CRYPTO_R_ILLEGAL_HEX_DIGIT);
             return NULL;
         }

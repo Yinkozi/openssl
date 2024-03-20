@@ -30,7 +30,7 @@ void SSL3_BUFFER_clear(SSL3_BUFFER *b)
 
 void SSL3_BUFFER_release(SSL3_BUFFER *b)
 {
-    OPENSSL_free(b->buf);
+    _OPENSSL_free(b->buf);
     b->buf = NULL;
 }
 
@@ -116,7 +116,7 @@ int ssl3_setup_write_buffer(SSL *s, size_t numwpipes, size_t len)
         SSL3_BUFFER *thiswb = &wb[currpipe];
 
         if (thiswb->buf != NULL && thiswb->len != len) {
-            OPENSSL_free(thiswb->buf);
+            _OPENSSL_free(thiswb->buf);
             thiswb->buf = NULL;         /* force reallocation */
         }
 
@@ -164,7 +164,7 @@ int ssl3_release_write_buffer(SSL *s)
     while (pipes > 0) {
         wb = &RECORD_LAYER_get_wbuf(&s->rlayer)[pipes - 1];
 
-        OPENSSL_free(wb->buf);
+        _OPENSSL_free(wb->buf);
         wb->buf = NULL;
         pipes--;
     }
@@ -177,7 +177,7 @@ int ssl3_release_read_buffer(SSL *s)
     SSL3_BUFFER *b;
 
     b = RECORD_LAYER_get_rbuf(&s->rlayer);
-    OPENSSL_free(b->buf);
+    _OPENSSL_free(b->buf);
     b->buf = NULL;
     return 1;
 }

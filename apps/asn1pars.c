@@ -301,8 +301,8 @@ int asn1parse_main(int argc, char **argv)
     if (ret != 0)
         ERR_print_errors(bio_err);
     BUF_MEM_free(buf);
-    OPENSSL_free(name);
-    OPENSSL_free(header);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
     ASN1_TYPE_free(at);
     sk_OPENSSL_STRING_free(osk);
     return ret;

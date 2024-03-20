@@ -374,7 +374,7 @@ int ssl_print_groups(BIO *out, SSL *s, int noshared)
             BIO_printf(out, "%s", gname);
         }
     }
-    OPENSSL_free(groups);
+    _OPENSSL_free(groups);
     if (noshared) {
         BIO_puts(out, "\n");
         return 1;
@@ -797,7 +797,7 @@ int generate_cookie_callback(SSL *ssl, unsigned char *cookie,
     HMAC(_EVP_sha1(), cookie_secret, COOKIE_SECRET_LENGTH,
          buffer, length, cookie, cookie_len);
 
-    OPENSSL_free(buffer);
+    _OPENSSL_free(buffer);
     BIO_ADDR_free(lpeer);
 
     return 1;
@@ -989,7 +989,7 @@ void ssl_excert_free(SSL_EXCERT *exc)
         sk_X509_pop_free(exc->chain, X509_free);
         curr = exc;
         exc = exc->next;
-        OPENSSL_free(curr);
+        _OPENSSL_free(curr);
     }
 }
 
@@ -1196,7 +1196,7 @@ void print_verify_detail(SSL *s, BIO *bio)
                    (mspki != NULL) ? "signed the certificate" :
                    mdpth ? "matched TA certificate" : "matched EE certificate",
                    mdpth);
-        OPENSSL_free(hexdata);
+        _OPENSSL_free(hexdata);
     }
 }
 

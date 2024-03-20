@@ -541,7 +541,7 @@ static int do_encode(EXPECTED *input,
         ret = 1;
     }
 
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
     return ret;
 }
 
@@ -559,7 +559,7 @@ static int do_enc_dec(EXPECTED *bytes, long nbytes,
         return -1;
 
     ret = do_decode(data, len, bytes, nbytes, package);
-    OPENSSL_free(data);
+    _OPENSSL_free(data);
     return ret;
 }
 
@@ -683,7 +683,7 @@ static int do_decode_custom(const TEST_CUSTOM_DATA *custom_data,
 
     ret = do_decode(encoding, encoding_length, expected, expected_size,
                     package);
-    OPENSSL_free(encoding);
+    _OPENSSL_free(encoding);
 
     return ret;
 }
@@ -701,7 +701,7 @@ static int do_encode_custom(EXPECTED *input,
         return -1;
 
     ret = do_encode(input, expected, expected_length, package);
-    OPENSSL_free(expected);
+    _OPENSSL_free(expected);
 
     return ret;
 }
@@ -720,7 +720,7 @@ static int do_print_item(const TEST_PACKAGE *package)
     (void)_RAND_bytes((unsigned char*)o,
                      (int)package->encode_expectations_elem_size);
     ret = ASN1_item_print(bio_err, o, 0, i, NULL);
-    OPENSSL_free(o);
+    _OPENSSL_free(o);
 
     return ret;
 }

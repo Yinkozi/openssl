@@ -178,7 +178,7 @@ int EVP_PBE_alg_add_type(int pbe_type, int pbe_nid, int cipher_nid,
     pbe_tmp->keygen = keygen;
 
     if (!sk_EVP_PBE_CTL_push(pbe_algs, pbe_tmp)) {
-        OPENSSL_free(pbe_tmp);
+        _OPENSSL_free(pbe_tmp);
         goto err;
     }
     return 1;
@@ -237,7 +237,7 @@ int EVP_PBE_find(int type, int pbe_nid,
 
 static void free_evp_pbe_ctl(EVP_PBE_CTL *pbe)
 {
-    OPENSSL_free(pbe);
+    _OPENSSL_free(pbe);
 }
 
 void EVP_PBE_cleanup(void)

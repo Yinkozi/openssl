@@ -57,7 +57,7 @@ static int test_sec_mem(void)
     /* 20 secure -> 32 bytes allocated */
     if (!TEST_size_t_eq(CRYPTO_secure_used(), 32))
         goto end;
-    OPENSSL_free(q);
+    _OPENSSL_free(q);
     q = NULL;
     /* should not complete, as secure memory is still allocated */
     if (!TEST_false(CRYPTO_secure_malloc_done())
@@ -122,7 +122,7 @@ static int test_sec_mem(void)
     testresult = 1;
  end:
     OPENSSL_secure_free(p);
-    OPENSSL_free(q);
+    _OPENSSL_free(q);
     OPENSSL_secure_free(r);
     OPENSSL_secure_free(s);
     return testresult;

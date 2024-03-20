@@ -104,7 +104,7 @@ static int single_kat_no_reseed(const struct drbg_kat *td)
         failures++;
 
 err:
-    OPENSSL_free(buff);
+    _OPENSSL_free(buff);
     RAND_DRBG_uninstantiate(drbg);
     RAND_DRBG_free(drbg);
     return failures == 0;
@@ -169,7 +169,7 @@ static int single_kat_pr_false(const struct drbg_kat *td)
         failures++;
 
 err:
-    OPENSSL_free(buff);
+    _OPENSSL_free(buff);
     RAND_DRBG_uninstantiate(drbg);
     RAND_DRBG_free(drbg);
     return failures == 0;
@@ -237,7 +237,7 @@ static int single_kat_pr_true(const struct drbg_kat *td)
         failures++;
 
 err:
-    OPENSSL_free(buff);
+    _OPENSSL_free(buff);
     RAND_DRBG_uninstantiate(drbg);
     RAND_DRBG_free(drbg);
     return failures == 0;

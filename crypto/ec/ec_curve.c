@@ -3332,7 +3332,7 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
     /* Gets here if the group was not found */
     ret = NID_undef;
 end:
-    OPENSSL_free(param_bytes);
+    _OPENSSL_free(param_bytes);
     BN_CTX_end(ctx);
     return ret;
 }

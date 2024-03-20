@@ -34,6 +34,6 @@ void X509_INFO_free(X509_INFO *x)
     X509_free(x->x509);
     X509_CRL_free(x->crl);
     X509_PKEY_free(x->x_pkey);
-    OPENSSL_free(x->enc_data);
-    OPENSSL_free(x);
+    _OPENSSL_free(x->enc_data);
+    _OPENSSL_free(x);
 }

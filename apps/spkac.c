@@ -141,11 +141,11 @@ int spkac_main(int argc, char **argv)
 
         out = bio_open_default(outfile, 'w', FORMAT_TEXT);
         if (out == NULL) {
-            OPENSSL_free(spkstr);
+            _OPENSSL_free(spkstr);
             goto end;
         }
         BIO_printf(out, "SPKAC=%s\n", spkstr);
-        OPENSSL_free(spkstr);
+        _OPENSSL_free(spkstr);
         ret = 0;
         goto end;
     }
@@ -197,6 +197,6 @@ int spkac_main(int argc, char **argv)
     BIO_free_all(out);
     EVP_PKEY_free(pkey);
     release_engine(e);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     return ret;
 }

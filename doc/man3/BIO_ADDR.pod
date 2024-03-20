@@ -77,19 +77,19 @@ hostname of the given B<BIO_ADDR>.  If B<numeric> is 1, the string
 will contain the numerical form of the address.  This only works for
 B<BIO_ADDR> of the protocol families AF_INET and AF_INET6.  The
 returned string has been allocated on the heap and must be freed
-with OPENSSL_free().
+with _OPENSSL_free().
 
 BIO_ADDR_service_string() returns a character string with the
 service name of the port of the given B<BIO_ADDR>.  If B<numeric>
 is 1, the string will contain the port number.  This only works
 for B<BIO_ADDR> of the protocol families AF_INET and AF_INET6.  The
 returned string has been allocated on the heap and must be freed
-with OPENSSL_free().
+with _OPENSSL_free().
 
 BIO_ADDR_path_string() returns a character string with the path
 of the given B<BIO_ADDR>.  This only works for B<BIO_ADDR> of the
 protocol family AF_UNIX.  The returned string has been allocated
-on the heap and must be freed with OPENSSL_free().
+on the heap and must be freed with _OPENSSL_free().
 
 =head1 RAW ADDRESSES
 

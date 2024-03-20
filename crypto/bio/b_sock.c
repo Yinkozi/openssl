@@ -226,8 +226,8 @@ int BIO_get_accept_socket(char *host, int bind_mode)
 
  err:
     BIO_ADDRINFO_free(res);
-    OPENSSL_free(h);
-    OPENSSL_free(p);
+    _OPENSSL_free(h);
+    _OPENSSL_free(p);
 
     return s;
 }
@@ -265,8 +265,8 @@ int BIO_accept(int sock, char **ip_port)
             strcat(*ip_port, ":");
             strcat(*ip_port, port);
         }
-        OPENSSL_free(host);
-        OPENSSL_free(port);
+        _OPENSSL_free(host);
+        _OPENSSL_free(port);
     }
 
  end:

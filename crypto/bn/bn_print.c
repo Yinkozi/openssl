@@ -16,7 +16,7 @@
 
 static const char Hex[] = "0123456789ABCDEF";
 
-/* Must 'OPENSSL_free' the returned data */
+/* Must '_OPENSSL_free' the returned data */
 char *BN_bn2hex(const BIGNUM *a)
 {
     int i, j, v, z = 0;
@@ -49,7 +49,7 @@ char *BN_bn2hex(const BIGNUM *a)
     return buf;
 }
 
-/* Must 'OPENSSL_free' the returned data */
+/* Must '_OPENSSL_free' the returned data */
 char *BN_bn2dec(const BIGNUM *a)
 {
     int i = 0, num, ok = 0, n, tbytes;
@@ -115,11 +115,11 @@ char *BN_bn2dec(const BIGNUM *a)
     }
     ok = 1;
  err:
-    OPENSSL_free(bn_data);
+    _OPENSSL_free(bn_data);
     BN_free(t);
     if (ok)
         return buf;
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return NULL;
 }
 

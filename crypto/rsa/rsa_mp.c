@@ -16,7 +16,7 @@ void rsa_multip_info_free_ex(RSA_PRIME_INFO *pinfo)
 {
     /* free pp and pinfo only */
     BN_clear_free(pinfo->pp);
-    OPENSSL_free(pinfo);
+    _OPENSSL_free(pinfo);
 }
 
 void rsa_multip_info_free(RSA_PRIME_INFO *pinfo)
@@ -53,7 +53,7 @@ RSA_PRIME_INFO *rsa_multip_info_new(void)
     BN_free(pinfo->d);
     BN_free(pinfo->t);
     BN_free(pinfo->pp);
-    OPENSSL_free(pinfo);
+    _OPENSSL_free(pinfo);
     return NULL;
 }
 

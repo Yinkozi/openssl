@@ -210,8 +210,8 @@ static int vms_load(DSO *dso)
     return 1;
  err:
     /* Cleanup! */
-    OPENSSL_free(p);
-    OPENSSL_free(filename);
+    _OPENSSL_free(p);
+    _OPENSSL_free(filename);
     return 0;
 }
 
@@ -235,7 +235,7 @@ static int vms_unload(DSO *dso)
         return 0;
     }
     /* Cleanup */
-    OPENSSL_free(p);
+    _OPENSSL_free(p);
     return 1;
 }
 

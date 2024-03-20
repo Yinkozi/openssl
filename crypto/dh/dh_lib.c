@@ -52,7 +52,7 @@ DH *DH_new_method(ENGINE *engine)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         DHerr(DH_F_DH_NEW_METHOD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -120,11 +120,11 @@ void DH_free(DH *r)
     BN_clear_free(r->g);
     BN_clear_free(r->q);
     BN_clear_free(r->j);
-    OPENSSL_free(r->seed);
+    _OPENSSL_free(r->seed);
     BN_clear_free(r->counter);
     BN_clear_free(r->pub_key);
     BN_clear_free(r->priv_key);
-    OPENSSL_free(r);
+    _OPENSSL_free(r);
 }
 
 int DH_up_ref(DH *r)

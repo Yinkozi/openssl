@@ -335,11 +335,11 @@ int setup_tests(void)
 
 void cleanup_tests(void)
 {
-    OPENSSL_free(roots_f);
-    OPENSSL_free(untrusted_f);
-    OPENSSL_free(bad_f);
-    OPENSSL_free(good_f);
-    OPENSSL_free(sroot_cert);
-    OPENSSL_free(ca_cert);
-    OPENSSL_free(ee_cert);
+    _OPENSSL_free(roots_f);
+    _OPENSSL_free(untrusted_f);
+    _OPENSSL_free(bad_f);
+    _OPENSSL_free(good_f);
+    _OPENSSL_free(sroot_cert);
+    _OPENSSL_free(ca_cert);
+    _OPENSSL_free(ee_cert);
 }

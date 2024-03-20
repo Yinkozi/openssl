@@ -53,7 +53,7 @@ CMAC_CTX *CMAC_CTX_new(void)
     }
     ctx->cctx = _EVP_CIPHER_CTX_new();
     if (ctx->cctx == NULL) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return NULL;
     }
     ctx->nlast_block = -1;
@@ -81,7 +81,7 @@ void CMAC_CTX_free(CMAC_CTX *ctx)
         return;
     CMAC_CTX_cleanup(ctx);
     _EVP_CIPHER_CTX_free(ctx->cctx);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int CMAC_CTX_copy(CMAC_CTX *out, const CMAC_CTX *in)

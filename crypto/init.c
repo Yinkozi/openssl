@@ -65,7 +65,7 @@ static struct thread_local_inits_st *ossl_init_get_thread_local(int alloc)
         if (local == NULL
             && (local = OPENSSL_zalloc(sizeof(*local))) != NULL
             && !CRYPTO_THREAD_set_local(&destructor_key.value, local)) {
-            OPENSSL_free(local);
+            _OPENSSL_free(local);
             return NULL;
         }
     } else {
@@ -445,7 +445,7 @@ static void ossl_init_thread_stop(struct thread_local_inits_st *locals)
         drbg_delete_thread_state();
     }
 
-    OPENSSL_free(locals);
+    _OPENSSL_free(locals);
 }
 
 void OPENSSL_thread_stop(void)
@@ -518,7 +518,7 @@ void OPENSSL_cleanup(void)
         currhandler->handler();
         lasthandler = currhandler;
         currhandler = currhandler->next;
-        OPENSSL_free(lasthandler);
+        _OPENSSL_free(lasthandler);
     }
     stop_handlers = NULL;
 

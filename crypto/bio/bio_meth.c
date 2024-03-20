@@ -39,7 +39,7 @@ BIO_METHOD *BIO_meth_new(int type, const char *name)
 
     if (biom == NULL
             || (biom->name = OPENSSL_strdup(name)) == NULL) {
-        OPENSSL_free(biom);
+        _OPENSSL_free(biom);
         BIOerr(BIO_F_BIO_METH_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
@@ -50,8 +50,8 @@ BIO_METHOD *BIO_meth_new(int type, const char *name)
 void BIO_meth_free(BIO_METHOD *biom)
 {
     if (biom != NULL) {
-        OPENSSL_free(biom->name);
-        OPENSSL_free(biom);
+        _OPENSSL_free(biom->name);
+        _OPENSSL_free(biom);
     }
 }
 

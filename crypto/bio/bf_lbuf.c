@@ -66,7 +66,7 @@ static int linebuffer_new(BIO *bi)
     ctx->obuf = OPENSSL_malloc(DEFAULT_LINEBUFFER_SIZE);
     if (ctx->obuf == NULL) {
         BIOerr(BIO_F_LINEBUFFER_NEW, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
     ctx->obuf_size = DEFAULT_LINEBUFFER_SIZE;
@@ -85,8 +85,8 @@ static int linebuffer_free(BIO *a)
     if (a == NULL)
         return 0;
     b = (BIO_LINEBUFFER_CTX *)a->ptr;
-    OPENSSL_free(b->obuf);
-    OPENSSL_free(a->ptr);
+    _OPENSSL_free(b->obuf);
+    _OPENSSL_free(a->ptr);
     a->ptr = NULL;
     a->init = 0;
     a->flags = 0;
@@ -244,7 +244,7 @@ static long linebuffer_ctrl(BIO *b, int cmd, long num, void *ptr)
                 ctx->obuf_len = obs;
             }
             memcpy(p, ctx->obuf, ctx->obuf_len);
-            OPENSSL_free(ctx->obuf);
+            _OPENSSL_free(ctx->obuf);
             ctx->obuf = p;
             ctx->obuf_size = obs;
         }

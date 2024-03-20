@@ -57,7 +57,7 @@ void CRYPTO_THREAD_lock_free(CRYPTO_RWLOCK *lock) {
         return;
 
     *(unsigned int *)lock = 0;
-    OPENSSL_free(lock);
+    _OPENSSL_free(lock);
 
     return;
 }

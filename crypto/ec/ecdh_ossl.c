@@ -115,6 +115,6 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
     EC_POINT_clear_free(tmp);
     BN_CTX_end(ctx);
     BN_CTX_free(ctx);
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return ret;
 }

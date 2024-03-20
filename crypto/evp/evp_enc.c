@@ -30,7 +30,7 @@ int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *c)
         if (c->cipher_data && c->cipher->ctx_size)
             OPENSSL_cleanse(c->cipher_data, c->cipher->ctx_size);
     }
-    OPENSSL_free(c->cipher_data);
+    _OPENSSL_free(c->cipher_data);
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_finish(c->engine);
 #endif
@@ -46,7 +46,7 @@ EVP_CIPHER_CTX *_EVP_CIPHER_CTX_new(void)
 void _EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx)
 {
     EVP_CIPHER_CTX_reset(ctx);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int EVP_CipherInit(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *cipher,

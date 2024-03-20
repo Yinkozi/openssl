@@ -161,7 +161,7 @@ static ASN1_STRING_TABLE *stable_get(int nid)
         return NULL;
     }
     if (!sk_ASN1_STRING_TABLE_push(stable, rv)) {
-        OPENSSL_free(rv);
+        _OPENSSL_free(rv);
         return NULL;
     }
     if (tmp != NULL) {
@@ -215,5 +215,5 @@ void ASN1_STRING_TABLE_cleanup(void)
 static void st_free(ASN1_STRING_TABLE *tbl)
 {
     if (tbl->flags & STABLE_FLAGS_MALLOC)
-        OPENSSL_free(tbl);
+        _OPENSSL_free(tbl);
 }

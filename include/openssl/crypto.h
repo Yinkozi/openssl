@@ -124,7 +124,7 @@ int CRYPTO_mem_ctrl(int mode);
         CRYPTO_clear_realloc(addr, old_num, num, OPENSSL_FILE, OPENSSL_LINE)
 # define OPENSSL_clear_free(addr, num) \
         CRYPTO_clear_free(addr, num, OPENSSL_FILE, OPENSSL_LINE)
-# define OPENSSL_free(addr) \
+# define _OPENSSL_free(addr) \
         CRYPTO_free(addr, OPENSSL_FILE, OPENSSL_LINE)
 # define OPENSSL_memdup(str, s) \
         CRYPTO_memdup((str), s, OPENSSL_FILE, OPENSSL_LINE)

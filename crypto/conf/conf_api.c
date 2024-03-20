@@ -60,9 +60,9 @@ int _CONF_add_string(CONF *conf, CONF_VALUE *section, CONF_VALUE *value)
     v = lh_CONF_VALUE_insert(conf->data, value);
     if (v != NULL) {
         (void)sk_CONF_VALUE_delete_ptr(ts, v);
-        OPENSSL_free(v->name);
-        OPENSSL_free(v->value);
-        OPENSSL_free(v);
+        _OPENSSL_free(v->name);
+        _OPENSSL_free(v->value);
+        _OPENSSL_free(v);
     }
     return 1;
 }
@@ -145,7 +145,7 @@ void _CONF_free_data(CONF *conf)
     if (conf == NULL || conf->data == NULL)
         return;
 
-    /* evil thing to make sure the 'OPENSSL_free()' works as expected */
+    /* evil thing to make sure the '_OPENSSL_free()' works as expected */
     lh_CONF_VALUE_set_down_load(conf->data, 0);
     lh_CONF_VALUE_doall_LH_CONF_VALUE(conf->data, value_free_hash, conf->data);
 
@@ -176,13 +176,13 @@ static void value_free_stack_doall(CONF_VALUE *a)
     sk = (STACK_OF(CONF_VALUE) *)a->value;
     for (i = sk_CONF_VALUE_num(sk) - 1; i >= 0; i--) {
         vv = sk_CONF_VALUE_value(sk, i);
-        OPENSSL_free(vv->value);
-        OPENSSL_free(vv->name);
-        OPENSSL_free(vv);
+        _OPENSSL_free(vv->value);
+        _OPENSSL_free(vv->name);
+        _OPENSSL_free(vv);
     }
     sk_CONF_VALUE_free(sk);
-    OPENSSL_free(a->section);
-    OPENSSL_free(a);
+    _OPENSSL_free(a->section);
+    _OPENSSL_free(a);
 }
 
 /* Up until OpenSSL 0.9.5a, this was new_section */
@@ -212,7 +212,7 @@ CONF_VALUE *_CONF_new_section(CONF *conf, const char *section)
  err:
     sk_CONF_VALUE_free(sk);
     if (v != NULL)
-        OPENSSL_free(v->section);
-    OPENSSL_free(v);
+        _OPENSSL_free(v->section);
+    _OPENSSL_free(v);
     return NULL;
 }

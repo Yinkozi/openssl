@@ -47,7 +47,7 @@ static int parse_boolean(const char *value, int *result)
 #define IMPLEMENT_SSL_TEST_STRING_OPTION(struct_type, name, field)      \
     static int parse_##name##_##field(struct_type *ctx, const char *value) \
     {                                                                   \
-        OPENSSL_free(ctx->field);                                       \
+        _OPENSSL_free(ctx->field);                                       \
         ctx->field = OPENSSL_strdup(value);                             \
         return TEST_ptr(ctx->field);                                    \
     }
@@ -728,21 +728,21 @@ SSL_TEST_CTX *SSL_TEST_CTX_new(void)
 
 static void ssl_test_extra_conf_free_data(SSL_TEST_EXTRA_CONF *conf)
 {
-    OPENSSL_free(conf->client.npn_protocols);
-    OPENSSL_free(conf->server.npn_protocols);
-    OPENSSL_free(conf->server2.npn_protocols);
-    OPENSSL_free(conf->client.alpn_protocols);
-    OPENSSL_free(conf->server.alpn_protocols);
-    OPENSSL_free(conf->server2.alpn_protocols);
-    OPENSSL_free(conf->client.reneg_ciphers);
-    OPENSSL_free(conf->server.srp_user);
-    OPENSSL_free(conf->server.srp_password);
-    OPENSSL_free(conf->server2.srp_user);
-    OPENSSL_free(conf->server2.srp_password);
-    OPENSSL_free(conf->client.srp_user);
-    OPENSSL_free(conf->client.srp_password);
-    OPENSSL_free(conf->server.session_ticket_app_data);
-    OPENSSL_free(conf->server2.session_ticket_app_data);
+    _OPENSSL_free(conf->client.npn_protocols);
+    _OPENSSL_free(conf->server.npn_protocols);
+    _OPENSSL_free(conf->server2.npn_protocols);
+    _OPENSSL_free(conf->client.alpn_protocols);
+    _OPENSSL_free(conf->server.alpn_protocols);
+    _OPENSSL_free(conf->server2.alpn_protocols);
+    _OPENSSL_free(conf->client.reneg_ciphers);
+    _OPENSSL_free(conf->server.srp_user);
+    _OPENSSL_free(conf->server.srp_password);
+    _OPENSSL_free(conf->server2.srp_user);
+    _OPENSSL_free(conf->server2.srp_password);
+    _OPENSSL_free(conf->client.srp_user);
+    _OPENSSL_free(conf->client.srp_password);
+    _OPENSSL_free(conf->server.session_ticket_app_data);
+    _OPENSSL_free(conf->server2.session_ticket_app_data);
 }
 
 static void ssl_test_ctx_free_extra_data(SSL_TEST_CTX *ctx)
@@ -754,13 +754,13 @@ static void ssl_test_ctx_free_extra_data(SSL_TEST_CTX *ctx)
 void SSL_TEST_CTX_free(SSL_TEST_CTX *ctx)
 {
     ssl_test_ctx_free_extra_data(ctx);
-    OPENSSL_free(ctx->expected_npn_protocol);
-    OPENSSL_free(ctx->expected_alpn_protocol);
-    OPENSSL_free(ctx->expected_session_ticket_app_data);
+    _OPENSSL_free(ctx->expected_npn_protocol);
+    _OPENSSL_free(ctx->expected_alpn_protocol);
+    _OPENSSL_free(ctx->expected_session_ticket_app_data);
     sk_X509_NAME_pop_free(ctx->expected_server_ca_names, X509_NAME_free);
     sk_X509_NAME_pop_free(ctx->expected_client_ca_names, X509_NAME_free);
-    OPENSSL_free(ctx->expected_cipher);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx->expected_cipher);
+    _OPENSSL_free(ctx);
 }
 
 static int parse_client_options(SSL_TEST_CLIENT_CONF *client, const CONF *conf,

@@ -22,7 +22,7 @@ DH_METHOD *DH_meth_new(const char *name, int flags)
         if (dhm->name != NULL)
             return dhm;
 
-        OPENSSL_free(dhm);
+        _OPENSSL_free(dhm);
     }
 
     DHerr(DH_F_DH_METH_NEW, ERR_R_MALLOC_FAILURE);
@@ -32,8 +32,8 @@ DH_METHOD *DH_meth_new(const char *name, int flags)
 void DH_meth_free(DH_METHOD *dhm)
 {
     if (dhm != NULL) {
-        OPENSSL_free(dhm->name);
-        OPENSSL_free(dhm);
+        _OPENSSL_free(dhm->name);
+        _OPENSSL_free(dhm);
     }
 }
 
@@ -48,7 +48,7 @@ DH_METHOD *DH_meth_dup(const DH_METHOD *dhm)
         if (ret->name != NULL)
             return ret;
 
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
     }
 
     DHerr(DH_F_DH_METH_DUP, ERR_R_MALLOC_FAILURE);
@@ -69,7 +69,7 @@ int DH_meth_set1_name(DH_METHOD *dhm, const char *name)
         return 0;
     }
 
-    OPENSSL_free(dhm->name);
+    _OPENSSL_free(dhm->name);
     dhm->name = tmpname;
 
     return 1;

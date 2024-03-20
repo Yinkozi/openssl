@@ -33,7 +33,7 @@ void TS_VERIFY_CTX_free(TS_VERIFY_CTX *ctx)
         return;
 
     TS_VERIFY_CTX_cleanup(ctx);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int TS_VERIFY_CTX_add_flags(TS_VERIFY_CTX *ctx, int f)
@@ -70,7 +70,7 @@ STACK_OF(X509) *TS_VERIFY_CTS_set_certs(TS_VERIFY_CTX *ctx,
 unsigned char *TS_VERIFY_CTX_set_imprint(TS_VERIFY_CTX *ctx,
                                          unsigned char *hexstr, long len)
 {
-    OPENSSL_free(ctx->imprint);
+    _OPENSSL_free(ctx->imprint);
     ctx->imprint = hexstr;
     ctx->imprint_len = len;
     return ctx->imprint;
@@ -87,7 +87,7 @@ void TS_VERIFY_CTX_cleanup(TS_VERIFY_CTX *ctx)
     ASN1_OBJECT_free(ctx->policy);
 
     X509_ALGOR_free(ctx->md_alg);
-    OPENSSL_free(ctx->imprint);
+    _OPENSSL_free(ctx->imprint);
 
     BIO_free_all(ctx->data);
 

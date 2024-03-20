@@ -217,7 +217,7 @@ static ASN1_PCTX *pctx;
         _BIO_free(bio); \
         len2 = I2D(type, &der); \
         if (len2 != 0) {} \
-        OPENSSL_free(der); \
+        _OPENSSL_free(der); \
         TYPE ## _free(type); \
     } \
 }
@@ -233,7 +233,7 @@ static ASN1_PCTX *pctx;
         PRINT(bio, type, 0); \
         _BIO_free(bio); \
         I2D(type, &der); \
-        OPENSSL_free(der); \
+        _OPENSSL_free(der); \
         TYPE ## _free(type); \
     } \
 }
@@ -249,7 +249,7 @@ static ASN1_PCTX *pctx;
         PRINT(bio, type, 0, pctx); \
         _BIO_free(bio); \
         I2D(type, &der); \
-        OPENSSL_free(der); \
+        _OPENSSL_free(der); \
         TYPE ## _free(type); \
     } \
 }
@@ -265,7 +265,7 @@ static ASN1_PCTX *pctx;
         \
         _BIO_free(bio); \
         I2D(type, &der); \
-        OPENSSL_free(der); \
+        _OPENSSL_free(der); \
         TYPE ## _free(type); \
     } \
 }
@@ -306,7 +306,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
             ASN1_item_print(bio, o, 4, i, pctx);
             _BIO_free(bio);
             ASN1_item_i2d(o, &der, i);
-            OPENSSL_free(der);
+            _OPENSSL_free(der);
             ASN1_item_free(o, i);
         }
     }

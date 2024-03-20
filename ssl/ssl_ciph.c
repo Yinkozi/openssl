@@ -950,7 +950,7 @@ static int ssl_cipher_strength_sort(CIPHER_ORDER **head_p,
             ssl_cipher_apply_rule(0, 0, 0, 0, 0, 0, 0, CIPHER_ORD, i, head_p,
                                   tail_p);
 
-    OPENSSL_free(number_uses);
+    _OPENSSL_free(number_uses);
     return 1;
 }
 
@@ -1508,7 +1508,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
      * in force within each class
      */
     if (!ssl_cipher_strength_sort(&head, &tail)) {
-        OPENSSL_free(co_list);
+        _OPENSSL_free(co_list);
         return NULL;
     }
 
@@ -1554,7 +1554,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
     num_of_alias_max = num_of_ciphers + num_of_group_aliases + 1;
     ca_list = OPENSSL_malloc(sizeof(*ca_list) * num_of_alias_max);
     if (ca_list == NULL) {
-        OPENSSL_free(co_list);
+        _OPENSSL_free(co_list);
         SSLerr(SSL_F_SSL_CREATE_CIPHER_LIST, ERR_R_MALLOC_FAILURE);
         return NULL;          /* Failure */
     }
@@ -1579,10 +1579,10 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
     if (ok && (strlen(rule_p) > 0))
         ok = ssl_cipher_process_rulestr(rule_p, &head, &tail, ca_list, c);
 
-    OPENSSL_free(ca_list);      /* Not needed anymore */
+    _OPENSSL_free(ca_list);      /* Not needed anymore */
 
     if (!ok) {                  /* Rule processing failure */
-        OPENSSL_free(co_list);
+        _OPENSSL_free(co_list);
         return NULL;
     }
 
@@ -1591,7 +1591,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
      * if we cannot get one.
      */
     if ((cipherstack = sk_SSL_CIPHER_new_null()) == NULL) {
-        OPENSSL_free(co_list);
+        _OPENSSL_free(co_list);
         return NULL;
     }
 
@@ -1599,7 +1599,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
     for (i = 0; i < sk_SSL_CIPHER_num(tls13_ciphersuites); i++) {
         if (!sk_SSL_CIPHER_push(cipherstack,
                                 sk_SSL_CIPHER_value(tls13_ciphersuites, i))) {
-            OPENSSL_free(co_list);
+            _OPENSSL_free(co_list);
             sk_SSL_CIPHER_free(cipherstack);
             return NULL;
         }
@@ -1612,7 +1612,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
     for (curr = head; curr != NULL; curr = curr->next) {
         if (curr->active) {
             if (!sk_SSL_CIPHER_push(cipherstack, curr->cipher)) {
-                OPENSSL_free(co_list);
+                _OPENSSL_free(co_list);
                 sk_SSL_CIPHER_free(cipherstack);
                 return NULL;
             }
@@ -1621,7 +1621,7 @@ STACK_OF(SSL_CIPHER) *ssl_create_cipher_list(const SSL_METHOD *ssl_method,
 #endif
         }
     }
-    OPENSSL_free(co_list);      /* Not needed any longer */
+    _OPENSSL_free(co_list);      /* Not needed any longer */
 
     if (!update_cipher_list_by_id(cipher_list_by_id, cipherstack)) {
         sk_SSL_CIPHER_free(cipherstack);
@@ -1947,7 +1947,7 @@ STACK_OF(SSL_COMP) *SSL_COMP_set0_compression_methods(STACK_OF(SSL_COMP)
 
 static void cmeth_free(SSL_COMP *cm)
 {
-    OPENSSL_free(cm);
+    _OPENSSL_free(cm);
 }
 
 void ssl_comp_free_compression_methods_int(void)
@@ -1990,14 +1990,14 @@ int SSL_COMP_add_compression_method(int id, COMP_METHOD *cm)
     comp->method = cm;
     load_builtin_compressions();
     if (ssl_comp_methods && sk_SSL_COMP_find(ssl_comp_methods, comp) >= 0) {
-        OPENSSL_free(comp);
+        _OPENSSL_free(comp);
         CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
         SSLerr(SSL_F_SSL_COMP_ADD_COMPRESSION_METHOD,
                SSL_R_DUPLICATE_COMPRESSION_ID);
         return 1;
     }
     if (ssl_comp_methods == NULL || !sk_SSL_COMP_push(ssl_comp_methods, comp)) {
-        OPENSSL_free(comp);
+        _OPENSSL_free(comp);
         CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
         SSLerr(SSL_F_SSL_COMP_ADD_COMPRESSION_METHOD, ERR_R_MALLOC_FAILURE);
         return 1;

@@ -103,7 +103,7 @@ BIO *_BIO_new(const BIO_METHOD *method)
     return bio;
 
 err:
-    OPENSSL_free(bio);
+    _OPENSSL_free(bio);
     return NULL;
 }
 
@@ -135,7 +135,7 @@ int _BIO_free(BIO *a)
 
     CRYPTO_THREAD_lock_free(a->lock);
 
-    OPENSSL_free(a);
+    _OPENSSL_free(a);
 
     return 1;
 }

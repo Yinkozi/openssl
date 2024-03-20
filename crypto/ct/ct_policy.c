@@ -47,7 +47,7 @@ void CT_POLICY_EVAL_CTX_free(CT_POLICY_EVAL_CTX *ctx)
         return;
     X509_free(ctx->cert);
     X509_free(ctx->issuer);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int CT_POLICY_EVAL_CTX_set1_cert(CT_POLICY_EVAL_CTX *ctx, X509 *cert)

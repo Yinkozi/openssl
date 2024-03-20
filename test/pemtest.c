@@ -52,9 +52,9 @@ static int test_b64(int idx)
     ret = 1;
  err:
     _BIO_free(b);
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(data);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(data);
     return ret;
 }
 
@@ -77,9 +77,9 @@ static int test_invalid(void)
         return 0;
     }
     _BIO_free(b);
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(data);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(data);
     return 1;
 }
 
@@ -105,9 +105,9 @@ static int test_empty_payload(void)
 
     ret = 1;
  err:
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(data);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(data);
     _BIO_free(b);
     return ret;
 }

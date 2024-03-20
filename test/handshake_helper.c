@@ -38,15 +38,15 @@ void HANDSHAKE_RESULT_free(HANDSHAKE_RESULT *result)
 {
     if (result == NULL)
         return;
-    OPENSSL_free(result->client_npn_negotiated);
-    OPENSSL_free(result->server_npn_negotiated);
-    OPENSSL_free(result->client_alpn_negotiated);
-    OPENSSL_free(result->server_alpn_negotiated);
-    OPENSSL_free(result->result_session_ticket_app_data);
+    _OPENSSL_free(result->client_npn_negotiated);
+    _OPENSSL_free(result->server_npn_negotiated);
+    _OPENSSL_free(result->client_alpn_negotiated);
+    _OPENSSL_free(result->server_alpn_negotiated);
+    _OPENSSL_free(result->result_session_ticket_app_data);
     sk_X509_NAME_pop_free(result->server_ca_names, X509_NAME_free);
     sk_X509_NAME_pop_free(result->client_ca_names, X509_NAME_free);
-    OPENSSL_free(result->cipher);
-    OPENSSL_free(result);
+    _OPENSSL_free(result->cipher);
+    _OPENSSL_free(result);
 }
 
 /*
@@ -75,15 +75,15 @@ typedef struct ctx_data_st {
 /* |ctx_data| itself is stack-allocated. */
 static void ctx_data_free_data(CTX_DATA *ctx_data)
 {
-    OPENSSL_free(ctx_data->npn_protocols);
+    _OPENSSL_free(ctx_data->npn_protocols);
     ctx_data->npn_protocols = NULL;
-    OPENSSL_free(ctx_data->alpn_protocols);
+    _OPENSSL_free(ctx_data->alpn_protocols);
     ctx_data->alpn_protocols = NULL;
-    OPENSSL_free(ctx_data->srp_user);
+    _OPENSSL_free(ctx_data->srp_user);
     ctx_data->srp_user = NULL;
-    OPENSSL_free(ctx_data->srp_password);
+    _OPENSSL_free(ctx_data->srp_password);
     ctx_data->srp_password = NULL;
-    OPENSSL_free(ctx_data->session_ticket_app_data);
+    _OPENSSL_free(ctx_data->session_ticket_app_data);
     ctx_data->session_ticket_app_data = NULL;
 }
 
@@ -371,7 +371,7 @@ static int parse_protos(const char *protos, unsigned char **out, size_t *outlen)
     return 1;
 
 err:
-    OPENSSL_free(*out);
+    _OPENSSL_free(*out);
     *out = NULL;
     return 0;
 }
@@ -645,7 +645,7 @@ static int configure_handshake_ctx(SSL_CTX *server_ctx, SSL_CTX *server2_ctx,
                 || !TEST_int_eq(SSL_CTX_set_alpn_protos(client_ctx, alpn_protos,
                                                         alpn_protos_len), 0))
             goto err;
-        OPENSSL_free(alpn_protos);
+        _OPENSSL_free(alpn_protos);
     }
 
     if (extra->server.session_ticket_app_data != NULL) {
@@ -672,10 +672,10 @@ static int configure_handshake_ctx(SSL_CTX *server_ctx, SSL_CTX *server2_ctx,
             || !TEST_int_eq(SSL_CTX_set_tlsext_ticket_keys(server_ctx,
                                                            ticket_keys,
                                                            ticket_key_len), 1)) {
-        OPENSSL_free(ticket_keys);
+        _OPENSSL_free(ticket_keys);
         goto err;
     }
-    OPENSSL_free(ticket_keys);
+    _OPENSSL_free(ticket_keys);
 
     /* The default log list includes EC keys, so CT can't work without EC. */
 #if !defined(OPENSSL_NO_CT) && !defined(OPENSSL_NO_EC)
@@ -775,16 +775,16 @@ static int create_peer(PEER *peer, SSL_CTX *ctx)
     return 1;
 err:
     SSL_free(ssl);
-    OPENSSL_free(write_buf);
-    OPENSSL_free(read_buf);
+    _OPENSSL_free(write_buf);
+    _OPENSSL_free(read_buf);
     return 0;
 }
 
 static void peer_free_data(PEER *peer)
 {
     SSL_free(peer->ssl);
-    OPENSSL_free(peer->write_buf);
-    OPENSSL_free(peer->read_buf);
+    _OPENSSL_free(peer->write_buf);
+    _OPENSSL_free(peer->read_buf);
 }
 
 /*

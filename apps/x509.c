@@ -759,7 +759,7 @@ int x509_main(int argc, char **argv)
                 d = (unsigned char *)m;
                 len = i2d_X509(x, &d);
                 print_array(out, "the_certificate", len, (unsigned char *)m);
-                OPENSSL_free(m);
+                _OPENSSL_free(m);
             } else if (text == i) {
                 X509_print_ex(out, x, get_nameopt(), certflag);
             } else if (startdate == i) {
@@ -906,7 +906,7 @@ int x509_main(int argc, char **argv)
     sk_ASN1_OBJECT_pop_free(reject, ASN1_OBJECT_free);
     ASN1_OBJECT_free(objtmp);
     release_engine(e);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     return ret;
 }
 
@@ -944,7 +944,7 @@ static ASN1_INTEGER *x509_load_serial(const char *CAfile,
         bs = BN_to_ASN1_INTEGER(serial, NULL);
 
  end:
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     BN_free(serial);
     return bs;
 }
@@ -1196,7 +1196,7 @@ static int print_x509v3_exts(BIO *bio, X509 *x, const char *ext_names)
     ret = X509V3_extensions_print(bio, NULL, exts2, 0, 0);
  end:
     sk_X509_EXTENSION_free(exts2);
-    OPENSSL_free(names);
-    OPENSSL_free(tmp_ext_names);
+    _OPENSSL_free(names);
+    _OPENSSL_free(tmp_ext_names);
     return ret;
 }

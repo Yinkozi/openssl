@@ -237,7 +237,7 @@ static EVP_PKEY *do_b2i_bio(BIO *in, int ispub)
         ret = b2i_rsa(&p, bitlen, ispub);
 
  err:
-    OPENSSL_free(buf);
+    _OPENSSL_free(buf);
     return ret;
 }
 
@@ -481,7 +481,7 @@ static int do_i2b_bio(BIO *out, EVP_PKEY *pk, int ispub)
     if (outlen < 0)
         return -1;
     wrlen = _BIO_write(out, tmp, outlen);
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     if (wrlen == outlen)
         return outlen;
     return -1;
@@ -741,7 +741,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
     _EVP_CIPHER_CTX_free(cctx);
     if (enctmp != NULL) {
         OPENSSL_cleanse(keybuf, sizeof(keybuf));
-        OPENSSL_free(enctmp);
+        _OPENSSL_free(enctmp);
     }
     return ret;
 }
@@ -860,7 +860,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
  error:
     _EVP_CIPHER_CTX_free(cctx);
     if (*out == NULL)
-        OPENSSL_free(start);
+        _OPENSSL_free(start);
     return -1;
 }
 
@@ -873,7 +873,7 @@ int i2b_PVK_bio(BIO *out, EVP_PKEY *pk, int enclevel,
     if (outlen < 0)
         return -1;
     wrlen = _BIO_write(out, tmp, outlen);
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     if (wrlen == outlen) {
         return outlen;
     }

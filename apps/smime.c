@@ -609,7 +609,7 @@ int smime_main(int argc, char **argv)
     _BIO_free(in);
     _BIO_free(indata);
     BIO_free_all(out);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     return ret;
 }
 

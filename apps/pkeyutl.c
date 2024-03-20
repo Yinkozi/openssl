@@ -354,9 +354,9 @@ int pkeyutl_main(int argc, char **argv)
     release_engine(e);
     _BIO_free(in);
     BIO_free_all(out);
-    OPENSSL_free(buf_in);
-    OPENSSL_free(buf_out);
-    OPENSSL_free(sig);
+    _OPENSSL_free(buf_in);
+    _OPENSSL_free(buf_out);
+    _OPENSSL_free(sig);
     sk_OPENSSL_STRING_free(pkeyopts);
     return ret;
 }
@@ -464,7 +464,7 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
     }
 
  end:
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     return ctx;
 
 }

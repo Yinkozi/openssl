@@ -102,13 +102,13 @@ TXT_DB *TXT_DB_read(BIO *in, int num)
         }
         *(p++) = '\0';
         if ((n != num) || (*f != '\0')) {
-            OPENSSL_free(pp);
+            _OPENSSL_free(pp);
             ret->error = DB_ERROR_WRONG_NUM_FIELDS;
             goto err;
         }
         pp[n] = p;
         if (!sk_OPENSSL_PSTRING_push(ret->data, pp)) {
-            OPENSSL_free(pp);
+            _OPENSSL_free(pp);
             goto err;
         }
     }
@@ -118,9 +118,9 @@ TXT_DB *TXT_DB_read(BIO *in, int num)
     BUF_MEM_free(buf);
     if (ret != NULL) {
         sk_OPENSSL_PSTRING_free(ret->data);
-        OPENSSL_free(ret->index);
-        OPENSSL_free(ret->qual);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret->index);
+        _OPENSSL_free(ret->qual);
+        _OPENSSL_free(ret);
     }
     return NULL;
 }
@@ -287,9 +287,9 @@ void TXT_DB_free(TXT_DB *db)
     if (db->index != NULL) {
         for (i = db->num_fields - 1; i >= 0; i--)
             lh_OPENSSL_STRING_free(db->index[i]);
-        OPENSSL_free(db->index);
+        _OPENSSL_free(db->index);
     }
-    OPENSSL_free(db->qual);
+    _OPENSSL_free(db->qual);
     if (db->data != NULL) {
         for (i = sk_OPENSSL_PSTRING_num(db->data) - 1; i >= 0; i--) {
             /*
@@ -300,16 +300,16 @@ void TXT_DB_free(TXT_DB *db)
             max = p[db->num_fields]; /* last address */
             if (max == NULL) {  /* new row */
                 for (n = 0; n < db->num_fields; n++)
-                    OPENSSL_free(p[n]);
+                    _OPENSSL_free(p[n]);
             } else {
                 for (n = 0; n < db->num_fields; n++) {
                     if (((p[n] < (char *)p) || (p[n] > max)))
-                        OPENSSL_free(p[n]);
+                        _OPENSSL_free(p[n]);
                 }
             }
-            OPENSSL_free(sk_OPENSSL_PSTRING_value(db->data, i));
+            _OPENSSL_free(sk_OPENSSL_PSTRING_value(db->data, i));
         }
         sk_OPENSSL_PSTRING_free(db->data);
     }
-    OPENSSL_free(db);
+    _OPENSSL_free(db);
 }

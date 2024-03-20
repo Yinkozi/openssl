@@ -143,7 +143,7 @@ int DH_KDF_X9_42(unsigned char *out, size_t outlen,
     }
     rv = 1;
  err:
-    OPENSSL_free(der);
+    _OPENSSL_free(der);
     EVP_MD_CTX_free(mctx);
     return rv;
 }

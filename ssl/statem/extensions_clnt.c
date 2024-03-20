@@ -643,13 +643,13 @@ static int add_key_share(SSL *s, WPACKET *pkt, unsigned int curve_id)
      */
     s->s3->tmp.pkey = key_share_key;
     s->s3->group_id = curve_id;
-    OPENSSL_free(encoded_point);
+    _OPENSSL_free(encoded_point);
 
     return 1;
  err:
     if (s->s3->tmp.pkey == NULL)
         EVP_PKEY_free(key_share_key);
-    OPENSSL_free(encoded_point);
+    _OPENSSL_free(encoded_point);
     return 0;
 }
 #endif
@@ -737,7 +737,7 @@ EXT_RETURN tls_construct_ctos_cookie(SSL *s, WPACKET *pkt, unsigned int context,
 
     ret = EXT_RETURN_SENT;
  end:
-    OPENSSL_free(s->ext.tls13_cookie);
+    _OPENSSL_free(s->ext.tls13_cookie);
     s->ext.tls13_cookie = NULL;
     s->ext.tls13_cookie_len = 0;
 
@@ -827,7 +827,7 @@ EXT_RETURN tls_construct_ctos_early_data(SSL *s, WPACKET *pkt,
     SSL_SESSION_free(s->psksession);
     s->psksession = psksess;
     if (psksess != NULL) {
-        OPENSSL_free(s->psksession_id);
+        _OPENSSL_free(s->psksession_id);
         s->psksession_id = OPENSSL_memdup(id, idlen);
         if (s->psksession_id == NULL) {
             s->psksession_id_len = 0;
@@ -1386,7 +1386,7 @@ int tls_parse_stoc_ec_pt_formats(SSL *s, PACKET *pkt, unsigned int context,
         }
 
         s->ext.peer_ecpointformats_len = 0;
-        OPENSSL_free(s->ext.peer_ecpointformats);
+        _OPENSSL_free(s->ext.peer_ecpointformats);
         s->ext.peer_ecpointformats = OPENSSL_malloc(ecpointformats_len);
         if (s->ext.peer_ecpointformats == NULL) {
             s->ext.peer_ecpointformats_len = 0;
@@ -1501,7 +1501,7 @@ int tls_parse_stoc_sct(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
         size_t size = PACKET_remaining(pkt);
 
         /* Simply copy it off for later processing */
-        OPENSSL_free(s->ext.scts);
+        _OPENSSL_free(s->ext.scts);
         s->ext.scts = NULL;
 
         s->ext.scts_len = (uint16_t)size;
@@ -1609,7 +1609,7 @@ int tls_parse_stoc_npn(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
      * Could be non-NULL if server has sent multiple NPN extensions in
      * a single Serverhello
      */
-    OPENSSL_free(s->ext.npn);
+    _OPENSSL_free(s->ext.npn);
     s->ext.npn = OPENSSL_malloc(selected_len);
     if (s->ext.npn == NULL) {
         s->ext.npn_len = 0;
@@ -1650,7 +1650,7 @@ int tls_parse_stoc_alpn(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                  SSL_R_BAD_EXTENSION);
         return 0;
     }
-    OPENSSL_free(s->s3->alpn_selected);
+    _OPENSSL_free(s->s3->alpn_selected);
     s->s3->alpn_selected = OPENSSL_malloc(len);
     if (s->s3->alpn_selected == NULL) {
         s->s3->alpn_selected_len = 0;

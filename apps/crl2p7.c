@@ -212,7 +212,7 @@ static int add_certs_from_file(STACK_OF(X509) *stack, char *certfile)
 
     ret = count;
  end:
-    /* never need to OPENSSL_free x */
+    /* never need to _OPENSSL_free x */
     _BIO_free(in);
     sk_X509_INFO_free(sk);
     return ret;

@@ -108,7 +108,7 @@ FILE *openssl_fopen(const char *filename, const char *mode)
         }
         file = fopen(filename, mode);
 
-        OPENSSL_free(newname);
+        _OPENSSL_free(newname);
     }
 # else
     file = fopen(filename, mode);

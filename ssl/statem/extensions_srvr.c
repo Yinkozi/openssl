@@ -150,7 +150,7 @@ int tls_parse_ctos_server_name(SSL *s, PACKET *pkt, unsigned int context,
          * Store the requested SNI in the SSL as temporary storage.
          * If we accept it, it will get stored in the SSL_SESSION as well.
          */
-        OPENSSL_free(s->ext.hostname);
+        _OPENSSL_free(s->ext.hostname);
         s->ext.hostname = NULL;
         if (!PACKET_strndup(&hostname, &s->ext.hostname)) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_CTOS_SERVER_NAME,
@@ -487,7 +487,7 @@ int tls_parse_ctos_alpn(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
         }
     } while (PACKET_remaining(&protocol_list) != 0);
 
-    OPENSSL_free(s->s3->alpn_proposed);
+    _OPENSSL_free(s->s3->alpn_proposed);
     s->s3->alpn_proposed = NULL;
     s->s3->alpn_proposed_len = 0;
     if (!PACKET_memdup(&save_protocol_list,
@@ -967,7 +967,7 @@ int tls_parse_ctos_supported_groups(SSL *s, PACKET *pkt, unsigned int context,
     }
 
     if (!s->hit || SSL_IS_TLS13(s)) {
-        OPENSSL_free(s->ext.peer_supportedgroups);
+        _OPENSSL_free(s->ext.peer_supportedgroups);
         s->ext.peer_supportedgroups = NULL;
         s->ext.peer_supportedgroups_len = 0;
         if (!tls1_save_u16(&supported_groups_list,
@@ -1106,7 +1106,7 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
             }
             pskdatalen = s->psk_server_callback(s, pskid, pskdata,
                                                 sizeof(pskdata));
-            OPENSSL_free(pskid);
+            _OPENSSL_free(pskid);
             if (pskdatalen > PSK_MAX_PSK_LEN) {
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_CTOS_PSK,
                          ERR_R_INTERNAL_ERROR);
@@ -1750,10 +1750,10 @@ EXT_RETURN tls_construct_stoc_key_share(SSL *s, WPACKET *pkt,
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_STOC_KEY_SHARE,
                  ERR_R_INTERNAL_ERROR);
         EVP_PKEY_free(skey);
-        OPENSSL_free(encodedPoint);
+        _OPENSSL_free(encodedPoint);
         return EXT_RETURN_FAIL;
     }
-    OPENSSL_free(encodedPoint);
+    _OPENSSL_free(encodedPoint);
 
     /* This causes the crypto state to be updated based on the derived keys */
     s->s3->tmp.pkey = skey;

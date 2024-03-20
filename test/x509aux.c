@@ -104,7 +104,7 @@ static int test_certs(int num)
             err = 1;
             goto next;
         }
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         buf = NULL;
 
         /* Test 1-pass encoding into library allocated buffer */
@@ -123,7 +123,7 @@ static int test_certs(int num)
 
         if (trusted) {
             /* Encode just the cert and compare with initial encoding */
-            OPENSSL_free(buf);
+            _OPENSSL_free(buf);
             buf = NULL;
 
             /* Test 1-pass encoding into library allocated buffer */
@@ -147,10 +147,10 @@ static int test_certs(int num)
     next:
         X509_free(cert);
         X509_free(reuse);
-        OPENSSL_free(buf);
-        OPENSSL_free(name);
-        OPENSSL_free(header);
-        OPENSSL_free(data);
+        _OPENSSL_free(buf);
+        _OPENSSL_free(name);
+        _OPENSSL_free(header);
+        _OPENSSL_free(data);
     }
     _BIO_free(fp);
 

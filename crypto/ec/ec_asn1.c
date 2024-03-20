@@ -436,8 +436,8 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
     ok = 1;
 
  err:
-    OPENSSL_free(a_buf);
-    OPENSSL_free(b_buf);
+    _OPENSSL_free(a_buf);
+    _OPENSSL_free(b_buf);
     BN_free(tmp_1);
     BN_free(tmp_2);
     return ok;
@@ -491,7 +491,7 @@ ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group,
         goto err;
     }
     if (ret->base == NULL && (ret->base = ASN1_OCTET_STRING_new()) == NULL) {
-        OPENSSL_free(buffer);
+        _OPENSSL_free(buffer);
         ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -761,7 +761,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_ASN1_ERROR);
             goto err;
         }
-        OPENSSL_free(ret->seed);
+        _OPENSSL_free(ret->seed);
         if ((ret->seed = OPENSSL_malloc(params->curve->seed->length)) == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -1150,7 +1150,7 @@ int i2d_ECPrivateKey(EC_KEY *a, unsigned char **out)
     ok = 1;
  err:
     OPENSSL_clear_free(priv, privlen);
-    OPENSSL_free(pub);
+    _OPENSSL_free(pub);
     EC_PRIVATEKEY_free(priv_key);
     return (ok ? ret : 0);
 }
@@ -1242,7 +1242,7 @@ int i2o_ECPublicKey(const EC_KEY *a, unsigned char **out)
                             *out, buf_len, NULL)) {
         ECerr(EC_F_I2O_ECPUBLICKEY, ERR_R_EC_LIB);
         if (new_buffer) {
-            OPENSSL_free(*out);
+            _OPENSSL_free(*out);
             *out = NULL;
         }
         return 0;
@@ -1275,7 +1275,7 @@ void ECDSA_SIG_free(ECDSA_SIG *sig)
         return;
     BN_clear_free(sig->r);
     BN_clear_free(sig->s);
-    OPENSSL_free(sig);
+    _OPENSSL_free(sig);
 }
 
 void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)

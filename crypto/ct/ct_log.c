@@ -66,7 +66,7 @@ static CTLOG_STORE_LOAD_CTX *ctlog_store_load_ctx_new(void)
 
 static void ctlog_store_load_ctx_free(CTLOG_STORE_LOAD_CTX* ctx)
 {
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 /* Converts a log's public key into a SHA256 log ID */
@@ -85,7 +85,7 @@ static int ct_v1_log_id_from_pkey(EVP_PKEY *pkey,
     SHA256(pkey_der, pkey_der_len, log_id);
     ret = 1;
 err:
-    OPENSSL_free(pkey_der);
+    _OPENSSL_free(pkey_der);
     return ret;
 }
 
@@ -104,7 +104,7 @@ CTLOG_STORE *CTLOG_STORE_new(void)
 
     return ret;
 err:
-    OPENSSL_free(ret);
+    _OPENSSL_free(ret);
     return NULL;
 }
 
@@ -112,7 +112,7 @@ void CTLOG_STORE_free(CTLOG_STORE *store)
 {
     if (store != NULL) {
         sk_CTLOG_pop_free(store->logs, CTLOG_free);
-        OPENSSL_free(store);
+        _OPENSSL_free(store);
     }
 }
 
@@ -169,7 +169,7 @@ static int ctlog_store_load_log(const char *log_name, int log_name_len,
         goto mem_err;
 
     ret = ctlog_new_from_conf(&ct_log, load_ctx->conf, tmp);
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
 
     if (ret < 0) {
         /* Propagate any internal error */
@@ -263,9 +263,9 @@ err:
 void CTLOG_free(CTLOG *log)
 {
     if (log != NULL) {
-        OPENSSL_free(log->name);
+        _OPENSSL_free(log->name);
         EVP_PKEY_free(log->public_key);
-        OPENSSL_free(log);
+        _OPENSSL_free(log);
     }
 }
 

@@ -87,7 +87,7 @@ int bn_mod_add_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
     r->neg = 0;
 
     if (tp != storage)
-        OPENSSL_free(tp);
+        _OPENSSL_free(tp);
 
     return 1;
 }

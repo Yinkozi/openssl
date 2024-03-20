@@ -94,7 +94,7 @@ static int do_create(const char *value, const char *name)
 
     nid = OBJ_create(ostr, name, ln);
 
-    OPENSSL_free(lntmp);
+    _OPENSSL_free(lntmp);
 
     return nid != NID_undef;
 }

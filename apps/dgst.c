@@ -420,12 +420,12 @@ int dgst_main(int argc, char **argv)
  end:
     OPENSSL_clear_free(buf, BUFSIZE);
     _BIO_free(in);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     BIO_free_all(out);
     EVP_PKEY_free(sigkey);
     sk_OPENSSL_STRING_free(sigopts);
     sk_OPENSSL_STRING_free(macopts);
-    OPENSSL_free(sigbuf);
+    _OPENSSL_free(sigbuf);
     _BIO_free(bmd);
     release_engine(e);
     return ret;
@@ -567,7 +567,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
             BIO_printf(out, "%02x", buf[i]);
 
         BIO_printf(out, " *%s\n", file);
-        OPENSSL_free((char *)file);
+        _OPENSSL_free((char *)file);
     } else {
         if (sig_name != NULL) {
             BIO_puts(out, sig_name);

@@ -36,7 +36,7 @@ ASN1_SCTX *ASN1_SCTX_new(int (*scan_cb) (ASN1_SCTX *ctx))
 
 void ASN1_SCTX_free(ASN1_SCTX *p)
 {
-    OPENSSL_free(p);
+    _OPENSSL_free(p);
 }
 
 const ASN1_ITEM *ASN1_SCTX_get_item(ASN1_SCTX *p)

@@ -131,7 +131,7 @@ static int pkcs7_encode_rinfo(PKCS7_RECIP_INFO *ri,
 
  err:
     EVP_PKEY_CTX_free(pctx);
-    OPENSSL_free(ek);
+    _OPENSSL_free(ek);
     return ret;
 
 }
@@ -188,7 +188,7 @@ static int pkcs7_decrypt_rinfo(unsigned char **pek, int *peklen,
  err:
     EVP_PKEY_CTX_free(pctx);
     if (!ret)
-        OPENSSL_free(ek);
+        _OPENSSL_free(ek);
 
     return ret;
 }
@@ -766,7 +766,7 @@ int PKCS7_dataFinal(PKCS7 *p7, BIO *bio)
                     goto err;
 
                 if (!EVP_SignFinal(ctx_tmp, abuf, &abuflen, si->pkey)) {
-                    OPENSSL_free(abuf);
+                    _OPENSSL_free(abuf);
                     PKCS7err(PKCS7_F_PKCS7_DATAFINAL, ERR_R_EVP_LIB);
                     goto err;
                 }
@@ -850,7 +850,7 @@ int PKCS7_SIGNER_INFO_sign(PKCS7_SIGNER_INFO *si)
         goto err;
     if (_EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
         goto err;
-    OPENSSL_free(abuf);
+    _OPENSSL_free(abuf);
     abuf = NULL;
     if (_EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
         goto err;
@@ -873,7 +873,7 @@ int PKCS7_SIGNER_INFO_sign(PKCS7_SIGNER_INFO *si)
     return 1;
 
  err:
-    OPENSSL_free(abuf);
+    _OPENSSL_free(abuf);
     EVP_MD_CTX_free(mctx);
     return 0;
 
@@ -1026,7 +1026,7 @@ int PKCS7_signatureVerify(BIO *bio, PKCS7 *p7, PKCS7_SIGNER_INFO *si,
         if (!EVP_VerifyUpdate(mdc_tmp, abuf, alen))
             goto err;
 
-        OPENSSL_free(abuf);
+        _OPENSSL_free(abuf);
     }
 
     os = si->enc_digest;

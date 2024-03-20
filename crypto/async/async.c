@@ -51,7 +51,7 @@ static async_ctx *async_ctx_new(void)
 
     return nctx;
 err:
-    OPENSSL_free(nctx);
+    _OPENSSL_free(nctx);
 
     return NULL;
 }
@@ -70,7 +70,7 @@ static int async_ctx_free(void)
     if (!CRYPTO_THREAD_set_local(&ctxkey, NULL))
         return 0;
 
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 
     return 1;
 }
@@ -93,9 +93,9 @@ static ASYNC_JOB *async_job_new(void)
 static void async_job_free(ASYNC_JOB *job)
 {
     if (job != NULL) {
-        OPENSSL_free(job->funcargs);
+        _OPENSSL_free(job->funcargs);
         async_fibre_free(&job->fibrectx);
-        OPENSSL_free(job);
+        _OPENSSL_free(job);
     }
 }
 
@@ -136,7 +136,7 @@ static void async_release_job(ASYNC_JOB *job) {
     async_pool *pool;
 
     pool = (async_pool *)CRYPTO_THREAD_get_local(&poolkey);
-    OPENSSL_free(job->funcargs);
+    _OPENSSL_free(job->funcargs);
     job->funcargs = NULL;
     sk_ASYNC_JOB_push(pool->jobs, job);
 }
@@ -338,7 +338,7 @@ int ASYNC_init_thread(size_t max_size, size_t init_size)
     pool->jobs = sk_ASYNC_JOB_new_reserve(NULL, init_size);
     if (pool->jobs == NULL) {
         ASYNCerr(ASYNC_F_ASYNC_INIT_THREAD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(pool);
+        _OPENSSL_free(pool);
         return 0;
     }
 
@@ -370,7 +370,7 @@ int ASYNC_init_thread(size_t max_size, size_t init_size)
 err:
     async_empty_pool(pool);
     sk_ASYNC_JOB_free(pool->jobs);
-    OPENSSL_free(pool);
+    _OPENSSL_free(pool);
     return 0;
 }
 
@@ -381,7 +381,7 @@ void async_delete_thread_state(void)
     if (pool != NULL) {
         async_empty_pool(pool);
         sk_ASYNC_JOB_free(pool->jobs);
-        OPENSSL_free(pool);
+        _OPENSSL_free(pool);
         CRYPTO_THREAD_set_local(&poolkey, NULL);
     }
     async_local_cleanup();

@@ -136,6 +136,6 @@ int gendsa_main(int argc, char **argv)
     BIO_free_all(out);
     DSA_free(dsa);
     release_engine(e);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passout);
     return ret;
 }

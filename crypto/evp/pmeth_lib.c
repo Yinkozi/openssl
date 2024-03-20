@@ -237,7 +237,7 @@ void EVP_PKEY_meth_copy(EVP_PKEY_METHOD *dst, const EVP_PKEY_METHOD *src)
 void EVP_PKEY_meth_free(EVP_PKEY_METHOD *pmeth)
 {
     if (pmeth && (pmeth->flags & EVP_PKEY_FLAG_DYNAMIC))
-        OPENSSL_free(pmeth);
+        _OPENSSL_free(pmeth);
 }
 
 EVP_PKEY_CTX *EVP_PKEY_CTX_new(EVP_PKEY *pkey, ENGINE *e)
@@ -360,7 +360,7 @@ void EVP_PKEY_CTX_free(EVP_PKEY_CTX *ctx)
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_finish(ctx->engine);
 #endif
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int EVP_PKEY_CTX_ctrl(EVP_PKEY_CTX *ctx, int keytype, int optype,
@@ -440,7 +440,7 @@ int EVP_PKEY_CTX_hex2ctrl(EVP_PKEY_CTX *ctx, int cmd, const char *hex)
         return 0;
     if (binlen <= INT_MAX)
         rv = ctx->pmeth->ctrl(ctx, cmd, binlen, bin);
-    OPENSSL_free(bin);
+    _OPENSSL_free(bin);
     return rv;
 }
 

@@ -351,7 +351,7 @@ EVP_MD *EVP_MD_meth_dup(const EVP_MD *md)
 }
 void EVP_MD_meth_free(EVP_MD *md)
 {
-    OPENSSL_free(md);
+    _OPENSSL_free(md);
 }
 int EVP_MD_meth_set_input_blocksize(EVP_MD *md, int blocksize)
 {

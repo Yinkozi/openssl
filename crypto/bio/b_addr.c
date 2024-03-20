@@ -54,7 +54,7 @@ BIO_ADDR *BIO_ADDR_new(void)
 
 void BIO_ADDR_free(BIO_ADDR *ap)
 {
-    OPENSSL_free(ap);
+    _OPENSSL_free(ap);
 }
 
 void BIO_ADDR_clear(BIO_ADDR *ap)
@@ -251,11 +251,11 @@ static int addr_strings(const BIO_ADDR *ap, int numeric,
     if ((hostname != NULL && *hostname == NULL)
             || (service != NULL && *service == NULL)) {
         if (hostname != NULL) {
-            OPENSSL_free(*hostname);
+            _OPENSSL_free(*hostname);
             *hostname = NULL;
         }
         if (service != NULL) {
-            OPENSSL_free(*service);
+            _OPENSSL_free(*service);
             *service = NULL;
         }
         BIOerr(BIO_F_ADDR_STRINGS, ERR_R_MALLOC_FAILURE);
@@ -437,8 +437,8 @@ void BIO_ADDRINFO_free(BIO_ADDRINFO *bai)
      */
     while (bai != NULL) {
         BIO_ADDRINFO *next = bai->bai_next;
-        OPENSSL_free(bai->bai_addr);
-        OPENSSL_free(bai);
+        _OPENSSL_free(bai->bai_addr);
+        _OPENSSL_free(bai);
         bai = next;
     }
 }

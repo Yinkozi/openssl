@@ -338,7 +338,7 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     _BIO_write(rbio, iv, sizeof(iv));
     _BIO_write(rbio, enc, len);
 
-    OPENSSL_free(enc);
+    _OPENSSL_free(enc);
     return 1;
 }
 

@@ -46,7 +46,7 @@ ASN1_PCTX *ASN1_PCTX_new(void)
 
 void ASN1_PCTX_free(ASN1_PCTX *p)
 {
-    OPENSSL_free(p);
+    _OPENSSL_free(p);
 }
 
 unsigned long ASN1_PCTX_get_flags(const ASN1_PCTX *p)
@@ -399,7 +399,7 @@ static int asn1_print_integer(BIO *out, const ASN1_INTEGER *str)
         return 0;
     if (BIO_puts(out, s) <= 0)
         ret = 0;
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
     return ret;
 }
 

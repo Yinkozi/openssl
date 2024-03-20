@@ -39,7 +39,7 @@ static BIGNUM *srp_Calc_xy(const BIGNUM *x, const BIGNUM *y, const BIGNUM *N)
         goto err;
     res = BN_bin2bn(digest, sizeof(digest), NULL);
  err:
-    OPENSSL_free(tmp);
+    _OPENSSL_free(tmp);
     return res;
 }
 
@@ -152,7 +152,7 @@ BIGNUM *SRP_Calc_x(const BIGNUM *s, const char *user, const char *pass)
     res = BN_bin2bn(dig, sizeof(dig), NULL);
 
  err:
-    OPENSSL_free(cs);
+    _OPENSSL_free(cs);
     EVP_MD_CTX_free(ctxt);
     return res;
 }

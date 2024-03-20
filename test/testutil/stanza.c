@@ -151,8 +151,8 @@ void test_clearstanza(STANZA *s)
     int i = s->numpairs;
 
     for ( ; --i >= 0; pp++) {
-        OPENSSL_free(pp->key);
-        OPENSSL_free(pp->value);
+        _OPENSSL_free(pp->key);
+        _OPENSSL_free(pp->value);
     }
     s->numpairs = 0;
 }

@@ -15,7 +15,7 @@ char **newargv = NULL;
 
 static void cleanup_argv(void)
 {
-    OPENSSL_free(newargv);
+    _OPENSSL_free(newargv);
     newargv = NULL;
 }
 

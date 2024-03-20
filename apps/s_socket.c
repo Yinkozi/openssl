@@ -315,8 +315,8 @@ int do_server(int *accept_sock, const char *host, const char *port,
             success = 1;
 
         (void)BIO_flush(bio_s_out);
-        OPENSSL_free(hostname);
-        OPENSSL_free(service);
+        _OPENSSL_free(hostname);
+        _OPENSSL_free(service);
         BIO_ADDR_free(info.addr);
         if (!success) {
             BIO_closesocket(asock);

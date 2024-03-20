@@ -119,7 +119,7 @@ static int dynamic_ex_data_idx = -1;
 
 static void int_free_str(char *s)
 {
-    OPENSSL_free(s);
+    _OPENSSL_free(s);
 }
 
 /*
@@ -138,10 +138,10 @@ static void dynamic_data_ctx_free_func(void *parent, void *ptr,
     if (ptr) {
         dynamic_data_ctx *ctx = (dynamic_data_ctx *)ptr;
         DSO_free(ctx->dynamic_dso);
-        OPENSSL_free(ctx->DYNAMIC_LIBNAME);
-        OPENSSL_free(ctx->engine_id);
+        _OPENSSL_free(ctx->DYNAMIC_LIBNAME);
+        _OPENSSL_free(ctx->engine_id);
         sk_OPENSSL_STRING_pop_free(ctx->dirs, int_free_str);
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
     }
 }
 
@@ -163,7 +163,7 @@ static int dynamic_set_data_ctx(ENGINE *e, dynamic_data_ctx **ctx)
     c->dirs = sk_OPENSSL_STRING_new_null();
     if (c->dirs == NULL) {
         ENGINEerr(ENGINE_F_DYNAMIC_SET_DATA_CTX, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(c);
+        _OPENSSL_free(c);
         return 0;
     }
     c->DYNAMIC_F1 = "v_check";
@@ -187,7 +187,7 @@ static int dynamic_set_data_ctx(ENGINE *e, dynamic_data_ctx **ctx)
      */
     if (c)
         sk_OPENSSL_STRING_free(c->dirs);
-    OPENSSL_free(c);
+    _OPENSSL_free(c);
     return ret;
 }
 
@@ -306,7 +306,7 @@ static int dynamic_ctrl(ENGINE *e, int cmd, long i, void *p, void (*f) (void))
         /* a NULL 'p' or a string of zero-length is the same thing */
         if (p && (strlen((const char *)p) < 1))
             p = NULL;
-        OPENSSL_free(ctx->DYNAMIC_LIBNAME);
+        _OPENSSL_free(ctx->DYNAMIC_LIBNAME);
         if (p)
             ctx->DYNAMIC_LIBNAME = OPENSSL_strdup(p);
         else
@@ -319,7 +319,7 @@ static int dynamic_ctrl(ENGINE *e, int cmd, long i, void *p, void (*f) (void))
         /* a NULL 'p' or a string of zero-length is the same thing */
         if (p && (strlen((const char *)p) < 1))
             p = NULL;
-        OPENSSL_free(ctx->engine_id);
+        _OPENSSL_free(ctx->engine_id);
         if (p)
             ctx->engine_id = OPENSSL_strdup(p);
         else
@@ -354,7 +354,7 @@ static int dynamic_ctrl(ENGINE *e, int cmd, long i, void *p, void (*f) (void))
                 return 0;
             }
             if (!sk_OPENSSL_STRING_push(ctx->dirs, tmp_str)) {
-                OPENSSL_free(tmp_str);
+                _OPENSSL_free(tmp_str);
                 ENGINEerr(ENGINE_F_DYNAMIC_CTRL, ERR_R_MALLOC_FAILURE);
                 return 0;
             }
@@ -385,10 +385,10 @@ static int int_load(dynamic_data_ctx *ctx)
             return 0;
         if (DSO_load(ctx->dynamic_dso, merge, NULL, 0)) {
             /* Found what we're looking for */
-            OPENSSL_free(merge);
+            _OPENSSL_free(merge);
             return 1;
         }
-        OPENSSL_free(merge);
+        _OPENSSL_free(merge);
     }
     return 0;
 }

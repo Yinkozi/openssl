@@ -205,7 +205,7 @@ static void bn_free_d(BIGNUM *a, int clear)
     else if (clear != 0)
         OPENSSL_clear_free(a->d, a->dmax * sizeof(a->d[0]));
     else
-        OPENSSL_free(a->d);
+        _OPENSSL_free(a->d);
 }
 
 
@@ -217,7 +217,7 @@ void BN_clear_free(BIGNUM *a)
         bn_free_d(a, 1);
     if (BN_get_flags(a, BN_FLG_MALLOCED)) {
         OPENSSL_cleanse(a, sizeof(*a));
-        OPENSSL_free(a);
+        _OPENSSL_free(a);
     }
 }
 
@@ -228,7 +228,7 @@ void BN_free(BIGNUM *a)
     if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
         bn_free_d(a, 0);
     if (a->flags & BN_FLG_MALLOCED)
-        OPENSSL_free(a);
+        _OPENSSL_free(a);
 }
 
 void bn_init(BIGNUM *a)
@@ -958,7 +958,7 @@ void BN_GENCB_free(BN_GENCB *cb)
 {
     if (cb == NULL)
         return;
-    OPENSSL_free(cb);
+    _OPENSSL_free(cb);
 }
 
 void BN_set_flags(BIGNUM *b, int n)

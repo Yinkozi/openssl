@@ -79,7 +79,7 @@ static int b64_new(BIO *bi)
     ctx->start = 1;
     ctx->base64 = EVP_ENCODE_CTX_new();
     if (ctx->base64 == NULL) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
 
@@ -100,7 +100,7 @@ static int b64_free(BIO *a)
         return 0;
 
     EVP_ENCODE_CTX_free(ctx->base64);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
     BIO_set_data(a, NULL);
     BIO_set_init(a, 0);
 

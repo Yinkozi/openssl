@@ -236,7 +236,7 @@ static unsigned char *multihexstr2buf(const char *str[3], size_t *len)
             lo = OPENSSL_hexchar2int(str[outer][inner + 1]);
 
             if (hi < 0 || lo < 0) {
-                OPENSSL_free(outbuf);
+                _OPENSSL_free(outbuf);
                 return NULL;
             }
             outbuf[curr++] = (hi << 4) | lo;
@@ -268,19 +268,19 @@ static int load_record(SSL3_RECORD *rec, RECORD_DATA *recd, unsigned char **key,
 
     rec->length = ptlen;
     memcpy(rec->data, pt, ptlen);
-    OPENSSL_free(pt);
+    _OPENSSL_free(pt);
     memcpy(seq, sq, SEQ_NUM_SIZE);
-    OPENSSL_free(sq);
+    _OPENSSL_free(sq);
     memcpy(iv, ivtmp, ivlen);
-    OPENSSL_free(ivtmp);
+    _OPENSSL_free(ivtmp);
 
     return 1;
  err:
-    OPENSSL_free(*key);
+    _OPENSSL_free(*key);
     *key = NULL;
-    OPENSSL_free(ivtmp);
-    OPENSSL_free(sq);
-    OPENSSL_free(pt);
+    _OPENSSL_free(ivtmp);
+    _OPENSSL_free(sq);
+    _OPENSSL_free(pt);
     return 0;
 }
 
@@ -306,7 +306,7 @@ static int test_record(SSL3_RECORD *rec, RECORD_DATA *recd, int enc)
     ret = 1;
 
  err:
-    OPENSSL_free(refd);
+    _OPENSSL_free(refd);
     return ret;
 }
 
@@ -398,10 +398,10 @@ static int test_tls13_encryption(void)
             goto err;
         }
 
-        OPENSSL_free(rec.data);
-        OPENSSL_free(key);
-        OPENSSL_free(iv);
-        OPENSSL_free(seq);
+        _OPENSSL_free(rec.data);
+        _OPENSSL_free(key);
+        _OPENSSL_free(iv);
+        _OPENSSL_free(seq);
         rec.data = NULL;
         key = NULL;
         iv = NULL;
@@ -412,10 +412,10 @@ static int test_tls13_encryption(void)
     ret = 1;
 
  err:
-    OPENSSL_free(rec.data);
-    OPENSSL_free(key);
-    OPENSSL_free(iv);
-    OPENSSL_free(seq);
+    _OPENSSL_free(rec.data);
+    _OPENSSL_free(key);
+    _OPENSSL_free(iv);
+    _OPENSSL_free(seq);
     SSL_free(s);
     SSL_CTX_free(ctx);
     return ret;

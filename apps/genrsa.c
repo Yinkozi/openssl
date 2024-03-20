@@ -155,8 +155,8 @@ opthelp:
     if (hexe && dece) {
         BIO_printf(bio_err, "e is %s (0x%s)\n", dece, hexe);
     }
-    OPENSSL_free(hexe);
-    OPENSSL_free(dece);
+    _OPENSSL_free(hexe);
+    _OPENSSL_free(dece);
     cb_data.password = passout;
     cb_data.prompt_info = outfile;
     assert(private);
@@ -172,7 +172,7 @@ opthelp:
     RSA_free(rsa);
     BIO_free_all(out);
     release_engine(eng);
-    OPENSSL_free(passout);
+    _OPENSSL_free(passout);
     if (ret != 0)
         ERR_print_errors(bio_err);
     return ret;

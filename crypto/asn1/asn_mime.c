@@ -167,7 +167,7 @@ static int asn1_write_micalg(BIO *out, STACK_OF(X509_ALGOR) *mdalgs)
             rv = md->md_ctrl(NULL, EVP_MD_CTRL_MICALG, 0, &micstr);
             if (rv > 0) {
                 BIO_puts(out, micstr);
-                OPENSSL_free(micstr);
+                _OPENSSL_free(micstr);
                 continue;
             }
             if (rv != -2)
@@ -827,9 +827,9 @@ static MIME_HEADER *mime_hdr_new(const char *name, const char *value)
     return mhdr;
 
  err:
-    OPENSSL_free(tmpname);
-    OPENSSL_free(tmpval);
-    OPENSSL_free(mhdr);
+    _OPENSSL_free(tmpname);
+    _OPENSSL_free(tmpval);
+    _OPENSSL_free(mhdr);
     return NULL;
 }
 
@@ -860,9 +860,9 @@ static int mime_hdr_addparam(MIME_HEADER *mhdr, const char *name, const char *va
         goto err;
     return 1;
  err:
-    OPENSSL_free(tmpname);
-    OPENSSL_free(tmpval);
-    OPENSSL_free(mparam);
+    _OPENSSL_free(tmpname);
+    _OPENSSL_free(tmpval);
+    _OPENSSL_free(mparam);
     return 0;
 }
 
@@ -913,18 +913,18 @@ static void mime_hdr_free(MIME_HEADER *hdr)
 {
     if (hdr == NULL)
         return;
-    OPENSSL_free(hdr->name);
-    OPENSSL_free(hdr->value);
+    _OPENSSL_free(hdr->name);
+    _OPENSSL_free(hdr->value);
     if (hdr->params)
         sk_MIME_PARAM_pop_free(hdr->params, mime_param_free);
-    OPENSSL_free(hdr);
+    _OPENSSL_free(hdr);
 }
 
 static void mime_param_free(MIME_PARAM *param)
 {
-    OPENSSL_free(param->param_name);
-    OPENSSL_free(param->param_value);
-    OPENSSL_free(param);
+    _OPENSSL_free(param->param_name);
+    _OPENSSL_free(param->param_value);
+    _OPENSSL_free(param);
 }
 
 /*-

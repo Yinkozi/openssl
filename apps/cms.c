@@ -546,7 +546,7 @@ int cms_main(int argc, char **argv)
                 cms_key_param *nparam;
                 nparam = app_malloc(sizeof(*nparam), "key param buffer");
                 if ((nparam->param = sk_OPENSSL_STRING_new_null()) == NULL) {
-                    OPENSSL_free(nparam);
+                    _OPENSSL_free(nparam);
                     goto end;
                 }
                 nparam->idx = keyidx;
@@ -1084,9 +1084,9 @@ int cms_main(int argc, char **argv)
     X509_VERIFY_PARAM_free(vpm);
     sk_OPENSSL_STRING_free(sksigners);
     sk_OPENSSL_STRING_free(skkeys);
-    OPENSSL_free(secret_key);
-    OPENSSL_free(secret_keyid);
-    OPENSSL_free(pwri_tmp);
+    _OPENSSL_free(secret_key);
+    _OPENSSL_free(secret_keyid);
+    _OPENSSL_free(pwri_tmp);
     ASN1_OBJECT_free(econtent_type);
     CMS_ReceiptRequest_free(rr);
     sk_OPENSSL_STRING_free(rr_to);
@@ -1095,7 +1095,7 @@ int cms_main(int argc, char **argv)
         cms_key_param *tparam;
         sk_OPENSSL_STRING_free(key_param->param);
         tparam = key_param->next;
-        OPENSSL_free(key_param);
+        _OPENSSL_free(key_param);
         key_param = tparam;
     }
     X509_STORE_free(store);
@@ -1110,7 +1110,7 @@ int cms_main(int argc, char **argv)
     _BIO_free(in);
     _BIO_free(indata);
     BIO_free_all(out);
-    OPENSSL_free(passin);
+    _OPENSSL_free(passin);
     return ret;
 }
 

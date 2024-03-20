@@ -38,7 +38,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         if (i2d_SCT_LIST(scts, &der)) {
             /* Silence unused result warning */
         }
-        OPENSSL_free(der);
+        _OPENSSL_free(der);
 
         SCT_LIST_free(scts);
     }

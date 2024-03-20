@@ -55,7 +55,7 @@ unsigned long X509_issuer_and_serial_hash(X509 *a)
            ((unsigned long)md[2] << 16L) | ((unsigned long)md[3] << 24L)
         ) & 0xffffffffL;
  err:
-    OPENSSL_free(f);
+    _OPENSSL_free(f);
     EVP_MD_CTX_free(ctx);
     return ret;
 }

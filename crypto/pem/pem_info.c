@@ -206,11 +206,11 @@ STACK_OF(X509_INFO) *PEM_X509_INFO_read_bio(BIO *bp, STACK_OF(X509_INFO) *sk,
         } else {
             /* unknown */
         }
-        OPENSSL_free(name);
+        _OPENSSL_free(name);
         name = NULL;
-        OPENSSL_free(header);
+        _OPENSSL_free(header);
         header = NULL;
-        OPENSSL_free(data);
+        _OPENSSL_free(data);
         data = NULL;
     }
 
@@ -237,9 +237,9 @@ STACK_OF(X509_INFO) *PEM_X509_INFO_read_bio(BIO *bp, STACK_OF(X509_INFO) *sk,
         ret = NULL;
     }
 
-    OPENSSL_free(name);
-    OPENSSL_free(header);
-    OPENSSL_free(data);
+    _OPENSSL_free(name);
+    _OPENSSL_free(header);
+    _OPENSSL_free(data);
     return ret;
 }
 

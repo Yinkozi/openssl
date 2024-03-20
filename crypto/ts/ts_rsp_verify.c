@@ -465,7 +465,7 @@ static int int_ts_RESP_verify_token(TS_VERIFY_CTX *ctx,
  err:
     X509_free(signer);
     X509_ALGOR_free(md_alg);
-    OPENSSL_free(imprint);
+    _OPENSSL_free(imprint);
     return ret;
 }
 
@@ -514,7 +514,7 @@ static int ts_check_status_info(TS_RESP *response)
                        ", status text: ", embedded_status_text ?
                        embedded_status_text : "unspecified",
                        ", failure codes: ", failure_text);
-    OPENSSL_free(embedded_status_text);
+    _OPENSSL_free(embedded_status_text);
 
     return 0;
 }
@@ -613,7 +613,7 @@ static int ts_compute_imprint(BIO *data, TS_TST_INFO *tst_info,
     EVP_MD_CTX_free(md_ctx);
     X509_ALGOR_free(*md_alg);
     *md_alg = NULL;
-    OPENSSL_free(*imprint);
+    _OPENSSL_free(*imprint);
     *imprint_len = 0;
     *imprint = 0;
     return 0;

@@ -296,9 +296,9 @@ void EVP_PKEY_asn1_copy(EVP_PKEY_ASN1_METHOD *dst,
 void EVP_PKEY_asn1_free(EVP_PKEY_ASN1_METHOD *ameth)
 {
     if (ameth && (ameth->pkey_flags & ASN1_PKEY_DYNAMIC)) {
-        OPENSSL_free(ameth->pem_str);
-        OPENSSL_free(ameth->info);
-        OPENSSL_free(ameth);
+        _OPENSSL_free(ameth->pem_str);
+        _OPENSSL_free(ameth->info);
+        _OPENSSL_free(ameth);
     }
 }
 

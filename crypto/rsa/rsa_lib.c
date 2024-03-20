@@ -60,7 +60,7 @@ RSA *RSA_new_method(ENGINE *engine)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         RSAerr(RSA_F_RSA_NEW_METHOD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -137,8 +137,8 @@ void RSA_free(RSA *r)
     sk_RSA_PRIME_INFO_pop_free(r->prime_infos, rsa_multip_info_free);
     BN_BLINDING_free(r->blinding);
     BN_BLINDING_free(r->mt_blinding);
-    OPENSSL_free(r->bignum_data);
-    OPENSSL_free(r);
+    _OPENSSL_free(r->bignum_data);
+    _OPENSSL_free(r);
 }
 
 int RSA_up_ref(RSA *r)

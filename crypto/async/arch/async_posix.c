@@ -51,7 +51,7 @@ int async_fibre_makecontext(async_fibre *fibre)
 
 void async_fibre_free(async_fibre *fibre)
 {
-    OPENSSL_free(fibre->fibre.uc_stack.ss_sp);
+    _OPENSSL_free(fibre->fibre.uc_stack.ss_sp);
     fibre->fibre.uc_stack.ss_sp = NULL;
 }
 

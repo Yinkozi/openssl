@@ -324,7 +324,7 @@ int ASN1_STRING_set(ASN1_STRING *str, const void *_data, int len_in)
 
 void ASN1_STRING_set0(ASN1_STRING *str, void *data, int len)
 {
-    OPENSSL_free(str->data);
+    _OPENSSL_free(str->data);
     str->data = data;
     str->length = len;
 }
@@ -352,9 +352,9 @@ void asn1_string_embed_free(ASN1_STRING *a, int embed)
     if (a == NULL)
         return;
     if (!(a->flags & ASN1_STRING_FLAG_NDEF))
-        OPENSSL_free(a->data);
+        _OPENSSL_free(a->data);
     if (embed == 0)
-        OPENSSL_free(a);
+        _OPENSSL_free(a);
 }
 
 void ASN1_STRING_free(ASN1_STRING *a)

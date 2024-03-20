@@ -30,7 +30,7 @@ DSA_METHOD *DSA_meth_new(const char *name, int flags)
         if (dsam->name != NULL)
             return dsam;
 
-        OPENSSL_free(dsam);
+        _OPENSSL_free(dsam);
     }
 
     DSAerr(DSA_F_DSA_METH_NEW, ERR_R_MALLOC_FAILURE);
@@ -40,8 +40,8 @@ DSA_METHOD *DSA_meth_new(const char *name, int flags)
 void DSA_meth_free(DSA_METHOD *dsam)
 {
     if (dsam != NULL) {
-        OPENSSL_free(dsam->name);
-        OPENSSL_free(dsam);
+        _OPENSSL_free(dsam->name);
+        _OPENSSL_free(dsam);
     }
 }
 
@@ -56,7 +56,7 @@ DSA_METHOD *DSA_meth_dup(const DSA_METHOD *dsam)
         if (ret->name != NULL)
             return ret;
 
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
     }
 
     DSAerr(DSA_F_DSA_METH_DUP, ERR_R_MALLOC_FAILURE);
@@ -77,7 +77,7 @@ int DSA_meth_set1_name(DSA_METHOD *dsam, const char *name)
         return 0;
     }
 
-    OPENSSL_free(dsam->name);
+    _OPENSSL_free(dsam->name);
     dsam->name = tmpname;
 
     return 1;

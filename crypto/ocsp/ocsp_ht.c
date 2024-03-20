@@ -88,8 +88,8 @@ void OCSP_REQ_CTX_free(OCSP_REQ_CTX *rctx)
     if (!rctx)
         return;
     _BIO_free(rctx->mem);
-    OPENSSL_free(rctx->iobuf);
-    OPENSSL_free(rctx);
+    _OPENSSL_free(rctx->iobuf);
+    _OPENSSL_free(rctx);
 }
 
 BIO *OCSP_REQ_CTX_get0_mem_bio(OCSP_REQ_CTX *rctx)

@@ -25,7 +25,7 @@ COMP_CTX *COMP_CTX_new(COMP_METHOD *meth)
     }
     ret->meth = meth;
     if ((ret->meth->init != NULL) && !ret->meth->init(ret)) {
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         ret = NULL;
     }
     return ret;
@@ -53,7 +53,7 @@ void COMP_CTX_free(COMP_CTX *ctx)
     if (ctx->meth->finish != NULL)
         ctx->meth->finish(ctx);
 
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int COMP_compress_block(COMP_CTX *ctx, unsigned char *out, int olen,

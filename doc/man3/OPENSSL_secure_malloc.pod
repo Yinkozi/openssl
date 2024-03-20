@@ -77,7 +77,7 @@ OPENSSL_secure_free() releases the memory at C<ptr> back to the heap.
 It must be called with a value previously obtained from
 OPENSSL_secure_malloc().
 If CRYPTO_secure_malloc_init() is not called, this is equivalent to
-calling OPENSSL_free().
+calling _OPENSSL_free().
 It exists for consistency with OPENSSL_secure_malloc() , and
 is a macro that expands to CRYPTO_secure_free() and adds the C<__FILE__>
 and C<__LINE__> parameters..

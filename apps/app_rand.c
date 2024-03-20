@@ -65,7 +65,7 @@ void app_RAND_write(void)
         BIO_printf(bio_err, "Cannot write random bytes:\n");
         ERR_print_errors(bio_err);
     }
-    OPENSSL_free(save_rand_file);
+    _OPENSSL_free(save_rand_file);
     save_rand_file =  NULL;
 }
 
@@ -85,7 +85,7 @@ int opt_rand(int opt)
         return loadfiles(opt_arg());
         break;
     case OPT_R_WRITERAND:
-        OPENSSL_free(save_rand_file);
+        _OPENSSL_free(save_rand_file);
         save_rand_file = OPENSSL_strdup(opt_arg());
         break;
     }

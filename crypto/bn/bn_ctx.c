@@ -175,7 +175,7 @@ void BN_CTX_free(BN_CTX *ctx)
 #endif
     BN_STACK_finish(&ctx->stack);
     BN_POOL_finish(&ctx->pool);
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 void BN_CTX_start(BN_CTX *ctx)
@@ -248,7 +248,7 @@ static void BN_STACK_init(BN_STACK *st)
 
 static void BN_STACK_finish(BN_STACK *st)
 {
-    OPENSSL_free(st->indexes);
+    _OPENSSL_free(st->indexes);
     st->indexes = NULL;
 }
 
@@ -267,7 +267,7 @@ static int BN_STACK_push(BN_STACK *st, unsigned int idx)
         }
         if (st->depth)
             memcpy(newitems, st->indexes, sizeof(*newitems) * st->depth);
-        OPENSSL_free(st->indexes);
+        _OPENSSL_free(st->indexes);
         st->indexes = newitems;
         st->size = newsize;
     }
@@ -300,7 +300,7 @@ static void BN_POOL_finish(BN_POOL *p)
             if (bn->d)
                 BN_clear_free(bn);
         p->current = p->head->next;
-        OPENSSL_free(p->head);
+        _OPENSSL_free(p->head);
         p->head = p->current;
     }
 }

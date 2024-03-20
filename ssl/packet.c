@@ -106,7 +106,7 @@ static int wpacket_intern_init_len(WPACKET *pkt, size_t lenbytes)
     pkt->subs->lenbytes = lenbytes;
 
     if (!WPACKET_allocate_bytes(pkt, lenbytes, &lenchars)) {
-        OPENSSL_free(pkt->subs);
+        _OPENSSL_free(pkt->subs);
         pkt->subs = NULL;
         return 0;
     }
@@ -216,7 +216,7 @@ static int wpacket_intern_close(WPACKET *pkt, WPACKET_SUB *sub, int doclose)
 
     if (doclose) {
         pkt->subs = sub->parent;
-        OPENSSL_free(sub);
+        _OPENSSL_free(sub);
     }
 
     return 1;
@@ -262,7 +262,7 @@ int WPACKET_finish(WPACKET *pkt)
 
     ret = wpacket_intern_close(pkt, pkt->subs, 1);
     if (ret) {
-        OPENSSL_free(pkt->subs);
+        _OPENSSL_free(pkt->subs);
         pkt->subs = NULL;
     }
 
@@ -418,7 +418,7 @@ void WPACKET_cleanup(WPACKET *pkt)
 
     for (sub = pkt->subs; sub != NULL; sub = parent) {
         parent = sub->parent;
-        OPENSSL_free(sub);
+        _OPENSSL_free(sub);
     }
     pkt->subs = NULL;
 }

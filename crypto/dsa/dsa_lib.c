@@ -59,7 +59,7 @@ DSA *DSA_new_method(ENGINE *engine)
     ret->lock = CRYPTO_THREAD_lock_new();
     if (ret->lock == NULL) {
         DSAerr(DSA_F_DSA_NEW_METHOD, ERR_R_MALLOC_FAILURE);
-        OPENSSL_free(ret);
+        _OPENSSL_free(ret);
         return NULL;
     }
 
@@ -128,7 +128,7 @@ void DSA_free(DSA *r)
     BN_clear_free(r->g);
     BN_clear_free(r->pub_key);
     BN_clear_free(r->priv_key);
-    OPENSSL_free(r);
+    _OPENSSL_free(r);
 }
 
 int DSA_up_ref(DSA *r)

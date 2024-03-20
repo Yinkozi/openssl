@@ -72,7 +72,7 @@ static int enc_new(BIO *bi)
 
     ctx->cipher = _EVP_CIPHER_CTX_new();
     if (ctx->cipher == NULL) {
-        OPENSSL_free(ctx);
+        _OPENSSL_free(ctx);
         return 0;
     }
     ctx->cont = 1;

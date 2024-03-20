@@ -90,7 +90,7 @@ static int rsa_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
                                strtype, str, penc, penclen))
         return 1;
 
-    OPENSSL_free(penc);
+    _OPENSSL_free(penc);
     ASN1_STRING_free(str);
     return 0;
 }

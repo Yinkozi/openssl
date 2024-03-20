@@ -123,7 +123,7 @@ static int client_setup_sni_before_state(void)
         goto end;
     ret = 1;
 end:
-    OPENSSL_free(hostname);
+    _OPENSSL_free(hostname);
     SSL_free(con);
     SSL_CTX_free(ctx);
     return ret;
@@ -172,7 +172,7 @@ static int client_setup_sni_after_state(void)
         goto end;
     ret = 1;
 end:
-    OPENSSL_free(hostname);
+    _OPENSSL_free(hostname);
     SSL_free(con);
     SSL_CTX_free(ctx);
     return ret;

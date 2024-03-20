@@ -688,7 +688,7 @@ size_t EC_KEY_priv2buf(const EC_KEY *eckey, unsigned char **pbuf)
     }
     len = EC_KEY_priv2oct(eckey, buf, len);
     if (len == 0) {
-        OPENSSL_free(buf);
+        _OPENSSL_free(buf);
         return 0;
     }
     *pbuf = buf;

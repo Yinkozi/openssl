@@ -131,7 +131,7 @@ EVP_ENCODE_CTX *EVP_ENCODE_CTX_new(void)
 
 void EVP_ENCODE_CTX_free(EVP_ENCODE_CTX *ctx)
 {
-    OPENSSL_free(ctx);
+    _OPENSSL_free(ctx);
 }
 
 int EVP_ENCODE_CTX_copy(EVP_ENCODE_CTX *dctx, EVP_ENCODE_CTX *sctx)

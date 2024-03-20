@@ -343,7 +343,7 @@ static int dtls_listen_test(int i)
     SSL_free(ssl);
     SSL_CTX_free(ctx);
     _BIO_free(inbio);
-    OPENSSL_free(peer);
+    _OPENSSL_free(peer);
     return success;
 }
 #endif
