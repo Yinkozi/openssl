@@ -3008,7 +3008,7 @@ int speed_main(int argc, char **argv)
                 pctx = NULL;
             }
             if (kctx == NULL ||      /* keygen ctx is not null */
-                EVP_PKEY_keygen_init(kctx) <= 0/* init keygen ctx */ ) {
+                _EVP_PKEY_keygen_init(kctx) <= 0/* init keygen ctx */ ) {
                 ecdh_checks = 0;
                 BIO_printf(bio_err, "ECDH keygen failure.\n");
                 ERR_print_errors(bio_err);
@@ -3108,7 +3108,7 @@ int speed_main(int argc, char **argv)
 
             if ((ed_pctx = _EVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
                     == NULL
-                || EVP_PKEY_keygen_init(ed_pctx) <= 0
+                || _EVP_PKEY_keygen_init(ed_pctx) <= 0
                 || EVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {
                 st = 0;
                 EVP_PKEY_CTX_free(ed_pctx);

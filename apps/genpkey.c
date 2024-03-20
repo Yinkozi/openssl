@@ -235,7 +235,7 @@ static int init_keygen_file(EVP_PKEY_CTX **pctx, const char *file, ENGINE *e)
     ctx = EVP_PKEY_CTX_new(pkey, e);
     if (ctx == NULL)
         goto err;
-    if (EVP_PKEY_keygen_init(ctx) <= 0)
+    if (_EVP_PKEY_keygen_init(ctx) <= 0)
         goto err;
     EVP_PKEY_free(pkey);
     *pctx = ctx;
@@ -289,7 +289,7 @@ int init_gen_str(EVP_PKEY_CTX **pctx,
         if (EVP_PKEY_paramgen_init(ctx) <= 0)
             goto err;
     } else {
-        if (EVP_PKEY_keygen_init(ctx) <= 0)
+        if (_EVP_PKEY_keygen_init(ctx) <= 0)
             goto err;
     }
 

@@ -4689,7 +4689,7 @@ EVP_PKEY *ssl_generate_pkey(EVP_PKEY *pm)
     pctx = EVP_PKEY_CTX_new(pm, NULL);
     if (pctx == NULL)
         goto err;
-    if (EVP_PKEY_keygen_init(pctx) <= 0)
+    if (_EVP_PKEY_keygen_init(pctx) <= 0)
         goto err;
     if (EVP_PKEY_keygen(pctx, &pkey) <= 0) {
         EVP_PKEY_free(pkey);
@@ -4724,7 +4724,7 @@ EVP_PKEY *ssl_generate_pkey_group(SSL *s, uint16_t id)
                  ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    if (EVP_PKEY_keygen_init(pctx) <= 0) {
+    if (_EVP_PKEY_keygen_init(pctx) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_GENERATE_PKEY_GROUP,
                  ERR_R_EVP_LIB);
         goto err;

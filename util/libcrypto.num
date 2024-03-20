@@ -3430,7 +3430,7 @@ OPENSSL_LH_error                        3380	1_1_0	EXIST::FUNCTION:
 PKCS7_DIGEST_it                         3381	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 PKCS7_DIGEST_it                         3381	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 X509_CINF_new                           3382	1_1_0	EXIST::FUNCTION:
-EVP_PKEY_keygen_init                    3383	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_keygen_init                    3383	1_1_0	EXIST::FUNCTION:
 EVP_aes_192_ocb                         3384	1_1_0	EXIST::FUNCTION:OCB
 EVP_camellia_256_cfb1                   3385	1_1_0	EXIST::FUNCTION:CAMELLIA
 CRYPTO_secure_actual_size               3387	1_1_0	EXIST::FUNCTION:

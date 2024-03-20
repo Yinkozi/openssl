@@ -1949,7 +1949,7 @@ static int keygen_test_init(EVP_TEST *t, const char *alg)
         return 1;
     }
 
-    if (EVP_PKEY_keygen_init(genctx) <= 0) {
+    if (_EVP_PKEY_keygen_init(genctx) <= 0) {
         t->err = "KEYGEN_INIT_ERROR";
         goto err;
     }

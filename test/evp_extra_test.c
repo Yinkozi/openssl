@@ -1298,7 +1298,7 @@ static int test_EVP_SM2(void)
     if (!TEST_ptr(kctx))
         goto done;
 
-    if (!TEST_true(EVP_PKEY_keygen_init(kctx)))
+    if (!TEST_true(_EVP_PKEY_keygen_init(kctx)))
         goto done;
 
     if (!TEST_true(EVP_PKEY_keygen(kctx, &pkey)))

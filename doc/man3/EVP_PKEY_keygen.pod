@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-EVP_PKEY_keygen_init, EVP_PKEY_keygen, EVP_PKEY_paramgen_init,
+_EVP_PKEY_keygen_init, EVP_PKEY_keygen, EVP_PKEY_paramgen_init,
 EVP_PKEY_paramgen, EVP_PKEY_CTX_set_cb, EVP_PKEY_CTX_get_cb,
 EVP_PKEY_CTX_get_keygen_info, EVP_PKEY_CTX_set_app_data,
 EVP_PKEY_CTX_get_app_data,
@@ -14,7 +14,7 @@ EVP_PKEY_param_check
 
  #include <openssl/evp.h>
 
- int EVP_PKEY_keygen_init(EVP_PKEY_CTX *ctx);
+ int _EVP_PKEY_keygen_init(EVP_PKEY_CTX *ctx);
  int EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey);
  int EVP_PKEY_paramgen_init(EVP_PKEY_CTX *ctx);
  int EVP_PKEY_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey);
@@ -35,7 +35,7 @@ EVP_PKEY_param_check
 
 =head1 DESCRIPTION
 
-The EVP_PKEY_keygen_init() function initializes a public key algorithm
+The _EVP_PKEY_keygen_init() function initializes a public key algorithm
 context using key B<pkey> for a key generation operation.
 
 The EVP_PKEY_keygen() function performs a key generation operation, the
@@ -77,7 +77,7 @@ if it's present; otherwise it calls a default one defined in B<EVP_PKEY_ASN1_MET
 
 =head1 NOTES
 
-After the call to EVP_PKEY_keygen_init() or EVP_PKEY_paramgen_init() algorithm
+After the call to _EVP_PKEY_keygen_init() or EVP_PKEY_paramgen_init() algorithm
 specific control operations can be performed to set any appropriate parameters
 for the operation.
 
@@ -101,7 +101,7 @@ in functions which require the use of a public key or parameters.
 
 =head1 RETURN VALUES
 
-EVP_PKEY_keygen_init(), EVP_PKEY_paramgen_init(), EVP_PKEY_keygen() and
+_EVP_PKEY_keygen_init(), EVP_PKEY_paramgen_init(), EVP_PKEY_keygen() and
 EVP_PKEY_paramgen() return 1 for success and 0 or a negative value for failure.
 In particular a return value of -2 indicates the operation is not supported by
 the public key algorithm.
@@ -123,7 +123,7 @@ Generate a 2048 bit RSA key:
  ctx = _EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
  if (!ctx)
      /* Error occurred */
- if (EVP_PKEY_keygen_init(ctx) <= 0)
+ if (_EVP_PKEY_keygen_init(ctx) <= 0)
      /* Error */
  if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, 2048) <= 0)
      /* Error */
@@ -145,7 +145,7 @@ Generate a key from a set of parameters:
  ctx = EVP_PKEY_CTX_new(param, eng);
  if (!ctx)
      /* Error occurred */
- if (EVP_PKEY_keygen_init(ctx) <= 0)
+ if (_EVP_PKEY_keygen_init(ctx) <= 0)
      /* Error */
 
  /* Generate key */

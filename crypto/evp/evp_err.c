@@ -109,7 +109,7 @@ static const ERR_STRING_DATA EVP_str_functs[] = {
      "EVP_PKEY_get_raw_public_key"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_PKEY_KEYGEN, 0), "EVP_PKEY_keygen"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_PKEY_KEYGEN_INIT, 0),
-     "EVP_PKEY_keygen_init"},
+     "_EVP_PKEY_keygen_init"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_PKEY_METH_ADD0, 0), "EVP_PKEY_meth_add0"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_PKEY_METH_NEW, 0), "EVP_PKEY_meth_new"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_PKEY_NEW, 0), "_EVP_PKEY_new"},

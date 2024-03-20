@@ -279,7 +279,7 @@ handle the parameter generation process.
  int (*keygen) (EVP_PKEY_CTX *ctx, EVP_PKEY *pkey);
 
 The keygen_init() and keygen() methods are used to generate the actual key for
-the specified algorithm. They are called by L<EVP_PKEY_keygen_init(3)> and
+the specified algorithm. They are called by L<_EVP_PKEY_keygen_init(3)> and
 L<EVP_PKEY_keygen(3)>.
 
  int (*sign_init) (EVP_PKEY_CTX *ctx);
