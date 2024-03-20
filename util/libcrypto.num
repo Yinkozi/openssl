@@ -2360,7 +2360,7 @@ X509_REVOKED_add_ext                    2330	1_1_0	EXIST::FUNCTION:
 EVP_CipherUpdate                        2331	1_1_0	EXIST::FUNCTION:
 Camellia_cfb8_encrypt                   2332	1_1_0	EXIST::FUNCTION:CAMELLIA
 EVP_aes_256_xts                         2333	1_1_0	EXIST::FUNCTION:
-EVP_DigestSignFinal                     2334	1_1_0	EXIST::FUNCTION:
+_EVP_DigestSignFinal                     2334	1_1_0	EXIST::FUNCTION:
 ASN1_STRING_cmp                         2335	1_1_0	EXIST::FUNCTION:
 EVP_chacha20_poly1305                   2336	1_1_0	EXIST::FUNCTION:CHACHA,POLY1305
 OPENSSL_sk_zero                         2337	1_1_0	EXIST::FUNCTION:

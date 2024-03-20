@@ -1016,12 +1016,12 @@ static int test_EVP_DigestSignInit(void)
         goto out;
 
     /* Determine the size of the signature. */
-    if (!TEST_true(EVP_DigestSignFinal(md_ctx, NULL, &sig_len))
+    if (!TEST_true(_EVP_DigestSignFinal(md_ctx, NULL, &sig_len))
             || !TEST_size_t_eq(sig_len, (size_t)EVP_PKEY_size(pkey)))
         goto out;
 
     if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
-            || !TEST_true(EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
+            || !TEST_true(_EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
         goto out;
 
     /* Ensure that the signature round-trips. */
@@ -1329,7 +1329,7 @@ static int test_EVP_SM2(void)
         goto done;
 
     /* Determine the size of the signature. */
-    if (!TEST_true(EVP_DigestSignFinal(md_ctx, NULL, &sig_len)))
+    if (!TEST_true(_EVP_DigestSignFinal(md_ctx, NULL, &sig_len)))
         goto done;
 
     if (!TEST_size_t_eq(sig_len, (size_t)EVP_PKEY_size(pkey)))
@@ -1338,7 +1338,7 @@ static int test_EVP_SM2(void)
     if (!TEST_ptr(sig = OPENSSL_malloc(sig_len)))
         goto done;
 
-    if (!TEST_true(EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
+    if (!TEST_true(_EVP_DigestSignFinal(md_ctx, sig, &sig_len)))
         goto done;
 
     /* Ensure that the signature round-trips. */
@@ -1925,13 +1925,13 @@ static int test_signatures_with_engine(int tst)
             goto err;
 
         if (!TEST_true(_EVP_DigestSignUpdate(ctx, msg, sizeof(msg)))
-                || !TEST_true(EVP_DigestSignFinal(ctx, NULL, &maclen)))
+                || !TEST_true(_EVP_DigestSignFinal(ctx, NULL, &maclen)))
             goto err;
 
         if (!TEST_ptr(mac = OPENSSL_malloc(maclen)))
             goto err;
 
-        if (!TEST_true(EVP_DigestSignFinal(ctx, mac, &maclen)))
+        if (!TEST_true(_EVP_DigestSignFinal(ctx, mac, &maclen)))
             goto err;
     } else {
         /* We used a bad key. We expect a failure here */

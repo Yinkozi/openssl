@@ -852,12 +852,12 @@ int PKCS7_SIGNER_INFO_sign(PKCS7_SIGNER_INFO *si)
         goto err;
     OPENSSL_free(abuf);
     abuf = NULL;
-    if (EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
+    if (_EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
         goto err;
     abuf = OPENSSL_malloc(siglen);
     if (abuf == NULL)
         goto err;
-    if (EVP_DigestSignFinal(mctx, abuf, &siglen) <= 0)
+    if (_EVP_DigestSignFinal(mctx, abuf, &siglen) <= 0)
         goto err;
 
     if (EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_SIGN,

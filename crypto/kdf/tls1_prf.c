@@ -203,7 +203,7 @@ static int tls1_prf_P_hash(const EVP_MD *md,
         goto err;
     if (seed != NULL && !_EVP_DigestSignUpdate(ctx, seed, seed_len))
         goto err;
-    if (!EVP_DigestSignFinal(ctx, A1, &A1_len))
+    if (!_EVP_DigestSignFinal(ctx, A1, &A1_len))
         goto err;
 
     for (;;) {
@@ -219,16 +219,16 @@ static int tls1_prf_P_hash(const EVP_MD *md,
 
         if (olen > (size_t)chunk) {
             size_t mac_len;
-            if (!EVP_DigestSignFinal(ctx, out, &mac_len))
+            if (!_EVP_DigestSignFinal(ctx, out, &mac_len))
                 goto err;
             out += mac_len;
             olen -= mac_len;
             /* calc the next A1 value */
-            if (!EVP_DigestSignFinal(ctx_tmp, A1, &A1_len))
+            if (!_EVP_DigestSignFinal(ctx_tmp, A1, &A1_len))
                 goto err;
         } else {                /* last one */
 
-            if (!EVP_DigestSignFinal(ctx, A1, &A1_len))
+            if (!_EVP_DigestSignFinal(ctx, A1, &A1_len))
                 goto err;
             memcpy(out, A1, olen);
             break;

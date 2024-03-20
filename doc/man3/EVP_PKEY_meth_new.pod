@@ -397,7 +397,7 @@ L<EVP_PKEY_sign(3)>.
 
 The B<EVP_PKEY_FLAG_SIGCTX_CUSTOM> is used to indicate the signctx() method
 of an B<EVP_PKEY_METHOD> is always called by the EVP framework while doing a
-digest signing operation by calling L<EVP_DigestSignFinal(3)>.
+digest signing operation by calling L<_EVP_DigestSignFinal(3)>.
 
 EVP_PKEY_meth_free() frees an existing B<EVP_PKEY_METHOD> pointed by
 B<pmeth>.

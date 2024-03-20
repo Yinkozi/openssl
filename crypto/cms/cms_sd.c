@@ -699,13 +699,13 @@ int CMS_SignerInfo_sign(CMS_SignerInfo *si)
         goto err;
     if (_EVP_DigestSignUpdate(mctx, abuf, alen) <= 0)
         goto err;
-    if (EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
+    if (_EVP_DigestSignFinal(mctx, NULL, &siglen) <= 0)
         goto err;
     OPENSSL_free(abuf);
     abuf = OPENSSL_malloc(siglen);
     if (abuf == NULL)
         goto err;
-    if (EVP_DigestSignFinal(mctx, abuf, &siglen) <= 0)
+    if (_EVP_DigestSignFinal(mctx, abuf, &siglen) <= 0)
         goto err;
 
     if (EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_SIGN,

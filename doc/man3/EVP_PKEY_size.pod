@@ -56,8 +56,8 @@ buffer size, but may be useful in cases where it's desirable to know
 the upper limit in advance.
 
 It should also be especially noted that EVP_PKEY_size() shouldn't be
-used to get the output size for EVP_DigestSignFinal(), according to
-L<EVP_DigestSignFinal(3)/NOTES>.
+used to get the output size for _EVP_DigestSignFinal(), according to
+L<_EVP_DigestSignFinal(3)/NOTES>.
 
 =head1 SEE ALSO
 

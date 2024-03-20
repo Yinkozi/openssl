@@ -97,7 +97,7 @@ int _EVP_DigestVerifyInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
     return do_sigver_init(ctx, pctx, type, e, pkey, 1);
 }
 
-int EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sigret,
+int _EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sigret,
                         size_t *siglen)
 {
     int sctx = 0, r = 0;
@@ -167,7 +167,7 @@ int EVP_DigestSign(EVP_MD_CTX *ctx, unsigned char *sigret, size_t *siglen,
         return ctx->pctx->pmeth->digestsign(ctx, sigret, siglen, tbs, tbslen);
     if (sigret != NULL && _EVP_DigestSignUpdate(ctx, tbs, tbslen) <= 0)
         return 0;
-    return EVP_DigestSignFinal(ctx, sigret, siglen);
+    return _EVP_DigestSignFinal(ctx, sigret, siglen);
 }
 
 int _EVP_DigestVerifyFinal(EVP_MD_CTX *ctx, const unsigned char *sig,

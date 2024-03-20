@@ -1035,7 +1035,7 @@ static int mac_test_run(EVP_TEST *t)
         t->err = "DIGESTSIGNUPDATE_ERROR";
         goto err;
     }
-    if (!EVP_DigestSignFinal(mctx, NULL, &got_len)) {
+    if (!_EVP_DigestSignFinal(mctx, NULL, &got_len)) {
         t->err = "DIGESTSIGNFINAL_LENGTH_ERROR";
         goto err;
     }
@@ -1043,7 +1043,7 @@ static int mac_test_run(EVP_TEST *t)
         t->err = "TEST_FAILURE";
         goto err;
     }
-    if (!EVP_DigestSignFinal(mctx, got, &got_len)
+    if (!_EVP_DigestSignFinal(mctx, got, &got_len)
             || !memory_err_compare(t, "TEST_MAC_ERR",
                                    expected->output, expected->output_len,
                                    got, got_len)) {
@@ -2166,7 +2166,7 @@ static int digestsign_test_run(EVP_TEST *t)
         goto err;
     }
 
-    if (!EVP_DigestSignFinal(expected->ctx, NULL, &got_len)) {
+    if (!_EVP_DigestSignFinal(expected->ctx, NULL, &got_len)) {
         t->err = "DIGESTSIGNFINAL_LENGTH_ERROR";
         goto err;
     }
@@ -2174,7 +2174,7 @@ static int digestsign_test_run(EVP_TEST *t)
         t->err = "MALLOC_FAILURE";
         goto err;
     }
-    if (!EVP_DigestSignFinal(expected->ctx, got, &got_len)) {
+    if (!_EVP_DigestSignFinal(expected->ctx, got, &got_len)) {
         t->err = "DIGESTSIGNFINAL_ERROR";
         goto err;
     }

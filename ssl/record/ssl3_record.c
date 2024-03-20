@@ -1353,7 +1353,7 @@ int tls1_mac(SSL *ssl, SSL3_RECORD *rec, unsigned char *md, int sending)
         /* TODO(size_t): Convert these calls */
         if (_EVP_DigestSignUpdate(mac_ctx, header, sizeof(header)) <= 0
             || _EVP_DigestSignUpdate(mac_ctx, rec->input, rec->length) <= 0
-            || EVP_DigestSignFinal(mac_ctx, md, &md_size) <= 0) {
+            || _EVP_DigestSignFinal(mac_ctx, md, &md_size) <= 0) {
             EVP_MD_CTX_free(hmac);
             return 0;
         }

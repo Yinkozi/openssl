@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-_EVP_DigestSignInit, _EVP_DigestSignUpdate, EVP_DigestSignFinal,
+_EVP_DigestSignInit, _EVP_DigestSignUpdate, _EVP_DigestSignFinal,
 EVP_DigestSign - EVP signing functions
 
 =head1 SYNOPSIS
@@ -12,7 +12,7 @@ EVP_DigestSign - EVP signing functions
  int _EVP_DigestSignInit(EVP_MD_CTX *ctx, EVP_PKEY_CTX **pctx,
                         const EVP_MD *type, ENGINE *e, EVP_PKEY *pkey);
  int _EVP_DigestSignUpdate(EVP_MD_CTX *ctx, const void *d, size_t cnt);
- int EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sig, size_t *siglen);
+ int _EVP_DigestSignFinal(EVP_MD_CTX *ctx, unsigned char *sig, size_t *siglen);
 
  int EVP_DigestSign(EVP_MD_CTX *ctx, unsigned char *sigret,
                     size_t *siglen, const unsigned char *tbs,
@@ -89,7 +89,7 @@ signature context B<ctx>. This function can be called several times on the
 same B<ctx> to include additional data. This function is currently implemented
 using a macro.
 
-EVP_DigestSignFinal() signs the data in B<ctx> and places the signature in B<sig>.
+_EVP_DigestSignFinal() signs the data in B<ctx> and places the signature in B<sig>.
 If B<sig> is B<NULL> then the maximum size of the output buffer is written to
 the B<siglen> parameter. If B<sig> is not B<NULL> then before the call the
 B<siglen> parameter should contain the length of the B<sig> buffer. If the
@@ -98,11 +98,11 @@ written to B<siglen>.
 
 EVP_DigestSign() signs B<tbslen> bytes of data at B<tbs> and places the
 signature in B<sig> and its length in B<siglen> in a similar way to
-EVP_DigestSignFinal().
+_EVP_DigestSignFinal().
 
 =head1 RETURN VALUES
 
-_EVP_DigestSignInit(), _EVP_DigestSignUpdate(), EVP_DigestSignFinal() and
+_EVP_DigestSignInit(), _EVP_DigestSignUpdate(), _EVP_DigestSignFinal() and
 EVP_DigestSign() return 1 for success and 0 for failure.
 
 The error codes can be obtained from L<ERR_get_error(3)>.
@@ -115,7 +115,7 @@ transparent to the algorithm used and much more flexible.
 
 EVP_DigestSign() is a one shot operation which signs a single block of data
 in one function. For algorithms that support streaming it is equivalent to
-calling _EVP_DigestSignUpdate() and EVP_DigestSignFinal(). For algorithms which
+calling _EVP_DigestSignUpdate() and _EVP_DigestSignFinal(). For algorithms which
 do not support streaming (e.g. PureEdDSA) it is the only way to sign data.
 
 In previous versions of OpenSSL there was a link between message digest types
@@ -127,9 +127,9 @@ For some key types and parameters the random number generator must be seeded.
 If the automatic seeding or reseeding of the OpenSSL CSPRNG fails due to
 external circumstances (see L<RAND(7)>), the operation will fail.
 
-The call to EVP_DigestSignFinal() internally finalizes a copy of the digest
+The call to _EVP_DigestSignFinal() internally finalizes a copy of the digest
 context. This means that calls to _EVP_DigestSignUpdate() and
-EVP_DigestSignFinal() can be called later to digest and sign additional data.
+_EVP_DigestSignFinal() can be called later to digest and sign additional data.
 
 Since only a copy of the digest context is ever finalized, the context must
 be cleaned up after use by calling EVP_MD_CTX_free() or a memory leak
@@ -151,7 +151,7 @@ L<RAND(7)>
 
 =head1 HISTORY
 
-_EVP_DigestSignInit(), _EVP_DigestSignUpdate() and EVP_DigestSignFinal()
+_EVP_DigestSignInit(), _EVP_DigestSignUpdate() and _EVP_DigestSignFinal()
 were added in OpenSSL 1.0.0.
 
 =head1 COPYRIGHT

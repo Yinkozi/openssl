@@ -298,7 +298,7 @@ int tls_construct_cert_verify(SSL *s, WPACKET *pkt)
             || !EVP_MD_CTX_ctrl(mctx, EVP_CTRL_SSL3_MASTER_SECRET,
                                 (int)s->session->master_key_length,
                                 s->session->master_key)
-            || EVP_DigestSignFinal(mctx, sig, &siglen) <= 0) {
+            || _EVP_DigestSignFinal(mctx, sig, &siglen) <= 0) {
 
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CERT_VERIFY,
                      ERR_R_EVP_LIB);

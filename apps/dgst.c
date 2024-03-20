@@ -542,7 +542,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
             sigbuf = app_malloc(len, "Signature buffer");
             buf = sigbuf;
         }
-        if (!EVP_DigestSignFinal(ctx, buf, &len)) {
+        if (!_EVP_DigestSignFinal(ctx, buf, &len)) {
             BIO_printf(bio_err, "Error Signing Data\n");
             ERR_print_errors(bio_err);
             goto end;
