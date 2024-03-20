@@ -199,7 +199,7 @@ int genpkey_main(int argc, char **argv)
     }
 
  end:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(ctx);
     BIO_free_all(out);
     _BIO_free(in);
@@ -237,7 +237,7 @@ static int init_keygen_file(EVP_PKEY_CTX **pctx, const char *file, ENGINE *e)
         goto err;
     if (_EVP_PKEY_keygen_init(ctx) <= 0)
         goto err;
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     *pctx = ctx;
     return 1;
 
@@ -245,7 +245,7 @@ static int init_keygen_file(EVP_PKEY_CTX **pctx, const char *file, ENGINE *e)
     BIO_puts(bio_err, "Error initializing context\n");
     ERR_print_errors(bio_err);
     EVP_PKEY_CTX_free(ctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return 0;
 
 }

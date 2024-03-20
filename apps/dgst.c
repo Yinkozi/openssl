@@ -422,7 +422,7 @@ int dgst_main(int argc, char **argv)
     _BIO_free(in);
     _OPENSSL_free(passin);
     BIO_free_all(out);
-    EVP_PKEY_free(sigkey);
+    _EVP_PKEY_free(sigkey);
     sk_OPENSSL_STRING_free(sigopts);
     sk_OPENSSL_STRING_free(macopts);
     _OPENSSL_free(sigbuf);

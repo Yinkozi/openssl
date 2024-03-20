@@ -39,6 +39,6 @@ int RSA_print(BIO *bp, const RSA *x, int off)
     ret = EVP_PKEY_set1_RSA(pk, (RSA *)x);
     if (ret)
         ret = EVP_PKEY_print_private(bp, pk, off, NULL);
-    EVP_PKEY_free(pk);
+    _EVP_PKEY_free(pk);
     return ret;
 }

@@ -257,12 +257,12 @@ int tls1_change_cipher_state(SSL *s, int which)
                                                (int)*mac_secret_size);
         if (mac_key == NULL
             || _EVP_DigestSignInit(mac_ctx, NULL, m, NULL, mac_key) <= 0) {
-            EVP_PKEY_free(mac_key);
+            _EVP_PKEY_free(mac_key);
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS1_CHANGE_CIPHER_STATE,
                      ERR_R_INTERNAL_ERROR);
             goto err;
         }
-        EVP_PKEY_free(mac_key);
+        _EVP_PKEY_free(mac_key);
     }
 #ifdef SSL_DEBUG
     printf("which = %04X\nmac key=", which);

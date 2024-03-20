@@ -3002,7 +3002,7 @@ int speed_main(int argc, char **argv)
                 /* Create the context for the key generation */
                 kctx = EVP_PKEY_CTX_new(params, NULL);
 
-                EVP_PKEY_free(params);
+                _EVP_PKEY_free(params);
                 params = NULL;
                 EVP_PKEY_CTX_free(pctx);
                 pctx = NULL;
@@ -3062,8 +3062,8 @@ int speed_main(int argc, char **argv)
             loopargs[i].ecdh_ctx[testnum] = ctx;
             loopargs[i].outlen[testnum] = outlen;
 
-            EVP_PKEY_free(key_A);
-            EVP_PKEY_free(key_B);
+            _EVP_PKEY_free(key_A);
+            _EVP_PKEY_free(key_B);
             EVP_PKEY_CTX_free(kctx);
             kctx = NULL;
             EVP_PKEY_CTX_free(test_ctx);
@@ -3119,10 +3119,10 @@ int speed_main(int argc, char **argv)
             if (!_EVP_DigestSignInit(loopargs[i].eddsa_ctx[testnum], NULL, NULL,
                                     NULL, ed_pkey)) {
                 st = 0;
-                EVP_PKEY_free(ed_pkey);
+                _EVP_PKEY_free(ed_pkey);
                 break;
             }
-            EVP_PKEY_free(ed_pkey);
+            _EVP_PKEY_free(ed_pkey);
         }
         if (st == 0) {
             BIO_printf(bio_err, "EdDSA failure.\n");

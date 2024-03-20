@@ -187,7 +187,7 @@ int ec_main(int argc, char **argv)
             pkey = load_key(infile, informat, 1, passin, e, "Private Key");
         if (pkey != NULL) {
             eckey = EVP_PKEY_get1_EC_KEY(pkey);
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
         }
     } else {
         if (pubin)

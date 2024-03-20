@@ -355,8 +355,8 @@ void EVP_PKEY_CTX_free(EVP_PKEY_CTX *ctx)
         return;
     if (ctx->pmeth && ctx->pmeth->cleanup)
         ctx->pmeth->cleanup(ctx);
-    EVP_PKEY_free(ctx->pkey);
-    EVP_PKEY_free(ctx->peerkey);
+    _EVP_PKEY_free(ctx->pkey);
+    _EVP_PKEY_free(ctx->peerkey);
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_finish(ctx->engine);
 #endif

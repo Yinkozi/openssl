@@ -834,7 +834,7 @@ int x509_main(int argc, char **argv)
                 BIO_printf(bio_err, "Generating certificate request\n");
 
                 rq = X509_to_X509_REQ(x, pk, digest);
-                EVP_PKEY_free(pk);
+                _EVP_PKEY_free(pk);
                 if (rq == NULL) {
                     ERR_print_errors(bio_err);
                     goto end;
@@ -896,9 +896,9 @@ int x509_main(int argc, char **argv)
     X509_REQ_free(req);
     X509_free(x);
     X509_free(xca);
-    EVP_PKEY_free(Upkey);
-    EVP_PKEY_free(CApkey);
-    EVP_PKEY_free(fkey);
+    _EVP_PKEY_free(Upkey);
+    _EVP_PKEY_free(CApkey);
+    _EVP_PKEY_free(fkey);
     sk_OPENSSL_STRING_free(sigopts);
     X509_REQ_free(rq);
     ASN1_INTEGER_free(sno);

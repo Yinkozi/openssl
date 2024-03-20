@@ -2590,7 +2590,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
             goto err;
         }
 
-        EVP_PKEY_free(pkdh);
+        _EVP_PKEY_free(pkdh);
         pkdh = NULL;
 
         DH_get0_pqg(dh, &r[0], NULL, &r[1]);
@@ -2838,7 +2838,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
     return 1;
  err:
 #ifndef OPENSSL_NO_DH
-    EVP_PKEY_free(pkdh);
+    _EVP_PKEY_free(pkdh);
 #endif
 #ifndef OPENSSL_NO_EC
     _OPENSSL_free(encodedPoint);
@@ -3221,10 +3221,10 @@ static int tls_process_cke_dhe(SSL *s, PACKET *pkt)
     }
 
     ret = 1;
-    EVP_PKEY_free(s->s3->tmp.pkey);
+    _EVP_PKEY_free(s->s3->tmp.pkey);
     s->s3->tmp.pkey = NULL;
  err:
-    EVP_PKEY_free(ckey);
+    _EVP_PKEY_free(ckey);
     return ret;
 #else
     /* Should never happen */
@@ -3287,10 +3287,10 @@ static int tls_process_cke_ecdhe(SSL *s, PACKET *pkt)
     }
 
     ret = 1;
-    EVP_PKEY_free(s->s3->tmp.pkey);
+    _EVP_PKEY_free(s->s3->tmp.pkey);
     s->s3->tmp.pkey = NULL;
  err:
-    EVP_PKEY_free(ckey);
+    _EVP_PKEY_free(ckey);
 
     return ret;
 #else

@@ -209,7 +209,7 @@ void ssl_cert_clear_certs(CERT *c)
         CERT_PKEY *cpk = c->pkeys + i;
         X509_free(cpk->x509);
         cpk->x509 = NULL;
-        EVP_PKEY_free(cpk->privatekey);
+        _EVP_PKEY_free(cpk->privatekey);
         cpk->privatekey = NULL;
         sk_X509_pop_free(cpk->chain, X509_free);
         cpk->chain = NULL;
@@ -232,7 +232,7 @@ void ssl_cert_free(CERT *c)
     REF_ASSERT_ISNT(i < 0);
 
 #ifndef OPENSSL_NO_DH
-    EVP_PKEY_free(c->dh_tmp);
+    _EVP_PKEY_free(c->dh_tmp);
 #endif
 
     ssl_cert_clear_certs(c);

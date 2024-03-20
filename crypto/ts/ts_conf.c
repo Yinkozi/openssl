@@ -250,7 +250,7 @@ int TS_CONF_set_signer_key(CONF *conf, const char *section,
 
     ret = 1;
  err:
-    EVP_PKEY_free(key_obj);
+    _EVP_PKEY_free(key_obj);
     return ret;
 }
 

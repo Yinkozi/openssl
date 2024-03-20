@@ -2181,7 +2181,7 @@ static int tls_process_ske_dhe(SSL *s, PACKET *pkt, EVP_PKEY **pkey)
     BN_free(g);
     BN_free(bnpub_key);
     DH_free(dh);
-    EVP_PKEY_free(peer_tmp);
+    _EVP_PKEY_free(peer_tmp);
 
     return 0;
 #else
@@ -2270,7 +2270,7 @@ MSG_PROCESS_RETURN tls_process_key_exchange(SSL *s, PACKET *pkt)
     save_param_start = *pkt;
 
 #if !defined(OPENSSL_NO_EC) || !defined(OPENSSL_NO_DH)
-    EVP_PKEY_free(s->s3->peer_tmp);
+    _EVP_PKEY_free(s->s3->peer_tmp);
     s->s3->peer_tmp = NULL;
 #endif
 
@@ -3106,11 +3106,11 @@ static int tls_construct_cke_dhe(SSL *s, WPACKET *pkt)
     }
 
     BN_bn2bin(pub_key, keybytes);
-    EVP_PKEY_free(ckey);
+    _EVP_PKEY_free(ckey);
 
     return 1;
  err:
-    EVP_PKEY_free(ckey);
+    _EVP_PKEY_free(ckey);
     return 0;
 #else
     SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CKE_DHE,
@@ -3164,7 +3164,7 @@ static int tls_construct_cke_ecdhe(SSL *s, WPACKET *pkt)
     ret = 1;
  err:
     _OPENSSL_free(encodedPoint);
-    EVP_PKEY_free(ckey);
+    _EVP_PKEY_free(ckey);
     return ret;
 #else
     SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CKE_ECDHE,
@@ -3517,7 +3517,7 @@ WORK_STATE tls_prepare_client_certificate(SSL *s, WORK_STATE wst)
         }
 
         X509_free(x509);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         if (i && !ssl3_check_client_certificate(s))
             i = 0;
         if (i == 0) {

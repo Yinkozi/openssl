@@ -85,7 +85,7 @@ static int si_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 {
     if (operation == ASN1_OP_FREE_POST) {
         PKCS7_SIGNER_INFO *si = (PKCS7_SIGNER_INFO *)*pval;
-        EVP_PKEY_free(si->pkey);
+        _EVP_PKEY_free(si->pkey);
     }
     return 1;
 }

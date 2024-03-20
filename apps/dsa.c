@@ -160,7 +160,7 @@ int dsa_main(int argc, char **argv)
 
         if (pkey != NULL) {
             dsa = EVP_PKEY_get1_DSA(pkey);
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
         }
     }
     if (dsa == NULL) {
@@ -221,13 +221,13 @@ int dsa_main(int argc, char **argv)
         if (outformat == FORMAT_PVK) {
             if (pubin) {
                 BIO_printf(bio_err, "PVK form impossible with public key input\n");
-                EVP_PKEY_free(pk);
+                _EVP_PKEY_free(pk);
                 goto end;
             }
             assert(private);
 # ifdef OPENSSL_NO_RC4
             BIO_printf(bio_err, "PVK format not supported\n");
-            EVP_PKEY_free(pk);
+            _EVP_PKEY_free(pk);
             goto end;
 # else
             i = i2b_PVK_bio(out, pk, pvk_encr, 0, passout);
@@ -238,7 +238,7 @@ int dsa_main(int argc, char **argv)
             assert(private);
             i = i2b_PrivateKey_bio(out, pk);
         }
-        EVP_PKEY_free(pk);
+        _EVP_PKEY_free(pk);
 #endif
     } else {
         BIO_printf(bio_err, "bad output format specified for outfile\n");

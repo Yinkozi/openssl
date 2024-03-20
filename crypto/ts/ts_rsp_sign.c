@@ -143,7 +143,7 @@ void TS_RESP_CTX_free(TS_RESP_CTX *ctx)
         return;
 
     X509_free(ctx->signer_cert);
-    EVP_PKEY_free(ctx->signer_key);
+    _EVP_PKEY_free(ctx->signer_key);
     sk_X509_pop_free(ctx->certs, X509_free);
     sk_ASN1_OBJECT_pop_free(ctx->policies, ASN1_OBJECT_free);
     ASN1_OBJECT_free(ctx->default_policy);
@@ -169,7 +169,7 @@ int TS_RESP_CTX_set_signer_cert(TS_RESP_CTX *ctx, X509 *signer)
 
 int TS_RESP_CTX_set_signer_key(TS_RESP_CTX *ctx, EVP_PKEY *key)
 {
-    EVP_PKEY_free(ctx->signer_key);
+    _EVP_PKEY_free(ctx->signer_key);
     ctx->signer_key = key;
     EVP_PKEY_up_ref(ctx->signer_key);
 

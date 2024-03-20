@@ -250,7 +250,7 @@ It's called by L<X509_signature_print(3)>.
  void (*pkey_free) (EVP_PKEY *pkey);
 
 The pkey_free() method helps freeing the internals of B<pkey>.
-It's called by L<EVP_PKEY_free(3)>, L<EVP_PKEY_set_type(3)>,
+It's called by L<_EVP_PKEY_free(3)>, L<EVP_PKEY_set_type(3)>,
 L<EVP_PKEY_set_type_str(3)>, and L<EVP_PKEY_assign(3)>.
 
  int (*pkey_ctrl) (EVP_PKEY *pkey, int op, long arg1, void *arg2);

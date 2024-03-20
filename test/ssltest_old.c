@@ -794,7 +794,7 @@ static void print_details(SSL *c_ssl, const char *prefix)
     if (SSL_get_peer_tmp_key(c_ssl, &pkey)) {
         BIO_puts(bio_stdout, ", temp key: ");
         print_key_details(bio_stdout, pkey);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
     }
     if (SSL_get_peer_signature_nid(c_ssl, &mdnid))
         BIO_printf(bio_stdout, ", digest=%s", OBJ_nid2sn(mdnid));

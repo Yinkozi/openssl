@@ -1055,7 +1055,7 @@ static int mac_test_run(EVP_TEST *t)
     EVP_MD_CTX_free(mctx);
     _OPENSSL_free(got);
     EVP_PKEY_CTX_free(genctx);
-    EVP_PKEY_free(key);
+    _EVP_PKEY_free(key);
     return 1;
 }
 
@@ -1114,12 +1114,12 @@ static int pkey_test_init(EVP_TEST *t, const char *name,
     }
 
     if (!TEST_ptr(kdata = OPENSSL_zalloc(sizeof(*kdata)))) {
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         return 0;
     }
     kdata->keyop = keyop;
     if (!TEST_ptr(kdata->ctx = EVP_PKEY_CTX_new(pkey, NULL))) {
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         _OPENSSL_free(kdata);
         return 0;
     }
@@ -2016,13 +2016,13 @@ static int keygen_test_run(EVP_TEST *t)
         key->next = private_keys;
         private_keys = key;
     } else {
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
     }
 
     return 1;
 
 err:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return 0;
 }
 
@@ -2469,7 +2469,7 @@ static void free_key_list(KEY_LIST *lst)
     while (lst != NULL) {
         KEY_LIST *next = lst->next;
 
-        EVP_PKEY_free(lst->key);
+        _EVP_PKEY_free(lst->key);
         _OPENSSL_free(lst->name);
         _OPENSSL_free(lst);
         lst = next;
@@ -2540,7 +2540,7 @@ top:
     if (strcmp(pp->key, "PrivateKey") == 0) {
         pkey = _PEM_read_bio_PrivateKey(t->s.key, NULL, 0, NULL);
         if (pkey == NULL && !key_unsupported()) {
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
             TEST_info("Can't read private key %s", pp->value);
             TEST_openssl_errors();
             return 0;
@@ -2549,7 +2549,7 @@ top:
     } else if (strcmp(pp->key, "PublicKey") == 0) {
         pkey = _PEM_read_bio_PUBKEY(t->s.key, NULL, 0, NULL);
         if (pkey == NULL && !key_unsupported()) {
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
             TEST_info("Can't read public key %s", pp->value);
             TEST_openssl_errors();
             return 0;
@@ -2614,7 +2614,7 @@ top:
         /* Hack to detect SM2 keys */
         if(pkey != NULL && strstr(key->name, "SM2") != NULL) {
 #ifdef OPENSSL_NO_SM2
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
             pkey = NULL;
 #else
             EVP_PKEY_set_alias_type(pkey, EVP_PKEY_SM2);

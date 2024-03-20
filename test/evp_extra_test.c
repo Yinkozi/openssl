@@ -948,7 +948,7 @@ static EVP_PKEY *load_example_rsa_key(void)
     pkey = NULL;
 
 end:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     RSA_free(rsa);
 
     return ret;
@@ -992,7 +992,7 @@ static int test_EVP_Enveloped(void)
     ret = 1;
 err:
     _OPENSSL_free(kek);
-    EVP_PKEY_free(keypair);
+    _EVP_PKEY_free(keypair);
     _EVP_CIPHER_CTX_free(ctx);
     return ret;
 }
@@ -1037,7 +1037,7 @@ static int test_EVP_DigestSignInit(void)
  out:
     EVP_MD_CTX_free(md_ctx);
     EVP_MD_CTX_free(md_ctx_verify);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     _OPENSSL_free(sig);
 
     return ret;
@@ -1062,7 +1062,7 @@ static int test_EVP_DigestVerifyInit(void)
 
  out:
     EVP_MD_CTX_free(md_ctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -1085,7 +1085,7 @@ static int test_d2i_AutoPrivateKey(int i)
     ret = 1;
 
  done:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -1173,7 +1173,7 @@ static int test_EVP_PKCS82PKEY(void)
 
  done:
     PKCS8_PRIV_KEY_INFO_free(p8inf);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     return ret;
 }
@@ -1253,7 +1253,7 @@ static int test_EVP_SM2_verify(void)
 
  done:
     _BIO_free(bio);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(pctx);
     EVP_MD_CTX_free(mctx);
     return rc;
@@ -1381,8 +1381,8 @@ done:
     EVP_PKEY_CTX_free(kctx);
     EVP_PKEY_CTX_free(sctx);
     EVP_PKEY_CTX_free(cctx);
-    EVP_PKEY_free(pkey);
-    EVP_PKEY_free(params);
+    _EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(params);
     EVP_MD_CTX_free(md_ctx);
     EVP_MD_CTX_free(md_ctx_verify);
     _OPENSSL_free(sig);
@@ -1472,7 +1472,7 @@ static int test_set_get_raw_keys_int(int tst, int pub)
 
     ret = 1;
  done:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -1579,7 +1579,7 @@ static int test_EVP_PKEY_check(int i)
  done:
     EVP_PKEY_CTX_free(ctx);
     EVP_PKEY_CTX_free(ctx2);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     _BIO_free(pubkey);
     return ret;
 }
@@ -1753,8 +1753,8 @@ static int test_EVP_PKEY_set1_DH(void)
 
     ret = 1;
  err:
-    EVP_PKEY_free(pkey1);
-    EVP_PKEY_free(pkey2);
+    _EVP_PKEY_free(pkey1);
+    _EVP_PKEY_free(pkey2);
     DH_free(x942dh);
     DH_free(pkcs3dh);
 
@@ -1943,7 +1943,7 @@ static int test_signatures_with_engine(int tst)
  err:
     EVP_MD_CTX_free(ctx);
     _OPENSSL_free(mac);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     ENGINE_finish(e);
     ENGINE_free(e);
 

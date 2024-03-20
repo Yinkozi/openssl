@@ -52,7 +52,7 @@ EVP_PKEY *EVP_PKCS82PKEY(const PKCS8_PRIV_KEY_INFO *p8)
     return pkey;
 
  error:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return NULL;
 }
 

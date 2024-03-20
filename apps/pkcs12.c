@@ -486,7 +486,7 @@ int pkcs12_main(int argc, char **argv)
 
  export_end:
 
-        EVP_PKEY_free(key);
+        _EVP_PKEY_free(key);
         sk_X509_pop_free(certs, X509_free);
         X509_free(ucert);
 
@@ -677,7 +677,7 @@ int dump_certs_pkeys_bag(BIO *out, const PKCS12_SAFEBAG *bag,
             return 0;
         print_attribs(out, PKCS8_pkey_get0_attrs(p8c), "Key Attributes");
         ret = PEM_write_bio_PrivateKey(out, pkey, enc, NULL, 0, NULL, pempass);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         break;
 
     case NID_pkcs8ShroudedKeyBag:
@@ -702,7 +702,7 @@ int dump_certs_pkeys_bag(BIO *out, const PKCS12_SAFEBAG *bag,
         print_attribs(out, PKCS8_pkey_get0_attrs(p8), "Key Attributes");
         PKCS8_PRIV_KEY_INFO_free(p8);
         ret = PEM_write_bio_PrivateKey(out, pkey, enc, NULL, 0, NULL, pempass);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         break;
 
     case NID_certBag:

@@ -953,7 +953,7 @@ int cms_main(int argc, char **argv)
                 goto end;
             X509_free(signer);
             signer = NULL;
-            EVP_PKEY_free(key);
+            _EVP_PKEY_free(key);
             key = NULL;
         }
         /* If not streaming or resigning finalize structure */
@@ -1102,7 +1102,7 @@ int cms_main(int argc, char **argv)
     X509_free(cert);
     X509_free(recip);
     X509_free(signer);
-    EVP_PKEY_free(key);
+    _EVP_PKEY_free(key);
     CMS_ContentInfo_free(cms);
     CMS_ContentInfo_free(rcms);
     release_engine(e);

@@ -251,7 +251,7 @@ EVP_PKEY *EVP_PKEY_new_raw_private_key(int type, ENGINE *e,
     return ret;
 
  err:
-    EVP_PKEY_free(ret);
+    _EVP_PKEY_free(ret);
     return NULL;
 }
 
@@ -281,7 +281,7 @@ EVP_PKEY *EVP_PKEY_new_raw_public_key(int type, ENGINE *e,
     return ret;
 
  err:
-    EVP_PKEY_free(ret);
+    _EVP_PKEY_free(ret);
     return NULL;
 }
 
@@ -342,7 +342,7 @@ EVP_PKEY *EVP_PKEY_new_CMAC_key(ENGINE *e, const unsigned char *priv,
     return ret;
 
  err:
-    EVP_PKEY_free(ret);
+    _EVP_PKEY_free(ret);
     CMAC_CTX_free(cmctx);
     return NULL;
 #else
@@ -597,7 +597,7 @@ int EVP_PKEY_base_id(const EVP_PKEY *pkey)
     return EVP_PKEY_type(pkey->type);
 }
 
-void EVP_PKEY_free(EVP_PKEY *x)
+void _EVP_PKEY_free(EVP_PKEY *x)
 {
     int i;
 

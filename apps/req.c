@@ -965,7 +965,7 @@ int req_main(int argc, char **argv)
     _BIO_free(addext_bio);
     _BIO_free(in);
     BIO_free_all(out);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     EVP_PKEY_CTX_free(genctx);
     sk_OPENSSL_STRING_free(pkeyopts);
     sk_OPENSSL_STRING_free(sigopts);
@@ -1536,7 +1536,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
             *pkey_type = EVP_PKEY_id(param);
         } else if (*pkey_type != EVP_PKEY_base_id(param)) {
             BIO_printf(bio_err, "Key Type does not match parameters\n");
-            EVP_PKEY_free(param);
+            _EVP_PKEY_free(param);
             return NULL;
         }
     }
@@ -1561,7 +1561,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
     if (param != NULL) {
         gctx = EVP_PKEY_CTX_new(param, keygen_engine);
         *pkeylen = EVP_PKEY_bits(param);
-        EVP_PKEY_free(param);
+        _EVP_PKEY_free(param);
     } else {
         gctx = _EVP_PKEY_CTX_new_id(*pkey_type, keygen_engine);
     }

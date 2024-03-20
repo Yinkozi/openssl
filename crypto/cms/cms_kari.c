@@ -278,7 +278,7 @@ static int cms_kari_create_ephemeral_key(CMS_KeyAgreeRecipientInfo *kari,
  err:
     if (!rv)
         EVP_PKEY_CTX_free(pctx);
-    EVP_PKEY_free(ekey);
+    _EVP_PKEY_free(ekey);
     return rv;
 }
 

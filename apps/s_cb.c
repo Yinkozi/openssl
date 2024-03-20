@@ -432,7 +432,7 @@ int ssl_print_tmp_key(BIO *out, SSL *s)
         BIO_printf(out, "%s, %d bits\n", OBJ_nid2sn(EVP_PKEY_id(key)),
                    EVP_PKEY_bits(key));
     }
-    EVP_PKEY_free(key);
+    _EVP_PKEY_free(key);
     return 1;
 }
 
@@ -985,7 +985,7 @@ void ssl_excert_free(SSL_EXCERT *exc)
         return;
     while (exc) {
         X509_free(exc->cert);
-        EVP_PKEY_free(exc->key);
+        _EVP_PKEY_free(exc->key);
         sk_X509_pop_free(exc->chain, X509_free);
         curr = exc;
         exc = exc->next;

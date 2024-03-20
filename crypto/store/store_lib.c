@@ -456,10 +456,10 @@ void OSSL_STORE_INFO_free(OSSL_STORE_INFO *info)
             _OPENSSL_free(info->_.name.desc);
             break;
         case OSSL_STORE_INFO_PARAMS:
-            EVP_PKEY_free(info->_.params);
+            _EVP_PKEY_free(info->_.params);
             break;
         case OSSL_STORE_INFO_PKEY:
-            EVP_PKEY_free(info->_.pkey);
+            _EVP_PKEY_free(info->_.pkey);
             break;
         case OSSL_STORE_INFO_CERT:
             X509_free(info->_.x509);

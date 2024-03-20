@@ -44,7 +44,7 @@ EVP_PKEY *_PEM_read_bio_PrivateKey(BIO *bp, EVP_PKEY **x, pem_password_cb *cb,
             goto p8err;
         ret = EVP_PKCS82PKEY(p8inf);
         if (x) {
-            EVP_PKEY_free((EVP_PKEY *)*x);
+            _EVP_PKEY_free((EVP_PKEY *)*x);
             *x = ret;
         }
         PKCS8_PRIV_KEY_INFO_free(p8inf);
@@ -72,7 +72,7 @@ EVP_PKEY *_PEM_read_bio_PrivateKey(BIO *bp, EVP_PKEY **x, pem_password_cb *cb,
             goto p8err;
         ret = EVP_PKCS82PKEY(p8inf);
         if (x) {
-            EVP_PKEY_free((EVP_PKEY *)*x);
+            _EVP_PKEY_free((EVP_PKEY *)*x);
             *x = ret;
         }
         PKCS8_PRIV_KEY_INFO_free(p8inf);
@@ -140,12 +140,12 @@ EVP_PKEY *PEM_read_bio_Parameters(BIO *bp, EVP_PKEY **x)
         if (!EVP_PKEY_set_type_str(ret, nm, slen)
             || !ret->ameth->param_decode
             || !ret->ameth->param_decode(ret, &p, len)) {
-            EVP_PKEY_free(ret);
+            _EVP_PKEY_free(ret);
             ret = NULL;
             goto err;
         }
         if (x) {
-            EVP_PKEY_free((EVP_PKEY *)*x);
+            _EVP_PKEY_free((EVP_PKEY *)*x);
             *x = ret;
         }
     }

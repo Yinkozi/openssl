@@ -1707,7 +1707,7 @@ static HANDSHAKE_RESULT *do_handshake_internal(
 
     if (SSL_get_peer_tmp_key(client.ssl, &tmp_key)) {
         ret->tmp_key_type = pkey_type(tmp_key);
-        EVP_PKEY_free(tmp_key);
+        _EVP_PKEY_free(tmp_key);
     }
 
     SSL_get_peer_signature_nid(client.ssl, &ret->server_sign_hash);

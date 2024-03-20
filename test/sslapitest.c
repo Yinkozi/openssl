@@ -6343,7 +6343,7 @@ static int cert_cb(SSL *s, void *arg)
     _OPENSSL_free(ecdsakey);
     _OPENSSL_free(rootfile);
     _BIO_free(in);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     X509_free(x509);
     X509_free(rootx);
     sk_X509_pop_free(chain, X509_free);

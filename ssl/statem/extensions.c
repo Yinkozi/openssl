@@ -1648,7 +1648,7 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
  err:
     OPENSSL_cleanse(binderkey, sizeof(binderkey));
     OPENSSL_cleanse(finishedkey, sizeof(finishedkey));
-    EVP_PKEY_free(mackey);
+    _EVP_PKEY_free(mackey);
     EVP_MD_CTX_free(mctx);
 
     return ret;

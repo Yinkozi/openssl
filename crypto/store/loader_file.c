@@ -270,7 +270,7 @@ static OSSL_STORE_INFO *try_decode_PKCS12(const char *pem_name,
                     OSSL_STORE_INFO_free(osi_cert);
                     OSSL_STORE_INFO_free(osi_pkey);
                     sk_OSSL_STORE_INFO_pop_free(ctx, OSSL_STORE_INFO_free);
-                    EVP_PKEY_free(pkey);
+                    _EVP_PKEY_free(pkey);
                     X509_free(cert);
                     sk_X509_pop_free(chain, X509_free);
                     ctx = NULL;
@@ -456,7 +456,7 @@ static OSSL_STORE_INFO *try_decode_PrivateKey(const char *pem_name,
                                               &tmp_blob, len);
                     if (tmp_pkey != NULL) {
                         if (pkey != NULL)
-                            EVP_PKEY_free(tmp_pkey);
+                            _EVP_PKEY_free(tmp_pkey);
                         else
                             pkey = tmp_pkey;
                         (*matchcount)++;
@@ -478,7 +478,7 @@ static OSSL_STORE_INFO *try_decode_PrivateKey(const char *pem_name,
             tmp_pkey = d2i_PrivateKey(ameth->pkey_id, NULL, &tmp_blob, len);
             if (tmp_pkey != NULL) {
                 if (pkey != NULL)
-                    EVP_PKEY_free(tmp_pkey);
+                    _EVP_PKEY_free(tmp_pkey);
                 else
                     pkey = tmp_pkey;
                 (*matchcount)++;
@@ -486,7 +486,7 @@ static OSSL_STORE_INFO *try_decode_PrivateKey(const char *pem_name,
         }
 
         if (*matchcount > 1) {
-            EVP_PKEY_free(pkey);
+            _EVP_PKEY_free(pkey);
             pkey = NULL;
         }
     }
@@ -496,7 +496,7 @@ static OSSL_STORE_INFO *try_decode_PrivateKey(const char *pem_name,
 
     store_info = OSSL_STORE_INFO_new_PKEY(pkey);
     if (store_info == NULL)
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
 
     return store_info;
 }
@@ -596,7 +596,7 @@ static OSSL_STORE_INFO *try_decode_params(const char *pem_name,
                 && ameth->param_decode != NULL
                 && ameth->param_decode(tmp_pkey, &tmp_blob, len)) {
                 if (pkey != NULL)
-                    EVP_PKEY_free(tmp_pkey);
+                    _EVP_PKEY_free(tmp_pkey);
                 else
                     pkey = tmp_pkey;
                 tmp_pkey = NULL;
@@ -604,7 +604,7 @@ static OSSL_STORE_INFO *try_decode_params(const char *pem_name,
             }
         }
 
-        EVP_PKEY_free(tmp_pkey);
+        _EVP_PKEY_free(tmp_pkey);
         if (*matchcount == 1) {
             ok = 1;
         }
@@ -613,7 +613,7 @@ static OSSL_STORE_INFO *try_decode_params(const char *pem_name,
     if (ok)
         store_info = OSSL_STORE_INFO_new_PARAMS(pkey);
     if (store_info == NULL)
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
 
     return store_info;
 }

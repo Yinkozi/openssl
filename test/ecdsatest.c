@@ -307,8 +307,8 @@ static int test_builtin(int n)
 
     ret = 1;
  err:
-    EVP_PKEY_free(pkey);
-    EVP_PKEY_free(pkey_neg);
+    _EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey_neg);
     EVP_MD_CTX_free(mctx);
     _OPENSSL_free(sig);
     return ret;

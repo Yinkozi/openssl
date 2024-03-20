@@ -664,7 +664,7 @@ static int dh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
         rv = 1;
  err:
     ASN1_INTEGER_free(public_key);
-    EVP_PKEY_free(pkpeer);
+    _EVP_PKEY_free(pkpeer);
     DH_free(dhpeer);
     return rv;
 }

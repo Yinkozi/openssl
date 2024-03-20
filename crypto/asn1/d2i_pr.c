@@ -54,7 +54,7 @@ EVP_PKEY *d2i_PrivateKey(int type, EVP_PKEY **a, const unsigned char **pp,
             PKCS8_PRIV_KEY_INFO_free(p8);
             if (tmp == NULL)
                 goto err;
-            EVP_PKEY_free(ret);
+            _EVP_PKEY_free(ret);
             ret = tmp;
             if (EVP_PKEY_type(type) != EVP_PKEY_base_id(ret))
                 goto err;
@@ -69,7 +69,7 @@ EVP_PKEY *d2i_PrivateKey(int type, EVP_PKEY **a, const unsigned char **pp,
     return ret;
  err:
     if (a == NULL || *a != ret)
-        EVP_PKEY_free(ret);
+        _EVP_PKEY_free(ret);
     return NULL;
 }
 

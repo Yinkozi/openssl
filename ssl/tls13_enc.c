@@ -331,7 +331,7 @@ size_t tls13_final_finish_mac(SSL *s, const char *str, size_t slen,
 
     ret = hashlen;
  err:
-    EVP_PKEY_free(key);
+    _EVP_PKEY_free(key);
     EVP_MD_CTX_free(ctx);
     return ret;
 }

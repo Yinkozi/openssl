@@ -60,7 +60,7 @@ int EVP_PKEY_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
 
     ret = ctx->pmeth->paramgen(ctx, *ppkey);
     if (ret <= 0) {
-        EVP_PKEY_free(*ppkey);
+        _EVP_PKEY_free(*ppkey);
         *ppkey = NULL;
     }
     return ret;
@@ -107,7 +107,7 @@ int _EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
 
     ret = ctx->pmeth->keygen(ctx, *ppkey);
     if (ret <= 0) {
-        EVP_PKEY_free(*ppkey);
+        _EVP_PKEY_free(*ppkey);
         *ppkey = NULL;
     }
     return ret;

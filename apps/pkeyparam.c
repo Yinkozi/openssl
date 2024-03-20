@@ -133,7 +133,7 @@ int pkeyparam_main(int argc, char **argv)
     ret = 0;
 
  end:
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     release_engine(e);
     BIO_free_all(out);
     _BIO_free(in);

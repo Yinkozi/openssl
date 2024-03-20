@@ -547,7 +547,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     EVP_PKEY_assign_RSA(pkey, privkey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     bufp = kCertificateDER;
     cert = d2i_X509(NULL, &bufp, sizeof(kCertificateDER));
@@ -568,7 +568,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     EVP_PKEY_assign_EC_KEY(pkey, ecdsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, ECDSACertPEM, sizeof(ECDSACertPEM)) == sizeof(ECDSACertPEM));
@@ -592,7 +592,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     EVP_PKEY_assign_DSA(pkey, dsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, DSACertPEM, sizeof(DSACertPEM)) == sizeof(DSACertPEM));

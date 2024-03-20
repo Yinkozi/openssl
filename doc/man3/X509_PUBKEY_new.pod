@@ -53,7 +53,7 @@ value is an internal pointer which B<MUST NOT> be freed after use.
 
 X509_PUBKEY_get() is similar to X509_PUBKEY_get0() except the reference
 count on the returned key is incremented so it B<MUST> be freed using
-EVP_PKEY_free() after use.
+_EVP_PKEY_free() after use.
 
 d2i_PUBKEY() and i2d_PUBKEY() decode and encode an B<EVP_PKEY> structure
 using B<SubjectPublicKeyInfo> format. They otherwise follow the conventions of

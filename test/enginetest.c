@@ -229,13 +229,13 @@ static EVP_PKEY *get_test_pkey(void)
 
     if (rsa == NULL || pk == NULL || !EVP_PKEY_assign_RSA(pk, rsa)) {
         RSA_free(rsa);
-        EVP_PKEY_free(pk);
+        _EVP_PKEY_free(pk);
         return NULL;
     }
 
     if (!RSA_set0_key(rsa, BN_bin2bn(n, sizeof(n)-1, NULL),
                       BN_bin2bn(e, sizeof(e)-1, NULL), NULL)) {
-        EVP_PKEY_free(pk);
+        _EVP_PKEY_free(pk);
         return NULL;
     }
 
@@ -343,7 +343,7 @@ static int test_redirect(void)
 
  err:
     EVP_PKEY_CTX_free(ctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     ENGINE_free(e);
     _OPENSSL_free(tmp);
     return to_return;

@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     }
     PKCS7_free(p7);
     X509_free(scert);
-    EVP_PKEY_free(skey);
+    _EVP_PKEY_free(skey);
     _BIO_free(in);
     _BIO_free(out);
     _BIO_free(tbio);

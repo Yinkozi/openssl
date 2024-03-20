@@ -197,7 +197,7 @@ static int sign_and_verify(int len)
     ok = 1;
 end:
     EVP_PKEY_CTX_free(ctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     _OPENSSL_free(signature);
     _OPENSSL_free(paddedData);

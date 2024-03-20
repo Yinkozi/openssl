@@ -236,7 +236,7 @@ static int tls1_prf_P_hash(const EVP_MD *md,
     }
     ret = 1;
  err:
-    EVP_PKEY_free(mac_key);
+    _EVP_PKEY_free(mac_key);
     EVP_MD_CTX_free(ctx);
     EVP_MD_CTX_free(ctx_tmp);
     EVP_MD_CTX_free(ctx_init);

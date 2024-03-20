@@ -89,5 +89,5 @@ int setup_tests(void)
 void cleanup_tests(void)
 {
     X509_free(cert);
-    EVP_PKEY_free(privkey);
+    _EVP_PKEY_free(privkey);
 }

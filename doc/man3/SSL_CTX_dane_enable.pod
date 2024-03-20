@@ -115,7 +115,7 @@ NULL).
 In this case the return value is the depth of the top-most element of the
 validated certificate chain.
 As with B<mcert> this is a short-term internal reference, and
-L<EVP_PKEY_up_ref(3)> and L<EVP_PKEY_free(3)> can be used to acquire and
+L<EVP_PKEY_up_ref(3)> and L<_EVP_PKEY_free(3)> can be used to acquire and
 release long-term references respectively.
 
 SSL_get0_dane_tlsa() can be used to retrieve the fields of the TLSA record that
@@ -364,7 +364,7 @@ L<X509_up_ref(3)>,
 L<X509_free(3)>,
 L<EVP_get_digestbyname(3)>,
 L<EVP_PKEY_up_ref(3)>,
-L<EVP_PKEY_free(3)>
+L<_EVP_PKEY_free(3)>
 
 =head1 HISTORY
 

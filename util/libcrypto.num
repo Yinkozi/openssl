@@ -1461,7 +1461,7 @@ ERR_pop_to_mark                         1447	1_1_0	EXIST::FUNCTION:
 CRL_DIST_POINTS_new                     1449	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_get0_asn1                      1450	1_1_0	EXIST::FUNCTION:
 EVP_camellia_192_ctr                    1451	1_1_0	EXIST::FUNCTION:CAMELLIA
-EVP_PKEY_free                           1452	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_free                           1452	1_1_0	EXIST::FUNCTION:
 X509_ATTRIBUTE_count                    1453	1_1_0	EXIST::FUNCTION:
 BIO_new_dgram                           1454	1_1_0	EXIST::FUNCTION:DGRAM
 CMS_RecipientInfo_kari_get0_reks        1455	1_1_0	EXIST::FUNCTION:CMS

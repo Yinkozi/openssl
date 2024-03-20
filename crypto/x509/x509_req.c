@@ -114,7 +114,7 @@ int X509_REQ_check_private_key(X509_REQ *x, EVP_PKEY *k)
         X509err(X509_F_X509_REQ_CHECK_PRIVATE_KEY, X509_R_UNKNOWN_KEY_TYPE);
     }
 
-    EVP_PKEY_free(xk);
+    _EVP_PKEY_free(xk);
     return ok;
 }
 

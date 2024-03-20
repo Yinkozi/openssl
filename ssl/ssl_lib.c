@@ -184,7 +184,7 @@ static void tlsa_free(danetls_record *t)
     if (t == NULL)
         return;
     _OPENSSL_free(t->data);
-    EVP_PKEY_free(t->spki);
+    _EVP_PKEY_free(t->spki);
     _OPENSSL_free(t);
 }
 
@@ -410,7 +410,7 @@ static int dane_tlsa_add(SSL_DANE *dane,
             if (usage == DANETLS_USAGE_DANE_TA)
                 t->spki = pkey;
             else
-                EVP_PKEY_free(pkey);
+                _EVP_PKEY_free(pkey);
             break;
         }
     }

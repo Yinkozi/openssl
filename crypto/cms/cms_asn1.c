@@ -48,7 +48,7 @@ static int cms_si_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 {
     if (operation == ASN1_OP_FREE_POST) {
         CMS_SignerInfo *si = (CMS_SignerInfo *)*pval;
-        EVP_PKEY_free(si->pkey);
+        _EVP_PKEY_free(si->pkey);
         X509_free(si->signer);
         EVP_MD_CTX_free(si->mctx);
         EVP_PKEY_CTX_free(si->pctx);
@@ -134,7 +134,7 @@ static int cms_rek_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 {
     CMS_RecipientEncryptedKey *rek = (CMS_RecipientEncryptedKey *)*pval;
     if (operation == ASN1_OP_FREE_POST) {
-        EVP_PKEY_free(rek->pkey);
+        _EVP_PKEY_free(rek->pkey);
     }
     return 1;
 }
@@ -213,7 +213,7 @@ static int cms_ri_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
         CMS_RecipientInfo *ri = (CMS_RecipientInfo *)*pval;
         if (ri->type == CMS_RECIPINFO_TRANS) {
             CMS_KeyTransRecipientInfo *ktri = ri->d.ktri;
-            EVP_PKEY_free(ktri->pkey);
+            _EVP_PKEY_free(ktri->pkey);
             X509_free(ktri->recip);
             EVP_PKEY_CTX_free(ktri->pctx);
         } else if (ri->type == CMS_RECIPINFO_KEK) {

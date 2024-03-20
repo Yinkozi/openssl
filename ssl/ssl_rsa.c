@@ -115,12 +115,12 @@ int SSL_use_RSAPrivateKey(SSL *ssl, RSA *rsa)
     RSA_up_ref(rsa);
     if (EVP_PKEY_assign_RSA(pkey, rsa) <= 0) {
         RSA_free(rsa);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         return 0;
     }
 
     ret = ssl_set_pkey(ssl->cert, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 #endif
@@ -155,7 +155,7 @@ static int ssl_set_pkey(CERT *c, EVP_PKEY *pkey)
         }
     }
 
-    EVP_PKEY_free(c->pkeys[i].privatekey);
+    _EVP_PKEY_free(c->pkeys[i].privatekey);
     EVP_PKEY_up_ref(pkey);
     c->pkeys[i].privatekey = pkey;
     c->key = &c->pkeys[i];
@@ -265,7 +265,7 @@ int SSL_use_PrivateKey_file(SSL *ssl, const char *file, int type)
         goto end;
     }
     ret = SSL_use_PrivateKey(ssl, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
  end:
     _BIO_free(in);
     return ret;
@@ -285,7 +285,7 @@ int SSL_use_PrivateKey_ASN1(int type, SSL *ssl, const unsigned char *d,
     }
 
     ret = SSL_use_PrivateKey(ssl, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -339,7 +339,7 @@ static int ssl_set_cert(CERT *c, X509 *x)
              * key (when switching to a different cert & key, first this
              * function should be used, then ssl_set_pkey
              */
-            EVP_PKEY_free(c->pkeys[i].privatekey);
+            _EVP_PKEY_free(c->pkeys[i].privatekey);
             c->pkeys[i].privatekey = NULL;
             /* clear error queue */
             ERR_clear_error();
@@ -429,12 +429,12 @@ int SSL_CTX_use_RSAPrivateKey(SSL_CTX *ctx, RSA *rsa)
     RSA_up_ref(rsa);
     if (EVP_PKEY_assign_RSA(pkey, rsa) <= 0) {
         RSA_free(rsa);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         return 0;
     }
 
     ret = ssl_set_pkey(ctx->cert, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -538,7 +538,7 @@ int SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file, int type)
         goto end;
     }
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
  end:
     _BIO_free(in);
     return ret;
@@ -558,7 +558,7 @@ int SSL_CTX_use_PrivateKey_ASN1(int type, SSL_CTX *ctx,
     }
 
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 }
 
@@ -1136,7 +1136,7 @@ static int ssl_set_cert_and_key(SSL *ssl, SSL_CTX *ctx, X509 *x509, EVP_PKEY *pr
     X509_up_ref(x509);
     c->pkeys[i].x509 = x509;
 
-    EVP_PKEY_free(c->pkeys[i].privatekey);
+    _EVP_PKEY_free(c->pkeys[i].privatekey);
     EVP_PKEY_up_ref(privatekey);
     c->pkeys[i].privatekey = privatekey;
 
@@ -1144,7 +1144,7 @@ static int ssl_set_cert_and_key(SSL *ssl, SSL_CTX *ctx, X509 *x509, EVP_PKEY *pr
 
     ret = 1;
  out:
-    EVP_PKEY_free(pubkey);
+    _EVP_PKEY_free(pubkey);
     return ret;
 }
 

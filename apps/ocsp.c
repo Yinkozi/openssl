@@ -806,8 +806,8 @@ redo_accept:
     X509_STORE_free(store);
     X509_VERIFY_PARAM_free(vpm);
     sk_OPENSSL_STRING_free(rsign_sigopts);
-    EVP_PKEY_free(key);
-    EVP_PKEY_free(rkey);
+    _EVP_PKEY_free(key);
+    _EVP_PKEY_free(rkey);
     X509_free(cert);
     sk_X509_pop_free(issuers, X509_free);
     X509_free(rsigner);

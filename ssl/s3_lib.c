@@ -3318,9 +3318,9 @@ void ssl3_free(SSL *s)
     ssl3_cleanup_key_block(s);
 
 #if !defined(OPENSSL_NO_EC) || !defined(OPENSSL_NO_DH)
-    EVP_PKEY_free(s->s3->peer_tmp);
+    _EVP_PKEY_free(s->s3->peer_tmp);
     s->s3->peer_tmp = NULL;
-    EVP_PKEY_free(s->s3->tmp.pkey);
+    _EVP_PKEY_free(s->s3->tmp.pkey);
     s->s3->tmp.pkey = NULL;
 #endif
 
@@ -3352,8 +3352,8 @@ int ssl3_clear(SSL *s)
     _OPENSSL_free(s->s3->tmp.peer_cert_sigalgs);
 
 #if !defined(OPENSSL_NO_EC) || !defined(OPENSSL_NO_DH)
-    EVP_PKEY_free(s->s3->tmp.pkey);
-    EVP_PKEY_free(s->s3->peer_tmp);
+    _EVP_PKEY_free(s->s3->tmp.pkey);
+    _EVP_PKEY_free(s->s3->peer_tmp);
 #endif                          /* !OPENSSL_NO_EC */
 
     ssl3_free_digest_list(s);
@@ -3424,10 +3424,10 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
             if (!ssl_security(s, SSL_SECOP_TMP_DH,
                               EVP_PKEY_security_bits(pkdh), 0, pkdh)) {
                 SSLerr(SSL_F_SSL3_CTRL, SSL_R_DH_KEY_TOO_SMALL);
-                EVP_PKEY_free(pkdh);
+                _EVP_PKEY_free(pkdh);
                 return ret;
             }
-            EVP_PKEY_free(s->cert->dh_tmp);
+            _EVP_PKEY_free(s->cert->dh_tmp);
             s->cert->dh_tmp = pkdh;
             ret = 1;
         }
@@ -3786,10 +3786,10 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
             if (!ssl_ctx_security(ctx, SSL_SECOP_TMP_DH,
                                   EVP_PKEY_security_bits(pkdh), 0, pkdh)) {
                 SSLerr(SSL_F_SSL3_CTX_CTRL, SSL_R_DH_KEY_TOO_SMALL);
-                EVP_PKEY_free(pkdh);
+                _EVP_PKEY_free(pkdh);
                 return 0;
             }
-            EVP_PKEY_free(ctx->cert->dh_tmp);
+            _EVP_PKEY_free(ctx->cert->dh_tmp);
             ctx->cert->dh_tmp = pkdh;
             return 1;
         }
@@ -4692,7 +4692,7 @@ EVP_PKEY *ssl_generate_pkey(EVP_PKEY *pm)
     if (_EVP_PKEY_keygen_init(pctx) <= 0)
         goto err;
     if (_EVP_PKEY_keygen(pctx, &pkey) <= 0) {
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         pkey = NULL;
     }
 
@@ -4738,7 +4738,7 @@ EVP_PKEY *ssl_generate_pkey_group(SSL *s, uint16_t id)
     if (_EVP_PKEY_keygen(pctx, &pkey) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_GENERATE_PKEY_GROUP,
                  ERR_R_EVP_LIB);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         pkey = NULL;
     }
 
@@ -4763,7 +4763,7 @@ EVP_PKEY *ssl_generate_param_group(uint16_t id)
         pkey = _EVP_PKEY_new();
         if (pkey != NULL && EVP_PKEY_set_type(pkey, ginf->nid))
             return pkey;
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         return NULL;
     }
 
@@ -4775,7 +4775,7 @@ EVP_PKEY *ssl_generate_param_group(uint16_t id)
     if (EVP_PKEY_CTX_set_ec_paramgen_curve_nid(pctx, ginf->nid) <= 0)
         goto err;
     if (EVP_PKEY_paramgen(pctx, &pkey) <= 0) {
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         pkey = NULL;
     }
 
@@ -4862,7 +4862,7 @@ EVP_PKEY *ssl_dh_to_pkey(DH *dh)
         return NULL;
     ret = _EVP_PKEY_new();
     if (EVP_PKEY_set1_DH(ret, dh) <= 0) {
-        EVP_PKEY_free(ret);
+        _EVP_PKEY_free(ret);
         return NULL;
     }
     return ret;

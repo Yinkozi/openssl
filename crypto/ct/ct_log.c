@@ -264,7 +264,7 @@ void CTLOG_free(CTLOG *log)
 {
     if (log != NULL) {
         _OPENSSL_free(log->name);
-        EVP_PKEY_free(log->public_key);
+        _EVP_PKEY_free(log->public_key);
         _OPENSSL_free(log);
     }
 }

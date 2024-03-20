@@ -194,7 +194,7 @@ int rsautl_main(int argc, char **argv)
         return 1;
 
     rsa = EVP_PKEY_get1_RSA(pkey);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     if (rsa == NULL) {
         BIO_printf(bio_err, "Error getting RSA key\n");

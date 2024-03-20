@@ -232,7 +232,7 @@ int pkey_main(int argc, char **argv)
  end:
     if (ret != 0)
         ERR_print_errors(bio_err);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     release_engine(e);
     BIO_free_all(out);
     _BIO_free(in);

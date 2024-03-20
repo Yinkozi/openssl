@@ -700,7 +700,7 @@ static int ecdh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
         rv = 1;
  err:
     EC_KEY_free(ecpeer);
-    EVP_PKEY_free(pkpeer);
+    _EVP_PKEY_free(pkpeer);
     return rv;
 }
 

@@ -773,7 +773,7 @@ int tls_parse_ctos_cookie(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                                                .cookie_hmac_key));
     if (hctx == NULL || pkey == NULL) {
         EVP_MD_CTX_free(hctx);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_CTOS_COOKIE,
                  ERR_R_MALLOC_FAILURE);
         return 0;
@@ -785,14 +785,14 @@ int tls_parse_ctos_cookie(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                               rawlen - SHA256_DIGEST_LENGTH) <= 0
             || hmaclen != SHA256_DIGEST_LENGTH) {
         EVP_MD_CTX_free(hctx);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PARSE_CTOS_COOKIE,
                  ERR_R_INTERNAL_ERROR);
         return 0;
     }
 
     EVP_MD_CTX_free(hctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
 
     if (CRYPTO_memcmp(hmac, mdin, SHA256_DIGEST_LENGTH) != 0) {
         SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_F_TLS_PARSE_CTOS_COOKIE,
@@ -1741,7 +1741,7 @@ EXT_RETURN tls_construct_stoc_key_share(SSL *s, WPACKET *pkt,
     if (encoded_pt_len == 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_STOC_KEY_SHARE,
                  ERR_R_EC_LIB);
-        EVP_PKEY_free(skey);
+        _EVP_PKEY_free(skey);
         return EXT_RETURN_FAIL;
     }
 
@@ -1749,7 +1749,7 @@ EXT_RETURN tls_construct_stoc_key_share(SSL *s, WPACKET *pkt,
             || !WPACKET_close(pkt)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_STOC_KEY_SHARE,
                  ERR_R_INTERNAL_ERROR);
-        EVP_PKEY_free(skey);
+        _EVP_PKEY_free(skey);
         _OPENSSL_free(encodedPoint);
         return EXT_RETURN_FAIL;
     }
@@ -1893,7 +1893,7 @@ EXT_RETURN tls_construct_stoc_cookie(SSL *s, WPACKET *pkt, unsigned int context,
 
  err:
     EVP_MD_CTX_free(hctx);
-    EVP_PKEY_free(pkey);
+    _EVP_PKEY_free(pkey);
     return ret;
 #else
     return EXT_RETURN_FAIL;

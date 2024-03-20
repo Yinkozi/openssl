@@ -426,7 +426,7 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
             goto end;
         *pkeysize = EVP_PKEY_size(pkey);
         ctx = EVP_PKEY_CTX_new(pkey, impl);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
     }
 
     if (ctx == NULL)
@@ -487,7 +487,7 @@ static int setup_peer(EVP_PKEY_CTX *ctx, int peerform, const char *file,
 
     ret = EVP_PKEY_derive_set_peer(ctx, peer);
 
-    EVP_PKEY_free(peer);
+    _EVP_PKEY_free(peer);
     if (ret <= 0)
         ERR_print_errors(bio_err);
     return ret;

@@ -2174,8 +2174,8 @@ int s_server_main(int argc, char *argv[])
     X509_free(s_cert);
     sk_X509_CRL_pop_free(crls, X509_CRL_free);
     X509_free(s_dcert);
-    EVP_PKEY_free(s_key);
-    EVP_PKEY_free(s_dkey);
+    _EVP_PKEY_free(s_key);
+    _EVP_PKEY_free(s_dkey);
     sk_X509_pop_free(s_chain, X509_free);
     sk_X509_pop_free(s_dchain, X509_free);
     _OPENSSL_free(pass);
@@ -2189,7 +2189,7 @@ int s_server_main(int argc, char *argv[])
     _OPENSSL_free(tlscstatp.path);
     SSL_CTX_free(ctx2);
     X509_free(s_cert2);
-    EVP_PKEY_free(s_key2);
+    _EVP_PKEY_free(s_key2);
 #ifndef OPENSSL_NO_NEXTPROTONEG
     _OPENSSL_free(next_proto.data);
 #endif

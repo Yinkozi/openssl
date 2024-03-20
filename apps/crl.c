@@ -209,7 +209,7 @@ int crl_main(int argc, char **argv)
             goto end;
         }
         i = X509_CRL_verify(x, pkey);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         if (i < 0)
             goto end;
         if (i == 0)
@@ -234,7 +234,7 @@ int crl_main(int argc, char **argv)
         }
         delta = X509_CRL_diff(x, newcrl, pkey, digest, 0);
         X509_CRL_free(newcrl);
-        EVP_PKEY_free(pkey);
+        _EVP_PKEY_free(pkey);
         if (delta) {
             X509_CRL_free(x);
             x = delta;

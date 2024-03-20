@@ -311,7 +311,7 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
     BN_free(gbn);
     BN_free(pub_key);
     BN_free(priv_key);
-    EVP_PKEY_free(ret);
+    _EVP_PKEY_free(ret);
     BN_CTX_free(ctx);
     return NULL;
 }
@@ -378,7 +378,7 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
     BN_free(iqmp);
     BN_free(d);
     RSA_free(rsa);
-    EVP_PKEY_free(ret);
+    _EVP_PKEY_free(ret);
     return NULL;
 }
 
