@@ -67,7 +67,7 @@ Verify signature using PKCS#1 and SHA256 digest:
      /* Error */
  if (EVP_PKEY_CTX_set_rsa_padding(ctx, RSA_PKCS1_PADDING) <= 0)
      /* Error */
- if (EVP_PKEY_CTX_set_signature_md(ctx, EVP_sha256()) <= 0)
+ if (EVP_PKEY_CTX_set_signature_md(ctx, _EVP_sha256()) <= 0)
      /* Error */
 
  /* Perform operation */

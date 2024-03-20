@@ -128,7 +128,7 @@ TS_RESP_CTX *TS_RESP_CTX_new(void)
         return NULL;
     }
 
-    ctx->signer_md = EVP_sha256();
+    ctx->signer_md = _EVP_sha256();
 
     ctx->serial_cb = def_serial_cb;
     ctx->time_cb = def_time_cb;
@@ -909,7 +909,7 @@ static ESS_CERT_ID_V2 *ess_cert_id_v2_new_init(const EVP_MD *hash_alg,
     if ((cid = ESS_CERT_ID_V2_new()) == NULL)
         goto err;
 
-    if (hash_alg != EVP_sha256()) {
+    if (hash_alg != _EVP_sha256()) {
         alg = X509_ALGOR_new();
         if (alg == NULL)
             goto err;

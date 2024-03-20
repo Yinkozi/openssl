@@ -2708,7 +2708,7 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
      */
     if (!EVP_Digest(s->session->ext.tick, ticklen,
                     s->session->session_id, &sess_len,
-                    EVP_sha256(), NULL)) {
+                    _EVP_sha256(), NULL)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_NEW_SESSION_TICKET,
                  ERR_R_EVP_LIB);
         goto err;

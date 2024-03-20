@@ -5943,7 +5943,7 @@ static int tick_key_cb(SSL *s, unsigned char key_name[16],
     memset(key_name, 0, 16);
     if (!EVP_CipherInit_ex(ctx, EVP_aes_128_cbc(), NULL, tick_aes_key, iv, enc)
             || !HMAC_Init_ex(hctx, tick_hmac_key, sizeof(tick_hmac_key),
-                             EVP_sha256(), NULL))
+                             _EVP_sha256(), NULL))
         return -1;
 
     return tick_key_renew ? 2 : 1;

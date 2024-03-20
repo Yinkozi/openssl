@@ -174,7 +174,7 @@ static const EVP_MD sha256_md = {
     sizeof(EVP_MD *) + sizeof(SHA256_CTX),
 };
 
-const EVP_MD *EVP_sha256(void)
+const EVP_MD *_EVP_sha256(void)
 {
     return &sha256_md;
 }

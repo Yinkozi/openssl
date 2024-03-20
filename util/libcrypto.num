@@ -2597,7 +2597,7 @@ DES_key_sched                           2565	1_1_0	EXIST::FUNCTION:DES
 GENERAL_NAME_dup                        2566	1_1_0	EXIST::FUNCTION:
 X509_STORE_CTX_get1_crls                2567	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_meth_set_verify                2568	1_1_0	EXIST::FUNCTION:
-EVP_sha256                              2569	1_1_0	EXIST::FUNCTION:
+_EVP_sha256                              2569	1_1_0	EXIST::FUNCTION:
 CMS_unsigned_delete_attr                2570	1_1_0	EXIST::FUNCTION:CMS
 EVP_md5_sha1                            2571	1_1_0	EXIST::FUNCTION:MD5
 EVP_PKEY_sign_init                      2572	1_1_0	EXIST::FUNCTION:

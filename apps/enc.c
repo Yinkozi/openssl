@@ -295,7 +295,7 @@ int enc_main(int argc, char **argv)
     }
 
     if (dgst == NULL)
-        dgst = EVP_sha256();
+        dgst = _EVP_sha256();
 
     if (iter == 0)
         iter = 1;

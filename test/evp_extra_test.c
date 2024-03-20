@@ -1011,7 +1011,7 @@ static int test_EVP_DigestSignInit(void)
             || !TEST_ptr(pkey = load_example_rsa_key()))
         goto out;
 
-    if (!TEST_true(EVP_DigestSignInit(md_ctx, NULL, EVP_sha256(), NULL, pkey))
+    if (!TEST_true(EVP_DigestSignInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
             || !TEST_true(EVP_DigestSignUpdate(md_ctx, kMsg, sizeof(kMsg))))
         goto out;
 
@@ -1025,7 +1025,7 @@ static int test_EVP_DigestSignInit(void)
         goto out;
 
     /* Ensure that the signature round-trips. */
-    if (!TEST_true(EVP_DigestVerifyInit(md_ctx_verify, NULL, EVP_sha256(),
+    if (!TEST_true(EVP_DigestVerifyInit(md_ctx_verify, NULL, _EVP_sha256(),
                                         NULL, pkey))
             || !TEST_true(EVP_DigestVerifyUpdate(md_ctx_verify,
                                                  kMsg, sizeof(kMsg)))
@@ -1053,7 +1053,7 @@ static int test_EVP_DigestVerifyInit(void)
             || !TEST_ptr(pkey = load_example_rsa_key()))
         goto out;
 
-    if (!TEST_true(EVP_DigestVerifyInit(md_ctx, NULL, EVP_sha256(), NULL, pkey))
+    if (!TEST_true(EVP_DigestVerifyInit(md_ctx, NULL, _EVP_sha256(), NULL, pkey))
             || !TEST_true(EVP_DigestVerifyUpdate(md_ctx, kMsg, sizeof(kMsg)))
             || !TEST_true(EVP_DigestVerifyFinal(md_ctx, kSignature,
                                                  sizeof(kSignature))))
@@ -1608,7 +1608,7 @@ static int test_HKDF(void)
         memset(out, 0, outlen);
 
         if (!TEST_int_gt(EVP_PKEY_derive_init(pctx), 0)
-                || !TEST_int_gt(EVP_PKEY_CTX_set_hkdf_md(pctx, EVP_sha256()), 0)
+                || !TEST_int_gt(EVP_PKEY_CTX_set_hkdf_md(pctx, _EVP_sha256()), 0)
                 || !TEST_int_gt(EVP_PKEY_CTX_set1_hkdf_salt(pctx, salt,
                                                             sizeof(salt) - 1), 0)
                 || !TEST_int_gt(EVP_PKEY_CTX_set1_hkdf_key(pctx, key,
@@ -1825,7 +1825,7 @@ static int test_custom_md_meth(void)
                 * from being called.
                 */
             || !TEST_true(EVP_DigestInit_ex(mdctx, tmp, NULL))
-            || !TEST_true(EVP_DigestInit_ex(mdctx, EVP_sha256(), NULL))
+            || !TEST_true(EVP_DigestInit_ex(mdctx, _EVP_sha256(), NULL))
             || !TEST_true(EVP_DigestUpdate(mdctx, mess, strlen(mess)))
             || !TEST_true(EVP_DigestFinal_ex(mdctx, md_value, &md_len))
             || !TEST_int_eq(custom_md_init_called, 1)
@@ -1918,7 +1918,7 @@ static int test_signatures_with_engine(int tst)
     if (!TEST_ptr(ctx = EVP_MD_CTX_new()))
         goto err;
 
-    ret = EVP_DigestSignInit(ctx, NULL, tst == 2 ? NULL : EVP_sha256(), NULL,
+    ret = EVP_DigestSignInit(ctx, NULL, tst == 2 ? NULL : _EVP_sha256(), NULL,
                              pkey);
     if (tst == 0) {
         if (!TEST_true(ret))

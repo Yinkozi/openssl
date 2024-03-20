@@ -241,7 +241,7 @@ static int sm2_crypt_test(void)
     /* Same test as above except using SHA-256 instead of SM3 */
     if (!test_sm2_crypt(
             test_group,
-            EVP_sha256(),
+            _EVP_sha256(),
             "1649AB77A00637BD5E2EFE283FBF353534AA7F7CB89463F208DDBC2920BB0DA0",
             "encryption standard",
             "004C62EEFD6ECFC2B95B92FD6C3D9575148AFA17425546D49018E5388D49DD7B4F"

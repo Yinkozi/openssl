@@ -152,11 +152,11 @@ static int test_hmac_run(void)
     if (!TEST_str_eq(p, (char *)test[4].digest))
         goto err;
 
-    if (!TEST_false(HMAC_Init_ex(ctx, NULL, 0, EVP_sha256(), NULL)))
+    if (!TEST_false(HMAC_Init_ex(ctx, NULL, 0, _EVP_sha256(), NULL)))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[5].key, test[5].key_len, EVP_sha256(), NULL))
-        || !TEST_ptr_eq(HMAC_CTX_get_md(ctx), EVP_sha256())
+    if (!TEST_true(HMAC_Init_ex(ctx, test[5].key, test[5].key_len, _EVP_sha256(), NULL))
+        || !TEST_ptr_eq(HMAC_CTX_get_md(ctx), _EVP_sha256())
         || !TEST_true(HMAC_Update(ctx, test[5].data, test[5].data_len))
         || !TEST_true(HMAC_Final(ctx, buf, &len)))
         goto err;
@@ -186,7 +186,7 @@ static int test_hmac_run(void)
      * Test reusing a key where the digest is provided again but is the same as
      * last time
      */
-    if (!TEST_true(HMAC_Init_ex(ctx, NULL, 0, EVP_sha256(), NULL))
+    if (!TEST_true(HMAC_Init_ex(ctx, NULL, 0, _EVP_sha256(), NULL))
         || !TEST_true(HMAC_Update(ctx, test[6].data, test[6].data_len))
         || !TEST_true(HMAC_Final(ctx, buf, &len)))
         goto err;

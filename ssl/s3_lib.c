@@ -4142,7 +4142,7 @@ const SSL_CIPHER *ssl3_choose_cipher(SSL *s, STACK_OF(SSL_CIPHER) *clnt,
     STACK_OF(SSL_CIPHER) *prio, *allow;
     int i, ii, ok, prefer_sha256 = 0;
     unsigned long alg_k = 0, alg_a = 0, mask_k = 0, mask_a = 0;
-    const EVP_MD *mdsha256 = EVP_sha256();
+    const EVP_MD *mdsha256 = _EVP_sha256();
 #ifndef OPENSSL_NO_CHACHA
     STACK_OF(SSL_CIPHER) *prio_chacha = NULL;
 #endif

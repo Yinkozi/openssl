@@ -341,7 +341,7 @@ The B<EVP> interface to message digests should almost always be used in
 preference to the low-level interfaces. This is because the code then becomes
 transparent to the digest used and much more flexible.
 
-New applications should use the SHA-2 (such as L<EVP_sha256(3)>) or the SHA-3
+New applications should use the SHA-2 (such as L<_EVP_sha256(3)>) or the SHA-3
 digest algorithms (such as L<EVP_sha3_512(3)>). The other digest algorithms
 are still in common use.
 

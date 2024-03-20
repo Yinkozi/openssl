@@ -530,7 +530,7 @@ static char *shacrypt(const char *passwd, const char *magic, const char *salt)
 
     switch (magic[0]) {
     case '5':
-        sha = EVP_sha256();
+        sha = _EVP_sha256();
         buf_size = 32;
         break;
     case '6':

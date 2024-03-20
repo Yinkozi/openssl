@@ -351,7 +351,7 @@ int dgst_main(int argc, char **argv)
             goto end;
         }
         if (md == NULL)
-            md = EVP_sha256();
+            md = _EVP_sha256();
         if (!EVP_DigestInit_ex(mctx, md, impl)) {
             BIO_printf(bio_err, "Error setting digest\n");
             ERR_print_errors(bio_err);

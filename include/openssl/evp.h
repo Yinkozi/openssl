@@ -708,7 +708,7 @@ const EVP_MD *EVP_blake2s256(void);
 # endif
 const EVP_MD *_EVP_sha1(void);
 const EVP_MD *EVP_sha224(void);
-const EVP_MD *EVP_sha256(void);
+const EVP_MD *_EVP_sha256(void);
 const EVP_MD *EVP_sha384(void);
 const EVP_MD *EVP_sha512(void);
 const EVP_MD *EVP_sha512_224(void);

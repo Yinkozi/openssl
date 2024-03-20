@@ -27,7 +27,7 @@ static int test_kdf_tls1_prf(void)
         TEST_error("EVP_PKEY_derive_init");
         return 0;
     }
-    if (EVP_PKEY_CTX_set_tls1_prf_md(pctx, EVP_sha256()) <= 0) {
+    if (EVP_PKEY_CTX_set_tls1_prf_md(pctx, _EVP_sha256()) <= 0) {
         TEST_error("EVP_PKEY_CTX_set_tls1_prf_md");
         return 0;
     }
@@ -68,7 +68,7 @@ static int test_kdf_hkdf(void)
         TEST_error("EVP_PKEY_derive_init");
         return 0;
     }
-    if (EVP_PKEY_CTX_set_hkdf_md(pctx, EVP_sha256()) <= 0) {
+    if (EVP_PKEY_CTX_set_hkdf_md(pctx, _EVP_sha256()) <= 0) {
         TEST_error("EVP_PKEY_CTX_set_hkdf_md");
         return 0;
     }

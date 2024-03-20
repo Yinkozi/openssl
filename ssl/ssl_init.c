@@ -84,7 +84,7 @@ DEFINE_RUN_ONCE_STATIC(ossl_init_ssl_base)
     EVP_add_digest_alias(SN_sha1, "ssl3-sha1");
     EVP_add_digest_alias(SN_sha1WithRSAEncryption, SN_sha1WithRSA);
     EVP_add_digest(EVP_sha224());
-    EVP_add_digest(EVP_sha256());
+    EVP_add_digest(_EVP_sha256());
     EVP_add_digest(EVP_sha384());
     EVP_add_digest(EVP_sha512());
 #ifndef OPENSSL_NO_COMP

@@ -391,7 +391,7 @@ static int TicketKeyCallback(SSL *ssl, uint8_t *key_name, uint8_t *iv,
     return 0;
   }
 
-  if (!HMAC_Init_ex(hmac_ctx, kZeros, sizeof(kZeros), EVP_sha256(), NULL) ||
+  if (!HMAC_Init_ex(hmac_ctx, kZeros, sizeof(kZeros), _EVP_sha256(), NULL) ||
       !EVP_CipherInit_ex(ctx, EVP_aes_128_cbc(), NULL, kZeros, iv, encrypt)) {
     return -1;
   }

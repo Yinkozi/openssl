@@ -164,7 +164,7 @@ int ssl_handshake_hash(SSL *s, unsigned char *out, size_t outlen,
 
 const EVP_MD *ssl_handshake_md(SSL *s)
 {
-    return EVP_sha256();
+    return _EVP_sha256();
 }
 
 void RECORD_LAYER_reset_read_sequence(RECORD_LAYER *rl)
@@ -198,7 +198,7 @@ int ssl_log_secret(SSL *ssl,
 
 const EVP_MD *ssl_md(int idx)
 {
-    return EVP_sha256();
+    return _EVP_sha256();
 }
 
 void ossl_statem_fatal(SSL *s, int al, int func, int reason, const char *file,

@@ -3979,7 +3979,7 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
                                        tctx->ext.secure->tick_aes_key, iv)
                 || !HMAC_Init_ex(hctx, tctx->ext.secure->tick_hmac_key,
                                  sizeof(tctx->ext.secure->tick_hmac_key),
-                                 EVP_sha256(), NULL)) {
+                                 _EVP_sha256(), NULL)) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_CONSTRUCT_STATELESS_TICKET,
                      ERR_R_INTERNAL_ERROR);
             goto err;

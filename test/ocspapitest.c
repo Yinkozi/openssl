@@ -83,7 +83,7 @@ static OCSP_BASICRESP *make_dummy_resp(void)
         || !ASN1_BIT_STRING_set(key, keybytes, sizeof(keybytes))
         || !ASN1_INTEGER_set_uint64(serial, (uint64_t)1))
         goto err;
-    cid = OCSP_cert_id_new(EVP_sha256(), name, key, serial);
+    cid = OCSP_cert_id_new(_EVP_sha256(), name, key, serial);
     if (!TEST_ptr(bs)
         || !TEST_ptr(thisupd)
         || !TEST_ptr(nextupd)
