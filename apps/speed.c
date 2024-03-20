@@ -945,7 +945,7 @@ static int EVP_Update_loop(void *args)
     if (decrypt)
         EVP_DecryptFinal_ex(ctx, buf, &outl);
     else
-        EVP_EncryptFinal_ex(ctx, buf, &outl);
+        _EVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
 }
 
@@ -983,7 +983,7 @@ static int EVP_Update_loop_ccm(void *args)
     if (decrypt)
         EVP_DecryptFinal_ex(ctx, buf, &outl);
     else
-        EVP_EncryptFinal_ex(ctx, buf, &outl);
+        _EVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
 }
 
@@ -1017,7 +1017,7 @@ static int EVP_Update_loop_aead(void *args)
             _EVP_EncryptInit_ex(ctx, NULL, NULL, NULL, iv);
             _EVP_EncryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
             _EVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
-            EVP_EncryptFinal_ex(ctx, buf + outl, &outl);
+            _EVP_EncryptFinal_ex(ctx, buf + outl, &outl);
         }
     }
     return count;

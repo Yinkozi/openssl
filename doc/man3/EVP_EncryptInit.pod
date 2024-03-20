@@ -7,7 +7,7 @@ EVP_CIPHER_CTX_reset,
 EVP_CIPHER_CTX_free,
 _EVP_EncryptInit_ex,
 _EVP_EncryptUpdate,
-EVP_EncryptFinal_ex,
+_EVP_EncryptFinal_ex,
 EVP_DecryptInit_ex,
 EVP_DecryptUpdate,
 EVP_DecryptFinal_ex,
@@ -62,7 +62,7 @@ EVP_enc_null
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
  int _EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out,
                        int *outl, const unsigned char *in, int inl);
- int EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl);
+ int _EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl);
 
  int EVP_DecryptInit_ex(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
                         ENGINE *impl, const unsigned char *key, const unsigned char *iv);
@@ -158,7 +158,7 @@ The actual number of bytes written is placed in B<outl>. It also
 checks if B<in> and B<out> are partially overlapping, and if they are
 0 is returned to indicate failure.
 
-If padding is enabled (the default) then EVP_EncryptFinal_ex() encrypts
+If padding is enabled (the default) then _EVP_EncryptFinal_ex() encrypts
 the "final" data, that is any data that remains in a partial block.
 It uses standard block padding (aka PKCS padding) as described in
 the NOTES section, below. The encrypted
@@ -167,7 +167,7 @@ one cipher block. The number of bytes written is placed in B<outl>. After
 this function is called the encryption operation is finished and no further
 calls to _EVP_EncryptUpdate() should be made.
 
-If padding is disabled then EVP_EncryptFinal_ex() will not encrypt any more
+If padding is disabled then _EVP_EncryptFinal_ex() will not encrypt any more
 data and it will return an error if any data remains in a partial block:
 that is if the total data length is not a multiple of the block size.
 
@@ -197,7 +197,7 @@ similar way to _EVP_EncryptInit_ex(), EVP_DecryptInit_ex() and
 EVP_CipherInit_ex() except they always use the default cipher implementation.
 
 EVP_EncryptFinal(), EVP_DecryptFinal() and EVP_CipherFinal() are
-identical to EVP_EncryptFinal_ex(), EVP_DecryptFinal_ex() and
+identical to _EVP_EncryptFinal_ex(), EVP_DecryptFinal_ex() and
 EVP_CipherFinal_ex(). In previous releases they also cleaned up
 the B<ctx>, but this is no longer done and EVP_CIPHER_CTX_clean()
 must be called to free any context resources.
@@ -288,7 +288,7 @@ buffer at least as big as the value returned by EVP_CIPHER_CTX_key_length().
 _EVP_CIPHER_CTX_new() returns a pointer to a newly created
 B<EVP_CIPHER_CTX> for success and B<NULL> for failure.
 
-_EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and EVP_EncryptFinal_ex()
+_EVP_EncryptInit_ex(), _EVP_EncryptUpdate() and _EVP_EncryptFinal_ex()
 return 1 for success and 0 for failure.
 
 EVP_DecryptInit_ex() and EVP_DecryptUpdate() return 1 for success and 0 for failure.
@@ -495,7 +495,7 @@ the total amount of data decrypted is a multiple of the block size.
 The functions EVP_EncryptInit(), EVP_EncryptFinal(), EVP_DecryptInit(),
 EVP_CipherInit() and EVP_CipherFinal() are obsolete but are retained for
 compatibility with existing code. New code should use _EVP_EncryptInit_ex(),
-EVP_EncryptFinal_ex(), EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
+_EVP_EncryptFinal_ex(), EVP_DecryptInit_ex(), EVP_DecryptFinal_ex(),
 EVP_CipherInit_ex() and EVP_CipherFinal_ex() because they can reuse an
 existing context without allocating and freeing it up on each call.
 
@@ -551,7 +551,7 @@ Encrypt a string using IDEA:
       * Buffer passed to EVP_EncryptFinal() must be after data just
       * encrypted to avoid overwriting it.
       */
-     if (!EVP_EncryptFinal_ex(ctx, outbuf + outlen, &tmplen)) {
+     if (!_EVP_EncryptFinal_ex(ctx, outbuf + outlen, &tmplen)) {
          /* Error */
          EVP_CIPHER_CTX_free(ctx);
          return 0;

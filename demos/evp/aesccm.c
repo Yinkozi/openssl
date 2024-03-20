@@ -75,7 +75,7 @@ void aes_ccm_encrypt(void)
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);
     /* Finalise: note get no output for CCM */
-    EVP_EncryptFinal_ex(ctx, outbuf, &outlen);
+    _EVP_EncryptFinal_ex(ctx, outbuf, &outlen);
     /* Get tag */
     EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, 16, outbuf);
     /* Output tag */

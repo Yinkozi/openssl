@@ -57,7 +57,7 @@ static const ERR_STRING_DATA EVP_str_functs[] = {
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_ENCRYPTDECRYPTUPDATE, 0),
      "evp_EncryptDecryptUpdate"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_ENCRYPTFINAL_EX, 0),
-     "EVP_EncryptFinal_ex"},
+     "_EVP_EncryptFinal_ex"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_ENCRYPTUPDATE, 0), "_EVP_EncryptUpdate"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_MD_CTX_COPY_EX, 0), "EVP_MD_CTX_copy_ex"},
     {ERR_PACK(ERR_LIB_EVP, EVP_F_EVP_MD_SIZE, 0), "EVP_MD_size"},

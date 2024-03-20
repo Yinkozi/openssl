@@ -1984,7 +1984,7 @@ static int test_cipher_with_engine(void)
         goto err;
 
     if (!TEST_true(_EVP_EncryptUpdate(ctx2, buf, &len, msg, sizeof(msg)))
-            || !TEST_true(EVP_EncryptFinal_ex(ctx2, buf + len, &len)))
+            || !TEST_true(_EVP_EncryptFinal_ex(ctx2, buf + len, &len)))
         goto err;
 
     testresult = 1;

@@ -846,7 +846,7 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
         OPENSSL_cleanse(keybuf, 20);
         if (!_EVP_EncryptUpdate(cctx, p, &enctmplen, p, pklen - 8))
             goto error;
-        if (!EVP_EncryptFinal_ex(cctx, p + enctmplen, &enctmplen))
+        if (!_EVP_EncryptFinal_ex(cctx, p + enctmplen, &enctmplen))
             goto error;
     }
 

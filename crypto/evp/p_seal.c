@@ -58,7 +58,7 @@ err:
 int EVP_SealFinal(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 {
     int i;
-    i = EVP_EncryptFinal_ex(ctx, out, outl);
+    i = _EVP_EncryptFinal_ex(ctx, out, outl);
     if (i)
         i = _EVP_EncryptInit_ex(ctx, NULL, NULL, NULL, NULL);
     return i;

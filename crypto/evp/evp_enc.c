@@ -219,7 +219,7 @@ int EVP_CipherUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl,
 int EVP_CipherFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 {
     if (ctx->encrypt)
-        return EVP_EncryptFinal_ex(ctx, out, outl);
+        return _EVP_EncryptFinal_ex(ctx, out, outl);
     else
         return EVP_DecryptFinal_ex(ctx, out, outl);
 }
@@ -410,11 +410,11 @@ int _EVP_EncryptUpdate(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl,
 int EVP_EncryptFinal(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 {
     int ret;
-    ret = EVP_EncryptFinal_ex(ctx, out, outl);
+    ret = _EVP_EncryptFinal_ex(ctx, out, outl);
     return ret;
 }
 
-int EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
+int _EVP_EncryptFinal_ex(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 {
     int n, ret;
     unsigned int i, b, bl;

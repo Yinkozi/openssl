@@ -192,7 +192,7 @@ EVP_CIPHER_meth_set_do_cipher() sets the cipher function for
 B<cipher>.
 The cipher function is called by EVP_CipherUpdate(),
 _EVP_EncryptUpdate(), EVP_DecryptUpdate(), EVP_CipherFinal(),
-EVP_EncryptFinal(), EVP_EncryptFinal_ex(), EVP_DecryptFinal() and
+EVP_EncryptFinal(), _EVP_EncryptFinal_ex(), EVP_DecryptFinal() and
 EVP_DecryptFinal_ex().
 
 EVP_CIPHER_meth_set_cleanup() sets the function for B<cipher> to do
