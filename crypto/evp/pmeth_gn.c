@@ -83,7 +83,7 @@ int _EVP_PKEY_keygen_init(EVP_PKEY_CTX *ctx)
     return ret;
 }
 
-int EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
+int _EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey)
 {
     int ret;
 
@@ -162,7 +162,7 @@ EVP_PKEY *EVP_PKEY_new_mac_key(int type, ENGINE *e,
         goto merr;
     if (EVP_PKEY_CTX_set_mac_key(mac_ctx, key, keylen) <= 0)
         goto merr;
-    if (EVP_PKEY_keygen(mac_ctx, &mac_key) <= 0)
+    if (_EVP_PKEY_keygen(mac_ctx, &mac_key) <= 0)
         goto merr;
  merr:
     EVP_PKEY_CTX_free(mac_ctx);

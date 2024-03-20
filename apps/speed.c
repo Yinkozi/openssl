@@ -3016,8 +3016,8 @@ int speed_main(int argc, char **argv)
                 break;
             }
 
-            if (EVP_PKEY_keygen(kctx, &key_A) <= 0 || /* generate secret key A */
-                EVP_PKEY_keygen(kctx, &key_B) <= 0 || /* generate secret key B */
+            if (_EVP_PKEY_keygen(kctx, &key_A) <= 0 || /* generate secret key A */
+                _EVP_PKEY_keygen(kctx, &key_B) <= 0 || /* generate secret key B */
                 !(ctx = EVP_PKEY_CTX_new(key_A, NULL)) || /* derivation ctx from skeyA */
                 EVP_PKEY_derive_init(ctx) <= 0 || /* init derivation ctx */
                 EVP_PKEY_derive_set_peer(ctx, key_B) <= 0 || /* set peer pubkey in ctx */
@@ -3109,7 +3109,7 @@ int speed_main(int argc, char **argv)
             if ((ed_pctx = _EVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
                     == NULL
                 || _EVP_PKEY_keygen_init(ed_pctx) <= 0
-                || EVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {
+                || _EVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {
                 st = 0;
                 EVP_PKEY_CTX_free(ed_pctx);
                 break;

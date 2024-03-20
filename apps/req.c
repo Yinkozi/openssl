@@ -633,7 +633,7 @@ int req_main(int argc, char **argv)
         EVP_PKEY_CTX_set_cb(genctx, genpkey_cb);
         EVP_PKEY_CTX_set_app_data(genctx, bio_err);
 
-        if (EVP_PKEY_keygen(genctx, &pkey) <= 0) {
+        if (_EVP_PKEY_keygen(genctx, &pkey) <= 0) {
             BIO_puts(bio_err, "Error Generating Key\n");
             goto end;
         }

@@ -4691,7 +4691,7 @@ EVP_PKEY *ssl_generate_pkey(EVP_PKEY *pm)
         goto err;
     if (_EVP_PKEY_keygen_init(pctx) <= 0)
         goto err;
-    if (EVP_PKEY_keygen(pctx, &pkey) <= 0) {
+    if (_EVP_PKEY_keygen(pctx, &pkey) <= 0) {
         EVP_PKEY_free(pkey);
         pkey = NULL;
     }
@@ -4735,7 +4735,7 @@ EVP_PKEY *ssl_generate_pkey_group(SSL *s, uint16_t id)
                  ERR_R_EVP_LIB);
         goto err;
     }
-    if (EVP_PKEY_keygen(pctx, &pkey) <= 0) {
+    if (_EVP_PKEY_keygen(pctx, &pkey) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_GENERATE_PKEY_GROUP,
                  ERR_R_EVP_LIB);
         EVP_PKEY_free(pkey);

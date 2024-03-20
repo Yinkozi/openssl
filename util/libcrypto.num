@@ -853,7 +853,7 @@ ASN1_TIME_check                         851	1_1_0	EXIST::FUNCTION:
 PKCS7_DIGEST_new                        852	1_1_0	EXIST::FUNCTION:
 i2d_TS_TST_INFO_fp                      853	1_1_0	EXIST::FUNCTION:STDIO,TS
 d2i_PKCS8_fp                            854	1_1_0	EXIST::FUNCTION:STDIO
-EVP_PKEY_keygen                         855	1_1_0	EXIST::FUNCTION:
+_EVP_PKEY_keygen                         855	1_1_0	EXIST::FUNCTION:
 X509_CRL_dup                            856	1_1_0	EXIST::FUNCTION:
 EVP_PKEY_CTX_get_cb                     857	1_1_0	EXIST::FUNCTION:
 X509_STORE_free                         858	1_1_0	EXIST::FUNCTION:

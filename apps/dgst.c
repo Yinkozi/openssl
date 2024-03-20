@@ -293,7 +293,7 @@ int dgst_main(int argc, char **argv)
                 }
             }
         }
-        if (EVP_PKEY_keygen(mac_ctx, &sigkey) <= 0) {
+        if (_EVP_PKEY_keygen(mac_ctx, &sigkey) <= 0) {
             BIO_puts(bio_err, "Error generating key\n");
             ERR_print_errors(bio_err);
             goto mac_end;

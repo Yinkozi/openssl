@@ -157,7 +157,7 @@ int genpkey_main(int argc, char **argv)
             goto end;
         }
     } else {
-        if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
+        if (_EVP_PKEY_keygen(ctx, &pkey) <= 0) {
             BIO_puts(bio_err, "Error generating key\n");
             ERR_print_errors(bio_err);
             goto end;

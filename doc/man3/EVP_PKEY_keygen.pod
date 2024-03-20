@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-_EVP_PKEY_keygen_init, EVP_PKEY_keygen, EVP_PKEY_paramgen_init,
+_EVP_PKEY_keygen_init, _EVP_PKEY_keygen, EVP_PKEY_paramgen_init,
 EVP_PKEY_paramgen, EVP_PKEY_CTX_set_cb, EVP_PKEY_CTX_get_cb,
 EVP_PKEY_CTX_get_keygen_info, EVP_PKEY_CTX_set_app_data,
 EVP_PKEY_CTX_get_app_data,
@@ -15,7 +15,7 @@ EVP_PKEY_param_check
  #include <openssl/evp.h>
 
  int _EVP_PKEY_keygen_init(EVP_PKEY_CTX *ctx);
- int EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey);
+ int _EVP_PKEY_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey);
  int EVP_PKEY_paramgen_init(EVP_PKEY_CTX *ctx);
  int EVP_PKEY_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY **ppkey);
 
@@ -38,7 +38,7 @@ EVP_PKEY_param_check
 The _EVP_PKEY_keygen_init() function initializes a public key algorithm
 context using key B<pkey> for a key generation operation.
 
-The EVP_PKEY_keygen() function performs a key generation operation, the
+The _EVP_PKEY_keygen() function performs a key generation operation, the
 generated key is written to B<ppkey>.
 
 The functions EVP_PKEY_paramgen_init() and EVP_PKEY_paramgen() are similar
@@ -81,7 +81,7 @@ After the call to _EVP_PKEY_keygen_init() or EVP_PKEY_paramgen_init() algorithm
 specific control operations can be performed to set any appropriate parameters
 for the operation.
 
-The functions EVP_PKEY_keygen() and EVP_PKEY_paramgen() can be called more than
+The functions _EVP_PKEY_keygen() and EVP_PKEY_paramgen() can be called more than
 once on the same context if several operations are performed using the same
 parameters.
 
@@ -101,7 +101,7 @@ in functions which require the use of a public key or parameters.
 
 =head1 RETURN VALUES
 
-_EVP_PKEY_keygen_init(), EVP_PKEY_paramgen_init(), EVP_PKEY_keygen() and
+_EVP_PKEY_keygen_init(), EVP_PKEY_paramgen_init(), _EVP_PKEY_keygen() and
 EVP_PKEY_paramgen() return 1 for success and 0 or a negative value for failure.
 In particular a return value of -2 indicates the operation is not supported by
 the public key algorithm.
@@ -129,7 +129,7 @@ Generate a 2048 bit RSA key:
      /* Error */
 
  /* Generate key */
- if (EVP_PKEY_keygen(ctx, &pkey) <= 0)
+ if (_EVP_PKEY_keygen(ctx, &pkey) <= 0)
      /* Error */
 
 Generate a key from a set of parameters:
@@ -149,7 +149,7 @@ Generate a key from a set of parameters:
      /* Error */
 
  /* Generate key */
- if (EVP_PKEY_keygen(ctx, &pkey) <= 0)
+ if (_EVP_PKEY_keygen(ctx, &pkey) <= 0)
      /* Error */
 
 Example of generation callback for OpenSSL public key implementations:

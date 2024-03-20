@@ -265,7 +265,7 @@ static int cms_kari_create_ephemeral_key(CMS_KeyAgreeRecipientInfo *kari,
         goto err;
     if (_EVP_PKEY_keygen_init(pctx) <= 0)
         goto err;
-    if (EVP_PKEY_keygen(pctx, &ekey) <= 0)
+    if (_EVP_PKEY_keygen(pctx, &ekey) <= 0)
         goto err;
     EVP_PKEY_CTX_free(pctx);
     pctx = EVP_PKEY_CTX_new(ekey, NULL);
