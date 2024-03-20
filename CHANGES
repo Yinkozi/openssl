@@ -5058,7 +5058,7 @@
      [Steve Henson]
 
   *) New option -sigopt to dgst utility. Update dgst to use
-     EVP_Digest{Sign,Verify}*. These two changes make it possible to use
+     _EVP_Digest{Sign,Verify}*. These two changes make it possible to use
      alternative signing parameters such as X9.31 or PSS in the dgst
      utility.
      [Steve Henson]
@@ -5259,7 +5259,7 @@
      functional reference processing.
      [Steve Henson]
 
-  *) New functions EVP_Digest{Sign,Verify)*. These are enhanced versions of
+  *) New functions _EVP_Digest{Sign,Verify)*. These are enhanced versions of
      EVP_{Sign,Verify}* which allow an application to customise the signature
      process.
      [Steve Henson]
@@ -8713,7 +8713,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      in <openssl/bn.h>.  Also further increase BN_CTX_NUM to 32.
      [Bodo Moeller]
 
-  *) Modify EVP_Digest*() routines so they now return values. Although the
+  *) Modify _EVP_Digest*() routines so they now return values. Although the
      internal software routines can never fail additional hardware versions
      might.
      [Steve Henson]
@@ -8955,7 +8955,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      (converts ASN1_TIME to GeneralizedTime).
      [Steve Henson]
 
-  *) Various new functions. EVP_Digest() combines EVP_Digest{Init,Update,Final}()
+  *) Various new functions. _EVP_Digest() combines _EVP_Digest{Init,Update,Final}()
      in a single operation. X509_get0_pubkey_bitstr() extracts the public_key
      structure from a certificate. X509_pubkey_digest() digests the public_key
      contents: this is used in various key identifiers.

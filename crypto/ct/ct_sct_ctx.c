@@ -213,7 +213,7 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
     if (der_len <= 0)
         goto err;
 
-    if (!EVP_Digest(der, der_len, md, &md_len, _EVP_sha256(), NULL))
+    if (!_EVP_Digest(der, der_len, md, &md_len, _EVP_sha256(), NULL))
         goto err;
 
     if (md != *hash) {

@@ -645,7 +645,7 @@ static int EVP_Digest_MD2_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_MD2][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], md2, NULL, EVP_md2(),
+        if (!_EVP_Digest(buf, (size_t)lengths[testnum], md2, NULL, EVP_md2(),
                         NULL))
             return -1;
     }
@@ -662,7 +662,7 @@ static int EVP_Digest_MDC2_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_MDC2][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], mdc2, NULL, EVP_mdc2(),
+        if (!_EVP_Digest(buf, (size_t)lengths[testnum], mdc2, NULL, EVP_mdc2(),
                         NULL))
             return -1;
     }
@@ -679,7 +679,7 @@ static int EVP_Digest_MD4_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_MD4][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], md4, NULL, EVP_md4(),
+        if (!_EVP_Digest(buf, (size_t)lengths[testnum], md4, NULL, EVP_md4(),
                         NULL))
             return -1;
     }
@@ -770,7 +770,7 @@ static int EVP_Digest_RMD160_loop(void *args)
     unsigned char rmd160[RIPEMD160_DIGEST_LENGTH];
     int count;
     for (count = 0; COND(c[D_RMD160][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], &(rmd160[0]),
+        if (!_EVP_Digest(buf, (size_t)lengths[testnum], &(rmd160[0]),
                         NULL, EVP_ripemd160(), NULL))
             return -1;
     }
@@ -1035,7 +1035,7 @@ static int EVP_Digest_loop(void *args)
 #endif
 
     for (count = 0; COND(nb_iter); count++) {
-        if (!EVP_Digest(buf, lengths[testnum], md, NULL, evp_md, NULL))
+        if (!_EVP_Digest(buf, lengths[testnum], md, NULL, evp_md, NULL))
             return -1;
     }
     return count;

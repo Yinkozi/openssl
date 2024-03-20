@@ -2703,10 +2703,10 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
      * SHA256 is disabled) hash of the ticket.
      */
     /*
-     * TODO(size_t): we use sess_len here because EVP_Digest expects an int
+     * TODO(size_t): we use sess_len here because _EVP_Digest expects an int
      * but s->session->session_id_length is a size_t
      */
-    if (!EVP_Digest(s->session->ext.tick, ticklen,
+    if (!_EVP_Digest(s->session->ext.tick, ticklen,
                     s->session->session_id, &sess_len,
                     _EVP_sha256(), NULL)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_NEW_SESSION_TICKET,

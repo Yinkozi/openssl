@@ -23,7 +23,7 @@ L<B<EVP_Sign>I<XXX>|EVP_SignInit(3)> and L<B<EVP_Verify>I<XXX>|EVP_VerifyInit(3)
 functions.
 
 Symmetric encryption is available with the L<B<EVP_Encrypt>I<XXX>|EVP_EncryptInit(3)>
-functions.  The L<B<EVP_Digest>I<XXX>|EVP_DigestInit(3)> functions provide message digests.
+functions.  The L<B<_EVP_Digest>I<XXX>|EVP_DigestInit(3)> functions provide message digests.
 
 The B<EVP_PKEY>I<XXX> functions provide a high-level interface to
 asymmetric algorithms. To create a new EVP_PKEY see

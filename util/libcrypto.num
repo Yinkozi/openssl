@@ -1654,7 +1654,7 @@ CMS_ContentInfo_it                      1642	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION
 CMS_ContentInfo_it                      1642	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:CMS
 OCSP_resp_get0_signature                1643	1_1_0	EXIST::FUNCTION:OCSP
 X509_STORE_CTX_get1_issuer              1644	1_1_0	EXIST::FUNCTION:
-EVP_Digest                              1645	1_1_0	EXIST::FUNCTION:
+_EVP_Digest                              1645	1_1_0	EXIST::FUNCTION:
 CRYPTO_set_ex_data                      1646	1_1_0	EXIST::FUNCTION:
 BN_bn2hex                               1647	1_1_0	EXIST::FUNCTION:
 BN_lshift1                              1648	1_1_0	EXIST::FUNCTION:

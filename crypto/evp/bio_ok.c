@@ -60,7 +60,7 @@
         reader can now read the seed from stream, hash the same string
         and then compare the digest output.
 
-        Bad things: BIO_f_reliable knows what's going on in EVP_Digest. I
+        Bad things: BIO_f_reliable knows what's going on in _EVP_Digest. I
         initially wrote and tested this code on x86 machine and wrote the
         digests out in machine-dependent order :( There are people using
         this code and I cannot change this easily without making existing

@@ -90,7 +90,7 @@ static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
 
     X509_PUBKEY_get0_param(NULL, &pk, &pklen, NULL, pubkey);
 
-    if (!EVP_Digest(pk, pklen, pkey_dig, &diglen, _EVP_sha1(), NULL))
+    if (!_EVP_Digest(pk, pklen, pkey_dig, &diglen, _EVP_sha1(), NULL))
         goto err;
 
     if (!ASN1_OCTET_STRING_set(oct, pkey_dig, diglen)) {

@@ -175,7 +175,7 @@ implementation includes the following abstractions;
  DSA_METHOD, DH_METHOD, RAND_METHOD, ECDH_METHOD, ECDSA_METHOD,
        - similarly for other OpenSSL APIs
  EVP_CIPHER - potentially multiple cipher algorithms (indexed by 'nid')
- EVP_DIGEST - potentially multiple hash algorithms (indexed by 'nid')
+ _EVP_Digest - potentially multiple hash algorithms (indexed by 'nid')
  key-loading - loading public and/or private EVP_PKEY keys
 
 =head2 Reference counting and handles
@@ -272,7 +272,7 @@ For each supported abstraction, the ENGINE code maintains an internal table
 of state to control which implementations are available for a given
 abstraction and which should be used by default. These implementations are
 registered in the tables and indexed by an 'nid' value, because
-abstractions like EVP_CIPHER and EVP_DIGEST support many distinct
+abstractions like EVP_CIPHER and _EVP_Digest support many distinct
 algorithms and modes, and ENGINEs can support arbitrarily many of them.
 In the case of other abstractions like RSA, DSA, etc, there is only one
 "algorithm" so all implementations implicitly register using the same 'nid'

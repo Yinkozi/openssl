@@ -551,7 +551,7 @@ __owur int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *d,
                                 size_t cnt);
 __owur int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, unsigned char *md,
                                   unsigned int *s);
-__owur int EVP_Digest(const void *data, size_t count,
+__owur int _EVP_Digest(const void *data, size_t count,
                           unsigned char *md, unsigned int *size,
                           const EVP_MD *type, ENGINE *impl);
 

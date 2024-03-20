@@ -35,7 +35,7 @@ static BIGNUM *srp_Calc_xy(const BIGNUM *x, const BIGNUM *y, const BIGNUM *N)
         goto err;
     if (BN_bn2binpad(x, tmp, numN) < 0
         || BN_bn2binpad(y, tmp + numN, numN) < 0
-        || !EVP_Digest(tmp, numN * 2, digest, NULL, _EVP_sha1(), NULL))
+        || !_EVP_Digest(tmp, numN * 2, digest, NULL, _EVP_sha1(), NULL))
         goto err;
     res = BN_bin2bn(digest, sizeof(digest), NULL);
  err:

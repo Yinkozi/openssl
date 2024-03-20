@@ -70,7 +70,7 @@ OCSP_CERTID *OCSP_cert_id_new(const EVP_MD *dgst,
         goto err;
 
     /* Calculate the issuerKey hash, excluding tag and length */
-    if (!EVP_Digest(issuerKey->data, issuerKey->length, md, &i, dgst, NULL))
+    if (!_EVP_Digest(issuerKey->data, issuerKey->length, md, &i, dgst, NULL))
         goto err;
 
     if (!(ASN1_OCTET_STRING_set(&cid->issuerKeyHash, md, i)))

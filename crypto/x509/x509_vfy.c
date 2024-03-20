@@ -2742,7 +2742,7 @@ static int dane_match(X509_STORE_CTX *ctx, X509 *cert, int depth)
 
             if (md != NULL) {
                 cmpbuf = mdbuf;
-                if (!EVP_Digest(i2dbuf, i2dlen, cmpbuf, &cmplen, md, 0)) {
+                if (!_EVP_Digest(i2dbuf, i2dlen, cmpbuf, &cmplen, md, 0)) {
                     matched = -1;
                     break;
                 }
