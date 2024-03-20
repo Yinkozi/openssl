@@ -316,7 +316,7 @@ int dgst_main(int argc, char **argv)
         EVP_MD_CTX *mctx = NULL;
         EVP_PKEY_CTX *pctx = NULL;
         int r;
-        if (BIO_get_md_ctx(bmd, &mctx) <= 0) {
+        if (_BIO_get_md_ctx(bmd, &mctx) <= 0) {
             BIO_printf(bio_err, "Error getting context\n");
             ERR_print_errors(bio_err);
             goto end;
@@ -345,7 +345,7 @@ int dgst_main(int argc, char **argv)
     /* we use md as a filter, reading from 'in' */
     else {
         EVP_MD_CTX *mctx = NULL;
-        if (BIO_get_md_ctx(bmd, &mctx) <= 0) {
+        if (_BIO_get_md_ctx(bmd, &mctx) <= 0) {
             BIO_printf(bio_err, "Error getting context\n");
             ERR_print_errors(bio_err);
             goto end;
@@ -380,7 +380,7 @@ int dgst_main(int argc, char **argv)
 
     if (md == NULL) {
         EVP_MD_CTX *tctx;
-        BIO_get_md_ctx(bmd, &tctx);
+        _BIO_get_md_ctx(bmd, &tctx);
         md = EVP_MD_CTX_md(tctx);
     }
 
@@ -517,7 +517,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
     }
     if (sigin != NULL) {
         EVP_MD_CTX *ctx;
-        BIO_get_md_ctx(bp, &ctx);
+        _BIO_get_md_ctx(bp, &ctx);
         i = _EVP_DigestVerifyFinal(ctx, sigin, (unsigned int)siglen);
         if (i > 0) {
             BIO_printf(out, "Verified OK\n");
@@ -535,7 +535,7 @@ int do_fp(BIO *out, unsigned char *buf, BIO *bp, int sep, int binout,
     if (key != NULL) {
         EVP_MD_CTX *ctx;
         int pkey_len;
-        BIO_get_md_ctx(bp, &ctx);
+        _BIO_get_md_ctx(bp, &ctx);
         pkey_len = EVP_PKEY_size(key);
         if (pkey_len > BUFSIZE) {
             len = pkey_len;

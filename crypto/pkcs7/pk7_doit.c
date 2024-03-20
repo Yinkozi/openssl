@@ -600,7 +600,7 @@ static BIO *PKCS7_find_digest(EVP_MD_CTX **pmd, BIO *bio, int nid)
                      PKCS7_R_UNABLE_TO_FIND_MESSAGE_DIGEST);
             return NULL;
         }
-        BIO_get_md_ctx(bio, pmd);
+        _BIO_get_md_ctx(bio, pmd);
         if (*pmd == NULL) {
             PKCS7err(PKCS7_F_PKCS7_FIND_DIGEST, ERR_R_INTERNAL_ERROR);
             return NULL;
@@ -968,7 +968,7 @@ int PKCS7_signatureVerify(BIO *bio, PKCS7 *p7, PKCS7_SIGNER_INFO *si,
                      PKCS7_R_UNABLE_TO_FIND_MESSAGE_DIGEST);
             goto err;
         }
-        BIO_get_md_ctx(btmp, &mdc);
+        _BIO_get_md_ctx(btmp, &mdc);
         if (mdc == NULL) {
             PKCS7err(PKCS7_F_PKCS7_SIGNATUREVERIFY, ERR_R_INTERNAL_ERROR);
             goto err;

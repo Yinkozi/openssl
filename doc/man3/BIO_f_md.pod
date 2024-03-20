@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-_BIO_f_md, BIO_set_md, BIO_get_md, BIO_get_md_ctx - message digest BIO filter
+_BIO_f_md, BIO_set_md, BIO_get_md, _BIO_get_md_ctx - message digest BIO filter
 
 =head1 SYNOPSIS
 
@@ -14,7 +14,7 @@ _BIO_f_md, BIO_set_md, BIO_get_md, BIO_get_md_ctx - message digest BIO filter
  const BIO_METHOD *_BIO_f_md(void);
  int BIO_set_md(BIO *b, EVP_MD *md);
  int BIO_get_md(BIO *b, EVP_MD **mdp);
- int BIO_get_md_ctx(BIO *b, EVP_MD_CTX **mdcp);
+ int _BIO_get_md_ctx(BIO *b, EVP_MD_CTX **mdcp);
 
 =head1 DESCRIPTION
 
@@ -39,15 +39,15 @@ passed through it. It is a BIO_ctrl() macro.
 BIO_get_md() places the a pointer to the digest BIOs digest method
 in B<mdp>, it is a BIO_ctrl() macro.
 
-BIO_get_md_ctx() returns the digest BIOs context into B<mdcp>.
+_BIO_get_md_ctx() returns the digest BIOs context into B<mdcp>.
 
 =head1 NOTES
 
-The context returned by BIO_get_md_ctx() can be used in calls
+The context returned by _BIO_get_md_ctx() can be used in calls
 to EVP_DigestFinal() and also the signature routines EVP_SignFinal()
 and EVP_VerifyFinal().
 
-The context returned by BIO_get_md_ctx() is an internal context
+The context returned by _BIO_get_md_ctx() is an internal context
 structure. Changes made to this context will affect the digest
 BIO itself and the context pointer will become invalid when the digest
 BIO is freed.
@@ -60,7 +60,7 @@ If an application needs to call BIO_gets() or BIO_puts() through
 a chain containing digest BIOs then this can be done by prepending
 a buffering BIO.
 
-Calling BIO_get_md_ctx() will return the context and initialize the BIO
+Calling _BIO_get_md_ctx() will return the context and initialize the BIO
 state. This allows applications to initialize the context externally
 if the standard calls such as BIO_set_md() are not sufficiently flexible.
 
@@ -147,7 +147,7 @@ separate BIO_ctrl() call.
 
 =head1 HISTORY
 
-Before OpenSSL 1.0.0., the call to BIO_get_md_ctx() would only work if the
+Before OpenSSL 1.0.0., the call to _BIO_get_md_ctx() would only work if the
 BIO was initialized first.
 
 =head1 COPYRIGHT

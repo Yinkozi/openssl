@@ -325,7 +325,7 @@ int cms_DigestAlgorithm_find_ctx(EVP_MD_CTX *mctx, BIO *chain,
                    CMS_R_NO_MATCHING_DIGEST);
             return 0;
         }
-        BIO_get_md_ctx(chain, &mtmp);
+        _BIO_get_md_ctx(chain, &mtmp);
         if (EVP_MD_CTX_type(mtmp) == nid
             /*
              * Workaround for broken implementations that use signature

@@ -117,7 +117,7 @@ BIO_get_fd                              define
 BIO_get_fp                              define
 BIO_get_info_callback                   define
 BIO_get_md                              define
-BIO_get_md_ctx                          define
+_BIO_get_md_ctx                          define
 BIO_get_mem_data                        define
 BIO_get_mem_ptr                         define
 BIO_get_num_renegotiates                define
