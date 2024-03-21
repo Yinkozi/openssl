@@ -326,7 +326,7 @@ int TS_RESP_CTX_set_status_info(TS_RESP_CTX *ctx,
  err:
     if (!ret)
         TSerr(TS_F_TS_RESP_CTX_SET_STATUS_INFO, ERR_R_MALLOC_FAILURE);
-    TS_STATUS_INFO_free(si);
+    _TS_STATUS_INFO_free(si);
     ASN1_UTF8STRING_free(utf8_text);
     return ret;
 }
@@ -417,7 +417,7 @@ TS_RESP *TS_RESP_create_response(TS_RESP_CTX *ctx, BIO *req_bio)
                                                  TS_STATUS_REJECTION,
                                                  "Error during response "
                                                  "generation.") == 0) {
-                TS_RESP_free(ctx->response);
+                _TS_RESP_free(ctx->response);
                 ctx->response = NULL;
             }
         }
@@ -439,11 +439,11 @@ static void ts_RESP_CTX_init(TS_RESP_CTX *ctx)
 /* Cleans up the variable part of the context. */
 static void ts_RESP_CTX_cleanup(TS_RESP_CTX *ctx)
 {
-    TS_REQ_free(ctx->request);
+    _TS_REQ_free(ctx->request);
     ctx->request = NULL;
-    TS_RESP_free(ctx->response);
+    _TS_RESP_free(ctx->response);
     ctx->response = NULL;
-    TS_TST_INFO_free(ctx->tst_info);
+    _TS_TST_INFO_free(ctx->tst_info);
     ctx->tst_info = NULL;
 }
 
@@ -594,7 +594,7 @@ static TS_TST_INFO *ts_RESP_create_tst_info(TS_RESP_CTX *ctx,
     result = 1;
  end:
     if (!result) {
-        TS_TST_INFO_free(tst_info);
+        _TS_TST_INFO_free(tst_info);
         tst_info = NULL;
         TSerr(TS_F_TS_RESP_CREATE_TST_INFO, TS_R_TST_INFO_SETUP_ERROR);
         TS_RESP_CTX_set_status_info_cond(ctx, TS_STATUS_REJECTION,
@@ -602,7 +602,7 @@ static TS_TST_INFO *ts_RESP_create_tst_info(TS_RESP_CTX *ctx,
                                          "generation.");
     }
     GENERAL_NAME_free(tsa_name);
-    TS_ACCURACY_free(accuracy);
+    _TS_ACCURACY_free(accuracy);
     ASN1_GENERALIZEDTIME_free(asn1_time);
     ASN1_INTEGER_free(serial);
 
@@ -728,7 +728,7 @@ static int ts_RESP_sign(TS_RESP_CTX *ctx)
                                          "generation.");
     BIO_free_all(p7bio);
     ESS_SIGNING_CERT_V2_free(sc2);
-    ESS_SIGNING_CERT_free(sc);
+    _ESS_SIGNING_CERT_free(sc);
     PKCS7_free(p7);
     return ret;
 }
@@ -758,7 +758,7 @@ static ESS_SIGNING_CERT *ess_SIGNING_CERT_new_init(X509 *signcert,
 
     return sc;
  err:
-    ESS_SIGNING_CERT_free(sc);
+    _ESS_SIGNING_CERT_free(sc);
     TSerr(TS_F_ESS_SIGNING_CERT_NEW_INIT, ERR_R_MALLOC_FAILURE);
     return NULL;
 }
@@ -800,7 +800,7 @@ static ESS_CERT_ID *ess_CERT_ID_new_init(X509 *cert, int issuer_needed)
     return cid;
  err:
     GENERAL_NAME_free(name);
-    ESS_CERT_ID_free(cid);
+    _ESS_CERT_ID_free(cid);
     TSerr(TS_F_ESS_CERT_ID_NEW_INIT, ERR_R_MALLOC_FAILURE);
     return NULL;
 }

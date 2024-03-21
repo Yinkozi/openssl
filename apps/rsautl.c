@@ -266,7 +266,7 @@ int rsautl_main(int argc, char **argv)
         _BIO_write(out, rsa_out, rsa_outlen);
     }
  end:
-    RSA_free(rsa);
+    _RSA_free(rsa);
     release_engine(e);
     _BIO_free(in);
     BIO_free_all(out);

@@ -1491,7 +1491,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
     if (sess) {
         /* Some additional consistency checks */
         if (slen != 0) {
-            SSL_SESSION_free(sess);
+            _SSL_SESSION_free(sess);
             sess = NULL;
             ret = SSL_TICKET_NO_DECRYPT;
             goto end;
@@ -1547,7 +1547,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
 
         case SSL_TICKET_RETURN_IGNORE:
             ret = SSL_TICKET_NONE;
-            SSL_SESSION_free(sess);
+            _SSL_SESSION_free(sess);
             sess = NULL;
             break;
 
@@ -1555,7 +1555,7 @@ SSL_TICKET_STATUS tls_decrypt_ticket(SSL *s, const unsigned char *etick,
             if (ret != SSL_TICKET_EMPTY && ret != SSL_TICKET_NO_DECRYPT)
                 ret = SSL_TICKET_NO_DECRYPT;
             /* else the value of |ret| will already do the right thing */
-            SSL_SESSION_free(sess);
+            _SSL_SESSION_free(sess);
             sess = NULL;
             break;
 
@@ -2459,7 +2459,7 @@ DH *ssl_get_auto_dh(SSL *s)
         return NULL;
     g = BN_new();
     if (g == NULL || !BN_set_word(g, 2)) {
-        DH_free(dhp);
+        _DH_free(dhp);
         BN_free(g);
         return NULL;
     }
@@ -2480,7 +2480,7 @@ DH *ssl_get_auto_dh(SSL *s)
     else
         p = BN_get_rfc2409_prime_1024(NULL);
     if (p == NULL || !DH_set0_pqg(dhp, p, NULL, g)) {
-        DH_free(dhp);
+        _DH_free(dhp);
         BN_free(p);
         BN_free(g);
         return NULL;

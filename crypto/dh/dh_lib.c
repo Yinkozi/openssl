@@ -89,11 +89,11 @@ DH *DH_new_method(ENGINE *engine)
     return ret;
 
  err:
-    DH_free(ret);
+    _DH_free(ret);
     return NULL;
 }
 
-void DH_free(DH *r)
+void _DH_free(DH *r)
 {
     int i;
 

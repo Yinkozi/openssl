@@ -764,7 +764,7 @@ EXT_RETURN tls_construct_ctos_early_data(SSL *s, WPACKET *pkt,
             && (!s->psk_use_session_cb(s, handmd, &id, &idlen, &psksess)
                 || (psksess != NULL
                     && psksess->ssl_version != TLS1_3_VERSION))) {
-        SSL_SESSION_free(psksess);
+        _SSL_SESSION_free(psksess);
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_CONSTRUCT_CTOS_EARLY_DATA,
                  SSL_R_BAD_PSK);
         return EXT_RETURN_FAIL;
@@ -824,7 +824,7 @@ EXT_RETURN tls_construct_ctos_early_data(SSL *s, WPACKET *pkt,
     }
 #endif  /* OPENSSL_NO_PSK */
 
-    SSL_SESSION_free(s->psksession);
+    _SSL_SESSION_free(s->psksession);
     s->psksession = psksess;
     if (psksess != NULL) {
         _OPENSSL_free(s->psksession_id);
@@ -1991,7 +1991,7 @@ int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
      */
     if (identity == 0 && (s->psksession == NULL || s->ext.tick_identity == 2)) {
         s->hit = 1;
-        SSL_SESSION_free(s->psksession);
+        _SSL_SESSION_free(s->psksession);
         s->psksession = NULL;
         return 1;
     }
@@ -2014,7 +2014,7 @@ int tls_parse_stoc_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
             || s->psksession->ext.max_early_data == 0)
         memcpy(s->early_secret, s->psksession->early_secret, EVP_MAX_MD_SIZE);
 
-    SSL_SESSION_free(s->session);
+    _SSL_SESSION_free(s->session);
     s->session = s->psksession;
     s->psksession = NULL;
     s->hit = 1;

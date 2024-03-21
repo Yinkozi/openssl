@@ -279,7 +279,7 @@ int pkcs8_main(int argc, char **argv)
 
     if (nocrypt) {
         if (informat == FORMAT_PEM) {
-            p8inf = PEM_read_bio_PKCS8_PRIV_KEY_INFO(in, NULL, NULL, NULL);
+            p8inf = _PEM_read_bio_PKCS8_PRIV_KEY_INFO(in, NULL, NULL, NULL);
         } else if (informat == FORMAT_ASN1) {
             p8inf = d2i_PKCS8_PRIV_KEY_INFO_bio(in, NULL);
         } else {
@@ -288,7 +288,7 @@ int pkcs8_main(int argc, char **argv)
         }
     } else {
         if (informat == FORMAT_PEM) {
-            p8 = PEM_read_bio_PKCS8(in, NULL, NULL, NULL);
+            p8 = _PEM_read_bio_PKCS8(in, NULL, NULL, NULL);
         } else if (informat == FORMAT_ASN1) {
             p8 = d2i_PKCS8_bio(in, NULL);
         } else {

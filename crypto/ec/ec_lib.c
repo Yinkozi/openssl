@@ -91,7 +91,7 @@ void EC_pre_comp_free(EC_GROUP *group)
     group->pre_comp.ec = NULL;
 }
 
-void EC_GROUP_free(EC_GROUP *group)
+void _EC_GROUP_free(EC_GROUP *group)
 {
     if (!group)
         return;
@@ -248,7 +248,7 @@ EC_GROUP *EC_GROUP_dup(const EC_GROUP *a)
 
  err:
     if (!ok) {
-        EC_GROUP_free(t);
+        _EC_GROUP_free(t);
         return NULL;
     }
         return t;

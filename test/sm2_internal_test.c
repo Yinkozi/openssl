@@ -128,7 +128,7 @@ done:
     BN_free(order);
     BN_free(cof);
     if (!ok) {
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
         group = NULL;
     }
 
@@ -203,7 +203,7 @@ static int test_sm2_crypt(const EC_GROUP *group,
     _OPENSSL_free(ctext);
     _OPENSSL_free(recovered);
     _OPENSSL_free(expected);
-    EC_KEY_free(key);
+    _EC_KEY_free(key);
     return rc;
 }
 
@@ -294,8 +294,8 @@ static int sm2_crypt_test(void)
 
     testresult = 1;
  done:
-    EC_GROUP_free(test_group);
-    EC_GROUP_free(gm_group);
+    _EC_GROUP_free(test_group);
+    _EC_GROUP_free(gm_group);
 
     return testresult;
 }
@@ -358,9 +358,9 @@ static int test_sm2_sign(const EC_GROUP *group,
     TEST_true(ok);
 
  done:
-    ECDSA_SIG_free(sig);
+    _ECDSA_SIG_free(sig);
     EC_POINT_free(pt);
-    EC_KEY_free(key);
+    _EC_KEY_free(key);
     BN_free(priv);
     BN_free(r);
     BN_free(s);
@@ -399,7 +399,7 @@ static int sm2_sig_test(void)
     testresult = 1;
 
  done:
-    EC_GROUP_free(test_group);
+    _EC_GROUP_free(test_group);
 
     return testresult;
 }

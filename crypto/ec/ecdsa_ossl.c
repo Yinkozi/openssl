@@ -26,7 +26,7 @@ int ossl_ecdsa_sign(int type, const unsigned char *dgst, int dlen,
         return 0;
     }
     *siglen = i2d_ECDSA_SIG(s, &sig);
-    ECDSA_SIG_free(s);
+    _ECDSA_SIG_free(s);
     return 1;
 }
 
@@ -274,7 +274,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
     ok = 1;
  err:
     if (!ok) {
-        ECDSA_SIG_free(ret);
+        _ECDSA_SIG_free(ret);
         ret = NULL;
     }
     BN_CTX_free(ctx);
@@ -310,7 +310,7 @@ int ossl_ecdsa_verify(int type, const unsigned char *dgst, int dgst_len,
     ret = ECDSA_do_verify(dgst, dgst_len, s, eckey);
  err:
     _OPENSSL_free(der);
-    ECDSA_SIG_free(s);
+    _ECDSA_SIG_free(s);
     return ret;
 }
 

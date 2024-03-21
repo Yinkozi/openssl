@@ -226,7 +226,7 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
         *id = NULL;
         *idlen = 0;
         *sess = NULL;
-        SSL_SESSION_free(usesess);
+        _SSL_SESSION_free(usesess);
     } else {
         *sess = usesess;
         *id = (unsigned char *)psk_identity;
@@ -236,7 +236,7 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
     return 1;
 
  err:
-    SSL_SESSION_free(usesess);
+    _SSL_SESSION_free(usesess);
     return 0;
 }
 
@@ -1848,7 +1848,7 @@ int s_client_main(int argc, char **argv)
             ERR_print_errors(bio_err);
             goto end;
         }
-        psksess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
+        psksess = _PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
         _BIO_free(stmp);
         if (psksess == NULL) {
             BIO_printf(bio_err, "Can't read PSK session file %s\n", psksessf);
@@ -2002,7 +2002,7 @@ int s_client_main(int argc, char **argv)
             ERR_print_errors(bio_err);
             goto end;
         }
-        sess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
+        sess = _PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
         _BIO_free(stmp);
         if (sess == NULL) {
             BIO_printf(bio_err, "Can't open session file %s\n", sess_in);
@@ -2015,7 +2015,7 @@ int s_client_main(int argc, char **argv)
             goto end;
         }
 
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
     }
 
     if (fallback_scsv)
@@ -3145,7 +3145,7 @@ int s_client_main(int argc, char **argv)
             print_stuff(bio_c_out, con, 1);
         SSL_free(con);
     }
-    SSL_SESSION_free(psksess);
+    _SSL_SESSION_free(psksess);
 #if !defined(OPENSSL_NO_NEXTPROTONEG)
     _OPENSSL_free(next_proto.data);
 #endif

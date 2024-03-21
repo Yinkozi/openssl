@@ -269,7 +269,7 @@ static int test_rsa_simple(int idx, int en_pad_type, int de_pad_type,
         key = NULL;
     }
 err:
-    RSA_free(key);
+    _RSA_free(key);
     return ret;
 }
 
@@ -345,7 +345,7 @@ static int test_rsa_oaep(int idx)
 
     ret = 1;
 err:
-    RSA_free(key);
+    _RSA_free(key);
     return ret;
 }
 

@@ -165,7 +165,7 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
  err:
     if (rv == 0) {
         DSAerr(DSA_F_DSA_DO_SIGN, reason);
-        DSA_SIG_free(ret);
+        _DSA_SIG_free(ret);
         ret = NULL;
     }
     BN_CTX_free(ctx);

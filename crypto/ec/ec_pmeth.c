@@ -89,8 +89,8 @@ static void pkey_ec_cleanup(EVP_PKEY_CTX *ctx)
 {
     EC_PKEY_CTX *dctx = ctx->data;
     if (dctx != NULL) {
-        EC_GROUP_free(dctx->gen_group);
-        EC_KEY_free(dctx->co_key);
+        _EC_GROUP_free(dctx->gen_group);
+        _EC_KEY_free(dctx->co_key);
         _OPENSSL_free(dctx->kdf_ukm);
         _OPENSSL_free(dctx);
         ctx->data = NULL;
@@ -231,7 +231,7 @@ static int pkey_ec_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             ECerr(EC_F_PKEY_EC_CTRL, EC_R_INVALID_CURVE);
             return 0;
         }
-        EC_GROUP_free(dctx->gen_group);
+        _EC_GROUP_free(dctx->gen_group);
         dctx->gen_group = group;
         return 1;
 
@@ -272,7 +272,7 @@ static int pkey_ec_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             else
                 EC_KEY_clear_flags(dctx->co_key, EC_FLAG_COFACTOR_ECDH);
         } else {
-            EC_KEY_free(dctx->co_key);
+            _EC_KEY_free(dctx->co_key);
             dctx->co_key = NULL;
         }
         return 1;
@@ -406,7 +406,7 @@ static int pkey_ec_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         return 0;
     if (!(ret = EC_KEY_set_group(ec, dctx->gen_group))
         || !ossl_assert(ret = EVP_PKEY_assign_EC_KEY(pkey, ec)))
-        EC_KEY_free(ec);
+        _EC_KEY_free(ec);
     return ret;
 }
 
@@ -424,7 +424,7 @@ static int pkey_ec_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
     if (ec == NULL)
         return 0;
     if (!ossl_assert(EVP_PKEY_assign_EC_KEY(pkey, ec))) {
-        EC_KEY_free(ec);
+        _EC_KEY_free(ec);
         return 0;
     }
     /* Note: if error is returned, we count on caller to free pkey->pkey.ec */

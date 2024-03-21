@@ -868,7 +868,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
             goto err;
         }
-        EC_GROUP_free(ret);
+        _EC_GROUP_free(ret);
         ret = named_group;
 
         /*
@@ -896,10 +896,10 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 
  err:
     if (!ok) {
-        EC_GROUP_free(ret);
+        _EC_GROUP_free(ret);
         ret = NULL;
     }
-    EC_GROUP_free(dup);
+    _EC_GROUP_free(dup);
 
     BN_free(p);
     BN_free(a);
@@ -973,7 +973,7 @@ EC_GROUP *d2i_ECPKParameters(EC_GROUP **a, const unsigned char **in, long len)
         group->decoded_from_explicit_params = 1;
 
     if (a) {
-        EC_GROUP_free(*a);
+        _EC_GROUP_free(*a);
         *a = group;
     }
 
@@ -1021,7 +1021,7 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
         ret = *a;
 
     if (priv_key->parameters) {
-        EC_GROUP_free(ret->group);
+        _EC_GROUP_free(ret->group);
         ret->group = EC_GROUP_new_from_ecpkparameters(priv_key->parameters);
         if (ret->group != NULL
             && priv_key->parameters->type == ECPKPARAMETERS_TYPE_EXPLICIT)
@@ -1078,7 +1078,7 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
 
  err:
     if (a == NULL || *a != ret)
-        EC_KEY_free(ret);
+        _EC_KEY_free(ret);
     EC_PRIVATEKEY_free(priv_key);
     return NULL;
 }
@@ -1184,7 +1184,7 @@ EC_KEY *d2i_ECParameters(EC_KEY **a, const unsigned char **in, long len)
     if (!d2i_ECPKParameters(&ret->group, in, len)) {
         ECerr(EC_F_D2I_ECPARAMETERS, ERR_R_EC_LIB);
         if (a == NULL || *a != ret)
-             EC_KEY_free(ret);
+             _EC_KEY_free(ret);
         return NULL;
     }
 
@@ -1269,7 +1269,7 @@ ECDSA_SIG *ECDSA_SIG_new(void)
     return sig;
 }
 
-void ECDSA_SIG_free(ECDSA_SIG *sig)
+void _ECDSA_SIG_free(ECDSA_SIG *sig)
 {
     if (sig == NULL)
         return;

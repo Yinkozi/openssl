@@ -101,7 +101,7 @@ int gendsa_main(int argc, char **argv)
     if (in == NULL)
         goto end2;
 
-    if ((dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL)) == NULL) {
+    if ((dsa = _PEM_read_bio_DSAparams(in, NULL, NULL, NULL)) == NULL) {
         BIO_printf(bio_err, "unable to load DSA parameter file\n");
         goto end;
     }
@@ -134,7 +134,7 @@ int gendsa_main(int argc, char **argv)
  end2:
     _BIO_free(in);
     BIO_free_all(out);
-    DSA_free(dsa);
+    _DSA_free(dsa);
     release_engine(e);
     _OPENSSL_free(passout);
     return ret;

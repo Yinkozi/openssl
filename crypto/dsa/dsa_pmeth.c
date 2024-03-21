@@ -217,7 +217,7 @@ static int pkey_dsa_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
     if (ret)
         EVP_PKEY_assign_DSA(pkey, dsa);
     else
-        DSA_free(dsa);
+        _DSA_free(dsa);
     return ret;
 }
 

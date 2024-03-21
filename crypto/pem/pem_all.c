@@ -54,7 +54,7 @@ static RSA *pkey_get_rsa(EVP_PKEY *key, RSA **rsa)
     if (!rtmp)
         return NULL;
     if (rsa) {
-        RSA_free(*rsa);
+        _RSA_free(*rsa);
         *rsa = rtmp;
     }
     return rtmp;
@@ -98,13 +98,13 @@ static DSA *pkey_get_dsa(EVP_PKEY *key, DSA **dsa)
     if (!dtmp)
         return NULL;
     if (dsa) {
-        DSA_free(*dsa);
+        _DSA_free(*dsa);
         *dsa = dtmp;
     }
     return dtmp;
 }
 
-DSA *PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **dsa, pem_password_cb *cb,
+DSA *_PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **dsa, pem_password_cb *cb,
                                 void *u)
 {
     EVP_PKEY *pktmp;
@@ -138,13 +138,13 @@ static EC_KEY *pkey_get_eckey(EVP_PKEY *key, EC_KEY **eckey)
     if (!dtmp)
         return NULL;
     if (eckey) {
-        EC_KEY_free(*eckey);
+        _EC_KEY_free(*eckey);
         *eckey = dtmp;
     }
     return dtmp;
 }
 
-EC_KEY *PEM_read_bio_ECPrivateKey(BIO *bp, EC_KEY **key, pem_password_cb *cb,
+EC_KEY *_PEM_read_bio_ECPrivateKey(BIO *bp, EC_KEY **key, pem_password_cb *cb,
                                   void *u)
 {
     EVP_PKEY *pktmp;

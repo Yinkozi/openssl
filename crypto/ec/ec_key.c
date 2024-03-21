@@ -28,18 +28,18 @@ EC_KEY *EC_KEY_new_by_curve_name(int nid)
         return NULL;
     ret->group = EC_GROUP_new_by_curve_name(nid);
     if (ret->group == NULL) {
-        EC_KEY_free(ret);
+        _EC_KEY_free(ret);
         return NULL;
     }
     if (ret->meth->set_group != NULL
         && ret->meth->set_group(ret, ret->group) == 0) {
-        EC_KEY_free(ret);
+        _EC_KEY_free(ret);
         return NULL;
     }
     return ret;
 }
 
-void EC_KEY_free(EC_KEY *r)
+void _EC_KEY_free(EC_KEY *r)
 {
     int i;
 
@@ -64,7 +64,7 @@ void EC_KEY_free(EC_KEY *r)
 
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_EC_KEY, r, &r->ex_data);
     CRYPTO_THREAD_lock_free(r->lock);
-    EC_GROUP_free(r->group);
+    _EC_GROUP_free(r->group);
     EC_POINT_free(r->pub_key);
     BN_clear_free(r->priv_key);
 
@@ -92,7 +92,7 @@ EC_KEY *EC_KEY_copy(EC_KEY *dest, const EC_KEY *src)
     if (src->group != NULL) {
         const EC_METHOD *meth = EC_GROUP_method_of(src->group);
         /* clear the old group */
-        EC_GROUP_free(dest->group);
+        _EC_GROUP_free(dest->group);
         dest->group = EC_GROUP_new(meth);
         if (dest->group == NULL)
             return NULL;
@@ -156,7 +156,7 @@ EC_KEY *EC_KEY_dup(const EC_KEY *ec_key)
         return NULL;
 
     if (EC_KEY_copy(ret, ec_key) == NULL) {
-        EC_KEY_free(ret);
+        _EC_KEY_free(ret);
         return NULL;
     }
     return ret;
@@ -405,7 +405,7 @@ int EC_KEY_set_group(EC_KEY *key, const EC_GROUP *group)
 {
     if (key->meth->set_group != NULL && key->meth->set_group(key, group) == 0)
         return 0;
-    EC_GROUP_free(key->group);
+    _EC_GROUP_free(key->group);
     key->group = EC_GROUP_dup(group);
     return (key->group == NULL) ? 0 : 1;
 }

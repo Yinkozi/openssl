@@ -96,11 +96,11 @@ DSA *DSA_new_method(ENGINE *engine)
     return ret;
 
  err:
-    DSA_free(ret);
+    _DSA_free(ret);
     return NULL;
 }
 
-void DSA_free(DSA *r)
+void _DSA_free(DSA *r)
 {
     int i;
 
@@ -235,7 +235,7 @@ DH *DSA_dup_DH(const DSA *r)
     BN_free(q);
     BN_free(pub_key);
     BN_free(priv_key);
-    DH_free(ret);
+    _DH_free(ret);
     return NULL;
 }
 #endif

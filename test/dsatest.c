@@ -110,7 +110,7 @@ static int dsa_test(void)
         ret = 1;
 
  end:
-    DSA_free(dsa);
+    _DSA_free(dsa);
     BN_GENCB_free(cb);
     return ret;
 }

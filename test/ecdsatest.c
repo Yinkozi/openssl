@@ -170,8 +170,8 @@ static int x9_62_tests(int n)
     _OPENSSL_free(message);
     _OPENSSL_free(pbuf);
     _OPENSSL_free(qbuf);
-    EC_KEY_free(key);
-    ECDSA_SIG_free(signature);
+    _EC_KEY_free(key);
+    _ECDSA_SIG_free(signature);
     BN_free(r);
     BN_free(s);
     EVP_MD_CTX_free(mctx);

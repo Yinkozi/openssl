@@ -98,11 +98,11 @@ RSA *RSA_new_method(ENGINE *engine)
     return ret;
 
  err:
-    RSA_free(ret);
+    _RSA_free(ret);
     return NULL;
 }
 
-void RSA_free(RSA *r)
+void _RSA_free(RSA *r)
 {
     int i;
 

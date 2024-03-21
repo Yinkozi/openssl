@@ -169,7 +169,7 @@ opthelp:
  end:
     BN_free(bn);
     BN_GENCB_free(cb);
-    RSA_free(rsa);
+    _RSA_free(rsa);
     BIO_free_all(out);
     release_engine(eng);
     _OPENSSL_free(passout);

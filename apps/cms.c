@@ -364,7 +364,7 @@ int cms_main(int argc, char **argv)
             if (rctformat == FORMAT_SMIME)
                 rcms = SMIME_read_CMS(rctin, NULL);
             else if (rctformat == FORMAT_PEM)
-                rcms = PEM_read_bio_CMS(rctin, NULL, NULL, NULL);
+                rcms = _PEM_read_bio_CMS(rctin, NULL, NULL, NULL);
             else if (rctformat == FORMAT_ASN1)
                 if (!opt_format(opt_arg(),
                                 OPT_FMT_PEMDER | OPT_FMT_SMIME, &rctformat))
@@ -736,7 +736,7 @@ int cms_main(int argc, char **argv)
         if (informat == FORMAT_SMIME) {
             cms = SMIME_read_CMS(in, &indata);
         } else if (informat == FORMAT_PEM) {
-            cms = PEM_read_bio_CMS(in, NULL, NULL, NULL);
+            cms = _PEM_read_bio_CMS(in, NULL, NULL, NULL);
         } else if (informat == FORMAT_ASN1) {
             cms = d2i_CMS_bio(in, NULL);
         } else {
@@ -778,7 +778,7 @@ int cms_main(int argc, char **argv)
         if (rctformat == FORMAT_SMIME) {
             rcms = SMIME_read_CMS(rctin, NULL);
         } else if (rctformat == FORMAT_PEM) {
-            rcms = PEM_read_bio_CMS(rctin, NULL, NULL, NULL);
+            rcms = _PEM_read_bio_CMS(rctin, NULL, NULL, NULL);
         } else if (rctformat == FORMAT_ASN1) {
             rcms = d2i_CMS_bio(rctin, NULL);
         } else {

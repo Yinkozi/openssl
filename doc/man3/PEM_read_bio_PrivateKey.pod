@@ -12,19 +12,19 @@ _PEM_read_bio_RSAPrivateKey, PEM_read_RSAPrivateKey,
 PEM_write_bio_RSAPrivateKey, PEM_write_RSAPrivateKey,
 _PEM_read_bio_RSAPublicKey, PEM_read_RSAPublicKey, PEM_write_bio_RSAPublicKey,
 PEM_write_RSAPublicKey, PEM_read_bio_RSA_PUBKEY, PEM_read_RSA_PUBKEY,
-PEM_write_bio_RSA_PUBKEY, PEM_write_RSA_PUBKEY, PEM_read_bio_DSAPrivateKey,
+PEM_write_bio_RSA_PUBKEY, PEM_write_RSA_PUBKEY, _PEM_read_bio_DSAPrivateKey,
 PEM_read_DSAPrivateKey, PEM_write_bio_DSAPrivateKey, PEM_write_DSAPrivateKey,
 PEM_read_bio_DSA_PUBKEY, PEM_read_DSA_PUBKEY, PEM_write_bio_DSA_PUBKEY,
 PEM_write_DSA_PUBKEY, PEM_read_bio_Parameters, PEM_write_bio_Parameters,
-PEM_read_bio_DSAparams, PEM_read_DSAparams,
+_PEM_read_bio_DSAparams, PEM_read_DSAparams,
 PEM_write_bio_DSAparams, PEM_write_DSAparams, _PEM_read_bio_DHparams,
 PEM_read_DHparams, PEM_write_bio_DHparams, PEM_write_DHparams,
 _PEM_read_bio_X509, PEM_read_X509, PEM_write_bio_X509, PEM_write_X509,
 _PEM_read_bio_X509_AUX, PEM_read_X509_AUX, PEM_write_bio_X509_AUX,
-PEM_write_X509_AUX, PEM_read_bio_X509_REQ, PEM_read_X509_REQ,
+PEM_write_X509_AUX, _PEM_read_bio_X509_REQ, PEM_read_X509_REQ,
 PEM_write_bio_X509_REQ, PEM_write_X509_REQ, PEM_write_bio_X509_REQ_NEW,
 PEM_write_X509_REQ_NEW, _PEM_read_bio_X509_CRL, PEM_read_X509_CRL,
-PEM_write_bio_X509_CRL, PEM_write_X509_CRL, PEM_read_bio_PKCS7, PEM_read_PKCS7,
+PEM_write_bio_X509_CRL, PEM_write_X509_CRL, _PEM_read_bio_PKCS7, PEM_read_PKCS7,
 PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
 
 =head1 SYNOPSIS
@@ -93,7 +93,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_RSA_PUBKEY(BIO *bp, RSA *x);
  int PEM_write_RSA_PUBKEY(FILE *fp, RSA *x);
 
- DSA *PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **x,
+ DSA *_PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **x,
                                  pem_password_cb *cb, void *u);
  DSA *PEM_read_DSAPrivateKey(FILE *fp, DSA **x,
                              pem_password_cb *cb, void *u);
@@ -114,7 +114,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  EVP_PKEY *PEM_read_bio_Parameters(BIO *bp, EVP_PKEY **x);
  int PEM_write_bio_Parameters(BIO *bp, const EVP_PKEY *x);
 
- DSA *PEM_read_bio_DSAparams(BIO *bp, DSA **x, pem_password_cb *cb, void *u);
+ DSA *_PEM_read_bio_DSAparams(BIO *bp, DSA **x, pem_password_cb *cb, void *u);
  DSA *PEM_read_DSAparams(FILE *fp, DSA **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_DSAparams(BIO *bp, DSA *x);
  int PEM_write_DSAparams(FILE *fp, DSA *x);
@@ -134,7 +134,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_X509_AUX(BIO *bp, X509 *x);
  int PEM_write_X509_AUX(FILE *fp, X509 *x);
 
- X509_REQ *PEM_read_bio_X509_REQ(BIO *bp, X509_REQ **x,
+ X509_REQ *_PEM_read_bio_X509_REQ(BIO *bp, X509_REQ **x,
                                  pem_password_cb *cb, void *u);
  X509_REQ *PEM_read_X509_REQ(FILE *fp, X509_REQ **x,
                              pem_password_cb *cb, void *u);
@@ -150,7 +150,7 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
  int PEM_write_bio_X509_CRL(BIO *bp, X509_CRL *x);
  int PEM_write_X509_CRL(FILE *fp, X509_CRL *x);
 
- PKCS7 *PEM_read_bio_PKCS7(BIO *bp, PKCS7 **x, pem_password_cb *cb, void *u);
+ PKCS7 *_PEM_read_bio_PKCS7(BIO *bp, PKCS7 **x, pem_password_cb *cb, void *u);
  PKCS7 *PEM_read_PKCS7(FILE *fp, PKCS7 **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_PKCS7(BIO *bp, PKCS7 *x);
  int PEM_write_PKCS7(FILE *fp, PKCS7 *x);

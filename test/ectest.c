@@ -173,7 +173,7 @@ static int prime_field_tests(void)
         || !TEST_ptr(tmp = EC_GROUP_new(EC_GROUP_method_of(group)))
         || !TEST_true(EC_GROUP_copy(tmp, group)))
         goto err;
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     group = tmp;
     tmp = NULL;
 
@@ -611,8 +611,8 @@ err:
     BN_free(p);
     BN_free(a);
     BN_free(b);
-    EC_GROUP_free(group);
-    EC_GROUP_free(tmp);
+    _EC_GROUP_free(group);
+    _EC_GROUP_free(tmp);
     EC_POINT_free(P);
     EC_POINT_free(Q);
     EC_POINT_free(R);
@@ -622,12 +622,12 @@ err:
     BN_free(yplusone);
     BN_free(scalar3);
 
-    EC_GROUP_free(P_160);
-    EC_GROUP_free(P_192);
-    EC_GROUP_free(P_224);
-    EC_GROUP_free(P_256);
-    EC_GROUP_free(P_384);
-    EC_GROUP_free(P_521);
+    _EC_GROUP_free(P_160);
+    _EC_GROUP_free(P_192);
+    _EC_GROUP_free(P_224);
+    _EC_GROUP_free(P_256);
+    _EC_GROUP_free(P_384);
+    _EC_GROUP_free(P_521);
     return r;
 }
 
@@ -954,8 +954,8 @@ err:
     EC_POINT_free(P);
     EC_POINT_free(Q);
     EC_POINT_free(R);
-    EC_GROUP_free(group);
-    EC_GROUP_free(variable);
+    _EC_GROUP_free(group);
+    _EC_GROUP_free(variable);
     return r;
 }
 
@@ -988,7 +988,7 @@ static int char2_field_tests(void)
         || !TEST_ptr(tmp = EC_GROUP_new(EC_GROUP_method_of(group)))
         || !TEST_true(EC_GROUP_copy(tmp, group)))
         goto err;
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     group = tmp;
     tmp = NULL;
 
@@ -1112,8 +1112,8 @@ err:
     BN_free(p);
     BN_free(a);
     BN_free(b);
-    EC_GROUP_free(group);
-    EC_GROUP_free(tmp);
+    _EC_GROUP_free(group);
+    _EC_GROUP_free(tmp);
     EC_POINT_free(P);
     EC_POINT_free(Q);
     EC_POINT_free(R);
@@ -1168,7 +1168,7 @@ static int hybrid_point_encoding_test(void)
 err:
     BN_free(x);
     BN_free(y);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     EC_POINT_free(point);
     _OPENSSL_free(buf);
     return r;
@@ -1187,10 +1187,10 @@ static int internal_curve_test(int n)
     }
     if (!TEST_true(EC_GROUP_check(group, NULL))) {
         TEST_info("EC_GROUP_check() failed with curve %s\n", OBJ_nid2sn(nid));
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
         return 0;
     }
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     return 1;
 }
 
@@ -1204,7 +1204,7 @@ static int internal_curve_test_method(int n)
         return 0;
     }
     r = group_order_tests(group);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     return r;
 }
 
@@ -1435,7 +1435,7 @@ static int nistp_single_test(int idx)
 
     r = group_order_tests(NISTP);
 err:
-    EC_GROUP_free(NISTP);
+    _EC_GROUP_free(NISTP);
     EC_POINT_free(G);
     EC_POINT_free(P);
     EC_POINT_free(Q);
@@ -1516,7 +1516,7 @@ static int underflow_test(void)
     EC_POINT_free(P);
     EC_POINT_free(Q);
     EC_POINT_free(R);
-    EC_GROUP_free(grp);
+    _EC_GROUP_free(grp);
     BN_CTX_free(ctx);
 
     return testresult;
@@ -1821,13 +1821,13 @@ static int check_named_curve_from_ecparameters(int id)
     ret = 1;
 err:
     for (g_next = &g_ary[0]; g_next < g_ary + OSSL_NELEM(g_ary); g_next++)
-        EC_GROUP_free(*g_next);
+        _EC_GROUP_free(*g_next);
     for (p_next = &p_ary[0]; p_next < p_ary + OSSL_NELEM(g_ary); p_next++)
         ECPARAMETERS_free(*p_next);
     ECPARAMETERS_free(params);
     EC_POINT_free(other_gen);
-    EC_GROUP_free(tmpg);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(tmpg);
+    _EC_GROUP_free(group);
     BN_CTX_end(bn_ctx);
     BN_CTX_free(bn_ctx);
     return ret;
@@ -1846,7 +1846,7 @@ static int parameter_test(void)
         || !TEST_int_eq(EC_GROUP_cmp(group, group2, NULL), 0))
         goto err;
 
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     group = NULL;
 
     /* Test the named curve encoding, which should be default. */
@@ -1869,8 +1869,8 @@ static int parameter_test(void)
 
     r = 1;
 err:
-    EC_GROUP_free(group);
-    EC_GROUP_free(group2);
+    _EC_GROUP_free(group);
+    _EC_GROUP_free(group2);
     ECPARAMETERS_free(ecparameters);
     _OPENSSL_free(buf);
     return r;
@@ -1962,7 +1962,7 @@ static int cofactor_range_test(void)
     ret = 1;
  err:
     BN_free(cf);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     return ret;
 }
 
@@ -1987,8 +1987,8 @@ static int cardinality_test(int n)
     if (!TEST_ptr(ctx = BN_CTX_new())
         || !TEST_ptr(g1 = EC_GROUP_new_by_curve_name(nid))
         || !TEST_ptr(g2 = EC_GROUP_new(EC_GROUP_method_of(g1)))) {
-        EC_GROUP_free(g1);
-        EC_GROUP_free(g2);
+        _EC_GROUP_free(g1);
+        _EC_GROUP_free(g2);
         BN_CTX_free(ctx);
         return 0;
     }
@@ -2042,8 +2042,8 @@ static int cardinality_test(int n)
     ret = 1;
  err:
     EC_POINT_free(g2_gen);
-    EC_GROUP_free(g1);
-    EC_GROUP_free(g2);
+    _EC_GROUP_free(g1);
+    _EC_GROUP_free(g2);
     BN_CTX_end(ctx);
     BN_CTX_free(ctx);
     return ret;
@@ -2142,7 +2142,7 @@ static int ec_point_hex2point_test(int id)
 
  err:
     EC_POINT_free(P);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     BN_CTX_free(bnctx);
 
     return ret;
@@ -2221,7 +2221,7 @@ static int custom_generator_test(int id)
     EC_POINT_free(Q1);
     EC_POINT_free(Q2);
     EC_POINT_free(G2);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     BN_CTX_free(ctx);
     _OPENSSL_free(b1);
     _OPENSSL_free(b2);

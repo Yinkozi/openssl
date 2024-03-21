@@ -1767,7 +1767,7 @@ HANDSHAKE_RESULT *do_handshake(SSL_CTX *server_ctx, SSL_CTX *server2_ctx,
                                    test_ctx, &test_ctx->resume_extra,
                                    session, serv_sess, NULL, NULL);
  end:
-    SSL_SESSION_free(session);
-    SSL_SESSION_free(serv_sess);
+    _SSL_SESSION_free(session);
+    _SSL_SESSION_free(serv_sess);
     return result;
 }

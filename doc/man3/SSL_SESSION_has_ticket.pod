@@ -40,7 +40,7 @@ SSL_SESSION_get_ticket_lifetime_hint() returns the number of seconds.
 L<ssl(7)>,
 L<d2i_SSL_SESSION(3)>,
 L<SSL_SESSION_get_time(3)>,
-L<SSL_SESSION_free(3)>
+L<_SSL_SESSION_free(3)>
 
 =head1 HISTORY
 

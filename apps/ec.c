@@ -191,9 +191,9 @@ int ec_main(int argc, char **argv)
         }
     } else {
         if (pubin)
-            eckey = PEM_read_bio_EC_PUBKEY(in, NULL, NULL, NULL);
+            eckey = _PEM_read_bio_EC_PUBKEY(in, NULL, NULL, NULL);
         else
-            eckey = PEM_read_bio_ECPrivateKey(in, NULL, NULL, passin);
+            eckey = _PEM_read_bio_ECPrivateKey(in, NULL, NULL, passin);
     }
     if (eckey == NULL) {
         BIO_printf(bio_err, "unable to load Key\n");
@@ -270,7 +270,7 @@ int ec_main(int argc, char **argv)
  end:
     _BIO_free(in);
     BIO_free_all(out);
-    EC_KEY_free(eckey);
+    _EC_KEY_free(eckey);
     release_engine(e);
     _OPENSSL_free(passin);
     _OPENSSL_free(passout);

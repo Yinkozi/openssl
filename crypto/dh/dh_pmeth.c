@@ -316,7 +316,7 @@ static DSA *dsa_dh_generate(DH_PKEY_CTX *dctx, BN_GENCB *pcb)
         rv = dsa_builtin_paramgen2(ret, prime_len, subprime_len, md,
                                    NULL, 0, -1, NULL, NULL, NULL, pcb);
     if (rv <= 0) {
-        DSA_free(ret);
+        _DSA_free(ret);
         return NULL;
     }
     return ret;
@@ -373,7 +373,7 @@ static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         if (dsa_dh == NULL)
             return 0;
         dh = DSA_dup_DH(dsa_dh);
-        DSA_free(dsa_dh);
+        _DSA_free(dsa_dh);
         if (!dh)
             return 0;
         EVP_PKEY_assign(pkey, EVP_PKEY_DHX, dh);
@@ -391,7 +391,7 @@ static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
     if (ret)
         EVP_PKEY_assign_DH(pkey, dh);
     else
-        DH_free(dh);
+        _DH_free(dh);
     return ret;
 }
 

@@ -35,7 +35,7 @@ int TS_REQ_set_msg_imprint(TS_REQ *a, TS_MSG_IMPRINT *msg_imprint)
         TSerr(TS_F_TS_REQ_SET_MSG_IMPRINT, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    TS_MSG_IMPRINT_free(a->msg_imprint);
+    _TS_MSG_IMPRINT_free(a->msg_imprint);
     a->msg_imprint = new_msg_imprint;
     return 1;
 }

@@ -2180,7 +2180,7 @@ static int tls_process_ske_dhe(SSL *s, PACKET *pkt, EVP_PKEY **pkey)
     BN_free(p);
     BN_free(g);
     BN_free(bnpub_key);
-    DH_free(dh);
+    _DH_free(dh);
     _EVP_PKEY_free(peer_tmp);
 
     return 0;
@@ -2639,7 +2639,7 @@ MSG_PROCESS_RETURN tls_process_new_session_ticket(SSL *s, PACKET *pkt)
             SSL_CTX_remove_session(s->session_ctx, s->session);
         }
 
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
         s->session = new_sess;
     }
 

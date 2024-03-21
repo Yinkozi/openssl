@@ -24,7 +24,7 @@ static int dh_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
             return 2;
         return 0;
     } else if (operation == ASN1_OP_FREE_PRE) {
-        DH_free((DH *)*pval);
+        _DH_free((DH *)*pval);
         *pval = NULL;
         return 2;
     }
@@ -87,12 +87,12 @@ DH *d2i_DHxparams(DH **a, const unsigned char **pp, long length)
         return NULL;
     dhx = d2i_int_dhx(NULL, pp, length);
     if (dhx == NULL) {
-        DH_free(dh);
+        _DH_free(dh);
         return NULL;
     }
 
     if (a) {
-        DH_free(*a);
+        _DH_free(*a);
         *a = dh;
     }
 

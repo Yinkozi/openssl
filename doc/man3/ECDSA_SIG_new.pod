@@ -3,7 +3,7 @@
 =head1 NAME
 
 ECDSA_SIG_get0, ECDSA_SIG_get0_r, ECDSA_SIG_get0_s, ECDSA_SIG_set0,
-ECDSA_SIG_new, ECDSA_SIG_free, ECDSA_size, ECDSA_sign, ECDSA_do_sign,
+ECDSA_SIG_new, _ECDSA_SIG_free, ECDSA_size, ECDSA_sign, ECDSA_do_sign,
 ECDSA_verify, ECDSA_do_verify, ECDSA_sign_setup, ECDSA_sign_ex,
 ECDSA_do_sign_ex - low-level elliptic curve digital signature algorithm (ECDSA)
 functions
@@ -13,7 +13,7 @@ functions
  #include <openssl/ecdsa.h>
 
  ECDSA_SIG *ECDSA_SIG_new(void);
- void ECDSA_SIG_free(ECDSA_SIG *sig);
+ void _ECDSA_SIG_free(ECDSA_SIG *sig);
  void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
  const BIGNUM *ECDSA_SIG_get0_r(const ECDSA_SIG *sig);
  const BIGNUM *ECDSA_SIG_get0_s(const ECDSA_SIG *sig);
@@ -50,7 +50,7 @@ B<r> and B<s> value of an ECDSA signature (see X9.62 or FIPS 186-2).
 ECDSA_SIG_new() allocates an empty B<ECDSA_SIG> structure. Note: before
 OpenSSL 1.1.0 the: the B<r> and B<s> components were initialised.
 
-ECDSA_SIG_free() frees the B<ECDSA_SIG> structure B<sig>.
+_ECDSA_SIG_free() frees the B<ECDSA_SIG> structure B<sig>.
 
 ECDSA_SIG_get0() returns internal pointers the B<r> and B<s> values contained
 in B<sig> and stores them in B<*pr> and B<*ps>, respectively.

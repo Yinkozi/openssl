@@ -97,7 +97,7 @@ static DSA *load_dsa_params(void)
     if (!DSA_set0_pqg(dsa, p = BN_bin2bn(dsap_2048, sizeof(dsap_2048), NULL),
                            q = BN_bin2bn(dsaq_2048, sizeof(dsaq_2048), NULL),
                            g = BN_bin2bn(dsag_2048, sizeof(dsag_2048), NULL))) {
-        DSA_free(dsa);
+        _DSA_free(dsa);
         BN_free(p);
         BN_free(q);
         BN_free(g);
@@ -225,7 +225,7 @@ static int dsa_large_digest_test(void) {
 
 void cleanup_tests(void)
 {
-    DSA_free(dsakey);
+    _DSA_free(dsakey);
 }
 
 #endif /* OPENSSL_NO_DSA */

@@ -29,7 +29,7 @@ DH *DH_generate_parameters(int prime_len, int generator,
         return NULL;
     cb = BN_GENCB_new();
     if (cb == NULL) {
-        DH_free(ret);
+        _DH_free(ret);
         return NULL;
     }
 
@@ -40,7 +40,7 @@ DH *DH_generate_parameters(int prime_len, int generator,
         return ret;
     }
     BN_GENCB_free(cb);
-    DH_free(ret);
+    _DH_free(ret);
     return NULL;
 }
 #endif

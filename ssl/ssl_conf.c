@@ -249,7 +249,7 @@ static int cmd_ECDHParameters(SSL_CONF_CTX *cctx, const char *value)
         rv = SSL_CTX_set_tmp_ecdh(cctx->ctx, ecdh);
     else if (cctx->ssl)
         rv = SSL_set_tmp_ecdh(cctx->ssl, ecdh);
-    EC_KEY_free(ecdh);
+    _EC_KEY_free(ecdh);
 
     return rv > 0;
 }
@@ -554,7 +554,7 @@ static int cmd_DHParameters(SSL_CONF_CTX *cctx, const char *value)
     if (cctx->ssl)
         rv = SSL_set_tmp_dh(cctx->ssl, dh);
  end:
-    DH_free(dh);
+    _DH_free(dh);
     _BIO_free(in);
     return rv > 0;
 }

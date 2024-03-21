@@ -36,7 +36,7 @@ int ec_GF2m_simple_group_init(EC_GROUP *group)
 
 /*
  * Free a GF(2^m)-based EC_GROUP structure. Note that all other members are
- * handled by EC_GROUP_free.
+ * handled by _EC_GROUP_free.
  */
 void ec_GF2m_simple_group_finish(EC_GROUP *group)
 {

@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         goto err;
 
     /* Parse PEM content */
-    cms = PEM_read_bio_CMS(in, NULL, 0, NULL);
+    cms = _PEM_read_bio_CMS(in, NULL, 0, NULL);
 
     if (!cms)
         goto err;

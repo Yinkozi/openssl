@@ -109,7 +109,7 @@ EC_GROUP *EC_GROUP_new(const EC_METHOD *meth);
 /** Frees a EC_GROUP object
  *  \param  group  EC_GROUP object to be freed.
  */
-void EC_GROUP_free(EC_GROUP *group);
+void _EC_GROUP_free(EC_GROUP *group);
 
 /** Clears and frees a EC_GROUP object
  *  \param  group  EC_GROUP object to be cleared and freed.
@@ -844,7 +844,7 @@ EC_KEY *EC_KEY_new_by_curve_name(int nid);
 /** Frees a EC_KEY object.
  *  \param  key  EC_KEY object to be freed.
  */
-void EC_KEY_free(EC_KEY *key);
+void _EC_KEY_free(EC_KEY *key);
 
 /** Copies a EC_KEY object.
  *  \param  dst  destination EC_KEY object
@@ -1137,7 +1137,7 @@ ECDSA_SIG *ECDSA_SIG_new(void);
 /** frees a ECDSA_SIG structure
  *  \param  sig  pointer to the ECDSA_SIG structure
  */
-void ECDSA_SIG_free(ECDSA_SIG *sig);
+void _ECDSA_SIG_free(ECDSA_SIG *sig);
 
 /** DER encode content of ECDSA_SIG object (note: this function modifies *pp
  *  (*pp += length of the DER encoded signature)).

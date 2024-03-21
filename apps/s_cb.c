@@ -420,7 +420,7 @@ int ssl_print_tmp_key(BIO *out, SSL *s)
             int nid;
             const char *cname;
             nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
-            EC_KEY_free(ec);
+            _EC_KEY_free(ec);
             cname = EC_curve_nid2nist(nid);
             if (cname == NULL)
                 cname = OBJ_nid2sn(nid);

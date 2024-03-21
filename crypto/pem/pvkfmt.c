@@ -299,13 +299,13 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
 
     if (!EVP_PKEY_set1_DSA(ret, dsa))
         goto memerr;
-    DSA_free(dsa);
+    _DSA_free(dsa);
     *in = p;
     return ret;
 
  memerr:
     PEMerr(PEM_F_B2I_DSS, ERR_R_MALLOC_FAILURE);
-    DSA_free(dsa);
+    _DSA_free(dsa);
     BN_free(pbn);
     BN_free(qbn);
     BN_free(gbn);
@@ -364,7 +364,7 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
 
     if (!EVP_PKEY_set1_RSA(ret, rsa))
         goto memerr;
-    RSA_free(rsa);
+    _RSA_free(rsa);
     *in = pin;
     return ret;
  memerr:
@@ -377,7 +377,7 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
     BN_free(dmq1);
     BN_free(iqmp);
     BN_free(d);
-    RSA_free(rsa);
+    _RSA_free(rsa);
     _EVP_PKEY_free(ret);
     return NULL;
 }

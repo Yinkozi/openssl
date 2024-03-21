@@ -560,7 +560,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     /* ECDSA */
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, ECDSAPrivateKeyPEM, sizeof(ECDSAPrivateKeyPEM)) == sizeof(ECDSAPrivateKeyPEM));
-    ecdsakey = PEM_read_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
+    ecdsakey = _PEM_read_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(ecdsakey != NULL);
     _BIO_free(bio_buf);
@@ -584,7 +584,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     /* DSA */
     bio_buf = _BIO_new(_BIO_s_mem());
     OPENSSL_assert((size_t)_BIO_write(bio_buf, DSAPrivateKeyPEM, sizeof(DSAPrivateKeyPEM)) == sizeof(DSAPrivateKeyPEM));
-    dsakey = PEM_read_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
+    dsakey = _PEM_read_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
     ERR_print_errors_fp(stderr);
     OPENSSL_assert(dsakey != NULL);
     _BIO_free(bio_buf);

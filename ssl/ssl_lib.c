@@ -582,10 +582,10 @@ int SSL_clear(SSL *s)
     }
 
     if (ssl_clear_bad_session(s)) {
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
         s->session = NULL;
     }
-    SSL_SESSION_free(s->psksession);
+    _SSL_SESSION_free(s->psksession);
     s->psksession = NULL;
     _OPENSSL_free(s->psksession_id);
     s->psksession_id = NULL;
@@ -1176,9 +1176,9 @@ void SSL_free(SSL *s)
     /* Make the next call work :-) */
     if (s->session != NULL) {
         ssl_clear_bad_session(s);
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
     }
-    SSL_SESSION_free(s->psksession);
+    _SSL_SESSION_free(s->psksession);
     _OPENSSL_free(s->psksession_id);
 
     clear_ciphers(s);
@@ -3564,7 +3564,7 @@ void ssl_update_cache(SSL *s, int mode)
         if (s->session_ctx->new_session_cb != NULL) {
             SSL_SESSION_up_ref(s->session);
             if (!s->session_ctx->new_session_cb(s, s->session))
-                SSL_SESSION_free(s->session);
+                _SSL_SESSION_free(s->session);
         }
     }
 

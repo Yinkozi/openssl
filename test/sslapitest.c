@@ -484,7 +484,7 @@ static int test_keylog_no_master_key(void)
     testresult = 1;
 
 end:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -684,7 +684,7 @@ end:
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
 
     return testresult;
 }
@@ -1132,7 +1132,7 @@ static int new_session_cb(SSL *ssl, SSL_SESSION *sess)
      * sess has been up-refed for us, but we don't actually need it so free it
      * immediately.
      */
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     return 1;
 }
 
@@ -1241,7 +1241,7 @@ static int execute_test_session(int maxprot, int use_int_cache,
             goto end;
     }
 
-    SSL_SESSION_free(sess1);
+    _SSL_SESSION_free(sess1);
     if (!TEST_ptr(sess1 = SSL_get1_session(clientssl2)))
         goto end;
     shutdown_ssl_connection(serverssl2, clientssl2);
@@ -1336,9 +1336,9 @@ static int execute_test_session(int maxprot, int use_int_cache,
     SSL_free(serverssl2);
     SSL_free(clientssl2);
     serverssl2 = clientssl2 = NULL;
-    SSL_SESSION_free(sess1);
+    _SSL_SESSION_free(sess1);
     sess1 = NULL;
-    SSL_SESSION_free(sess2);
+    _SSL_SESSION_free(sess2);
     sess2 = NULL;
 
     SSL_CTX_set_max_proto_version(sctx, maxprot);
@@ -1386,7 +1386,7 @@ static int execute_test_session(int maxprot, int use_int_cache,
             if (!TEST_ptr(tmp = SSL_SESSION_dup(sess2))
                     || !TEST_true(SSL_CTX_remove_session(sctx, sess2)))
                 goto end;
-            SSL_SESSION_free(sess2);
+            _SSL_SESSION_free(sess2);
         }
         sess2 = tmp;
     }
@@ -1427,8 +1427,8 @@ static int execute_test_session(int maxprot, int use_int_cache,
     SSL_free(serverssl3);
     SSL_free(clientssl3);
 # endif
-    SSL_SESSION_free(sess1);
-    SSL_SESSION_free(sess2);
+    _SSL_SESSION_free(sess1);
+    _SSL_SESSION_free(sess2);
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
 
@@ -1488,7 +1488,7 @@ static int new_cachesession_cb(SSL *ssl, SSL_SESSION *sess)
         sesscache[new_called] = sess;
     } else {
         /* We don't need the reference to the session, so free it */
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
     }
     new_called++;
 
@@ -1581,7 +1581,7 @@ static int check_resumption(int idx, SSL_CTX *sctx, SSL_CTX *cctx, int succ)
         SSL_free(serverssl);
         SSL_free(clientssl);
         serverssl = clientssl = NULL;
-        SSL_SESSION_free(sesscache[i]);
+        _SSL_SESSION_free(sesscache[i]);
         sesscache[i] = NULL;
     }
 
@@ -1691,7 +1691,7 @@ static int test_tickets(int stateful, int idx)
     SSL_free(serverssl);
     SSL_free(clientssl);
     for (j = 0; j < OSSL_NELEM(sesscache); j++) {
-        SSL_SESSION_free(sesscache[j]);
+        _SSL_SESSION_free(sesscache[j]);
         sesscache[j] = NULL;
     }
     SSL_CTX_free(sctx);
@@ -1758,8 +1758,8 @@ static int test_psk_tickets(void)
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
 
     return testresult;
@@ -2298,7 +2298,7 @@ static SSL_SESSION *create_a_psk(SSL *ssl)
             || !TEST_true(
                     SSL_SESSION_set_protocol_version(sess,
                                                      TLS1_3_VERSION))) {
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
         return NULL;
     }
     return sess;
@@ -2358,7 +2358,7 @@ static int setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx, SSL **clientssl,
                 || !TEST_true(SSL_SESSION_set_max_early_data(clientpsk,
                                                              0x100))
                 || !TEST_true(SSL_SESSION_up_ref(clientpsk))) {
-            SSL_SESSION_free(clientpsk);
+            _SSL_SESSION_free(clientpsk);
             clientpsk = NULL;
             return 0;
         }
@@ -2366,8 +2366,8 @@ static int setupearly_data_test(SSL_CTX **cctx, SSL_CTX **sctx, SSL **clientssl,
 
         if (sess != NULL) {
             if (!TEST_true(SSL_SESSION_up_ref(clientpsk))) {
-                SSL_SESSION_free(clientpsk);
-                SSL_SESSION_free(serverpsk);
+                _SSL_SESSION_free(clientpsk);
+                _SSL_SESSION_free(serverpsk);
                 clientpsk = serverpsk = NULL;
                 return 0;
             }
@@ -2544,7 +2544,7 @@ static int test_early_data_read_write(int idx)
             || !TEST_mem_eq(buf, readbytes, MSG7, strlen(MSG7)))
         goto end;
 
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     sess = SSL_get1_session(clientssl);
     use_session_cb_cnt = 0;
     find_session_cb_cnt = 0;
@@ -2594,9 +2594,9 @@ static int test_early_data_read_write(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -2733,9 +2733,9 @@ static int test_early_data_replay_int(int idx, int usecb, int confopt)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -2894,10 +2894,10 @@ static int early_data_skip_helper(int testtype, int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -2991,9 +2991,9 @@ static int test_early_data_not_sent(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -3099,7 +3099,7 @@ static int test_early_data_psk(int idx)
          * is associated with each handshake - not the session. Therefore it
          * should not matter that we used a different server name last time.
          */
-        SSL_SESSION_free(serverpsk);
+        _SSL_SESSION_free(serverpsk);
         serverpsk = SSL_SESSION_dup(clientpsk);
         if (!TEST_ptr(serverpsk)
                 || !TEST_true(SSL_SESSION_set1_hostname(serverpsk, "badhost")))
@@ -3142,7 +3142,7 @@ static int test_early_data_psk(int idx)
 
     case 7:
         /* Set inconsistent ALPN (late client detection) */
-        SSL_SESSION_free(serverpsk);
+        _SSL_SESSION_free(serverpsk);
         serverpsk = SSL_SESSION_dup(clientpsk);
         if (!TEST_ptr(serverpsk)
                 || !TEST_true(SSL_SESSION_set1_alpn_selected(clientpsk,
@@ -3190,9 +3190,9 @@ static int test_early_data_psk(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -3290,9 +3290,9 @@ static int test_early_data_psk_with_all_ciphers(int idx)
 
     testresult = 1;
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     if (clientssl != NULL)
         SSL_shutdown(clientssl);
@@ -3352,9 +3352,9 @@ static int test_early_data_not_expected(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -3426,8 +3426,8 @@ static int test_early_data_tls1_2(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -3560,7 +3560,7 @@ static int test_ciphersuite_change(void)
             || !TEST_true(SSL_session_reused(clientssl)))
         goto end;
 
-    SSL_SESSION_free(clntsess);
+    _SSL_SESSION_free(clntsess);
     clntsess = SSL_get1_session(clientssl);
     SSL_shutdown(clientssl);
     SSL_shutdown(serverssl);
@@ -3582,7 +3582,7 @@ static int test_ciphersuite_change(void)
             || !TEST_false(SSL_session_reused(clientssl)))
         goto end;
 
-    SSL_SESSION_free(clntsess);
+    _SSL_SESSION_free(clntsess);
     clntsess = NULL;
     SSL_shutdown(clientssl);
     SSL_shutdown(serverssl);
@@ -3639,7 +3639,7 @@ static int test_ciphersuite_change(void)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(clntsess);
+    _SSL_SESSION_free(clntsess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -3996,8 +3996,8 @@ static int test_tls13_psk(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -4477,7 +4477,7 @@ static int test_custom_exts(int tst)
     testresult = 1;
 
 end:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx2);
@@ -4845,9 +4845,9 @@ static int test_export_key_mat_early(int idx)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
-    SSL_SESSION_free(clientpsk);
-    SSL_SESSION_free(serverpsk);
+    _SSL_SESSION_free(sess);
+    _SSL_SESSION_free(clientpsk);
+    _SSL_SESSION_free(serverpsk);
     clientpsk = serverpsk = NULL;
     SSL_free(serverssl);
     SSL_free(clientssl);
@@ -5627,7 +5627,7 @@ static int test_info_callback(int tst)
             goto end;
 
         /* We don't actually need this reference */
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
 
         SSL_set_info_callback((tst % 2) == 0 ? serverssl : clientssl,
                               sslapi_info_callback);
@@ -5696,7 +5696,7 @@ static int test_info_callback(int tst)
  end:
     SSL_free(serverssl);
     SSL_free(clientssl);
-    SSL_SESSION_free(clntsess);
+    _SSL_SESSION_free(clntsess);
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
     return testresult;
@@ -6091,7 +6091,7 @@ static int test_ticket_callbacks(int tst)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(clntsess);
+    _SSL_SESSION_free(clntsess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -6814,7 +6814,7 @@ static int test_servername(int tst)
     testresult = 1;
 
  end:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);

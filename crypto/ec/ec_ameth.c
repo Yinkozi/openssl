@@ -133,7 +133,7 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
         EC_GROUP_set_asn1_flag(group, OPENSSL_EC_NAMED_CURVE);
         if (EC_KEY_set_group(eckey, group) == 0)
             goto ecerr;
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
     } else {
         ECerr(EC_F_ECKEY_TYPE2PARAM, EC_R_DECODE_ERROR);
         goto ecerr;
@@ -142,8 +142,8 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
     return eckey;
 
  ecerr:
-    EC_KEY_free(eckey);
-    EC_GROUP_free(group);
+    _EC_KEY_free(eckey);
+    _EC_GROUP_free(group);
     return NULL;
 }
 
@@ -176,7 +176,7 @@ static int eckey_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
     return 1;
 
  ecerr:
-    EC_KEY_free(eckey);
+    _EC_KEY_free(eckey);
     return 0;
 }
 
@@ -225,7 +225,7 @@ static int eckey_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
  ecliberr:
     ECerr(EC_F_ECKEY_PRIV_DECODE, ERR_R_EC_LIB);
  ecerr:
-    EC_KEY_free(eckey);
+    _EC_KEY_free(eckey);
     return 0;
 }
 
@@ -331,10 +331,10 @@ static int ec_copy_parameters(EVP_PKEY *to, const EVP_PKEY *from)
     }
     if (EC_KEY_set_group(to->pkey.ec, group) == 0)
         goto err;
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     return 1;
  err:
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     return 0;
 }
 
@@ -352,7 +352,7 @@ static int ec_cmp_parameters(const EVP_PKEY *a, const EVP_PKEY *b)
 
 static void int_ec_free(EVP_PKEY *pkey)
 {
-    EC_KEY_free(pkey->pkey.ec);
+    _EC_KEY_free(pkey->pkey.ec);
 }
 
 typedef enum {
@@ -699,7 +699,7 @@ static int ecdh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
     if (EVP_PKEY_derive_set_peer(pctx, pkpeer) > 0)
         rv = 1;
  err:
-    EC_KEY_free(ecpeer);
+    _EC_KEY_free(ecpeer);
     _EVP_PKEY_free(pkpeer);
     return rv;
 }

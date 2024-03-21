@@ -472,7 +472,7 @@ static int test_tls13ccs(int tst)
 
     ret = 1;
  err:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(sssl);
     SSL_free(cssl);
     SSL_CTX_free(sctx);

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-DSA_new, DSA_free - allocate and free DSA objects
+DSA_new, _DSA_free - allocate and free DSA objects
 
 =head1 SYNOPSIS
 
@@ -10,14 +10,14 @@ DSA_new, DSA_free - allocate and free DSA objects
 
  DSA* DSA_new(void);
 
- void DSA_free(DSA *dsa);
+ void _DSA_free(DSA *dsa);
 
 =head1 DESCRIPTION
 
 DSA_new() allocates and initializes a B<DSA> structure. It is equivalent to
 calling DSA_new_method(NULL).
 
-DSA_free() frees the B<DSA> structure and its components. The values are
+_DSA_free() frees the B<DSA> structure and its components. The values are
 erased before the memory is returned to the system.
 If B<dsa> is NULL nothing is done.
 
@@ -28,7 +28,7 @@ code that can be obtained by
 L<ERR_get_error(3)>. Otherwise it returns a pointer
 to the newly allocated structure.
 
-DSA_free() returns no value.
+_DSA_free() returns no value.
 
 =head1 SEE ALSO
 

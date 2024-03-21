@@ -236,7 +236,7 @@ static int test_dtls_drop_records(int idx)
 
     testresult = 1;
  end:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);

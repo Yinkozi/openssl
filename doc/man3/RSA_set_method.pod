@@ -109,7 +109,7 @@ the default method is used.
      /* called at RSA_new */
      int (*init)(RSA *rsa);
 
-     /* called at RSA_free */
+     /* called at _RSA_free */
      int (*finish)(RSA *rsa);
 
      /*

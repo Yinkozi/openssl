@@ -79,7 +79,7 @@ static int test_x509_check_cert_pkey(void)
         result = X509_check_private_key(x509, pkey);
         break;
     case 2:
-        x509_req = PEM_read_bio_X509_REQ(bio, NULL, NULL, NULL);
+        x509_req = _PEM_read_bio_X509_REQ(bio, NULL, NULL, NULL);
         if (x509_req == NULL) {
             TEST_error("read PEM x509 req failed");
             goto failed;

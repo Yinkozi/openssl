@@ -252,7 +252,7 @@ int dsa_main(int argc, char **argv)
     ret = 0;
  end:
     BIO_free_all(out);
-    DSA_free(dsa);
+    _DSA_free(dsa);
     release_engine(e);
     _OPENSSL_free(passin);
     _OPENSSL_free(passout);

@@ -178,14 +178,14 @@ int dhparam_main(int argc, char **argv)
             if (dsa == NULL
                 || !DSA_generate_parameters_ex(dsa, num, NULL, 0, NULL, NULL,
                                                cb)) {
-                DSA_free(dsa);
+                _DSA_free(dsa);
                 BN_GENCB_free(cb);
                 ERR_print_errors(bio_err);
                 goto end;
             }
 
             dh = DSA_dup_DH(dsa);
-            DSA_free(dsa);
+            _DSA_free(dsa);
             if (dh == NULL) {
                 BN_GENCB_free(cb);
                 ERR_print_errors(bio_err);
@@ -220,7 +220,7 @@ int dhparam_main(int argc, char **argv)
             if (informat == FORMAT_ASN1)
                 dsa = d2i_DSAparams_bio(in, NULL);
             else                /* informat == FORMAT_PEM */
-                dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
+                dsa = _PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
 
             if (dsa == NULL) {
                 BIO_printf(bio_err, "unable to load DSA parameters\n");
@@ -229,7 +229,7 @@ int dhparam_main(int argc, char **argv)
             }
 
             dh = DSA_dup_DH(dsa);
-            DSA_free(dsa);
+            _DSA_free(dsa);
             if (dh == NULL) {
                 ERR_print_errors(bio_err);
                 goto end;
@@ -320,7 +320,7 @@ int dhparam_main(int argc, char **argv)
                    bits, bits);
         BIO_printf(out, "    if (p == NULL || g == NULL\n"
                         "            || !DH_set0_pqg(dh, p, NULL, g)) {\n"
-                        "        DH_free(dh);\n"
+                        "        _DH_free(dh);\n"
                         "        BN_free(p);\n"
                         "        BN_free(g);\n"
                         "        return NULL;\n"
@@ -328,7 +328,7 @@ int dhparam_main(int argc, char **argv)
         if (DH_get_length(dh) > 0)
             BIO_printf(out,
                         "    if (!DH_set_length(dh, %ld)) {\n"
-                        "        DH_free(dh);\n"
+                        "        _DH_free(dh);\n"
                         "        return NULL;\n"
                         "    }\n", DH_get_length(dh));
         BIO_printf(out, "    return dh;\n}\n");
@@ -358,7 +358,7 @@ int dhparam_main(int argc, char **argv)
  end:
     _BIO_free(in);
     BIO_free_all(out);
-    DH_free(dh);
+    _DH_free(dh);
     release_engine(e);
     return ret;
 }

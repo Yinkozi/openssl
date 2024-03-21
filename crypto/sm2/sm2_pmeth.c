@@ -47,7 +47,7 @@ static void pkey_sm2_cleanup(EVP_PKEY_CTX *ctx)
     SM2_PKEY_CTX *smctx = ctx->data;
 
     if (smctx != NULL) {
-        EC_GROUP_free(smctx->gen_group);
+        _EC_GROUP_free(smctx->gen_group);
         _OPENSSL_free(smctx->id);
         _OPENSSL_free(smctx);
         ctx->data = NULL;
@@ -173,7 +173,7 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             SM2err(SM2_F_PKEY_SM2_CTRL, SM2_R_INVALID_CURVE);
             return 0;
         }
-        EC_GROUP_free(smctx->gen_group);
+        _EC_GROUP_free(smctx->gen_group);
         smctx->gen_group = group;
         return 1;
 

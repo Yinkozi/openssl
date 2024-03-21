@@ -919,7 +919,7 @@ static int mac_test_init(EVP_TEST *t, const char *alg)
 }
 
 /* Because _OPENSSL_free is a macro, it can't be passed as a function pointer */
-static void _OPENSSL_free(char *m)
+static void openssl_free(char *m)
 {
     _OPENSSL_free(m);
 }
@@ -928,7 +928,7 @@ static void mac_test_cleanup(EVP_TEST *t)
 {
     MAC_DATA *mdat = t->data;
 
-    sk_OPENSSL_STRING_pop_free(mdat->controls, _OPENSSL_free);
+    sk_OPENSSL_STRING_pop_free(mdat->controls, openssl_free);
     _OPENSSL_free(mdat->alg);
     _OPENSSL_free(mdat->key);
     _OPENSSL_free(mdat->input);

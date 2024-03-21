@@ -150,7 +150,7 @@ static int test_client_hello(int currtest)
             TEST_info("Unable to open session.pem");
             goto end;
         }
-        sess = PEM_read_bio_SSL_SESSION(sessbio, NULL, NULL, NULL);
+        sess = _PEM_read_bio_SSL_SESSION(sessbio, NULL, NULL, NULL);
         if (!TEST_ptr(sess)) {
             TEST_info("Unable to load SSL_SESSION");
             goto end;
@@ -241,7 +241,7 @@ static int test_client_hello(int currtest)
 end:
     SSL_free(con);
     SSL_CTX_free(ctx);
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     _BIO_free(sessbio);
 
     return testresult;

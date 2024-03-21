@@ -3359,15 +3359,15 @@ int speed_main(int argc, char **argv)
 
 #ifndef OPENSSL_NO_RSA
         for (k = 0; k < RSA_NUM; k++)
-            RSA_free(loopargs[i].rsa_key[k]);
+            _RSA_free(loopargs[i].rsa_key[k]);
 #endif
 #ifndef OPENSSL_NO_DSA
         for (k = 0; k < DSA_NUM; k++)
-            DSA_free(loopargs[i].dsa_key[k]);
+            _DSA_free(loopargs[i].dsa_key[k]);
 #endif
 #ifndef OPENSSL_NO_EC
         for (k = 0; k < ECDSA_NUM; k++)
-            EC_KEY_free(loopargs[i].ecdsa[k]);
+            _EC_KEY_free(loopargs[i].ecdsa[k]);
         for (k = 0; k < EC_NUM; k++)
             EVP_PKEY_CTX_free(loopargs[i].ecdh_ctx[k]);
         for (k = 0; k < EdDSA_NUM; k++)

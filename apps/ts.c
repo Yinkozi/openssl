@@ -407,7 +407,7 @@ static int query_command(const char *data, const char *digest, const EVP_MD *md,
     BIO_free_all(in_bio);
     BIO_free_all(data_bio);
     BIO_free_all(out_bio);
-    TS_REQ_free(query);
+    _TS_REQ_free(query);
     return ret;
 }
 
@@ -462,12 +462,12 @@ static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
     ret = 1;
  err:
     if (!ret) {
-        TS_REQ_free(ts_req);
+        _TS_REQ_free(ts_req);
         ts_req = NULL;
         BIO_printf(bio_err, "could not create query\n");
         ERR_print_errors(bio_err);
     }
-    TS_MSG_IMPRINT_free(msg_imprint);
+    _TS_MSG_IMPRINT_free(msg_imprint);
     X509_ALGOR_free(algo);
     _OPENSSL_free(data);
     ASN1_OBJECT_free(policy_obj);
@@ -620,7 +620,7 @@ static int reply_command(CONF *conf, const char *section, const char *engine,
     BIO_free_all(inkey_bio);
     BIO_free_all(signer_bio);
     BIO_free_all(out_bio);
-    TS_RESP_free(response);
+    _TS_RESP_free(response);
     return ret;
 }
 
@@ -652,12 +652,12 @@ static TS_RESP *read_PKCS7(BIO *in_bio)
 
  end:
     PKCS7_free(token);
-    TS_TST_INFO_free(tst_info);
+    _TS_TST_INFO_free(tst_info);
     if (!ret) {
-        TS_RESP_free(resp);
+        _TS_RESP_free(resp);
         resp = NULL;
     }
-    TS_STATUS_INFO_free(si);
+    _TS_STATUS_INFO_free(si);
     return resp;
 }
 
@@ -721,7 +721,7 @@ static TS_RESP *create_response(CONF *conf, const char *section, const char *eng
 
  end:
     if (!ret) {
-        TS_RESP_free(response);
+        _TS_RESP_free(response);
         response = NULL;
     }
     TS_RESP_CTX_free(resp_ctx);
@@ -856,7 +856,7 @@ static int verify_command(const char *data, const char *digest, const char *quer
 
     BIO_free_all(in_bio);
     PKCS7_free(token);
-    TS_RESP_free(response);
+    _TS_RESP_free(response);
     TS_VERIFY_CTX_free(verify_ctx);
     return ret;
 }
@@ -928,7 +928,7 @@ static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
         ctx = NULL;
     }
     BIO_free_all(input);
-    TS_REQ_free(request);
+    _TS_REQ_free(request);
     return ctx;
 }
 

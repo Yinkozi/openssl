@@ -107,7 +107,7 @@ int pkcs7_main(int argc, char **argv)
     if (informat == FORMAT_ASN1)
         p7 = d2i_PKCS7_bio(in, NULL);
     else
-        p7 = PEM_read_bio_PKCS7(in, NULL, NULL, NULL);
+        p7 = _PEM_read_bio_PKCS7(in, NULL, NULL, NULL);
     if (p7 == NULL) {
         BIO_printf(bio_err, "unable to load PKCS7 object\n");
         ERR_print_errors(bio_err);

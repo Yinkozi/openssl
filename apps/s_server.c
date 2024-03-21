@@ -1989,7 +1989,7 @@ int s_server_main(int argc, char *argv[])
         } else if (!SSL_CTX_set_tmp_dh(ctx, dh)) {
             BIO_puts(bio_err, "Error setting temp DH parameters\n");
             ERR_print_errors(bio_err);
-            DH_free(dh);
+            _DH_free(dh);
             goto end;
         }
 
@@ -2000,7 +2000,7 @@ int s_server_main(int argc, char *argv[])
                     BIO_printf(bio_s_out, "Setting temp DH parameters\n");
                     (void)BIO_flush(bio_s_out);
 
-                    DH_free(dh);
+                    _DH_free(dh);
                     dh = dh2;
                 }
             }
@@ -2009,11 +2009,11 @@ int s_server_main(int argc, char *argv[])
             } else if (!SSL_CTX_set_tmp_dh(ctx2, dh)) {
                 BIO_puts(bio_err, "Error setting temp DH parameters\n");
                 ERR_print_errors(bio_err);
-                DH_free(dh);
+                _DH_free(dh);
                 goto end;
             }
         }
-        DH_free(dh);
+        _DH_free(dh);
     }
 #endif
 
@@ -2064,7 +2064,7 @@ int s_server_main(int argc, char *argv[])
             ERR_print_errors(bio_err);
             goto end;
         }
-        psksess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
+        psksess = _PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
         _BIO_free(stmp);
         if (psksess == NULL) {
             BIO_printf(bio_err, "Can't read PSK session file %s\n", psksessf);
@@ -2169,7 +2169,7 @@ int s_server_main(int argc, char *argv[])
     ret = 0;
  end:
     SSL_CTX_free(ctx);
-    SSL_SESSION_free(psksess);
+    _SSL_SESSION_free(psksess);
     set_keylog_file(NULL, NULL);
     X509_free(s_cert);
     sk_X509_CRL_pop_free(crls, X509_CRL_free);

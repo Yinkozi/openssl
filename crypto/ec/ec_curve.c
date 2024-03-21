@@ -3127,7 +3127,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     ok = 1;
  err:
     if (!ok) {
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
         group = NULL;
     }
     EC_POINT_free(P);

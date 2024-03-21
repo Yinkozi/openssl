@@ -432,7 +432,7 @@ int sm2_sign(const unsigned char *dgst, int dgstlen,
     ret = 1;
 
  done:
-    ECDSA_SIG_free(s);
+    _ECDSA_SIG_free(s);
     BN_free(e);
     return ret;
 }
@@ -474,6 +474,6 @@ int sm2_verify(const unsigned char *dgst, int dgstlen,
  done:
     _OPENSSL_free(der);
     BN_free(e);
-    ECDSA_SIG_free(s);
+    _ECDSA_SIG_free(s);
     return ret;
 }

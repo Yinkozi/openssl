@@ -114,7 +114,7 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
     memcpy(dest, src, sizeof(*dest));
 
     /*
-     * Set the various pointers to NULL so that we can call SSL_SESSION_free in
+     * Set the various pointers to NULL so that we can call _SSL_SESSION_free in
      * the case of an error whilst halfway through constructing dest
      */
 #ifndef OPENSSL_NO_PSK
@@ -222,7 +222,7 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
     return dest;
  err:
     SSLerr(SSL_F_SSL_SESSION_DUP, ERR_R_MALLOC_FAILURE);
-    SSL_SESSION_free(dest);
+    _SSL_SESSION_free(dest);
     return NULL;
 }
 
@@ -380,7 +380,7 @@ int ssl_get_new_session(SSL *s, int session)
     else
         ss->timeout = s->session_ctx->session_timeout;
 
-    SSL_SESSION_free(s->session);
+    _SSL_SESSION_free(s->session);
     s->session = NULL;
 
     if (session) {
@@ -392,7 +392,7 @@ int ssl_get_new_session(SSL *s, int session)
             ss->session_id_length = 0;
         } else if (!ssl_generate_session_id(s, ss)) {
             /* SSLfatal() already called */
-            SSL_SESSION_free(ss);
+            _SSL_SESSION_free(ss);
             return 0;
         }
 
@@ -403,7 +403,7 @@ int ssl_get_new_session(SSL *s, int session)
     if (s->sid_ctx_length > sizeof(ss->sid_ctx)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_GET_NEW_SESSION,
                  ERR_R_INTERNAL_ERROR);
-        SSL_SESSION_free(ss);
+        _SSL_SESSION_free(ss);
         return 0;
     }
     memcpy(ss->sid_ctx, s->sid_ctx, s->sid_ctx_length);
@@ -608,7 +608,7 @@ int ssl_get_prev_session(SSL *s, CLIENTHELLO_MSG *hello)
 
     if (!SSL_IS_TLS13(s)) {
         /* We already did this for TLS1.3 */
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
         s->session = ret;
     }
 
@@ -618,7 +618,7 @@ int ssl_get_prev_session(SSL *s, CLIENTHELLO_MSG *hello)
 
  err:
     if (ret != NULL) {
-        SSL_SESSION_free(ret);
+        _SSL_SESSION_free(ret);
         /* In TLSv1.3 s->session was already set to ret, so we NULL it out */
         if (SSL_IS_TLS13(s))
             s->session = NULL;
@@ -663,7 +663,7 @@ int SSL_CTX_add_session(SSL_CTX *ctx, SSL_SESSION *c)
     if (s != NULL && s != c) {
         /* We *are* in trouble ... */
         SSL_SESSION_list_remove(ctx, s);
-        SSL_SESSION_free(s);
+        _SSL_SESSION_free(s);
         /*
          * ... so pretend the other session did not exist in cache (we cannot
          * handle two SSL_SESSION structures with identical session ID in the
@@ -692,7 +692,7 @@ int SSL_CTX_add_session(SSL_CTX *ctx, SSL_SESSION *c)
          * count because it already takes into account the cache
          */
 
-        SSL_SESSION_free(s);    /* s == c */
+        _SSL_SESSION_free(s);    /* s == c */
         ret = 0;
     } else {
         /*
@@ -741,13 +741,13 @@ static int remove_session_lock(SSL_CTX *ctx, SSL_SESSION *c, int lck)
             ctx->remove_session_cb(ctx, c);
 
         if (ret)
-            SSL_SESSION_free(r);
+            _SSL_SESSION_free(r);
     } else
         ret = 0;
     return ret;
 }
 
-void SSL_SESSION_free(SSL_SESSION *ss)
+void _SSL_SESSION_free(SSL_SESSION *ss)
 {
     int i;
 
@@ -804,7 +804,7 @@ int SSL_set_session(SSL *s, SSL_SESSION *session)
         SSL_SESSION_up_ref(session);
         s->verify_result = session->verify_result;
     }
-    SSL_SESSION_free(s->session);
+    _SSL_SESSION_free(s->session);
     s->session = session;
 
     return 1;
@@ -1063,7 +1063,7 @@ static void timeout_cb(SSL_SESSION *s, TIMEOUT_PARAM *p)
         s->not_resumable = 1;
         if (p->ctx->remove_session_cb != NULL)
             p->ctx->remove_session_cb(p->ctx, s);
-        SSL_SESSION_free(s);
+        _SSL_SESSION_free(s);
     }
 }
 

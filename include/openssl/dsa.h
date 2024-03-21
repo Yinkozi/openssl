@@ -73,7 +73,7 @@ typedef struct DSA_SIG_st DSA_SIG;
 
 DSA *DSAparams_dup(DSA *x);
 DSA_SIG *DSA_SIG_new(void);
-void DSA_SIG_free(DSA_SIG *a);
+void _DSA_SIG_free(DSA_SIG *a);
 int i2d_DSA_SIG(const DSA_SIG *a, unsigned char **pp);
 DSA_SIG *d2i_DSA_SIG(DSA_SIG **v, const unsigned char **pp, long length);
 void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
@@ -92,7 +92,7 @@ const DSA_METHOD *DSA_get_method(DSA *d);
 
 DSA *DSA_new(void);
 DSA *DSA_new_method(ENGINE *engine);
-void DSA_free(DSA *r);
+void _DSA_free(DSA *r);
 /* "up" the DSA object's reference count */
 int DSA_up_ref(DSA *r);
 int DSA_size(const DSA *);

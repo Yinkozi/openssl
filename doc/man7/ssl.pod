@@ -423,7 +423,7 @@ sessions defined in the B<SSL_SESSION> structures.
 
 =item int B<SSL_SESSION_cmp>(const SSL_SESSION *a, const SSL_SESSION *b);
 
-=item void B<SSL_SESSION_free>(SSL_SESSION *ss);
+=item void B<_SSL_SESSION_free>(SSL_SESSION *ss);
 
 =item char *B<SSL_SESSION_get_app_data>(SSL_SESSION *s);
 
@@ -815,7 +815,7 @@ L<SSL_state_string(3)>,
 L<SSL_want(3)>,
 L<SSL_write_ex(3)>,
 L<SSL_write(3)>,
-L<SSL_SESSION_free(3)>,
+L<_SSL_SESSION_free(3)>,
 L<SSL_SESSION_get_time(3)>,
 L<d2i_SSL_SESSION(3)>,
 L<SSL_CTX_set_psk_client_callback(3)>,

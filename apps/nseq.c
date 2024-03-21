@@ -91,7 +91,7 @@ int nseq_main(int argc, char **argv)
         goto end;
     }
 
-    seq = PEM_read_bio_NETSCAPE_CERT_SEQUENCE(in, NULL, NULL, NULL);
+    seq = _PEM_read_bio_NETSCAPE_CERT_SEQUENCE(in, NULL, NULL, NULL);
     if (seq == NULL) {
         BIO_printf(bio_err, "%s: Error reading sequence file %s\n",
                    prog, infile);

@@ -93,7 +93,7 @@ static int test_curve(void)
     }
 
 err:
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     EC_POINT_free(point);
     BN_free(result);
     BN_free(expected_result);

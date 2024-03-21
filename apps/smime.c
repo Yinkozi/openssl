@@ -447,7 +447,7 @@ int smime_main(int argc, char **argv)
         if (informat == FORMAT_SMIME) {
             p7 = SMIME_read_PKCS7(in, &indata);
         } else if (informat == FORMAT_PEM) {
-            p7 = PEM_read_bio_PKCS7(in, NULL, NULL, NULL);
+            p7 = _PEM_read_bio_PKCS7(in, NULL, NULL, NULL);
         } else if (informat == FORMAT_ASN1) {
             p7 = d2i_PKCS7_bio(in, NULL);
         } else {

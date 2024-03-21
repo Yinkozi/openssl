@@ -11088,7 +11088,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) Bugfixes in apps/x509.c: Avoid a memory leak; and don't use
-     perror when PEM_read_bio_X509_REQ fails, the error message must
+     perror when _PEM_read_bio_X509_REQ fails, the error message must
      be obtained from the error queue.
      [Bodo Moeller]
 
@@ -13745,8 +13745,8 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      SSL_CTX_set_tmp_{rsa,dh}_callback().
      [Ben Laurie]
 
-  *) Make DH_free() tolerate being passed a NULL pointer (like RSA_free() and
-     DSA_free()). Make X509_PUBKEY_set() check for errors in d2i_PublicKey().
+  *) Make _DH_free() tolerate being passed a NULL pointer (like _RSA_free() and
+     _DSA_free()). Make X509_PUBKEY_set() check for errors in d2i_PublicKey().
      [Steve Henson]
 
   *) X509_name_add_entry() freed the wrong thing after an error.

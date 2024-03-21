@@ -218,7 +218,7 @@ static ASN1_PCTX *pctx;
         len2 = I2D(type, &der); \
         if (len2 != 0) {} \
         _OPENSSL_free(der); \
-        TYPE ## _free(type); \
+        _##TYPE ## _free(type); \
     } \
 }
 
@@ -234,7 +234,7 @@ static ASN1_PCTX *pctx;
         _BIO_free(bio); \
         I2D(type, &der); \
         _OPENSSL_free(der); \
-        TYPE ## _free(type); \
+        _##TYPE ## _free(type); \
     } \
 }
 
@@ -250,7 +250,7 @@ static ASN1_PCTX *pctx;
         _BIO_free(bio); \
         I2D(type, &der); \
         _OPENSSL_free(der); \
-        TYPE ## _free(type); \
+        _##TYPE ## _free(type); \
     } \
 }
 
@@ -266,7 +266,7 @@ static ASN1_PCTX *pctx;
         _BIO_free(bio); \
         I2D(type, &der); \
         _OPENSSL_free(der); \
-        TYPE ## _free(type); \
+        _##TYPE ## _free(type); \
     } \
 }
 

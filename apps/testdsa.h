@@ -250,7 +250,7 @@ DSA *get_dsa(int dsa_bits)
 
     return dsa;
  err:
-    DSA_free(dsa);
+    _DSA_free(dsa);
     BN_free(priv_key);
     BN_free(pub_key);
     BN_free(p);

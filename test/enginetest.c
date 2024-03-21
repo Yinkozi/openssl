@@ -228,7 +228,7 @@ static EVP_PKEY *get_test_pkey(void)
     EVP_PKEY *pk = _EVP_PKEY_new();
 
     if (rsa == NULL || pk == NULL || !EVP_PKEY_assign_RSA(pk, rsa)) {
-        RSA_free(rsa);
+        _RSA_free(rsa);
         _EVP_PKEY_free(pk);
         return NULL;
     }

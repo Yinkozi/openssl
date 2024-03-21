@@ -152,7 +152,7 @@ int dsaparam_main(int argc, char **argv)
     } else if (informat == FORMAT_ASN1) {
         dsa = d2i_DSAparams_bio(in, NULL);
     } else {
-        dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
+        dsa = _PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
     }
     if (dsa == NULL) {
         BIO_printf(bio_err, "unable to load DSA parameters\n");
@@ -190,7 +190,7 @@ int dsaparam_main(int argc, char **argv)
                    bits_p, bits_p);
         BIO_printf(bio_out, "                           g = BN_bin2bn(dsag_%d, sizeof(dsag_%d), NULL))) {\n",
                    bits_p, bits_p);
-        BIO_printf(bio_out, "        DSA_free(dsa);\n"
+        BIO_printf(bio_out, "        _DSA_free(dsa);\n"
                             "        BN_free(p);\n"
                             "        BN_free(q);\n"
                             "        BN_free(g);\n"
@@ -221,7 +221,7 @@ int dsaparam_main(int argc, char **argv)
             goto end;
         if (!DSA_generate_key(dsakey)) {
             ERR_print_errors(bio_err);
-            DSA_free(dsakey);
+            _DSA_free(dsakey);
             goto end;
         }
         assert(private);
@@ -230,14 +230,14 @@ int dsaparam_main(int argc, char **argv)
         else
             i = PEM_write_bio_DSAPrivateKey(out, dsakey, NULL, NULL, 0, NULL,
                                             NULL);
-        DSA_free(dsakey);
+        _DSA_free(dsakey);
     }
     ret = 0;
  end:
     BN_GENCB_free(cb);
     _BIO_free(in);
     BIO_free_all(out);
-    DSA_free(dsa);
+    _DSA_free(dsa);
     release_engine(e);
     return ret;
 }

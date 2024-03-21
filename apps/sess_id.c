@@ -163,7 +163,7 @@ int sess_id_main(int argc, char **argv)
     ret = 0;
  end:
     BIO_free_all(out);
-    SSL_SESSION_free(x);
+    _SSL_SESSION_free(x);
     return ret;
 }
 
@@ -178,7 +178,7 @@ static SSL_SESSION *load_sess_id(char *infile, int format)
     if (format == FORMAT_ASN1)
         x = d2i_SSL_SESSION_bio(in, NULL);
     else
-        x = PEM_read_bio_SSL_SESSION(in, NULL, NULL, NULL);
+        x = _PEM_read_bio_SSL_SESSION(in, NULL, NULL, NULL);
     if (x == NULL) {
         BIO_printf(bio_err, "unable to load SSL_SESSION\n");
         ERR_print_errors(bio_err);

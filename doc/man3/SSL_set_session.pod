@@ -21,7 +21,7 @@ with the L<SSL_session_reused(3)> call.
 
 If there is already a session set inside B<ssl> (because it was set with
 SSL_set_session() before or because the same B<ssl> was already used for
-a connection), SSL_SESSION_free() will be called for that session. If that old
+a connection), _SSL_SESSION_free() will be called for that session. If that old
 session is still B<open>, it is considered bad and will be removed from the
 session cache (if used). A session is considered open, if L<SSL_shutdown(3)> was
 not called for the connection (or at least L<SSL_set_shutdown(3)> was used to
@@ -53,7 +53,7 @@ The operation succeeded.
 
 =head1 SEE ALSO
 
-L<ssl(7)>, L<SSL_SESSION_free(3)>,
+L<ssl(7)>, L<_SSL_SESSION_free(3)>,
 L<SSL_get_session(3)>,
 L<SSL_session_reused(3)>,
 L<SSL_CTX_set_session_cache_mode(3)>

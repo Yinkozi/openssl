@@ -70,7 +70,7 @@ during L<SSL_CTX_flush_sessions(3)>.
 If the data is to be kept, SSL_get1_session() will increment the reference
 count, so that the session will not be implicitly removed by other operations
 but stays in memory. In order to remove the session
-L<SSL_SESSION_free(3)> must be explicitly called once
+L<_SSL_SESSION_free(3)> must be explicitly called once
 to decrement the reference count again.
 
 SSL_SESSION objects keep internal link information about the session cache
@@ -99,7 +99,7 @@ The return value points to the data of an SSL session.
 
 L<ssl(7)>, L<SSL_free(3)>,
 L<SSL_clear(3)>,
-L<SSL_SESSION_free(3)>
+L<_SSL_SESSION_free(3)>
 
 =head1 COPYRIGHT
 

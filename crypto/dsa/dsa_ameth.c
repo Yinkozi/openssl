@@ -69,7 +69,7 @@ static int dsa_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
 
  err:
     ASN1_INTEGER_free(public_key);
-    DSA_free(dsa);
+    _DSA_free(dsa);
     return 0;
 
 }
@@ -193,7 +193,7 @@ static int dsa_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
  decerr:
     DSAerr(DSA_F_DSA_PRIV_DECODE, DSA_R_DECODE_ERROR);
  dsaerr:
-    DSA_free(dsa);
+    _DSA_free(dsa);
  done:
     BN_CTX_free(ctx);
     ASN1_STRING_clear_free(privkey);
@@ -323,7 +323,7 @@ static int dsa_pub_cmp(const EVP_PKEY *a, const EVP_PKEY *b)
 
 static void int_dsa_free(EVP_PKEY *pkey)
 {
-    DSA_free(pkey->pkey.dsa);
+    _DSA_free(pkey->pkey.dsa);
 }
 
 static int do_dsa_print(BIO *bp, const DSA *x, int off, int ptype)
@@ -455,7 +455,7 @@ static int dsa_sig_print(BIO *bp, const X509_ALGOR *sigalg,
             goto err;
         rv = 1;
  err:
-        DSA_SIG_free(dsa_sig);
+        _DSA_SIG_free(dsa_sig);
         return rv;
     }
     return X509_signature_dump(bp, sig, indent);

@@ -252,7 +252,7 @@ static int ts_check_signing_certs(PKCS7_SIGNER_INFO *si,
     if (!ret)
         TSerr(TS_F_TS_CHECK_SIGNING_CERTS,
               TS_R_ESS_SIGNING_CERTIFICATE_ERROR);
-    ESS_SIGNING_CERT_free(ss);
+    _ESS_SIGNING_CERT_free(ss);
     ESS_SIGNING_CERT_V2_free(ssv2);
     return ret;
 }
@@ -393,7 +393,7 @@ int TS_RESP_verify_token(TS_VERIFY_CTX *ctx, PKCS7 *token)
     int ret = 0;
     if (tst_info) {
         ret = int_ts_RESP_verify_token(ctx, token, tst_info);
-        TS_TST_INFO_free(tst_info);
+        _TS_TST_INFO_free(tst_info);
     }
     return ret;
 }

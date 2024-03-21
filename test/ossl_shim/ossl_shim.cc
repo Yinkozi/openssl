@@ -574,7 +574,7 @@ static bssl::UniquePtr<SSL_CTX> SetupCtx(const TestConfig *config) {
     if (p == NULL || g == NULL || tmpdh == NULL) {
         BN_free(p);
         BN_free(g);
-        DH_free(tmpdh);
+        _DH_free(tmpdh);
         return nullptr;
     }
     // This prime number is 2^1024 + 643 – a value just above a power of two.
@@ -590,7 +590,7 @@ static bssl::UniquePtr<SSL_CTX> SetupCtx(const TestConfig *config) {
         !BN_set_word(g, 2)) {
       BN_free(p);
       BN_free(g);
-      DH_free(tmpdh);
+      _DH_free(tmpdh);
       return nullptr;
     }
     DH_set0_pqg(tmpdh, p, NULL, g);

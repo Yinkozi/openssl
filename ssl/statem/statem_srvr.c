@@ -2453,7 +2453,7 @@ int tls_construct_server_hello(SSL *s, WPACKET *pkt)
 
     if (s->hello_retry_request == SSL_HRR_PENDING) {
         /* Ditch the session. We'll create a new one next time around */
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
         s->session = NULL;
         s->hit = 0;
 
@@ -2534,7 +2534,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
             DH *dhp = ssl_get_auto_dh(s);
             pkdh = _EVP_PKEY_new();
             if (pkdh == NULL || dhp == NULL) {
-                DH_free(dhp);
+                _DH_free(dhp);
                 SSLfatal(s, SSL_AD_INTERNAL_ERROR,
                          SSL_F_TLS_CONSTRUCT_SERVER_KEY_EXCHANGE,
                          ERR_R_INTERNAL_ERROR);
@@ -3743,7 +3743,7 @@ MSG_PROCESS_RETURN tls_process_client_certificate(SSL *s, PACKET *pkt)
             goto err;
         }
 
-        SSL_SESSION_free(s->session);
+        _SSL_SESSION_free(s->session);
         s->session = new_sess;
     }
 
@@ -3928,17 +3928,17 @@ static int construct_stateless_ticket(SSL *s, WPACKET *pkt, uint32_t age_add,
         /* shouldn't ever happen */
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_CONSTRUCT_STATELESS_TICKET,
                  ERR_R_INTERNAL_ERROR);
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
         goto err;
     }
     p = senc;
     if (!i2d_SSL_SESSION(sess, &p)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_CONSTRUCT_STATELESS_TICKET,
                  ERR_R_INTERNAL_ERROR);
-        SSL_SESSION_free(sess);
+        _SSL_SESSION_free(sess);
         goto err;
     }
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
 
     /*
      * Initialize HMAC and cipher contexts. If callback present it does
@@ -4096,7 +4096,7 @@ int tls_construct_new_session_ticket(SSL *s, WPACKET *pkt)
                 goto err;
             }
 
-            SSL_SESSION_free(s->session);
+            _SSL_SESSION_free(s->session);
             s->session = new_sess;
         }
 

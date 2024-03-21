@@ -523,7 +523,7 @@ int x509_main(int argc, char **argv)
         in = bio_open_default(infile, 'r', informat);
         if (in == NULL)
             goto end;
-        req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
+        req = _PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
         _BIO_free(in);
 
         if (req == NULL) {

@@ -693,7 +693,7 @@ int req_main(int argc, char **argv)
         if (informat == FORMAT_ASN1)
             req = d2i_X509_REQ_bio(in, NULL);
         else
-            req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
+            req = _PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
         if (req == NULL) {
             BIO_printf(bio_err, "unable to load X509 request\n");
             goto end;

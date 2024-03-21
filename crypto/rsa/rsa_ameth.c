@@ -109,11 +109,11 @@ static int rsa_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
         return 0;
     }
     if (!rsa_param_decode(rsa, alg)) {
-        RSA_free(rsa);
+        _RSA_free(rsa);
         return 0;
     }
     if (!EVP_PKEY_assign(pkey, pkey->ameth->pkey_id, rsa)) {
-        RSA_free(rsa);
+        _RSA_free(rsa);
         return 0;
     }
     return 1;
@@ -197,7 +197,7 @@ static int rsa_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
         return 0;
     }
     if (!rsa_param_decode(rsa, alg)) {
-        RSA_free(rsa);
+        _RSA_free(rsa);
         return 0;
     }
     EVP_PKEY_assign(pkey, pkey->ameth->pkey_id, rsa);
@@ -221,7 +221,7 @@ static int rsa_security_bits(const EVP_PKEY *pkey)
 
 static void int_rsa_free(EVP_PKEY *pkey)
 {
-    RSA_free(pkey->pkey.rsa);
+    _RSA_free(pkey->pkey.rsa);
 }
 
 static X509_ALGOR *rsa_mgf1_decode(X509_ALGOR *alg)

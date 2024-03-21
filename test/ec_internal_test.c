@@ -95,7 +95,7 @@ static int field_tests(const EC_METHOD *meth, const unsigned char *params,
     BN_CTX_end(ctx);
     BN_CTX_free(ctx);
     if (group != NULL)
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
     return ret;
 }
 
@@ -177,7 +177,7 @@ static int field_tests_default(int n)
     ret = 1;
  err:
     if (group != NULL)
-        EC_GROUP_free(group);
+        _EC_GROUP_free(group);
     if (ctx != NULL)
         BN_CTX_free(ctx);
     return ret;
@@ -211,8 +211,8 @@ static int set_private_key(void)
     testresult = 1;
 
  err:
-    EC_KEY_free(key);
-    EC_KEY_free(aux_key);
+    _EC_KEY_free(key);
+    _EC_KEY_free(aux_key);
     return testresult;
 }
 
@@ -236,7 +236,7 @@ static int decoded_flag_test(void)
     if (!TEST_ptr(grp)
         || !TEST_int_eq(grp->decoded_from_explicit_params, 0))
         goto err;
-    EC_GROUP_free(grp);
+    _EC_GROUP_free(grp);
 
     /* Test EC_GROUP_new_by_curve_name not setting the flag */
     grp = EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1);
@@ -249,7 +249,7 @@ static int decoded_flag_test(void)
         || !TEST_ptr(grp_copy = EC_GROUP_new_from_ecparameters(ecparams))
         || !TEST_int_eq(grp_copy->decoded_from_explicit_params, 0))
         goto err;
-    EC_GROUP_free(grp_copy);
+    _EC_GROUP_free(grp_copy);
     grp_copy = NULL;
     ECPARAMETERS_free(ecparams);
     ecparams = NULL;
@@ -266,7 +266,7 @@ static int decoded_flag_test(void)
     /* Test EC_KEY_decoded_from_explicit_params negative case */
         || !TEST_int_eq(EC_KEY_decoded_from_explicit_params(key), 0))
         goto err;
-    EC_GROUP_free(grp_copy);
+    _EC_GROUP_free(grp_copy);
     grp_copy = NULL;
     ECPKPARAMETERS_free(ecpkparams);
     ecpkparams = NULL;
@@ -277,7 +277,7 @@ static int decoded_flag_test(void)
         || !TEST_ptr(grp_copy = d2i_ECPKParameters(NULL, &encp, encodedlen))
         || !TEST_int_eq(grp_copy->decoded_from_explicit_params, 0))
         goto err;
-    EC_GROUP_free(grp_copy);
+    _EC_GROUP_free(grp_copy);
     grp_copy = NULL;
     _OPENSSL_free(encodedparams);
     encodedparams = NULL;
@@ -289,7 +289,7 @@ static int decoded_flag_test(void)
         || !TEST_int_eq(EC_GROUP_get_asn1_flag(grp_copy), OPENSSL_EC_EXPLICIT_CURVE)
         || !TEST_int_eq(grp_copy->decoded_from_explicit_params, 0))
         goto err;
-    EC_GROUP_free(grp_copy);
+    _EC_GROUP_free(grp_copy);
     grp_copy = NULL;
 
     /* Test d2i_ECPKParameters with explicit params setting the flag */
@@ -306,9 +306,9 @@ static int decoded_flag_test(void)
     testresult = 1;
 
  err:
-    EC_KEY_free(key);
-    EC_GROUP_free(grp);
-    EC_GROUP_free(grp_copy);
+    _EC_KEY_free(key);
+    _EC_GROUP_free(grp);
+    _EC_GROUP_free(grp_copy);
     ECPARAMETERS_free(ecparams);
     ECPKPARAMETERS_free(ecpkparams);
     _OPENSSL_free(encodedparams);
@@ -351,8 +351,8 @@ end:
     if (fp != NULL)
         fclose(fp);
 
-    EC_GROUP_free(g1);
-    EC_GROUP_free(g2);
+    _EC_GROUP_free(g1);
+    _EC_GROUP_free(g2);
 
     return testresult;
 }

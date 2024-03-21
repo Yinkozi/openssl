@@ -239,7 +239,7 @@ int ecparam_main(int argc, char **argv)
     } else if (informat == FORMAT_ASN1) {
         group = d2i_ECPKParameters_bio(in, NULL);
     } else {
-        group = PEM_read_bio_ECPKParameters(in, NULL, NULL, NULL);
+        group = _PEM_read_bio_ECPKParameters(in, NULL, NULL, NULL);
     }
     if (group == NULL) {
         BIO_printf(bio_err, "unable to load elliptic curve parameters\n");
@@ -373,7 +373,7 @@ int ecparam_main(int argc, char **argv)
                         "    BN_free(tmp_3);\n"
                         "    EC_POINT_free(point);\n"
                         "    if (!ok) {\n"
-                        "        EC_GROUP_free(group);\n"
+                        "        _EC_GROUP_free(group);\n"
                         "        return NULL;\n"
                         "    }\n"
                         "    return (group);\n"
@@ -404,7 +404,7 @@ int ecparam_main(int argc, char **argv)
 
         if (EC_KEY_set_group(eckey, group) == 0) {
             BIO_printf(bio_err, "unable to set group when generating key\n");
-            EC_KEY_free(eckey);
+            _EC_KEY_free(eckey);
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -414,7 +414,7 @@ int ecparam_main(int argc, char **argv)
 
         if (!EC_KEY_generate_key(eckey)) {
             BIO_printf(bio_err, "unable to generate key\n");
-            EC_KEY_free(eckey);
+            _EC_KEY_free(eckey);
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -424,7 +424,7 @@ int ecparam_main(int argc, char **argv)
         else
             i = PEM_write_bio_ECPrivateKey(out, eckey, NULL,
                                            NULL, 0, NULL, NULL);
-        EC_KEY_free(eckey);
+        _EC_KEY_free(eckey);
     }
 
     ret = 0;
@@ -436,7 +436,7 @@ int ecparam_main(int argc, char **argv)
     BN_free(ec_order);
     BN_free(ec_cofactor);
     _OPENSSL_free(buffer);
-    EC_GROUP_free(group);
+    _EC_GROUP_free(group);
     release_engine(e);
     _BIO_free(in);
     BIO_free_all(out);

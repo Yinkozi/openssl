@@ -1153,7 +1153,7 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
                          SSL_F_TLS_PARSE_CTOS_PSK, ERR_R_INTERNAL_ERROR);
                 goto err;
             }
-            SSL_SESSION_free(sess);
+            _SSL_SESSION_free(sess);
             sess = sesstmp;
 
             /*
@@ -1203,7 +1203,7 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
             if (s->max_early_data > 0
                     && (s->options & SSL_OP_NO_ANTI_REPLAY) == 0
                     && !SSL_CTX_remove_session(s->session_ctx, sess)) {
-                SSL_SESSION_free(sess);
+                _SSL_SESSION_free(sess);
                 sess = NULL;
                 continue;
             }
@@ -1237,7 +1237,7 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
         md = ssl_md(sess->cipher->algorithm2);
         if (md != ssl_md(s->s3->tmp.new_cipher->algorithm2)) {
             /* The ciphersuite is not compatible with this session. */
-            SSL_SESSION_free(sess);
+            _SSL_SESSION_free(sess);
             sess = NULL;
             s->ext.early_data_ok = 0;
             s->ext.ticket_expected = 0;
@@ -1280,11 +1280,11 @@ int tls_parse_ctos_psk(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
 
     s->ext.tick_identity = id;
 
-    SSL_SESSION_free(s->session);
+    _SSL_SESSION_free(s->session);
     s->session = sess;
     return 1;
 err:
-    SSL_SESSION_free(sess);
+    _SSL_SESSION_free(sess);
     return 0;
 }
 

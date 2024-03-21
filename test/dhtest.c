@@ -236,14 +236,14 @@ static int dh_test(void)
     _OPENSSL_free(abuf);
     _OPENSSL_free(bbuf);
     _OPENSSL_free(cbuf);
-    DH_free(b);
-    DH_free(a);
-    DH_free(c);
+    _DH_free(b);
+    _DH_free(a);
+    _DH_free(c);
     BN_free(bp);
     BN_free(bg);
     BN_free(cpriv_key);
     BN_GENCB_free(_cb);
-    DH_free(dh);
+    _DH_free(dh);
 
     return ret;
 }
@@ -587,9 +587,9 @@ static int rfc5114_test(void)
                 || !TEST_mem_eq(Z2, td->Z_len, td->Z, td->Z_len))
             goto err;
 
-        DH_free(dhA);
+        _DH_free(dhA);
         dhA = NULL;
-        DH_free(dhB);
+        _DH_free(dhB);
         dhB = NULL;
         _OPENSSL_free(Z1);
         Z1 = NULL;
@@ -621,14 +621,14 @@ static int rfc5114_test(void)
     /* We'll have a stale error on the queue from the above test so clear it */
     ERR_clear_error();
     BN_free(bady);
-    DH_free(dhA);
+    _DH_free(dhA);
     _OPENSSL_free(Z1);
     return 1;
 
  bad_err:
     BN_free(bady);
-    DH_free(dhA);
-    DH_free(dhB);
+    _DH_free(dhA);
+    _DH_free(dhB);
     BN_free(pub_key);
     BN_free(priv_key);
     _OPENSSL_free(Z1);
@@ -638,8 +638,8 @@ static int rfc5114_test(void)
 
  err:
     BN_free(bady);
-    DH_free(dhA);
-    DH_free(dhB);
+    _DH_free(dhA);
+    _DH_free(dhB);
     _OPENSSL_free(Z1);
     _OPENSSL_free(Z2);
     TEST_error("Test failed RFC5114 set %d\n", i + 1);
@@ -698,8 +698,8 @@ static int rfc7919_test(void)
  err:
     _OPENSSL_free(abuf);
     _OPENSSL_free(bbuf);
-    DH_free(a);
-    DH_free(b);
+    _DH_free(a);
+    _DH_free(b);
     return ret;
 }
 #endif

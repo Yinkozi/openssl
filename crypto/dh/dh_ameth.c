@@ -39,7 +39,7 @@ static int i2d_dhp(const EVP_PKEY *pkey, const DH *a, unsigned char **pp)
 
 static void int_dh_free(EVP_PKEY *pkey)
 {
-    DH_free(pkey->pkey.dh);
+    _DH_free(pkey->pkey.dh);
 }
 
 static int dh_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
@@ -89,7 +89,7 @@ static int dh_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
 
  err:
     ASN1_INTEGER_free(public_key);
-    DH_free(dh);
+    _DH_free(dh);
     return 0;
 
 }
@@ -194,7 +194,7 @@ static int dh_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
  decerr:
     DHerr(DH_F_DH_PRIV_DECODE, EVP_R_DECODE_ERROR);
  dherr:
-    DH_free(dh);
+    _DH_free(dh);
     ASN1_STRING_clear_free(privkey);
     return 0;
 }
@@ -425,7 +425,7 @@ DH *DHparams_dup(DH *dh)
     if (ret == NULL)
         return NULL;
     if (!int_dh_param_copy(ret, dh, -1)) {
-        DH_free(ret);
+        _DH_free(ret);
         return NULL;
     }
     return ret;
@@ -665,7 +665,7 @@ static int dh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
  err:
     ASN1_INTEGER_free(public_key);
     _EVP_PKEY_free(pkpeer);
-    DH_free(dhpeer);
+    _DH_free(dhpeer);
     return rv;
 }
 

@@ -949,7 +949,7 @@ static EVP_PKEY *load_example_rsa_key(void)
 
 end:
     _EVP_PKEY_free(pkey);
-    RSA_free(rsa);
+    _RSA_free(rsa);
 
     return ret;
 }
@@ -1145,7 +1145,7 @@ static int test_invalide_ec_char2_pub_range_decode(int id)
     ret = (ec_der_pub_keys[id].valid && TEST_ptr(eckey))
           || TEST_ptr_null(eckey);
 err:
-    EC_KEY_free(eckey);
+    _EC_KEY_free(eckey);
     _BIO_free(bio);
     return ret;
 }
@@ -1755,8 +1755,8 @@ static int test_EVP_PKEY_set1_DH(void)
  err:
     _EVP_PKEY_free(pkey1);
     _EVP_PKEY_free(pkey2);
-    DH_free(x942dh);
-    DH_free(pkcs3dh);
+    _DH_free(x942dh);
+    _DH_free(pkcs3dh);
 
     return ret;
 }

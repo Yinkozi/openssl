@@ -29,7 +29,7 @@ DSA_SIG *DSA_SIG_new(void)
     return sig;
 }
 
-void DSA_SIG_free(DSA_SIG *sig)
+void _DSA_SIG_free(DSA_SIG *sig)
 {
     if (sig == NULL)
         return;
@@ -67,7 +67,7 @@ static int dsa_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
             return 2;
         return 0;
     } else if (operation == ASN1_OP_FREE_PRE) {
-        DSA_free((DSA *)*pval);
+        _DSA_free((DSA *)*pval);
         *pval = NULL;
         return 2;
     }
@@ -118,7 +118,7 @@ int DSA_sign(int type, const unsigned char *dgst, int dlen,
         return 0;
     }
     *siglen = i2d_DSA_SIG(s, &sig);
-    DSA_SIG_free(s);
+    _DSA_SIG_free(s);
     return 1;
 }
 
@@ -150,6 +150,6 @@ int DSA_verify(int type, const unsigned char *dgst, int dgst_len,
     ret = DSA_do_verify(dgst, dgst_len, s, dsa);
  err:
     OPENSSL_clear_free(der, derlen);
-    DSA_SIG_free(s);
+    _DSA_SIG_free(s);
     return ret;
 }

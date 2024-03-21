@@ -215,7 +215,7 @@ SSL_SESSION_get0_peer                   215	1_1_0	EXIST::FUNCTION:
 SSL_SESSION_get_compress_id             216	1_1_0	EXIST::FUNCTION:
 SSL_get_peer_cert_chain                 217	1_1_0	EXIST::FUNCTION:
 SSL_CTX_set_cert_cb                     218	1_1_0	EXIST::FUNCTION:
-PEM_read_bio_SSL_SESSION                219	1_1_0	EXIST::FUNCTION:
+_PEM_read_bio_SSL_SESSION                219	1_1_0	EXIST::FUNCTION:
 SSL_set_info_callback                   220	1_1_0	EXIST::FUNCTION:
 SSL_CTX_sess_set_new_cb                 221	1_1_0	EXIST::FUNCTION:
 SSL_CTX_get_security_level              222	1_1_0	EXIST::FUNCTION:
@@ -325,7 +325,7 @@ SSL_CTX_use_PrivateKey_ASN1             325	1_1_0	EXIST::FUNCTION:
 SSL_CTX_get0_privatekey                 326	1_1_0	EXIST::FUNCTION:
 BIO_f_ssl                               327	1_1_0	EXIST::FUNCTION:
 SSLv3_server_method                     328	1_1_0	EXIST::FUNCTION:DEPRECATEDIN_1_1_0,SSL3_METHOD
-SSL_SESSION_free                        329	1_1_0	EXIST::FUNCTION:
+_SSL_SESSION_free                        329	1_1_0	EXIST::FUNCTION:
 SSL_get_shutdown                        330	1_1_0	EXIST::FUNCTION:
 SSL_get_peer_finished                   331	1_1_0	EXIST::FUNCTION:
 SSL_set_tlsext_use_srtp                 332	1_1_0	EXIST::FUNCTION:SRTP

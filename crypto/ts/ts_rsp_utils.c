@@ -25,7 +25,7 @@ int TS_RESP_set_status_info(TS_RESP *a, TS_STATUS_INFO *status_info)
         TSerr(TS_F_TS_RESP_SET_STATUS_INFO, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    TS_STATUS_INFO_free(a->status_info);
+    _TS_STATUS_INFO_free(a->status_info);
     a->status_info = new_status_info;
 
     return 1;
@@ -41,7 +41,7 @@ void TS_RESP_set_tst_info(TS_RESP *a, PKCS7 *p7, TS_TST_INFO *tst_info)
 {
     PKCS7_free(a->token);
     a->token = p7;
-    TS_TST_INFO_free(a->tst_info);
+    _TS_TST_INFO_free(a->tst_info);
     a->tst_info = tst_info;
 }
 
@@ -97,7 +97,7 @@ int TS_TST_INFO_set_msg_imprint(TS_TST_INFO *a, TS_MSG_IMPRINT *msg_imprint)
         TSerr(TS_F_TS_TST_INFO_SET_MSG_IMPRINT, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    TS_MSG_IMPRINT_free(a->msg_imprint);
+    _TS_MSG_IMPRINT_free(a->msg_imprint);
     a->msg_imprint = new_msg_imprint;
     return 1;
 }
@@ -160,7 +160,7 @@ int TS_TST_INFO_set_accuracy(TS_TST_INFO *a, TS_ACCURACY *accuracy)
         TSerr(TS_F_TS_TST_INFO_SET_ACCURACY, ERR_R_MALLOC_FAILURE);
         return 0;
     }
-    TS_ACCURACY_free(a->accuracy);
+    _TS_ACCURACY_free(a->accuracy);
     a->accuracy = new_accuracy;
     return 1;
 }

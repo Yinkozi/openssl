@@ -216,7 +216,7 @@ static int test_rsa_mp(void)
 
     ret = 1;
 err:
-    RSA_free(key);
+    _RSA_free(key);
     return ret;
 }
 #endif

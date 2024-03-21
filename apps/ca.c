@@ -1282,7 +1282,7 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
         ERR_print_errors(bio_err);
         goto end;
     }
-    if ((req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL)) == NULL) {
+    if ((req = _PEM_read_bio_X509_REQ(in, NULL, NULL, NULL)) == NULL) {
         BIO_printf(bio_err, "Error reading certificate request in %s\n",
                    infile);
         goto end;

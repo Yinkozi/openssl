@@ -742,7 +742,7 @@ static void print_key_details(BIO *out, EVP_PKEY *key)
         int nid;
         const char *cname;
         nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
-        EC_KEY_free(ec);
+        _EC_KEY_free(ec);
         cname = EC_curve_nid2nist(nid);
         if (!cname)
             cname = OBJ_nid2sn(nid);
@@ -839,7 +839,7 @@ static SSL_SESSION *read_session(const char *filename)
         ERR_print_errors(bio_err);
         return NULL;
     }
-    sess = PEM_read_bio_SSL_SESSION(f, NULL, 0, NULL);
+    sess = _PEM_read_bio_SSL_SESSION(f, NULL, 0, NULL);
     if (sess == NULL) {
         BIO_printf(bio_err, "Can't parse session file %s\n", filename);
         ERR_print_errors(bio_err);
@@ -1529,7 +1529,7 @@ int main(int argc, char *argv[])
             dh = get_dh1024();
         SSL_CTX_set_tmp_dh(s_ctx, dh);
         SSL_CTX_set_tmp_dh(s_ctx2, dh);
-        DH_free(dh);
+        _DH_free(dh);
     }
 #else
     (void)no_dhe;
@@ -1897,8 +1897,8 @@ int main(int argc, char *argv[])
 
     _BIO_free(bio_stdout);
 
-    SSL_SESSION_free(server_sess);
-    SSL_SESSION_free(client_sess);
+    _SSL_SESSION_free(server_sess);
+    _SSL_SESSION_free(client_sess);
 
 #ifndef OPENSSL_NO_CRYPTO_MDEBUG
     if (CRYPTO_mem_leaks(bio_err) <= 0)
@@ -2946,7 +2946,7 @@ static DH *get_dh512(void)
     p = BN_bin2bn(dh512_p, sizeof(dh512_p), NULL);
     g = BN_bin2bn(dh512_g, sizeof(dh512_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
-        DH_free(dh);
+        _DH_free(dh);
         BN_free(p);
         BN_free(g);
         return NULL;
@@ -2990,7 +2990,7 @@ static DH *get_dh1024(void)
     p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
     g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
-        DH_free(dh);
+        _DH_free(dh);
         BN_free(p);
         BN_free(g);
         return NULL;
@@ -3054,7 +3054,7 @@ static DH *get_dh1024dsa(void)
     p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
     g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
-        DH_free(dh);
+        _DH_free(dh);
         BN_free(p);
         BN_free(g);
         return NULL;
@@ -3085,7 +3085,7 @@ static DH *get_dh2048(void)
     return dh;
 
  err:
-    DH_free(dh);
+    _DH_free(dh);
     BN_free(p);
     BN_free(g);
     return NULL;
@@ -3113,7 +3113,7 @@ static DH *get_dh4096(void)
     return dh;
 
  err:
-    DH_free(dh);
+    _DH_free(dh);
     BN_free(p);
     BN_free(g);
     return NULL;

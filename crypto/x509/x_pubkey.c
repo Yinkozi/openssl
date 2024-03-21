@@ -235,7 +235,7 @@ RSA *d2i_RSA_PUBKEY(RSA **a, const unsigned char **pp, long length)
         return NULL;
     *pp = q;
     if (a) {
-        RSA_free(*a);
+        _RSA_free(*a);
         *a = key;
     }
     return key;
@@ -275,7 +275,7 @@ DSA *d2i_DSA_PUBKEY(DSA **a, const unsigned char **pp, long length)
         return NULL;
     *pp = q;
     if (a) {
-        DSA_free(*a);
+        _DSA_free(*a);
         *a = key;
     }
     return key;
@@ -315,7 +315,7 @@ EC_KEY *d2i_EC_PUBKEY(EC_KEY **a, const unsigned char **pp, long length)
         return NULL;
     *pp = q;
     if (a) {
-        EC_KEY_free(*a);
+        _EC_KEY_free(*a);
         *a = key;
     }
     return key;

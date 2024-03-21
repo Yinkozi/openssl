@@ -56,7 +56,7 @@ DSA *DSA_generate_parameters(int bits,
     }
     BN_GENCB_free(cb);
 err:
-    DSA_free(ret);
+    _DSA_free(ret);
     return NULL;
 }
 #endif
