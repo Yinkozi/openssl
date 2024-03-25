@@ -28,7 +28,7 @@
 
 static int test_tbl_standard(void)
 {
-    const ASN1_STRING_TABLE *tmp;
+    const YASN1_STRING_TABLE *tmp;
     int last_nid = -1;
     size_t i;
 
@@ -64,7 +64,7 @@ static int test_tbl_standard(void)
 
 static int test_standard_methods(void)
 {
-    const EVP_PKEY_ASN1_METHOD **tmp;
+    const EVVP_PKEY_YASN1_METHOD **tmp;
     int last_pkey_id = -1;
     size_t i;
     int ok = 1;
@@ -80,13 +80,13 @@ static int test_standard_methods(void)
         /*
          * One of the following must be true:
          *
-         * pem_str == NULL AND ASN1_PKEY_ALIAS is set
-         * pem_str != NULL AND ASN1_PKEY_ALIAS is clear
+         * pem_str == NULL AND YASN1_PKEY_ALIAS is set
+         * pem_str != NULL AND YASN1_PKEY_ALIAS is clear
          *
-         * Anything else is an error and may lead to a corrupt ASN1 method table
+         * Anything else is an error and may lead to a corrupt YASN1 method table
          */
-        if (!TEST_true(((*tmp)->pem_str == NULL && ((*tmp)->pkey_flags & ASN1_PKEY_ALIAS) != 0)
-                       || ((*tmp)->pem_str != NULL && ((*tmp)->pkey_flags & ASN1_PKEY_ALIAS) == 0))) {
+        if (!TEST_true(((*tmp)->pem_str == NULL && ((*tmp)->pkey_flags & YASN1_PKEY_ALIAS) != 0)
+                       || ((*tmp)->pem_str != NULL && ((*tmp)->pkey_flags & YASN1_PKEY_ALIAS) == 0))) {
             TEST_note("asn1 standard methods: Index %zu, pkey ID %d, Name=%s",
                       i, (*tmp)->pkey_id, OBJ_nid2sn((*tmp)->pkey_id));
             ok = 0;
@@ -115,7 +115,7 @@ static int test_standard_methods(void)
  ***/
 static int test_nid2obj_nonexist(void)
 {
-    ASN1_OBJECT *obj;
+    YASN1_OBJECT *obj;
     unsigned long err;
 
     obj = OBJ_nid2obj(INT_MAX);

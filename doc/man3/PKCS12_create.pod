@@ -2,19 +2,19 @@
 
 =head1 NAME
 
-PKCS12_create - create a PKCS#12 structure
+YPKCS12_create - create a YPKCS#12 structure
 
 =head1 SYNOPSIS
 
  #include <openssl/pkcs12.h>
 
- PKCS12 *PKCS12_create(const char *pass, const char *name, EVP_PKEY *pkey,
-                       X509 *cert, STACK_OF(X509) *ca,
+ YPKCS12 *YPKCS12_create(const char *pass, const char *name, EVVP_PKEY *pkey,
+                       YX509 *cert, STACK_OF(YX509) *ca,
                        int nid_key, int nid_cert, int iter, int mac_iter, int keytype);
 
 =head1 DESCRIPTION
 
-PKCS12_create() creates a PKCS#12 structure.
+YPKCS12_create() creates a YPKCS#12 structure.
 
 B<pass> is the passphrase to use. B<name> is the B<friendlyName> to use for
 the supplied certificate and key. B<pkey> is the private key to include in
@@ -32,13 +32,13 @@ B<keytype> is the type of key.
 The parameters B<nid_key>, B<nid_cert>, B<iter>, B<mac_iter> and B<keytype>
 can all be set to zero and sensible defaults will be used.
 
-These defaults are: 40 bit RC2 encryption for certificates, triple DES
-encryption for private keys, a key iteration count of PKCS12_DEFAULT_ITER
+These defaults are: 40 bit YRC2 encryption for certificates, triple DES
+encryption for private keys, a key iteration count of YPKCS12_DEFAULT_ITER
 (currently 2048) and a MAC iteration count of 1.
 
 The default MAC iteration count is 1 in order to retain compatibility with
 old software which did not interpret MAC iteration counts. If such compatibility
-is not required then B<mac_iter> should be set to PKCS12_DEFAULT_ITER.
+is not required then B<mac_iter> should be set to YPKCS12_DEFAULT_ITER.
 
 B<keytype> adds a flag to the store private key. This is a non standard extension
 that is only currently interpreted by MSIE. If set to zero the flag is omitted,
@@ -50,7 +50,7 @@ encryption.
 
 If a certificate contains an B<alias> or B<keyid> then this will be
 used for the corresponding B<friendlyName> or B<localKeyID> in the
-PKCS12 structure.
+YPKCS12 structure.
 
 Either B<pkey>, B<cert> or both can be B<NULL> to indicate that no key or
 certificate is required. In previous versions both had to be present or
@@ -61,17 +61,17 @@ should be used.
 
 B<mac_iter> can be set to -1 and the MAC will then be omitted entirely.
 
-PKCS12_create() makes assumptions regarding the encoding of the given pass
+YPKCS12_create() makes assumptions regarding the encoding of the given pass
 phrase.
 See L<passphrase-encoding(7)> for more information.
 
 =head1 RETURN VALUES
 
-PKCS12_create() returns a valid B<PKCS12> structure or NULL if an error occurred.
+YPKCS12_create() returns a valid B<YPKCS12> structure or NULL if an error occurred.
 
 =head1 SEE ALSO
 
-L<d2i_PKCS12(3)>,
+L<d2i_YPKCS12(3)>,
 L<passphrase-encoding(7)>
 
 =head1 COPYRIGHT

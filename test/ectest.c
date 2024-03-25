@@ -56,7 +56,7 @@ static int group_order_tests(EC_GROUP *group)
         || !TEST_true(BN_one(n1))
         || !TEST_true(EC_POINT_mul(group, Q, n1, NULL, NULL, ctx))
         || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
-        || !TEST_true(BN_sub(n1, order, n1))
+        || !TEST_true(BNY_sub(n1, order, n1))
         || !TEST_true(EC_POINT_mul(group, Q, n1, NULL, NULL, ctx))
         || !TEST_true(EC_POINT_invert(group, Q, ctx))
         || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx)))
@@ -75,17 +75,17 @@ static int group_order_tests(EC_GROUP *group)
             || (i == 1 && !TEST_int_eq(0, EC_POINT_cmp(group, P, G, ctx)))
             || !TEST_true(BN_one(n1))
             /* n1 = 1 - order */
-            || !TEST_true(BN_sub(n1, n1, order))
+            || !TEST_true(BNY_sub(n1, n1, order))
             || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n1, ctx))
             || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
 
             /* n2 = 1 + order */
-            || !TEST_true(BN_add(n2, order, BN_value_one()))
+            || !TEST_true(BNY_add(n2, order, BN_value_one()))
             || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n2, ctx))
             || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
 
             /* n2 = (1 - order) * (1 + order) = 1 - order^2 */
-            || !TEST_true(BN_mul(n2, n1, n2, ctx))
+            || !TEST_true(BNY_mul(n2, n1, n2, ctx))
             || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n2, ctx))
             || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx)))
             goto err;
@@ -165,7 +165,7 @@ static int prime_field_tests(void)
         || !TEST_true(BN_hex2bn(&a, "1"))
         || !TEST_true(BN_hex2bn(&b, "1"))
         /*
-         * applications should use EC_GROUP_new_curve_GFp so
+         * applications should use EC_GROUP_new_curves_GFp so
          * that the library gets to choose the EC_METHOD
          */
         || !TEST_ptr(group = EC_GROUP_new(EC_GFp_mont_method()))
@@ -296,7 +296,7 @@ static int prime_field_tests(void)
                                     "8EF573284664698968C38BB913CBFC82"))
         || !TEST_true(BN_hex2bn(&y,                         "23a62855"
                                     "3168947d59dcc912042351377ac5fb32"))
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -349,7 +349,7 @@ static int prime_field_tests(void)
     if (!TEST_true(BN_hex2bn(&z,                 "07192B95FFC8DA78"
                                  "631011ED6B24CDD573F977A11E794811"))
         || !TEST_BN_eq(y, z)
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -388,7 +388,7 @@ static int prime_field_tests(void)
     if (!TEST_true(BN_hex2bn(&z,         "BD376388B5F723FB4C22DFE6"
                                  "CD4375A05A07476444D5819985007E34"))
         || !TEST_BN_eq(y, z)
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -428,7 +428,7 @@ static int prime_field_tests(void)
     if (!TEST_true(BN_hex2bn(&z, "4FE342E2FE1A7F9B8EE7EB4A7C0F9E16"
                                  "2BCE33576B315ECECBB6406837BF51F5"))
         || !TEST_BN_eq(y, z)
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -474,7 +474,7 @@ static int prime_field_tests(void)
                                  "F8F41DBD289A147CE9DA3113B5F0B8C0"
                                  "0A60B1CE1D7E819D7A431D7C90EA0E5F"))
         || !TEST_BN_eq(y, z)
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -530,7 +530,7 @@ static int prime_field_tests(void)
                                  "97EE72995EF42640C550B9013FAD0761"
                                  "353C7086A272C24088BE94769FD16650"))
         || !TEST_BN_eq(y, z)
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -562,9 +562,9 @@ static int prime_field_tests(void)
     points[3] = Q;
 
     if (!TEST_true(EC_GROUP_get_order(group, z, ctx))
-        || !TEST_true(BN_add(y, z, BN_value_one()))
+        || !TEST_true(BNY_add(y, z, BN_value_one()))
         || !TEST_BN_even(y)
-        || !TEST_true(BN_rshift1(y, y)))
+        || !TEST_true(BN_ryshift1(y, y)))
         goto err;
     scalars[0] = y;         /* (group order + 1)/2, so y*Q + y*Q = Q */
     scalars[1] = y;
@@ -577,7 +577,7 @@ static int prime_field_tests(void)
         || !TEST_int_eq(0, EC_POINT_cmp(group, P, R, ctx))
         || !TEST_int_eq(0, EC_POINT_cmp(group, R, Q, ctx))
         || !TEST_true(BN_rand(y, BN_num_bits(y), 0, 0))
-        || !TEST_true(BN_add(z, z, y)))
+        || !TEST_true(BNY_add(z, z, y)))
         goto err;
     BN_set_negative(z, 1);
     scalars[0] = y;
@@ -586,7 +586,7 @@ static int prime_field_tests(void)
     if (!TEST_true(EC_POINTs_mul(group, P, NULL, 2, points, scalars, ctx))
         || !TEST_true(EC_POINT_is_at_infinity(group, P))
         || !TEST_true(BN_rand(x, BN_num_bits(y) - 1, 0, 0))
-        || !TEST_true(BN_add(z, x, y)))
+        || !TEST_true(BNY_add(z, x, y)))
         goto err;
     BN_set_negative(z, 1);
     scalars[0] = x;
@@ -833,7 +833,7 @@ static int char2_curve_test(int n)
         || !TEST_ptr(R = EC_POINT_new(group))
         || !TEST_true(BN_hex2bn(&x, test->x))
         || !TEST_true(BN_hex2bn(&y, test->y))
-        || !TEST_true(BN_add(yplusone, y, BN_value_one())))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one())))
         goto err;
 
 /* Change test based on whether binary point compression is enabled or not. */
@@ -900,9 +900,9 @@ static int char2_curve_test(int n)
         points[1] = Q;
         points[2] = Q;
 
-        if (!TEST_true(BN_add(y, z, BN_value_one()))
+        if (!TEST_true(BNY_add(y, z, BN_value_one()))
             || !TEST_BN_even(y)
-            || !TEST_true(BN_rshift1(y, y)))
+            || !TEST_true(BN_ryshift1(y, y)))
             goto err;
         scalars[0] = y;         /* (group order + 1)/2, so y*Q + y*Q = Q */
         scalars[1] = y;
@@ -917,7 +917,7 @@ static int char2_curve_test(int n)
             goto err;
 
         if (!TEST_true(BN_rand(y, BN_num_bits(y), 0, 0))
-            || !TEST_true(BN_add(z, z, y)))
+            || !TEST_true(BNY_add(z, z, y)))
             goto err;
         BN_set_negative(z, 1);
         scalars[0] = y;
@@ -928,7 +928,7 @@ static int char2_curve_test(int n)
             goto err;
 
         if (!TEST_true(BN_rand(x, BN_num_bits(y) - 1, 0, 0))
-            || !TEST_true(BN_add(z, x, y)))
+            || !TEST_true(BNY_add(z, x, y)))
             goto err;
         BN_set_negative(z, 1);
         scalars[0] = x;
@@ -980,7 +980,7 @@ static int char2_field_tests(void)
         goto err;
 
     group = EC_GROUP_new(EC_GF2m_simple_method()); /* applications should use
-                                                    * EC_GROUP_new_curve_GF2m
+                                                    * EC_GROUP_new_curves_GF2m
                                                     * so that the library gets
                                                     * to choose the EC_METHOD */
     if (!TEST_ptr(group)
@@ -1136,7 +1136,7 @@ static int hybrid_point_encoding_test(void)
 
     if (!TEST_true(BN_dec2bn(&x, "0"))
         || !TEST_true(BN_dec2bn(&y, "1"))
-        || !TEST_ptr(group = EC_GROUP_new_by_curve_name(NID_sect571k1))
+        || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_sect571k1))
         || !TEST_ptr(point = EC_POINT_new(group))
         || !TEST_true(EC_POINT_set_affine_coordinates(group, point, x, y, NULL))
         || !TEST_size_t_ne(0, (len = EC_POINT_point2oct(group,
@@ -1180,7 +1180,7 @@ static int internal_curve_test(int n)
     EC_GROUP *group = NULL;
     int nid = curves[n].nid;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(nid))) {
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))) {
         TEST_info("EC_GROUP_new_curve_name() failed with curve %s\n",
                   OBJ_nid2sn(nid));
         return 0;
@@ -1199,7 +1199,7 @@ static int internal_curve_test_method(int n)
     int r, nid = curves[n].nid;
     EC_GROUP *group;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(nid))) {
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))) {
         TEST_info("Curve %s failed\n", OBJ_nid2sn(nid));
         return 0;
     }
@@ -1349,7 +1349,7 @@ static int nistp_single_test(int idx)
         || !TEST_ptr(Q_CHECK = EC_POINT_new(NISTP))
         || !TEST_true(BN_hex2bn(&x, test->Qx))
         || !TEST_true(BN_hex2bn(&y, test->Qy))
-        || !TEST_true(BN_add(yplusone, y, BN_value_one()))
+        || !TEST_true(BNY_add(yplusone, y, BN_value_one()))
     /*
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
@@ -1381,7 +1381,7 @@ static int nistp_single_test(int idx)
         || !TEST_true(EC_POINT_dbl(NISTP, P, G, ctx))
         || !TEST_true(EC_GROUP_set_generator(NISTP, P, order, BN_value_one()))
         /* set the scalar to m=n/2, where n is the NIST test scalar */
-        || !TEST_true(BN_rshift(m, n, 1)))
+        || !TEST_true(BN_ryshift(m, n, 1)))
         goto err;
 
     /* test the non-standard generator */
@@ -1486,7 +1486,7 @@ static int underflow_test(void)
     if (!TEST_ptr(k))
         goto err;
 
-    grp = EC_GROUP_new_by_curve_name(NID_secp521r1);
+    grp = EC_GROUP_new_by_curve_mame(NID_secp521r1);
     P = EC_POINT_new(grp);
     Q = EC_POINT_new(grp);
     R = EC_POINT_new(grp);
@@ -1639,7 +1639,7 @@ int are_ec_nids_compatible(int n1d, int n2d)
  * Note that it is possible to retrieve an alternative alias that does not match
  * the original nid.
  *
- * Ensure that the OPENSSL_EC_EXPLICIT_CURVE ASN1 flag is set.
+ * Ensure that the OPENSSL_EC_EXPLICIT_CURVE YASN1 flag is set.
  */
 static int check_named_curve_from_ecparameters(int id)
 {
@@ -1652,7 +1652,7 @@ static int check_named_curve_from_ecparameters(int id)
     const BIGNUM *group_order = NULL;
     BIGNUM *other_order = NULL;
     BN_CTX *bn_ctx = NULL;
-    static const unsigned char invalid_seed[] = "THIS IS NOT A VALID SEED";
+    static const unsigned char invalid_seed[] = "THIS IS NOT A VALID YSEED";
     static size_t invalid_seed_len = sizeof(invalid_seed);
     ECPARAMETERS *params = NULL, *other_params = NULL;
     EC_GROUP *g_ary[8] = {NULL};
@@ -1674,7 +1674,7 @@ static int check_named_curve_from_ecparameters(int id)
         || !TEST_ptr(other_order = BN_CTX_get(bn_ctx))
         || !TEST_ptr(other_cofactor = BN_CTX_get(bn_ctx))
         /* Generate reference group and params */
-        || !TEST_ptr(group = EC_GROUP_new_by_curve_name(nid))
+        || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
         || !TEST_ptr(params = EC_GROUP_get_ecparameters(group, NULL))
         || !TEST_ptr(group_gen = EC_GROUP_get0_generator(group))
         || !TEST_ptr(group_order = EC_GROUP_get0_order(group))
@@ -1686,9 +1686,9 @@ static int check_named_curve_from_ecparameters(int id)
         || !TEST_true(EC_POINT_get_affine_coordinates(group, other_gen,
                       other_gen_x, other_gen_y, bn_ctx))
         || !TEST_true(BN_copy(other_order, group_order))
-        || !TEST_true(BN_add_word(other_order, 1))
+        || !TEST_true(BNY_add_word(other_order, 1))
         || !TEST_true(BN_copy(other_cofactor, group_cofactor))
-        || !TEST_true(BN_add_word(other_cofactor, 1)))
+        || !TEST_true(BNY_add_word(other_cofactor, 1)))
         goto err;
 
     EC_POINT_free(other_gen);
@@ -1721,7 +1721,7 @@ static int check_named_curve_from_ecparameters(int id)
         TEST_info("nid = %s, tnid = %s", OBJ_nid2sn(nid), OBJ_nid2sn(tnid));
         goto err;
     }
-    /* Ensure that the OPENSSL_EC_EXPLICIT_CURVE ASN1 flag is set. */
+    /* Ensure that the OPENSSL_EC_EXPLICIT_CURVE YASN1 flag is set. */
     if (!TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup), OPENSSL_EC_EXPLICIT_CURVE))
         goto err;
 
@@ -1840,7 +1840,7 @@ static int parameter_test(void)
     unsigned char *buf = NULL;
     int r = 0, len;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(NID_secp112r1))
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_secp112r1))
         || !TEST_ptr(ecparameters = EC_GROUP_get_ecparameters(group, NULL))
         || !TEST_ptr(group2 = EC_GROUP_new_from_ecparameters(ecparameters))
         || !TEST_int_eq(EC_GROUP_cmp(group, group2, NULL), 0))
@@ -1850,7 +1850,7 @@ static int parameter_test(void)
     group = NULL;
 
     /* Test the named curve encoding, which should be default. */
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(NID_secp521r1))
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_secp521r1))
         || !TEST_true((len = i2d_ECPKParameters(group, &buf)) >= 0)
         || !TEST_mem_eq(buf, len, p521_named, sizeof(p521_named)))
         goto err;
@@ -1985,7 +1985,7 @@ static int cardinality_test(int n)
     TEST_info("Curve %s cardinality test", OBJ_nid2sn(nid));
 
     if (!TEST_ptr(ctx = BN_CTX_new())
-        || !TEST_ptr(g1 = EC_GROUP_new_by_curve_name(nid))
+        || !TEST_ptr(g1 = EC_GROUP_new_by_curve_mame(nid))
         || !TEST_ptr(g2 = EC_GROUP_new(EC_GROUP_method_of(g1)))) {
         EC_GROUP_free(g1);
         EC_GROUP_free(g2);
@@ -2024,7 +2024,7 @@ static int cardinality_test(int n)
         || !TEST_BN_eq(g1_cf, g2_cf)
         /* negative test for invalid cofactor */
         || !TEST_true(BN_set_word(g2_cf, 0))
-        || !TEST_true(BN_sub(g2_cf, g2_cf, BN_value_one()))
+        || !TEST_true(BNY_sub(g2_cf, g2_cf, BN_value_one()))
         || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, g2_cf))
         /* negative test for NULL order */
         || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, NULL, NULL))
@@ -2033,7 +2033,7 @@ static int cardinality_test(int n)
         || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
         /* negative test for negative order */
         || !TEST_true(BN_set_word(g2_cf, 0))
-        || !TEST_true(BN_sub(g2_cf, g2_cf, BN_value_one()))
+        || !TEST_true(BNY_sub(g2_cf, g2_cf, BN_value_one()))
         || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
         /* negative test for too large order */
         || !TEST_true(BN_lshift(g1_order, g1_p, 2))
@@ -2052,7 +2052,7 @@ static int cardinality_test(int n)
 /*
  * Helper for ec_point_hex2point_test
  *
- * Self-tests EC_POINT_point2hex() against EC_POINT_hex2point() for the given
+ * Self-tests EC_POINT_point2hexx() against EC_POINT_hex2point() for the given
  * (group,P) pair.
  *
  * If P is NULL use point at infinity.
@@ -2074,7 +2074,7 @@ int ec_point_hex2point_test_helper(const EC_GROUP *group, const EC_POINT *P,
         P = Pinf;
     }
 
-    if (!TEST_ptr(hex = EC_POINT_point2hex(group, P, form, bnctx))
+    if (!TEST_ptr(hex = EC_POINT_point2hexx(group, P, form, bnctx))
             || !TEST_ptr(Q = EC_POINT_hex2point(group, hex, NULL, bnctx))
             || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, bnctx)))
         goto err;
@@ -2100,7 +2100,7 @@ int ec_point_hex2point_test_helper(const EC_GROUP *group, const EC_POINT *P,
 }
 
 /*
- * This test self-validates EC_POINT_hex2point() and EC_POINT_point2hex()
+ * This test self-validates EC_POINT_hex2point() and EC_POINT_point2hexx()
  */
 static int ec_point_hex2point_test(int id)
 {
@@ -2113,7 +2113,7 @@ static int ec_point_hex2point_test(int id)
     /* Do some setup */
     nid = curves[id].nid;
     if (!TEST_ptr(bnctx = BN_CTX_new())
-            || !TEST_ptr(group = EC_GROUP_new_by_curve_name(nid))
+            || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
             || !TEST_ptr(G = EC_GROUP_get0_generator(group))
             || !TEST_ptr(P = EC_POINT_dup(G, group)))
         goto err;
@@ -2168,7 +2168,7 @@ static int custom_generator_test(int id)
 
     BN_CTX_start(ctx);
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(nid)))
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid)))
         goto err;
 
     /* expected byte length of encoded points */
@@ -2200,7 +2200,7 @@ static int custom_generator_test(int id)
                                              EC_GROUP_get0_order(group),
                                              EC_GROUP_get0_cofactor(group)))
         || !TEST_ptr(Q2 = EC_POINT_new(group))
-        || !TEST_true(BN_rshift1(k, k))
+        || !TEST_true(BN_ryshift1(k, k))
         /* Q2 := k/2 G2 */
         || !TEST_true(EC_POINT_mul(group, Q2, k, NULL, NULL, ctx))
         || !TEST_int_eq(EC_POINT_point2oct(group, Q2,

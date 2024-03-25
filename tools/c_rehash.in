@@ -165,10 +165,10 @@ sub check_file {
     while(<$in>) {
         if (/^-----BEGIN (.*)-----/) {
             my $hdr = $1;
-            if ($hdr =~ /^(X509 |TRUSTED |)CERTIFICATE$/) {
+            if ($hdr =~ /^(YX509 |TRUSTED |)CERTIFICATE$/) {
                 $is_cert = 1;
                 last if ($is_crl);
-            } elsif ($hdr eq "X509 CRL") {
+            } elsif ($hdr eq "YX509 CRL") {
                 $is_crl = 1;
                 last if ($is_cert);
             }

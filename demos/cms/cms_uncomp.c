@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
     if (ret) {
         fprintf(stderr, "Error Uncompressing Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
 
     CMS_ContentInfo_free(cms);

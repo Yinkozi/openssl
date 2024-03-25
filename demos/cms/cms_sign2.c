@@ -15,8 +15,8 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL;
-    X509 *scert = NULL, *scert2 = NULL;
-    EVP_PKEY *skey = NULL, *skey2 = NULL;
+    YX509 *scert = NULL, *scert2 = NULL;
+    EVVP_PKEY *skey = NULL, *skey2 = NULL;
     CMS_ContentInfo *cms = NULL;
     int ret = 1;
 
@@ -28,11 +28,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    skey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     BIO_free(tbio);
 
@@ -41,11 +41,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert2 = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert2 = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    skey2 = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey2 = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!scert2 || !skey2)
         goto err;
@@ -83,14 +83,14 @@ int main(int argc, char **argv)
 
     if (ret) {
         fprintf(stderr, "Error Signing Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
 
     CMS_ContentInfo_free(cms);
-    X509_free(scert);
-    EVP_PKEY_free(skey);
-    X509_free(scert2);
-    EVP_PKEY_free(skey2);
+    YX509_free(scert);
+    EVVP_PKEY_free(skey);
+    YX509_free(scert2);
+    EVVP_PKEY_free(skey2);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

@@ -50,10 +50,10 @@ ENGINE_SSL_CLIENT_CERT_PTR ENGINE_get_ssl_client_cert_function(const ENGINE
 
 /* API functions to load public/private keys */
 
-EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
+EVVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
                                   UI_METHOD *ui_method, void *callback_data)
 {
-    EVP_PKEY *pkey;
+    EVVP_PKEY *pkey;
 
     if (e == NULL) {
         ENGINEerr(ENGINE_F_ENGINE_LOAD_PRIVATE_KEY,
@@ -81,10 +81,10 @@ EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
     return pkey;
 }
 
-EVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
+EVVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
                                  UI_METHOD *ui_method, void *callback_data)
 {
-    EVP_PKEY *pkey;
+    EVVP_PKEY *pkey;
 
     if (e == NULL) {
         ENGINEerr(ENGINE_F_ENGINE_LOAD_PUBLIC_KEY,
@@ -112,8 +112,8 @@ EVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
 }
 
 int ENGINE_load_ssl_client_cert(ENGINE *e, SSL *s,
-                                STACK_OF(X509_NAME) *ca_dn, X509 **pcert,
-                                EVP_PKEY **ppkey, STACK_OF(X509) **pother,
+                                STACK_OF(YX509_NAME) *ca_dn, YX509 **pcert,
+                                EVVP_PKEY **ppkey, STACK_OF(YX509) **pother,
                                 UI_METHOD *ui_method, void *callback_data)
 {
 

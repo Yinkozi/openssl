@@ -37,7 +37,7 @@
 
 /*
  * This should limit the stack usage due to alloca to about 4K.
- * BN_SOFT_LIMIT is a soft limit equivalent to 2*OPENSSL_RSA_MAX_MODULUS_BITS.
+ * BN_SOFT_LIMIT is a soft limit equivalent to 2*OPENSSL_YRSA_MAX_MODULUS_BITS.
  * Beyond that size bn_mul_mont is no longer used, and the constant time
  * assembler code is disabled, due to the blatant alloca and bn_mul_mont usage.
  * Note that bn_mul_mont does an alloca that is hidden away in assembly.
@@ -229,7 +229,7 @@ BN_ULONG bn_mul_add_words(BN_ULONG *rp, const BN_ULONG *ap, int num,
                           BN_ULONG w);
 BN_ULONG bn_mul_words(BN_ULONG *rp, const BN_ULONG *ap, int num, BN_ULONG w);
 void bn_sqr_words(BN_ULONG *rp, const BN_ULONG *ap, int num);
-BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d);
+BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d);
 BN_ULONG bn_add_words(BN_ULONG *rp, const BN_ULONG *ap, const BN_ULONG *bp,
                       int num);
 BN_ULONG bn_sub_words(BN_ULONG *rp, const BN_ULONG *ap, const BN_ULONG *bp,
@@ -315,7 +315,7 @@ struct bn_gencb_st {
                  (b) >  23 ? 3 : 1)
 
 /*
- * BN_mod_exp_mont_consttime is based on the assumption that the L1 data cache
+ * BNY_mod_exp_mont_consttime is based on the assumption that the L1 data cache
  * line width of the target processor is at least the following value.
  */
 # define MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH      ( 64 )
@@ -323,7 +323,7 @@ struct bn_gencb_st {
 
 /*
  * Window sizes optimized for fixed window size modular exponentiation
- * algorithm (BN_mod_exp_mont_consttime). To achieve the security goals of
+ * algorithm (BNY_mod_exp_mont_consttime). To achieve the security goals of
  * BN_mode_exp_mont_consttime, the maximum size of the window must not exceed
  * log_2(MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH). Window size thresholds are
  * defined for cache line sizes of 32 and 64, cache line sizes where
@@ -653,7 +653,7 @@ void bn_mul_normal(BN_ULONG *r, BN_ULONG *a, int na, BN_ULONG *b, int nb);
 void bn_mul_comba8(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b);
 void bn_mul_comba4(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b);
 void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp);
-void bn_sqr_comba8(BN_ULONG *r, const BN_ULONG *a);
+void bny_sqr_comba8(BN_ULONG *r, const BN_ULONG *a);
 void bn_sqr_comba4(BN_ULONG *r, const BN_ULONG *a);
 int bn_cmp_words(const BN_ULONG *a, const BN_ULONG *b, int n);
 int bn_cmp_part_words(const BN_ULONG *a, const BN_ULONG *b, int cl, int dl);
@@ -661,7 +661,7 @@ void bn_mul_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n2,
                       int dna, int dnb, BN_ULONG *t);
 void bn_mul_part_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b,
                            int n, int tna, int tnb, BN_ULONG *t);
-void bn_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t);
+void bny_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t);
 void bn_mul_low_normal(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n);
 void bn_mul_low_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n2,
                           BN_ULONG *t);
@@ -682,7 +682,7 @@ static ossl_inline BIGNUM *bn_expand(BIGNUM *a, int bits)
     if (((bits+BN_BITS2-1)/BN_BITS2) <= (a)->dmax)
         return a;
 
-    return bn_expand2((a),(bits+BN_BITS2-1)/BN_BITS2);
+    return bny_expand2((a),(bits+BN_BITS2-1)/BN_BITS2);
 }
 
 #endif

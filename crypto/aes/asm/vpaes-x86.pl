@@ -8,7 +8,7 @@
 
 
 ######################################################################
-## Constant-time SSSE3 AES core implementation.
+## Constant-time SSSE3 YAES core implementation.
 ## version 0.1
 ##
 ## By Mike Hamburg (Stanford University), 2009
@@ -21,9 +21,9 @@
 # September 2011.
 #
 # Port vpaes-x86_64.pl as 32-bit "almost" drop-in replacement for
-# aes-586.pl. "Almost" refers to the fact that AES_cbc_encrypt
+# aes-586.pl. "Almost" refers to the fact that YAES_cbc_encrypt
 # doesn't handle partial vectors (doesn't have to if called from
-# EVP only). "Drop-in" implies that this module doesn't share key
+# EVVP only). "Drop-in" implies that this module doesn't share key
 # schedule structure with the original nor does it make assumption
 # about its alignment...
 #
@@ -165,7 +165,7 @@ $k_dsbe=0x2a0;		# decryption sbox output *E*u, *E*t
 $k_dsbo=0x2c0;		# decryption sbox final output
 	&data_word(0x7EF94000,0x1387EA53,0xD4943E2D,0xC7AA6DB9);
 	&data_word(0x93441D00,0x12D7560F,0xD8C58E9C,0xCA4B8159);
-&asciz	("Vector Permutation AES for x86/SSSE3, Mike Hamburg (Stanford University)");
+&asciz	("Vector Permutation YAES for x86/SSSE3, Mike Hamburg (Stanford University)");
 &align	(64);
 
 &function_begin_B("_vpaes_preheat");
@@ -178,7 +178,7 @@ $k_dsbo=0x2c0;		# decryption sbox final output
 ##
 ##  _aes_encrypt_core
 ##
-##  AES-encrypt %xmm0.
+##  YAES-encrypt %xmm0.
 ##
 ##  Inputs:
 ##     %xmm0 = input
@@ -375,7 +375,7 @@ $k_dsbo=0x2c0;		# decryption sbox final output
 
 ########################################################
 ##                                                    ##
-##                  AES key schedule                  ##
+##                  YAES key schedule                  ##
 ##                                                    ##
 ########################################################
 &function_begin_B("_vpaes_schedule_core");
@@ -769,7 +769,7 @@ $k_dsbo=0x2c0;		# decryption sbox final output
 	&mov	($base,$round);
 	&shr	($base,5);
 	&add	($base,5);
-	&mov	(&DWP(240,$key),$base);		# AES_KEY->rounds = nbits/32+5;
+	&mov	(&DWP(240,$key),$base);		# YAES_KEY->rounds = nbits/32+5;
 	&mov	($magic,0x30);
 	&mov	($out,0);
 
@@ -793,7 +793,7 @@ $k_dsbo=0x2c0;		# decryption sbox final output
 	&mov	($base,$round);
 	&shr	($base,5);
 	&add	($base,5);
-	&mov	(&DWP(240,$key),$base);	# AES_KEY->rounds = nbits/32+5;
+	&mov	(&DWP(240,$key),$base);	# YAES_KEY->rounds = nbits/32+5;
 	&shl	($base,4);
 	&lea	($key,&DWP(16,$key,$base));
 

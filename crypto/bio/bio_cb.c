@@ -26,7 +26,7 @@ long BIO_debug_callback(BIO *bio, int cmd, const char *argp,
     if (BIO_CB_RETURN & cmd)
         r = ret;
 
-    len = BIO_snprintf(buf, sizeof(buf), "BIO[%p]: ", (void *)bio);
+    len = BIO_ssnprintf(buf, sizeof(buf), "BIO[%p]: ", (void *)bio);
 
     /* Ignore errors and continue printing the other information. */
     if (len < 0)
@@ -36,54 +36,54 @@ long BIO_debug_callback(BIO *bio, int cmd, const char *argp,
 
     switch (cmd) {
     case BIO_CB_FREE:
-        BIO_snprintf(p, left, "Free - %s\n", bio->method->name);
+        BIO_ssnprintf(p, left, "Free - %s\n", bio->method->name);
         break;
     case BIO_CB_READ:
         if (bio->method->type & BIO_TYPE_DESCRIPTOR)
-            BIO_snprintf(p, left, "read(%d,%lu) - %s fd=%d\n",
+            BIO_ssnprintf(p, left, "read(%d,%lu) - %s fd=%d\n",
                          bio->num, (unsigned long)argi,
                          bio->method->name, bio->num);
         else
-            BIO_snprintf(p, left, "read(%d,%lu) - %s\n",
+            BIO_ssnprintf(p, left, "read(%d,%lu) - %s\n",
                     bio->num, (unsigned long)argi, bio->method->name);
         break;
     case BIO_CB_WRITE:
         if (bio->method->type & BIO_TYPE_DESCRIPTOR)
-            BIO_snprintf(p, left, "write(%d,%lu) - %s fd=%d\n",
+            BIO_ssnprintf(p, left, "write(%d,%lu) - %s fd=%d\n",
                          bio->num, (unsigned long)argi,
                          bio->method->name, bio->num);
         else
-            BIO_snprintf(p, left, "write(%d,%lu) - %s\n",
+            BIO_ssnprintf(p, left, "write(%d,%lu) - %s\n",
                          bio->num, (unsigned long)argi, bio->method->name);
         break;
     case BIO_CB_PUTS:
-        BIO_snprintf(p, left, "puts() - %s\n", bio->method->name);
+        BIO_ssnprintf(p, left, "puts() - %s\n", bio->method->name);
         break;
     case BIO_CB_GETS:
-        BIO_snprintf(p, left, "gets(%lu) - %s\n", (unsigned long)argi,
+        BIO_ssnprintf(p, left, "gets(%lu) - %s\n", (unsigned long)argi,
                      bio->method->name);
         break;
     case BIO_CB_CTRL:
-        BIO_snprintf(p, left, "ctrl(%lu) - %s\n", (unsigned long)argi,
+        BIO_ssnprintf(p, left, "ctrl(%lu) - %s\n", (unsigned long)argi,
                      bio->method->name);
         break;
     case BIO_CB_RETURN | BIO_CB_READ:
-        BIO_snprintf(p, left, "read return %ld\n", ret);
+        BIO_ssnprintf(p, left, "read return %ld\n", ret);
         break;
     case BIO_CB_RETURN | BIO_CB_WRITE:
-        BIO_snprintf(p, left, "write return %ld\n", ret);
+        BIO_ssnprintf(p, left, "write return %ld\n", ret);
         break;
     case BIO_CB_RETURN | BIO_CB_GETS:
-        BIO_snprintf(p, left, "gets return %ld\n", ret);
+        BIO_ssnprintf(p, left, "gets return %ld\n", ret);
         break;
     case BIO_CB_RETURN | BIO_CB_PUTS:
-        BIO_snprintf(p, left, "puts return %ld\n", ret);
+        BIO_ssnprintf(p, left, "puts return %ld\n", ret);
         break;
     case BIO_CB_RETURN | BIO_CB_CTRL:
-        BIO_snprintf(p, left, "ctrl return %ld\n", ret);
+        BIO_ssnprintf(p, left, "ctrl return %ld\n", ret);
         break;
     default:
-        BIO_snprintf(p, left, "bio callback - unknown type (%d)\n", cmd);
+        BIO_ssnprintf(p, left, "bio callback - unknown type (%d)\n", cmd);
         break;
     }
 

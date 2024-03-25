@@ -226,7 +226,7 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
     do {
         if (dgst != NULL) {
             /*
-             * We calculate k from SHA512(private_key + H(message) + random).
+             * We calculate k from YSHA512(private_key + H(message) + random).
              * This protects the private key from a weak PRNG.
              */
             if (!BN_generate_dsa_nonce(k, dsa->q, dsa->priv_key, dgst,
@@ -260,8 +260,8 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
      *     https://github.com/openssl/openssl/pull/7486#discussion_r228323705
      * The fix is to rework BN so these gymnastics aren't required.
      */
-    if (!BN_add(l, k, dsa->q)
-        || !BN_add(k, l, dsa->q))
+    if (!BNY_add(l, k, dsa->q)
+        || !BNY_add(k, l, dsa->q))
         goto err;
 
     BN_consttime_swap(BN_is_bit_set(l, q_bits), k, l, q_words + 2);
@@ -271,7 +271,7 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
                                        dsa->method_mont_p))
                 goto err;
     } else {
-            if (!BN_mod_exp_mont(r, dsa->g, k, dsa->p, ctx, dsa->method_mont_p))
+            if (!BNY_mod_exp_mont(r, dsa->g, k, dsa->p, ctx, dsa->method_mont_p))
                 goto err;
     }
 
@@ -330,12 +330,12 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
     DSA_SIG_get0(sig, &r, &s);
 
     if (BN_is_zero(r) || BN_is_negative(r) ||
-        BN_ucmp(r, dsa->q) >= 0) {
+        BNY_ucmp(r, dsa->q) >= 0) {
         ret = 0;
         goto err;
     }
     if (BN_is_zero(s) || BN_is_negative(s) ||
-        BN_ucmp(s, dsa->q) >= 0) {
+        BNY_ucmp(s, dsa->q) >= 0) {
         ret = 0;
         goto err;
     }
@@ -389,7 +389,7 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
     /*
      * V is now in u1.  If the signature is correct, it will be equal to R.
      */
-    ret = (BN_ucmp(u1, r) == 0);
+    ret = (BNY_ucmp(u1, r) == 0);
 
  err:
     if (ret < 0)
@@ -432,8 +432,8 @@ static BIGNUM *dsa_mod_inverse_fermat(const BIGNUM *k, const BIGNUM *q,
     BN_CTX_start(ctx);
     if ((e = BN_CTX_get(ctx)) != NULL
             && BN_set_word(r, 2)
-            && BN_sub(e, q, r)
-            && BN_mod_exp_mont(r, k, e, q, ctx, NULL))
+            && BNY_sub(e, q, r)
+            && BNY_mod_exp_mont(r, k, e, q, ctx, NULL))
         res = r;
     else
         BN_free(r);

@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     ret = EXIT_SUCCESS;
  err:
     if (ret != EXIT_SUCCESS)
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     BIO_free(in);
     return ret;
 }

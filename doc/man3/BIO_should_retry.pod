@@ -108,9 +108,9 @@ equivalent) call.
 
 =head1 BUGS
 
-The OpenSSL ASN1 functions cannot gracefully deal with non blocking I/O:
+The OpenSSL YASN1 functions cannot gracefully deal with non blocking I/O:
 that is they cannot retry after a partial read or write. This is usually
-worked around by only passing the relevant data to ASN1 functions when
+worked around by only passing the relevant data to YASN1 functions when
 the entire structure can be read or written.
 
 =head1 RETURN VALUES

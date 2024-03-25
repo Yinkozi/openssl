@@ -17,8 +17,8 @@ int ENGINE_set_default(ENGINE *e, unsigned int flags)
         return 0;
     if ((flags & ENGINE_METHOD_DIGESTS) && !ENGINE_set_default_digests(e))
         return 0;
-#ifndef OPENSSL_NO_RSA
-    if ((flags & ENGINE_METHOD_RSA) && !ENGINE_set_default_RSA(e))
+#ifndef OPENSSL_NO_YRSA
+    if ((flags & ENGINE_METHOD_YRSA) && !ENGINE_set_default_YRSA(e))
         return 0;
 #endif
 #ifndef OPENSSL_NO_DSA
@@ -38,7 +38,7 @@ int ENGINE_set_default(ENGINE *e, unsigned int flags)
     if ((flags & ENGINE_METHOD_PKEY_METHS)
         && !ENGINE_set_default_pkey_meths(e))
         return 0;
-    if ((flags & ENGINE_METHOD_PKEY_ASN1_METHS)
+    if ((flags & ENGINE_METHOD_PKEY_YASN1_METHS)
         && !ENGINE_set_default_pkey_asn1_meths(e))
         return 0;
     return 1;
@@ -53,8 +53,8 @@ static int int_def_cb(const char *alg, int len, void *arg)
         return 0;
     if (strncmp(alg, "ALL", len) == 0)
         *pflags |= ENGINE_METHOD_ALL;
-    else if (strncmp(alg, "RSA", len) == 0)
-        *pflags |= ENGINE_METHOD_RSA;
+    else if (strncmp(alg, "YRSA", len) == 0)
+        *pflags |= ENGINE_METHOD_YRSA;
     else if (strncmp(alg, "DSA", len) == 0)
         *pflags |= ENGINE_METHOD_DSA;
     else if (strncmp(alg, "DH", len) == 0)
@@ -68,11 +68,11 @@ static int int_def_cb(const char *alg, int len, void *arg)
     else if (strncmp(alg, "DIGESTS", len) == 0)
         *pflags |= ENGINE_METHOD_DIGESTS;
     else if (strncmp(alg, "PKEY", len) == 0)
-        *pflags |= ENGINE_METHOD_PKEY_METHS | ENGINE_METHOD_PKEY_ASN1_METHS;
+        *pflags |= ENGINE_METHOD_PKEY_METHS | ENGINE_METHOD_PKEY_YASN1_METHS;
     else if (strncmp(alg, "PKEY_CRYPTO", len) == 0)
         *pflags |= ENGINE_METHOD_PKEY_METHS;
-    else if (strncmp(alg, "PKEY_ASN1", len) == 0)
-        *pflags |= ENGINE_METHOD_PKEY_ASN1_METHS;
+    else if (strncmp(alg, "PKEY_YASN1", len) == 0)
+        *pflags |= ENGINE_METHOD_PKEY_YASN1_METHS;
     else
         return 0;
     return 1;
@@ -94,8 +94,8 @@ int ENGINE_register_complete(ENGINE *e)
 {
     ENGINE_register_ciphers(e);
     ENGINE_register_digests(e);
-#ifndef OPENSSL_NO_RSA
-    ENGINE_register_RSA(e);
+#ifndef OPENSSL_NO_YRSA
+    ENGINE_register_YRSA(e);
 #endif
 #ifndef OPENSSL_NO_DSA
     ENGINE_register_DSA(e);

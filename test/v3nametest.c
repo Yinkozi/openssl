@@ -86,14 +86,14 @@ static int is_exception(const char *msg)
     return 0;
 }
 
-static int set_cn(X509 *crt, ...)
+static int set_cn(YX509 *crt, ...)
 {
     int ret = 0;
-    X509_NAME *n = NULL;
+    YX509_NAME *n = NULL;
     va_list ap;
 
     va_start(ap, crt);
-    n = X509_NAME_new();
+    n = YX509_NAME_new();
     if (n == NULL)
         goto out;
 
@@ -105,32 +105,32 @@ static int set_cn(X509 *crt, ...)
         if (nid == 0)
             break;
         name = va_arg(ap, const char *);
-        if (!X509_NAME_add_entry_by_NID(n, nid, MBSTRING_ASC,
+        if (!YX509_NAME_add_entry_by_NID(n, nid, MBSTRING_ASC,
                                         (unsigned char *)name, -1, -1, 1))
             goto out;
     }
-    if (!X509_set_subject_name(crt, n))
+    if (!YX509_set_subject_name(crt, n))
         goto out;
     ret = 1;
  out:
-    X509_NAME_free(n);
+    YX509_NAME_free(n);
     va_end(ap);
     return ret;
 }
 
 /*-
-int             X509_add_ext(X509 *x, X509_EXTENSION *ex, int loc);
-X509_EXTENSION *X509_EXTENSION_create_by_NID(X509_EXTENSION **ex,
-                        int nid, int crit, ASN1_OCTET_STRING *data);
-int             X509_add_ext(X509 *x, X509_EXTENSION *ex, int loc);
+int             YX509_add_ext(YX509 *x, YX509_EXTENSION *ex, int loc);
+YX509_EXTENSION *YX509_EXTENSION_create_by_NID(YX509_EXTENSION **ex,
+                        int nid, int crit, YASN1_OCTET_STRING *data);
+int             YX509_add_ext(YX509 *x, YX509_EXTENSION *ex, int loc);
 */
 
-static int set_altname(X509 *crt, ...)
+static int set_altname(YX509 *crt, ...)
 {
     int ret = 0;
     GENERAL_NAMES *gens = NULL;
     GENERAL_NAME *gen = NULL;
-    ASN1_IA5STRING *ia5 = NULL;
+    YASN1_IA5STRING *ia5 = NULL;
     va_list ap;
     va_start(ap, crt);
     gens = sk_GENERAL_NAME_new_null();
@@ -147,10 +147,10 @@ static int set_altname(X509 *crt, ...)
         gen = GENERAL_NAME_new();
         if (gen == NULL)
             goto out;
-        ia5 = ASN1_IA5STRING_new();
+        ia5 = YASN1_IA5STRING_new();
         if (ia5 == NULL)
             goto out;
-        if (!ASN1_STRING_set(ia5, name, -1))
+        if (!YASN1_STRING_set(ia5, name, -1))
             goto out;
         switch (type) {
         case GEN_EMAIL:
@@ -164,75 +164,75 @@ static int set_altname(X509 *crt, ...)
         sk_GENERAL_NAME_push(gens, gen);
         gen = NULL;
     }
-    if (!X509_add1_ext_i2d(crt, NID_subject_alt_name, gens, 0, 0))
+    if (!YX509_add1_ext_i2d(crt, NID_subject_alt_name, gens, 0, 0))
         goto out;
     ret = 1;
  out:
-    ASN1_IA5STRING_free(ia5);
+    YASN1_IA5STRING_free(ia5);
     GENERAL_NAME_free(gen);
     GENERAL_NAMES_free(gens);
     va_end(ap);
     return ret;
 }
 
-static int set_cn1(X509 *crt, const char *name)
+static int set_cn1(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_commonName, name, 0);
 }
 
-static int set_cn_and_email(X509 *crt, const char *name)
+static int set_cn_and_email(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_commonName, name,
                   NID_pkcs9_emailAddress, "dummy@example.com", 0);
 }
 
-static int set_cn2(X509 *crt, const char *name)
+static int set_cn2(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_commonName, "dummy value",
                   NID_commonName, name, 0);
 }
 
-static int set_cn3(X509 *crt, const char *name)
+static int set_cn3(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_commonName, name,
                   NID_commonName, "dummy value", 0);
 }
 
-static int set_email1(X509 *crt, const char *name)
+static int set_email1(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_pkcs9_emailAddress, name, 0);
 }
 
-static int set_email2(X509 *crt, const char *name)
+static int set_email2(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_pkcs9_emailAddress, "dummy@example.com",
                   NID_pkcs9_emailAddress, name, 0);
 }
 
-static int set_email3(X509 *crt, const char *name)
+static int set_email3(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_pkcs9_emailAddress, name,
                   NID_pkcs9_emailAddress, "dummy@example.com", 0);
 }
 
-static int set_email_and_cn(X509 *crt, const char *name)
+static int set_email_and_cn(YX509 *crt, const char *name)
 {
     return set_cn(crt, NID_pkcs9_emailAddress, name,
                   NID_commonName, "www.example.org", 0);
 }
 
-static int set_altname_dns(X509 *crt, const char *name)
+static int set_altname_dns(YX509 *crt, const char *name)
 {
     return set_altname(crt, GEN_DNS, name, 0);
 }
 
-static int set_altname_email(X509 *crt, const char *name)
+static int set_altname_email(YX509 *crt, const char *name)
 {
     return set_altname(crt, GEN_EMAIL, name, 0);
 }
 
 struct set_name_fn {
-    int (*fn) (X509 *, const char *);
+    int (*fn) (YX509 *, const char *);
     const char *name;
     int host;
     int email;
@@ -251,14 +251,14 @@ static const struct set_name_fn name_fns[] = {
     {set_altname_email, "set rfc822Name", 0, 1},
 };
 
-static X509 *make_cert(void)
+static YX509 *make_cert(void)
 {
-    X509 *crt = NULL;
+    YX509 *crt = NULL;
 
-    if (!TEST_ptr(crt = X509_new()))
+    if (!TEST_ptr(crt = YX509_new()))
         return NULL;
-    if (!TEST_true(X509_set_version(crt, 2))) {
-        X509_free(crt);
+    if (!TEST_true(YX509_set_version(crt, 2))) {
+        YX509_free(crt);
         return NULL;
     }
     return crt;
@@ -271,7 +271,7 @@ static int check_message(const struct set_name_fn *fn, const char *op,
 
     if (match < 0)
         return 1;
-    BIO_snprintf(msg, sizeof(msg), "%s: %s: [%s] %s [%s]",
+    BIO_ssnprintf(msg, sizeof(msg), "%s: %s: [%s] %s [%s]",
                  fn->name, op, nameincert,
                  match ? "matches" : "does not match", name);
     if (is_exception(msg))
@@ -280,7 +280,7 @@ static int check_message(const struct set_name_fn *fn, const char *op,
     return 0;
 }
 
-static int run_cert(X509 *crt, const char *nameincert,
+static int run_cert(YX509 *crt, const char *nameincert,
                      const struct set_name_fn *fn)
 {
     const char *const *pname = names;
@@ -295,7 +295,7 @@ static int run_cert(X509 *crt, const char *nameincert,
         memcpy(name, *pname, namelen);
 
         match = -1;
-        if (!TEST_int_ge(ret = X509_check_host(crt, name, namelen, 0, NULL),
+        if (!TEST_int_ge(ret = YX509_check_host(crt, name, namelen, 0, NULL),
                          0)) {
             failed = 1;
         } else if (fn->host) {
@@ -309,8 +309,8 @@ static int run_cert(X509 *crt, const char *nameincert,
             failed = 1;
 
         match = -1;
-        if (!TEST_int_ge(ret = X509_check_host(crt, name, namelen,
-                                               X509_CHECK_FLAG_NO_WILDCARDS,
+        if (!TEST_int_ge(ret = YX509_check_host(crt, name, namelen,
+                                               YX509_CHECK_FLAG_NO_WILDCARDS,
                                                NULL), 0)) {
             failed = 1;
         } else if (fn->host) {
@@ -325,7 +325,7 @@ static int run_cert(X509 *crt, const char *nameincert,
             failed = 1;
 
         match = -1;
-        ret = X509_check_email(crt, name, namelen, 0);
+        ret = YX509_check_email(crt, name, namelen, 0);
         if (fn->email) {
             if (ret && !samename)
                 match = 1;
@@ -345,7 +345,7 @@ static int call_run_cert(int i)
 {
     int failed = 0;
     const struct set_name_fn *pfn = &name_fns[i];
-    X509 *crt;
+    YX509 *crt;
     const char *const *pname;
 
     TEST_info("%s", pfn->name);
@@ -354,7 +354,7 @@ static int call_run_cert(int i)
              || !TEST_true(pfn->fn(crt, *pname))
              || !run_cert(crt, *pname, pfn))
             failed = 1;
-        X509_free(crt);
+        YX509_free(crt);
     }
     return failed == 0;
 }

@@ -30,14 +30,14 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$UCMP	="cmpld";
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$UCMP	="cmplw";
 	$STU	="stwu";
 	$POP	="lwz";
@@ -208,7 +208,7 @@ $code=<<___;
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 	lwz	$A,0($ctx)
 	lwz	$B,4($ctx)
 	lwz	$C,8($ctx)
@@ -265,7 +265,7 @@ Lmemcpy:
 	bne	Lunaligned
 
 Ldone:
-	$POP	r0,`$FRAME+$LRSAVE`($sp)
+	$POP	r0,`$FRAME+$LYRSAVE`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
 	$POP	r17,`$FRAME-$SIZE_T*15`($sp)
@@ -343,7 +343,7 @@ $code.=<<___;
 .size	.sha1_block_data_order,.-.sha1_block_data_order
 ___
 $code.=<<___;
-.asciz	"SHA1 block transform for PPC, CRYPTOGAMS by <appro\@fy.chalmers.se>"
+.asciz	"YSHA1 block transform for PPC, CRYPTOGAMS by <appro\@fy.chalmers.se>"
 ___
 
 $code =~ s/\`([^\`]*)\`/eval $1/gem;

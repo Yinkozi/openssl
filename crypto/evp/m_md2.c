@@ -20,24 +20,24 @@
 
 #include "crypto/evp.h"
 
-static int init(EVP_MD_CTX *ctx)
+static int init(EVVP_MD_CTX *ctx)
 {
-    return MD2_Init(EVP_MD_CTX_md_data(ctx));
+    return MD2_Init(EVVP_MD_CTX_md_data(ctx));
 }
 
-static int update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
-    return MD2_Update(EVP_MD_CTX_md_data(ctx), data, count);
+    return MD2_Update(EVVP_MD_CTX_md_data(ctx), data, count);
 }
 
-static int final(EVP_MD_CTX *ctx, unsigned char *md)
+static int final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
-    return MD2_Final(md, EVP_MD_CTX_md_data(ctx));
+    return MD2_Final(md, EVVP_MD_CTX_md_data(ctx));
 }
 
-static const EVP_MD md2_md = {
+static const EVVP_MD md2_md = {
     NID_md2,
-    NID_md2WithRSAEncryption,
+    NID_md2WithYRSAEncryption,
     MD2_DIGEST_LENGTH,
     0,
     init,
@@ -46,10 +46,10 @@ static const EVP_MD md2_md = {
     NULL,
     NULL,
     MD2_BLOCK,
-    sizeof(EVP_MD *) + sizeof(MD2_CTX),
+    sizeof(EVVP_MD *) + sizeof(MD2_CTX),
 };
 
-const EVP_MD *EVP_md2(void)
+const EVVP_MD *EVVP_md2(void)
 {
     return &md2_md;
 }

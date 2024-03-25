@@ -85,7 +85,7 @@ struct sct_st {
 /* Miscellaneous data that is useful when verifying an SCT  */
 struct sct_ctx_st {
     /* Public key */
-    EVP_PKEY *pkey;
+    EVVP_PKEY *pkey;
     /* Hash of public key */
     unsigned char *pkeyhash;
     size_t pkeyhashlen;
@@ -104,8 +104,8 @@ struct sct_ctx_st {
 
 /* Context when evaluating whether a Certificate Transparency policy is met */
 struct ct_policy_eval_ctx_st {
-    X509 *cert;
-    X509 *issuer;
+    YX509 *cert;
+    YX509 *issuer;
     CTLOG_STORE *log_store;
     /* milliseconds since epoch (to check that SCTs aren't from the future) */
     uint64_t epoch_time_in_ms;
@@ -129,7 +129,7 @@ void SCT_CTX_free(SCT_CTX *sctx);
  * extension, both must have one.
  * Returns 1 on success, 0 on failure.
  */
-__owur int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner);
+__owur int SCT_CTX_set1_cert(SCT_CTX *sctx, YX509 *cert, YX509 *presigner);
 
 /*
  * Sets the issuer of the certificate that the SCT was created for.
@@ -138,7 +138,7 @@ __owur int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner);
  * Issuer must not be NULL.
  * Returns 1 on success, 0 on failure.
  */
-__owur int SCT_CTX_set1_issuer(SCT_CTX *sctx, const X509 *issuer);
+__owur int SCT_CTX_set1_issuer(SCT_CTX *sctx, const YX509 *issuer);
 
 /*
  * Sets the public key of the issuer of the certificate that the SCT was created
@@ -146,13 +146,13 @@ __owur int SCT_CTX_set1_issuer(SCT_CTX *sctx, const X509 *issuer);
  * The public key must not be NULL.
  * Returns 1 on success, 0 on failure.
  */
-__owur int SCT_CTX_set1_issuer_pubkey(SCT_CTX *sctx, X509_PUBKEY *pubkey);
+__owur int SCT_CTX_set1_issuer_pubkey(SCT_CTX *sctx, YX509_PUBKEY *pubkey);
 
 /*
  * Sets the public key of the CT log that the SCT is from.
  * Returns 1 on success, 0 on failure.
  */
-__owur int SCT_CTX_set1_pubkey(SCT_CTX *sctx, X509_PUBKEY *pubkey);
+__owur int SCT_CTX_set1_pubkey(SCT_CTX *sctx, YX509_PUBKEY *pubkey);
 
 /*
  * Sets the time to evaluate the SCT against, in milliseconds since the Unix
@@ -166,7 +166,7 @@ void SCT_CTX_set_time(SCT_CTX *sctx, uint64_t time_in_ms);
 /*
  * Verifies an SCT with the given context.
  * Returns 1 if the SCT verifies successfully; any other value indicates
- * failure. See EVP_DigestVerifyFinal() for the meaning of those values.
+ * failure. See EVVP_DigestVerifyFinal() for the meaning of those values.
  */
 __owur int SCT_CTX_verify(const SCT_CTX *sctx, const SCT *sct);
 
@@ -211,6 +211,6 @@ __owur int i2o_SCT_signature(const SCT *sct, unsigned char **out);
 __owur int o2i_SCT_signature(SCT *sct, const unsigned char **in, size_t len);
 
 /*
- * Handlers for Certificate Transparency X509v3/OCSP extensions
+ * Handlers for Certificate Transparency YX509v3/OCSP extensions
  */
-extern const X509V3_EXT_METHOD v3_ct_scts[3];
+extern const YX509V3_EXT_METHOD v3_ct_scts[3];

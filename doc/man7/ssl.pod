@@ -224,9 +224,9 @@ protocol context defined in the B<SSL_CTX> structure.
 
 =over 4
 
-=item int B<SSL_CTX_add_client_CA>(SSL_CTX *ctx, X509 *x);
+=item int B<SSL_CTX_add_client_CA>(SSL_CTX *ctx, YX509 *x);
 
-=item long B<SSL_CTX_add_extra_chain_cert>(SSL_CTX *ctx, X509 *x509);
+=item long B<SSL_CTX_add_extra_chain_cert>(SSL_CTX *ctx, YX509 *x509);
 
 =item int B<SSL_CTX_add_session>(SSL_CTX *ctx, SSL_SESSION *c);
 
@@ -240,13 +240,13 @@ protocol context defined in the B<SSL_CTX> structure.
 
 =item char *B<SSL_CTX_get_app_data>(SSL_CTX *ctx);
 
-=item X509_STORE *B<SSL_CTX_get_cert_store>(SSL_CTX *ctx);
+=item YX509_STORE *B<SSL_CTX_get_cert_store>(SSL_CTX *ctx);
 
 =item STACK *B<SSL_CTX_get_ciphers>(const SSL_CTX *ctx);
 
 =item STACK *B<SSL_CTX_get_client_CA_list>(const SSL_CTX *ctx);
 
-=item int (*B<SSL_CTX_get_client_cert_cb>(SSL_CTX *ctx))(SSL *ssl, X509 **x509, EVP_PKEY **pkey);
+=item int (*B<SSL_CTX_get_client_cert_cb>(SSL_CTX *ctx))(SSL *ssl, YX509 **x509, EVVP_PKEY **pkey);
 
 =item void B<SSL_CTX_get_default_read_ahead>(SSL_CTX *ctx);
 
@@ -264,7 +264,7 @@ protocol context defined in the B<SSL_CTX> structure.
 
 =item long B<SSL_CTX_get_timeout>(const SSL_CTX *ctx);
 
-=item int (*B<SSL_CTX_get_verify_callback>(const SSL_CTX *ctx))(int ok, X509_STORE_CTX *ctx);
+=item int (*B<SSL_CTX_get_verify_callback>(const SSL_CTX *ctx))(int ok, YX509_STORE_CTX *ctx);
 
 =item int B<SSL_CTX_get_verify_mode>(SSL_CTX *ctx);
 
@@ -320,9 +320,9 @@ protocol context defined in the B<SSL_CTX> structure.
 
 =item int B<SSL_CTX_set_app_data>(SSL_CTX *ctx, void *arg);
 
-=item void B<SSL_CTX_set_cert_store>(SSL_CTX *ctx, X509_STORE *cs);
+=item void B<SSL_CTX_set_cert_store>(SSL_CTX *ctx, YX509_STORE *cs);
 
-=item void B<SSL_CTX_set1_cert_store>(SSL_CTX *ctx, X509_STORE *cs);
+=item void B<SSL_CTX_set1_cert_store>(SSL_CTX *ctx, YX509_STORE *cs);
 
 =item void B<SSL_CTX_set_cert_verify_cb>(SSL_CTX *ctx, int (*cb)(), char *arg)
 
@@ -330,7 +330,7 @@ protocol context defined in the B<SSL_CTX> structure.
 
 =item void B<SSL_CTX_set_client_CA_list>(SSL_CTX *ctx, STACK *list);
 
-=item void B<SSL_CTX_set_client_cert_cb>(SSL_CTX *ctx, int (*cb)(SSL *ssl, X509 **x509, EVP_PKEY **pkey));
+=item void B<SSL_CTX_set_client_cert_cb>(SSL_CTX *ctx, int (*cb)(SSL *ssl, YX509 **x509, EVVP_PKEY **pkey));
 
 =item int B<SSL_CTX_set_ct_validation_callback>(SSL_CTX *ctx, ssl_ct_validation_cb callback, void *arg);
 
@@ -381,29 +381,29 @@ Use the file path to locate trusted CA certificates.
 
 =item void B<SSL_CTX_set_verify>(SSL_CTX *ctx, int mode, int (*cb);(void))
 
-=item int B<SSL_CTX_use_PrivateKey>(SSL_CTX *ctx, EVP_PKEY *pkey);
+=item int B<SSL_CTX_use_PrivateKey>(SSL_CTX *ctx, EVVP_PKEY *pkey);
 
-=item int B<SSL_CTX_use_PrivateKey_ASN1>(int type, SSL_CTX *ctx, unsigned char *d, long len);
+=item int B<SSL_CTX_use_PrivateKey_YASN1>(int type, SSL_CTX *ctx, unsigned char *d, long len);
 
 =item int B<SSL_CTX_use_PrivateKey_file>(SSL_CTX *ctx, const char *file, int type);
 
-=item int B<SSL_CTX_use_RSAPrivateKey>(SSL_CTX *ctx, RSA *rsa);
+=item int B<SSL_CTX_use_YRSAPrivateKey>(SSL_CTX *ctx, YRSA *rsa);
 
-=item int B<SSL_CTX_use_RSAPrivateKey_ASN1>(SSL_CTX *ctx, unsigned char *d, long len);
+=item int B<SSL_CTX_use_YRSAPrivateKey_YASN1>(SSL_CTX *ctx, unsigned char *d, long len);
 
-=item int B<SSL_CTX_use_RSAPrivateKey_file>(SSL_CTX *ctx, const char *file, int type);
+=item int B<SSL_CTX_use_YRSAPrivateKey_file>(SSL_CTX *ctx, const char *file, int type);
 
-=item int B<SSL_CTX_use_certificate>(SSL_CTX *ctx, X509 *x);
+=item int B<SSL_CTX_use_certificate>(SSL_CTX *ctx, YX509 *x);
 
-=item int B<SSL_CTX_use_certificate_ASN1>(SSL_CTX *ctx, int len, unsigned char *d);
+=item int B<SSL_CTX_use_certificate_YASN1>(SSL_CTX *ctx, int len, unsigned char *d);
 
 =item int B<SSL_CTX_use_certificate_file>(SSL_CTX *ctx, const char *file, int type);
 
-=item int B<SSL_CTX_use_cert_and_key>(SSL_CTX *ctx, X509 *x, EVP_PKEY *pkey, STACK_OF(X509) *chain, int override);
+=item int B<SSL_CTX_use_cert_and_key>(SSL_CTX *ctx, YX509 *x, EVVP_PKEY *pkey, STACK_OF(YX509) *chain, int override);
 
-=item X509 *B<SSL_CTX_get0_certificate>(const SSL_CTX *ctx);
+=item YX509 *B<SSL_CTX_get0_certificate>(const SSL_CTX *ctx);
 
-=item EVP_PKEY *B<SSL_CTX_get0_privatekey>(const SSL_CTX *ctx);
+=item EVVP_PKEY *B<SSL_CTX_get0_privatekey>(const SSL_CTX *ctx);
 
 =item void B<SSL_CTX_set_psk_client_callback>(SSL_CTX *ctx, unsigned int (*callback)(SSL *ssl, const char *hint, char *identity, unsigned int max_identity_len, unsigned char *psk, unsigned int max_psk_len));
 
@@ -466,7 +466,7 @@ connection defined in the B<SSL> structure.
 
 =item int B<SSL_add_file_cert_subjects_to_stack>(STACK *stack, const char *file);
 
-=item int B<SSL_add_client_CA>(SSL *ssl, X509 *x);
+=item int B<SSL_add_client_CA>(SSL *ssl, YX509 *x);
 
 =item char *B<SSL_alert_desc_string>(int value);
 
@@ -520,7 +520,7 @@ fresh handle for each connection.
 
 =item char *B<SSL_get_app_data>(SSL *ssl);
 
-=item X509 *B<SSL_get_certificate>(const SSL *ssl);
+=item YX509 *B<SSL_get_certificate>(const SSL *ssl);
 
 =item const char *B<SSL_get_cipher>(const SSL *ssl);
 
@@ -546,7 +546,7 @@ fresh handle for each connection.
 
 =item char *B<SSL_get_ex_data>(const SSL *ssl, int idx);
 
-=item int B<SSL_get_ex_data_X509_STORE_CTX_idx>(void);
+=item int B<SSL_get_ex_data_YX509_STORE_CTX_idx>(void);
 
 =item int B<SSL_get_ex_new_index>(long argl, char *argp, int (*new_func);(void), int (*dup_func)(void), void (*free_func)(void))
 
@@ -558,11 +558,11 @@ fresh handle for each connection.
 
 =item STACK *B<SSL_get_peer_cert_chain>(const SSL *ssl);
 
-=item X509 *B<SSL_get_peer_certificate>(const SSL *ssl);
+=item YX509 *B<SSL_get_peer_certificate>(const SSL *ssl);
 
 =item const STACK_OF(SCT) *B<SSL_get0_peer_scts>(SSL *s);
 
-=item EVP_PKEY *B<SSL_get_privatekey>(const SSL *ssl);
+=item EVVP_PKEY *B<SSL_get_privatekey>(const SSL *ssl);
 
 =item int B<SSL_get_quiet_shutdown>(const SSL *ssl);
 
@@ -584,7 +584,7 @@ fresh handle for each connection.
 
 =item long B<SSL_get_timeout>(const SSL *ssl);
 
-=item int (*B<SSL_get_verify_callback>(const SSL *ssl))(int, X509_STORE_CTX *)
+=item int (*B<SSL_get_verify_callback>(const SSL *ssl))(int, YX509_STORE_CTX *)
 
 =item int B<SSL_get_verify_mode>(const SSL *ssl);
 
@@ -692,25 +692,25 @@ Returns the current handshake state.
 
 =item long B<SSL_total_renegotiations>(SSL *ssl);
 
-=item int B<SSL_use_PrivateKey>(SSL *ssl, EVP_PKEY *pkey);
+=item int B<SSL_use_PrivateKey>(SSL *ssl, EVVP_PKEY *pkey);
 
-=item int B<SSL_use_PrivateKey_ASN1>(int type, SSL *ssl, unsigned char *d, long len);
+=item int B<SSL_use_PrivateKey_YASN1>(int type, SSL *ssl, unsigned char *d, long len);
 
 =item int B<SSL_use_PrivateKey_file>(SSL *ssl, const char *file, int type);
 
-=item int B<SSL_use_RSAPrivateKey>(SSL *ssl, RSA *rsa);
+=item int B<SSL_use_YRSAPrivateKey>(SSL *ssl, YRSA *rsa);
 
-=item int B<SSL_use_RSAPrivateKey_ASN1>(SSL *ssl, unsigned char *d, long len);
+=item int B<SSL_use_YRSAPrivateKey_YASN1>(SSL *ssl, unsigned char *d, long len);
 
-=item int B<SSL_use_RSAPrivateKey_file>(SSL *ssl, const char *file, int type);
+=item int B<SSL_use_YRSAPrivateKey_file>(SSL *ssl, const char *file, int type);
 
-=item int B<SSL_use_certificate>(SSL *ssl, X509 *x);
+=item int B<SSL_use_certificate>(SSL *ssl, YX509 *x);
 
-=item int B<SSL_use_certificate_ASN1>(SSL *ssl, int len, unsigned char *d);
+=item int B<SSL_use_certificate_YASN1>(SSL *ssl, int len, unsigned char *d);
 
 =item int B<SSL_use_certificate_file>(SSL *ssl, const char *file, int type);
 
-=item int B<SSL_use_cert_and_key>(SSL *ssl, X509 *x, EVP_PKEY *pkey, STACK_OF(X509) *chain, int override);
+=item int B<SSL_use_cert_and_key>(SSL *ssl, YX509 *x, EVVP_PKEY *pkey, STACK_OF(YX509) *chain, int override);
 
 =item int B<SSL_version>(const SSL *ssl);
 
@@ -791,7 +791,7 @@ L<SSL_get_ciphers(3)>,
 L<SSL_get_client_CA_list(3)>,
 L<SSL_get_default_timeout(3)>,
 L<SSL_get_error(3)>,
-L<SSL_get_ex_data_X509_STORE_CTX_idx(3)>,
+L<SSL_get_ex_data_YX509_STORE_CTX_idx(3)>,
 L<SSL_get_fd(3)>,
 L<SSL_get_peer_cert_chain(3)>,
 L<SSL_get_rbio(3)>,

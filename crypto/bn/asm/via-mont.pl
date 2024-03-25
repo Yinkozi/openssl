@@ -114,7 +114,7 @@ $sp=&DWP(28,"esp");
 # &DWP(64+(4*$num+$pad)*3,"esp")	# padded copy of np[num]
 # Note that SDK suggests to unconditionally allocate 2K per vector. This
 # has quite an impact on performance. It naturally depends on key length,
-# but to give an example 1024 bit private RSA key operations suffer >30%
+# but to give an example 1024 bit private YRSA key operations suffer >30%
 # penalty. I allocate only as much as actually required...
 
 &function_begin($func);

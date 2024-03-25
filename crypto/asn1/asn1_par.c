@@ -13,8 +13,8 @@
 #include <openssl/objects.h>
 #include <openssl/asn1.h>
 
-#ifndef ASN1_PARSE_MAXDEPTH
-#define ASN1_PARSE_MAXDEPTH 128
+#ifndef YASN1_PARSE_MAXDEPTH
+#define YASN1_PARSE_MAXDEPTH 128
 #endif
 
 static int asn1_print_info(BIO *bp, int tag, int xclass, int constructed,
@@ -28,7 +28,7 @@ static int asn1_print_info(BIO *bp, int tag, int xclass, int constructed,
     char str[128];
     const char *p;
 
-    if (constructed & V_ASN1_CONSTRUCTED)
+    if (constructed & V_YASN1_CONSTRUCTED)
         p = "cons: ";
     else
         p = "prim: ";
@@ -37,30 +37,30 @@ static int asn1_print_info(BIO *bp, int tag, int xclass, int constructed,
     BIO_indent(bp, indent, 128);
 
     p = str;
-    if ((xclass & V_ASN1_PRIVATE) == V_ASN1_PRIVATE)
-        BIO_snprintf(str, sizeof(str), "priv [ %d ] ", tag);
-    else if ((xclass & V_ASN1_CONTEXT_SPECIFIC) == V_ASN1_CONTEXT_SPECIFIC)
-        BIO_snprintf(str, sizeof(str), "cont [ %d ]", tag);
-    else if ((xclass & V_ASN1_APPLICATION) == V_ASN1_APPLICATION)
-        BIO_snprintf(str, sizeof(str), "appl [ %d ]", tag);
+    if ((xclass & V_YASN1_PRIVATE) == V_YASN1_PRIVATE)
+        BIO_ssnprintf(str, sizeof(str), "priv [ %d ] ", tag);
+    else if ((xclass & V_YASN1_CONTEXT_SPECIFIC) == V_YASN1_CONTEXT_SPECIFIC)
+        BIO_ssnprintf(str, sizeof(str), "cont [ %d ]", tag);
+    else if ((xclass & V_YASN1_APPLICATION) == V_YASN1_APPLICATION)
+        BIO_ssnprintf(str, sizeof(str), "appl [ %d ]", tag);
     else if (tag > 30)
-        BIO_snprintf(str, sizeof(str), "<ASN1 %d>", tag);
+        BIO_ssnprintf(str, sizeof(str), "<YASN1 %d>", tag);
     else
-        p = ASN1_tag2str(tag);
+        p = YASN1_tag2str(tag);
 
-    if (BIO_printf(bp, fmt, p) <= 0)
+    if (BIO_pprintf(bp, fmt, p) <= 0)
         goto err;
     return 1;
  err:
     return 0;
 }
 
-int ASN1_parse(BIO *bp, const unsigned char *pp, long len, int indent)
+int YASN1_parse(BIO *bp, const unsigned char *pp, long len, int indent)
 {
     return asn1_parse2(bp, &pp, len, 0, 0, indent, 0);
 }
 
-int ASN1_parse_dump(BIO *bp, const unsigned char *pp, long len, int indent,
+int YASN1_parse_dump(BIO *bp, const unsigned char *pp, long len, int indent,
                     int dump)
 {
     return asn1_parse2(bp, &pp, len, 0, 0, indent, dump);
@@ -73,14 +73,14 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
     long len;
     int tag, xclass, ret = 0;
     int nl, hl, j, r;
-    ASN1_OBJECT *o = NULL;
-    ASN1_OCTET_STRING *os = NULL;
-    ASN1_INTEGER *ai = NULL;
-    ASN1_ENUMERATED *ae = NULL;
-    /* ASN1_BMPSTRING *bmp=NULL; */
+    YASN1_OBJECT *o = NULL;
+    YASN1_OCTET_STRING *os = NULL;
+    YASN1_INTEGER *ai = NULL;
+    YASN1_ENUMERATED *ae = NULL;
+    /* YASN1_BMPSTRING *bmp=NULL; */
     int dump_indent, dump_cont = 0;
 
-    if (depth > ASN1_PARSE_MAXDEPTH) {
+    if (depth > YASN1_PARSE_MAXDEPTH) {
         BIO_puts(bp, "BAD RECURSION DEPTH\n");
         return 0;
     }
@@ -90,7 +90,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
     tot = p + length;
     while (length > 0) {
         op = p;
-        j = ASN1_get_object(&p, &len, &tag, &xclass, length);
+        j = YASN1_get_object(&p, &len, &tag, &xclass, length);
         if (j & 0x80) {
             if (BIO_write(bp, "Error in encoding\n", 18) <= 0)
                 goto end;
@@ -102,28 +102,28 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
         /*
          * if j == 0x21 it is a constructed indefinite length object
          */
-        if (BIO_printf(bp, "%5ld:", (long)offset + (long)(op - *pp))
+        if (BIO_pprintf(bp, "%5ld:", (long)offset + (long)(op - *pp))
             <= 0)
             goto end;
 
-        if (j != (V_ASN1_CONSTRUCTED | 1)) {
-            if (BIO_printf(bp, "d=%-2d hl=%ld l=%4ld ",
+        if (j != (V_YASN1_CONSTRUCTED | 1)) {
+            if (BIO_pprintf(bp, "d=%-2d hl=%ld l=%4ld ",
                            depth, (long)hl, len) <= 0)
                 goto end;
         } else {
-            if (BIO_printf(bp, "d=%-2d hl=%ld l=inf  ", depth, (long)hl) <= 0)
+            if (BIO_pprintf(bp, "d=%-2d hl=%ld l=inf  ", depth, (long)hl) <= 0)
                 goto end;
         }
         if (!asn1_print_info(bp, tag, xclass, j, (indent) ? depth : 0))
             goto end;
-        if (j & V_ASN1_CONSTRUCTED) {
+        if (j & V_YASN1_CONSTRUCTED) {
             const unsigned char *sp = p;
 
             ep = p + len;
             if (BIO_write(bp, "\n", 1) <= 0)
                 goto end;
             if (len > length) {
-                BIO_printf(bp, "length is greater than %ld\n", length);
+                BIO_pprintf(bp, "length is greater than %ld\n", length);
                 ret = 0;
                 goto end;
             }
@@ -162,44 +162,44 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 goto end;
         } else {
             nl = 0;
-            if ((tag == V_ASN1_PRINTABLESTRING) ||
-                (tag == V_ASN1_T61STRING) ||
-                (tag == V_ASN1_IA5STRING) ||
-                (tag == V_ASN1_VISIBLESTRING) ||
-                (tag == V_ASN1_NUMERICSTRING) ||
-                (tag == V_ASN1_UTF8STRING) ||
-                (tag == V_ASN1_UTCTIME) || (tag == V_ASN1_GENERALIZEDTIME)) {
+            if ((tag == V_YASN1_PRINTABLESTRING) ||
+                (tag == V_YASN1_T61STRING) ||
+                (tag == V_YASN1_IA5STRING) ||
+                (tag == V_YASN1_VISIBLESTRING) ||
+                (tag == V_YASN1_NUMERICSTRING) ||
+                (tag == V_YASN1_UTF8STRING) ||
+                (tag == V_YASN1_UTCTIME) || (tag == V_YASN1_GENERALIZEDTIME)) {
                 if (BIO_write(bp, ":", 1) <= 0)
                     goto end;
                 if ((len > 0) && BIO_write(bp, (const char *)p, (int)len)
                     != (int)len)
                     goto end;
-            } else if (tag == V_ASN1_OBJECT) {
+            } else if (tag == V_YASN1_OBJECT) {
                 opp = op;
-                if (d2i_ASN1_OBJECT(&o, &opp, len + hl) != NULL) {
+                if (d2i_YASN1_OBJECT(&o, &opp, len + hl) != NULL) {
                     if (BIO_write(bp, ":", 1) <= 0)
                         goto end;
-                    i2a_ASN1_OBJECT(bp, o);
+                    i2a_YASN1_OBJECT(bp, o);
                 } else {
                     if (BIO_puts(bp, ":BAD OBJECT") <= 0)
                         goto end;
                     dump_cont = 1;
                 }
-            } else if (tag == V_ASN1_BOOLEAN) {
+            } else if (tag == V_YASN1_BOOLEAN) {
                 if (len != 1) {
                     if (BIO_puts(bp, ":BAD BOOLEAN") <= 0)
                         goto end;
                     dump_cont = 1;
                 }
                 if (len > 0)
-                    BIO_printf(bp, ":%u", p[0]);
-            } else if (tag == V_ASN1_BMPSTRING) {
+                    BIO_pprintf(bp, ":%u", p[0]);
+            } else if (tag == V_YASN1_BMPSTRING) {
                 /* do the BMP thang */
-            } else if (tag == V_ASN1_OCTET_STRING) {
+            } else if (tag == V_YASN1_OCTET_STRING) {
                 int i, printable = 1;
 
                 opp = op;
-                os = d2i_ASN1_OCTET_STRING(NULL, &opp, len + hl);
+                os = d2i_YASN1_OCTET_STRING(NULL, &opp, len + hl);
                 if (os != NULL && os->length > 0) {
                     opp = os->data;
                     /*
@@ -229,7 +229,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                         if (BIO_write(bp, "[HEX DUMP]:", 11) <= 0)
                             goto end;
                         for (i = 0; i < os->length; i++) {
-                            if (BIO_printf(bp, "%02X", opp[i]) <= 0)
+                            if (BIO_pprintf(bp, "%02X", opp[i]) <= 0)
                                 goto end;
                         }
                     } else
@@ -249,21 +249,21 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                         nl = 1;
                     }
                 }
-                ASN1_OCTET_STRING_free(os);
+                YASN1_OCTET_STRING_free(os);
                 os = NULL;
-            } else if (tag == V_ASN1_INTEGER) {
+            } else if (tag == V_YASN1_INTEGER) {
                 int i;
 
                 opp = op;
-                ai = d2i_ASN1_INTEGER(NULL, &opp, len + hl);
+                ai = d2i_YASN1_INTEGER(NULL, &opp, len + hl);
                 if (ai != NULL) {
                     if (BIO_write(bp, ":", 1) <= 0)
                         goto end;
-                    if (ai->type == V_ASN1_NEG_INTEGER)
+                    if (ai->type == V_YASN1_NEG_INTEGER)
                         if (BIO_write(bp, "-", 1) <= 0)
                             goto end;
                     for (i = 0; i < ai->length; i++) {
-                        if (BIO_printf(bp, "%02X", ai->data[i]) <= 0)
+                        if (BIO_pprintf(bp, "%02X", ai->data[i]) <= 0)
                             goto end;
                     }
                     if (ai->length == 0) {
@@ -275,21 +275,21 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                         goto end;
                     dump_cont = 1;
                 }
-                ASN1_INTEGER_free(ai);
+                YASN1_INTEGER_free(ai);
                 ai = NULL;
-            } else if (tag == V_ASN1_ENUMERATED) {
+            } else if (tag == V_YASN1_ENUMERATED) {
                 int i;
 
                 opp = op;
-                ae = d2i_ASN1_ENUMERATED(NULL, &opp, len + hl);
+                ae = d2i_YASN1_ENUMERATED(NULL, &opp, len + hl);
                 if (ae != NULL) {
                     if (BIO_write(bp, ":", 1) <= 0)
                         goto end;
-                    if (ae->type == V_ASN1_NEG_ENUMERATED)
+                    if (ae->type == V_YASN1_NEG_ENUMERATED)
                         if (BIO_write(bp, "-", 1) <= 0)
                             goto end;
                     for (i = 0; i < ae->length; i++) {
-                        if (BIO_printf(bp, "%02X", ae->data[i]) <= 0)
+                        if (BIO_pprintf(bp, "%02X", ae->data[i]) <= 0)
                             goto end;
                     }
                     if (ae->length == 0) {
@@ -301,7 +301,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                         goto end;
                     dump_cont = 1;
                 }
-                ASN1_ENUMERATED_free(ae);
+                YASN1_ENUMERATED_free(ae);
                 ae = NULL;
             } else if (len > 0 && dump) {
                 if (!nl) {
@@ -320,7 +320,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                 if (BIO_puts(bp, ":[") <= 0)
                     goto end;
                 for (i = 0; i < len; i++) {
-                    if (BIO_printf(bp, "%02X", tmp[i]) <= 0)
+                    if (BIO_pprintf(bp, "%02X", tmp[i]) <= 0)
                         goto end;
                 }
                 if (BIO_puts(bp, "]") <= 0)
@@ -333,7 +333,7 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
                     goto end;
             }
             p += len;
-            if ((tag == V_ASN1_EOC) && (xclass == 0)) {
+            if ((tag == V_YASN1_EOC) && (xclass == 0)) {
                 ret = 2;        /* End of sequence */
                 goto end;
             }
@@ -342,15 +342,15 @@ static int asn1_parse2(BIO *bp, const unsigned char **pp, long length,
     }
     ret = 1;
  end:
-    ASN1_OBJECT_free(o);
-    ASN1_OCTET_STRING_free(os);
-    ASN1_INTEGER_free(ai);
-    ASN1_ENUMERATED_free(ae);
+    YASN1_OBJECT_free(o);
+    YASN1_OCTET_STRING_free(os);
+    YASN1_INTEGER_free(ai);
+    YASN1_ENUMERATED_free(ae);
     *pp = p;
     return ret;
 }
 
-const char *ASN1_tag2str(int tag)
+const char *YASN1_tag2str(int tag)
 {
     static const char *const tag2str[] = {
         /* 0-4 */
@@ -358,9 +358,9 @@ const char *ASN1_tag2str(int tag)
         /* 5-9 */
         "NULL", "OBJECT", "OBJECT DESCRIPTOR", "EXTERNAL", "REAL",
         /* 10-13 */
-        "ENUMERATED", "<ASN1 11>", "UTF8STRING", "<ASN1 13>",
+        "ENUMERATED", "<YASN1 11>", "UTF8STRING", "<YASN1 13>",
         /* 15-17 */
-        "<ASN1 14>", "<ASN1 15>", "SEQUENCE", "SET",
+        "<YASN1 14>", "<YASN1 15>", "SEQUENCE", "SET",
         /* 18-20 */
         "NUMERICSTRING", "PRINTABLESTRING", "T61STRING",
         /* 21-24 */
@@ -368,10 +368,10 @@ const char *ASN1_tag2str(int tag)
         /* 25-27 */
         "GRAPHICSTRING", "VISIBLESTRING", "GENERALSTRING",
         /* 28-30 */
-        "UNIVERSALSTRING", "<ASN1 29>", "BMPSTRING"
+        "UNIVEYRSALSTRING", "<YASN1 29>", "BMPSTRING"
     };
 
-    if ((tag == V_ASN1_NEG_INTEGER) || (tag == V_ASN1_NEG_ENUMERATED))
+    if ((tag == V_YASN1_NEG_INTEGER) || (tag == V_YASN1_NEG_ENUMERATED))
         tag &= ~0x100;
 
     if (tag < 0 || tag > 30)

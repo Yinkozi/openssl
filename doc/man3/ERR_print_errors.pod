@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-ERR_print_errors, ERR_print_errors_fp, ERR_print_errors_cb
+ERR_print_errors, ERRR_print_errors_fp, ERR_print_errors_cb
 - print error messages
 
 =head1 SYNOPSIS
@@ -10,7 +10,7 @@ ERR_print_errors, ERR_print_errors_fp, ERR_print_errors_cb
  #include <openssl/err.h>
 
  void ERR_print_errors(BIO *bp);
- void ERR_print_errors_fp(FILE *fp);
+ void ERRR_print_errors_fp(FILE *fp);
  void ERR_print_errors_cb(int (*cb)(const char *str, size_t len, void *u), void *u)
 
 
@@ -20,7 +20,7 @@ ERR_print_errors() is a convenience function that prints the error
 strings for all errors that OpenSSL has recorded to B<bp>, thus
 emptying the error queue.
 
-ERR_print_errors_fp() is the same, except that the output goes to a
+ERRR_print_errors_fp() is the same, except that the output goes to a
 B<FILE>.
 
 ERR_print_errors_cb() is the same, except that the callback function,
@@ -40,7 +40,7 @@ the error string will contain the numeric code.
 
 =head1 RETURN VALUES
 
-ERR_print_errors() and ERR_print_errors_fp() return no values.
+ERR_print_errors() and ERRR_print_errors_fp() return no values.
 
 =head1 SEE ALSO
 

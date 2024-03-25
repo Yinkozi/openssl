@@ -27,7 +27,7 @@ struct ocsp_req_ctx_st {
     int iobuflen;               /* Line buffer length */
     BIO *io;                    /* BIO to perform I/O with */
     BIO *mem;                   /* Memory BIO response is built into */
-    unsigned long asn1_len;     /* ASN1 length of response */
+    unsigned long asn1_len;     /* YASN1 length of response */
     unsigned long max_resp_len; /* Maximum length of response */
 };
 
@@ -45,15 +45,15 @@ struct ocsp_req_ctx_st {
 /* MIME headers being read */
 #define OHS_HEADERS             2
 /* OCSP initial header (tag + length) being read */
-#define OHS_ASN1_HEADER         3
+#define OHS_YASN1_HEADER         3
 /* OCSP content octets being read */
-#define OHS_ASN1_CONTENT        4
+#define OHS_YASN1_CONTENT        4
 /* First call: ready to start I/O */
-#define OHS_ASN1_WRITE_INIT     (5 | OHS_NOREAD)
+#define OHS_YASN1_WRITE_INIT     (5 | OHS_NOREAD)
 /* Request being sent */
-#define OHS_ASN1_WRITE          (6 | OHS_NOREAD)
+#define OHS_YASN1_WRITE          (6 | OHS_NOREAD)
 /* Request being flushed */
-#define OHS_ASN1_FLUSH          (7 | OHS_NOREAD)
+#define OHS_YASN1_FLUSH          (7 | OHS_NOREAD)
 /* Completed */
 #define OHS_DONE                (8 | OHS_NOREAD)
 /* Headers set, no final \r\n included */
@@ -105,22 +105,22 @@ void OCSP_set_max_response_length(OCSP_REQ_CTX *rctx, unsigned long len)
         rctx->max_resp_len = len;
 }
 
-int OCSP_REQ_CTX_i2d(OCSP_REQ_CTX *rctx, const ASN1_ITEM *it, ASN1_VALUE *val)
+int OCSP_REQ_CTX_i2d(OCSP_REQ_CTX *rctx, const YASN1_ITEM *it, YASN1_VALUE *val)
 {
     static const char req_hdr[] =
         "Content-Type: application/ocsp-request\r\n"
         "Content-Length: %d\r\n\r\n";
-    int reqlen = ASN1_item_i2d(val, NULL, it);
-    if (BIO_printf(rctx->mem, req_hdr, reqlen) <= 0)
+    int reqlen = YASN1_item_i2d(val, NULL, it);
+    if (BIO_pprintf(rctx->mem, req_hdr, reqlen) <= 0)
         return 0;
-    if (ASN1_item_i2d_bio(it, rctx->mem, val) <= 0)
+    if (YASN1_item_i2d_bio(it, rctx->mem, val) <= 0)
         return 0;
-    rctx->state = OHS_ASN1_WRITE_INIT;
+    rctx->state = OHS_YASN1_WRITE_INIT;
     return 1;
 }
 
 int OCSP_REQ_CTX_nbio_d2i(OCSP_REQ_CTX *rctx,
-                          ASN1_VALUE **pval, const ASN1_ITEM *it)
+                          YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     int rv, len;
     const unsigned char *p;
@@ -130,7 +130,7 @@ int OCSP_REQ_CTX_nbio_d2i(OCSP_REQ_CTX *rctx,
         return rv;
 
     len = BIO_get_mem_data(rctx->mem, &p);
-    *pval = ASN1_item_d2i(NULL, &p, len, it);
+    *pval = YASN1_item_d2i(NULL, &p, len, it);
     if (*pval == NULL) {
         rctx->state = OHS_ERROR;
         return 0;
@@ -145,7 +145,7 @@ int OCSP_REQ_CTX_http(OCSP_REQ_CTX *rctx, const char *op, const char *path)
     if (!path)
         path = "/";
 
-    if (BIO_printf(rctx->mem, http_hdr, op, path) <= 0)
+    if (BIO_pprintf(rctx->mem, http_hdr, op, path) <= 0)
         return 0;
     rctx->state = OHS_HTTP_HEADER;
     return 1;
@@ -153,8 +153,8 @@ int OCSP_REQ_CTX_http(OCSP_REQ_CTX *rctx, const char *op, const char *path)
 
 int OCSP_REQ_CTX_set1_req(OCSP_REQ_CTX *rctx, OCSP_REQUEST *req)
 {
-    return OCSP_REQ_CTX_i2d(rctx, ASN1_ITEM_rptr(OCSP_REQUEST),
-                            (ASN1_VALUE *)req);
+    return OCSP_REQ_CTX_i2d(rctx, YASN1_ITEM_rptr(OCSP_REQUEST),
+                            (YASN1_VALUE *)req);
 }
 
 int OCSP_REQ_CTX_add1_header(OCSP_REQ_CTX *rctx,
@@ -296,15 +296,15 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
             rctx->state = OHS_ERROR;
             return 0;
         }
-        rctx->state = OHS_ASN1_WRITE_INIT;
+        rctx->state = OHS_YASN1_WRITE_INIT;
 
         /* fall thru */
-    case OHS_ASN1_WRITE_INIT:
+    case OHS_YASN1_WRITE_INIT:
         rctx->asn1_len = BIO_get_mem_data(rctx->mem, NULL);
-        rctx->state = OHS_ASN1_WRITE;
+        rctx->state = OHS_YASN1_WRITE;
 
         /* fall thru */
-    case OHS_ASN1_WRITE:
+    case OHS_YASN1_WRITE:
         n = BIO_get_mem_data(rctx->mem, &p);
 
         i = BIO_write(rctx->io, p + (n - rctx->asn1_len), rctx->asn1_len);
@@ -321,12 +321,12 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
         if (rctx->asn1_len > 0)
             goto next_io;
 
-        rctx->state = OHS_ASN1_FLUSH;
+        rctx->state = OHS_YASN1_FLUSH;
 
         (void)BIO_reset(rctx->mem);
 
         /* fall thru */
-    case OHS_ASN1_FLUSH:
+    case OHS_YASN1_FLUSH:
 
         i = BIO_flush(rctx->io);
 
@@ -396,24 +396,24 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
             if (*p)
                 goto next_line;
 
-            rctx->state = OHS_ASN1_HEADER;
+            rctx->state = OHS_YASN1_HEADER;
 
         }
 
         /* Fall thru */
 
-    case OHS_ASN1_HEADER:
+    case OHS_YASN1_HEADER:
         /*
-         * Now reading ASN1 header: can read at least 2 bytes which is enough
-         * for ASN1 SEQUENCE header and either length field or at least the
+         * Now reading YASN1 header: can read at least 2 bytes which is enough
+         * for YASN1 SEQUENCE header and either length field or at least the
          * length of the length field.
          */
         n = BIO_get_mem_data(rctx->mem, &p);
         if (n < 2)
             goto next_io;
 
-        /* Check it is an ASN1 SEQUENCE */
-        if (*p++ != (V_ASN1_SEQUENCE | V_ASN1_CONSTRUCTED)) {
+        /* Check it is an YASN1 SEQUENCE */
+        if (*p++ != (V_YASN1_SEQUENCE | V_YASN1_CONSTRUCTED)) {
             rctx->state = OHS_ERROR;
             return 0;
         }
@@ -448,11 +448,11 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
         } else
             rctx->asn1_len = *p + 2;
 
-        rctx->state = OHS_ASN1_CONTENT;
+        rctx->state = OHS_YASN1_CONTENT;
 
         /* Fall thru */
 
-    case OHS_ASN1_CONTENT:
+    case OHS_YASN1_CONTENT:
         n = BIO_get_mem_data(rctx->mem, NULL);
         if (n < (int)rctx->asn1_len)
             goto next_io;
@@ -472,8 +472,8 @@ int OCSP_REQ_CTX_nbio(OCSP_REQ_CTX *rctx)
 int OCSP_sendreq_nbio(OCSP_RESPONSE **presp, OCSP_REQ_CTX *rctx)
 {
     return OCSP_REQ_CTX_nbio_d2i(rctx,
-                                 (ASN1_VALUE **)presp,
-                                 ASN1_ITEM_rptr(OCSP_RESPONSE));
+                                 (YASN1_VALUE **)presp,
+                                 YASN1_ITEM_rptr(OCSP_RESPONSE));
 }
 
 /* Blocking OCSP request handler: now a special case of non-blocking I/O */

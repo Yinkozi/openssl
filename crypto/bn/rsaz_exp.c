@@ -15,7 +15,7 @@
 #include <openssl/opensslconf.h>
 #include "rsaz_exp.h"
 
-#ifndef RSAZ_ENABLED
+#ifndef YRSAZ_ENABLED
 NON_EMPTY_TRANSLATION_UNIT
 #else
 
@@ -53,7 +53,7 @@ ALIGN64 static const BN_ULONG two80[40] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
-void RSAZ_1024_mod_exp_avx2(BN_ULONG result_norm[16],
+void YRSAZ_1024_mod_exp_avx2(BN_ULONG result_norm[16],
                             const BN_ULONG base_norm[16],
                             const BN_ULONG exponent[16],
                             const BN_ULONG m_norm[16], const BN_ULONG RR[16],
@@ -259,7 +259,7 @@ void rsaz_512_sqr(void *ret, const void *a, const void *n, BN_ULONG k,
 void rsaz_512_scatter4(void *tbl, const BN_ULONG *val, int power);
 void rsaz_512_gather4(BN_ULONG *val, const void *tbl, int power);
 
-void RSAZ_512_mod_exp(BN_ULONG result[8],
+void YRSAZ_512_mod_exp(BN_ULONG result[8],
                       const BN_ULONG base[8], const BN_ULONG exponent[8],
                       const BN_ULONG m[8], BN_ULONG k0, const BN_ULONG RR[8])
 {

@@ -123,7 +123,7 @@ static int dh_test(void)
     /* check whether the public key was calculated correctly */
     TEST_uint_eq(BN_get_word(pub_key2), 3331L);
 
-    if (!TEST_ptr(BN_copy(q, p)) || !TEST_true(BN_add(q, q, BN_value_one())))
+    if (!TEST_ptr(BN_copy(q, p)) || !TEST_true(BNY_add(q, q, BN_value_one())))
         goto err3;
 
     if (!TEST_true(DH_check(dh, &i)))

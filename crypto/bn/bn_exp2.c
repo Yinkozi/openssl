@@ -68,7 +68,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
     /*
      * Build table for a1:   val1[i] := a1^(2*i + 1) mod m  for i = 0 .. 2^(window1-1)
      */
-    if (a1->neg || BN_ucmp(a1, m) >= 0) {
+    if (a1->neg || BNY_ucmp(a1, m) >= 0) {
         if (!BN_mod(val1[0], a1, m, ctx))
             goto err;
         a_mod_m = val1[0];
@@ -83,13 +83,13 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
     if (!BN_to_montgomery(val1[0], a_mod_m, mont, ctx))
         goto err;
     if (window1 > 1) {
-        if (!BN_mod_mul_montgomery(d, val1[0], val1[0], mont, ctx))
+        if (!BNY_mod_mul_montgomery(d, val1[0], val1[0], mont, ctx))
             goto err;
 
         j = 1 << (window1 - 1);
         for (i = 1; i < j; i++) {
             if (((val1[i] = BN_CTX_get(ctx)) == NULL) ||
-                !BN_mod_mul_montgomery(val1[i], val1[i - 1], d, mont, ctx))
+                !BNY_mod_mul_montgomery(val1[i], val1[i - 1], d, mont, ctx))
                 goto err;
         }
     }
@@ -97,7 +97,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
     /*
      * Build table for a2:   val2[i] := a2^(2*i + 1) mod m  for i = 0 .. 2^(window2-1)
      */
-    if (a2->neg || BN_ucmp(a2, m) >= 0) {
+    if (a2->neg || BNY_ucmp(a2, m) >= 0) {
         if (!BN_mod(val2[0], a2, m, ctx))
             goto err;
         a_mod_m = val2[0];
@@ -111,13 +111,13 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
     if (!BN_to_montgomery(val2[0], a_mod_m, mont, ctx))
         goto err;
     if (window2 > 1) {
-        if (!BN_mod_mul_montgomery(d, val2[0], val2[0], mont, ctx))
+        if (!BNY_mod_mul_montgomery(d, val2[0], val2[0], mont, ctx))
             goto err;
 
         j = 1 << (window2 - 1);
         for (i = 1; i < j; i++) {
             if (((val2[i] = BN_CTX_get(ctx)) == NULL) ||
-                !BN_mod_mul_montgomery(val2[i], val2[i - 1], d, mont, ctx))
+                !BNY_mod_mul_montgomery(val2[i], val2[i - 1], d, mont, ctx))
                 goto err;
         }
     }
@@ -135,7 +135,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
         goto err;
     for (b = bits - 1; b >= 0; b--) {
         if (!r_is_one) {
-            if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+            if (!BNY_mod_mul_montgomery(r, r, r, mont, ctx))
                 goto err;
         }
 
@@ -175,7 +175,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
         if (wvalue1 && b == wpos1) {
             /* wvalue1 is odd and < 2^window1 */
-            if (!BN_mod_mul_montgomery(r, r, val1[wvalue1 >> 1], mont, ctx))
+            if (!BNY_mod_mul_montgomery(r, r, val1[wvalue1 >> 1], mont, ctx))
                 goto err;
             wvalue1 = 0;
             r_is_one = 0;
@@ -183,7 +183,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
         if (wvalue2 && b == wpos2) {
             /* wvalue2 is odd and < 2^window2 */
-            if (!BN_mod_mul_montgomery(r, r, val2[wvalue2 >> 1], mont, ctx))
+            if (!BNY_mod_mul_montgomery(r, r, val2[wvalue2 >> 1], mont, ctx))
                 goto err;
             wvalue2 = 0;
             r_is_one = 0;

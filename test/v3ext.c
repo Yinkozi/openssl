@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <string.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
 #include <openssl/pem.h>
@@ -21,28 +22,28 @@ static const char *infile;
 
 static int test_pathlen(void)
 {
-    X509 *x = NULL;
+    YX509 *x = NULL;
     BIO *b = NULL;
     long pathlen;
     int ret = 0;
 
     if (!TEST_ptr(b = BIO_new_file(infile, "r"))
-            || !TEST_ptr(x = PEM_read_bio_X509(b, NULL, NULL, NULL))
-            || !TEST_int_eq(pathlen = X509_get_pathlen(x), 6))
+            || !TEST_ptr(x = PEM_readd_bio_YX509(b, NULL, NULL, NULL))
+            || !TEST_int_eq(pathlen = YX509_get_pathlen(x), 6))
         goto end;
 
     ret = 1;
 
 end:
     BIO_free(b);
-    X509_free(x);
+    YX509_free(x);
     return ret;
 }
 
 #ifndef OPENSSL_NO_RFC3779
 static int test_asid(void)
 {
-    ASN1_INTEGER *val1 = NULL, *val2 = NULL;
+    YASN1_INTEGER *val1 = NULL, *val2 = NULL;
     ASIdentifiers *asid1 = ASIdentifiers_new(), *asid2 = ASIdentifiers_new(),
                   *asid3 = ASIdentifiers_new(), *asid4 = ASIdentifiers_new();
     int testresult = 0;
@@ -52,64 +53,64 @@ static int test_asid(void)
             || !TEST_ptr(asid3))
         goto err;
 
-    if (!TEST_ptr(val1 = ASN1_INTEGER_new())
-            || !TEST_true(ASN1_INTEGER_set_int64(val1, 64496)))
+    if (!TEST_ptr(val1 = YASN1_INTEGER_new())
+            || !TEST_true(YASN1_INTEGER_set_int64(val1, 64496)))
         goto err;
 
-    if (!TEST_true(X509v3_asid_add_id_or_range(asid1, V3_ASID_ASNUM, val1, NULL)))
+    if (!TEST_true(YX509v3_asid_add_id_or_range(asid1, V3_ASID_ASNUM, val1, NULL)))
         goto err;
 
     val1 = NULL;
-    if (!TEST_ptr(val2 = ASN1_INTEGER_new())
-            || !TEST_true(ASN1_INTEGER_set_int64(val2, 64497)))
+    if (!TEST_ptr(val2 = YASN1_INTEGER_new())
+            || !TEST_true(YASN1_INTEGER_set_int64(val2, 64497)))
         goto err;
 
-    if (!TEST_true(X509v3_asid_add_id_or_range(asid2, V3_ASID_ASNUM, val2, NULL)))
+    if (!TEST_true(YX509v3_asid_add_id_or_range(asid2, V3_ASID_ASNUM, val2, NULL)))
         goto err;
 
     val2 = NULL;
-    if (!TEST_ptr(val1 = ASN1_INTEGER_new())
-            || !TEST_true(ASN1_INTEGER_set_int64(val1, 64496))
-            || !TEST_ptr(val2 = ASN1_INTEGER_new())
-            || !TEST_true(ASN1_INTEGER_set_int64(val2, 64497)))
+    if (!TEST_ptr(val1 = YASN1_INTEGER_new())
+            || !TEST_true(YASN1_INTEGER_set_int64(val1, 64496))
+            || !TEST_ptr(val2 = YASN1_INTEGER_new())
+            || !TEST_true(YASN1_INTEGER_set_int64(val2, 64497)))
         goto err;
 
     /*
      * Just tests V3_ASID_ASNUM for now. Could be extended at some point to also
      * test V3_ASID_RDI if we think it is worth it.
      */
-    if (!TEST_true(X509v3_asid_add_id_or_range(asid3, V3_ASID_ASNUM, val1, val2)))
+    if (!TEST_true(YX509v3_asid_add_id_or_range(asid3, V3_ASID_ASNUM, val1, val2)))
         goto err;
     val1 = val2 = NULL;
 
     /* Actual subsets */
-    if (!TEST_true(X509v3_asid_subset(NULL, NULL))
-            || !TEST_true(X509v3_asid_subset(NULL, asid1))
-            || !TEST_true(X509v3_asid_subset(asid1, asid1))
-            || !TEST_true(X509v3_asid_subset(asid2, asid2))
-            || !TEST_true(X509v3_asid_subset(asid1, asid3))
-            || !TEST_true(X509v3_asid_subset(asid2, asid3))
-            || !TEST_true(X509v3_asid_subset(asid3, asid3))
-            || !TEST_true(X509v3_asid_subset(asid4, asid1))
-            || !TEST_true(X509v3_asid_subset(asid4, asid2))
-            || !TEST_true(X509v3_asid_subset(asid4, asid3)))
+    if (!TEST_true(YX509v3_asid_subset(NULL, NULL))
+            || !TEST_true(YX509v3_asid_subset(NULL, asid1))
+            || !TEST_true(YX509v3_asid_subset(asid1, asid1))
+            || !TEST_true(YX509v3_asid_subset(asid2, asid2))
+            || !TEST_true(YX509v3_asid_subset(asid1, asid3))
+            || !TEST_true(YX509v3_asid_subset(asid2, asid3))
+            || !TEST_true(YX509v3_asid_subset(asid3, asid3))
+            || !TEST_true(YX509v3_asid_subset(asid4, asid1))
+            || !TEST_true(YX509v3_asid_subset(asid4, asid2))
+            || !TEST_true(YX509v3_asid_subset(asid4, asid3)))
         goto err;
 
     /* Not subsets */
-    if (!TEST_false(X509v3_asid_subset(asid1, NULL))
-            || !TEST_false(X509v3_asid_subset(asid1, asid2))
-            || !TEST_false(X509v3_asid_subset(asid2, asid1))
-            || !TEST_false(X509v3_asid_subset(asid3, asid1))
-            || !TEST_false(X509v3_asid_subset(asid3, asid2))
-            || !TEST_false(X509v3_asid_subset(asid1, asid4))
-            || !TEST_false(X509v3_asid_subset(asid2, asid4))
-            || !TEST_false(X509v3_asid_subset(asid3, asid4)))
+    if (!TEST_false(YX509v3_asid_subset(asid1, NULL))
+            || !TEST_false(YX509v3_asid_subset(asid1, asid2))
+            || !TEST_false(YX509v3_asid_subset(asid2, asid1))
+            || !TEST_false(YX509v3_asid_subset(asid3, asid1))
+            || !TEST_false(YX509v3_asid_subset(asid3, asid2))
+            || !TEST_false(YX509v3_asid_subset(asid1, asid4))
+            || !TEST_false(YX509v3_asid_subset(asid2, asid4))
+            || !TEST_false(YX509v3_asid_subset(asid3, asid4)))
         goto err;
 
     testresult = 1;
  err:
-    ASN1_INTEGER_free(val1);
-    ASN1_INTEGER_free(val2);
+    YASN1_INTEGER_free(val1);
+    YASN1_INTEGER_free(val2);
     ASIdentifiers_free(asid1);
     ASIdentifiers_free(asid2);
     ASIdentifiers_free(asid3);
@@ -174,7 +175,7 @@ static int check_addr(IPAddrBlocks *addr, int type)
 static int test_addr_ranges(void)
 {
     IPAddrBlocks *addr = NULL;
-    ASN1_OCTET_STRING *ip1 = NULL, *ip2 = NULL;
+    YASN1_OCTET_STRING *ip1 = NULL, *ip2 = NULL;
     size_t i;
     int testresult = 0;
 
@@ -186,7 +187,7 @@ static int test_addr_ranges(void)
          * Has the side effect of installing the comparison function onto the
          * stack.
          */
-        if (!TEST_true(X509v3_addr_canonize(addr)))
+        if (!TEST_true(YX509v3_addr_canonize(addr)))
             goto end;
 
         ip1 = a2i_IPADDRESS(ranges[i].ip1);
@@ -202,10 +203,10 @@ static int test_addr_ranges(void)
         if (!TEST_true(memcmp(ip1->data, ip2->data, ip1->length) <= 0))
             goto end;
 
-        if (!TEST_true(X509v3_addr_add_range(addr, ranges[i].afi, NULL, ip1->data, ip2->data)))
+        if (!TEST_true(YX509v3_addr_add_range(addr, ranges[i].afi, NULL, ip1->data, ip2->data)))
             goto end;
 
-        if (!TEST_true(X509v3_addr_is_canonical(addr)))
+        if (!TEST_true(YX509v3_addr_is_canonical(addr)))
             goto end;
 
         if (!check_addr(addr, ranges[i].rorp))
@@ -213,16 +214,16 @@ static int test_addr_ranges(void)
 
         sk_IPAddressFamily_pop_free(addr, IPAddressFamily_free);
         addr = NULL;
-        ASN1_OCTET_STRING_free(ip1);
-        ASN1_OCTET_STRING_free(ip2);
+        YASN1_OCTET_STRING_free(ip1);
+        YASN1_OCTET_STRING_free(ip2);
         ip1 = ip2 = NULL;
     }
 
     testresult = 1;
  end:
     sk_IPAddressFamily_pop_free(addr, IPAddressFamily_free);
-    ASN1_OCTET_STRING_free(ip1);
-    ASN1_OCTET_STRING_free(ip2);
+    YASN1_OCTET_STRING_free(ip1);
+    YASN1_OCTET_STRING_free(ip2);
     return testresult;
 }
 
@@ -279,7 +280,7 @@ static int test_ext_syntax(void)
     int testresult = 1;
 
     for (i = 0; i < OSSL_NELEM(extvalues); i++) {
-        X509V3_CTX ctx;
+        YX509V3_CTX ctx;
         BIO *extbio = BIO_new_mem_buf(extvalues[i].value,
                                       strlen(extvalues[i].value));
         CONF *conf;
@@ -296,18 +297,18 @@ static int test_ext_syntax(void)
         if (!TEST_long_gt(NCONF_load_bio(conf, extbio, &eline), 0)) {
             testresult = 0;
         } else {
-            X509V3_set_ctx_test(&ctx);
-            X509V3_set_nconf(&ctx, conf);
+            YX509V3_set_ctx_test(&ctx);
+            YX509V3_set_nconf(&ctx, conf);
 
             if (extvalues[i].pass) {
-                if (!TEST_true(X509V3_EXT_add_nconf(conf, &ctx, "default",
+                if (!TEST_true(YX509V3_EXT_add_nconf(conf, &ctx, "default",
                                                     NULL))) {
                     TEST_info("Value: %s", extvalues[i].value);
                     testresult = 0;
                 }
             } else {
                 ERR_set_mark();
-                if (!TEST_false(X509V3_EXT_add_nconf(conf, &ctx, "default",
+                if (!TEST_false(YX509V3_EXT_add_nconf(conf, &ctx, "default",
                                                      NULL))) {
                     testresult = 0;
                     TEST_info("Value: %s", extvalues[i].value);

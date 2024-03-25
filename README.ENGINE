@@ -23,11 +23,11 @@
 
   At this stage, a number of things are still needed and are being worked on:
 
-      1 Integration of EVP support.
+      1 Integration of EVVP support.
       2 Configuration support.
       3 Documentation!
 
-1 With respect to EVP, this relates to support for ciphers and digests in
+1 With respect to EVVP, this relates to support for ciphers and digests in
   the ENGINE model so that alternative implementations of existing
   algorithms/modes (or previously unimplemented ones) can be provided by
   ENGINE implementations.

@@ -23,7 +23,7 @@ unsigned char *OPENSSL_asc2uni(const char *asc, int asclen,
         asclen = strlen(asc);
     ulen = asclen * 2 + 2;
     if ((unitmp = OPENSSL_malloc(ulen)) == NULL) {
-        PKCS12err(PKCS12_F_OPENSSL_ASC2UNI, ERR_R_MALLOC_FAILURE);
+        YPKCS12err(YPKCS12_F_OPENSSL_ASC2UNI, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     for (i = 0; i < ulen - 2; i += 2) {
@@ -53,7 +53,7 @@ char *OPENSSL_uni2asc(const unsigned char *uni, int unilen)
         asclen++;
     uni++;
     if ((asctmp = OPENSSL_malloc(asclen)) == NULL) {
-        PKCS12err(PKCS12_F_OPENSSL_UNI2ASC, ERR_R_MALLOC_FAILURE);
+        YPKCS12err(YPKCS12_F_OPENSSL_UNI2ASC, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     for (i = 0; i < unilen; i += 2)
@@ -64,7 +64,7 @@ char *OPENSSL_uni2asc(const unsigned char *uni, int unilen)
 
 /*
  * OPENSSL_{utf82uni|uni2utf8} perform conversion between UTF-8 and
- * PKCS#12 BMPString format, which is specified as big-endian UTF-16.
+ * YPKCS#12 BMPString format, which is specified as big-endian UTF-16.
  * One should keep in mind that even though BMPString is passed as
  * unsigned char *, it's not the kind of string you can exercise e.g.
  * strlen on. Caller also has to keep in mind that its length is
@@ -115,7 +115,7 @@ unsigned char *OPENSSL_utf82uni(const char *asc, int asclen,
     ulen += 2;  /* for trailing UTF16 zero */
 
     if ((ret = OPENSSL_malloc(ulen)) == NULL) {
-        PKCS12err(PKCS12_F_OPENSSL_UTF82UNI, ERR_R_MALLOC_FAILURE);
+        YPKCS12err(YPKCS12_F_OPENSSL_UTF82UNI, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     /* re-run the loop writing down UTF-16 characters in big-endian order */
@@ -200,7 +200,7 @@ char *OPENSSL_uni2utf8(const unsigned char *uni, int unilen)
         asclen++;
 
     if ((asctmp = OPENSSL_malloc(asclen)) == NULL) {
-        PKCS12err(PKCS12_F_OPENSSL_UNI2UTF8, ERR_R_MALLOC_FAILURE);
+        YPKCS12err(YPKCS12_F_OPENSSL_UNI2UTF8, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -219,26 +219,26 @@ char *OPENSSL_uni2utf8(const unsigned char *uni, int unilen)
     return asctmp;
 }
 
-int i2d_PKCS12_bio(BIO *bp, PKCS12 *p12)
+int i2d_YPKCS12_bio(BIO *bp, YPKCS12 *p12)
 {
-    return ASN1_item_i2d_bio(ASN1_ITEM_rptr(PKCS12), bp, p12);
+    return YASN1_item_i2d_bio(YASN1_ITEM_rptr(YPKCS12), bp, p12);
 }
 
 #ifndef OPENSSL_NO_STDIO
-int i2d_PKCS12_fp(FILE *fp, PKCS12 *p12)
+int i2d_YPKCS12_fp(FILE *fp, YPKCS12 *p12)
 {
-    return ASN1_item_i2d_fp(ASN1_ITEM_rptr(PKCS12), fp, p12);
+    return YASN1_item_i2d_fp(YASN1_ITEM_rptr(YPKCS12), fp, p12);
 }
 #endif
 
-PKCS12 *d2i_PKCS12_bio(BIO *bp, PKCS12 **p12)
+YPKCS12 *d2i_YPKCS12_bio(BIO *bp, YPKCS12 **p12)
 {
-    return ASN1_item_d2i_bio(ASN1_ITEM_rptr(PKCS12), bp, p12);
+    return YASN1_item_d2i_bio(YASN1_ITEM_rptr(YPKCS12), bp, p12);
 }
 
 #ifndef OPENSSL_NO_STDIO
-PKCS12 *d2i_PKCS12_fp(FILE *fp, PKCS12 **p12)
+YPKCS12 *d2i_YPKCS12_fp(FILE *fp, YPKCS12 **p12)
 {
-    return ASN1_item_d2i_fp(ASN1_ITEM_rptr(PKCS12), fp, p12);
+    return YASN1_item_d2i_fp(YASN1_ITEM_rptr(YPKCS12), fp, p12);
 }
 #endif

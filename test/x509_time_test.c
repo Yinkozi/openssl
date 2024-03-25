@@ -7,7 +7,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-/* Tests for X509 time functions */
+/* Tests for YX509 time functions */
 
 #include <string.h>
 #include <time.h>
@@ -89,15 +89,15 @@ static TESTDATA_FORMAT x509_format_tests[] = {
     },
     {
         /* good format, check returned 'turned' string */
-        "20170217180154Z", 1, 1, V_ASN1_UTCTIME, "170217180154Z",
+        "20170217180154Z", 1, 1, V_YASN1_UTCTIME, "170217180154Z",
     },
     {
         /* good format, check returned string */
-        "20510217180154Z", 1, 1, V_ASN1_GENERALIZEDTIME, "20510217180154Z",
+        "20510217180154Z", 1, 1, V_YASN1_GENERALIZEDTIME, "20510217180154Z",
     },
     {
         /* good format but out of UTC range, check returned string */
-        "19230419180154Z", 1, 1, V_ASN1_GENERALIZEDTIME, "19230419180154Z",
+        "19230419180154Z", 1, 1, V_YASN1_GENERALIZEDTIME, "19230419180154Z",
     },
     /* UTC */
     {
@@ -126,136 +126,136 @@ static TESTDATA_FORMAT x509_format_tests[] = {
     },
     {
         /* 2017, good format, check returned string */
-        "170217180154Z", 1, 1, V_ASN1_UTCTIME, "170217180154Z",
+        "170217180154Z", 1, 1, V_YASN1_UTCTIME, "170217180154Z",
     },
     {
         /* 1998, good format, check returned string */
-        "981223180154Z", 1, 1, V_ASN1_UTCTIME, "981223180154Z",
+        "981223180154Z", 1, 1, V_YASN1_UTCTIME, "981223180154Z",
     },
 };
 
 static TESTDATA x509_cmp_tests[] = {
     {
-        "20170217180154Z", V_ASN1_GENERALIZEDTIME,
+        "20170217180154Z", V_YASN1_GENERALIZEDTIME,
         /* The same in seconds since epoch. */
         1487354514, -1,
     },
     {
-        "20170217180154Z", V_ASN1_GENERALIZEDTIME,
+        "20170217180154Z", V_YASN1_GENERALIZEDTIME,
         /* One second more. */
         1487354515, -1,
     },
     {
-        "20170217180154Z", V_ASN1_GENERALIZEDTIME,
+        "20170217180154Z", V_YASN1_GENERALIZEDTIME,
         /* One second less. */
         1487354513, 1,
     },
     /* Same as UTC time. */
     {
-        "170217180154Z", V_ASN1_UTCTIME,
+        "170217180154Z", V_YASN1_UTCTIME,
         /* The same in seconds since epoch. */
         1487354514, -1,
     },
     {
-        "170217180154Z", V_ASN1_UTCTIME,
+        "170217180154Z", V_YASN1_UTCTIME,
         /* One second more. */
         1487354515, -1,
     },
     {
-        "170217180154Z", V_ASN1_UTCTIME,
+        "170217180154Z", V_YASN1_UTCTIME,
         /* One second less. */
         1487354513, 1,
     },
     /* UTCTime from the 20th century. */
     {
-        "990217180154Z", V_ASN1_UTCTIME,
+        "990217180154Z", V_YASN1_UTCTIME,
         /* The same in seconds since epoch. */
         919274514, -1,
     },
     {
-        "990217180154Z", V_ASN1_UTCTIME,
+        "990217180154Z", V_YASN1_UTCTIME,
         /* One second more. */
         919274515, -1,
     },
     {
-        "990217180154Z", V_ASN1_UTCTIME,
+        "990217180154Z", V_YASN1_UTCTIME,
         /* One second less. */
         919274513, 1,
     },
     /* Various invalid formats. */
     {
         /* No trailing Z. */
-        "20170217180154", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "20170217180154", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* No trailing Z, UTCTime. */
-        "170217180154", V_ASN1_UTCTIME, 0, 0,
+        "170217180154", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* No seconds. */
-        "201702171801Z", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "201702171801Z", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* No seconds, UTCTime. */
-        "1702171801Z", V_ASN1_UTCTIME, 0, 0,
+        "1702171801Z", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Fractional seconds. */
-        "20170217180154.001Z", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "20170217180154.001Z", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Fractional seconds, UTCTime. */
-        "170217180154.001Z", V_ASN1_UTCTIME, 0, 0,
+        "170217180154.001Z", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Timezone offset. */
-        "20170217180154+0100", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "20170217180154+0100", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Timezone offset, UTCTime. */
-        "170217180154+0100", V_ASN1_UTCTIME, 0, 0,
+        "170217180154+0100", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Extra digits. */
-        "2017021718015400Z", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "2017021718015400Z", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Extra digits, UTCTime. */
-        "17021718015400Z", V_ASN1_UTCTIME, 0, 0,
+        "17021718015400Z", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Non-digits. */
-        "2017021718015aZ", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "2017021718015aZ", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Non-digits, UTCTime. */
-        "17021718015aZ", V_ASN1_UTCTIME, 0, 0,
+        "17021718015aZ", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Trailing garbage. */
-        "20170217180154Zlongtrailinggarbage", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "20170217180154Zlongtrailinggarbage", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Trailing garbage, UTCTime. */
-        "170217180154Zlongtrailinggarbage", V_ASN1_UTCTIME, 0, 0,
+        "170217180154Zlongtrailinggarbage", V_YASN1_UTCTIME, 0, 0,
     },
     {
          /* Swapped type. */
-        "20170217180154Z", V_ASN1_UTCTIME, 0, 0,
+        "20170217180154Z", V_YASN1_UTCTIME, 0, 0,
     },
     {
         /* Swapped type. */
-        "170217180154Z", V_ASN1_GENERALIZEDTIME, 0, 0,
+        "170217180154Z", V_YASN1_GENERALIZEDTIME, 0, 0,
     },
     {
         /* Bad type. */
-        "20170217180154Z", V_ASN1_OCTET_STRING, 0, 0,
+        "20170217180154Z", V_YASN1_OCTET_STRING, 0, 0,
     },
 };
 
 static int test_x509_cmp_time(int idx)
 {
-    ASN1_TIME t;
+    YASN1_TIME t;
     int result;
 
     memset(&t, 0, sizeof(t));
@@ -264,7 +264,7 @@ static int test_x509_cmp_time(int idx)
     t.length = strlen(x509_cmp_tests[idx].data);
     t.flags = 0;
 
-    result = X509_cmp_time(&t, &x509_cmp_tests[idx].cmp_time);
+    result = YX509_cmp_time(&t, &x509_cmp_tests[idx].cmp_time);
     if (!TEST_int_eq(result, x509_cmp_tests[idx].expected)) {
         TEST_info("test_x509_cmp_time(%d) failed: expected %d, got %d\n",
                 idx, x509_cmp_tests[idx].expected, result);
@@ -277,41 +277,41 @@ static int test_x509_cmp_time_current(void)
 {
     time_t now = time(NULL);
     /* Pick a day earlier and later, relative to any system clock. */
-    ASN1_TIME *asn1_before = NULL, *asn1_after = NULL;
+    YASN1_TIME *asn1_before = NULL, *asn1_after = NULL;
     int cmp_result, failed = 0;
 
-    asn1_before = ASN1_TIME_adj(NULL, now, -1, 0);
-    asn1_after = ASN1_TIME_adj(NULL, now, 1, 0);
+    asn1_before = YASN1_TIME_adj(NULL, now, -1, 0);
+    asn1_after = YASN1_TIME_adj(NULL, now, 1, 0);
 
-    cmp_result  = X509_cmp_time(asn1_before, NULL);
+    cmp_result  = YX509_cmp_time(asn1_before, NULL);
     if (!TEST_int_eq(cmp_result, -1))
         failed = 1;
 
-    cmp_result = X509_cmp_time(asn1_after, NULL);
+    cmp_result = YX509_cmp_time(asn1_after, NULL);
     if (!TEST_int_eq(cmp_result, 1))
         failed = 1;
 
-    ASN1_TIME_free(asn1_before);
-    ASN1_TIME_free(asn1_after);
+    YASN1_TIME_free(asn1_before);
+    YASN1_TIME_free(asn1_after);
 
     return failed == 0;
 }
 
 static int test_x509_time(int idx)
 {
-    ASN1_TIME *t = NULL;
+    YASN1_TIME *t = NULL;
     int result, rv = 0;
 
     if (x509_format_tests[idx].set_string) {
         /* set-string mode */
-        t = ASN1_TIME_new();
+        t = YASN1_TIME_new();
         if (t == NULL) {
             TEST_info("test_x509_time(%d) failed: internal error\n", idx);
             return 0;
         }
     }
 
-    result = ASN1_TIME_set_string_X509(t, x509_format_tests[idx].data);
+    result = YASN1_TIME_set_string_YX509(t, x509_format_tests[idx].data);
     /* time string parsing result is always checked against what's expected */
     if (!TEST_int_eq(result, x509_format_tests[idx].expected)) {
         TEST_info("test_x509_time(%d) failed: expected %d, got %d\n",
@@ -343,7 +343,7 @@ static int test_x509_time(int idx)
     rv = 1;
 out:
     if (t != NULL)
-        ASN1_TIME_free(t);
+        YASN1_TIME_free(t);
     return rv;
 }
 
@@ -406,23 +406,23 @@ static const struct {
 static int test_days(int n)
 {
     char d[16];
-    ASN1_TIME *a = NULL;
+    YASN1_TIME *a = NULL;
     struct tm t;
     int r;
 
-    BIO_snprintf(d, sizeof(d), "%04d%02d%02d050505Z",
+    BIO_ssnprintf(d, sizeof(d), "%04d%02d%02d050505Z",
                  day_of_week_tests[n].y, day_of_week_tests[n].m,
                  day_of_week_tests[n].d);
 
-    if (!TEST_ptr(a = ASN1_TIME_new()))
+    if (!TEST_ptr(a = YASN1_TIME_new()))
         return 0;
 
-    r = TEST_true(ASN1_TIME_set_string(a, d))
-        && TEST_true(ASN1_TIME_to_tm(a, &t))
+    r = TEST_true(YASN1_TIME_set_string(a, d))
+        && TEST_true(YASN1_TIME_to_tm(a, &t))
         && TEST_int_eq(t.tm_yday, day_of_week_tests[n].yd)
         && TEST_int_eq(t.tm_wday, day_of_week_tests[n].wd);
 
-    ASN1_TIME_free(a);
+    YASN1_TIME_free(a);
     return r;
 }
 
@@ -430,29 +430,29 @@ static int test_days(int n)
     { { sizeof(s) - 1, t, (unsigned char*)s, 0 }, e }
 
 static const struct {
-    ASN1_TIME asn1;
+    YASN1_TIME asn1;
     const char *readable;
 } x509_print_tests [] = {
     /* Generalized Time */
-    construct_asn1_time("20170731222050Z", V_ASN1_GENERALIZEDTIME,
+    construct_asn1_time("20170731222050Z", V_YASN1_GENERALIZEDTIME,
             "Jul 31 22:20:50 2017 GMT"),
     /* Generalized Time, no seconds */
-    construct_asn1_time("201707312220Z", V_ASN1_GENERALIZEDTIME,
+    construct_asn1_time("201707312220Z", V_YASN1_GENERALIZEDTIME,
             "Jul 31 22:20:00 2017 GMT"),
     /* Generalized Time, fractional seconds (3 digits) */
-    construct_asn1_time("20170731222050.123Z", V_ASN1_GENERALIZEDTIME,
+    construct_asn1_time("20170731222050.123Z", V_YASN1_GENERALIZEDTIME,
             "Jul 31 22:20:50.123 2017 GMT"),
     /* Generalized Time, fractional seconds (1 digit) */
-    construct_asn1_time("20170731222050.1Z", V_ASN1_GENERALIZEDTIME,
+    construct_asn1_time("20170731222050.1Z", V_YASN1_GENERALIZEDTIME,
             "Jul 31 22:20:50.1 2017 GMT"),
     /* Generalized Time, fractional seconds (0 digit) */
-    construct_asn1_time("20170731222050.Z", V_ASN1_GENERALIZEDTIME,
+    construct_asn1_time("20170731222050.Z", V_YASN1_GENERALIZEDTIME,
             "Bad time value"),
     /* UTC Time */
-    construct_asn1_time("170731222050Z", V_ASN1_UTCTIME,
+    construct_asn1_time("170731222050Z", V_YASN1_UTCTIME,
             "Jul 31 22:20:50 2017 GMT"),
     /* UTC Time, no seconds */
-    construct_asn1_time("1707312220Z", V_ASN1_UTCTIME,
+    construct_asn1_time("1707312220Z", V_YASN1_UTCTIME,
             "Jul 31 22:20:00 2017 GMT"),
 };
 
@@ -466,7 +466,7 @@ static int test_x509_time_print(int idx)
     if (!TEST_ptr(m = BIO_new(BIO_s_mem())))
         goto err;
 
-    rv = ASN1_TIME_print(m, &x509_print_tests[idx].asn1);
+    rv = YASN1_TIME_print(m, &x509_print_tests[idx].asn1);
     readable = x509_print_tests[idx].readable;
 
     if (rv == 0 && !TEST_str_eq(readable, "Bad time value")) {

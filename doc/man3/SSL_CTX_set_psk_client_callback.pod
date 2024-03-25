@@ -14,7 +14,7 @@ SSL_set_psk_use_session_callback
 
  #include <openssl/ssl.h>
 
- typedef int (*SSL_psk_use_session_cb_func)(SSL *ssl, const EVP_MD *md,
+ typedef int (*SSL_psk_use_session_cb_func)(SSL *ssl, const EVVP_MD *md,
                                             const unsigned char **id,
                                             size_t *idlen,
                                             SSL_SESSION **sess);

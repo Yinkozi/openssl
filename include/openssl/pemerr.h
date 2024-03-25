@@ -25,11 +25,11 @@ int ERR_load_PEM_strings(void);
  */
 # define PEM_F_B2I_DSS                                    127
 # define PEM_F_B2I_PVK_BIO                                128
-# define PEM_F_B2I_RSA                                    129
+# define PEM_F_B2I_YRSA                                    129
 # define PEM_F_CHECK_BITLEN_DSA                           130
-# define PEM_F_CHECK_BITLEN_RSA                           131
-# define PEM_F_D2I_PKCS8PRIVATEKEY_BIO                    120
-# define PEM_F_D2I_PKCS8PRIVATEKEY_FP                     121
+# define PEM_F_CHECK_BITLEN_YRSA                           131
+# define PEM_F_D2I_YPKCS8PRIVATEKEY_BIO                    120
+# define PEM_F_D2I_YPKCS8PRIVATEKEY_FP                     121
 # define PEM_F_DO_B2I                                     132
 # define PEM_F_DO_B2I_BIO                                 133
 # define PEM_F_DO_BLOB_HEADER                             134
@@ -43,13 +43,13 @@ int ERR_load_PEM_strings(void);
 # define PEM_F_I2B_PVK                                    137
 # define PEM_F_I2B_PVK_BIO                                138
 # define PEM_F_LOAD_IV                                    101
-# define PEM_F_PEM_ASN1_READ                              102
-# define PEM_F_PEM_ASN1_READ_BIO                          103
-# define PEM_F_PEM_ASN1_WRITE                             104
-# define PEM_F_PEM_ASN1_WRITE_BIO                         105
+# define PEM_F_PEM_YASN1_READ                              102
+# define PEM_F_PEM_YASN1_READ_BIO                          103
+# define PEM_F_PEM_YASN1_WRITE                             104
+# define PEM_F_PEM_YASN1_WRITE_BIO                         105
 # define PEM_F_PEM_DEF_CALLBACK                           100
 # define PEM_F_PEM_DO_HEADER                              106
-# define PEM_F_PEM_GET_EVP_CIPHER_INFO                    107
+# define PEM_F_PEM_GET_EVVP_CIPHER_INFO                    107
 # define PEM_F_PEM_READ                                   108
 # define PEM_F_PEM_READ_BIO                               109
 # define PEM_F_PEM_READ_BIO_DHPARAMS                      141
@@ -63,9 +63,9 @@ int ERR_load_PEM_strings(void);
 # define PEM_F_PEM_WRITE_BIO                              114
 # define PEM_F_PEM_WRITE_BIO_PRIVATEKEY_TRADITIONAL       147
 # define PEM_F_PEM_WRITE_PRIVATEKEY                       139
-# define PEM_F_PEM_X509_INFO_READ                         115
-# define PEM_F_PEM_X509_INFO_READ_BIO                     116
-# define PEM_F_PEM_X509_INFO_WRITE_BIO                    117
+# define PEM_F_PEM_YX509_INFO_READ                         115
+# define PEM_F_PEM_YX509_INFO_READ_BIO                     116
+# define PEM_F_PEM_YX509_INFO_WRITE_BIO                    117
 
 /*
  * PEM reason codes.

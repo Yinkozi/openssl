@@ -18,7 +18,7 @@
 #
 # SPARCv9 VIS3 Montgomery multiplication procedure suitable for T3 and
 # onward. There are three new instructions used here: umulxhi,
-# addxc[cc] and initializing store. On T3 RSA private key operations
+# addxc[cc] and initializing store. On T3 YRSA private key operations
 # are 1.54/1.87/2.11/2.26 times faster for 512/1024/2048/4096-bit key
 # lengths. This is without dedicated squaring procedure. On T4
 # corresponding coefficients are 1.47/2.10/2.80/2.90x, which is mostly

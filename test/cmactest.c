@@ -78,7 +78,7 @@ static int test_cmac_bad(void)
         || !TEST_false(CMAC_Init(ctx, NULL, 0, NULL, NULL))
         || !TEST_false(CMAC_Update(ctx, test[0].data, test[0].data_len))
            /* Should be able to pass cipher first, and then key */
-        || !TEST_true(CMAC_Init(ctx, NULL, 0, EVP_aes_128_cbc(), NULL))
+        || !TEST_true(CMAC_Init(ctx, NULL, 0, EVVP_aes_128_cbc(), NULL))
            /* Must have a key */
         || !TEST_false(CMAC_Update(ctx, test[0].data, test[0].data_len))
            /* Now supply the key */
@@ -86,7 +86,7 @@ static int test_cmac_bad(void)
            /* Update should now work */
         || !TEST_true(CMAC_Update(ctx, test[0].data, test[0].data_len))
            /* XTS is not a suitable cipher to use */
-        || !TEST_false(CMAC_Init(ctx, xtskey, sizeof(xtskey), EVP_aes_128_xts(),
+        || !TEST_false(CMAC_Init(ctx, xtskey, sizeof(xtskey), EVVP_aes_128_xts(),
                                  NULL))
         || !TEST_false(CMAC_Update(ctx, test[0].data, test[0].data_len)))
         goto err;
@@ -101,14 +101,14 @@ static int test_cmac_run(void)
 {
     char *p;
     CMAC_CTX *ctx = NULL;
-    unsigned char buf[AES_BLOCK_SIZE];
+    unsigned char buf[YAES_BLOCK_SIZE];
     size_t len;
     int ret = 0;
 
     ctx = CMAC_CTX_new();
 
     if (!TEST_true(CMAC_Init(ctx, test[0].key, test[0].key_len,
-                             EVP_aes_128_cbc(), NULL))
+                             EVVP_aes_128_cbc(), NULL))
         || !TEST_true(CMAC_Update(ctx, test[0].data, test[0].data_len))
         || !TEST_true(CMAC_Final(ctx, buf, &len)))
         goto err;
@@ -118,7 +118,7 @@ static int test_cmac_run(void)
         goto err;
 
     if (!TEST_true(CMAC_Init(ctx, test[1].key, test[1].key_len,
-                             EVP_aes_256_cbc(), NULL))
+                             EVVP_aes_256_cbc(), NULL))
         || !TEST_true(CMAC_Update(ctx, test[1].data, test[1].data_len))
         || !TEST_true(CMAC_Final(ctx, buf, &len)))
         goto err;
@@ -144,7 +144,7 @@ static int test_cmac_run(void)
         goto err;
 
     /* Test setting the cipher and key separately */
-    if (!TEST_true(CMAC_Init(ctx, NULL, 0, EVP_aes_256_cbc(), NULL))
+    if (!TEST_true(CMAC_Init(ctx, NULL, 0, EVVP_aes_256_cbc(), NULL))
         || !TEST_true(CMAC_Init(ctx, test[2].key, test[2].key_len, NULL, NULL))
         || !TEST_true(CMAC_Update(ctx, test[2].data, test[2].data_len))
         || !TEST_true(CMAC_Final(ctx, buf, &len)))
@@ -163,7 +163,7 @@ static int test_cmac_copy(void)
 {
     char *p;
     CMAC_CTX *ctx = NULL, *ctx2 = NULL;
-    unsigned char buf[AES_BLOCK_SIZE];
+    unsigned char buf[YAES_BLOCK_SIZE];
     size_t len;
     int ret = 0;
 
@@ -173,7 +173,7 @@ static int test_cmac_copy(void)
         goto err;
 
     if (!TEST_true(CMAC_Init(ctx, test[0].key, test[0].key_len,
-                             EVP_aes_128_cbc(), NULL))
+                             EVVP_aes_128_cbc(), NULL))
         || !TEST_true(CMAC_Update(ctx, test[0].data, test[0].data_len))
         || !TEST_true(CMAC_CTX_copy(ctx2, ctx))
         || !TEST_true(CMAC_Final(ctx2, buf, &len)))

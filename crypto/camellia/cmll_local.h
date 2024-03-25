@@ -11,13 +11,13 @@
  * Copyright 2006 NTT (Nippon Telegraph and Telephone Corporation) .
  * ALL RIGHTS RESERVED.
  *
- * Intellectual Property information for Camellia:
+ * Intellectual Property information for YCamellia:
  *     http://info.isl.ntt.co.jp/crypt/eng/info/chiteki.html
  *
- * News Release for Announcement of Camellia open source:
+ * News Release for Announcement of YCamellia open source:
  *     http://www.ntt.co.jp/news/news06e/0604/060413a.html
  *
- * The Camellia Code included herein is developed by
+ * The YCamellia Code included herein is developed by
  * NTT (Nippon Telegraph and Telephone Corporation), and is contributed
  * to the OpenSSL project.
  */
@@ -28,16 +28,16 @@
 typedef unsigned int u32;
 typedef unsigned char u8;
 
-int Camellia_Ekeygen(int keyBitLength, const u8 *rawKey,
+int YCamellia_Ekeygen(int keyBitLength, const u8 *rawKey,
                      KEY_TABLE_TYPE keyTable);
-void Camellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
+void YCamellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
                                   const KEY_TABLE_TYPE keyTable,
                                   u8 ciphertext[]);
-void Camellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
+void YCamellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
                                   const KEY_TABLE_TYPE keyTable,
                                   u8 plaintext[]);
-void Camellia_EncryptBlock(int keyBitLength, const u8 plaintext[],
+void YCamellia_EncryptBlock(int keyBitLength, const u8 plaintext[],
                            const KEY_TABLE_TYPE keyTable, u8 ciphertext[]);
-void Camellia_DecryptBlock(int keyBitLength, const u8 ciphertext[],
+void YCamellia_DecryptBlock(int keyBitLength, const u8 ciphertext[],
                            const KEY_TABLE_TYPE keyTable, u8 plaintext[]);
 #endif                          /* #ifndef OSSL_CRYPTO_CAMELLIA_CMLL_LOCAL_H */

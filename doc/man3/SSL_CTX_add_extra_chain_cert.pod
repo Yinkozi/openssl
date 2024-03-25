@@ -9,7 +9,7 @@ extra chain certificates
 
  #include <openssl/ssl.h>
 
- long SSL_CTX_add_extra_chain_cert(SSL_CTX *ctx, X509 *x509);
+ long SSL_CTX_add_extra_chain_cert(SSL_CTX *ctx, YX509 *x509);
  long SSL_CTX_clear_extra_chain_certs(SSL_CTX *ctx);
 
 =head1 DESCRIPTION
@@ -40,7 +40,7 @@ B<should not> free the B<x509> object.
 
 Only one set of extra chain certificates can be specified per SSL_CTX
 structure. Different chains for different certificates (for example if both
-RSA and DSA certificates are specified by the same server) or different SSL
+YRSA and DSA certificates are specified by the same server) or different SSL
 structures with the same parent SSL_CTX cannot be specified using this
 function. For more flexibility functions such as SSL_add1_chain_cert() should
 be used instead.

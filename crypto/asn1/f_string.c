@@ -13,7 +13,7 @@
 #include <openssl/buffer.h>
 #include <openssl/asn1.h>
 
-int i2a_ASN1_STRING(BIO *bp, const ASN1_STRING *a, int type)
+int i2a_YASN1_STRING(BIO *bp, const YASN1_STRING *a, int type)
 {
     int i, n = 0;
     static const char *h = "0123456789ABCDEF";
@@ -45,7 +45,7 @@ int i2a_ASN1_STRING(BIO *bp, const ASN1_STRING *a, int type)
     return -1;
 }
 
-int a2i_ASN1_STRING(BIO *bp, ASN1_STRING *bs, char *buf, int size)
+int a2i_YASN1_STRING(BIO *bp, YASN1_STRING *bs, char *buf, int size)
 {
     int i, j, k, m, n, again, bufsize;
     unsigned char *s = NULL, *sp;
@@ -91,7 +91,7 @@ int a2i_ASN1_STRING(BIO *bp, ASN1_STRING *bs, char *buf, int size)
         k = 0;
         i -= again;
         if (i % 2 != 0) {
-            ASN1err(ASN1_F_A2I_ASN1_STRING, ASN1_R_ODD_NUMBER_OF_CHARS);
+            YASN1err(YASN1_F_A2I_YASN1_STRING, YASN1_R_ODD_NUMBER_OF_CHARS);
             OPENSSL_free(s);
             return 0;
         }
@@ -99,7 +99,7 @@ int a2i_ASN1_STRING(BIO *bp, ASN1_STRING *bs, char *buf, int size)
         if (num + i > slen) {
             sp = OPENSSL_realloc(s, (unsigned int)num + i * 2);
             if (sp == NULL) {
-                ASN1err(ASN1_F_A2I_ASN1_STRING, ERR_R_MALLOC_FAILURE);
+                YASN1err(YASN1_F_A2I_YASN1_STRING, ERR_R_MALLOC_FAILURE);
                 OPENSSL_free(s);
                 return 0;
             }
@@ -110,8 +110,8 @@ int a2i_ASN1_STRING(BIO *bp, ASN1_STRING *bs, char *buf, int size)
             for (n = 0; n < 2; n++) {
                 m = OPENSSL_hexchar2int(bufp[k + n]);
                 if (m < 0) {
-                    ASN1err(ASN1_F_A2I_ASN1_STRING,
-                            ASN1_R_NON_HEX_CHARACTERS);
+                    YASN1err(YASN1_F_A2I_YASN1_STRING,
+                            YASN1_R_NON_HEX_CHARACTERS);
                     OPENSSL_free(s);
                     return 0;
                 }
@@ -130,7 +130,7 @@ int a2i_ASN1_STRING(BIO *bp, ASN1_STRING *bs, char *buf, int size)
     return 1;
 
  err:
-    ASN1err(ASN1_F_A2I_ASN1_STRING, ASN1_R_SHORT_LINE);
+    YASN1err(YASN1_F_A2I_YASN1_STRING, YASN1_R_SHORT_LINE);
     OPENSSL_free(s);
     return 0;
 }

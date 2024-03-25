@@ -275,7 +275,7 @@ int OSSL_STORE_INFO_set0_NAME_description(OSSL_STORE_INFO *info, char *desc)
 
     return 1;
 }
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_PARAMS(EVP_PKEY *params)
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_PARAMS(EVVP_PKEY *params)
 {
     OSSL_STORE_INFO *info = store_info_new(OSSL_STORE_INFO_PARAMS, params);
 
@@ -285,7 +285,7 @@ OSSL_STORE_INFO *OSSL_STORE_INFO_new_PARAMS(EVP_PKEY *params)
     return info;
 }
 
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_PKEY(EVP_PKEY *pkey)
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_PKEY(EVVP_PKEY *pkey)
 {
     OSSL_STORE_INFO *info = store_info_new(OSSL_STORE_INFO_PKEY, pkey);
 
@@ -295,7 +295,7 @@ OSSL_STORE_INFO *OSSL_STORE_INFO_new_PKEY(EVP_PKEY *pkey)
     return info;
 }
 
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_CERT(X509 *x509)
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_CERT(YX509 *x509)
 {
     OSSL_STORE_INFO *info = store_info_new(OSSL_STORE_INFO_CERT, x509);
 
@@ -305,7 +305,7 @@ OSSL_STORE_INFO *OSSL_STORE_INFO_new_CERT(X509 *x509)
     return info;
 }
 
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_CRL(X509_CRL *crl)
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_CRL(YX509_CRL *crl)
 {
     OSSL_STORE_INFO *info = store_info_new(OSSL_STORE_INFO_CRL, crl);
 
@@ -368,17 +368,17 @@ char *OSSL_STORE_INFO_get1_NAME_description(const OSSL_STORE_INFO *info)
     return NULL;
 }
 
-EVP_PKEY *OSSL_STORE_INFO_get0_PARAMS(const OSSL_STORE_INFO *info)
+EVVP_PKEY *OSSL_STORE_INFO_get0_PARAMS(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_PARAMS)
         return info->_.params;
     return NULL;
 }
 
-EVP_PKEY *OSSL_STORE_INFO_get1_PARAMS(const OSSL_STORE_INFO *info)
+EVVP_PKEY *OSSL_STORE_INFO_get1_PARAMS(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_PARAMS) {
-        EVP_PKEY_up_ref(info->_.params);
+        EVVP_PKEY_up_ref(info->_.params);
         return info->_.params;
     }
     OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_INFO_GET1_PARAMS,
@@ -386,17 +386,17 @@ EVP_PKEY *OSSL_STORE_INFO_get1_PARAMS(const OSSL_STORE_INFO *info)
     return NULL;
 }
 
-EVP_PKEY *OSSL_STORE_INFO_get0_PKEY(const OSSL_STORE_INFO *info)
+EVVP_PKEY *OSSL_STORE_INFO_get0_PKEY(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_PKEY)
         return info->_.pkey;
     return NULL;
 }
 
-EVP_PKEY *OSSL_STORE_INFO_get1_PKEY(const OSSL_STORE_INFO *info)
+EVVP_PKEY *OSSL_STORE_INFO_get1_PKEY(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_PKEY) {
-        EVP_PKEY_up_ref(info->_.pkey);
+        EVVP_PKEY_up_ref(info->_.pkey);
         return info->_.pkey;
     }
     OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_INFO_GET1_PKEY,
@@ -404,17 +404,17 @@ EVP_PKEY *OSSL_STORE_INFO_get1_PKEY(const OSSL_STORE_INFO *info)
     return NULL;
 }
 
-X509 *OSSL_STORE_INFO_get0_CERT(const OSSL_STORE_INFO *info)
+YX509 *OSSL_STORE_INFO_get0_CERT(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_CERT)
         return info->_.x509;
     return NULL;
 }
 
-X509 *OSSL_STORE_INFO_get1_CERT(const OSSL_STORE_INFO *info)
+YX509 *OSSL_STORE_INFO_get1_CERT(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_CERT) {
-        X509_up_ref(info->_.x509);
+        YX509_up_ref(info->_.x509);
         return info->_.x509;
     }
     OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_INFO_GET1_CERT,
@@ -422,17 +422,17 @@ X509 *OSSL_STORE_INFO_get1_CERT(const OSSL_STORE_INFO *info)
     return NULL;
 }
 
-X509_CRL *OSSL_STORE_INFO_get0_CRL(const OSSL_STORE_INFO *info)
+YX509_CRL *OSSL_STORE_INFO_get0_CRL(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_CRL)
         return info->_.crl;
     return NULL;
 }
 
-X509_CRL *OSSL_STORE_INFO_get1_CRL(const OSSL_STORE_INFO *info)
+YX509_CRL *OSSL_STORE_INFO_get1_CRL(const OSSL_STORE_INFO *info)
 {
     if (info->type == OSSL_STORE_INFO_CRL) {
-        X509_CRL_up_ref(info->_.crl);
+        YX509_CRL_up_ref(info->_.crl);
         return info->_.crl;
     }
     OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_INFO_GET1_CRL,
@@ -456,16 +456,16 @@ void OSSL_STORE_INFO_free(OSSL_STORE_INFO *info)
             OPENSSL_free(info->_.name.desc);
             break;
         case OSSL_STORE_INFO_PARAMS:
-            EVP_PKEY_free(info->_.params);
+            EVVP_PKEY_free(info->_.params);
             break;
         case OSSL_STORE_INFO_PKEY:
-            EVP_PKEY_free(info->_.pkey);
+            EVVP_PKEY_free(info->_.pkey);
             break;
         case OSSL_STORE_INFO_CERT:
-            X509_free(info->_.x509);
+            YX509_free(info->_.x509);
             break;
         case OSSL_STORE_INFO_CRL:
-            X509_CRL_free(info->_.crl);
+            YX509_CRL_free(info->_.crl);
             break;
         }
         OPENSSL_free(info);
@@ -483,7 +483,7 @@ int OSSL_STORE_supports_search(OSSL_STORE_CTX *ctx, int search_type)
 }
 
 /* Search term constructors */
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(X509_NAME *name)
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(YX509_NAME *name)
 {
     OSSL_STORE_SEARCH *search = OPENSSL_zalloc(sizeof(*search));
 
@@ -498,8 +498,8 @@ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(X509_NAME *name)
     return search;
 }
 
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(X509_NAME *name,
-                                                    const ASN1_INTEGER *serial)
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(YX509_NAME *name,
+                                                    const YASN1_INTEGER *serial)
 {
     OSSL_STORE_SEARCH *search = OPENSSL_zalloc(sizeof(*search));
 
@@ -515,7 +515,7 @@ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(X509_NAME *name,
     return search;
 }
 
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVP_MD *digest,
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVVP_MD *digest,
                                                         const unsigned char
                                                         *bytes, size_t len)
 {
@@ -527,14 +527,14 @@ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVP_MD *digest,
         return NULL;
     }
 
-    if (digest != NULL && len != (size_t)EVP_MD_size(digest)) {
+    if (digest != NULL && len != (size_t)EVVP_MD_size(digest)) {
         char buf1[20], buf2[20];
 
-        BIO_snprintf(buf1, sizeof(buf1), "%d", EVP_MD_size(digest));
-        BIO_snprintf(buf2, sizeof(buf2), "%zu", len);
+        BIO_ssnprintf(buf1, sizeof(buf1), "%d", EVVP_MD_size(digest));
+        BIO_ssnprintf(buf2, sizeof(buf2), "%zu", len);
         OSSL_STOREerr(OSSL_STORE_F_OSSL_STORE_SEARCH_BY_KEY_FINGERPRINT,
                       OSSL_STORE_R_FINGERPRINT_SIZE_DOES_NOT_MATCH_DIGEST);
-        ERR_add_error_data(5, EVP_MD_name(digest), " size is ", buf1,
+        ERR_add_error_data(5, EVVP_MD_name(digest), " size is ", buf1,
                            ", fingerprint size is ", buf2);
     }
 
@@ -573,12 +573,12 @@ int OSSL_STORE_SEARCH_get_type(const OSSL_STORE_SEARCH *criterion)
     return criterion->search_type;
 }
 
-X509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion)
+YX509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion)
 {
     return criterion->name;
 }
 
-const ASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
+const YASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
                                                  *criterion)
 {
     return criterion->serial;
@@ -596,7 +596,7 @@ const char *OSSL_STORE_SEARCH_get0_string(const OSSL_STORE_SEARCH *criterion)
     return (const char *)criterion->string;
 }
 
-const EVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH *criterion)
+const EVVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH *criterion)
 {
     return criterion->digest;
 }

@@ -2,81 +2,81 @@
 
 =head1 NAME
 
-EVP_CIPHER_meth_new, EVP_CIPHER_meth_dup, EVP_CIPHER_meth_free,
-EVP_CIPHER_meth_set_iv_length, EVP_CIPHER_meth_set_flags,
-EVP_CIPHER_meth_set_impl_ctx_size, EVP_CIPHER_meth_set_init,
-EVP_CIPHER_meth_set_do_cipher, EVP_CIPHER_meth_set_cleanup,
-EVP_CIPHER_meth_set_set_asn1_params, EVP_CIPHER_meth_set_get_asn1_params,
-EVP_CIPHER_meth_set_ctrl, EVP_CIPHER_meth_get_init,
-EVP_CIPHER_meth_get_do_cipher, EVP_CIPHER_meth_get_cleanup,
-EVP_CIPHER_meth_get_set_asn1_params, EVP_CIPHER_meth_get_get_asn1_params,
-EVP_CIPHER_meth_get_ctrl - Routines to build up EVP_CIPHER methods
+EVVP_CIPHER_meth_new, EVVP_CIPHER_meth_dup, EVVP_CIPHER_meth_free,
+EVVP_CIPHER_meth_set_iv_length, EVVP_CIPHER_meth_set_flags,
+EVVP_CIPHER_meth_set_impl_ctx_size, EVVP_CIPHER_meth_set_init,
+EVVP_CIPHER_meth_set_do_cipher, EVVP_CIPHER_meth_set_cleanup,
+EVVP_CIPHER_meth_set_set_asn1_params, EVVP_CIPHER_meth_set_get_asn1_params,
+EVVP_CIPHER_meth_set_ctrl, EVVP_CIPHER_meth_get_init,
+EVVP_CIPHER_meth_get_do_cipher, EVVP_CIPHER_meth_get_cleanup,
+EVVP_CIPHER_meth_get_set_asn1_params, EVVP_CIPHER_meth_get_get_asn1_params,
+EVVP_CIPHER_meth_get_ctrl - Routines to build up EVVP_CIPHER methods
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- EVP_CIPHER *EVP_CIPHER_meth_new(int cipher_type, int block_size, int key_len);
- EVP_CIPHER *EVP_CIPHER_meth_dup(const EVP_CIPHER *cipher);
- void EVP_CIPHER_meth_free(EVP_CIPHER *cipher);
+ EVVP_CIPHER *EVVP_CIPHER_meth_new(int cipher_type, int block_size, int key_len);
+ EVVP_CIPHER *EVVP_CIPHER_meth_dup(const EVVP_CIPHER *cipher);
+ void EVVP_CIPHER_meth_free(EVVP_CIPHER *cipher);
 
- int EVP_CIPHER_meth_set_iv_length(EVP_CIPHER *cipher, int iv_len);
- int EVP_CIPHER_meth_set_flags(EVP_CIPHER *cipher, unsigned long flags);
- int EVP_CIPHER_meth_set_impl_ctx_size(EVP_CIPHER *cipher, int ctx_size);
- int EVP_CIPHER_meth_set_init(EVP_CIPHER *cipher,
-                              int (*init)(EVP_CIPHER_CTX *ctx,
+ int EVVP_CIPHER_meth_set_iv_length(EVVP_CIPHER *cipher, int iv_len);
+ int EVVP_CIPHER_meth_set_flags(EVVP_CIPHER *cipher, unsigned long flags);
+ int EVVP_CIPHER_meth_set_impl_ctx_size(EVVP_CIPHER *cipher, int ctx_size);
+ int EVVP_CIPHER_meth_set_init(EVVP_CIPHER *cipher,
+                              int (*init)(EVVP_CIPHER_CTX *ctx,
                                           const unsigned char *key,
                                           const unsigned char *iv,
                                           int enc));
- int EVP_CIPHER_meth_set_do_cipher(EVP_CIPHER *cipher,
-                                   int (*do_cipher)(EVP_CIPHER_CTX *ctx,
+ int EVVP_CIPHER_meth_set_do_cipher(EVVP_CIPHER *cipher,
+                                   int (*do_cipher)(EVVP_CIPHER_CTX *ctx,
                                                     unsigned char *out,
                                                     const unsigned char *in,
                                                     size_t inl));
- int EVP_CIPHER_meth_set_cleanup(EVP_CIPHER *cipher,
-                                 int (*cleanup)(EVP_CIPHER_CTX *));
- int EVP_CIPHER_meth_set_set_asn1_params(EVP_CIPHER *cipher,
-                                         int (*set_asn1_parameters)(EVP_CIPHER_CTX *,
-                                                                    ASN1_TYPE *));
- int EVP_CIPHER_meth_set_get_asn1_params(EVP_CIPHER *cipher,
-                                         int (*get_asn1_parameters)(EVP_CIPHER_CTX *,
-                                                                    ASN1_TYPE *));
- int EVP_CIPHER_meth_set_ctrl(EVP_CIPHER *cipher,
-                              int (*ctrl)(EVP_CIPHER_CTX *, int type,
+ int EVVP_CIPHER_meth_set_cleanup(EVVP_CIPHER *cipher,
+                                 int (*cleanup)(EVVP_CIPHER_CTX *));
+ int EVVP_CIPHER_meth_set_set_asn1_params(EVVP_CIPHER *cipher,
+                                         int (*set_asn1_parameters)(EVVP_CIPHER_CTX *,
+                                                                    YASN1_TYPE *));
+ int EVVP_CIPHER_meth_set_get_asn1_params(EVVP_CIPHER *cipher,
+                                         int (*get_asn1_parameters)(EVVP_CIPHER_CTX *,
+                                                                    YASN1_TYPE *));
+ int EVVP_CIPHER_meth_set_ctrl(EVVP_CIPHER *cipher,
+                              int (*ctrl)(EVVP_CIPHER_CTX *, int type,
                                           int arg, void *ptr));
 
- int (*EVP_CIPHER_meth_get_init(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *ctx,
+ int (*EVVP_CIPHER_meth_get_init(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *ctx,
                                                            const unsigned char *key,
                                                            const unsigned char *iv,
                                                            int enc);
- int (*EVP_CIPHER_meth_get_do_cipher(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *ctx,
+ int (*EVVP_CIPHER_meth_get_do_cipher(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *ctx,
                                                                 unsigned char *out,
                                                                 const unsigned char *in,
                                                                 size_t inl);
- int (*EVP_CIPHER_meth_get_cleanup(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *);
- int (*EVP_CIPHER_meth_get_set_asn1_params(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
-                                                                      ASN1_TYPE *);
- int (*EVP_CIPHER_meth_get_get_asn1_params(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
-                                                                      ASN1_TYPE *);
- int (*EVP_CIPHER_meth_get_ctrl(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
+ int (*EVVP_CIPHER_meth_get_cleanup(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *);
+ int (*EVVP_CIPHER_meth_get_set_asn1_params(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *,
+                                                                      YASN1_TYPE *);
+ int (*EVVP_CIPHER_meth_get_get_asn1_params(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *,
+                                                                      YASN1_TYPE *);
+ int (*EVVP_CIPHER_meth_get_ctrl(const EVVP_CIPHER *cipher))(EVVP_CIPHER_CTX *,
                                                            int type, int arg,
                                                            void *ptr);
 
 =head1 DESCRIPTION
 
-The B<EVP_CIPHER> type is a structure for symmetric cipher method
+The B<EVVP_CIPHER> type is a structure for symmetric cipher method
 implementation.
 
-EVP_CIPHER_meth_new() creates a new B<EVP_CIPHER> structure.
+EVVP_CIPHER_meth_new() creates a new B<EVVP_CIPHER> structure.
 
-EVP_CIPHER_meth_dup() creates a copy of B<cipher>.
+EVVP_CIPHER_meth_dup() creates a copy of B<cipher>.
 
-EVP_CIPHER_meth_free() destroys a B<EVP_CIPHER> structure.
+EVVP_CIPHER_meth_free() destroys a B<EVVP_CIPHER> structure.
 
-EVP_CIPHER_meth_set_iv_length() sets the length of the IV.
+EVVP_CIPHER_meth_set_iv_length() sets the length of the IV.
 This is only needed when the implemented cipher mode requires it.
 
-EVP_CIPHER_meth_set_flags() sets the flags to describe optional
+EVVP_CIPHER_meth_set_flags() sets the flags to describe optional
 behaviours in the particular B<cipher>.
 With the exception of cipher modes, of which only one may be present,
 several flags can be or'd together.
@@ -84,68 +84,68 @@ The available flags are:
 
 =over 4
 
-=item EVP_CIPH_STREAM_CIPHER, EVP_CIPH_ECB_MODE EVP_CIPH_CBC_MODE,
-EVP_CIPH_CFB_MODE, EVP_CIPH_OFB_MODE, EVP_CIPH_CTR_MODE, EVP_CIPH_GCM_MODE,
-EVP_CIPH_CCM_MODE, EVP_CIPH_XTS_MODE, EVP_CIPH_WRAP_MODE,
-EVP_CIPH_OCB_MODE
+=item EVVP_CIPH_STREAM_CIPHER, EVVP_CIPH_ECB_MODE EVVP_CIPH_CBC_MODE,
+EVVP_CIPH_CFB_MODE, EVVP_CIPH_OFB_MODE, EVVP_CIPH_CTR_MODE, EVVP_CIPH_GCM_MODE,
+EVVP_CIPH_CCM_MODE, EVVP_CIPH_XTS_MODE, EVVP_CIPH_WRAP_MODE,
+EVVP_CIPH_OCB_MODE
 
 The cipher mode.
 
-=item EVP_CIPH_VARIABLE_LENGTH
+=item EVVP_CIPH_VARIABLE_LENGTH
 
 This cipher is of variable length.
 
-=item EVP_CIPH_CUSTOM_IV
+=item EVVP_CIPH_CUSTOM_IV
 
 Storing and initialising the IV is left entirely to the
 implementation.
 
-=item EVP_CIPH_ALWAYS_CALL_INIT
+=item EVVP_CIPH_ALWAYS_CALL_INIT
 
 Set this if the implementation's init() function should be called even
 if B<key> is B<NULL>.
 
-=item EVP_CIPH_CTRL_INIT
+=item EVVP_CIPH_CTRL_INIT
 
 Set this to have the implementation's ctrl() function called with
-command code B<EVP_CTRL_INIT> early in its setup.
+command code B<EVVP_CTRL_INIT> early in its setup.
 
-=item EVP_CIPH_CUSTOM_KEY_LENGTH
+=item EVVP_CIPH_CUSTOM_KEY_LENGTH
 
-Checking and setting the key length after creating the B<EVP_CIPHER>
+Checking and setting the key length after creating the B<EVVP_CIPHER>
 is left to the implementation.
-Whenever someone uses EVP_CIPHER_CTX_set_key_length() on a
-B<EVP_CIPHER> with this flag set, the implementation's ctrl() function
-will be called with the control code B<EVP_CTRL_SET_KEY_LENGTH> and
+Whenever someone uses EVVP_CIPHER_CTX_set_key_length() on a
+B<EVVP_CIPHER> with this flag set, the implementation's ctrl() function
+will be called with the control code B<EVVP_CTRL_SET_KEY_LENGTH> and
 the key length in B<arg>.
 
-=item EVP_CIPH_NO_PADDING
+=item EVVP_CIPH_NO_PADDING
 
 Don't use standard block padding.
 
-=item EVP_CIPH_RAND_KEY
+=item EVVP_CIPH_RAND_KEY
 
 Making a key with random content is left to the implementation.
 This is done by calling the implementation's ctrl() function with the
-control code B<EVP_CTRL_RAND_KEY> and the pointer to the key memory
+control code B<EVVP_CTRL_RAND_KEY> and the pointer to the key memory
 storage in B<ptr>.
 
-=item EVP_CIPH_CUSTOM_COPY
+=item EVVP_CIPH_CUSTOM_COPY
 
 Set this to have the implementation's ctrl() function called with
-command code B<EVP_CTRL_COPY> at the end of EVP_CIPHER_CTX_copy().
+command code B<EVVP_CTRL_COPY> at the end of EVVP_CIPHER_CTX_copy().
 The intended use is for further things to deal with after the
 implementation specific data block has been copied.
-The destination B<EVP_CIPHER_CTX> is passed to the control with the
+The destination B<EVVP_CIPHER_CTX> is passed to the control with the
 B<ptr> parameter.
 The implementation specific data block is reached with
-EVP_CIPHER_CTX_get_cipher_data().
+EVVP_CIPHER_CTX_get_cipher_data().
 
-=item EVP_CIPH_FLAG_DEFAULT_ASN1
+=item EVVP_CIPH_FLAG_DEFAULT_YASN1
 
-Use the default EVP routines to pass IV to and from ASN.1.
+Use the default EVVP routines to pass IV to and from ASN.1.
 
-=item EVP_CIPH_FLAG_LENGTH_BITS
+=item EVVP_CIPH_FLAG_LENGTH_BITS
 
 Signals that the length of the input buffer for encryption /
 decryption is to be understood as the number of bits instead of
@@ -156,84 +156,84 @@ This is only useful for CFB1 ciphers.
 The FIPS flags seem to be unused, so I'm hiding them until I get an
 explanation or they get removed.  /RL
 
-=item EVP_CIPH_FLAG_FIPS
+=item EVVP_CIPH_FLAG_FIPS
 
-=item EVP_CIPH_FLAG_NON_FIPS_ALLOW
+=item EVVP_CIPH_FLAG_NON_FIPS_ALLOW
 
 =end comment
 
-=item EVP_CIPH_FLAG_CUSTOM_CIPHER
+=item EVVP_CIPH_FLAG_CUSTOM_CIPHER
 
 This indicates that the implementation takes care of everything,
 including padding, buffering and finalization.
-The EVP routines will simply give them control and do nothing more.
+The EVVP routines will simply give them control and do nothing more.
 
-=item EVP_CIPH_FLAG_AEAD_CIPHER
+=item EVVP_CIPH_FLAG_AEAD_CIPHER
 
 This indicates that this is an AEAD cipher implementation.
 
-=item EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
+=item EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
 
 Allow interleaving of crypto blocks, a particular optimization only applicable
 to certain TLS ciphers.
 
 =back
 
-EVP_CIPHER_meth_set_impl_ctx_size() sets the size of the EVP_CIPHER's
+EVVP_CIPHER_meth_set_impl_ctx_size() sets the size of the EVVP_CIPHER's
 implementation context so that it can be automatically allocated.
 
-EVP_CIPHER_meth_set_init() sets the cipher init function for
+EVVP_CIPHER_meth_set_init() sets the cipher init function for
 B<cipher>.
-The cipher init function is called by EVP_CipherInit(),
-EVP_CipherInit_ex(), EVP_EncryptInit(), EVP_EncryptInit_ex(),
-EVP_DecryptInit(), EVP_DecryptInit_ex().
+The cipher init function is called by EVVP_CipherInit(),
+EVVP_CipherInit_ex(), EVVP_EncryptInit(), EVVP_EncryptInit_ex(),
+EVVP_DecryptInit(), EVVP_DecryptInit_ex().
 
-EVP_CIPHER_meth_set_do_cipher() sets the cipher function for
+EVVP_CIPHER_meth_set_do_cipher() sets the cipher function for
 B<cipher>.
-The cipher function is called by EVP_CipherUpdate(),
-EVP_EncryptUpdate(), EVP_DecryptUpdate(), EVP_CipherFinal(),
-EVP_EncryptFinal(), EVP_EncryptFinal_ex(), EVP_DecryptFinal() and
-EVP_DecryptFinal_ex().
+The cipher function is called by EVVP_CipherUpdate(),
+EVVP_EncryptUpdate(), EVVP_DecryptUpdate(), EVVP_CipherFinal(),
+EVVP_EncryptFinal(), EVVP_EncryptFinal_ex(), EVVP_DecryptFinal() and
+EVVP_DecryptFinal_ex().
 
-EVP_CIPHER_meth_set_cleanup() sets the function for B<cipher> to do
+EVVP_CIPHER_meth_set_cleanup() sets the function for B<cipher> to do
 extra cleanup before the method's private data structure is cleaned
 out and freed.
-Note that the cleanup function is passed a B<EVP_CIPHER_CTX *>, the
+Note that the cleanup function is passed a B<EVVP_CIPHER_CTX *>, the
 private data structure is then available with
-EVP_CIPHER_CTX_get_cipher_data().
-This cleanup function is called by EVP_CIPHER_CTX_reset() and
-EVP_CIPHER_CTX_free().
+EVVP_CIPHER_CTX_get_cipher_data().
+This cleanup function is called by EVVP_CIPHER_CTX_reset() and
+EVVP_CIPHER_CTX_free().
 
-EVP_CIPHER_meth_set_set_asn1_params() sets the function for B<cipher>
+EVVP_CIPHER_meth_set_set_asn1_params() sets the function for B<cipher>
 to set the AlgorithmIdentifier "parameter" based on the passed cipher.
-This function is called by EVP_CIPHER_param_to_asn1().
-EVP_CIPHER_meth_set_get_asn1_params() sets the function for B<cipher>
+This function is called by EVVP_CIPHER_param_to_asn1().
+EVVP_CIPHER_meth_set_get_asn1_params() sets the function for B<cipher>
 that sets the cipher parameters based on an ASN.1 AlgorithmIdentifier
 "parameter".
 Both these functions are needed when there is a need for custom data
 (more or other than the cipher IV).
-They are called by EVP_CIPHER_param_to_asn1() and
-EVP_CIPHER_asn1_to_param() respectively if defined.
+They are called by EVVP_CIPHER_param_to_asn1() and
+EVVP_CIPHER_asn1_to_param() respectively if defined.
 
-EVP_CIPHER_meth_set_ctrl() sets the control function for B<cipher>.
+EVVP_CIPHER_meth_set_ctrl() sets the control function for B<cipher>.
 
-EVP_CIPHER_meth_get_init(), EVP_CIPHER_meth_get_do_cipher(),
-EVP_CIPHER_meth_get_cleanup(), EVP_CIPHER_meth_get_set_asn1_params(),
-EVP_CIPHER_meth_get_get_asn1_params() and EVP_CIPHER_meth_get_ctrl()
+EVVP_CIPHER_meth_get_init(), EVVP_CIPHER_meth_get_do_cipher(),
+EVVP_CIPHER_meth_get_cleanup(), EVVP_CIPHER_meth_get_set_asn1_params(),
+EVVP_CIPHER_meth_get_get_asn1_params() and EVVP_CIPHER_meth_get_ctrl()
 are all used to retrieve the method data given with the
-EVP_CIPHER_meth_set_*() functions above.
+EVVP_CIPHER_meth_set_*() functions above.
 
 =head1 RETURN VALUES
 
-EVP_CIPHER_meth_new() and EVP_CIPHER_meth_dup() return a pointer to a
-newly created B<EVP_CIPHER>, or NULL on failure.
-All EVP_CIPHER_meth_set_*() functions return 1.
-All EVP_CIPHER_meth_get_*() functions return pointers to their
+EVVP_CIPHER_meth_new() and EVVP_CIPHER_meth_dup() return a pointer to a
+newly created B<EVVP_CIPHER>, or NULL on failure.
+All EVVP_CIPHER_meth_set_*() functions return 1.
+All EVVP_CIPHER_meth_get_*() functions return pointers to their
 respective B<cipher> function.
 
 =head1 SEE ALSO
 
-L<EVP_EncryptInit>
+L<EVVP_EncryptInit>
 
 =head1 HISTORY
 

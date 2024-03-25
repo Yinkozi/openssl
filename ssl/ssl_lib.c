@@ -132,7 +132,7 @@ static const struct {
 
 static int dane_ctx_enable(struct dane_ctx_st *dctx)
 {
-    const EVP_MD **mdevp;
+    const EVVP_MD **mdevp;
     uint8_t *mdord;
     uint8_t mdmax = DANETLS_MATCHING_LAST;
     int n = ((int)mdmax) + 1;   /* int to handle PrivMatch(255) */
@@ -153,10 +153,10 @@ static int dane_ctx_enable(struct dane_ctx_st *dctx)
 
     /* Install default entries */
     for (i = 0; i < OSSL_NELEM(dane_mds); ++i) {
-        const EVP_MD *md;
+        const EVVP_MD *md;
 
         if (dane_mds[i].nid == NID_undef ||
-            (md = EVP_get_digestbynid(dane_mds[i].nid)) == NULL)
+            (md = EVVP_get_digestbynid(dane_mds[i].nid)) == NULL)
             continue;
         mdevp[dane_mds[i].mtype] = md;
         mdord[dane_mds[i].mtype] = dane_mds[i].ord;
@@ -184,7 +184,7 @@ static void tlsa_free(danetls_record *t)
     if (t == NULL)
         return;
     OPENSSL_free(t->data);
-    EVP_PKEY_free(t->spki);
+    EVVP_PKEY_free(t->spki);
     OPENSSL_free(t);
 }
 
@@ -193,10 +193,10 @@ static void dane_final(SSL_DANE *dane)
     sk_danetls_record_pop_free(dane->trecs, tlsa_free);
     dane->trecs = NULL;
 
-    sk_X509_pop_free(dane->certs, X509_free);
+    sk_YX509_pop_free(dane->certs, YX509_free);
     dane->certs = NULL;
 
-    X509_free(dane->mcert);
+    YX509_free(dane->mcert);
     dane->mcert = NULL;
     dane->mtlsa = NULL;
     dane->mdpth = -1;
@@ -236,7 +236,7 @@ static int ssl_dane_dup(SSL *to, SSL *from)
 }
 
 static int dane_mtype_set(struct dane_ctx_st *dctx,
-                          const EVP_MD *md, uint8_t mtype, uint8_t ord)
+                          const EVVP_MD *md, uint8_t mtype, uint8_t ord)
 {
     int i;
 
@@ -246,7 +246,7 @@ static int dane_mtype_set(struct dane_ctx_st *dctx,
     }
 
     if (mtype > dctx->mdmax) {
-        const EVP_MD **mdevp;
+        const EVVP_MD **mdevp;
         uint8_t *mdord;
         int n = ((int)mtype) + 1;
 
@@ -280,7 +280,7 @@ static int dane_mtype_set(struct dane_ctx_st *dctx,
     return 1;
 }
 
-static const EVP_MD *tlsa_md_get(SSL_DANE *dane, uint8_t mtype)
+static const EVVP_MD *tlsa_md_get(SSL_DANE *dane, uint8_t mtype)
 {
     if (mtype > dane->dctx->mdmax)
         return NULL;
@@ -293,7 +293,7 @@ static int dane_tlsa_add(SSL_DANE *dane,
                          uint8_t mtype, unsigned const char *data, size_t dlen)
 {
     danetls_record *t;
-    const EVP_MD *md = NULL;
+    const EVVP_MD *md = NULL;
     int ilen = (int)dlen;
     int i;
     int num;
@@ -326,7 +326,7 @@ static int dane_tlsa_add(SSL_DANE *dane,
         }
     }
 
-    if (md != NULL && dlen != (size_t)EVP_MD_size(md)) {
+    if (md != NULL && dlen != (size_t)EVVP_MD_size(md)) {
         SSLerr(SSL_F_DANE_TLSA_ADD, SSL_R_DANE_TLSA_BAD_DIGEST_LENGTH);
         return 0;
     }
@@ -355,25 +355,25 @@ static int dane_tlsa_add(SSL_DANE *dane,
     /* Validate and cache full certificate or public key */
     if (mtype == DANETLS_MATCHING_FULL) {
         const unsigned char *p = data;
-        X509 *cert = NULL;
-        EVP_PKEY *pkey = NULL;
+        YX509 *cert = NULL;
+        EVVP_PKEY *pkey = NULL;
 
         switch (selector) {
         case DANETLS_SELECTOR_CERT:
-            if (!d2i_X509(&cert, &p, ilen) || p < data ||
+            if (!d2i_YX509(&cert, &p, ilen) || p < data ||
                 dlen != (size_t)(p - data)) {
                 tlsa_free(t);
                 SSLerr(SSL_F_DANE_TLSA_ADD, SSL_R_DANE_TLSA_BAD_CERTIFICATE);
                 return 0;
             }
-            if (X509_get0_pubkey(cert) == NULL) {
+            if (YX509_get0_pubkey(cert) == NULL) {
                 tlsa_free(t);
                 SSLerr(SSL_F_DANE_TLSA_ADD, SSL_R_DANE_TLSA_BAD_CERTIFICATE);
                 return 0;
             }
 
             if ((DANETLS_USAGE_BIT(usage) & DANETLS_TA_MASK) == 0) {
-                X509_free(cert);
+                YX509_free(cert);
                 break;
             }
 
@@ -385,10 +385,10 @@ static int dane_tlsa_add(SSL_DANE *dane,
              * they are missing from the chain.
              */
             if ((dane->certs == NULL &&
-                 (dane->certs = sk_X509_new_null()) == NULL) ||
-                !sk_X509_push(dane->certs, cert)) {
+                 (dane->certs = sk_YX509_new_null()) == NULL) ||
+                !sk_YX509_push(dane->certs, cert)) {
                 SSLerr(SSL_F_DANE_TLSA_ADD, ERR_R_MALLOC_FAILURE);
-                X509_free(cert);
+                YX509_free(cert);
                 tlsa_free(t);
                 return -1;
             }
@@ -410,7 +410,7 @@ static int dane_tlsa_add(SSL_DANE *dane,
             if (usage == DANETLS_USAGE_DANE_TA)
                 t->spki = pkey;
             else
-                EVP_PKEY_free(pkey);
+                EVVP_PKEY_free(pkey);
             break;
         }
     }
@@ -615,18 +615,18 @@ int SSL_clear(SSL *s)
 
     s->key_update = SSL_KEY_UPDATE_NONE;
 
-    EVP_MD_CTX_free(s->pha_dgst);
+    EVVP_MD_CTX_free(s->pha_dgst);
     s->pha_dgst = NULL;
 
     /* Reset DANE verification result state */
     s->dane.mdpth = -1;
     s->dane.pdpth = -1;
-    X509_free(s->dane.mcert);
+    YX509_free(s->dane.mcert);
     s->dane.mcert = NULL;
     s->dane.mtlsa = NULL;
 
     /* Clear the verification result peername */
-    X509_VERIFY_PARAM_move_peername(s->param, NULL);
+    YX509_VERIFY_PARAM_move_peername(s->param, NULL);
 
     /* Clear any shared connection state */
     OPENSSL_free(s->shared_sigalgs);
@@ -746,10 +746,10 @@ SSL *SSL_new(SSL_CTX *ctx)
     s->verify_callback = ctx->default_verify_callback;
     s->generate_session_id = ctx->generate_session_id;
 
-    s->param = X509_VERIFY_PARAM_new();
+    s->param = YX509_VERIFY_PARAM_new();
     if (s->param == NULL)
         goto err;
-    X509_VERIFY_PARAM_inherit(s->param, ctx->param);
+    YX509_VERIFY_PARAM_inherit(s->param, ctx->param);
     s->quiet_shutdown = ctx->quiet_shutdown;
 
     s->ext.max_fragment_len_mode = ctx->ext.max_fragment_len_mode;
@@ -813,7 +813,7 @@ SSL *SSL_new(SSL_CTX *ctx)
     }
 
     s->verified_chain = NULL;
-    s->verify_result = X509_V_OK;
+    s->verify_result = YX509_V_OK;
 
     s->default_passwd_callback = ctx->default_passwd_callback;
     s->default_passwd_callback_userdata = ctx->default_passwd_callback_userdata;
@@ -946,42 +946,42 @@ int SSL_has_matching_session_id(const SSL *ssl, const unsigned char *id,
 
 int SSL_CTX_set_purpose(SSL_CTX *s, int purpose)
 {
-    return X509_VERIFY_PARAM_set_purpose(s->param, purpose);
+    return YX509_VERIFY_PARAM_set_purpose(s->param, purpose);
 }
 
 int SSL_set_purpose(SSL *s, int purpose)
 {
-    return X509_VERIFY_PARAM_set_purpose(s->param, purpose);
+    return YX509_VERIFY_PARAM_set_purpose(s->param, purpose);
 }
 
 int SSL_CTX_set_trust(SSL_CTX *s, int trust)
 {
-    return X509_VERIFY_PARAM_set_trust(s->param, trust);
+    return YX509_VERIFY_PARAM_set_trust(s->param, trust);
 }
 
 int SSL_set_trust(SSL *s, int trust)
 {
-    return X509_VERIFY_PARAM_set_trust(s->param, trust);
+    return YX509_VERIFY_PARAM_set_trust(s->param, trust);
 }
 
 int SSL_set1_host(SSL *s, const char *hostname)
 {
-    return X509_VERIFY_PARAM_set1_host(s->param, hostname, 0);
+    return YX509_VERIFY_PARAM_set1_host(s->param, hostname, 0);
 }
 
 int SSL_add1_host(SSL *s, const char *hostname)
 {
-    return X509_VERIFY_PARAM_add1_host(s->param, hostname, 0);
+    return YX509_VERIFY_PARAM_add1_host(s->param, hostname, 0);
 }
 
 void SSL_set_hostflags(SSL *s, unsigned int flags)
 {
-    X509_VERIFY_PARAM_set_hostflags(s->param, flags);
+    YX509_VERIFY_PARAM_set_hostflags(s->param, flags);
 }
 
 const char *SSL_get0_peername(SSL *s)
 {
-    return X509_VERIFY_PARAM_get0_peername(s->param);
+    return YX509_VERIFY_PARAM_get0_peername(s->param);
 }
 
 int SSL_CTX_dane_enable(SSL_CTX *ctx)
@@ -1031,7 +1031,7 @@ int SSL_dane_enable(SSL *s, const char *basedomain)
     }
 
     /* Primary RFC6125 reference identifier */
-    if (!X509_VERIFY_PARAM_set1_host(s->param, basedomain, 0)) {
+    if (!YX509_VERIFY_PARAM_set1_host(s->param, basedomain, 0)) {
         SSLerr(SSL_F_SSL_DANE_ENABLE, SSL_R_ERROR_SETTING_TLSA_BASE_DOMAIN);
         return -1;
     }
@@ -1064,11 +1064,11 @@ unsigned long SSL_dane_clear_flags(SSL *ssl, unsigned long flags)
     return orig;
 }
 
-int SSL_get0_dane_authority(SSL *s, X509 **mcert, EVP_PKEY **mspki)
+int SSL_get0_dane_authority(SSL *s, YX509 **mcert, EVVP_PKEY **mspki)
 {
     SSL_DANE *dane = &s->dane;
 
-    if (!DANETLS_ENABLED(dane) || s->verify_result != X509_V_OK)
+    if (!DANETLS_ENABLED(dane) || s->verify_result != YX509_V_OK)
         return -1;
     if (dane->mtlsa) {
         if (mcert)
@@ -1084,7 +1084,7 @@ int SSL_get0_dane_tlsa(SSL *s, uint8_t *usage, uint8_t *selector,
 {
     SSL_DANE *dane = &s->dane;
 
-    if (!DANETLS_ENABLED(dane) || s->verify_result != X509_V_OK)
+    if (!DANETLS_ENABLED(dane) || s->verify_result != YX509_V_OK)
         return -1;
     if (dane->mtlsa) {
         if (usage)
@@ -1112,28 +1112,28 @@ int SSL_dane_tlsa_add(SSL *s, uint8_t usage, uint8_t selector,
     return dane_tlsa_add(&s->dane, usage, selector, mtype, data, dlen);
 }
 
-int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVP_MD *md, uint8_t mtype,
+int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVVP_MD *md, uint8_t mtype,
                            uint8_t ord)
 {
     return dane_mtype_set(&ctx->dane, md, mtype, ord);
 }
 
-int SSL_CTX_set1_param(SSL_CTX *ctx, X509_VERIFY_PARAM *vpm)
+int SSL_CTX_set1_param(SSL_CTX *ctx, YX509_VERIFY_PARAM *vpm)
 {
-    return X509_VERIFY_PARAM_set1(ctx->param, vpm);
+    return YX509_VERIFY_PARAM_set1(ctx->param, vpm);
 }
 
-int SSL_set1_param(SSL *ssl, X509_VERIFY_PARAM *vpm)
+int SSL_set1_param(SSL *ssl, YX509_VERIFY_PARAM *vpm)
 {
-    return X509_VERIFY_PARAM_set1(ssl->param, vpm);
+    return YX509_VERIFY_PARAM_set1(ssl->param, vpm);
 }
 
-X509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx)
+YX509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx)
 {
     return ctx->param;
 }
 
-X509_VERIFY_PARAM *SSL_get0_param(SSL *ssl)
+YX509_VERIFY_PARAM *SSL_get0_param(SSL *ssl)
 {
     return ssl->param;
 }
@@ -1155,7 +1155,7 @@ void SSL_free(SSL *s)
         return;
     REF_ASSERT_ISNT(i < 0);
 
-    X509_VERIFY_PARAM_free(s->param);
+    YX509_VERIFY_PARAM_free(s->param);
     dane_final(&s->dane);
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_SSL, s, &s->ex_data);
 
@@ -1195,7 +1195,7 @@ void SSL_free(SSL *s)
     OPENSSL_free(s->ext.supportedgroups);
     OPENSSL_free(s->ext.peer_supportedgroups);
 #endif                          /* OPENSSL_NO_EC */
-    sk_X509_EXTENSION_pop_free(s->ext.ocsp.exts, X509_EXTENSION_free);
+    sk_YX509_EXTENSION_pop_free(s->ext.ocsp.exts, YX509_EXTENSION_free);
 #ifndef OPENSSL_NO_OCSP
     sk_OCSP_RESPID_pop_free(s->ext.ocsp.ids, OCSP_RESPID_free);
 #endif
@@ -1210,12 +1210,12 @@ void SSL_free(SSL *s)
         OPENSSL_free(s->clienthello->pre_proc_exts);
     OPENSSL_free(s->clienthello);
     OPENSSL_free(s->pha_context);
-    EVP_MD_CTX_free(s->pha_dgst);
+    EVVP_MD_CTX_free(s->pha_dgst);
 
-    sk_X509_NAME_pop_free(s->ca_names, X509_NAME_free);
-    sk_X509_NAME_pop_free(s->client_ca_names, X509_NAME_free);
+    sk_YX509_NAME_pop_free(s->ca_names, YX509_NAME_free);
+    sk_YX509_NAME_pop_free(s->client_ca_names, YX509_NAME_free);
 
-    sk_X509_pop_free(s->verified_chain, X509_free);
+    sk_YX509_pop_free(s->verified_chain, YX509_free);
 
     if (s->method != NULL)
         s->method->ssl_free(s);
@@ -1445,10 +1445,10 @@ int SSL_get_verify_mode(const SSL *s)
 
 int SSL_get_verify_depth(const SSL *s)
 {
-    return X509_VERIFY_PARAM_get_depth(s->param);
+    return YX509_VERIFY_PARAM_get_depth(s->param);
 }
 
-int (*SSL_get_verify_callback(const SSL *s)) (int, X509_STORE_CTX *) {
+int (*SSL_get_verify_callback(const SSL *s)) (int, YX509_STORE_CTX *) {
     return s->verify_callback;
 }
 
@@ -1459,15 +1459,15 @@ int SSL_CTX_get_verify_mode(const SSL_CTX *ctx)
 
 int SSL_CTX_get_verify_depth(const SSL_CTX *ctx)
 {
-    return X509_VERIFY_PARAM_get_depth(ctx->param);
+    return YX509_VERIFY_PARAM_get_depth(ctx->param);
 }
 
-int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx)) (int, X509_STORE_CTX *) {
+int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx)) (int, YX509_STORE_CTX *) {
     return ctx->default_verify_callback;
 }
 
 void SSL_set_verify(SSL *s, int mode,
-                    int (*callback) (int ok, X509_STORE_CTX *ctx))
+                    int (*callback) (int ok, YX509_STORE_CTX *ctx))
 {
     s->verify_mode = mode;
     if (callback != NULL)
@@ -1476,7 +1476,7 @@ void SSL_set_verify(SSL *s, int mode,
 
 void SSL_set_verify_depth(SSL *s, int depth)
 {
-    X509_VERIFY_PARAM_set_depth(s->param, depth);
+    YX509_VERIFY_PARAM_set_depth(s->param, depth);
 }
 
 void SSL_set_read_ahead(SSL *s, int yes)
@@ -1536,9 +1536,9 @@ int SSL_has_pending(const SSL *s)
     return RECORD_LAYER_read_pending(&s->rlayer);
 }
 
-X509 *SSL_get_peer_certificate(const SSL *s)
+YX509 *SSL_get_peer_certificate(const SSL *s)
 {
-    X509 *r;
+    YX509 *r;
 
     if ((s == NULL) || (s->session == NULL))
         r = NULL;
@@ -1548,14 +1548,14 @@ X509 *SSL_get_peer_certificate(const SSL *s)
     if (r == NULL)
         return r;
 
-    X509_up_ref(r);
+    YX509_up_ref(r);
 
     return r;
 }
 
-STACK_OF(X509) *SSL_get_peer_cert_chain(const SSL *s)
+STACK_OF(YX509) *SSL_get_peer_cert_chain(const SSL *s)
 {
-    STACK_OF(X509) *r;
+    STACK_OF(YX509) *r;
 
     if ((s == NULL) || (s->session == NULL))
         r = NULL;
@@ -1613,7 +1613,7 @@ int SSL_CTX_check_private_key(const SSL_CTX *ctx)
         SSLerr(SSL_F_SSL_CTX_CHECK_PRIVATE_KEY, SSL_R_NO_PRIVATE_KEY_ASSIGNED);
         return 0;
     }
-    return X509_check_private_key
+    return YX509_check_private_key
             (ctx->cert->key->x509, ctx->cert->key->privatekey);
 }
 
@@ -1632,7 +1632,7 @@ int SSL_check_private_key(const SSL *ssl)
         SSLerr(SSL_F_SSL_CHECK_PRIVATE_KEY, SSL_R_NO_PRIVATE_KEY_ASSIGNED);
         return 0;
     }
-    return X509_check_private_key(ssl->cert->key->x509,
+    return YX509_check_private_key(ssl->cert->key->x509,
                                    ssl->cert->key->privatekey);
 }
 
@@ -3040,8 +3040,8 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     if (!OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, NULL))
         return NULL;
 
-    if (SSL_get_ex_data_X509_STORE_CTX_idx() < 0) {
-        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_X509_VERIFICATION_SETUP_PROBLEMS);
+    if (SSL_get_ex_data_YX509_STORE_CTX_idx() < 0) {
+        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_YX509_VERIFICATION_SETUP_PROBLEMS);
         goto err;
     }
     ret = OPENSSL_zalloc(sizeof(*ret));
@@ -3071,7 +3071,7 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
     ret->sessions = lh_SSL_SESSION_new(ssl_session_hash, ssl_session_cmp);
     if (ret->sessions == NULL)
         goto err;
-    ret->cert_store = X509_STORE_new();
+    ret->cert_store = YX509_STORE_new();
     if (ret->cert_store == NULL)
         goto err;
 #ifndef OPENSSL_NO_CT
@@ -3092,23 +3092,23 @@ SSL_CTX *SSL_CTX_new(const SSL_METHOD *meth)
         goto err2;
     }
 
-    ret->param = X509_VERIFY_PARAM_new();
+    ret->param = YX509_VERIFY_PARAM_new();
     if (ret->param == NULL)
         goto err;
 
-    if ((ret->md5 = EVP_get_digestbyname("ssl3-md5")) == NULL) {
-        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_MD5_ROUTINES);
+    if ((ret->md5 = EVVP_get_digestbyname("ssl3-md5")) == NULL) {
+        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_YMD5_ROUTINES);
         goto err2;
     }
-    if ((ret->sha1 = EVP_get_digestbyname("ssl3-sha1")) == NULL) {
-        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_SHA1_ROUTINES);
+    if ((ret->sha1 = EVVP_get_digestbyname("ssl3-sha1")) == NULL) {
+        SSLerr(SSL_F_SSL_CTX_NEW, SSL_R_UNABLE_TO_LOAD_SSL3_YSHA1_ROUTINES);
         goto err2;
     }
 
-    if ((ret->ca_names = sk_X509_NAME_new_null()) == NULL)
+    if ((ret->ca_names = sk_YX509_NAME_new_null()) == NULL)
         goto err;
 
-    if ((ret->client_ca_names = sk_X509_NAME_new_null()) == NULL)
+    if ((ret->client_ca_names = sk_YX509_NAME_new_null()) == NULL)
         goto err;
 
     if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_SSL_CTX, ret, &ret->ex_data))
@@ -3242,7 +3242,7 @@ void SSL_CTX_free(SSL_CTX *a)
         return;
     REF_ASSERT_ISNT(i < 0);
 
-    X509_VERIFY_PARAM_free(a->param);
+    YX509_VERIFY_PARAM_free(a->param);
     dane_ctx_final(&a->dane);
 
     /*
@@ -3259,7 +3259,7 @@ void SSL_CTX_free(SSL_CTX *a)
 
     CRYPTO_free_ex_data(CRYPTO_EX_INDEX_SSL_CTX, a, &a->ex_data);
     lh_SSL_SESSION_free(a->sessions);
-    X509_STORE_free(a->cert_store);
+    YX509_STORE_free(a->cert_store);
 #ifndef OPENSSL_NO_CT
     CTLOG_STORE_free(a->ctlog_store);
 #endif
@@ -3267,9 +3267,9 @@ void SSL_CTX_free(SSL_CTX *a)
     sk_SSL_CIPHER_free(a->cipher_list_by_id);
     sk_SSL_CIPHER_free(a->tls13_ciphersuites);
     ssl_cert_free(a->cert);
-    sk_X509_NAME_pop_free(a->ca_names, X509_NAME_free);
-    sk_X509_NAME_pop_free(a->client_ca_names, X509_NAME_free);
-    sk_X509_pop_free(a->extra_certs, X509_free);
+    sk_YX509_NAME_pop_free(a->ca_names, YX509_NAME_free);
+    sk_YX509_NAME_pop_free(a->client_ca_names, YX509_NAME_free);
+    sk_YX509_pop_free(a->extra_certs, YX509_free);
     a->comp_methods = NULL;
 #ifndef OPENSSL_NO_SRTP
     sk_SRTP_PROTECTION_PROFILE_free(a->srtp_profiles);
@@ -3334,7 +3334,7 @@ void *SSL_get_default_passwd_cb_userdata(SSL *s)
 }
 
 void SSL_CTX_set_cert_verify_callback(SSL_CTX *ctx,
-                                      int (*cb) (X509_STORE_CTX *, void *),
+                                      int (*cb) (YX509_STORE_CTX *, void *),
                                       void *arg)
 {
     ctx->app_verify_callback = cb;
@@ -3342,7 +3342,7 @@ void SSL_CTX_set_cert_verify_callback(SSL_CTX *ctx,
 }
 
 void SSL_CTX_set_verify(SSL_CTX *ctx, int mode,
-                        int (*cb) (int, X509_STORE_CTX *))
+                        int (*cb) (int, YX509_STORE_CTX *))
 {
     ctx->verify_mode = mode;
     ctx->default_verify_callback = cb;
@@ -3350,7 +3350,7 @@ void SSL_CTX_set_verify(SSL_CTX *ctx, int mode,
 
 void SSL_CTX_set_verify_depth(SSL_CTX *ctx, int depth)
 {
-    X509_VERIFY_PARAM_set_depth(ctx->param, depth);
+    YX509_VERIFY_PARAM_set_depth(ctx->param, depth);
 }
 
 void SSL_CTX_set_cert_cb(SSL_CTX *c, int (*cb) (SSL *ssl, void *arg), void *arg)
@@ -3381,8 +3381,8 @@ void ssl_set_masks(SSL *s)
     dh_tmp = 0;
 #endif
 
-    rsa_enc = pvalid[SSL_PKEY_RSA] & CERT_PKEY_VALID;
-    rsa_sign = pvalid[SSL_PKEY_RSA] & CERT_PKEY_VALID;
+    rsa_enc = pvalid[SSL_PKEY_YRSA] & CERT_PKEY_VALID;
+    rsa_sign = pvalid[SSL_PKEY_YRSA] & CERT_PKEY_VALID;
     dsa_sign = pvalid[SSL_PKEY_DSA_SIGN] & CERT_PKEY_VALID;
 #ifndef OPENSSL_NO_EC
     have_ecc_cert = pvalid[SSL_PKEY_ECC] & CERT_PKEY_VALID;
@@ -3411,20 +3411,20 @@ void ssl_set_masks(SSL *s)
 #endif
 
     if (rsa_enc)
-        mask_k |= SSL_kRSA;
+        mask_k |= SSL_kYRSA;
 
     if (dh_tmp)
         mask_k |= SSL_kDHE;
 
     /*
-     * If we only have an RSA-PSS certificate allow RSA authentication
+     * If we only have an YRSA-PSS certificate allow YRSA authentication
      * if TLS 1.2 and peer supports it.
      */
 
-    if (rsa_enc || rsa_sign || (ssl_has_cert(s, SSL_PKEY_RSA_PSS_SIGN)
-                && pvalid[SSL_PKEY_RSA_PSS_SIGN] & CERT_PKEY_EXPLICIT_SIGN
+    if (rsa_enc || rsa_sign || (ssl_has_cert(s, SSL_PKEY_YRSA_PSS_SIGN)
+                && pvalid[SSL_PKEY_YRSA_PSS_SIGN] & CERT_PKEY_EXPLICIT_SIGN
                 && TLS1_get_version(s) == TLS1_2_VERSION))
-        mask_a |= SSL_aRSA;
+        mask_a |= SSL_aYRSA;
 
     if (dsa_sign) {
         mask_a |= SSL_aDSS;
@@ -3439,8 +3439,8 @@ void ssl_set_masks(SSL *s)
 #ifndef OPENSSL_NO_EC
     if (have_ecc_cert) {
         uint32_t ex_kusage;
-        ex_kusage = X509_get_key_usage(c->pkeys[SSL_PKEY_ECC].x509);
-        ecdsa_ok = ex_kusage & X509v3_KU_DIGITAL_SIGNATURE;
+        ex_kusage = YX509_get_key_usage(c->pkeys[SSL_PKEY_ECC].x509);
+        ecdsa_ok = ex_kusage & YX509v3_KU_DIGITAL_SIGNATURE;
         if (!(pvalid[SSL_PKEY_ECC] & CERT_PKEY_SIGN))
             ecdsa_ok = 0;
         if (ecdsa_ok)
@@ -3466,8 +3466,8 @@ void ssl_set_masks(SSL *s)
 #ifndef OPENSSL_NO_PSK
     mask_k |= SSL_kPSK;
     mask_a |= SSL_aPSK;
-    if (mask_k & SSL_kRSA)
-        mask_k |= SSL_kRSAPSK;
+    if (mask_k & SSL_kYRSA)
+        mask_k |= SSL_kYRSAPSK;
     if (mask_k & SSL_kDHE)
         mask_k |= SSL_kDHEPSK;
     if (mask_k & SSL_kECDHE)
@@ -3480,11 +3480,11 @@ void ssl_set_masks(SSL *s)
 
 #ifndef OPENSSL_NO_EC
 
-int ssl_check_srvr_ecc_cert_and_alg(X509 *x, SSL *s)
+int ssl_check_srvr_ecc_cert_and_alg(YX509 *x, SSL *s)
 {
     if (s->s3->tmp.new_cipher->algorithm_auth & SSL_aECDSA) {
         /* key usage, if present, must allow signing */
-        if (!(X509_get_key_usage(x) & X509v3_KU_DIGITAL_SIGNATURE)) {
+        if (!(YX509_get_key_usage(x) & YX509v3_KU_DIGITAL_SIGNATURE)) {
             SSLerr(SSL_F_SSL_CHECK_SRVR_ECC_CERT_AND_ALG,
                    SSL_R_ECC_CERT_NOT_FOR_SIGNING);
             return 0;
@@ -3681,7 +3681,7 @@ int SSL_get_error(const SSL *s, int i)
         }
     }
     if (SSL_want_x509_lookup(s))
-        return SSL_ERROR_WANT_X509_LOOKUP;
+        return SSL_ERROR_WANT_YX509_LOOKUP;
     if (SSL_want_async(s))
         return SSL_ERROR_WANT_ASYNC;
     if (SSL_want_async_job(s))
@@ -3815,10 +3815,10 @@ const char *SSL_get_version(const SSL *s)
     return ssl_protocol_to_string(s->version);
 }
 
-static int dup_ca_names(STACK_OF(X509_NAME) **dst, STACK_OF(X509_NAME) *src)
+static int dup_ca_names(STACK_OF(YX509_NAME) **dst, STACK_OF(YX509_NAME) *src)
 {
-    STACK_OF(X509_NAME) *sk;
-    X509_NAME *xn;
+    STACK_OF(YX509_NAME) *sk;
+    YX509_NAME *xn;
     int i;
 
     if (src == NULL) {
@@ -3826,17 +3826,17 @@ static int dup_ca_names(STACK_OF(X509_NAME) **dst, STACK_OF(X509_NAME) *src)
         return 1;
     }
 
-    if ((sk = sk_X509_NAME_new_null()) == NULL)
+    if ((sk = sk_YX509_NAME_new_null()) == NULL)
         return 0;
-    for (i = 0; i < sk_X509_NAME_num(src); i++) {
-        xn = X509_NAME_dup(sk_X509_NAME_value(src, i));
+    for (i = 0; i < sk_YX509_NAME_num(src); i++) {
+        xn = YX509_NAME_dup(sk_YX509_NAME_value(src, i));
         if (xn == NULL) {
-            sk_X509_NAME_pop_free(sk, X509_NAME_free);
+            sk_YX509_NAME_pop_free(sk, YX509_NAME_free);
             return 0;
         }
-        if (sk_X509_NAME_insert(sk, xn, i) == 0) {
-            X509_NAME_free(xn);
-            sk_X509_NAME_pop_free(sk, X509_NAME_free);
+        if (sk_YX509_NAME_insert(sk, xn, i) == 0) {
+            YX509_NAME_free(xn);
+            sk_YX509_NAME_pop_free(sk, YX509_NAME_free);
             return 0;
         }
     }
@@ -3925,7 +3925,7 @@ SSL *SSL_dup(SSL *s)
     ret->default_passwd_callback = s->default_passwd_callback;
     ret->default_passwd_callback_userdata = s->default_passwd_callback_userdata;
 
-    X509_VERIFY_PARAM_inherit(ret->param, s->param);
+    YX509_VERIFY_PARAM_inherit(ret->param, s->param);
 
     /* dup the cipher_list and cipher_list_by_id stacks */
     if (s->cipher_list != NULL) {
@@ -3952,11 +3952,11 @@ SSL *SSL_dup(SSL *s)
 void ssl_clear_cipher_ctx(SSL *s)
 {
     if (s->enc_read_ctx != NULL) {
-        EVP_CIPHER_CTX_free(s->enc_read_ctx);
+        EVVP_CIPHER_CTX_free(s->enc_read_ctx);
         s->enc_read_ctx = NULL;
     }
     if (s->enc_write_ctx != NULL) {
-        EVP_CIPHER_CTX_free(s->enc_write_ctx);
+        EVVP_CIPHER_CTX_free(s->enc_write_ctx);
         s->enc_write_ctx = NULL;
     }
 #ifndef OPENSSL_NO_COMP
@@ -3967,7 +3967,7 @@ void ssl_clear_cipher_ctx(SSL *s)
 #endif
 }
 
-X509 *SSL_get_certificate(const SSL *s)
+YX509 *SSL_get_certificate(const SSL *s)
 {
     if (s->cert != NULL)
         return s->cert->key->x509;
@@ -3975,7 +3975,7 @@ X509 *SSL_get_certificate(const SSL *s)
         return NULL;
 }
 
-EVP_PKEY *SSL_get_privatekey(const SSL *s)
+EVVP_PKEY *SSL_get_privatekey(const SSL *s)
 {
     if (s->cert != NULL)
         return s->cert->key->privatekey;
@@ -3983,7 +3983,7 @@ EVP_PKEY *SSL_get_privatekey(const SSL *s)
         return NULL;
 }
 
-X509 *SSL_CTX_get0_certificate(const SSL_CTX *ctx)
+YX509 *SSL_CTX_get0_certificate(const SSL_CTX *ctx)
 {
     if (ctx->cert != NULL)
         return ctx->cert->key->x509;
@@ -3991,7 +3991,7 @@ X509 *SSL_CTX_get0_certificate(const SSL_CTX *ctx)
         return NULL;
 }
 
-EVP_PKEY *SSL_CTX_get0_privatekey(const SSL_CTX *ctx)
+EVVP_PKEY *SSL_CTX_get0_privatekey(const SSL_CTX *ctx)
 {
     if (ctx->cert != NULL)
         return ctx->cert->key->privatekey;
@@ -4157,17 +4157,17 @@ SSL_CTX *SSL_set_SSL_CTX(SSL *ssl, SSL_CTX *ctx)
 
 int SSL_CTX_set_default_verify_paths(SSL_CTX *ctx)
 {
-    return X509_STORE_set_default_paths(ctx->cert_store);
+    return YX509_STORE_set_default_paths(ctx->cert_store);
 }
 
 int SSL_CTX_set_default_verify_dir(SSL_CTX *ctx)
 {
-    X509_LOOKUP *lookup;
+    YX509_LOOKUP *lookup;
 
-    lookup = X509_STORE_add_lookup(ctx->cert_store, X509_LOOKUP_hash_dir());
+    lookup = YX509_STORE_add_lookup(ctx->cert_store, YX509_LOOKUP_hash_dir());
     if (lookup == NULL)
         return 0;
-    X509_LOOKUP_add_dir(lookup, NULL, X509_FILETYPE_DEFAULT);
+    YX509_LOOKUP_add_dir(lookup, NULL, YX509_FILETYPE_DEFAULT);
 
     /* Clear any errors if the default directory does not exist */
     ERR_clear_error();
@@ -4177,13 +4177,13 @@ int SSL_CTX_set_default_verify_dir(SSL_CTX *ctx)
 
 int SSL_CTX_set_default_verify_file(SSL_CTX *ctx)
 {
-    X509_LOOKUP *lookup;
+    YX509_LOOKUP *lookup;
 
-    lookup = X509_STORE_add_lookup(ctx->cert_store, X509_LOOKUP_file());
+    lookup = YX509_STORE_add_lookup(ctx->cert_store, YX509_LOOKUP_file());
     if (lookup == NULL)
         return 0;
 
-    X509_LOOKUP_load_file(lookup, NULL, X509_FILETYPE_DEFAULT);
+    YX509_LOOKUP_load_file(lookup, NULL, YX509_FILETYPE_DEFAULT);
 
     /* Clear any errors if the default file does not exist */
     ERR_clear_error();
@@ -4194,7 +4194,7 @@ int SSL_CTX_set_default_verify_file(SSL_CTX *ctx)
 int SSL_CTX_load_verify_locations(SSL_CTX *ctx, const char *CAfile,
                                   const char *CApath)
 {
-    return X509_STORE_load_locations(ctx->cert_store, CAfile, CApath);
+    return YX509_STORE_load_locations(ctx->cert_store, CAfile, CApath);
 }
 
 void SSL_set_info_callback(SSL *ssl,
@@ -4286,21 +4286,21 @@ void *SSL_CTX_get_ex_data(const SSL_CTX *s, int idx)
     return CRYPTO_get_ex_data(&s->ex_data, idx);
 }
 
-X509_STORE *SSL_CTX_get_cert_store(const SSL_CTX *ctx)
+YX509_STORE *SSL_CTX_get_cert_store(const SSL_CTX *ctx)
 {
     return ctx->cert_store;
 }
 
-void SSL_CTX_set_cert_store(SSL_CTX *ctx, X509_STORE *store)
+void SSL_CTX_set_cert_store(SSL_CTX *ctx, YX509_STORE *store)
 {
-    X509_STORE_free(ctx->cert_store);
+    YX509_STORE_free(ctx->cert_store);
     ctx->cert_store = store;
 }
 
-void SSL_CTX_set1_cert_store(SSL_CTX *ctx, X509_STORE *store)
+void SSL_CTX_set1_cert_store(SSL_CTX *ctx, YX509_STORE *store)
 {
     if (store != NULL)
-        X509_STORE_up_ref(store);
+        YX509_STORE_up_ref(store);
     SSL_CTX_set_cert_store(ctx, store);
 }
 
@@ -4539,28 +4539,28 @@ size_t SSL_CTX_get_num_tickets(const SSL_CTX *ctx)
 }
 
 /*
- * Allocates new EVP_MD_CTX and sets pointer to it into given pointer
- * variable, freeing EVP_MD_CTX previously stored in that variable, if any.
- * If EVP_MD pointer is passed, initializes ctx with this |md|.
+ * Allocates new EVVP_MD_CTX and sets pointer to it into given pointer
+ * variable, freeing EVVP_MD_CTX previously stored in that variable, if any.
+ * If EVVP_MD pointer is passed, initializes ctx with this |md|.
  * Returns the newly allocated ctx;
  */
 
-EVP_MD_CTX *ssl_replace_hash(EVP_MD_CTX **hash, const EVP_MD *md)
+EVVP_MD_CTX *ssl_replace_hash(EVVP_MD_CTX **hash, const EVVP_MD *md)
 {
     ssl_clear_hash_ctx(hash);
-    *hash = EVP_MD_CTX_new();
-    if (*hash == NULL || (md && EVP_DigestInit_ex(*hash, md, NULL) <= 0)) {
-        EVP_MD_CTX_free(*hash);
+    *hash = EVVP_MD_CTX_new();
+    if (*hash == NULL || (md && EVVP_DigestInit_ex(*hash, md, NULL) <= 0)) {
+        EVVP_MD_CTX_free(*hash);
         *hash = NULL;
         return NULL;
     }
     return *hash;
 }
 
-void ssl_clear_hash_ctx(EVP_MD_CTX **hash)
+void ssl_clear_hash_ctx(EVVP_MD_CTX **hash)
 {
 
-    EVP_MD_CTX_free(*hash);
+    EVVP_MD_CTX_free(*hash);
     *hash = NULL;
 }
 
@@ -4568,9 +4568,9 @@ void ssl_clear_hash_ctx(EVP_MD_CTX **hash)
 int ssl_handshake_hash(SSL *s, unsigned char *out, size_t outlen,
                        size_t *hashlen)
 {
-    EVP_MD_CTX *ctx = NULL;
-    EVP_MD_CTX *hdgst = s->s3->handshake_dgst;
-    int hashleni = EVP_MD_CTX_size(hdgst);
+    EVVP_MD_CTX *ctx = NULL;
+    EVVP_MD_CTX *hdgst = s->s3->handshake_dgst;
+    int hashleni = EVVP_MD_CTX_size(hdgst);
     int ret = 0;
 
     if (hashleni < 0 || (size_t)hashleni > outlen) {
@@ -4579,15 +4579,15 @@ int ssl_handshake_hash(SSL *s, unsigned char *out, size_t outlen,
         goto err;
     }
 
-    ctx = EVP_MD_CTX_new();
+    ctx = EVVP_MD_CTX_new();
     if (ctx == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_HANDSHAKE_HASH,
                  ERR_R_INTERNAL_ERROR);
         goto err;
     }
 
-    if (!EVP_MD_CTX_copy_ex(ctx, hdgst)
-        || EVP_DigestFinal_ex(ctx, out, NULL) <= 0) {
+    if (!EVVP_MD_CTX_copy_ex(ctx, hdgst)
+        || EVVP_DigestFinal_ex(ctx, out, NULL) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_SSL_HANDSHAKE_HASH,
                  ERR_R_INTERNAL_ERROR);
         goto err;
@@ -4597,7 +4597,7 @@ int ssl_handshake_hash(SSL *s, unsigned char *out, size_t outlen,
 
     ret = 1;
  err:
-    EVP_MD_CTX_free(ctx);
+    EVVP_MD_CTX_free(ctx);
     return ret;
 }
 
@@ -4727,7 +4727,7 @@ unsigned long SSL_clear_options(SSL *s, unsigned long op)
     return s->options &= ~op;
 }
 
-STACK_OF(X509) *SSL_get0_verified_chain(const SSL *s)
+STACK_OF(YX509) *SSL_get0_verified_chain(const SSL *s)
 {
     return s->verified_chain;
 }
@@ -4795,7 +4795,7 @@ static int ct_extract_tls_extension_scts(SSL *s)
 
 /*
  * Checks for an OCSP response and then attempts to extract any SCTs found if it
- * contains an SCT X509 extension. They will be stored in |s->scts|.
+ * contains an SCT YX509 extension. They will be stored in |s->scts|.
  * Returns:
  * - The number of SCTs extracted, assuming an OCSP response exists.
  * - 0 if no OCSP response exists or it contains no SCTs.
@@ -4855,14 +4855,14 @@ static int ct_extract_ocsp_response_scts(SSL *s)
 static int ct_extract_x509v3_extension_scts(SSL *s)
 {
     int scts_extracted = 0;
-    X509 *cert = s->session != NULL ? s->session->peer : NULL;
+    YX509 *cert = s->session != NULL ? s->session->peer : NULL;
 
     if (cert != NULL) {
         STACK_OF(SCT) *scts =
-            X509_get_ext_d2i(cert, NID_ct_precert_scts, NULL, NULL);
+            YX509_get_ext_d2i(cert, NID_ct_precert_scts, NULL, NULL);
 
         scts_extracted =
-            ct_move_scts(&s->scts, scts, SCT_SOURCE_X509V3_EXTENSION);
+            ct_move_scts(&s->scts, scts, SCT_SOURCE_YX509V3_EXTENSION);
 
         SCT_LIST_free(scts);
     }
@@ -4872,7 +4872,7 @@ static int ct_extract_x509v3_extension_scts(SSL *s)
 
 /*
  * Attempts to find all received SCTs by checking TLS extensions, the OCSP
- * response (if it exists) and X509v3 extensions in the certificate.
+ * response (if it exists) and YX509v3 extensions in the certificate.
  * Returns NULL if an error occurs.
  */
 const STACK_OF(SCT) *SSL_get0_peer_scts(SSL *s)
@@ -4975,8 +4975,8 @@ int SSL_CTX_ct_is_enabled(const SSL_CTX *ctx)
 int ssl_validate_ct(SSL *s)
 {
     int ret = 0;
-    X509 *cert = s->session != NULL ? s->session->peer : NULL;
-    X509 *issuer;
+    YX509 *cert = s->session != NULL ? s->session->peer : NULL;
+    YX509 *issuer;
     SSL_DANE *dane = &s->dane;
     CT_POLICY_EVAL_CTX *ctx = NULL;
     const STACK_OF(SCT) *scts;
@@ -4993,8 +4993,8 @@ int ssl_validate_ct(SSL *s)
      * process SCTs when enabled.
      */
     if (s->ct_validation_callback == NULL || cert == NULL ||
-        s->verify_result != X509_V_OK ||
-        s->verified_chain == NULL || sk_X509_num(s->verified_chain) <= 1)
+        s->verify_result != YX509_V_OK ||
+        s->verified_chain == NULL || sk_YX509_num(s->verified_chain) <= 1)
         return 1;
 
     /*
@@ -5016,7 +5016,7 @@ int ssl_validate_ct(SSL *s)
         goto end;
     }
 
-    issuer = sk_X509_value(s->verified_chain, 1);
+    issuer = sk_YX509_value(s->verified_chain, 1);
     CT_POLICY_EVAL_CTX_set1_cert(ctx, cert);
     CT_POLICY_EVAL_CTX_set1_issuer(ctx, issuer);
     CT_POLICY_EVAL_CTX_set_shared_CTLOG_STORE(ctx, s->ctx->ctlog_store);
@@ -5070,7 +5070,7 @@ int ssl_validate_ct(SSL *s)
      * connection failure or record a verification error.
      */
     if (ret <= 0)
-        s->verify_result = X509_V_ERR_NO_VALID_SCTS;
+        s->verify_result = YX509_V_ERR_NO_VALID_SCTS;
     return ret;
 }
 
@@ -5328,12 +5328,12 @@ int ssl_log_rsa_client_key_exchange(SSL *ssl,
 {
     if (encrypted_premaster_len < 8) {
         SSLfatal(ssl, SSL_AD_INTERNAL_ERROR,
-                 SSL_F_SSL_LOG_RSA_CLIENT_KEY_EXCHANGE, ERR_R_INTERNAL_ERROR);
+                 SSL_F_SSL_LOG_YRSA_CLIENT_KEY_EXCHANGE, ERR_R_INTERNAL_ERROR);
         return 0;
     }
 
     /* We only want the first 8 bytes of the encrypted premaster as a tag. */
-    return nss_keylog_int("RSA",
+    return nss_keylog_int("YRSA",
                           ssl,
                           encrypted_premaster,
                           8,

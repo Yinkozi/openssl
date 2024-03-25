@@ -65,12 +65,12 @@ static void ctr_XOR(RAND_DRBG_CTR *ctr, const unsigned char *in, size_t inlen)
 __owur static int ctr_BCC_block(RAND_DRBG_CTR *ctr, unsigned char *out,
                                 const unsigned char *in, int len)
 {
-    int i, outlen = AES_BLOCK_SIZE;
+    int i, outlen = YAES_BLOCK_SIZE;
 
     for (i = 0; i < len; i++)
         out[i] ^= in[i];
 
-    if (!EVP_CipherUpdate(ctr->ctx_df, out, &outlen, out, len)
+    if (!EVVP_CipherUpdate(ctr->ctx_df, out, &outlen, out, len)
         || outlen != len)
         return 0;
     return 1;
@@ -91,7 +91,7 @@ __owur static int ctr_BCC_blocks(RAND_DRBG_CTR *ctr, const unsigned char *in)
         memcpy(in_tmp + 32, in, 16);
         num_of_blk = 3;
     }
-    return ctr_BCC_block(ctr, ctr->KX, in_tmp, AES_BLOCK_SIZE * num_of_blk);
+    return ctr_BCC_block(ctr, ctr->KX, in_tmp, YAES_BLOCK_SIZE * num_of_blk);
 }
 
 /*
@@ -105,9 +105,9 @@ __owur static int ctr_BCC_init(RAND_DRBG_CTR *ctr)
 
     memset(ctr->KX, 0, 48);
     num_of_blk = ctr->keylen == 16 ? 2 : 3;
-    bltmp[(AES_BLOCK_SIZE * 1) + 3] = 1;
-    bltmp[(AES_BLOCK_SIZE * 2) + 3] = 2;
-    return ctr_BCC_block(ctr, ctr->KX, bltmp, num_of_blk * AES_BLOCK_SIZE);
+    bltmp[(YAES_BLOCK_SIZE * 1) + 3] = 1;
+    bltmp[(YAES_BLOCK_SIZE * 2) + 3] = 2;
+    return ctr_BCC_block(ctr, ctr->KX, bltmp, num_of_blk * YAES_BLOCK_SIZE);
 }
 
 /*
@@ -166,7 +166,7 @@ __owur static int ctr_df(RAND_DRBG_CTR *ctr,
     static unsigned char c80 = 0x80;
     size_t inlen;
     unsigned char *p = ctr->bltmp;
-    int outlen = AES_BLOCK_SIZE;
+    int outlen = YAES_BLOCK_SIZE;
 
     if (!ctr_BCC_init(ctr))
         return 0;
@@ -196,21 +196,21 @@ __owur static int ctr_df(RAND_DRBG_CTR *ctr,
         || !ctr_BCC_final(ctr))
         return 0;
     /* Set up key K */
-    if (!EVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->KX, NULL, -1))
+    if (!EVVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->KX, NULL, -1))
         return 0;
     /* X follows key K */
-    if (!EVP_CipherUpdate(ctr->ctx_ecb, ctr->KX, &outlen, ctr->KX + ctr->keylen,
-                          AES_BLOCK_SIZE)
-        || outlen != AES_BLOCK_SIZE)
+    if (!EVVP_CipherUpdate(ctr->ctx_ecb, ctr->KX, &outlen, ctr->KX + ctr->keylen,
+                          YAES_BLOCK_SIZE)
+        || outlen != YAES_BLOCK_SIZE)
         return 0;
-    if (!EVP_CipherUpdate(ctr->ctx_ecb, ctr->KX + 16, &outlen, ctr->KX,
-                          AES_BLOCK_SIZE)
-        || outlen != AES_BLOCK_SIZE)
+    if (!EVVP_CipherUpdate(ctr->ctx_ecb, ctr->KX + 16, &outlen, ctr->KX,
+                          YAES_BLOCK_SIZE)
+        || outlen != YAES_BLOCK_SIZE)
         return 0;
     if (ctr->keylen != 16)
-        if (!EVP_CipherUpdate(ctr->ctx_ecb, ctr->KX + 32, &outlen,
-                              ctr->KX + 16, AES_BLOCK_SIZE)
-            || outlen != AES_BLOCK_SIZE)
+        if (!EVVP_CipherUpdate(ctr->ctx_ecb, ctr->KX + 32, &outlen,
+                              ctr->KX + 16, YAES_BLOCK_SIZE)
+            || outlen != YAES_BLOCK_SIZE)
             return 0;
     return 1;
 }
@@ -227,7 +227,7 @@ __owur static int ctr_update(RAND_DRBG *drbg,
                              const unsigned char *nonce, size_t noncelen)
 {
     RAND_DRBG_CTR *ctr = &drbg->data.ctr;
-    int outlen = AES_BLOCK_SIZE;
+    int outlen = YAES_BLOCK_SIZE;
     unsigned char V_tmp[48], out[48];
     unsigned char len;
 
@@ -242,7 +242,7 @@ __owur static int ctr_update(RAND_DRBG *drbg,
         memcpy(V_tmp + 32, ctr->V, 16);
         len = 48;
     }
-    if (!EVP_CipherUpdate(ctr->ctx_ecb, out, &outlen, V_tmp, len)
+    if (!EVVP_CipherUpdate(ctr->ctx_ecb, out, &outlen, V_tmp, len)
             || outlen != len)
         return 0;
     memcpy(ctr->K, out, ctr->keylen);
@@ -261,8 +261,8 @@ __owur static int ctr_update(RAND_DRBG *drbg,
         ctr_XOR(ctr, in2, in2len);
     }
 
-    if (!EVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->K, NULL, -1)
-        || !EVP_CipherInit_ex(ctr->ctx_ctr, NULL, NULL, ctr->K, NULL, -1))
+    if (!EVVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->K, NULL, -1)
+        || !EVVP_CipherInit_ex(ctr->ctx_ctr, NULL, NULL, ctr->K, NULL, -1))
         return 0;
     return 1;
 }
@@ -279,7 +279,7 @@ __owur static int drbg_ctr_instantiate(RAND_DRBG *drbg,
 
     memset(ctr->K, 0, sizeof(ctr->K));
     memset(ctr->V, 0, sizeof(ctr->V));
-    if (!EVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->K, NULL, -1))
+    if (!EVVP_CipherInit_ex(ctr->ctx_ecb, NULL, NULL, ctr->K, NULL, -1))
         return 0;
 
     inc_128(ctr);
@@ -350,16 +350,16 @@ __owur static int drbg_ctr_generate(RAND_DRBG *drbg,
     memset(out, 0, outlen);
 
     do {
-        if (!EVP_CipherInit_ex(ctr->ctx_ctr,
+        if (!EVVP_CipherInit_ex(ctr->ctx_ctr,
                                NULL, NULL, NULL, ctr->V, -1))
             return 0;
 
         /*-
-         * outlen has type size_t while EVP_CipherUpdate takes an
+         * outlen has type size_t while EVVP_CipherUpdate takes an
          * int argument and thus cannot be guaranteed to process more
          * than 2^31-1 bytes at a time. We process such huge generate
          * requests in 2^30 byte chunks, which is the greatest multiple
-         * of AES block size lower than or equal to 2^31-1.
+         * of YAES block size lower than or equal to 2^31-1.
          */
         buflen = outlen > (1U << 30) ? (1U << 30) : outlen;
         blocks = (buflen + 15) / 16;
@@ -376,7 +376,7 @@ __owur static int drbg_ctr_generate(RAND_DRBG *drbg,
         }
         PUTU32(ctr->V + 12, ctr32);
 
-        if (!EVP_CipherUpdate(ctr->ctx_ctr, out, &outl, out, buflen)
+        if (!EVVP_CipherUpdate(ctr->ctx_ctr, out, &outl, out, buflen)
             || outl != buflen)
             return 0;
 
@@ -391,9 +391,9 @@ __owur static int drbg_ctr_generate(RAND_DRBG *drbg,
 
 static int drbg_ctr_uninstantiate(RAND_DRBG *drbg)
 {
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ecb);
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ctr);
-    EVP_CIPHER_CTX_free(drbg->data.ctr.ctx_df);
+    EVVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ecb);
+    EVVP_CIPHER_CTX_free(drbg->data.ctr.ctx_ctr);
+    EVVP_CIPHER_CTX_free(drbg->data.ctr.ctx_df);
     OPENSSL_cleanse(&drbg->data.ctr, sizeof(drbg->data.ctr));
     return 1;
 }
@@ -416,18 +416,18 @@ int drbg_ctr_init(RAND_DRBG *drbg)
         return 0;
     case NID_aes_128_ctr:
         keylen = 16;
-        ctr->cipher_ecb = EVP_aes_128_ecb();
-        ctr->cipher_ctr = EVP_aes_128_ctr();
+        ctr->cipher_ecb = EVVP_aes_128_ecb();
+        ctr->cipher_ctr = EVVP_aes_128_ctr();
         break;
     case NID_aes_192_ctr:
         keylen = 24;
-        ctr->cipher_ecb = EVP_aes_192_ecb();
-        ctr->cipher_ctr = EVP_aes_192_ctr();
+        ctr->cipher_ecb = EVVP_aes_192_ecb();
+        ctr->cipher_ctr = EVVP_aes_192_ctr();
         break;
     case NID_aes_256_ctr:
         keylen = 32;
-        ctr->cipher_ecb = EVP_aes_256_ecb();
-        ctr->cipher_ctr = EVP_aes_256_ctr();
+        ctr->cipher_ecb = EVVP_aes_256_ecb();
+        ctr->cipher_ctr = EVVP_aes_256_ctr();
         break;
     }
 
@@ -435,13 +435,13 @@ int drbg_ctr_init(RAND_DRBG *drbg)
 
     ctr->keylen = keylen;
     if (ctr->ctx_ecb == NULL)
-        ctr->ctx_ecb = EVP_CIPHER_CTX_new();
+        ctr->ctx_ecb = EVVP_CIPHER_CTX_new();
     if (ctr->ctx_ctr == NULL)
-        ctr->ctx_ctr = EVP_CIPHER_CTX_new();
+        ctr->ctx_ctr = EVVP_CIPHER_CTX_new();
     if (ctr->ctx_ecb == NULL || ctr->ctx_ctr == NULL
-        || !EVP_CipherInit_ex(ctr->ctx_ecb,
+        || !EVVP_CipherInit_ex(ctr->ctx_ecb,
                               ctr->cipher_ecb, NULL, NULL, NULL, 1)
-        || !EVP_CipherInit_ex(ctr->ctx_ctr,
+        || !EVVP_CipherInit_ex(ctr->ctx_ctr,
                               ctr->cipher_ctr, NULL, NULL, NULL, 1))
         return 0;
 
@@ -459,11 +459,11 @@ int drbg_ctr_init(RAND_DRBG *drbg)
         };
 
         if (ctr->ctx_df == NULL)
-            ctr->ctx_df = EVP_CIPHER_CTX_new();
+            ctr->ctx_df = EVVP_CIPHER_CTX_new();
         if (ctr->ctx_df == NULL)
             return 0;
         /* Set key schedule for df_key */
-        if (!EVP_CipherInit_ex(ctr->ctx_df,
+        if (!EVVP_CipherInit_ex(ctr->ctx_df,
                                ctr->cipher_ecb, NULL, df_key, NULL, 1))
             return 0;
 

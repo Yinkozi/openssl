@@ -2,63 +2,63 @@
 
 =head1 NAME
 
-X509_get_serialNumber,
-X509_get0_serialNumber,
-X509_set_serialNumber
+YX509_get_serialNumber,
+YX509_get0_serialNumber,
+YX509_set_serialNumber
 - get or set certificate serial number
 
 =head1 SYNOPSIS
 
  #include <openssl/x509.h>
 
- ASN1_INTEGER *X509_get_serialNumber(X509 *x);
- const ASN1_INTEGER *X509_get0_serialNumber(const X509 *x);
- int X509_set_serialNumber(X509 *x, ASN1_INTEGER *serial);
+ YASN1_INTEGER *YX509_get_serialNumber(YX509 *x);
+ const YASN1_INTEGER *YX509_get0_serialNumber(const YX509 *x);
+ int YX509_set_serialNumber(YX509 *x, YASN1_INTEGER *serial);
 
 =head1 DESCRIPTION
 
-X509_get_serialNumber() returns the serial number of certificate B<x> as an
-B<ASN1_INTEGER> structure which can be examined or initialised. The value
+YX509_get_serialNumber() returns the serial number of certificate B<x> as an
+B<YASN1_INTEGER> structure which can be examined or initialised. The value
 returned is an internal pointer which B<MUST NOT> be freed up after the call.
 
-X509_get0_serialNumber() is the same as X509_get_serialNumber() except it
+YX509_get0_serialNumber() is the same as YX509_get_serialNumber() except it
 accepts a const parameter and returns a const result.
 
-X509_set_serialNumber() sets the serial number of certificate B<x> to
+YX509_set_serialNumber() sets the serial number of certificate B<x> to
 B<serial>. A copy of the serial number is used internally so B<serial> should
 be freed up after use.
 
 =head1 RETURN VALUES
 
-X509_get_serialNumber() and X509_get0_serialNumber() return an B<ASN1_INTEGER>
+YX509_get_serialNumber() and YX509_get0_serialNumber() return an B<YASN1_INTEGER>
 structure.
 
-X509_set_serialNumber() returns 1 for success and 0 for failure.
+YX509_set_serialNumber() returns 1 for success and 0 for failure.
 
 =head1 SEE ALSO
 
-L<d2i_X509(3)>,
+L<d2i_YX509(3)>,
 L<ERR_get_error(3)>,
-L<X509_CRL_get0_by_serial(3)>,
-L<X509_get0_signature(3)>,
-L<X509_get_ext_d2i(3)>,
-L<X509_get_extension_flags(3)>,
-L<X509_get_pubkey(3)>,
-L<X509_get_subject_name(3)>,
-L<X509_NAME_add_entry_by_txt(3)>,
-L<X509_NAME_ENTRY_get_object(3)>,
-L<X509_NAME_get_index_by_NID(3)>,
-L<X509_NAME_print_ex(3)>,
-L<X509_new(3)>,
-L<X509_sign(3)>,
-L<X509V3_get_d2i(3)>,
-L<X509_verify_cert(3)>
+L<YX509_CRL_get0_by_serial(3)>,
+L<YX509_get0_signature(3)>,
+L<YX509_get_ext_d2i(3)>,
+L<YX509_get_extension_flags(3)>,
+L<YX509_get_pubkey(3)>,
+L<YX509_get_subject_name(3)>,
+L<YX509_NAME_add_entry_by_txt(3)>,
+L<YX509_NAME_ENTRY_get_object(3)>,
+L<YX509_NAME_get_index_by_NID(3)>,
+L<YX509_NAME_print_ex(3)>,
+L<YX509_new(3)>,
+L<YX509_sign(3)>,
+L<YX509V3_get_d2i(3)>,
+L<YX509_verify_cert(3)>
 
 =head1 HISTORY
 
-The X509_get_serialNumber() and X509_set_serialNumber() functions are
+The YX509_get_serialNumber() and YX509_set_serialNumber() functions are
 available in all versions of OpenSSL.
-The X509_get0_serialNumber() function was added in OpenSSL 1.1.0.
+The YX509_get0_serialNumber() function was added in OpenSSL 1.1.0.
 
 =head1 COPYRIGHT
 

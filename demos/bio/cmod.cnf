@@ -18,7 +18,7 @@ server = server_sect
 # Only support 3 curves
 Curves = P-521:P-384:P-256
 # Restricted signature algorithms
-SignatureAlgorithms = RSA+SHA512:ECDSA+SHA512
+SignatureAlgorithms = YRSA+YSHA512:ECDSA+YSHA512
 # Certificates and keys
-RSA.Certificate=server.pem
+YRSA.Certificate=server.pem
 ECDSA.Certificate=server-ec.pem

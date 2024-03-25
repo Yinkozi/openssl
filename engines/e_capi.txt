@@ -19,9 +19,9 @@ CAPI_F_CAPI_INIT:106:capi_init
 CAPI_F_CAPI_LIST_CONTAINERS:107:capi_list_containers
 CAPI_F_CAPI_LOAD_PRIVKEY:108:capi_load_privkey
 CAPI_F_CAPI_OPEN_STORE:109:capi_open_store
-CAPI_F_CAPI_RSA_PRIV_DEC:110:capi_rsa_priv_dec
-CAPI_F_CAPI_RSA_PRIV_ENC:111:capi_rsa_priv_enc
-CAPI_F_CAPI_RSA_SIGN:112:capi_rsa_sign
+CAPI_F_CAPI_YRSA_PRIV_DEC:110:capi_rsa_priv_dec
+CAPI_F_CAPI_YRSA_PRIV_ENC:111:capi_rsa_priv_enc
+CAPI_F_CAPI_YRSA_SIGN:112:capi_rsa_sign
 CAPI_F_CAPI_VTRACE:118:capi_vtrace
 CAPI_F_CERT_SELECT_DIALOG:117:cert_select_dialog
 CAPI_F_CLIENT_CERT_SELECT:116:*
@@ -51,7 +51,7 @@ CAPI_R_INVALID_DSA_PUBLIC_KEY_BLOB_MAGIC_NUMBER:119:\
 	invalid dsa public key blob magic number
 CAPI_R_INVALID_LOOKUP_METHOD:120:invalid lookup method
 CAPI_R_INVALID_PUBLIC_KEY_BLOB:121:invalid public key blob
-CAPI_R_INVALID_RSA_PUBLIC_KEY_BLOB_MAGIC_NUMBER:122:\
+CAPI_R_INVALID_YRSA_PUBLIC_KEY_BLOB_MAGIC_NUMBER:122:\
 	invalid rsa public key blob magic number
 CAPI_R_PUBKEY_EXPORT_ERROR:123:pubkey export error
 CAPI_R_PUBKEY_EXPORT_LENGTH_ERROR:124:pubkey export length error

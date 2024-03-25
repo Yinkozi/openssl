@@ -151,15 +151,15 @@ struct IOSB {
 };
 # endif
 
-# ifndef NX509_SIG
-#  define NX509_SIG 32
+# ifndef NYX509_SIG
+#  define NYX509_SIG 32
 # endif
 
 /* Define globals.  They are protected by a lock */
 # ifdef SIGACTION
-static struct sigaction savsig[NX509_SIG];
+static struct sigaction savsig[NYX509_SIG];
 # else
-static void (*savsig[NX509_SIG]) (int);
+static void (*savsig[NYX509_SIG]) (int);
 # endif
 
 # ifdef OPENSSL_SYS_VMS
@@ -460,7 +460,7 @@ static int open_console(UI *ui)
 #  endif
             {
                 char tmp_num[10];
-                BIO_snprintf(tmp_num, sizeof(tmp_num) - 1, "%d", errno);
+                BIO_ssnprintf(tmp_num, sizeof(tmp_num) - 1, "%d", errno);
                 UIerr(UI_F_OPEN_CONSOLE, UI_R_UNKNOWN_TTYGET_ERRNO_VALUE);
                 ERR_add_error_data(2, "errno=", tmp_num);
 
@@ -475,7 +475,7 @@ static int open_console(UI *ui)
     if (status != SS$_NORMAL) {
         char tmp_num[12];
 
-        BIO_snprintf(tmp_num, sizeof(tmp_num) - 1, "%%X%08X", status);
+        BIO_ssnprintf(tmp_num, sizeof(tmp_num) - 1, "%%X%08X", status);
         UIerr(UI_F_OPEN_CONSOLE, UI_R_SYSASSIGN_ERROR);
         ERR_add_error_data(2, "status=", tmp_num);
         return 0;
@@ -512,9 +512,9 @@ static int noecho_console(UI *ui)
         if ((status != SS$_NORMAL) || (iosb.iosb$w_value != SS$_NORMAL)) {
             char tmp_num[2][12];
 
-            BIO_snprintf(tmp_num[0], sizeof(tmp_num[0]) - 1, "%%X%08X",
+            BIO_ssnprintf(tmp_num[0], sizeof(tmp_num[0]) - 1, "%%X%08X",
                          status);
-            BIO_snprintf(tmp_num[1], sizeof(tmp_num[1]) - 1, "%%X%08X",
+            BIO_ssnprintf(tmp_num[1], sizeof(tmp_num[1]) - 1, "%%X%08X",
                          iosb.iosb$w_value);
             UIerr(UI_F_NOECHO_CONSOLE, UI_R_SYSQIOW_ERROR);
             ERR_add_error_data(5, "status=", tmp_num[0],
@@ -550,9 +550,9 @@ static int echo_console(UI *ui)
         if ((status != SS$_NORMAL) || (iosb.iosb$w_value != SS$_NORMAL)) {
             char tmp_num[2][12];
 
-            BIO_snprintf(tmp_num[0], sizeof(tmp_num[0]) - 1, "%%X%08X",
+            BIO_ssnprintf(tmp_num[0], sizeof(tmp_num[0]) - 1, "%%X%08X",
                          status);
-            BIO_snprintf(tmp_num[1], sizeof(tmp_num[1]) - 1, "%%X%08X",
+            BIO_ssnprintf(tmp_num[1], sizeof(tmp_num[1]) - 1, "%%X%08X",
                          iosb.iosb$w_value);
             UIerr(UI_F_ECHO_CONSOLE, UI_R_SYSQIOW_ERROR);
             ERR_add_error_data(5, "status=", tmp_num[0],
@@ -583,7 +583,7 @@ static int close_console(UI *ui)
     if (status != SS$_NORMAL) {
         char tmp_num[12];
 
-        BIO_snprintf(tmp_num, sizeof(tmp_num) - 1, "%%X%08X", status);
+        BIO_ssnprintf(tmp_num, sizeof(tmp_num) - 1, "%%X%08X", status);
         UIerr(UI_F_CLOSE_CONSOLE, UI_R_SYSDASSGN_ERROR);
         ERR_add_error_data(2, "status=", tmp_num);
         ret = 0;
@@ -616,7 +616,7 @@ static void pushsig(void)
     savsig[SIGSEGV] = signal(SIGSEGV, recsig);
     savsig[SIGTERM] = signal(SIGTERM, recsig);
 #  else
-    for (i = 1; i < NX509_SIG; i++) {
+    for (i = 1; i < NYX509_SIG; i++) {
 #   ifdef SIGUSR1
         if (i == SIGUSR1)
             continue;
@@ -653,7 +653,7 @@ static void popsig(void)
     signal(SIGTERM, savsig[SIGTERM]);
 #  else
     int i;
-    for (i = 1; i < NX509_SIG; i++) {
+    for (i = 1; i < NYX509_SIG; i++) {
 #   ifdef SIGUSR1
         if (i == SIGUSR1)
             continue;

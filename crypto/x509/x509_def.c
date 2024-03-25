@@ -12,32 +12,32 @@
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 
-const char *X509_get_default_private_dir(void)
+const char *YX509_get_default_private_dir(void)
 {
-    return X509_PRIVATE_DIR;
+    return YX509_PRIVATE_DIR;
 }
 
-const char *X509_get_default_cert_area(void)
+const char *YX509_get_default_cert_area(void)
 {
-    return X509_CERT_AREA;
+    return YX509_CERT_AREA;
 }
 
-const char *X509_get_default_cert_dir(void)
+const char *YX509_get_default_cert_dir(void)
 {
-    return X509_CERT_DIR;
+    return YX509_CERT_DIR;
 }
 
-const char *X509_get_default_cert_file(void)
+const char *YX509_get_default_cert_file(void)
 {
-    return X509_CERT_FILE;
+    return YX509_CERT_FILE;
 }
 
-const char *X509_get_default_cert_dir_env(void)
+const char *YX509_get_default_cert_dir_env(void)
 {
-    return X509_CERT_DIR_EVP;
+    return YX509_CERT_DIR_EVVP;
 }
 
-const char *X509_get_default_cert_file_env(void)
+const char *YX509_get_default_cert_file_env(void)
 {
-    return X509_CERT_FILE_EVP;
+    return YX509_CERT_FILE_EVVP;
 }

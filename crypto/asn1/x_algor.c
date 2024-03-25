@@ -13,52 +13,52 @@
 #include <openssl/asn1t.h>
 #include "crypto/evp.h"
 
-ASN1_SEQUENCE(X509_ALGOR) = {
-        ASN1_SIMPLE(X509_ALGOR, algorithm, ASN1_OBJECT),
-        ASN1_OPT(X509_ALGOR, parameter, ASN1_ANY)
-} ASN1_SEQUENCE_END(X509_ALGOR)
+YASN1_SEQUENCE(YX509_ALGOR) = {
+        YASN1_SIMPLE(YX509_ALGOR, algorithm, YASN1_OBJECT),
+        YASN1_OPT(YX509_ALGOR, parameter, YASN1_ANY)
+} YASN1_SEQUENCE_END(YX509_ALGOR)
 
-ASN1_ITEM_TEMPLATE(X509_ALGORS) =
-        ASN1_EX_TEMPLATE_TYPE(ASN1_TFLG_SEQUENCE_OF, 0, algorithms, X509_ALGOR)
-ASN1_ITEM_TEMPLATE_END(X509_ALGORS)
+YASN1_ITEM_TEMPLATE(YX509_ALGORS) =
+        YASN1_EX_TEMPLATE_TYPE(YASN1_TFLG_SEQUENCE_OF, 0, algorithms, YX509_ALGOR)
+YASN1_ITEM_TEMPLATE_END(YX509_ALGORS)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_ALGOR)
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_fname(X509_ALGORS, X509_ALGORS, X509_ALGORS)
-IMPLEMENT_ASN1_DUP_FUNCTION(X509_ALGOR)
+IMPLEMENT_YASN1_FUNCTIONS(YX509_ALGOR)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_fname(YX509_ALGORS, YX509_ALGORS, YX509_ALGORS)
+IMPLEMENT_YASN1_DUP_FUNCTION(YX509_ALGOR)
 
-int X509_ALGOR_set0(X509_ALGOR *alg, ASN1_OBJECT *aobj, int ptype, void *pval)
+int YX509_ALGOR_set0(YX509_ALGOR *alg, YASN1_OBJECT *aobj, int ptype, void *pval)
 {
     if (alg == NULL)
         return 0;
 
-    if (ptype != V_ASN1_UNDEF) {
+    if (ptype != V_YASN1_UNDEF) {
         if (alg->parameter == NULL)
-            alg->parameter = ASN1_TYPE_new();
+            alg->parameter = YASN1_TYPE_new();
         if (alg->parameter == NULL)
             return 0;
     }
 
-    ASN1_OBJECT_free(alg->algorithm);
+    YASN1_OBJECT_free(alg->algorithm);
     alg->algorithm = aobj;
 
     if (ptype == 0)
         return 1;
-    if (ptype == V_ASN1_UNDEF) {
-        ASN1_TYPE_free(alg->parameter);
+    if (ptype == V_YASN1_UNDEF) {
+        YASN1_TYPE_free(alg->parameter);
         alg->parameter = NULL;
     } else
-        ASN1_TYPE_set(alg->parameter, ptype, pval);
+        YASN1_TYPE_set(alg->parameter, ptype, pval);
     return 1;
 }
 
-void X509_ALGOR_get0(const ASN1_OBJECT **paobj, int *pptype,
-                     const void **ppval, const X509_ALGOR *algor)
+void YX509_ALGOR_get0(const YASN1_OBJECT **paobj, int *pptype,
+                     const void **ppval, const YX509_ALGOR *algor)
 {
     if (paobj)
         *paobj = algor->algorithm;
     if (pptype) {
         if (algor->parameter == NULL) {
-            *pptype = V_ASN1_UNDEF;
+            *pptype = V_YASN1_UNDEF;
             return;
         } else
             *pptype = algor->parameter->type;
@@ -67,22 +67,22 @@ void X509_ALGOR_get0(const ASN1_OBJECT **paobj, int *pptype,
     }
 }
 
-/* Set up an X509_ALGOR DigestAlgorithmIdentifier from an EVP_MD */
+/* Set up an YX509_ALGOR DigestAlgorithmIdentifier from an EVVP_MD */
 
-void X509_ALGOR_set_md(X509_ALGOR *alg, const EVP_MD *md)
+void YX509_ALGOR_set_md(YX509_ALGOR *alg, const EVVP_MD *md)
 {
     int param_type;
 
-    if (md->flags & EVP_MD_FLAG_DIGALGID_ABSENT)
-        param_type = V_ASN1_UNDEF;
+    if (md->flags & EVVP_MD_FLAG_DIGALGID_ABSENT)
+        param_type = V_YASN1_UNDEF;
     else
-        param_type = V_ASN1_NULL;
+        param_type = V_YASN1_NULL;
 
-    X509_ALGOR_set0(alg, OBJ_nid2obj(EVP_MD_type(md)), param_type, NULL);
+    YX509_ALGOR_set0(alg, OBJ_nid2obj(EVVP_MD_type(md)), param_type, NULL);
 
 }
 
-int X509_ALGOR_cmp(const X509_ALGOR *a, const X509_ALGOR *b)
+int YX509_ALGOR_cmp(const YX509_ALGOR *a, const YX509_ALGOR *b)
 {
     int rv;
     rv = OBJ_cmp(a->algorithm, b->algorithm);
@@ -90,20 +90,20 @@ int X509_ALGOR_cmp(const X509_ALGOR *a, const X509_ALGOR *b)
         return rv;
     if (!a->parameter && !b->parameter)
         return 0;
-    return ASN1_TYPE_cmp(a->parameter, b->parameter);
+    return YASN1_TYPE_cmp(a->parameter, b->parameter);
 }
 
-int X509_ALGOR_copy(X509_ALGOR *dest, const X509_ALGOR *src)
+int YX509_ALGOR_copy(YX509_ALGOR *dest, const YX509_ALGOR *src)
 {
     if (src == NULL || dest == NULL)
 	return 0;
 
     if (dest->algorithm)
-         ASN1_OBJECT_free(dest->algorithm);
+         YASN1_OBJECT_free(dest->algorithm);
     dest->algorithm = NULL;
 
     if (dest->parameter)
-        ASN1_TYPE_free(dest->parameter);
+        YASN1_TYPE_free(dest->parameter);
     dest->parameter = NULL;
 
     if (src->algorithm)
@@ -111,14 +111,14 @@ int X509_ALGOR_copy(X509_ALGOR *dest, const X509_ALGOR *src)
 	    return 0;
 
     if (src->parameter) {
-        dest->parameter = ASN1_TYPE_new();
+        dest->parameter = YASN1_TYPE_new();
         if (dest->parameter == NULL)
             return 0;
 
         /* Assuming this is also correct for a BOOL.
          * set does copy as a side effect.
          */
-        if (ASN1_TYPE_set1(dest->parameter, 
+        if (YASN1_TYPE_set1(dest->parameter, 
                 src->parameter->type, src->parameter->value.ptr) == 0)
             return 0;
     }

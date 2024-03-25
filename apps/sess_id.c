@@ -43,7 +43,7 @@ static SSL_SESSION *load_sess_id(char *file, int format);
 int sess_id_main(int argc, char **argv)
 {
     SSL_SESSION *x = NULL;
-    X509 *peer = NULL;
+    YX509 *peer = NULL;
     BIO *out = NULL;
     char *infile = NULL, *outfile = NULL, *context = NULL, *prog;
     int informat = FORMAT_PEM, outformat = FORMAT_PEM;
@@ -56,7 +56,7 @@ int sess_id_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(sess_id_options);
@@ -104,12 +104,12 @@ int sess_id_main(int argc, char **argv)
     if (context != NULL) {
         size_t ctx_len = strlen(context);
         if (ctx_len > SSL_MAX_SID_CTX_LENGTH) {
-            BIO_printf(bio_err, "Context too long\n");
+            BIO_pprintf(bio_err, "Context too long\n");
             goto end;
         }
         if (!SSL_SESSION_set1_id_context(x, (unsigned char *)context,
                                          ctx_len)) {
-            BIO_printf(bio_err, "Error setting id context\n");
+            BIO_pprintf(bio_err, "Error setting id context\n");
             goto end;
         }
     }
@@ -127,36 +127,36 @@ int sess_id_main(int argc, char **argv)
             if (peer == NULL)
                 BIO_puts(out, "No certificate present\n");
             else
-                X509_print(out, peer);
+                YX509_print(out, peer);
         }
     }
 
     if (!noout && !cert) {
-        if (outformat == FORMAT_ASN1) {
+        if (outformat == FORMAT_YASN1) {
             i = i2d_SSL_SESSION_bio(out, x);
         } else if (outformat == FORMAT_PEM) {
             i = PEM_write_bio_SSL_SESSION(out, x);
         } else if (outformat == FORMAT_NSS) {
             i = SSL_SESSION_print_keylog(out, x);
         } else {
-            BIO_printf(bio_err, "bad output format specified for outfile\n");
+            BIO_pprintf(bio_err, "bad output format specified for outfile\n");
             goto end;
         }
         if (!i) {
-            BIO_printf(bio_err, "unable to write SSL_SESSION\n");
+            BIO_pprintf(bio_err, "unable to write SSL_SESSION\n");
             goto end;
         }
     } else if (!noout && (peer != NULL)) { /* just print the certificate */
-        if (outformat == FORMAT_ASN1) {
-            i = (int)i2d_X509_bio(out, peer);
+        if (outformat == FORMAT_YASN1) {
+            i = (int)i2d_YX509_bio(out, peer);
         } else if (outformat == FORMAT_PEM) {
-            i = PEM_write_bio_X509(out, peer);
+            i = PEM_write_bio_YX509(out, peer);
         } else {
-            BIO_printf(bio_err, "bad output format specified for outfile\n");
+            BIO_pprintf(bio_err, "bad output format specified for outfile\n");
             goto end;
         }
         if (!i) {
-            BIO_printf(bio_err, "unable to write X509\n");
+            BIO_pprintf(bio_err, "unable to write YX509\n");
             goto end;
         }
     }
@@ -175,12 +175,12 @@ static SSL_SESSION *load_sess_id(char *infile, int format)
     in = bio_open_default(infile, 'r', format);
     if (in == NULL)
         goto end;
-    if (format == FORMAT_ASN1)
+    if (format == FORMAT_YASN1)
         x = d2i_SSL_SESSION_bio(in, NULL);
     else
-        x = PEM_read_bio_SSL_SESSION(in, NULL, NULL, NULL);
+        x = PEM_readd_bio_SSL_SESSION(in, NULL, NULL, NULL);
     if (x == NULL) {
-        BIO_printf(bio_err, "unable to load SSL_SESSION\n");
+        BIO_pprintf(bio_err, "unable to load SSL_SESSION\n");
         ERR_print_errors(bio_err);
         goto end;
     }

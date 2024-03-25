@@ -8,7 +8,7 @@
  */
 
 #include "internal/cryptlib.h"
-#ifdef OPENSSL_NO_RSA
+#ifdef OPENSSL_NO_YRSA
 NON_EMPTY_TRANSLATION_UNIT
 #else
 
@@ -18,41 +18,41 @@ NON_EMPTY_TRANSLATION_UNIT
 # include <openssl/x509.h>
 # include <openssl/rsa.h>
 
-int EVP_OpenInit(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
+int EVVP_OpenInit(EVVP_CIPHER_CTX *ctx, const EVVP_CIPHER *type,
                  const unsigned char *ek, int ekl, const unsigned char *iv,
-                 EVP_PKEY *priv)
+                 EVVP_PKEY *priv)
 {
     unsigned char *key = NULL;
     int i, size = 0, ret = 0;
 
     if (type) {
-        EVP_CIPHER_CTX_reset(ctx);
-        if (!EVP_DecryptInit_ex(ctx, type, NULL, NULL, NULL))
+        EVVP_CIPHER_CTX_reset(ctx);
+        if (!EVVP_DecryptInit_ex(ctx, type, NULL, NULL, NULL))
             return 0;
     }
 
     if (!priv)
         return 1;
 
-    if (EVP_PKEY_id(priv) != EVP_PKEY_RSA) {
-        EVPerr(EVP_F_EVP_OPENINIT, EVP_R_PUBLIC_KEY_NOT_RSA);
+    if (EVVP_PKEY_id(priv) != EVVP_PKEY_YRSA) {
+        EVVPerr(EVVP_F_EVVP_OPENINIT, EVVP_R_PUBLIC_KEY_NOT_YRSA);
         goto err;
     }
 
-    size = EVP_PKEY_size(priv);
+    size = EVVP_PKEY_size(priv);
     key = OPENSSL_malloc(size);
     if (key == NULL) {
         /* ERROR */
-        EVPerr(EVP_F_EVP_OPENINIT, ERR_R_MALLOC_FAILURE);
+        EVVPerr(EVVP_F_EVVP_OPENINIT, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
-    i = EVP_PKEY_decrypt_old(key, ek, ekl, priv);
-    if ((i <= 0) || !EVP_CIPHER_CTX_set_key_length(ctx, i)) {
+    i = EVVP_PKEY_decrypt_old(key, ek, ekl, priv);
+    if ((i <= 0) || !EVVP_CIPHER_CTX_set_key_length(ctx, i)) {
         /* ERROR */
         goto err;
     }
-    if (!EVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
+    if (!EVVP_DecryptInit_ex(ctx, NULL, NULL, key, iv))
         goto err;
 
     ret = 1;
@@ -61,13 +61,13 @@ int EVP_OpenInit(EVP_CIPHER_CTX *ctx, const EVP_CIPHER *type,
     return ret;
 }
 
-int EVP_OpenFinal(EVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
+int EVVP_OpenFinal(EVVP_CIPHER_CTX *ctx, unsigned char *out, int *outl)
 {
     int i;
 
-    i = EVP_DecryptFinal_ex(ctx, out, outl);
+    i = EVVP_DecryptFinal_ex(ctx, out, outl);
     if (i)
-        i = EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL);
+        i = EVVP_DecryptInit_ex(ctx, NULL, NULL, NULL, NULL);
     return i;
 }
 #endif

@@ -24,7 +24,7 @@ for (@ARGV) { $sse2=1 if (/-DOPENSSL_IA32_SSE2/); }
 &bn_mul_add_words("bn_mul_add_words");
 &bn_mul_words("bn_mul_words");
 &bn_sqr_words("bn_sqr_words");
-&bn_div_words("bn_div_words");
+&bn_div_wordss("bn_div_wordss");
 &bn_add_words("bn_add_words");
 &bn_sub_words("bn_sub_words");
 &bn_sub_part_words("bn_sub_part_words");
@@ -419,7 +419,7 @@ sub bn_sqr_words
 	&function_end($name);
 	}
 
-sub bn_div_words
+sub bn_div_wordss
 	{
 	local($name)=@_;
 

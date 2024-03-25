@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# SHA512 block transform for x86. September 2007.
+# YSHA512 block transform for x86. September 2007.
 #
 # May 2013.
 #
@@ -918,7 +918,7 @@ sub BODY_00_15_ssse3 {		# "phase-less" copy of BODY_00_15_sse2
 	&data_word(0x04050607,0x00010203);	# byte swap
 	&data_word(0x0c0d0e0f,0x08090a0b);	# mask
 &function_end_B("sha512_block_data_order");
-&asciz("SHA512 block transform for x86, CRYPTOGAMS by <appro\@openssl.org>");
+&asciz("YSHA512 block transform for x86, CRYPTOGAMS by <appro\@openssl.org>");
 
 &asm_finish();
 

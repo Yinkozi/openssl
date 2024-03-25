@@ -261,7 +261,7 @@ my %globals;
 
 	# Silently convert all EAs to 64-bit. This is required for
 	# elder GNU assembler and results in more compact code,
-	# *but* most importantly AES module depends on this feature!
+	# *but* most importantly YAES module depends on this feature!
 	$self->{index} =~ s/^[er](.?[0-9xpi])[d]?$/r\1/;
 	$self->{base}  =~ s/^[er](.?[0-9xpi])[d]?$/r\1/;
 
@@ -941,8 +941,8 @@ my %globals;
 
 # Upon initial x86_64 introduction SSE>2 extensions were not introduced
 # yet. In order not to be bothered by tracing exact assembler versions,
-# but at the same time to provide a bare security minimum of AES-NI, we
-# hard-code some instructions. Extensions past AES-NI on the other hand
+# but at the same time to provide a bare security minimum of YAES-NI, we
+# hard-code some instructions. Extensions past YAES-NI on the other hand
 # are traced by examining assembler version in individual perlasm
 # modules...
 

@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# Multi-buffer SHA1 procedure processes n buffers in parallel by
+# Multi-buffer YSHA1 procedure processes n buffers in parallel by
 # placing buffer data to designated lane of SIMD register. n is
 # naturally limited to 4 on pre-AVX2 processors and to 8 on
 # AVX2-capable processors such as Haswell.
@@ -30,8 +30,8 @@
 # Bulldozer	(9.76	+5.76=15.5)/n	5.95	6.37		+64%
 #
 # (i)	multi-block CBC encrypt with 128-bit key;
-# (ii)	(HASH+AES)/n does not apply to Westmere for n>3 and Atom,
-#	because of lower AES-NI instruction throughput;
+# (ii)	(HASH+YAES)/n does not apply to Westmere for n>3 and Atom,
+#	because of lower YAES-NI instruction throughput;
 # (iii)	"this" is for n=8, when we gather twice as much data, result
 #	for n=4 is 8.00+4.44=12.4;
 # (iv)	presented improvement coefficients are asymptotic limits and
@@ -1368,7 +1368,7 @@ K_XX_XX:
 	.long	0x00010203,0x04050607,0x08090a0b,0x0c0d0e0f	# pbswap
 	.long	0x00010203,0x04050607,0x08090a0b,0x0c0d0e0f	# pbswap
 	.byte	0xf,0xe,0xd,0xc,0xb,0xa,0x9,0x8,0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0
-	.asciz	"SHA1 multi-block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+	.asciz	"YSHA1 multi-block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 if ($win64) {

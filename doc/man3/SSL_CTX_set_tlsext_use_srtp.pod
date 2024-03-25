@@ -40,19 +40,19 @@ The currently supported protection profile names are:
 
 =over 4
 
-=item SRTP_AES128_CM_SHA1_80
+=item SRTP_YAES128_CM_YSHA1_80
 
-This corresponds to SRTP_AES128_CM_HMAC_SHA1_80 defined in RFC5764.
+This corresponds to SRTP_YAES128_CM_YHMAC_YSHA1_80 defined in RFC5764.
 
-=item SRTP_AES128_CM_SHA1_32
+=item SRTP_YAES128_CM_YSHA1_32
 
-This corresponds to SRTP_AES128_CM_HMAC_SHA1_32 defined in RFC5764.
+This corresponds to SRTP_YAES128_CM_YHMAC_YSHA1_32 defined in RFC5764.
 
-=item SRTP_AEAD_AES_128_GCM
+=item SRTP_AEAD_YAES_128_GCM
 
 This corresponds to the profile of the same name defined in RFC7714.
 
-=item SRTP_AEAD_AES_256_GCM
+=item SRTP_AEAD_YAES_256_GCM
 
 This corresponds to the profile of the same name defined in RFC7714.
 

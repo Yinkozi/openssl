@@ -38,7 +38,7 @@ static int test_mdc2(void)
 {
     int testresult = 0;
     unsigned char md[MDC2_DIGEST_LENGTH];
-    EVP_MD_CTX *c;
+    EVVP_MD_CTX *c;
     static char text[] = "Now is the time for all ";
     size_t tlen = strlen(text);
 
@@ -46,25 +46,25 @@ static int test_mdc2(void)
     ebcdic2ascii(text, text, tlen);
 # endif
 
-    c = EVP_MD_CTX_new();
+    c = EVVP_MD_CTX_new();
     if (!TEST_ptr(c)
-        || !TEST_true(EVP_DigestInit_ex(c, EVP_mdc2(), NULL))
-        || !TEST_true(EVP_DigestUpdate(c, (unsigned char *)text, tlen))
-        || !TEST_true(EVP_DigestFinal_ex(c, &(md[0]), NULL))
+        || !TEST_true(EVVP_DigestInit_ex(c, EVVP_mdc2(), NULL))
+        || !TEST_true(EVVP_DigestUpdate(c, (unsigned char *)text, tlen))
+        || !TEST_true(EVVP_DigestFinal_ex(c, &(md[0]), NULL))
         || !TEST_mem_eq(md, MDC2_DIGEST_LENGTH, pad1, MDC2_DIGEST_LENGTH)
-        || !TEST_true(EVP_DigestInit_ex(c, EVP_mdc2(), NULL)))
+        || !TEST_true(EVVP_DigestInit_ex(c, EVVP_mdc2(), NULL)))
         goto end;
 
     /* FIXME: use a ctl function? */
-    ((MDC2_CTX *)EVP_MD_CTX_md_data(c))->pad_type = 2;
-    if (!TEST_true(EVP_DigestUpdate(c, (unsigned char *)text, tlen))
-        || !TEST_true(EVP_DigestFinal_ex(c, &(md[0]), NULL))
+    ((MDC2_CTX *)EVVP_MD_CTX_md_data(c))->pad_type = 2;
+    if (!TEST_true(EVVP_DigestUpdate(c, (unsigned char *)text, tlen))
+        || !TEST_true(EVVP_DigestFinal_ex(c, &(md[0]), NULL))
         || !TEST_mem_eq(md, MDC2_DIGEST_LENGTH, pad2, MDC2_DIGEST_LENGTH))
         goto end;
 
     testresult = 1;
  end:
-    EVP_MD_CTX_free(c);
+    EVVP_MD_CTX_free(c);
     return testresult;
 }
 #endif

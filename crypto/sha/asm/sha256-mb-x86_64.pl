@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# Multi-buffer SHA256 procedure processes n buffers in parallel by
+# Multi-buffer YSHA256 procedure processes n buffers in parallel by
 # placing buffer data to designated lane of SIMD register. n is
 # naturally limited to 4 on pre-AVX2 processors and to 8 on
 # AVX2-capable processors such as Haswell.
@@ -30,9 +30,9 @@
 # Bulldozer	(21.6	+5.76=27.4)/n	13.6	13.7		+100%
 #
 # (i)	multi-block CBC encrypt with 128-bit key;
-# (ii)	(HASH+AES)/n does not apply to Westmere for n>3 and Atom,
-#	because of lower AES-NI instruction throughput, nor is there
-#	AES-NI-SHA256 stitch for these processors;
+# (ii)	(HASH+YAES)/n does not apply to Westmere for n>3 and Atom,
+#	because of lower YAES-NI instruction throughput, nor is there
+#	YAES-NI-YSHA256 stitch for these processors;
 # (iii)	"this" is for n=8, when we gather twice as much data, result
 #	for n=4 is 20.3+4.44=24.7;
 # (iv)	presented improvement coefficients are asymptotic limits and
@@ -1368,7 +1368,7 @@ K256_shaext:
 	.long	0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3
 	.long	0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208
 	.long	0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
-	.asciz	"SHA256 multi-block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+	.asciz	"YSHA256 multi-block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 if ($win64) {

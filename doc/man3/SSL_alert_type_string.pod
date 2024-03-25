@@ -169,7 +169,7 @@ or validate a finished message.
 
 A negotiation not in compliance with export restrictions was
 detected; for example, attempting to transfer a 1024 bit
-ephemeral RSA key for the RSA_EXPORT handshake method. This
+ephemeral YRSA key for the YRSA_EXPORT handshake method. This
 message is always fatal.
 
 =item "PV"/"protocol version"

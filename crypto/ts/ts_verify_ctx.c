@@ -54,14 +54,14 @@ BIO *TS_VERIFY_CTX_set_data(TS_VERIFY_CTX *ctx, BIO *b)
     return ctx->data;
 }
 
-X509_STORE *TS_VERIFY_CTX_set_store(TS_VERIFY_CTX *ctx, X509_STORE *s)
+YX509_STORE *TS_VERIFY_CTX_set_store(TS_VERIFY_CTX *ctx, YX509_STORE *s)
 {
     ctx->store = s;
     return ctx->store;
 }
 
-STACK_OF(X509) *TS_VERIFY_CTS_set_certs(TS_VERIFY_CTX *ctx,
-                                        STACK_OF(X509) *certs)
+STACK_OF(YX509) *TS_VERIFY_CTS_set_certs(TS_VERIFY_CTX *ctx,
+                                        STACK_OF(YX509) *certs)
 {
     ctx->certs = certs;
     return ctx->certs;
@@ -81,17 +81,17 @@ void TS_VERIFY_CTX_cleanup(TS_VERIFY_CTX *ctx)
     if (!ctx)
         return;
 
-    X509_STORE_free(ctx->store);
-    sk_X509_pop_free(ctx->certs, X509_free);
+    YX509_STORE_free(ctx->store);
+    sk_YX509_pop_free(ctx->certs, YX509_free);
 
-    ASN1_OBJECT_free(ctx->policy);
+    YASN1_OBJECT_free(ctx->policy);
 
-    X509_ALGOR_free(ctx->md_alg);
+    YX509_ALGOR_free(ctx->md_alg);
     OPENSSL_free(ctx->imprint);
 
     BIO_free_all(ctx->data);
 
-    ASN1_INTEGER_free(ctx->nonce);
+    YASN1_INTEGER_free(ctx->nonce);
 
     GENERAL_NAME_free(ctx->tsa_name);
 
@@ -101,11 +101,11 @@ void TS_VERIFY_CTX_cleanup(TS_VERIFY_CTX *ctx)
 TS_VERIFY_CTX *TS_REQ_to_TS_VERIFY_CTX(TS_REQ *req, TS_VERIFY_CTX *ctx)
 {
     TS_VERIFY_CTX *ret = ctx;
-    ASN1_OBJECT *policy;
+    YASN1_OBJECT *policy;
     TS_MSG_IMPRINT *imprint;
-    X509_ALGOR *md_alg;
-    ASN1_OCTET_STRING *msg;
-    const ASN1_INTEGER *nonce;
+    YX509_ALGOR *md_alg;
+    YASN1_OCTET_STRING *msg;
+    const YASN1_INTEGER *nonce;
 
     OPENSSL_assert(req != NULL);
     if (ret)
@@ -123,18 +123,18 @@ TS_VERIFY_CTX *TS_REQ_to_TS_VERIFY_CTX(TS_REQ *req, TS_VERIFY_CTX *ctx)
 
     imprint = req->msg_imprint;
     md_alg = imprint->hash_algo;
-    if ((ret->md_alg = X509_ALGOR_dup(md_alg)) == NULL)
+    if ((ret->md_alg = YX509_ALGOR_dup(md_alg)) == NULL)
         goto err;
     msg = imprint->hashed_msg;
-    ret->imprint_len = ASN1_STRING_length(msg);
+    ret->imprint_len = YASN1_STRING_length(msg);
     if (ret->imprint_len <= 0)
         goto err;
     if ((ret->imprint = OPENSSL_malloc(ret->imprint_len)) == NULL)
         goto err;
-    memcpy(ret->imprint, ASN1_STRING_get0_data(msg), ret->imprint_len);
+    memcpy(ret->imprint, YASN1_STRING_get0_data(msg), ret->imprint_len);
 
     if ((nonce = req->nonce) != NULL) {
-        if ((ret->nonce = ASN1_INTEGER_dup(nonce)) == NULL)
+        if ((ret->nonce = YASN1_INTEGER_dup(nonce)) == NULL)
             goto err;
     } else
         ret->flags &= ~TS_VFY_NONCE;

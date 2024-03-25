@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# Multi-buffer AES-NI procedures process several independent buffers
+# Multi-buffer YAES-NI procedures process several independent buffers
 # in parallel by interleaving independent instructions.
 #
 # Cycles per byte for interleave factor 4:
@@ -79,7 +79,7 @@ open OUT,"| \"$^X\" \"$xlate\" $flavour \"$output\"";
 
 # void aesni_multi_cbc_encrypt (
 #     struct {	void *inp,*out; int blocks; double iv[2]; } inp[8];
-#     const AES_KEY *key,
+#     const YAES_KEY *key,
 #     int num);		/* 1 or 2 */
 #
 $inp="%rdi";	# 1st arg

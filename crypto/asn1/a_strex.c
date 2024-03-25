@@ -18,18 +18,18 @@
 #include "charmap.h"
 
 /*
- * ASN1_STRING_print_ex() and X509_NAME_print_ex(). Enhanced string and name
+ * YASN1_STRING_print_ex() and YX509_NAME_print_ex(). Enhanced string and name
  * printing routines handling multibyte characters, RFC2253 and a host of
  * other options.
  */
 
-#define CHARTYPE_BS_ESC         (ASN1_STRFLGS_ESC_2253 | CHARTYPE_FIRST_ESC_2253 | CHARTYPE_LAST_ESC_2253)
+#define CHARTYPE_BS_ESC         (YASN1_STRFLGS_ESC_2253 | CHARTYPE_FIRST_ESC_2253 | CHARTYPE_LAST_ESC_2253)
 
-#define ESC_FLAGS (ASN1_STRFLGS_ESC_2253 | \
-                  ASN1_STRFLGS_ESC_2254 | \
-                  ASN1_STRFLGS_ESC_QUOTE | \
-                  ASN1_STRFLGS_ESC_CTRL | \
-                  ASN1_STRFLGS_ESC_MSB)
+#define ESC_FLAGS (YASN1_STRFLGS_ESC_2253 | \
+                  YASN1_STRFLGS_ESC_2254 | \
+                  YASN1_STRFLGS_ESC_QUOTE | \
+                  YASN1_STRFLGS_ESC_CTRL | \
+                  YASN1_STRFLGS_ESC_MSB)
 
 /*
  * Three IO functions for sending data to memory, a BIO and and a FILE
@@ -73,25 +73,25 @@ static int do_esc_char(unsigned long c, unsigned short flags, char *do_quotes,
     if (c > 0xffffffffL)
         return -1;
     if (c > 0xffff) {
-        BIO_snprintf(tmphex, sizeof(tmphex), "\\W%08lX", c);
+        BIO_ssnprintf(tmphex, sizeof(tmphex), "\\W%08lX", c);
         if (!io_ch(arg, tmphex, 10))
             return -1;
         return 10;
     }
     if (c > 0xff) {
-        BIO_snprintf(tmphex, sizeof(tmphex), "\\U%04lX", c);
+        BIO_ssnprintf(tmphex, sizeof(tmphex), "\\U%04lX", c);
         if (!io_ch(arg, tmphex, 6))
             return -1;
         return 6;
     }
     chtmp = (unsigned char)c;
     if (chtmp > 0x7f)
-        chflgs = flags & ASN1_STRFLGS_ESC_MSB;
+        chflgs = flags & YASN1_STRFLGS_ESC_MSB;
     else
         chflgs = char_type[chtmp] & flags;
     if (chflgs & CHARTYPE_BS_ESC) {
         /* If we don't escape with quotes, signal we need quotes */
-        if (chflgs & ASN1_STRFLGS_ESC_QUOTE) {
+        if (chflgs & YASN1_STRFLGS_ESC_QUOTE) {
             if (do_quotes)
                 *do_quotes = 1;
             if (!io_ch(arg, &chtmp, 1))
@@ -104,10 +104,10 @@ static int do_esc_char(unsigned long c, unsigned short flags, char *do_quotes,
             return -1;
         return 2;
     }
-    if (chflgs & (ASN1_STRFLGS_ESC_CTRL
-                  | ASN1_STRFLGS_ESC_MSB
-                  | ASN1_STRFLGS_ESC_2254)) {
-        BIO_snprintf(tmphex, 11, "\\%02X", chtmp);
+    if (chflgs & (YASN1_STRFLGS_ESC_CTRL
+                  | YASN1_STRFLGS_ESC_MSB
+                  | YASN1_STRFLGS_ESC_2254)) {
+        BIO_ssnprintf(tmphex, 11, "\\%02X", chtmp);
         if (!io_ch(arg, tmphex, 3))
             return -1;
         return 3;
@@ -152,13 +152,13 @@ static int do_buf(unsigned char *buf, int buflen,
     switch (charwidth) {
     case 4:
         if (buflen & 3) {
-            ASN1err(ASN1_F_DO_BUF, ASN1_R_INVALID_UNIVERSALSTRING_LENGTH);
+            YASN1err(YASN1_F_DO_BUF, YASN1_R_INVALID_UNIVEYRSALSTRING_LENGTH);
             return -1;
         }
         break;
     case 2:
         if (buflen & 1) {
-            ASN1err(ASN1_F_DO_BUF, ASN1_R_INVALID_BMPSTRING_LENGTH);
+            YASN1err(YASN1_F_DO_BUF, YASN1_R_INVALID_BMPSTRING_LENGTH);
             return -1;
         }
         break;
@@ -167,7 +167,7 @@ static int do_buf(unsigned char *buf, int buflen,
     }
 
     while (p != q) {
-        if (p == buf && flags & ASN1_STRFLGS_ESC_2253)
+        if (p == buf && flags & YASN1_STRFLGS_ESC_2253)
             orflags = CHARTYPE_FIRST_ESC_2253;
         else
             orflags = 0;
@@ -199,7 +199,7 @@ static int do_buf(unsigned char *buf, int buflen,
         default:
             return -1;          /* invalid width */
         }
-        if (p == q && flags & ASN1_STRFLGS_ESC_2253)
+        if (p == q && flags & YASN1_STRFLGS_ESC_2253)
             orflags = CHARTYPE_LAST_ESC_2253;
         if (type & BUF_TYPE_CONVUTF8) {
             unsigned char utfbuf[6];
@@ -258,20 +258,20 @@ static int do_hex_dump(char_io *io_ch, void *arg, unsigned char *buf,
  */
 
 static int do_dump(unsigned long lflags, char_io *io_ch, void *arg,
-                   const ASN1_STRING *str)
+                   const YASN1_STRING *str)
 {
     /*
-     * Placing the ASN1_STRING in a temp ASN1_TYPE allows the DER encoding to
+     * Placing the YASN1_STRING in a temp YASN1_TYPE allows the DER encoding to
      * readily obtained
      */
-    ASN1_TYPE t;
+    YASN1_TYPE t;
     unsigned char *der_buf, *p;
     int outlen, der_len;
 
     if (!io_ch(arg, "#", 1))
         return -1;
     /* If we don't dump DER encoding just dump content octets */
-    if (!(lflags & ASN1_STRFLGS_DUMP_DER)) {
+    if (!(lflags & YASN1_STRFLGS_DUMP_DER)) {
         outlen = do_hex_dump(io_ch, arg, str->data, str->length);
         if (outlen < 0)
             return -1;
@@ -279,15 +279,15 @@ static int do_dump(unsigned long lflags, char_io *io_ch, void *arg,
     }
     t.type = str->type;
     t.value.ptr = (char *)str;
-    der_len = i2d_ASN1_TYPE(&t, NULL);
+    der_len = i2d_YASN1_TYPE(&t, NULL);
     if (der_len <= 0)
         return -1;
     if ((der_buf = OPENSSL_malloc(der_len)) == NULL) {
-        ASN1err(ASN1_F_DO_DUMP, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_DO_DUMP, ERR_R_MALLOC_FAILURE);
         return -1;
     }
     p = der_buf;
-    i2d_ASN1_TYPE(&t, &p);
+    i2d_YASN1_TYPE(&t, &p);
     outlen = do_hex_dump(io_ch, arg, der_buf, der_len);
     OPENSSL_free(der_buf);
     if (outlen < 0)
@@ -305,31 +305,31 @@ static const signed char tag2nbyte[] = {
     -1, -1, -1, -1, -1,         /* 0-4 */
     -1, -1, -1, -1, -1,         /* 5-9 */
     -1, -1,                     /* 10-11 */
-     0,                         /* 12 V_ASN1_UTF8STRING */
+     0,                         /* 12 V_YASN1_UTF8STRING */
     -1, -1, -1, -1, -1,         /* 13-17 */
-     1,                         /* 18 V_ASN1_NUMERICSTRING */
-     1,                         /* 19 V_ASN1_PRINTABLESTRING */
-     1,                         /* 20 V_ASN1_T61STRING */
+     1,                         /* 18 V_YASN1_NUMERICSTRING */
+     1,                         /* 19 V_YASN1_PRINTABLESTRING */
+     1,                         /* 20 V_YASN1_T61STRING */
     -1,                         /* 21 */
-     1,                         /* 22 V_ASN1_IA5STRING */
-     1,                         /* 23 V_ASN1_UTCTIME */
-     1,                         /* 24 V_ASN1_GENERALIZEDTIME */
+     1,                         /* 22 V_YASN1_IA5STRING */
+     1,                         /* 23 V_YASN1_UTCTIME */
+     1,                         /* 24 V_YASN1_GENERALIZEDTIME */
     -1,                         /* 25 */
-     1,                         /* 26 V_ASN1_ISO64STRING */
+     1,                         /* 26 V_YASN1_ISO64STRING */
     -1,                         /* 27 */
-     4,                         /* 28 V_ASN1_UNIVERSALSTRING */
+     4,                         /* 28 V_YASN1_UNIVEYRSALSTRING */
     -1,                         /* 29 */
-     2                          /* 30 V_ASN1_BMPSTRING */
+     2                          /* 30 V_YASN1_BMPSTRING */
 };
 
 /*
- * This is the main function, print out an ASN1_STRING taking note of various
+ * This is the main function, print out an YASN1_STRING taking note of various
  * escape and display options. Returns number of characters written or -1 if
  * an error occurred.
  */
 
 static int do_print_ex(char_io *io_ch, void *arg, unsigned long lflags,
-                       const ASN1_STRING *str)
+                       const YASN1_STRING *str)
 {
     int outlen, len;
     int type;
@@ -343,9 +343,9 @@ static int do_print_ex(char_io *io_ch, void *arg, unsigned long lflags,
 
     outlen = 0;
 
-    if (lflags & ASN1_STRFLGS_SHOW_TYPE) {
+    if (lflags & YASN1_STRFLGS_SHOW_TYPE) {
         const char *tagname;
-        tagname = ASN1_tag2str(type);
+        tagname = YASN1_tag2str(type);
         outlen += strlen(tagname);
         if (!io_ch(arg, tagname, outlen) || !io_ch(arg, ":", 1))
             return -1;
@@ -355,10 +355,10 @@ static int do_print_ex(char_io *io_ch, void *arg, unsigned long lflags,
     /* Decide what to do with type, either dump content or display it */
 
     /* Dump everything */
-    if (lflags & ASN1_STRFLGS_DUMP_ALL)
+    if (lflags & YASN1_STRFLGS_DUMP_ALL)
         type = -1;
     /* Ignore the string type */
-    else if (lflags & ASN1_STRFLGS_IGNORE_TYPE)
+    else if (lflags & YASN1_STRFLGS_IGNORE_TYPE)
         type = 1;
     else {
         /* Else determine width based on type */
@@ -366,7 +366,7 @@ static int do_print_ex(char_io *io_ch, void *arg, unsigned long lflags,
             type = tag2nbyte[type];
         else
             type = -1;
-        if ((type == -1) && !(lflags & ASN1_STRFLGS_DUMP_UNKNOWN))
+        if ((type == -1) && !(lflags & YASN1_STRFLGS_DUMP_UNKNOWN))
             type = 1;
     }
 
@@ -378,7 +378,7 @@ static int do_print_ex(char_io *io_ch, void *arg, unsigned long lflags,
         return outlen;
     }
 
-    if (lflags & ASN1_STRFLGS_UTF8_CONVERT) {
+    if (lflags & YASN1_STRFLGS_UTF8_CONVERT) {
         /*
          * Note: if string is UTF8 and we want to convert to UTF8 then we
          * just interpret it as 1 byte per character to avoid converting
@@ -421,14 +421,14 @@ static int do_indent(char_io *io_ch, void *arg, int indent)
 #define FN_WIDTH_LN     25
 #define FN_WIDTH_SN     10
 
-static int do_name_ex(char_io *io_ch, void *arg, const X509_NAME *n,
+static int do_name_ex(char_io *io_ch, void *arg, const YX509_NAME *n,
                       int indent, unsigned long flags)
 {
     int i, prev = -1, orflags, cnt;
     int fn_opt, fn_nid;
-    ASN1_OBJECT *fn;
-    const ASN1_STRING *val;
-    const X509_NAME_ENTRY *ent;
+    YASN1_OBJECT *fn;
+    const YASN1_STRING *val;
+    const YX509_NAME_ENTRY *ent;
     char objtmp[80];
     const char *objbuf;
     int outlen, len;
@@ -485,14 +485,14 @@ static int do_name_ex(char_io *io_ch, void *arg, const X509_NAME *n,
 
     fn_opt = flags & XN_FLAG_FN_MASK;
 
-    cnt = X509_NAME_entry_count(n);
+    cnt = YX509_NAME_entry_count(n);
     for (i = 0; i < cnt; i++) {
         if (flags & XN_FLAG_DN_REV)
-            ent = X509_NAME_get_entry(n, cnt - i - 1);
+            ent = YX509_NAME_get_entry(n, cnt - i - 1);
         else
-            ent = X509_NAME_get_entry(n, i);
+            ent = YX509_NAME_get_entry(n, i);
         if (prev != -1) {
-            if (prev == X509_NAME_ENTRY_set(ent)) {
+            if (prev == YX509_NAME_ENTRY_set(ent)) {
                 if (!io_ch(arg, sep_mv, sep_mv_len))
                     return -1;
                 outlen += sep_mv_len;
@@ -505,9 +505,9 @@ static int do_name_ex(char_io *io_ch, void *arg, const X509_NAME *n,
                 outlen += indent;
             }
         }
-        prev = X509_NAME_ENTRY_set(ent);
-        fn = X509_NAME_ENTRY_get_object(ent);
-        val = X509_NAME_ENTRY_get_data(ent);
+        prev = YX509_NAME_ENTRY_set(ent);
+        fn = YX509_NAME_ENTRY_get_object(ent);
+        val = YX509_NAME_ENTRY_get_data(ent);
         fn_nid = OBJ_obj2nid(fn);
         if (fn_opt != XN_FLAG_FN_NONE) {
             int objlen, fld_len;
@@ -545,7 +545,7 @@ static int do_name_ex(char_io *io_ch, void *arg, const X509_NAME *n,
          * other than a few 'standard' fields.
          */
         if ((fn_nid == NID_undef) && (flags & XN_FLAG_DUMP_UNKNOWN_FIELDS))
-            orflags = ASN1_STRFLGS_DUMP_ALL;
+            orflags = YASN1_STRFLGS_DUMP_ALL;
         else
             orflags = 0;
 
@@ -559,16 +559,16 @@ static int do_name_ex(char_io *io_ch, void *arg, const X509_NAME *n,
 
 /* Wrappers round the main functions */
 
-int X509_NAME_print_ex(BIO *out, const X509_NAME *nm, int indent,
+int YX509_NAME_print_ex(BIO *out, const YX509_NAME *nm, int indent,
                        unsigned long flags)
 {
     if (flags == XN_FLAG_COMPAT)
-        return X509_NAME_print(out, nm, indent);
+        return YX509_NAME_print(out, nm, indent);
     return do_name_ex(send_bio_chars, out, nm, indent, flags);
 }
 
 #ifndef OPENSSL_NO_STDIO
-int X509_NAME_print_ex_fp(FILE *fp, const X509_NAME *nm, int indent,
+int YX509_NAME_print_ex_fp(FILE *fp, const YX509_NAME *nm, int indent,
                           unsigned long flags)
 {
     if (flags == XN_FLAG_COMPAT) {
@@ -577,7 +577,7 @@ int X509_NAME_print_ex_fp(FILE *fp, const X509_NAME *nm, int indent,
         btmp = BIO_new_fp(fp, BIO_NOCLOSE);
         if (!btmp)
             return -1;
-        ret = X509_NAME_print(btmp, nm, indent);
+        ret = YX509_NAME_print(btmp, nm, indent);
         BIO_free(btmp);
         return ret;
     }
@@ -585,13 +585,13 @@ int X509_NAME_print_ex_fp(FILE *fp, const X509_NAME *nm, int indent,
 }
 #endif
 
-int ASN1_STRING_print_ex(BIO *out, const ASN1_STRING *str, unsigned long flags)
+int YASN1_STRING_print_ex(BIO *out, const YASN1_STRING *str, unsigned long flags)
 {
     return do_print_ex(send_bio_chars, out, flags, str);
 }
 
 #ifndef OPENSSL_NO_STDIO
-int ASN1_STRING_print_ex_fp(FILE *fp, const ASN1_STRING *str, unsigned long flags)
+int YASN1_STRING_print_ex_fp(FILE *fp, const YASN1_STRING *str, unsigned long flags)
 {
     return do_print_ex(send_fp_chars, fp, flags, str);
 }
@@ -602,9 +602,9 @@ int ASN1_STRING_print_ex_fp(FILE *fp, const ASN1_STRING *str, unsigned long flag
  * in output string or a negative error code
  */
 
-int ASN1_STRING_to_UTF8(unsigned char **out, const ASN1_STRING *in)
+int YASN1_STRING_to_UTF8(unsigned char **out, const YASN1_STRING *in)
 {
-    ASN1_STRING stmp, *str = &stmp;
+    YASN1_STRING stmp, *str = &stmp;
     int mbflag, type, ret;
     if (!in)
         return -1;
@@ -619,8 +619,8 @@ int ASN1_STRING_to_UTF8(unsigned char **out, const ASN1_STRING *in)
     stmp.length = 0;
     stmp.flags = 0;
     ret =
-        ASN1_mbstring_copy(&str, in->data, in->length, mbflag,
-                           B_ASN1_UTF8STRING);
+        YASN1_mbstring_copy(&str, in->data, in->length, mbflag,
+                           B_YASN1_UTF8STRING);
     if (ret < 0)
         return ret;
     *out = stmp.data;

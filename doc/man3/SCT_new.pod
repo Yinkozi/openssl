@@ -19,7 +19,7 @@ SCT_get_source, SCT_set_source
 
  typedef enum {
      CT_LOG_ENTRY_TYPE_NOT_SET = -1,
-     CT_LOG_ENTRY_TYPE_X509 = 0,
+     CT_LOG_ENTRY_TYPE_YX509 = 0,
      CT_LOG_ENTRY_TYPE_PRECERT = 1
  } ct_log_entry_type_t;
 
@@ -31,7 +31,7 @@ SCT_get_source, SCT_set_source
  typedef enum {
      SCT_SOURCE_UNKNOWN,
      SCT_SOURCE_TLS_EXTENSION,
-     SCT_SOURCE_X509V3_EXTENSION,
+     SCT_SOURCE_YX509V3_EXTENSION,
      SCT_SOURCE_OCSP_STAPLED_RESPONSE
  } sct_source_t;
 
@@ -96,7 +96,7 @@ Only SCT_VERSION_V1 is currently supported.
 
 SCT_set_log_entry_type() to set the type of certificate the SCT was issued for:
 
-B<CT_LOG_ENTRY_TYPE_X509> for a normal certificate.
+B<CT_LOG_ENTRY_TYPE_YX509> for a normal certificate.
 B<CT_LOG_ENTRY_TYPE_PRECERT> for a pre-certificate.
 
 =item *
@@ -144,7 +144,7 @@ The LogID (see RFC 6962, Section 3.2), base64 encoded.
 =item *
 
 The type of certificate the SCT was issued for:
-B<CT_LOG_ENTRY_TYPE_X509> for a normal certificate.
+B<CT_LOG_ENTRY_TYPE_YX509> for a normal certificate.
 B<CT_LOG_ENTRY_TYPE_PRECERT> for a pre-certificate.
 
 =item *

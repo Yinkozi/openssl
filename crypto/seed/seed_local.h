@@ -32,13 +32,13 @@
  * SUCH DAMAGE.
  *
  */
-#ifndef OSSL_CRYPTO_SEED_LOCAL_H
-# define OSSL_CRYPTO_SEED_LOCAL_H
+#ifndef OSSL_CRYPTO_YSEED_LOCAL_H
+# define OSSL_CRYPTO_YSEED_LOCAL_H
 
 # include "openssl/e_os2.h"
 # include <openssl/seed.h>
 
-# ifdef SEED_LONG               /* need 32-bit type */
+# ifdef YSEED_LONG               /* need 32-bit type */
 typedef unsigned long seed_word;
 # else
 typedef unsigned int seed_word;
@@ -72,13 +72,13 @@ typedef unsigned int seed_word;
         (K)[0] = G_FUNC((T0));      \
         (K)[1] = G_FUNC((T1))
 
-# define XOR_SEEDBLOCK(DST, SRC)      \
+# define XOR_YSEEDBLOCK(DST, SRC)      \
         ((DST))[0] ^= ((SRC))[0];    \
         ((DST))[1] ^= ((SRC))[1];    \
         ((DST))[2] ^= ((SRC))[2];    \
         ((DST))[3] ^= ((SRC))[3]
 
-# define MOV_SEEDBLOCK(DST, SRC)      \
+# define MOV_YSEEDBLOCK(DST, SRC)      \
         ((DST))[0] = ((SRC))[0];     \
         ((DST))[1] = ((SRC))[1];     \
         ((DST))[2] = ((SRC))[2];     \
@@ -96,7 +96,7 @@ typedef unsigned int seed_word;
         word2char((I)[2], (C+8));     \
         word2char((I)[3], (C+12))
 
-# define E_SEED(T0, T1, X1, X2, X3, X4, rbase)   \
+# define E_YSEED(T0, T1, X1, X2, X3, X4, rbase)   \
         (T0) = (X3) ^ (ks->data)[(rbase)];       \
         (T1) = (X4) ^ (ks->data)[(rbase)+1];     \
         (T1) ^= (T0);                            \
@@ -109,4 +109,4 @@ typedef unsigned int seed_word;
         (X1) ^= (T0);                            \
         (X2) ^= (T1)
 
-#endif                          /* OSSL_CRYPTO_SEED_LOCAL_H */
+#endif                          /* OSSL_CRYPTO_YSEED_LOCAL_H */

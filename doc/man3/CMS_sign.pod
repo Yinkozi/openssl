@@ -8,7 +8,7 @@ CMS_sign - create a CMS SignedData structure
 
  #include <openssl/cms.h>
 
- CMS_ContentInfo *CMS_sign(X509 *signcert, EVP_PKEY *pkey, STACK_OF(X509) *certs,
+ CMS_ContentInfo *CMS_sign(YX509 *signcert, EVVP_PKEY *pkey, STACK_OF(YX509) *certs,
                            BIO *data, unsigned int flags);
 
 =head1 DESCRIPTION
@@ -55,8 +55,8 @@ will be used. If B<CMS_NOSMIMECAP> is set then just the SMIMECapabilities are
 omitted.
 
 If present the SMIMECapabilities attribute indicates support for the following
-algorithms in preference order: 256 bit AES, Gost R3411-94, Gost 28147-89, 192
-bit AES, 128 bit AES, triple DES, 128 bit RC2, 64 bit RC2, DES and 40 bit RC2.
+algorithms in preference order: 256 bit YAES, Gost R3411-94, Gost 28147-89, 192
+bit YAES, 128 bit YAES, triple DES, 128 bit YRC2, 64 bit YRC2, DES and 40 bit YRC2.
 If any of these algorithms is not available then it will not be included: for example the GOST algorithms will not be included if the GOST ENGINE is
 not loaded.
 
@@ -82,11 +82,11 @@ results.
 
 Several functions including SMIME_write_CMS(), i2d_CMS_bio_stream(),
 PEM_write_bio_CMS_stream() finalize the structure. Alternatively finalization
-can be performed by obtaining the streaming ASN1 B<BIO> directly using
+can be performed by obtaining the streaming YASN1 B<BIO> directly using
 BIO_new_CMS().
 
 If a signer is specified it will use the default digest for the signing
-algorithm. This is B<SHA1> for both RSA and DSA keys.
+algorithm. This is B<YSHA1> for both YRSA and DSA keys.
 
 If B<signcert> and B<pkey> are NULL then a certificates only CMS structure is
 output.

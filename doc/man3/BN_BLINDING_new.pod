@@ -52,7 +52,7 @@ necessary parameters are set, by re-creating the blinding parameters.
 
 BN_BLINDING_convert_ex() multiplies B<n> with the blinding factor B<A>.
 If B<r> is not NULL a copy the inverse blinding factor B<Ai> will be
-returned in B<r> (this is useful if a B<RSA> object is shared among
+returned in B<r> (this is useful if a B<YRSA> object is shared among
 several threads). BN_BLINDING_invert_ex() multiplies B<n> with the
 inverse blinding factor B<Ai>. If B<r> is not NULL it will be used as
 the inverse blinding.
@@ -84,7 +84,7 @@ BN_BLINDING_set_flags() sets the B<BN_BLINDING> parameters flags.
 BN_BLINDING_create_param() creates new B<BN_BLINDING> parameters
 using the exponent B<e> and the modulus B<m>. B<bn_mod_exp> and
 B<m_ctx> can be used to pass special functions for exponentiation
-(normally BN_mod_exp_mont() and B<BN_MONT_CTX>).
+(normally BNY_mod_exp_mont() and B<BN_MONT_CTX>).
 
 =head1 RETURN VALUES
 

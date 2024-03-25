@@ -47,7 +47,7 @@ int ERR_load_SM2_strings(void);
 /*
  * SM2 reason codes.
  */
-#  define SM2_R_ASN1_ERROR                                 100
+#  define SM2_R_YASN1_ERROR                                 100
 #  define SM2_R_BAD_SIGNATURE                              101
 #  define SM2_R_BUFFER_TOO_SMALL                           107
 #  define SM2_R_DIST_ID_TOO_LARGE                          110

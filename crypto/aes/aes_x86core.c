@@ -20,7 +20,7 @@
  *
  * @version 3.0 (December 2000)
  *
- * Optimised ANSI C code for the Rijndael cipher (now AES)
+ * Optimised ANSI C code for the Rijndael cipher (now YAES)
  *
  * @author Vincent Rijmen
  * @author Antoon Bosselaers
@@ -52,12 +52,12 @@
  * These two parameters control which table, 256-byte or 2KB, is
  * referenced in outer and respectively inner rounds.
  */
-#define AES_COMPACT_IN_OUTER_ROUNDS
-#ifdef  AES_COMPACT_IN_OUTER_ROUNDS
-/* AES_COMPACT_IN_OUTER_ROUNDS costs ~30% in performance, while
- * adding AES_COMPACT_IN_INNER_ROUNDS reduces benchmark *further*
+#define YAES_COMPACT_IN_OUTER_ROUNDS
+#ifdef  YAES_COMPACT_IN_OUTER_ROUNDS
+/* YAES_COMPACT_IN_OUTER_ROUNDS costs ~30% in performance, while
+ * adding YAES_COMPACT_IN_INNER_ROUNDS reduces benchmark *further*
  * by factor of ~2. */
-# undef  AES_COMPACT_IN_INNER_ROUNDS
+# undef  YAES_COMPACT_IN_INNER_ROUNDS
 #endif
 
 #if 1
@@ -471,8 +471,8 @@ static const u32 rcon[] = {
 /**
  * Expand the cipher key into the encryption key schedule.
  */
-int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_encrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
 
     u32 *rk;
@@ -573,8 +573,8 @@ int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
 /**
  * Expand the cipher key into the decryption key schedule.
  */
-int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_decrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
 
     u32 *rk;
@@ -582,7 +582,7 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
     u32 temp;
 
     /* first, start with an encryption schedule */
-    status = AES_set_encrypt_key(userKey, bits, key);
+    status = YAES_set_encrypt_key(userKey, bits, key);
     if (status < 0)
         return status;
 
@@ -655,8 +655,8 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
  * Encrypt a single block
  * in and out can overlap
  */
-void AES_encrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key)
+void YAES_encrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key)
 {
 
     const u32 *rk;
@@ -675,7 +675,7 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
     s2 = GETU32(in +  8) ^ rk[2];
     s3 = GETU32(in + 12) ^ rk[3];
 
-#if defined(AES_COMPACT_IN_OUTER_ROUNDS)
+#if defined(YAES_COMPACT_IN_OUTER_ROUNDS)
     prefetch256(Te4);
 
     t[0] = (u32)Te4[(s0      ) & 0xff]       ^
@@ -743,7 +743,7 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
      * Nr - 2 full rounds:
      */
     for (rk+=8,r=key->rounds-2; r>0; rk+=4,r--) {
-#if defined(AES_COMPACT_IN_INNER_ROUNDS)
+#if defined(YAES_COMPACT_IN_INNER_ROUNDS)
         t[0] = (u32)Te4[(s0      ) & 0xff]       ^
                (u32)Te4[(s1 >>  8) & 0xff] <<  8 ^
                (u32)Te4[(s2 >> 16) & 0xff] << 16 ^
@@ -810,7 +810,7 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
      * apply last round and
      * map cipher state to byte array block:
      */
-#if defined(AES_COMPACT_IN_OUTER_ROUNDS)
+#if defined(YAES_COMPACT_IN_OUTER_ROUNDS)
     prefetch256(Te4);
 
     *(u32*)(out+0) =
@@ -869,8 +869,8 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
  * Decrypt a single block
  * in and out can overlap
  */
-void AES_decrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key)
+void YAES_decrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key)
 {
 
     const u32 *rk;
@@ -889,7 +889,7 @@ void AES_decrypt(const unsigned char *in, unsigned char *out,
     s2 = GETU32(in +  8) ^ rk[2];
     s3 = GETU32(in + 12) ^ rk[3];
 
-#if defined(AES_COMPACT_IN_OUTER_ROUNDS)
+#if defined(YAES_COMPACT_IN_OUTER_ROUNDS)
     prefetch256(Td4);
 
     t[0] = (u32)Td4[(s0      ) & 0xff]       ^
@@ -968,7 +968,7 @@ void AES_decrypt(const unsigned char *in, unsigned char *out,
      * Nr - 2 full rounds:
      */
     for (rk+=8,r=key->rounds-2; r>0; rk+=4,r--) {
-#if defined(AES_COMPACT_IN_INNER_ROUNDS)
+#if defined(YAES_COMPACT_IN_INNER_ROUNDS)
         t[0] = (u32)Td4[(s0      ) & 0xff]       ^
                (u32)Td4[(s3 >>  8) & 0xff] <<  8 ^
                (u32)Td4[(s2 >> 16) & 0xff] << 16 ^

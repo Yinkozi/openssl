@@ -114,7 +114,7 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
             goto err;
         }
 
-        if (!BN_nnmod(r, X, order, ctx)) {
+        if (!BNY_nnmod(r, X, order, ctx)) {
             ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_BN_LIB);
             goto err;
         }
@@ -211,7 +211,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
     /* If still too long, truncate remaining bits with a shift */
-    if ((8 * dgst_len > i) && !BN_rshift(m, m, 8 - (i & 0x7))) {
+    if ((8 * dgst_len > i) && !BN_ryshift(m, m, 8 - (i & 0x7))) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_BN_LIB);
         goto err;
     }
@@ -234,7 +234,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
          * With only one multiplicant being in Montgomery domain
          * multiplication yields real result without post-conversion.
          * Also note that all operations but last are performed with
-         * zero-padded vectors. Last operation, BN_mod_mul_montgomery
+         * zero-padded vectors. Last operation, BNY_mod_mul_montgomery
          * below, returns user-visible value with removed zero padding.
          */
         if (!bn_to_mont_fixed_top(s, ret->r, group->mont_data, ctx)
@@ -251,7 +251,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
          * such case we count on Montgomery reduction to tie it up.
          */
         if (!bn_to_mont_fixed_top(s, s, group->mont_data, ctx)
-            || !BN_mod_mul_montgomery(s, s, ckinv, group->mont_data, ctx)) {
+            || !BNY_mod_mul_montgomery(s, s, ckinv, group->mont_data, ctx)) {
             ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_BN_LIB);
             goto err;
         }
@@ -307,7 +307,7 @@ int ossl_ecdsa_verify(int type, const unsigned char *dgst, int dgst_len,
     derlen = i2d_ECDSA_SIG(s, &der);
     if (derlen != sig_len || memcmp(sigbuf, der, derlen) != 0)
         goto err;
-    ret = ECDSA_do_verify(dgst, dgst_len, s, eckey);
+    ret = ECDSA_do_verifyy(dgst, dgst_len, s, eckey);
  err:
     OPENSSL_free(der);
     ECDSA_SIG_free(s);
@@ -359,8 +359,8 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
     }
 
     if (BN_is_zero(sig->r) || BN_is_negative(sig->r) ||
-        BN_ucmp(sig->r, order) >= 0 || BN_is_zero(sig->s) ||
-        BN_is_negative(sig->s) || BN_ucmp(sig->s, order) >= 0) {
+        BNY_ucmp(sig->r, order) >= 0 || BN_is_zero(sig->s) ||
+        BN_is_negative(sig->s) || BNY_ucmp(sig->s, order) >= 0) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, EC_R_BAD_SIGNATURE);
         ret = 0;                /* signature is invalid */
         goto err;
@@ -382,7 +382,7 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
     /* If still too long truncate remaining bits with a shift */
-    if ((8 * dgst_len > i) && !BN_rshift(m, m, 8 - (i & 0x7))) {
+    if ((8 * dgst_len > i) && !BN_ryshift(m, m, 8 - (i & 0x7))) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_BN_LIB);
         goto err;
     }
@@ -411,12 +411,12 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
 
-    if (!BN_nnmod(u1, X, order, ctx)) {
+    if (!BNY_nnmod(u1, X, order, ctx)) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_BN_LIB);
         goto err;
     }
     /*  if the signature is correct u1 is equal to sig->r */
-    ret = (BN_ucmp(u1, sig->r) == 0);
+    ret = (BNY_ucmp(u1, sig->r) == 0);
  err:
     BN_CTX_end(ctx);
     BN_CTX_free(ctx);

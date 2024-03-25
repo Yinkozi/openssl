@@ -152,7 +152,7 @@ int BN_BLINDING_convert_ex(BIGNUM *n, BIGNUM *r, BN_BLINDING *b, BN_CTX *ctx)
         return 0;
 
     if (b->m_ctx != NULL)
-        ret = BN_mod_mul_montgomery(n, n, b->A, b->m_ctx, ctx);
+        ret = BNY_mod_mul_montgomery(n, n, b->A, b->m_ctx, ctx);
     else
         ret = BN_mod_mul(n, n, b->A, b->mod, ctx);
 
@@ -177,7 +177,7 @@ int BN_BLINDING_invert_ex(BIGNUM *n, const BIGNUM *r, BN_BLINDING *b,
     }
 
     if (b->m_ctx != NULL) {
-        /* ensure that BN_mod_mul_montgomery takes pre-defined path */
+        /* ensure that BNY_mod_mul_montgomery takes pre-defined path */
         if (n->dmax >= r->top) {
             size_t i, rtop = r->top, ntop = n->top;
             BN_ULONG mask;
@@ -277,7 +277,7 @@ BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
             break;
 
         /*
-         * this should almost never happen for good RSA keys
+         * this should almost never happen for good YRSA keys
          */
         if (!rv)
             goto err;

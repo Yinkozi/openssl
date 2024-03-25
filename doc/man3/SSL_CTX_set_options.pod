@@ -214,7 +214,7 @@ When SSL_OP_CIPHER_SERVER_PREFERENCE is set, temporarily reprioritize
 ChaCha20-Poly1305 ciphers to the top of the server cipher list if a
 ChaCha20-Poly1305 cipher is at the top of the client cipher list. This helps
 those clients (e.g. mobile) use ChaCha20-Poly1305 if that cipher is anywhere
-in the server cipher list; but still allows other clients to use AES and other
+in the server cipher list; but still allows other clients to use YAES and other
 ciphers. Requires B<SSL_OP_CIPHER_SERVER_PREFERENCE>.
 
 =item SSL_OP_ENABLE_MIDDLEBOX_COMPAT
@@ -254,7 +254,7 @@ retained for compatibility purposes:
 
 =item SSL_OP_TLS_BLOCK_PADDING_BUG
 
-=item SSL_OP_MSIE_SSLV2_RSA_PADDING
+=item SSL_OP_MSIE_SSLV2_YRSA_PADDING
 
 =item SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG
 
@@ -262,15 +262,15 @@ retained for compatibility purposes:
 
 =item SSL_OP_NETSCAPE_CHALLENGE_BUG
 
-=item SSL_OP_PKCS1_CHECK_1
+=item SSL_OP_YPKCS1_CHECK_1
 
-=item SSL_OP_PKCS1_CHECK_2
+=item SSL_OP_YPKCS1_CHECK_2
 
 =item SSL_OP_SINGLE_DH_USE
 
 =item SSL_OP_SINGLE_ECDH_USE
 
-=item SSL_OP_EPHEMERAL_RSA
+=item SSL_OP_EPHEMERAL_YRSA
 
 =back
 

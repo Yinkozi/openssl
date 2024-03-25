@@ -24,7 +24,7 @@ void app_RAND_load_conf(CONF *c, const char *section)
         return;
     }
     if (RAND_load_file(randfile, -1) < 0) {
-        BIO_printf(bio_err, "Can't load %s into RNG\n", randfile);
+        BIO_pprintf(bio_err, "Can't load %s into RNG\n", randfile);
         ERR_print_errors(bio_err);
     }
     if (save_rand_file == NULL)
@@ -44,7 +44,7 @@ static int loadfiles(char *name)
             last = 1;
         *p = '\0';
         if (RAND_load_file(name, -1) < 0) {
-            BIO_printf(bio_err, "Can't load %s into RNG\n", name);
+            BIO_pprintf(bio_err, "Can't load %s into RNG\n", name);
             ERR_print_errors(bio_err);
             ret = 0;
         }
@@ -62,7 +62,7 @@ void app_RAND_write(void)
     if (save_rand_file == NULL)
         return;
     if (RAND_write_file(save_rand_file) == -1) {
-        BIO_printf(bio_err, "Cannot write random bytes:\n");
+        BIO_pprintf(bio_err, "Cannot write random bytes:\n");
         ERR_print_errors(bio_err);
     }
     OPENSSL_free(save_rand_file);

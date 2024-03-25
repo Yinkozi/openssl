@@ -74,7 +74,7 @@ static int test_curve(void)
      * We currently hard-code P-256, though adaptation to other curves.
      * would be straightforward.
      */
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1))
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_X9_62_prime256v1))
             || !TEST_ptr(point = EC_POINT_dup(EC_GROUP_get0_generator(group),
                                               group))
             || !TEST_ptr(result = walk_curve(group, point, num_repeats)))
@@ -82,7 +82,7 @@ static int test_curve(void)
 
     if (print_mode) {
         BN_print(bio_out, result);
-        BIO_printf(bio_out, "\n");
+        BIO_pprintf(bio_out, "\n");
         ret = 1;
     } else {
         if (!TEST_true(BN_hex2bn(&expected_result, kP256DefaultResult))

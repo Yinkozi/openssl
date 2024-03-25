@@ -5432,34 +5432,34 @@ static void sc_muladd(uint8_t *s, const uint8_t *a, const uint8_t *b,
 int ED25519_sign(uint8_t *out_sig, const uint8_t *message, size_t message_len,
                  const uint8_t public_key[32], const uint8_t private_key[32])
 {
-    uint8_t az[SHA512_DIGEST_LENGTH];
-    uint8_t nonce[SHA512_DIGEST_LENGTH];
+    uint8_t az[YSHA512_DIGEST_LENGTH];
+    uint8_t nonce[YSHA512_DIGEST_LENGTH];
     ge_p3 R;
-    uint8_t hram[SHA512_DIGEST_LENGTH];
-    SHA512_CTX hash_ctx;
+    uint8_t hram[YSHA512_DIGEST_LENGTH];
+    YSHA512_CTX hash_ctx;
 
-    SHA512_Init(&hash_ctx);
-    SHA512_Update(&hash_ctx, private_key, 32);
-    SHA512_Final(az, &hash_ctx);
+    YSHA512_Init(&hash_ctx);
+    YSHA512_Update(&hash_ctx, private_key, 32);
+    YSHA512_Final(az, &hash_ctx);
 
     az[0] &= 248;
     az[31] &= 63;
     az[31] |= 64;
 
-    SHA512_Init(&hash_ctx);
-    SHA512_Update(&hash_ctx, az + 32, 32);
-    SHA512_Update(&hash_ctx, message, message_len);
-    SHA512_Final(nonce, &hash_ctx);
+    YSHA512_Init(&hash_ctx);
+    YSHA512_Update(&hash_ctx, az + 32, 32);
+    YSHA512_Update(&hash_ctx, message, message_len);
+    YSHA512_Final(nonce, &hash_ctx);
 
     x25519_sc_reduce(nonce);
     ge_scalarmult_base(&R, nonce);
     ge_p3_tobytes(out_sig, &R);
 
-    SHA512_Init(&hash_ctx);
-    SHA512_Update(&hash_ctx, out_sig, 32);
-    SHA512_Update(&hash_ctx, public_key, 32);
-    SHA512_Update(&hash_ctx, message, message_len);
-    SHA512_Final(hram, &hash_ctx);
+    YSHA512_Init(&hash_ctx);
+    YSHA512_Update(&hash_ctx, out_sig, 32);
+    YSHA512_Update(&hash_ctx, public_key, 32);
+    YSHA512_Update(&hash_ctx, message, message_len);
+    YSHA512_Final(hram, &hash_ctx);
 
     x25519_sc_reduce(hram);
     sc_muladd(out_sig + 32, hram, az, nonce);
@@ -5479,10 +5479,10 @@ int ED25519_verify(const uint8_t *message, size_t message_len,
     int i;
     ge_p3 A;
     const uint8_t *r, *s;
-    SHA512_CTX hash_ctx;
+    YSHA512_CTX hash_ctx;
     ge_p2 R;
     uint8_t rcheck[32];
-    uint8_t h[SHA512_DIGEST_LENGTH];
+    uint8_t h[YSHA512_DIGEST_LENGTH];
     /* 27742317777372353535851937790883648493 in little endian format */
     const uint8_t l_low[16] = {
         0xED, 0xD3, 0xF5, 0x5C, 0x1A, 0x63, 0x12, 0x58, 0xD6, 0x9C, 0xF7, 0xA2,
@@ -5526,11 +5526,11 @@ int ED25519_verify(const uint8_t *message, size_t message_len,
     fe_neg(A.X, A.X);
     fe_neg(A.T, A.T);
 
-    SHA512_Init(&hash_ctx);
-    SHA512_Update(&hash_ctx, r, 32);
-    SHA512_Update(&hash_ctx, public_key, 32);
-    SHA512_Update(&hash_ctx, message, message_len);
-    SHA512_Final(h, &hash_ctx);
+    YSHA512_Init(&hash_ctx);
+    YSHA512_Update(&hash_ctx, r, 32);
+    YSHA512_Update(&hash_ctx, public_key, 32);
+    YSHA512_Update(&hash_ctx, message, message_len);
+    YSHA512_Final(h, &hash_ctx);
 
     x25519_sc_reduce(h);
 
@@ -5544,10 +5544,10 @@ int ED25519_verify(const uint8_t *message, size_t message_len,
 void ED25519_public_from_private(uint8_t out_public_key[32],
                                  const uint8_t private_key[32])
 {
-    uint8_t az[SHA512_DIGEST_LENGTH];
+    uint8_t az[YSHA512_DIGEST_LENGTH];
     ge_p3 A;
 
-    SHA512(private_key, 32, az);
+    YSHA512(private_key, 32, az);
 
     az[0] &= 248;
     az[31] &= 63;

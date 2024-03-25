@@ -9,7 +9,7 @@
 
 /*
  * This has been a quickly hacked 'ideatest.c'.  When I add tests for other
- * RC2 modes, more of the code will be uncommented.
+ * YRC2 modes, more of the code will be uncommented.
  */
 
 #include <stdio.h>

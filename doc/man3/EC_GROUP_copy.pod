@@ -88,7 +88,7 @@ The functions EC_GROUP_set_curve_name() and EC_GROUP_get_curve_name(), set and g
 will return NID_undef.
 
 The asn1_flag value is used to determine whether the curve encoding uses
-explicit parameters or a named curve using an ASN1 OID: many applications only
+explicit parameters or a named curve using an YASN1 OID: many applications only
 support the latter form. If asn1_flag is B<OPENSSL_EC_NAMED_CURVE> then the
 named curve form is used and the parameters must have a corresponding
 named curve NID set. If asn1_flags is B<OPENSSL_EC_EXPLICIT_CURVE> the
@@ -100,7 +100,7 @@ previous versions of OpenSSL the value 0 must be used instead. Before OpenSSL
 applications would have to explicitly set the named curve form) in OpenSSL
 1.1.0 and later the named curve form is the default.
 
-The point_conversion_form for a curve controls how EC_POINT data is encoded as ASN1 as defined in X9.62 (ECDSA).
+The point_conversion_form for a curve controls how EC_POINT data is encoded as YASN1 as defined in X9.62 (ECDSA).
 point_conversion_form_t is an enum defined as follows:
 
  typedef enum {
@@ -134,7 +134,7 @@ does not use this seed value but does enable you to inspect it using EC_GROUP_ge
 containing the seed that was used. The length of the memory block can be obtained using EC_GROUP_get_seed_len(). A number of the
 built-in curves within the library provide seed values that can be obtained. It is also possible to set a custom seed using
 EC_GROUP_set_seed() and passing a pointer to a memory block, along with the length of the seed. Again, the EC library will not use
-this seed value, although it will be preserved in any ASN1 based communications.
+this seed value, although it will be preserved in any YASN1 based communications.
 
 EC_GROUP_get_degree() gets the degree of the field. For Fp fields this will be the number of bits in p.  For F2^m fields this will be
 the value m.
@@ -182,7 +182,7 @@ EC_GROUP_get_cofactor() returns 0 if the cofactor is not set (or is set to zero)
 
 EC_GROUP_get_curve_name() returns the curve name (NID) for B<group> or will return NID_undef if no curve name is associated.
 
-EC_GROUP_get_asn1_flag() returns the ASN1 flag for the specified B<group> .
+EC_GROUP_get_asn1_flag() returns the YASN1 flag for the specified B<group> .
 
 EC_GROUP_get_point_conversion_form() returns the point_conversion_form for B<group>.
 

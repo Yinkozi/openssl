@@ -13,7 +13,7 @@
 #include "crypto/rand.h"
 #if defined(OPENSSL_SYS_WINDOWS) || defined(OPENSSL_SYS_WIN32)
 
-# ifndef OPENSSL_RAND_SEED_OS
+# ifndef OPENSSL_RAND_YSEED_OS
 #  error "Unsupported seeding method configured; must be os"
 # endif
 
@@ -52,13 +52,13 @@ size_t rand_pool_acquire_entropy(RAND_POOL *pool)
     size_t entropy_available = 0;
 
 
-# ifdef OPENSSL_RAND_SEED_RDTSC
+# ifdef OPENSSL_RAND_YSEED_RDTSC
     entropy_available = rand_acquire_entropy_from_tsc(pool);
     if (entropy_available > 0)
         return entropy_available;
 # endif
 
-# ifdef OPENSSL_RAND_SEED_RDCPU
+# ifdef OPENSSL_RAND_YSEED_RDCPU
     entropy_available = rand_acquire_entropy_from_cpu(pool);
     if (entropy_available > 0)
         return entropy_available;
@@ -84,7 +84,7 @@ size_t rand_pool_acquire_entropy(RAND_POOL *pool)
     if (buffer != NULL) {
         size_t bytes = 0;
         /* poll the CryptoAPI PRNG */
-        if (CryptAcquireContextW(&hProvider, NULL, NULL, PROV_RSA_FULL,
+        if (CryptAcquireContextW(&hProvider, NULL, NULL, PROV_YRSA_FULL,
                                  CRYPT_VERIFYCONTEXT | CRYPT_SILENT) != 0) {
             if (CryptGenRandom(hProvider, bytes_needed, buffer) != 0)
                 bytes = bytes_needed;

@@ -22,53 +22,53 @@
 
 int OCSP_REQUEST_get_ext_count(OCSP_REQUEST *x)
 {
-    return X509v3_get_ext_count(x->tbsRequest.requestExtensions);
+    return YX509v3_get_ext_count(x->tbsRequest.requestExtensions);
 }
 
 int OCSP_REQUEST_get_ext_by_NID(OCSP_REQUEST *x, int nid, int lastpos)
 {
-    return (X509v3_get_ext_by_NID
+    return (YX509v3_get_ext_by_NID
             (x->tbsRequest.requestExtensions, nid, lastpos));
 }
 
-int OCSP_REQUEST_get_ext_by_OBJ(OCSP_REQUEST *x, const ASN1_OBJECT *obj,
+int OCSP_REQUEST_get_ext_by_OBJ(OCSP_REQUEST *x, const YASN1_OBJECT *obj,
                                 int lastpos)
 {
-    return (X509v3_get_ext_by_OBJ
+    return (YX509v3_get_ext_by_OBJ
             (x->tbsRequest.requestExtensions, obj, lastpos));
 }
 
 int OCSP_REQUEST_get_ext_by_critical(OCSP_REQUEST *x, int crit, int lastpos)
 {
-    return (X509v3_get_ext_by_critical
+    return (YX509v3_get_ext_by_critical
             (x->tbsRequest.requestExtensions, crit, lastpos));
 }
 
-X509_EXTENSION *OCSP_REQUEST_get_ext(OCSP_REQUEST *x, int loc)
+YX509_EXTENSION *OCSP_REQUEST_get_ext(OCSP_REQUEST *x, int loc)
 {
-    return X509v3_get_ext(x->tbsRequest.requestExtensions, loc);
+    return YX509v3_get_ext(x->tbsRequest.requestExtensions, loc);
 }
 
-X509_EXTENSION *OCSP_REQUEST_delete_ext(OCSP_REQUEST *x, int loc)
+YX509_EXTENSION *OCSP_REQUEST_delete_ext(OCSP_REQUEST *x, int loc)
 {
-    return X509v3_delete_ext(x->tbsRequest.requestExtensions, loc);
+    return YX509v3_delete_ext(x->tbsRequest.requestExtensions, loc);
 }
 
 void *OCSP_REQUEST_get1_ext_d2i(OCSP_REQUEST *x, int nid, int *crit, int *idx)
 {
-    return X509V3_get_d2i(x->tbsRequest.requestExtensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->tbsRequest.requestExtensions, nid, crit, idx);
 }
 
 int OCSP_REQUEST_add1_ext_i2d(OCSP_REQUEST *x, int nid, void *value, int crit,
                               unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->tbsRequest.requestExtensions, nid, value,
+    return YX509V3_add1_i2d(&x->tbsRequest.requestExtensions, nid, value,
                            crit, flags);
 }
 
-int OCSP_REQUEST_add_ext(OCSP_REQUEST *x, X509_EXTENSION *ex, int loc)
+int OCSP_REQUEST_add_ext(OCSP_REQUEST *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->tbsRequest.requestExtensions), ex, loc) !=
+    return (YX509v3_add_ext(&(x->tbsRequest.requestExtensions), ex, loc) !=
             NULL);
 }
 
@@ -76,107 +76,107 @@ int OCSP_REQUEST_add_ext(OCSP_REQUEST *x, X509_EXTENSION *ex, int loc)
 
 int OCSP_ONEREQ_get_ext_count(OCSP_ONEREQ *x)
 {
-    return X509v3_get_ext_count(x->singleRequestExtensions);
+    return YX509v3_get_ext_count(x->singleRequestExtensions);
 }
 
 int OCSP_ONEREQ_get_ext_by_NID(OCSP_ONEREQ *x, int nid, int lastpos)
 {
-    return X509v3_get_ext_by_NID(x->singleRequestExtensions, nid, lastpos);
+    return YX509v3_get_ext_by_NID(x->singleRequestExtensions, nid, lastpos);
 }
 
-int OCSP_ONEREQ_get_ext_by_OBJ(OCSP_ONEREQ *x, const ASN1_OBJECT *obj,
+int OCSP_ONEREQ_get_ext_by_OBJ(OCSP_ONEREQ *x, const YASN1_OBJECT *obj,
                                int lastpos)
 {
-    return X509v3_get_ext_by_OBJ(x->singleRequestExtensions, obj, lastpos);
+    return YX509v3_get_ext_by_OBJ(x->singleRequestExtensions, obj, lastpos);
 }
 
 int OCSP_ONEREQ_get_ext_by_critical(OCSP_ONEREQ *x, int crit, int lastpos)
 {
-    return (X509v3_get_ext_by_critical
+    return (YX509v3_get_ext_by_critical
             (x->singleRequestExtensions, crit, lastpos));
 }
 
-X509_EXTENSION *OCSP_ONEREQ_get_ext(OCSP_ONEREQ *x, int loc)
+YX509_EXTENSION *OCSP_ONEREQ_get_ext(OCSP_ONEREQ *x, int loc)
 {
-    return X509v3_get_ext(x->singleRequestExtensions, loc);
+    return YX509v3_get_ext(x->singleRequestExtensions, loc);
 }
 
-X509_EXTENSION *OCSP_ONEREQ_delete_ext(OCSP_ONEREQ *x, int loc)
+YX509_EXTENSION *OCSP_ONEREQ_delete_ext(OCSP_ONEREQ *x, int loc)
 {
-    return X509v3_delete_ext(x->singleRequestExtensions, loc);
+    return YX509v3_delete_ext(x->singleRequestExtensions, loc);
 }
 
 void *OCSP_ONEREQ_get1_ext_d2i(OCSP_ONEREQ *x, int nid, int *crit, int *idx)
 {
-    return X509V3_get_d2i(x->singleRequestExtensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->singleRequestExtensions, nid, crit, idx);
 }
 
 int OCSP_ONEREQ_add1_ext_i2d(OCSP_ONEREQ *x, int nid, void *value, int crit,
                              unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->singleRequestExtensions, nid, value, crit,
+    return YX509V3_add1_i2d(&x->singleRequestExtensions, nid, value, crit,
                            flags);
 }
 
-int OCSP_ONEREQ_add_ext(OCSP_ONEREQ *x, X509_EXTENSION *ex, int loc)
+int OCSP_ONEREQ_add_ext(OCSP_ONEREQ *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->singleRequestExtensions), ex, loc) != NULL);
+    return (YX509v3_add_ext(&(x->singleRequestExtensions), ex, loc) != NULL);
 }
 
 /* OCSP Basic response */
 
 int OCSP_BASICRESP_get_ext_count(OCSP_BASICRESP *x)
 {
-    return X509v3_get_ext_count(x->tbsResponseData.responseExtensions);
+    return YX509v3_get_ext_count(x->tbsResponseData.responseExtensions);
 }
 
 int OCSP_BASICRESP_get_ext_by_NID(OCSP_BASICRESP *x, int nid, int lastpos)
 {
-    return (X509v3_get_ext_by_NID
+    return (YX509v3_get_ext_by_NID
             (x->tbsResponseData.responseExtensions, nid, lastpos));
 }
 
-int OCSP_BASICRESP_get_ext_by_OBJ(OCSP_BASICRESP *x, const ASN1_OBJECT *obj,
+int OCSP_BASICRESP_get_ext_by_OBJ(OCSP_BASICRESP *x, const YASN1_OBJECT *obj,
                                   int lastpos)
 {
-    return (X509v3_get_ext_by_OBJ
+    return (YX509v3_get_ext_by_OBJ
             (x->tbsResponseData.responseExtensions, obj, lastpos));
 }
 
 int OCSP_BASICRESP_get_ext_by_critical(OCSP_BASICRESP *x, int crit,
                                        int lastpos)
 {
-    return (X509v3_get_ext_by_critical
+    return (YX509v3_get_ext_by_critical
             (x->tbsResponseData.responseExtensions, crit, lastpos));
 }
 
-X509_EXTENSION *OCSP_BASICRESP_get_ext(OCSP_BASICRESP *x, int loc)
+YX509_EXTENSION *OCSP_BASICRESP_get_ext(OCSP_BASICRESP *x, int loc)
 {
-    return X509v3_get_ext(x->tbsResponseData.responseExtensions, loc);
+    return YX509v3_get_ext(x->tbsResponseData.responseExtensions, loc);
 }
 
-X509_EXTENSION *OCSP_BASICRESP_delete_ext(OCSP_BASICRESP *x, int loc)
+YX509_EXTENSION *OCSP_BASICRESP_delete_ext(OCSP_BASICRESP *x, int loc)
 {
-    return X509v3_delete_ext(x->tbsResponseData.responseExtensions, loc);
+    return YX509v3_delete_ext(x->tbsResponseData.responseExtensions, loc);
 }
 
 void *OCSP_BASICRESP_get1_ext_d2i(OCSP_BASICRESP *x, int nid, int *crit,
                                   int *idx)
 {
-    return X509V3_get_d2i(x->tbsResponseData.responseExtensions, nid, crit,
+    return YX509V3_get_d2i(x->tbsResponseData.responseExtensions, nid, crit,
                           idx);
 }
 
 int OCSP_BASICRESP_add1_ext_i2d(OCSP_BASICRESP *x, int nid, void *value,
                                 int crit, unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->tbsResponseData.responseExtensions, nid,
+    return YX509V3_add1_i2d(&x->tbsResponseData.responseExtensions, nid,
                            value, crit, flags);
 }
 
-int OCSP_BASICRESP_add_ext(OCSP_BASICRESP *x, X509_EXTENSION *ex, int loc)
+int OCSP_BASICRESP_add_ext(OCSP_BASICRESP *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->tbsResponseData.responseExtensions), ex, loc)
+    return (YX509v3_add_ext(&(x->tbsResponseData.responseExtensions), ex, loc)
             != NULL);
 }
 
@@ -184,51 +184,51 @@ int OCSP_BASICRESP_add_ext(OCSP_BASICRESP *x, X509_EXTENSION *ex, int loc)
 
 int OCSP_SINGLERESP_get_ext_count(OCSP_SINGLERESP *x)
 {
-    return X509v3_get_ext_count(x->singleExtensions);
+    return YX509v3_get_ext_count(x->singleExtensions);
 }
 
 int OCSP_SINGLERESP_get_ext_by_NID(OCSP_SINGLERESP *x, int nid, int lastpos)
 {
-    return X509v3_get_ext_by_NID(x->singleExtensions, nid, lastpos);
+    return YX509v3_get_ext_by_NID(x->singleExtensions, nid, lastpos);
 }
 
-int OCSP_SINGLERESP_get_ext_by_OBJ(OCSP_SINGLERESP *x, const ASN1_OBJECT *obj,
+int OCSP_SINGLERESP_get_ext_by_OBJ(OCSP_SINGLERESP *x, const YASN1_OBJECT *obj,
                                    int lastpos)
 {
-    return X509v3_get_ext_by_OBJ(x->singleExtensions, obj, lastpos);
+    return YX509v3_get_ext_by_OBJ(x->singleExtensions, obj, lastpos);
 }
 
 int OCSP_SINGLERESP_get_ext_by_critical(OCSP_SINGLERESP *x, int crit,
                                         int lastpos)
 {
-    return X509v3_get_ext_by_critical(x->singleExtensions, crit, lastpos);
+    return YX509v3_get_ext_by_critical(x->singleExtensions, crit, lastpos);
 }
 
-X509_EXTENSION *OCSP_SINGLERESP_get_ext(OCSP_SINGLERESP *x, int loc)
+YX509_EXTENSION *OCSP_SINGLERESP_get_ext(OCSP_SINGLERESP *x, int loc)
 {
-    return X509v3_get_ext(x->singleExtensions, loc);
+    return YX509v3_get_ext(x->singleExtensions, loc);
 }
 
-X509_EXTENSION *OCSP_SINGLERESP_delete_ext(OCSP_SINGLERESP *x, int loc)
+YX509_EXTENSION *OCSP_SINGLERESP_delete_ext(OCSP_SINGLERESP *x, int loc)
 {
-    return X509v3_delete_ext(x->singleExtensions, loc);
+    return YX509v3_delete_ext(x->singleExtensions, loc);
 }
 
 void *OCSP_SINGLERESP_get1_ext_d2i(OCSP_SINGLERESP *x, int nid, int *crit,
                                    int *idx)
 {
-    return X509V3_get_d2i(x->singleExtensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->singleExtensions, nid, crit, idx);
 }
 
 int OCSP_SINGLERESP_add1_ext_i2d(OCSP_SINGLERESP *x, int nid, void *value,
                                  int crit, unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->singleExtensions, nid, value, crit, flags);
+    return YX509V3_add1_i2d(&x->singleExtensions, nid, value, crit, flags);
 }
 
-int OCSP_SINGLERESP_add_ext(OCSP_SINGLERESP *x, X509_EXTENSION *ex, int loc)
+int OCSP_SINGLERESP_add_ext(OCSP_SINGLERESP *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->singleExtensions), ex, loc) != NULL);
+    return (YX509v3_add_ext(&(x->singleExtensions), ex, loc) != NULL);
 }
 
 /* also CRL Entry Extensions */
@@ -241,11 +241,11 @@ int OCSP_SINGLERESP_add_ext(OCSP_SINGLERESP *x, X509_EXTENSION *ex, int loc)
  * OCTET STRING containing the nonce, previous versions used the raw nonce.
  */
 
-static int ocsp_add1_nonce(STACK_OF(X509_EXTENSION) **exts,
+static int ocsp_add1_nonce(STACK_OF(YX509_EXTENSION) **exts,
                            unsigned char *val, int len)
 {
     unsigned char *tmpval;
-    ASN1_OCTET_STRING os;
+    YASN1_OCTET_STRING os;
     int ret = 0;
     if (len <= 0)
         len = OCSP_DEFAULT_NONCE_LENGTH;
@@ -255,7 +255,7 @@ static int ocsp_add1_nonce(STACK_OF(X509_EXTENSION) **exts,
      * operation in some cases. Applications should *NOT* do this because it
      * relies on library internals.
      */
-    os.length = ASN1_object_size(0, len, V_ASN1_OCTET_STRING);
+    os.length = YASN1_object_size(0, len, V_YASN1_OCTET_STRING);
     if (os.length < 0)
         return 0;
 
@@ -263,13 +263,13 @@ static int ocsp_add1_nonce(STACK_OF(X509_EXTENSION) **exts,
     if (os.data == NULL)
         goto err;
     tmpval = os.data;
-    ASN1_put_object(&tmpval, 0, len, V_ASN1_OCTET_STRING, V_ASN1_UNIVERSAL);
+    YASN1_put_object(&tmpval, 0, len, V_YASN1_OCTET_STRING, V_YASN1_UNIVEYRSAL);
     if (val)
         memcpy(tmpval, val, len);
     else if (RAND_bytes(tmpval, len) <= 0)
         goto err;
-    if (!X509V3_add1_i2d(exts, NID_id_pkix_OCSP_Nonce,
-                         &os, 0, X509V3_ADD_REPLACE))
+    if (!YX509V3_add1_i2d(exts, NID_id_pkix_OCSP_Nonce,
+                         &os, 0, YX509V3_ADD_REPLACE))
         goto err;
     ret = 1;
  err:
@@ -311,13 +311,13 @@ int OCSP_check_nonce(OCSP_REQUEST *req, OCSP_BASICRESP *bs)
     /*
      * Since we are only interested in the presence or absence of
      * the nonce and comparing its value there is no need to use
-     * the X509V3 routines: this way we can avoid them allocating an
-     * ASN1_OCTET_STRING structure for the value which would be
+     * the YX509V3 routines: this way we can avoid them allocating an
+     * YASN1_OCTET_STRING structure for the value which would be
      * freed immediately anyway.
      */
 
     int req_idx, resp_idx;
-    X509_EXTENSION *req_ext, *resp_ext;
+    YX509_EXTENSION *req_ext, *resp_ext;
     req_idx = OCSP_REQUEST_get_ext_by_NID(req, NID_id_pkix_OCSP_Nonce, -1);
     resp_idx = OCSP_BASICRESP_get_ext_by_NID(bs, NID_id_pkix_OCSP_Nonce, -1);
     /* Check both absent */
@@ -334,8 +334,8 @@ int OCSP_check_nonce(OCSP_REQUEST *req, OCSP_BASICRESP *bs)
      */
     req_ext = OCSP_REQUEST_get_ext(req, req_idx);
     resp_ext = OCSP_BASICRESP_get_ext(bs, resp_idx);
-    if (ASN1_OCTET_STRING_cmp(X509_EXTENSION_get_data(req_ext),
-                              X509_EXTENSION_get_data(resp_ext)))
+    if (YASN1_OCTET_STRING_cmp(YX509_EXTENSION_get_data(req_ext),
+                              YX509_EXTENSION_get_data(resp_ext)))
         return 0;
     return 1;
 }
@@ -346,7 +346,7 @@ int OCSP_check_nonce(OCSP_REQUEST *req, OCSP_BASICRESP *bs)
 
 int OCSP_copy_nonce(OCSP_BASICRESP *resp, OCSP_REQUEST *req)
 {
-    X509_EXTENSION *req_ext;
+    YX509_EXTENSION *req_ext;
     int req_idx;
     /* Check for nonce in request */
     req_idx = OCSP_REQUEST_get_ext_by_NID(req, NID_id_pkix_OCSP_Nonce, -1);
@@ -357,71 +357,71 @@ int OCSP_copy_nonce(OCSP_BASICRESP *resp, OCSP_REQUEST *req)
     return OCSP_BASICRESP_add_ext(resp, req_ext, -1);
 }
 
-X509_EXTENSION *OCSP_crlID_new(const char *url, long *n, char *tim)
+YX509_EXTENSION *OCSP_crlID_new(const char *url, long *n, char *tim)
 {
-    X509_EXTENSION *x = NULL;
+    YX509_EXTENSION *x = NULL;
     OCSP_CRLID *cid = NULL;
 
     if ((cid = OCSP_CRLID_new()) == NULL)
         goto err;
     if (url) {
-        if ((cid->crlUrl = ASN1_IA5STRING_new()) == NULL)
+        if ((cid->crlUrl = YASN1_IA5STRING_new()) == NULL)
             goto err;
-        if (!(ASN1_STRING_set(cid->crlUrl, url, -1)))
+        if (!(YASN1_STRING_set(cid->crlUrl, url, -1)))
             goto err;
     }
     if (n) {
-        if ((cid->crlNum = ASN1_INTEGER_new()) == NULL)
+        if ((cid->crlNum = YASN1_INTEGER_new()) == NULL)
             goto err;
-        if (!(ASN1_INTEGER_set(cid->crlNum, *n)))
+        if (!(YASN1_INTEGER_set(cid->crlNum, *n)))
             goto err;
     }
     if (tim) {
-        if ((cid->crlTime = ASN1_GENERALIZEDTIME_new()) == NULL)
+        if ((cid->crlTime = YASN1_GENERALIZEDTIME_new()) == NULL)
             goto err;
-        if (!(ASN1_GENERALIZEDTIME_set_string(cid->crlTime, tim)))
+        if (!(YASN1_GENERALIZEDTIME_set_string(cid->crlTime, tim)))
             goto err;
     }
-    x = X509V3_EXT_i2d(NID_id_pkix_OCSP_CrlID, 0, cid);
+    x = YX509V3_EXT_i2d(NID_id_pkix_OCSP_CrlID, 0, cid);
  err:
     OCSP_CRLID_free(cid);
     return x;
 }
 
 /*   AcceptableResponses ::= SEQUENCE OF OBJECT IDENTIFIER */
-X509_EXTENSION *OCSP_accept_responses_new(char **oids)
+YX509_EXTENSION *OCSP_accept_responses_new(char **oids)
 {
     int nid;
-    STACK_OF(ASN1_OBJECT) *sk = NULL;
-    ASN1_OBJECT *o = NULL;
-    X509_EXTENSION *x = NULL;
+    STACK_OF(YASN1_OBJECT) *sk = NULL;
+    YASN1_OBJECT *o = NULL;
+    YX509_EXTENSION *x = NULL;
 
-    if ((sk = sk_ASN1_OBJECT_new_null()) == NULL)
+    if ((sk = sk_YASN1_OBJECT_new_null()) == NULL)
         goto err;
     while (oids && *oids) {
         if ((nid = OBJ_txt2nid(*oids)) != NID_undef && (o = OBJ_nid2obj(nid)))
-            sk_ASN1_OBJECT_push(sk, o);
+            sk_YASN1_OBJECT_push(sk, o);
         oids++;
     }
-    x = X509V3_EXT_i2d(NID_id_pkix_OCSP_acceptableResponses, 0, sk);
+    x = YX509V3_EXT_i2d(NID_id_pkix_OCSP_acceptableResponses, 0, sk);
  err:
-    sk_ASN1_OBJECT_pop_free(sk, ASN1_OBJECT_free);
+    sk_YASN1_OBJECT_pop_free(sk, YASN1_OBJECT_free);
     return x;
 }
 
 /*  ArchiveCutoff ::= GeneralizedTime */
-X509_EXTENSION *OCSP_archive_cutoff_new(char *tim)
+YX509_EXTENSION *OCSP_archive_cutoff_new(char *tim)
 {
-    X509_EXTENSION *x = NULL;
-    ASN1_GENERALIZEDTIME *gt = NULL;
+    YX509_EXTENSION *x = NULL;
+    YASN1_GENERALIZEDTIME *gt = NULL;
 
-    if ((gt = ASN1_GENERALIZEDTIME_new()) == NULL)
+    if ((gt = YASN1_GENERALIZEDTIME_new()) == NULL)
         goto err;
-    if (!(ASN1_GENERALIZEDTIME_set_string(gt, tim)))
+    if (!(YASN1_GENERALIZEDTIME_set_string(gt, tim)))
         goto err;
-    x = X509V3_EXT_i2d(NID_id_pkix_OCSP_archiveCutoff, 0, gt);
+    x = YX509V3_EXT_i2d(NID_id_pkix_OCSP_archiveCutoff, 0, gt);
  err:
-    ASN1_GENERALIZEDTIME_free(gt);
+    YASN1_GENERALIZEDTIME_free(gt);
     return x;
 }
 
@@ -430,17 +430,17 @@ X509_EXTENSION *OCSP_archive_cutoff_new(char *tim)
  * two--NID_ad_ocsp, NID_id_ad_caIssuers--and GeneralName value.  This method
  * forces NID_ad_ocsp and uniformResourceLocator [6] IA5String.
  */
-X509_EXTENSION *OCSP_url_svcloc_new(X509_NAME *issuer, const char **urls)
+YX509_EXTENSION *OCSP_url_svcloc_new(YX509_NAME *issuer, const char **urls)
 {
-    X509_EXTENSION *x = NULL;
-    ASN1_IA5STRING *ia5 = NULL;
+    YX509_EXTENSION *x = NULL;
+    YASN1_IA5STRING *ia5 = NULL;
     OCSP_SERVICELOC *sloc = NULL;
     ACCESS_DESCRIPTION *ad = NULL;
 
     if ((sloc = OCSP_SERVICELOC_new()) == NULL)
         goto err;
-    X509_NAME_free(sloc->issuer);
-    if ((sloc->issuer = X509_NAME_dup(issuer)) == NULL)
+    YX509_NAME_free(sloc->issuer);
+    if ((sloc->issuer = YX509_NAME_dup(issuer)) == NULL)
         goto err;
     if (urls && *urls
         && (sloc->locator = sk_ACCESS_DESCRIPTION_new_null()) == NULL)
@@ -450,9 +450,9 @@ X509_EXTENSION *OCSP_url_svcloc_new(X509_NAME *issuer, const char **urls)
             goto err;
         if ((ad->method = OBJ_nid2obj(NID_ad_OCSP)) == NULL)
             goto err;
-        if ((ia5 = ASN1_IA5STRING_new()) == NULL)
+        if ((ia5 = YASN1_IA5STRING_new()) == NULL)
             goto err;
-        if (!ASN1_STRING_set((ASN1_STRING *)ia5, *urls, -1))
+        if (!YASN1_STRING_set((YASN1_STRING *)ia5, *urls, -1))
             goto err;
         /* ad->location is allocated inside ACCESS_DESCRIPTION_new */
         ad->location->type = GEN_URI;
@@ -463,9 +463,9 @@ X509_EXTENSION *OCSP_url_svcloc_new(X509_NAME *issuer, const char **urls)
         ad = NULL;
         urls++;
     }
-    x = X509V3_EXT_i2d(NID_id_pkix_OCSP_serviceLocator, 0, sloc);
+    x = YX509V3_EXT_i2d(NID_id_pkix_OCSP_serviceLocator, 0, sloc);
  err:
-    ASN1_IA5STRING_free(ia5);
+    YASN1_IA5STRING_free(ia5);
     ACCESS_DESCRIPTION_free(ad);
     OCSP_SERVICELOC_free(sloc);
     return x;

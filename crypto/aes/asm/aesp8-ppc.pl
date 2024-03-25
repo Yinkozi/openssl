@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# This module implements support for AES instructions as per PowerISA
+# This module implements support for YAES instructions as per PowerISA
 # specification version 2.07, first implemented by POWER8 processor.
 # The module is endian-agnostic in sense that it supports both big-
 # and little-endian cases. Data alignment in parallelizable modes is
@@ -47,7 +47,7 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
@@ -55,7 +55,7 @@ if ($flavour =~ /64/) {
 	$SHL	="sldi";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$STU	="stwu";
 	$POP	="lwz";
 	$PUSH	="stw";
@@ -104,14 +104,14 @@ Lconsts:
 	blr
 	.long	0
 	.byte	0,12,0x14,0,0,0,0,0
-.asciz	"AES for PowerISA 2.07, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YAES for PowerISA 2.07, CRYPTOGAMS by <appro\@openssl.org>"
 
 .globl	.${prefix}_set_encrypt_key
 .align	5
 .${prefix}_set_encrypt_key:
 Lset_encrypt_key:
 	mflr		r11
-	$PUSH		r11,$LRSAVE($sp)
+	$PUSH		r11,$LYRSAVE($sp)
 
 	li		$ptr,-1
 	${UCMP}i	$inp,0
@@ -374,7 +374,7 @@ Lenc_key_abort:
 .${prefix}_set_decrypt_key:
 	$STU		$sp,-$FRAME($sp)
 	mflr		r10
-	$PUSH		r10,$FRAME+$LRSAVE($sp)
+	$PUSH		r10,$FRAME+$LYRSAVE($sp)
 	bl		Lset_encrypt_key
 	mtlr		r10
 
@@ -1912,7 +1912,7 @@ ___
 #########################################################################
 {{{	# XTS procedures						#
 # int aes_p8_xts_[en|de]crypt(const char *inp, char *out, size_t len,	#
-#                             const AES_KEY *key1, const AES_KEY *key2,	#
+#                             const YAES_KEY *key1, const YAES_KEY *key2,	#
 #                             [const] unsigned char iv[16]);		#
 # If $key2 is NULL, then a "tweak chaining" mode is engaged, in which	#
 # input tweak value is assumed to be encrypted already, and last tweak	#
@@ -2416,7 +2416,7 @@ _aesp8_xts_encrypt6x:
 	mflr		r11
 	li		r7,`$FRAME+8*16+15`
 	li		r3,`$FRAME+8*16+31`
-	$PUSH		r11,`$FRAME+21*16+6*$SIZE_T+$LRSAVE`($sp)
+	$PUSH		r11,`$FRAME+21*16+6*$SIZE_T+$LYRSAVE`($sp)
 	stvx		v20,r7,$sp		# ABI says so
 	addi		r7,r7,32
 	stvx		v21,r3,$sp
@@ -3068,7 +3068,7 @@ _aesp8_xts_decrypt6x:
 	mflr		r11
 	li		r7,`$FRAME+8*16+15`
 	li		r3,`$FRAME+8*16+31`
-	$PUSH		r11,`$FRAME+21*16+6*$SIZE_T+$LRSAVE`($sp)
+	$PUSH		r11,`$FRAME+21*16+6*$SIZE_T+$LYRSAVE`($sp)
 	stvx		v20,r7,$sp		# ABI says so
 	addi		r7,r7,32
 	stvx		v21,r3,$sp

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-d2i_SSL_SESSION, i2d_SSL_SESSION - convert SSL_SESSION object from/to ASN1 representation
+d2i_SSL_SESSION, i2d_SSL_SESSION - convert SSL_SESSION object from/to YASN1 representation
 
 =head1 SYNOPSIS
 
@@ -15,7 +15,7 @@ d2i_SSL_SESSION, i2d_SSL_SESSION - convert SSL_SESSION object from/to ASN1 repre
 =head1 DESCRIPTION
 
 These functions decode and encode an SSL_SESSION object.
-For encoding details see L<d2i_X509(3)>.
+For encoding details see L<d2i_YX509(3)>.
 
 SSL_SESSION objects keep internal link information about the session cache
 list, when being inserted into one SSL_CTX object's session cache.
@@ -29,14 +29,14 @@ d2i_SSL_SESSION() returns a pointer to the newly allocated SSL_SESSION
 object. In case of failure the NULL-pointer is returned and the error message
 can be retrieved from the error stack.
 
-i2d_SSL_SESSION() returns the size of the ASN1 representation in bytes.
+i2d_SSL_SESSION() returns the size of the YASN1 representation in bytes.
 When the session is not valid, B<0> is returned and no operation is performed.
 
 =head1 SEE ALSO
 
 L<ssl(7)>, L<SSL_SESSION_free(3)>,
 L<SSL_CTX_sess_set_get_cb(3)>,
-L<d2i_X509(3)>
+L<d2i_YX509(3)>
 
 =head1 COPYRIGHT
 

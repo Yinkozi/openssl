@@ -166,7 +166,7 @@ unencrypted example in L<BIO_s_connect(3)>.
  BIO_get_ssl(sbio, &ssl);
  if (ssl == NULL) {
      fprintf(stderr, "Can't locate SSL pointer\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -181,7 +181,7 @@ unencrypted example in L<BIO_s_connect(3)>.
  out = BIO_new_fp(stdout, BIO_NOCLOSE);
  if (BIO_do_connect(sbio) <= 0) {
      fprintf(stderr, "Error connecting to server\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -215,7 +215,7 @@ a client and also echoes the request to standard output.
          || !SSL_CTX_use_PrivateKey_file(ctx, "server.pem", SSL_FILETYPE_PEM)
          || !SSL_CTX_check_private_key(ctx)) {
      fprintf(stderr, "Error setting up SSL_CTX\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -226,7 +226,7 @@ a client and also echoes the request to standard output.
  BIO_get_ssl(sbio, &ssl);
  if (ssl == NULL) {
      fprintf(stderr, "Can't locate SSL pointer\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -247,7 +247,7 @@ a client and also echoes the request to standard output.
  /* Setup accept BIO */
  if (BIO_do_accept(acpt) <= 0) {
      fprintf(stderr, "Error setting up accept BIO\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -257,7 +257,7 @@ a client and also echoes the request to standard output.
 
  if (BIO_do_handshake(sbio) <= 0) {
      fprintf(stderr, "Error in SSL handshake\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 

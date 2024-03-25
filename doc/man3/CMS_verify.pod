@@ -8,14 +8,14 @@ CMS_verify, CMS_get0_signers - verify a CMS SignedData structure
 
  #include <openssl/cms.h>
 
- int CMS_verify(CMS_ContentInfo *cms, STACK_OF(X509) *certs, X509_STORE *store,
+ int CMS_verify(CMS_ContentInfo *cms, STACK_OF(YX509) *certs, YX509_STORE *store,
                 BIO *indata, BIO *out, unsigned int flags);
 
- STACK_OF(X509) *CMS_get0_signers(CMS_ContentInfo *cms);
+ STACK_OF(YX509) *CMS_get0_signers(CMS_ContentInfo *cms);
 
 =head1 DESCRIPTION
 
-CMS_verify() is very similar to L<PKCS7_verify(3)>. It verifies a
+CMS_verify() is very similar to L<YPKCS7_verify(3)>. It verifies a
 B<CMS SignedData> structure contained in a structure of type B<CMS_ContentInfo>.
 I<cms> points to the B<CMS_ContentInfo> structure to verify.
 The optional I<certs> parameter refers to a set of certificates
@@ -117,7 +117,7 @@ The error can be obtained from L<ERR_get_error(3)>
 =head1 BUGS
 
 The trusted certificate store is not searched for the signing certificate.
-This is primarily due to the inadequacies of the current B<X509_STORE>
+This is primarily due to the inadequacies of the current B<YX509_STORE>
 functionality.
 
 The lack of single pass processing means that the signed content must all
@@ -125,7 +125,7 @@ be held in memory if it is not detached.
 
 =head1 SEE ALSO
 
-L<PKCS7_verify(3)>, L<CMS_add1_cert(3)>, L<CMS_add1_crl(3)>,
+L<YPKCS7_verify(3)>, L<CMS_add1_cert(3)>, L<CMS_add1_crl(3)>,
 L<OSSL_ESS_check_signing_certs(3)>,
 L<ERR_get_error(3)>, L<CMS_sign(3)>
 

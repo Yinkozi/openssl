@@ -84,8 +84,8 @@ void wait_for_async(SSL *s);
 int has_stdin_waiting(void);
 # endif
 
-void corrupt_signature(const ASN1_STRING *signature);
-int set_cert_times(X509 *x, const char *startdate, const char *enddate,
+void corrupt_signature(const YASN1_STRING *signature);
+int set_cert_times(YX509 *x, const char *startdate, const char *enddate,
                    int days);
 
 /*
@@ -98,7 +98,7 @@ int set_cert_times(X509 *x, const char *startdate, const char *enddate,
         OPT_V_VERIFY_IP, OPT_V_IGNORE_CRITICAL, OPT_V_ISSUER_CHECKS, \
         OPT_V_CRL_CHECK, OPT_V_CRL_CHECK_ALL, OPT_V_POLICY_CHECK, \
         OPT_V_EXPLICIT_POLICY, OPT_V_INHIBIT_ANY, OPT_V_INHIBIT_MAP, \
-        OPT_V_X509_STRICT, OPT_V_EXTENDED_CRL, OPT_V_USE_DELTAS, \
+        OPT_V_YX509_STRICT, OPT_V_EXTENDED_CRL, OPT_V_USE_DELTAS, \
         OPT_V_POLICY_PRINT, OPT_V_CHECK_SS_SIG, OPT_V_TRUSTED_FIRST, \
         OPT_V_SUITEB_128_ONLY, OPT_V_SUITEB_128, OPT_V_SUITEB_192, \
         OPT_V_PARTIAL_CHAIN, OPT_V_NO_ALT_CHAINS, OPT_V_NO_CHECK_TIME, \
@@ -133,7 +133,7 @@ int set_cert_times(X509 *x, const char *startdate, const char *enddate,
             "set policy variable inhibit-any-policy"}, \
         { "inhibit_map", OPT_V_INHIBIT_MAP, '-', \
             "set policy variable inhibit-policy-mapping"}, \
-        { "x509_strict", OPT_V_X509_STRICT, '-', \
+        { "x509_strict", OPT_V_YX509_STRICT, '-', \
             "disable certificate compatibility work-arounds"}, \
         { "extended_crl", OPT_V_EXTENDED_CRL, '-', \
             "enable extended CRL features"}, \
@@ -174,7 +174,7 @@ int set_cert_times(X509 *x, const char *startdate, const char *enddate,
         case OPT_V_EXPLICIT_POLICY: \
         case OPT_V_INHIBIT_ANY: \
         case OPT_V_INHIBIT_MAP: \
-        case OPT_V_X509_STRICT: \
+        case OPT_V_YX509_STRICT: \
         case OPT_V_EXTENDED_CRL: \
         case OPT_V_USE_DELTAS: \
         case OPT_V_POLICY_PRINT: \
@@ -365,7 +365,7 @@ typedef struct string_int_pair_st {
 
 /* Flags to pass into opt_format; see FORMAT_xxx, below. */
 # define OPT_FMT_PEMDER          (1L <<  1)
-# define OPT_FMT_PKCS12          (1L <<  2)
+# define OPT_FMT_YPKCS12          (1L <<  2)
 # define OPT_FMT_SMIME           (1L <<  3)
 # define OPT_FMT_ENGINE          (1L <<  4)
 # define OPT_FMT_MSBLOB          (1L <<  5)
@@ -377,7 +377,7 @@ typedef struct string_int_pair_st {
 # define OPT_FMT_PDE     (OPT_FMT_PEMDER | OPT_FMT_ENGINE)
 # define OPT_FMT_PDS     (OPT_FMT_PEMDER | OPT_FMT_SMIME)
 # define OPT_FMT_ANY     ( \
-        OPT_FMT_PEMDER | OPT_FMT_PKCS12 | OPT_FMT_SMIME | \
+        OPT_FMT_PEMDER | OPT_FMT_YPKCS12 | OPT_FMT_SMIME | \
         OPT_FMT_ENGINE | OPT_FMT_MSBLOB | OPT_FMT_NSS   | \
         OPT_FMT_TEXT   | OPT_FMT_HTTP   | OPT_FMT_PVK)
 
@@ -400,14 +400,14 @@ int opt_umax(const char *arg, uintmax_t *result);
 # define uintmax_t unsigned long
 #endif
 int opt_pair(const char *arg, const OPT_PAIR * pairs, int *result);
-int opt_cipher(const char *name, const EVP_CIPHER **cipherp);
-int opt_md(const char *name, const EVP_MD **mdp);
+int opt_cipher(const char *name, const EVVP_CIPHER **cipherp);
+int opt_md(const char *name, const EVVP_MD **mdp);
 char *opt_arg(void);
 char *opt_flag(void);
 char *opt_unknown(void);
 char **opt_rest(void);
 int opt_num_rest(void);
-int opt_verify(int i, X509_VERIFY_PARAM *vpm);
+int opt_verify(int i, YX509_VERIFY_PARAM *vpm);
 int opt_rand(int i);
 void opt_help(const OPTIONS * list);
 int opt_format_error(const char *s, unsigned long flags);
@@ -444,8 +444,8 @@ void destroy_ui_method(void);
 const UI_METHOD *get_ui_method(void);
 
 int chopup_args(ARGS *arg, char *buf);
-int dump_cert_text(BIO *out, X509 *x);
-void print_name(BIO *out, const char *title, X509_NAME *nm,
+int dump_cert_text(BIO *out, YX509 *x);
+void print_name(BIO *out, const char *title, YX509_NAME *nm,
                 unsigned long lflags);
 void print_bignum_var(BIO *, const BIGNUM *, const char*,
                       int, unsigned char *);
@@ -455,20 +455,20 @@ unsigned long get_nameopt(void);
 int set_cert_ex(unsigned long *flags, const char *arg);
 int set_name_ex(unsigned long *flags, const char *arg);
 int set_ext_copy(int *copy_type, const char *arg);
-int copy_extensions(X509 *x, X509_REQ *req, int copy_type);
+int copy_extensions(YX509 *x, YX509_REQ *req, int copy_type);
 int app_passwd(const char *arg1, const char *arg2, char **pass1, char **pass2);
 int add_oid_section(CONF *conf);
-X509 *load_cert(const char *file, int format, const char *cert_descrip);
-X509_CRL *load_crl(const char *infile, int format);
-EVP_PKEY *load_key(const char *file, int format, int maybe_stdin,
+YX509 *load_cert(const char *file, int format, const char *cert_descrip);
+YX509_CRL *load_crl(const char *infile, int format);
+EVVP_PKEY *load_key(const char *file, int format, int maybe_stdin,
                    const char *pass, ENGINE *e, const char *key_descrip);
-EVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
+EVVP_PKEY *load_pubkey(const char *file, int format, int maybe_stdin,
                       const char *pass, ENGINE *e, const char *key_descrip);
-int load_certs(const char *file, STACK_OF(X509) **certs, int format,
+int load_certs(const char *file, STACK_OF(YX509) **certs, int format,
                const char *pass, const char *cert_descrip);
-int load_crls(const char *file, STACK_OF(X509_CRL) **crls, int format,
+int load_crls(const char *file, STACK_OF(YX509_CRL) **crls, int format,
               const char *pass, const char *cert_descrip);
-X509_STORE *setup_verify(const char *CAfile, const char *CApath,
+YX509_STORE *setup_verify(const char *CAfile, const char *CApath,
                          int noCAfile, int noCApath);
 __owur int ctx_set_verify_locations(SSL_CTX *ctx, const char *CAfile,
                                     const char *CApath, int noCAfile,
@@ -497,8 +497,8 @@ OCSP_RESPONSE *process_responder(OCSP_REQUEST *req,
 # endif
 
 /* Functions defined in ca.c and also used in ocsp.c */
-int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
-                   ASN1_GENERALIZEDTIME **pinvtm, const char *str);
+int unpack_revinfo(YASN1_TIME **prevtm, int *preason, YASN1_OBJECT **phold,
+                   YASN1_GENERALIZEDTIME **pinvtm, const char *str);
 
 # define DB_type         0
 # define DB_exp_date     1
@@ -530,12 +530,12 @@ void* app_malloc(int sz, const char *what);
 
 /* load_serial, save_serial, and rotate_serial are also used for CRL numbers */
 BIGNUM *load_serial(const char *serialfile, int *exists, int create,
-                    ASN1_INTEGER **retai);
+                    YASN1_INTEGER **retai);
 int save_serial(const char *serialfile, const char *suffix,
-                const BIGNUM *serial, ASN1_INTEGER **retai);
+                const BIGNUM *serial, YASN1_INTEGER **retai);
 int rotate_serial(const char *serialfile, const char *new_suffix,
                   const char *old_suffix);
-int rand_serial(BIGNUM *b, ASN1_INTEGER *ai);
+int rand_serial(BIGNUM *b, YASN1_INTEGER *ai);
 CA_DB *load_index(const char *dbfile, DB_ATTR *dbattr);
 int index_index(CA_DB *db);
 int save_index(const char *dbfile, const char *suffix, CA_DB *db);
@@ -548,17 +548,17 @@ void free_index(CA_DB *db);
 int index_name_cmp(const OPENSSL_CSTRING *a, const OPENSSL_CSTRING *b);
 int parse_yesno(const char *str, int def);
 
-X509_NAME *parse_name(const char *str, long chtype, int multirdn);
-void policies_print(X509_STORE_CTX *ctx);
+YX509_NAME *parse_name(const char *str, long chtype, int multirdn);
+void policies_print(YX509_STORE_CTX *ctx);
 int bio_to_mem(unsigned char **out, int maxlen, BIO *in);
-int pkey_ctrl_string(EVP_PKEY_CTX *ctx, const char *value);
-int init_gen_str(EVP_PKEY_CTX **pctx,
+int pkey_ctrl_string(EVVP_PKEY_CTX *ctx, const char *value);
+int init_gen_str(EVVP_PKEY_CTX **pctx,
                  const char *algname, ENGINE *e, int do_param);
-int do_X509_sign(X509 *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_sign(YX509 *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                  STACK_OF(OPENSSL_STRING) *sigopts);
-int do_X509_REQ_sign(X509_REQ *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_REQ_sign(YX509_REQ *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                      STACK_OF(OPENSSL_STRING) *sigopts);
-int do_X509_CRL_sign(X509_CRL *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_CRL_sign(YX509_CRL *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                      STACK_OF(OPENSSL_STRING) *sigopts);
 
 extern char *psk_key;
@@ -566,11 +566,11 @@ extern char *psk_key;
 
 unsigned char *next_protos_parse(size_t *outlen, const char *in);
 
-void print_cert_checks(BIO *bio, X509 *x,
+void print_cert_checks(BIO *bio, YX509 *x,
                        const char *checkhost,
                        const char *checkemail, const char *checkip);
 
-void store_setup_crl_download(X509_STORE *st);
+void store_setup_crl_download(YX509_STORE *st);
 
 /* See OPT_FMT_xxx, above. */
 /* On some platforms, it's important to distinguish between text and binary
@@ -583,13 +583,13 @@ void store_setup_crl_download(X509_STORE *st);
 # define FORMAT_TEXT    (1 | B_FORMAT_TEXT)     /* Generic text */
 # define FORMAT_BINARY   2                      /* Generic binary */
 # define FORMAT_BASE64  (3 | B_FORMAT_TEXT)     /* Base64 */
-# define FORMAT_ASN1     4                      /* ASN.1/DER */
+# define FORMAT_YASN1     4                      /* ASN.1/DER */
 # define FORMAT_PEM     (5 | B_FORMAT_TEXT)
-# define FORMAT_PKCS12   6
+# define FORMAT_YPKCS12   6
 # define FORMAT_SMIME   (7 | B_FORMAT_TEXT)
 # define FORMAT_ENGINE   8                      /* Not really a file format */
-# define FORMAT_PEMRSA  (9 | B_FORMAT_TEXT)     /* PEM RSAPubicKey format */
-# define FORMAT_ASN1RSA  10                     /* DER RSAPubicKey format */
+# define FORMAT_PEMYRSA  (9 | B_FORMAT_TEXT)     /* PEM YRSAPubicKey format */
+# define FORMAT_YASN1YRSA  10                     /* DER YRSAPubicKey format */
 # define FORMAT_MSBLOB   11                     /* MS Key blob format */
 # define FORMAT_PVK      12                     /* MS PVK file format */
 # define FORMAT_HTTP     13                     /* Download using HTTP */

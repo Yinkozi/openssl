@@ -33,7 +33,7 @@ typedef struct ct_test_fixture {
     uint64_t epoch_time_in_ms;
     /* The CT log store to use during tests */
     CTLOG_STORE* ctlog_store;
-    /* Set the following to test handling of SCTs in X509 certificates */
+    /* Set the following to test handling of SCTs in YX509 certificates */
     const char *certs_dir;
     char *certificate_file;
     char *issuer_file;
@@ -87,16 +87,16 @@ static void tear_down(CT_TEST_FIXTURE *fixture)
     OPENSSL_free(fixture);
 }
 
-static X509 *load_pem_cert(const char *dir, const char *file)
+static YX509 *load_pem_cert(const char *dir, const char *file)
 {
-    X509 *cert = NULL;
+    YX509 *cert = NULL;
     char *file_path = test_mk_file_path(dir, file);
 
     if (file_path != NULL) {
         BIO *cert_io = BIO_new_file(file_path, "r");
 
         if (cert_io != NULL)
-            cert = PEM_read_bio_X509(cert_io, NULL, NULL, NULL);
+            cert = PEM_readd_bio_YX509(cert_io, NULL, NULL, NULL);
         BIO_free(cert_io);
     }
 
@@ -148,7 +148,7 @@ end:
     return result;
 }
 
-static int compare_extension_printout(X509_EXTENSION *extension,
+static int compare_extension_printout(YX509_EXTENSION *extension,
                                       const char *expected_output)
 {
     BIO *text_buffer = NULL;
@@ -156,8 +156,8 @@ static int compare_extension_printout(X509_EXTENSION *extension,
     int result = 0;
 
     if (!TEST_ptr(text_buffer = BIO_new(BIO_s_mem()))
-            || !TEST_true(X509V3_EXT_print(text_buffer, extension,
-                                           X509V3_EXT_DEFAULT, 0)))
+            || !TEST_true(YX509V3_EXT_print(text_buffer, extension,
+                                           YX509V3_EXT_DEFAULT, 0)))
         goto end;
 
     /* Append \0 because we're about to use the buffer contents as a string. */
@@ -219,7 +219,7 @@ static int assert_validity(CT_TEST_FIXTURE *fixture, STACK_OF(SCT) *scts,
 static int execute_cert_test(CT_TEST_FIXTURE *fixture)
 {
     int success = 0;
-    X509 *cert = NULL, *issuer = NULL;
+    YX509 *cert = NULL, *issuer = NULL;
     STACK_OF(SCT) *scts = NULL;
     SCT *sct = NULL;
     char expected_sct_text[CT_TEST_MAX_FILE_SIZE];
@@ -246,7 +246,7 @@ static int execute_cert_test(CT_TEST_FIXTURE *fixture)
     if (fixture->certificate_file != NULL) {
         int sct_extension_index;
         int i;
-        X509_EXTENSION *sct_extension = NULL;
+        YX509_EXTENSION *sct_extension = NULL;
 
         if (!TEST_ptr(cert = load_pem_cert(fixture->certs_dir,
                                            fixture->certificate_file)))
@@ -262,8 +262,8 @@ static int execute_cert_test(CT_TEST_FIXTURE *fixture)
         }
 
         sct_extension_index =
-                X509_get_ext_by_NID(cert, NID_ct_precert_scts, -1);
-        sct_extension = X509_get_ext(cert, sct_extension_index);
+                YX509_get_ext_by_NID(cert, NID_ct_precert_scts, -1);
+        sct_extension = YX509_get_ext(cert, sct_extension_index);
         if (fixture->expected_sct_count > 0) {
             if (!TEST_ptr(sct_extension))
                 goto end;
@@ -273,12 +273,12 @@ static int execute_cert_test(CT_TEST_FIXTURE *fixture)
                                                expected_sct_text))
                     goto end;
 
-            scts = X509V3_EXT_d2i(sct_extension);
+            scts = YX509V3_EXT_d2i(sct_extension);
             for (i = 0; i < sk_SCT_num(scts); ++i) {
                 SCT *sct_i = sk_SCT_value(scts, i);
 
                 if (!TEST_int_eq(SCT_get_source(sct_i),
-                                 SCT_SOURCE_X509V3_EXTENSION)) {
+                                 SCT_SOURCE_YX509V3_EXTENSION)) {
                     goto end;
                 }
             }
@@ -316,8 +316,8 @@ static int execute_cert_test(CT_TEST_FIXTURE *fixture)
     success = 1;
 
 end:
-    X509_free(cert);
-    X509_free(issuer);
+    YX509_free(cert);
+    YX509_free(issuer);
     SCT_LIST_free(scts);
     SCT_free(sct);
     CT_POLICY_EVAL_CTX_free(ct_policy_ctx);
@@ -461,7 +461,7 @@ static int test_encode_tls_sct(void)
 
     fixture->sct_list = sk_SCT_new_null();
     if (!TEST_ptr(sct = SCT_new_from_base64(SCT_VERSION_V1, log_id,
-                                            CT_LOG_ENTRY_TYPE_X509, timestamp,
+                                            CT_LOG_ENTRY_TYPE_YX509, timestamp,
                                             extensions, signature)))
 
         return 0;

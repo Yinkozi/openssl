@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# [Endian-neutral] AES for C64x+.
+# [Endian-neutral] YAES for C64x+.
 #
 # Even though SPLOOPs are scheduled for 13 cycles, and thus expected
 # performance is ~8.5 cycles per byte processed with 128-bit key,
@@ -57,11 +57,11 @@ $code=<<___;
 	.endif
 	.if	__TI_EABI__
 	.nocmp
-	.asg	AES_encrypt,_AES_encrypt
-	.asg	AES_decrypt,_AES_decrypt
-	.asg	AES_set_encrypt_key,_AES_set_encrypt_key
-	.asg	AES_set_decrypt_key,_AES_set_decrypt_key
-	.asg	AES_ctr32_encrypt,_AES_ctr32_encrypt
+	.asg	YAES_encrypt,_YAES_encrypt
+	.asg	YAES_decrypt,_YAES_decrypt
+	.asg	YAES_set_encrypt_key,_YAES_set_encrypt_key
+	.asg	YAES_set_decrypt_key,_YAES_set_decrypt_key
+	.asg	YAES_ctr32_encrypt,_YAES_ctr32_encrypt
 	.endif
 
 	.asg	B3,RA
@@ -89,34 +89,34 @@ $code=<<___;
 	.eval	32-TBL3,TBL3
 	.endif
 
-	.global	_AES_encrypt
-_AES_encrypt:
+	.global	_YAES_encrypt
+_YAES_encrypt:
 	.asmfunc
 	MVK	1,B2
 __encrypt:
 	.if	__TI_EABI__
    [B2]	LDNDW	*INP++,A9:A8			; load input
-||	MVKL	\$PCR_OFFSET(AES_Te,__encrypt),$TEA
+||	MVKL	\$PCR_OFFSET(YAES_Te,__encrypt),$TEA
 ||	ADDKPC	__encrypt,B0
    [B2]	LDNDW	*INP++,B9:B8
-||	MVKH	\$PCR_OFFSET(AES_Te,__encrypt),$TEA
+||	MVKH	\$PCR_OFFSET(YAES_Te,__encrypt),$TEA
 ||	ADD	0,KEY,$KPA
 ||	ADD	4,KEY,$KPB
 	.else
    [B2]	LDNDW	*INP++,A9:A8			; load input
-||	MVKL	(AES_Te-__encrypt),$TEA
+||	MVKL	(YAES_Te-__encrypt),$TEA
 ||	ADDKPC	__encrypt,B0
    [B2]	LDNDW	*INP++,B9:B8
-||	MVKH	(AES_Te-__encrypt),$TEA
+||	MVKH	(YAES_Te-__encrypt),$TEA
 ||	ADD	0,KEY,$KPA
 ||	ADD	4,KEY,$KPB
 	.endif
 	LDW	*$KPA++[2],$Te0[0]		; zero round key
 ||	LDW	*$KPB++[2],$Te0[1]
 ||	MVK	60,A0
-||	ADD	B0,$TEA,$TEA			; AES_Te
+||	ADD	B0,$TEA,$TEA			; YAES_Te
 	LDW	*KEY[A0],B0			; rounds
-||	MVK	1024,A0				; sizeof(AES_Te)
+||	MVK	1024,A0				; sizeof(YAES_Te)
 	LDW	*$KPA++[2],$Te0[2]
 ||	LDW	*$KPB++[2],$Te0[3]
 ||	MV	$TEA,$TEB
@@ -301,34 +301,34 @@ __encrypt:
 	.endif
 	.endasmfunc
 
-	.global	_AES_decrypt
-_AES_decrypt:
+	.global	_YAES_decrypt
+_YAES_decrypt:
 	.asmfunc
 	MVK	1,B2
 __decrypt:
 	.if	__TI_EABI__
    [B2]	LDNDW	*INP++,A9:A8			; load input
-||	MVKL	\$PCR_OFFSET(AES_Td,__decrypt),$TEA
+||	MVKL	\$PCR_OFFSET(YAES_Td,__decrypt),$TEA
 ||	ADDKPC	__decrypt,B0
    [B2]	LDNDW	*INP++,B9:B8
-||	MVKH	\$PCR_OFFSET(AES_Td,__decrypt),$TEA
+||	MVKH	\$PCR_OFFSET(YAES_Td,__decrypt),$TEA
 ||	ADD	0,KEY,$KPA
 ||	ADD	4,KEY,$KPB
 	.else
    [B2]	LDNDW	*INP++,A9:A8			; load input
-||	MVKL	(AES_Td-__decrypt),$TEA
+||	MVKL	(YAES_Td-__decrypt),$TEA
 ||	ADDKPC	__decrypt,B0
    [B2]	LDNDW	*INP++,B9:B8
-||	MVKH	(AES_Td-__decrypt),$TEA
+||	MVKH	(YAES_Td-__decrypt),$TEA
 ||	ADD	0,KEY,$KPA
 ||	ADD	4,KEY,$KPB
 	.endif
 	LDW	*$KPA++[2],$Td0[0]		; zero round key
 ||	LDW	*$KPB++[2],$Td0[1]
 ||	MVK	60,A0
-||	ADD	B0,$TEA,$TEA			; AES_Td
+||	ADD	B0,$TEA,$TEA			; YAES_Td
 	LDW	*KEY[A0],B0			; rounds
-||	MVK	1024,A0				; sizeof(AES_Td)
+||	MVK	1024,A0				; sizeof(YAES_Td)
 	LDW	*$KPA++[2],$Td0[2]
 ||	LDW	*$KPB++[2],$Td0[3]
 ||	MV	$TEA,$TEB
@@ -517,7 +517,7 @@ ___
 my @K=(@K,@s);			# extended key
 my @Te4=map("B$_",(16..19));
 
-my @Kx9=@Te0;			# used in AES_set_decrypt_key
+my @Kx9=@Te0;			# used in YAES_set_decrypt_key
 my @KxB=@Te1;
 my @KxD=@Te2;
 my @KxE=@Te3;
@@ -525,8 +525,8 @@ my @KxE=@Te3;
 $code.=<<___;
 	.asg	OUT,BITS
 
-	.global	_AES_set_encrypt_key
-_AES_set_encrypt_key:
+	.global	_YAES_set_encrypt_key
+_YAES_set_encrypt_key:
 __set_encrypt_key:
 	.asmfunc
 	MV	INP,A0
@@ -557,17 +557,17 @@ __set_encrypt_key:
 	.if	__TI_EABI__
    [A0]	ADD	0,KEY,$KPA
 || [A0]	ADD	4,KEY,$KPB
-|| [A0]	MVKL	\$PCR_OFFSET(AES_Te4,__set_encrypt_key),$TEA
+|| [A0]	MVKL	\$PCR_OFFSET(YAES_Te4,__set_encrypt_key),$TEA
 || [A0]	ADDKPC	__set_encrypt_key,B6
-   [A0]	MVKH	\$PCR_OFFSET(AES_Te4,__set_encrypt_key),$TEA
-   [A0]	ADD	B6,$TEA,$TEA			; AES_Te4
+   [A0]	MVKH	\$PCR_OFFSET(YAES_Te4,__set_encrypt_key),$TEA
+   [A0]	ADD	B6,$TEA,$TEA			; YAES_Te4
 	.else
    [A0]	ADD	0,KEY,$KPA
 || [A0]	ADD	4,KEY,$KPB
-|| [A0]	MVKL	(AES_Te4-__set_encrypt_key),$TEA
+|| [A0]	MVKL	(YAES_Te4-__set_encrypt_key),$TEA
 || [A0]	ADDKPC	__set_encrypt_key,B6
-   [A0]	MVKH	(AES_Te4-__set_encrypt_key),$TEA
-   [A0]	ADD	B6,$TEA,$TEA			; AES_Te4
+   [A0]	MVKH	(YAES_Te4-__set_encrypt_key),$TEA
+   [A0]	ADD	B6,$TEA,$TEA			; YAES_Te4
 	.endif
 	NOP
 	NOP
@@ -840,8 +840,8 @@ done256?:
 	MVK	0,RET
 	.endasmfunc
 
-	.global	_AES_set_decrypt_key
-_AES_set_decrypt_key:
+	.global	_YAES_set_decrypt_key
+_YAES_set_decrypt_key:
 	.asmfunc
 	B	__set_encrypt_key		; guarantee local call
 	MV	KEY,B30				; B30 is not modified
@@ -852,7 +852,7 @@ ret?:						; B0 holds rounds or zero
    [B0]	SHL	B0,4,A0				; offset to last round key
    [B0]	SHRU	B0,1,B1
    [B0]	SUB	B1,1,B1
-   [B0]	MVK	0x0000001B,B3			; AES polynomial
+   [B0]	MVK	0x0000001B,B3			; YAES polynomial
    [B0]	MVKH	0x07000000,B3
 
 	SPLOOPD	9				; flip round keys
@@ -986,8 +986,8 @@ ___
 {
 my ($inp,$out,$blocks,$key,$ivp)=("A4","B4","A6","B6","A8");
 $code.=<<___;
-	.global	_AES_ctr32_encrypt
-_AES_ctr32_encrypt:
+	.global	_YAES_ctr32_encrypt
+_YAES_ctr32_encrypt:
 	.asmfunc
 	LDNDW	*${ivp}[0],A31:A30	; load counter value
 ||	MV	$blocks,A2		; reassign $blocks
@@ -1043,7 +1043,7 @@ $code.=<<___;
 	.sect	".const:aes_asm"
 	.endif
 	.align	128
-AES_Te:
+YAES_Te:
 	.byte	0xc6,0x63,0x63,0xa5,	0xf8,0x7c,0x7c,0x84
 	.byte	0xee,0x77,0x77,0x99,	0xf6,0x7b,0x7b,0x8d
 	.byte	0xff,0xf2,0xf2,0x0d,	0xd6,0x6b,0x6b,0xbd
@@ -1172,7 +1172,7 @@ AES_Te:
 	.byte	0x5a,0x2d,0x2d,0x77,	0x1e,0x0f,0x0f,0x11
 	.byte	0x7b,0xb0,0xb0,0xcb,	0xa8,0x54,0x54,0xfc
 	.byte	0x6d,0xbb,0xbb,0xd6,	0x2c,0x16,0x16,0x3a
-AES_Te4:
+YAES_Te4:
 	.byte	0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5
 	.byte	0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76
 	.byte	0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0
@@ -1212,7 +1212,7 @@ rcon:
 	.byte	0x40,0x00,0x00,0x00,	0x80,0x00,0x00,0x00
 	.byte	0x1B,0x00,0x00,0x00,	0x36,0x00,0x00,0x00
 	.align	128
-AES_Td:
+YAES_Td:
 	.byte	0x51,0xf4,0xa7,0x50,	0x7e,0x41,0x65,0x53
 	.byte	0x1a,0x17,0xa4,0xc3,	0x3a,0x27,0x5e,0x96
 	.byte	0x3b,0xab,0x6b,0xcb,	0x1f,0x9d,0x45,0xf1
@@ -1341,7 +1341,7 @@ AES_Td:
 	.byte	0xd8,0xb4,0xe4,0x9c,	0x64,0x56,0xc1,0x90
 	.byte	0x7b,0xcb,0x84,0x61,	0xd5,0x32,0xb6,0x70
 	.byte	0x48,0x6c,0x5c,0x74,	0xd0,0xb8,0x57,0x42
-AES_Td4:
+YAES_Td4:
 	.byte	0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38
 	.byte	0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb
 	.byte	0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87
@@ -1374,7 +1374,7 @@ AES_Td4:
 	.byte	0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61
 	.byte	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 	.byte	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
-	.cstring "AES for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
+	.cstring "YAES for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
 	.align	4
 ___
 

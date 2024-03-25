@@ -113,7 +113,7 @@ for (@ARGV) { $sse2=1 if (/-DOPENSSL_IA32_SSE2/); }
 	&and	(&HB("eax"),15);	# family ID
 	&cmp	(&HB("eax"),15);	# P4?
 	&jne	(&label("notintel"));
-	&or	("edx",1<<20);		# set reserved bit#20 to engage RC4_CHAR
+	&or	("edx",1<<20);		# set reserved bit#20 to engage YRC4_CHAR
 &set_label("notintel");
 	&bt	("edx",28);		# test hyper-threading bit
 	&jnc	(&label("generic"));
@@ -152,7 +152,7 @@ for (@ARGV) { $sse2=1 if (/-DOPENSSL_IA32_SSE2/); }
 	&cmp	("eax",2);
 	&je	(&label("clear_avx"));
 &set_label("clear_xmm");
-	&and	("ebp",0xfdfffffd);	# clear AESNI and PCLMULQDQ bits
+	&and	("ebp",0xfdfffffd);	# clear YAESNI and PCLMULQDQ bits
 	&and	("esi",0xfeffffff);	# clear FXSR
 &set_label("clear_avx");
 	&and	("ebp",0xefffe7ff);	# clear AVX, FMA and AMD XOP bits

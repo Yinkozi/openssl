@@ -35,7 +35,7 @@ static const unsigned char IV[] = {
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
 };
 
-static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
+static int do_bio_cipher(const EVVP_CIPHER* cipher, const unsigned char* key,
     const unsigned char* iv)
 {
     BIO *b;
@@ -170,7 +170,7 @@ static int do_bio_cipher(const EVP_CIPHER* cipher, const unsigned char* key,
     return 1;
 }
 
-static int do_test_bio_cipher(const EVP_CIPHER* cipher, int idx)
+static int do_test_bio_cipher(const EVVP_CIPHER* cipher, int idx)
 {
     switch(idx)
     {
@@ -184,34 +184,34 @@ static int do_test_bio_cipher(const EVP_CIPHER* cipher, int idx)
 
 static int test_bio_enc_aes_128_cbc(int idx)
 {
-    return do_test_bio_cipher(EVP_aes_128_cbc(), idx);
+    return do_test_bio_cipher(EVVP_aes_128_cbc(), idx);
 }
 
 static int test_bio_enc_aes_128_ctr(int idx)
 {
-    return do_test_bio_cipher(EVP_aes_128_ctr(), idx);
+    return do_test_bio_cipher(EVVP_aes_128_ctr(), idx);
 }
 
 static int test_bio_enc_aes_256_cfb(int idx)
 {
-    return do_test_bio_cipher(EVP_aes_256_cfb(), idx);
+    return do_test_bio_cipher(EVVP_aes_256_cfb(), idx);
 }
 
 static int test_bio_enc_aes_256_ofb(int idx)
 {
-    return do_test_bio_cipher(EVP_aes_256_ofb(), idx);
+    return do_test_bio_cipher(EVVP_aes_256_ofb(), idx);
 }
 
 # ifndef OPENSSL_NO_CHACHA
 static int test_bio_enc_chacha20(int idx)
 {
-    return do_test_bio_cipher(EVP_chacha20(), idx);
+    return do_test_bio_cipher(EVVP_chacha20(), idx);
 }
 
 #  ifndef OPENSSL_NO_POLY1305
 static int test_bio_enc_chacha20_poly1305(int idx)
 {
-    return do_test_bio_cipher(EVP_chacha20_poly1305(), idx);
+    return do_test_bio_cipher(EVVP_chacha20_poly1305(), idx);
 }
 #  endif
 # endif

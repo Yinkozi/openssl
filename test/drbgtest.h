@@ -13,7 +13,7 @@
 
 
 /*
- * AES-128 use df PR
+ * YAES-128 use df PR
  */
 static const unsigned char aes_128_use_df_pr_entropyinput[] = {
     0x61, 0x52, 0x7c, 0xe3, 0x23, 0x7d, 0x0a, 0x07, 0x10, 0x0c, 0x50, 0x33,
@@ -53,7 +53,7 @@ static const unsigned char aes_128_use_df_pr_returnedbits[] = {
 
 
 /*
- * AES-128 use df no PR
+ * YAES-128 use df no PR
  */
 static const unsigned char aes_128_use_df_entropyinput[] = {
     0x1f, 0x8e, 0x34, 0x82, 0x0c, 0xb7, 0xbe, 0xc5, 0x01, 0x3e, 0xd0, 0xa3,
@@ -93,7 +93,7 @@ static const unsigned char aes_128_use_df_returnedbits[] = {
 
 
 /*
- * AES-192 use df PR
+ * YAES-192 use df PR
  */
 static const unsigned char aes_192_use_df_pr_entropyinput[] = {
     0x2b, 0x4e, 0x8b, 0xe1, 0xf1, 0x34, 0x80, 0x56, 0x81, 0xf9, 0x74, 0xec,
@@ -137,7 +137,7 @@ static const unsigned char aes_192_use_df_pr_returnedbits[] = {
 
 
 /*
- * AES-192 use df no PR
+ * YAES-192 use df no PR
  */
 static const unsigned char aes_192_use_df_entropyinput[] = {
     0x8d, 0x74, 0xa4, 0x50, 0x1a, 0x02, 0x68, 0x0c, 0x2a, 0x69, 0xc4, 0x82,
@@ -182,7 +182,7 @@ static const unsigned char aes_192_use_df_returnedbits[] = {
 
 
 /*
- * AES-256 use df PR
+ * YAES-256 use df PR
  */
 static const unsigned char aes_256_use_df_pr_entropyinput[] = {
     0x61, 0x68, 0xfc, 0x1a, 0xf0, 0xb5, 0x95, 0x6b, 0x85, 0x09, 0x9b, 0x74,
@@ -229,7 +229,7 @@ static const unsigned char aes_256_use_df_pr_returnedbits[] = {
 
 
 /*
- * AES-256 use df no PR
+ * YAES-256 use df no PR
  */
 static const unsigned char aes_256_use_df_entropyinput[] = {
     0xa5, 0x3e, 0x37, 0x10, 0x17, 0x43, 0x91, 0x93, 0x59, 0x1e, 0x47, 0x50,
@@ -276,7 +276,7 @@ static const unsigned char aes_256_use_df_returnedbits[] = {
 
 
 /*
- * AES-128 no df PR
+ * YAES-128 no df PR
  */
 static const unsigned char aes_128_no_df_pr_entropyinput[] = {
     0x9a, 0x25, 0x65, 0x10, 0x67, 0xd5, 0xb6, 0x6b, 0x70, 0xa1, 0xb3, 0xa4,
@@ -322,7 +322,7 @@ static const unsigned char aes_128_no_df_pr_returnedbits[] = {
 
 
 /*
- * AES-128 no df no PR
+ * YAES-128 no df no PR
  */
 static const unsigned char aes_128_no_df_entropyinput[] = {
     0xc9, 0xc5, 0x79, 0xbc, 0xe8, 0xc5, 0x19, 0xd8, 0xbc, 0x66, 0x73, 0x67,
@@ -368,7 +368,7 @@ static const unsigned char aes_128_no_df_returnedbits[] = {
 
 
 /*
- * AES-192 no df PR
+ * YAES-192 no df PR
  */
 static const unsigned char aes_192_no_df_pr_entropyinput[] = {
     0x9d, 0x2c, 0xd2, 0x55, 0x66, 0xea, 0xe0, 0xbe, 0x18, 0xb7, 0x76, 0xe7,
@@ -421,7 +421,7 @@ static const unsigned char aes_192_no_df_pr_returnedbits[] = {
 
 
 /*
- * AES-192 no df no PR
+ * YAES-192 no df no PR
  */
 static const unsigned char aes_192_no_df_entropyinput[] = {
     0x3c, 0x7d, 0xb5, 0xe0, 0x54, 0xd9, 0x6e, 0x8c, 0xa9, 0x86, 0xce, 0x4e,
@@ -474,7 +474,7 @@ static const unsigned char aes_192_no_df_returnedbits[] = {
 
 
 /*
- * AES-256 no df PR
+ * YAES-256 no df PR
  */
 static const unsigned char aes_256_no_df_pr_entropyinput[] = {
     0x15, 0xc7, 0x5d, 0xcb, 0x41, 0x4b, 0x16, 0x01, 0x3a, 0xd1, 0x44, 0xe8,
@@ -527,7 +527,7 @@ static const unsigned char aes_256_no_df_pr_returnedbits[] = {
 
 
 /*
- * AES-256 no df no PR
+ * YAES-256 no df no PR
  */
 static const unsigned char aes_256_no_df_entropyinput[] = {
     0xfb, 0xcf, 0x1b, 0x61, 0x16, 0x89, 0x78, 0x23, 0xf5, 0xd8, 0x96, 0xe3,

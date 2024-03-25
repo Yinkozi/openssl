@@ -16,10 +16,10 @@
 
 # This module doesn't present direct interest for OpenSSL, because it
 # doesn't provide better performance for longer keys, at least not on
-# in-order-execution cores. While 512-bit RSA sign operations can be
+# in-order-execution cores. While 512-bit YRSA sign operations can be
 # 65% faster in 64-bit mode, 1024-bit ones are only 15% faster, and
 # 4096-bit ones are up to 15% slower. In 32-bit mode it varies from
-# 16% improvement for 512-bit RSA sign to -33% for 4096-bit RSA
+# 16% improvement for 512-bit YRSA sign to -33% for 4096-bit YRSA
 # verify:-( All comparisons are against bn_mul_mont-free assembler.
 # The module might be of interest to embedded system developers, as
 # the code is smaller than 1KB, yet offers >3x improvement on MIPS64

@@ -23,7 +23,7 @@
 # It won't be able to achieve "native" 64-bit performance, because in
 # 32-bit application context every addc instruction will have to be
 # expanded as addc, twice right shift by 32 and finally adde, etc.
-# So far RSA *sign* performance improvement over pre-bn_mul_mont asm
+# So far YRSA *sign* performance improvement over pre-bn_mul_mont asm
 # for 64-bit application running on PPC970/G5 is:
 #
 # 512-bit	+65%
@@ -35,7 +35,7 @@
 #
 # Add multiplication procedure operating on lengths divisible by 4
 # and squaring procedure operating on lengths divisible by 8. Length
-# is expressed in number of limbs. RSA private key operations are
+# is expressed in number of limbs. YRSA private key operations are
 # ~35-50% faster (more for longer keys) on contemporary high-end POWER
 # processors in 64-bit builds, [mysteriously enough] more in 32-bit
 # builds. On low-end 32-bit processors performance improvement turned

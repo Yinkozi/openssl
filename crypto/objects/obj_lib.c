@@ -13,27 +13,27 @@
 #include <openssl/buffer.h>
 #include "crypto/asn1.h"
 
-ASN1_OBJECT *OBJ_dup(const ASN1_OBJECT *o)
+YASN1_OBJECT *OBJ_dup(const YASN1_OBJECT *o)
 {
-    ASN1_OBJECT *r;
+    YASN1_OBJECT *r;
 
     if (o == NULL)
         return NULL;
     /* If object isn't dynamic it's an internal OID which is never freed */
-    if (!(o->flags & ASN1_OBJECT_FLAG_DYNAMIC))
-        return (ASN1_OBJECT *)o;
+    if (!(o->flags & YASN1_OBJECT_FLAG_DYNAMIC))
+        return (YASN1_OBJECT *)o;
 
-    r = ASN1_OBJECT_new();
+    r = YASN1_OBJECT_new();
     if (r == NULL) {
-        OBJerr(OBJ_F_OBJ_DUP, ERR_R_ASN1_LIB);
+        OBJerr(OBJ_F_OBJ_DUP, ERR_R_YASN1_LIB);
         return NULL;
     }
 
     /* Set dynamic flags so everything gets freed up on error */
 
-    r->flags = o->flags | (ASN1_OBJECT_FLAG_DYNAMIC |
-                           ASN1_OBJECT_FLAG_DYNAMIC_STRINGS |
-                           ASN1_OBJECT_FLAG_DYNAMIC_DATA);
+    r->flags = o->flags | (YASN1_OBJECT_FLAG_DYNAMIC |
+                           YASN1_OBJECT_FLAG_DYNAMIC_STRINGS |
+                           YASN1_OBJECT_FLAG_DYNAMIC_DATA);
 
     if (o->length > 0 && (r->data = OPENSSL_memdup(o->data, o->length)) == NULL)
         goto err;
@@ -49,12 +49,12 @@ ASN1_OBJECT *OBJ_dup(const ASN1_OBJECT *o)
 
     return r;
  err:
-    ASN1_OBJECT_free(r);
+    YASN1_OBJECT_free(r);
     OBJerr(OBJ_F_OBJ_DUP, ERR_R_MALLOC_FAILURE);
     return NULL;
 }
 
-int OBJ_cmp(const ASN1_OBJECT *a, const ASN1_OBJECT *b)
+int OBJ_cmp(const YASN1_OBJECT *a, const YASN1_OBJECT *b)
 {
     int ret;
 

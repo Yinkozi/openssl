@@ -49,7 +49,7 @@ RAND_DRBG_set() initializes the B<drbg> with the given B<type> and B<flags>.
 RAND_DRBG_set_defaults() sets the default B<type> and B<flags> for new DRBG
 instances.
 
-Currently, all DRBG types are based on AES-CTR, so B<type> can be one of the
+Currently, all DRBG types are based on YAES-CTR, so B<type> can be one of the
 following values: NID_aes_128_ctr, NID_aes_192_ctr, NID_aes_256_ctr.
 Before the DRBG can be used to generate random bits, it is necessary to set
 its type and to instantiate it.

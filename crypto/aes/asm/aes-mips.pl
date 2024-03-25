@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# AES for MIPS
+# YAES for MIPS
 
 # October 2010
 #
@@ -124,8 +124,8 @@ my ($key0,$cnt)=($gp,$fp);
 # invoked with -mips3 -O3 arguments...
 $code.=<<___;
 .align	5
-.ent	_mips_AES_encrypt
-_mips_AES_encrypt:
+.ent	_mips_YAES_encrypt
+_mips_YAES_encrypt:
 	.frame	$sp,0,$ra
 	.set	reorder
 	lw	$t0,0($key)
@@ -610,12 +610,12 @@ _mips_AES_encrypt:
 	xor	$s3,$t3
 
 	jr	$ra
-.end	_mips_AES_encrypt
+.end	_mips_YAES_encrypt
 
 .align	5
-.globl	AES_encrypt
-.ent	AES_encrypt
-AES_encrypt:
+.globl	YAES_encrypt
+.ent	YAES_encrypt
+YAES_encrypt:
 	.frame	$sp,$FRAMESIZE,$ra
 	.mask	$SAVED_REGS_MASK,-$SZREG
 	.set	noreorder
@@ -645,11 +645,11 @@ $code.=<<___ if ($flavour =~ /nubi/i);	# optimize non-nubi prologue
 ___
 $code.=<<___ if ($flavour !~ /o32/i);	# non-o32 PIC-ification
 	.cplocal	$Tbl
-	.cpsetup	$pf,$zero,AES_encrypt
+	.cpsetup	$pf,$zero,YAES_encrypt
 ___
 $code.=<<___;
 	.set	reorder
-	$PTR_LA	$Tbl,AES_Te		# PIC-ified 'load address'
+	$PTR_LA	$Tbl,YAES_Te		# PIC-ified 'load address'
 
 #if defined(_MIPS_ARCH_MIPS32R6) || defined(_MIPS_ARCH_MIPS64R6)
 	lw	$s0,0($inp)
@@ -667,7 +667,7 @@ $code.=<<___;
 	lwr	$s3,12+$LSB($inp)
 #endif
 
-	bal	_mips_AES_encrypt
+	bal	_mips_YAES_encrypt
 
 #if defined(_MIPS_ARCH_MIPS32R6) || defined(_MIPS_ARCH_MIPS64R6)
 	sw	$s0,0($out)
@@ -707,13 +707,13 @@ ___
 $code.=<<___;
 	jr	$ra
 	$PTR_ADD $sp,$FRAMESIZE
-.end	AES_encrypt
+.end	YAES_encrypt
 ___
 
 $code.=<<___;
 .align	5
-.ent	_mips_AES_decrypt
-_mips_AES_decrypt:
+.ent	_mips_YAES_decrypt
+_mips_YAES_decrypt:
 	.frame	$sp,0,$ra
 	.set	reorder
 	lw	$t0,0($key)
@@ -1195,12 +1195,12 @@ _mips_AES_decrypt:
 	xor	$s3,$t3
 
 	jr	$ra
-.end	_mips_AES_decrypt
+.end	_mips_YAES_decrypt
 
 .align	5
-.globl	AES_decrypt
-.ent	AES_decrypt
-AES_decrypt:
+.globl	YAES_decrypt
+.ent	YAES_decrypt
+YAES_decrypt:
 	.frame	$sp,$FRAMESIZE,$ra
 	.mask	$SAVED_REGS_MASK,-$SZREG
 	.set	noreorder
@@ -1230,11 +1230,11 @@ $code.=<<___ if ($flavour =~ /nubi/i);	# optimize non-nubi prologue
 ___
 $code.=<<___ if ($flavour !~ /o32/i);	# non-o32 PIC-ification
 	.cplocal	$Tbl
-	.cpsetup	$pf,$zero,AES_decrypt
+	.cpsetup	$pf,$zero,YAES_decrypt
 ___
 $code.=<<___;
 	.set	reorder
-	$PTR_LA	$Tbl,AES_Td		# PIC-ified 'load address'
+	$PTR_LA	$Tbl,YAES_Td		# PIC-ified 'load address'
 
 #if defined(_MIPS_ARCH_MIPS32R6) || defined(_MIPS_ARCH_MIPS64R6)
 	lw	$s0,0($inp)
@@ -1252,7 +1252,7 @@ $code.=<<___;
 	lwr	$s3,12+$LSB($inp)
 #endif
 
-	bal	_mips_AES_decrypt
+	bal	_mips_YAES_decrypt
 
 #if defined(_MIPS_ARCH_MIPS32R6) || defined(_MIPS_ARCH_MIPS64R6)
 	sw	$s0,0($out)
@@ -1292,7 +1292,7 @@ ___
 $code.=<<___;
 	jr	$ra
 	$PTR_ADD $sp,$FRAMESIZE
-.end	AES_decrypt
+.end	YAES_decrypt
 ___
 }}}
 
@@ -1307,8 +1307,8 @@ my ($rcon,$cnt)=($gp,$fp);
 
 $code.=<<___;
 .align	5
-.ent	_mips_AES_set_encrypt_key
-_mips_AES_set_encrypt_key:
+.ent	_mips_YAES_set_encrypt_key
+_mips_YAES_set_encrypt_key:
 	.frame	$sp,0,$ra
 	.set	noreorder
 	beqz	$inp,.Lekey_done
@@ -1574,11 +1574,11 @@ _mips_AES_set_encrypt_key:
 .Lekey_done:
 	jr	$ra
 	nop
-.end	_mips_AES_set_encrypt_key
+.end	_mips_YAES_set_encrypt_key
 
-.globl	AES_set_encrypt_key
-.ent	AES_set_encrypt_key
-AES_set_encrypt_key:
+.globl	YAES_set_encrypt_key
+.ent	YAES_set_encrypt_key
+YAES_set_encrypt_key:
 	.frame	$sp,$FRAMESIZE,$ra
 	.mask	$SAVED_REGS_MASK,-$SZREG
 	.set	noreorder
@@ -1600,13 +1600,13 @@ $code.=<<___ if ($flavour =~ /nubi/i);	# optimize non-nubi prologue
 ___
 $code.=<<___ if ($flavour !~ /o32/i);	# non-o32 PIC-ification
 	.cplocal	$Tbl
-	.cpsetup	$pf,$zero,AES_set_encrypt_key
+	.cpsetup	$pf,$zero,YAES_set_encrypt_key
 ___
 $code.=<<___;
 	.set	reorder
-	$PTR_LA	$Tbl,AES_Te4		# PIC-ified 'load address'
+	$PTR_LA	$Tbl,YAES_Te4		# PIC-ified 'load address'
 
-	bal	_mips_AES_set_encrypt_key
+	bal	_mips_YAES_set_encrypt_key
 
 	.set	noreorder
 	move	$a0,$t0
@@ -1623,7 +1623,7 @@ ___
 $code.=<<___;
 	jr	$ra
 	$PTR_ADD $sp,$FRAMESIZE
-.end	AES_set_encrypt_key
+.end	YAES_set_encrypt_key
 ___
 
 my ($head,$tail)=($inp,$bits);
@@ -1631,9 +1631,9 @@ my ($tp1,$tp2,$tp4,$tp8,$tp9,$tpb,$tpd,$tpe)=($a4,$a5,$a6,$a7,$s0,$s1,$s2,$s3);
 my ($m,$x80808080,$x7f7f7f7f,$x1b1b1b1b)=($at,$t0,$t1,$t2);
 $code.=<<___;
 .align	5
-.globl	AES_set_decrypt_key
-.ent	AES_set_decrypt_key
-AES_set_decrypt_key:
+.globl	YAES_set_decrypt_key
+.ent	YAES_set_decrypt_key
+YAES_set_decrypt_key:
 	.frame	$sp,$FRAMESIZE,$ra
 	.mask	$SAVED_REGS_MASK,-$SZREG
 	.set	noreorder
@@ -1655,13 +1655,13 @@ $code.=<<___ if ($flavour =~ /nubi/i);	# optimize non-nubi prologue
 ___
 $code.=<<___ if ($flavour !~ /o32/i);	# non-o32 PIC-ification
 	.cplocal	$Tbl
-	.cpsetup	$pf,$zero,AES_set_decrypt_key
+	.cpsetup	$pf,$zero,YAES_set_decrypt_key
 ___
 $code.=<<___;
 	.set	reorder
-	$PTR_LA	$Tbl,AES_Te4		# PIC-ified 'load address'
+	$PTR_LA	$Tbl,YAES_Te4		# PIC-ified 'load address'
 
-	bal	_mips_AES_set_encrypt_key
+	bal	_mips_YAES_set_encrypt_key
 
 	bltz	$t0,.Ldkey_done
 
@@ -1777,7 +1777,7 @@ ___
 $code.=<<___;
 	jr	$ra
 	$PTR_ADD $sp,$FRAMESIZE
-.end	AES_set_decrypt_key
+.end	YAES_set_decrypt_key
 ___
 }}}
 
@@ -1786,7 +1786,7 @@ ___
 $code.=<<___;
 .rdata
 .align	10
-AES_Te:
+YAES_Te:
 .byte	0xc6,0x63,0x63,0xa5,	0xf8,0x7c,0x7c,0x84	# Te0
 .byte	0xee,0x77,0x77,0x99,	0xf6,0x7b,0x7b,0x8d
 .byte	0xff,0xf2,0xf2,0x0d,	0xd6,0x6b,0x6b,0xbd
@@ -1916,7 +1916,7 @@ AES_Te:
 .byte	0x7b,0xb0,0xb0,0xcb,	0xa8,0x54,0x54,0xfc
 .byte	0x6d,0xbb,0xbb,0xd6,	0x2c,0x16,0x16,0x3a
 
-AES_Td:
+YAES_Td:
 .byte	0x51,0xf4,0xa7,0x50,	0x7e,0x41,0x65,0x53	# Td0
 .byte	0x1a,0x17,0xa4,0xc3,	0x3a,0x27,0x5e,0x96
 .byte	0x3b,0xab,0x6b,0xcb,	0x1f,0x9d,0x45,0xf1
@@ -2079,7 +2079,7 @@ AES_Td:
 .byte	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 .byte	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
 
-AES_Te4:
+YAES_Te4:
 .byte	0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5	# Te4
 .byte	0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76
 .byte	0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0

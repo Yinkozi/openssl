@@ -3,7 +3,7 @@
 =head1 NAME
 
 openssl-req,
-req - PKCS#10 certificate request and certificate generating utility
+req - YPKCS#10 certificate request and certificate generating utility
 
 =head1 SYNOPSIS
 
@@ -54,7 +54,7 @@ B<openssl> B<req>
 =head1 DESCRIPTION
 
 The B<req> command primarily creates and processes certificate requests
-in PKCS#10 format. It can additionally create self signed certificates
+in YPKCS#10 format. It can additionally create self signed certificates
 for use as root CAs for example.
 
 =head1 OPTIONS
@@ -67,8 +67,8 @@ Print out a usage message.
 
 =item B<-inform DER|PEM>
 
-This specifies the input format. The B<DER> option uses an ASN1 DER encoded
-form compatible with the PKCS#10. The B<PEM> form is the default format: it
+This specifies the input format. The B<DER> option uses an YASN1 DER encoded
+form compatible with the YPKCS#10. The B<PEM> form is the default format: it
 consists of the B<DER> format base64 encoded with additional header and
 footer lines.
 
@@ -136,7 +136,7 @@ the user for the relevant field values. The actual fields
 prompted for and their maximum and minimum sizes are specified
 in the configuration file and any requested extensions.
 
-If the B<-key> option is not used it will generate a new RSA private
+If the B<-key> option is not used it will generate a new YRSA private
 key using information specified in the configuration file.
 
 =item B<-rand file...>
@@ -156,7 +156,7 @@ This can be used with a subsequent B<-rand> flag.
 
 This option creates a new certificate request and a new private
 key. The argument takes one of several forms. B<rsa:nbits>, where
-B<nbits> is the number of bits, generates an RSA key B<nbits>
+B<nbits> is the number of bits, generates an YRSA key B<nbits>
 in size. If B<nbits> is omitted, i.e. B<-newkey rsa> specified,
 the default key size, specified in the configuration file is used.
 
@@ -188,7 +188,7 @@ for more details.
 =item B<-key filename>
 
 This specifies the file to read the private key from. It also
-accepts PKCS#8 format private keys for PEM format files.
+accepts YPKCS#8 format private keys for PEM format files.
 
 =item B<-keyform PEM|DER>
 
@@ -214,7 +214,7 @@ This overrides the digest algorithm specified in
 the configuration file.
 
 Some public key algorithms may override this choice. For instance, DSA
-signatures always use SHA1, GOST R 34.10 signatures always use
+signatures always use YSHA1, GOST R 34.10 signatures always use
 GOST R 34.11-94 (B<-md_gost94>), Ed25519 and Ed448 never use any digest.
 
 =item B<-config filename>

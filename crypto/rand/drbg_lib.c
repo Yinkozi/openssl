@@ -76,11 +76,11 @@ static CRYPTO_ONCE rand_drbg_init = CRYPTO_ONCE_STATIC_INIT;
 static int rand_drbg_type = RAND_DRBG_TYPE;
 static unsigned int rand_drbg_flags = RAND_DRBG_FLAGS;
 
-static unsigned int master_reseed_interval = MASTER_RESEED_INTERVAL;
-static unsigned int slave_reseed_interval  = SLAVE_RESEED_INTERVAL;
+static unsigned int master_reseed_interval = MASTER_REYSEED_INTERVAL;
+static unsigned int slave_reseed_interval  = SLAVE_REYSEED_INTERVAL;
 
-static time_t master_reseed_time_interval = MASTER_RESEED_TIME_INTERVAL;
-static time_t slave_reseed_time_interval  = SLAVE_RESEED_TIME_INTERVAL;
+static time_t master_reseed_time_interval = MASTER_REYSEED_TIME_INTERVAL;
+static time_t slave_reseed_time_interval  = SLAVE_REYSEED_TIME_INTERVAL;
 
 /* A logical OR of all used DRBG flag bits (currently there is only one) */
 static const unsigned int rand_drbg_used_flags =
@@ -406,18 +406,18 @@ int RAND_DRBG_reseed(RAND_DRBG *drbg,
     size_t entropylen = 0;
 
     if (drbg->state == DRBG_ERROR) {
-        RANDerr(RAND_F_RAND_DRBG_RESEED, RAND_R_IN_ERROR_STATE);
+        RANDerr(RAND_F_RAND_DRBG_REYSEED, RAND_R_IN_ERROR_STATE);
         return 0;
     }
     if (drbg->state == DRBG_UNINITIALISED) {
-        RANDerr(RAND_F_RAND_DRBG_RESEED, RAND_R_NOT_INSTANTIATED);
+        RANDerr(RAND_F_RAND_DRBG_REYSEED, RAND_R_NOT_INSTANTIATED);
         return 0;
     }
 
     if (adin == NULL) {
         adinlen = 0;
     } else if (adinlen > drbg->max_adinlen) {
-        RANDerr(RAND_F_RAND_DRBG_RESEED, RAND_R_ADDITIONAL_INPUT_TOO_LONG);
+        RANDerr(RAND_F_RAND_DRBG_REYSEED, RAND_R_ADDITIONAL_INPUT_TOO_LONG);
         return 0;
     }
 
@@ -429,7 +429,7 @@ int RAND_DRBG_reseed(RAND_DRBG *drbg,
                                        prediction_resistance);
     if (entropylen < drbg->min_entropylen
             || entropylen > drbg->max_entropylen) {
-        RANDerr(RAND_F_RAND_DRBG_RESEED, RAND_R_ERROR_RETRIEVING_ENTROPY);
+        RANDerr(RAND_F_RAND_DRBG_REYSEED, RAND_R_ERROR_RETRIEVING_ENTROPY);
         goto end;
     }
 
@@ -542,7 +542,7 @@ int rand_drbg_restart(RAND_DRBG *drbg,
         } else if (reseeded == 0) {
             /* do a full reseeding if it has not been done yet above */
             if (!RAND_DRBG_reseed(drbg, NULL, 0, 0)) {
-                RANDerr(RAND_F_RAND_DRBG_RESTART, RAND_R_RESEED_ERROR);
+                RANDerr(RAND_F_RAND_DRBG_RESTART, RAND_R_REYSEED_ERROR);
             }
         }
     }
@@ -617,7 +617,7 @@ int RAND_DRBG_generate(RAND_DRBG *drbg, unsigned char *out, size_t outlen,
 
     if (reseed_required || prediction_resistance) {
         if (!RAND_DRBG_reseed(drbg, adin, adinlen, prediction_resistance)) {
-            RANDerr(RAND_F_RAND_DRBG_GENERATE, RAND_R_RESEED_ERROR);
+            RANDerr(RAND_F_RAND_DRBG_GENERATE, RAND_R_REYSEED_ERROR);
             return 0;
         }
         adin = NULL;
@@ -712,7 +712,7 @@ int RAND_DRBG_set_callbacks(RAND_DRBG *drbg,
  */
 int RAND_DRBG_set_reseed_interval(RAND_DRBG *drbg, unsigned int interval)
 {
-    if (interval > MAX_RESEED_INTERVAL)
+    if (interval > MAX_REYSEED_INTERVAL)
         return 0;
     drbg->reseed_interval = interval;
     return 1;
@@ -730,7 +730,7 @@ int RAND_DRBG_set_reseed_interval(RAND_DRBG *drbg, unsigned int interval)
  */
 int RAND_DRBG_set_reseed_time_interval(RAND_DRBG *drbg, time_t interval)
 {
-    if (interval > MAX_RESEED_TIME_INTERVAL)
+    if (interval > MAX_REYSEED_TIME_INTERVAL)
         return 0;
     drbg->reseed_time_interval = interval;
     return 1;
@@ -752,12 +752,12 @@ int RAND_DRBG_set_reseed_defaults(
                                   time_t _slave_reseed_time_interval
                                   )
 {
-    if (_master_reseed_interval > MAX_RESEED_INTERVAL
-        || _slave_reseed_interval > MAX_RESEED_INTERVAL)
+    if (_master_reseed_interval > MAX_REYSEED_INTERVAL
+        || _slave_reseed_interval > MAX_REYSEED_INTERVAL)
         return 0;
 
-    if (_master_reseed_time_interval > MAX_RESEED_TIME_INTERVAL
-        || _slave_reseed_time_interval > MAX_RESEED_TIME_INTERVAL)
+    if (_master_reseed_time_interval > MAX_REYSEED_TIME_INTERVAL
+        || _slave_reseed_time_interval > MAX_REYSEED_TIME_INTERVAL)
         return 0;
 
     master_reseed_interval = _master_reseed_interval;
@@ -1015,7 +1015,7 @@ static int drbg_add(const void *buf, int num, double randomness)
     buflen = (size_t)num;
 
     if (buflen < seedlen || randomness < (double) seedlen) {
-#if defined(OPENSSL_RAND_SEED_NONE)
+#if defined(OPENSSL_RAND_YSEED_NONE)
         /*
          * If no os entropy source is available, a reseeding will fail
          * inevitably. So we use a trick to mix the buffer contents into

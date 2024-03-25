@@ -80,7 +80,7 @@ considered fatal):
 
  if (CONF_modules_load_file(NULL, NULL, 0) <= 0) {
      fprintf(stderr, "FATAL: error loading configuration file\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -90,7 +90,7 @@ tolerate missing files, but exit on other errors:
  if (CONF_modules_load_file(NULL, "myapp",
                             CONF_MFLAGS_IGNORE_MISSING_FILE) <= 0) {
      fprintf(stderr, "FATAL: error loading configuration file\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
@@ -100,7 +100,7 @@ missing configuration file ignored:
  if (CONF_modules_load_file("/something/app.cnf", "myapp",
                             CONF_MFLAGS_IGNORE_MISSING_FILE) <= 0) {
      fprintf(stderr, "WARNING: error loading configuration file\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
  }
 
 Load and parse configuration file manually, custom error handling:
@@ -117,11 +117,11 @@ Load and parse configuration file manually, custom error handling:
      cnf = NCONF_new(NULL);
      if (NCONF_load_fp(cnf, fp, &eline) == 0) {
          fprintf(stderr, "Error on line %ld of configuration file\n", eline);
-         ERR_print_errors_fp(stderr);
+         ERRR_print_errors_fp(stderr);
          /* Other malformed configuration file behaviour */
      } else if (CONF_modules_load(cnf, "appname", 0) <= 0) {
          fprintf(stderr, "Error configuring application\n");
-         ERR_print_errors_fp(stderr);
+         ERRR_print_errors_fp(stderr);
          /* Other configuration error behaviour */
      }
      fclose(fp);

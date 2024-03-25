@@ -17,13 +17,13 @@
 #include "crypto/x509.h"
 #include "ext_dat.h"
 
-static void *v2i_crld(const X509V3_EXT_METHOD *method,
-                      X509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval);
-static int i2r_crldp(const X509V3_EXT_METHOD *method, void *pcrldp, BIO *out,
+static void *v2i_crld(const YX509V3_EXT_METHOD *method,
+                      YX509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval);
+static int i2r_crldp(const YX509V3_EXT_METHOD *method, void *pcrldp, BIO *out,
                      int indent);
 
-const X509V3_EXT_METHOD v3_crld = {
-    NID_crl_distribution_points, 0, ASN1_ITEM_ref(CRL_DIST_POINTS),
+const YX509V3_EXT_METHOD v3_crld = {
+    NID_crl_distribution_points, 0, YASN1_ITEM_ref(CRL_DIST_POINTS),
     0, 0, 0, 0,
     0, 0,
     0,
@@ -32,8 +32,8 @@ const X509V3_EXT_METHOD v3_crld = {
     NULL
 };
 
-const X509V3_EXT_METHOD v3_freshest_crl = {
-    NID_freshest_crl, 0, ASN1_ITEM_ref(CRL_DIST_POINTS),
+const YX509V3_EXT_METHOD v3_freshest_crl = {
+    NID_freshest_crl, 0, YASN1_ITEM_ref(CRL_DIST_POINTS),
     0, 0, 0, 0,
     0, 0,
     0,
@@ -42,32 +42,32 @@ const X509V3_EXT_METHOD v3_freshest_crl = {
     NULL
 };
 
-static STACK_OF(GENERAL_NAME) *gnames_from_sectname(X509V3_CTX *ctx,
+static STACK_OF(GENERAL_NAME) *gnames_from_sectname(YX509V3_CTX *ctx,
                                                     char *sect)
 {
     STACK_OF(CONF_VALUE) *gnsect;
     STACK_OF(GENERAL_NAME) *gens;
     if (*sect == '@')
-        gnsect = X509V3_get_section(ctx, sect + 1);
+        gnsect = YX509V3_get_section(ctx, sect + 1);
     else
-        gnsect = X509V3_parse_list(sect);
+        gnsect = YX509V3_parse_list(sect);
     if (!gnsect) {
-        X509V3err(X509V3_F_GNAMES_FROM_SECTNAME, X509V3_R_SECTION_NOT_FOUND);
+        YX509V3err(YX509V3_F_GNAMES_FROM_SECTNAME, YX509V3_R_SECTION_NOT_FOUND);
         return NULL;
     }
     gens = v2i_GENERAL_NAMES(NULL, ctx, gnsect);
     if (*sect == '@')
-        X509V3_section_free(ctx, gnsect);
+        YX509V3_section_free(ctx, gnsect);
     else
-        sk_CONF_VALUE_pop_free(gnsect, X509V3_conf_free);
+        sk_CONF_VALUE_pop_free(gnsect, YX509V3_conf_free);
     return gens;
 }
 
-static int set_dist_point_name(DIST_POINT_NAME **pdp, X509V3_CTX *ctx,
+static int set_dist_point_name(DIST_POINT_NAME **pdp, YX509V3_CTX *ctx,
                                CONF_VALUE *cnf)
 {
     STACK_OF(GENERAL_NAME) *fnm = NULL;
-    STACK_OF(X509_NAME_ENTRY) *rnm = NULL;
+    STACK_OF(YX509_NAME_ENTRY) *rnm = NULL;
 
     if (strncmp(cnf->name, "fullname", 9) == 0) {
         fnm = gnames_from_sectname(ctx, cnf->value);
@@ -76,38 +76,38 @@ static int set_dist_point_name(DIST_POINT_NAME **pdp, X509V3_CTX *ctx,
     } else if (strcmp(cnf->name, "relativename") == 0) {
         int ret;
         STACK_OF(CONF_VALUE) *dnsect;
-        X509_NAME *nm;
-        nm = X509_NAME_new();
+        YX509_NAME *nm;
+        nm = YX509_NAME_new();
         if (nm == NULL)
             return -1;
-        dnsect = X509V3_get_section(ctx, cnf->value);
+        dnsect = YX509V3_get_section(ctx, cnf->value);
         if (!dnsect) {
-            X509V3err(X509V3_F_SET_DIST_POINT_NAME,
-                      X509V3_R_SECTION_NOT_FOUND);
+            YX509V3err(YX509V3_F_SET_DIST_POINT_NAME,
+                      YX509V3_R_SECTION_NOT_FOUND);
             return -1;
         }
-        ret = X509V3_NAME_from_section(nm, dnsect, MBSTRING_ASC);
-        X509V3_section_free(ctx, dnsect);
+        ret = YX509V3_NAME_from_section(nm, dnsect, MBSTRING_ASC);
+        YX509V3_section_free(ctx, dnsect);
         rnm = nm->entries;
         nm->entries = NULL;
-        X509_NAME_free(nm);
-        if (!ret || sk_X509_NAME_ENTRY_num(rnm) <= 0)
+        YX509_NAME_free(nm);
+        if (!ret || sk_YX509_NAME_ENTRY_num(rnm) <= 0)
             goto err;
         /*
          * Since its a name fragment can't have more than one RDNSequence
          */
-        if (sk_X509_NAME_ENTRY_value(rnm,
-                                     sk_X509_NAME_ENTRY_num(rnm) - 1)->set) {
-            X509V3err(X509V3_F_SET_DIST_POINT_NAME,
-                      X509V3_R_INVALID_MULTIPLE_RDNS);
+        if (sk_YX509_NAME_ENTRY_value(rnm,
+                                     sk_YX509_NAME_ENTRY_num(rnm) - 1)->set) {
+            YX509V3err(YX509V3_F_SET_DIST_POINT_NAME,
+                      YX509V3_R_INVALID_MULTIPLE_RDNS);
             goto err;
         }
     } else
         return 0;
 
     if (*pdp) {
-        X509V3err(X509V3_F_SET_DIST_POINT_NAME,
-                  X509V3_R_DISTPOINT_ALREADY_SET);
+        YX509V3err(YX509V3_F_SET_DIST_POINT_NAME,
+                  YX509V3_R_DISTPOINT_ALREADY_SET);
         goto err;
     }
 
@@ -126,7 +126,7 @@ static int set_dist_point_name(DIST_POINT_NAME **pdp, X509V3_CTX *ctx,
 
  err:
     sk_GENERAL_NAME_pop_free(fnm, GENERAL_NAME_free);
-    sk_X509_NAME_ENTRY_pop_free(rnm, X509_NAME_ENTRY_free);
+    sk_YX509_NAME_ENTRY_pop_free(rnm, YX509_NAME_ENTRY_free);
     return -1;
 }
 
@@ -143,13 +143,13 @@ static const BIT_STRING_BITNAME reason_flags[] = {
     {-1, NULL, NULL}
 };
 
-static int set_reasons(ASN1_BIT_STRING **preas, char *value)
+static int set_reasons(YASN1_BIT_STRING **preas, char *value)
 {
     STACK_OF(CONF_VALUE) *rsk = NULL;
     const BIT_STRING_BITNAME *pbn;
     const char *bnam;
     int i, ret = 0;
-    rsk = X509V3_parse_list(value);
+    rsk = YX509V3_parse_list(value);
     if (rsk == NULL)
         return 0;
     if (*preas != NULL)
@@ -157,13 +157,13 @@ static int set_reasons(ASN1_BIT_STRING **preas, char *value)
     for (i = 0; i < sk_CONF_VALUE_num(rsk); i++) {
         bnam = sk_CONF_VALUE_value(rsk, i)->name;
         if (*preas == NULL) {
-            *preas = ASN1_BIT_STRING_new();
+            *preas = YASN1_BIT_STRING_new();
             if (*preas == NULL)
                 goto err;
         }
         for (pbn = reason_flags; pbn->lname; pbn++) {
             if (strcmp(pbn->sname, bnam) == 0) {
-                if (!ASN1_BIT_STRING_set_bit(*preas, pbn->bitnum, 1))
+                if (!YASN1_BIT_STRING_set_bit(*preas, pbn->bitnum, 1))
                     goto err;
                 break;
             }
@@ -174,18 +174,18 @@ static int set_reasons(ASN1_BIT_STRING **preas, char *value)
     ret = 1;
 
  err:
-    sk_CONF_VALUE_pop_free(rsk, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(rsk, YX509V3_conf_free);
     return ret;
 }
 
 static int print_reasons(BIO *out, const char *rname,
-                         ASN1_BIT_STRING *rflags, int indent)
+                         YASN1_BIT_STRING *rflags, int indent)
 {
     int first = 1;
     const BIT_STRING_BITNAME *pbn;
-    BIO_printf(out, "%*s%s:\n%*s", indent, "", rname, indent + 2, "");
+    BIO_pprintf(out, "%*s%s:\n%*s", indent, "", rname, indent + 2, "");
     for (pbn = reason_flags; pbn->lname; pbn++) {
-        if (ASN1_BIT_STRING_get_bit(rflags, pbn->bitnum)) {
+        if (YASN1_BIT_STRING_get_bit(rflags, pbn->bitnum)) {
             if (first)
                 first = 0;
             else
@@ -200,7 +200,7 @@ static int print_reasons(BIO *out, const char *rname,
     return 1;
 }
 
-static DIST_POINT *crldp_from_section(X509V3_CTX *ctx,
+static DIST_POINT *crldp_from_section(YX509V3_CTX *ctx,
                                       STACK_OF(CONF_VALUE) *nval)
 {
     int i;
@@ -234,8 +234,8 @@ static DIST_POINT *crldp_from_section(X509V3_CTX *ctx,
     return NULL;
 }
 
-static void *v2i_crld(const X509V3_EXT_METHOD *method,
-                      X509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
+static void *v2i_crld(const YX509V3_EXT_METHOD *method,
+                      YX509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
 {
     STACK_OF(DIST_POINT) *crld;
     GENERAL_NAMES *gens = NULL;
@@ -253,11 +253,11 @@ static void *v2i_crld(const X509V3_EXT_METHOD *method,
         cnf = sk_CONF_VALUE_value(nval, i);
         if (!cnf->value) {
             STACK_OF(CONF_VALUE) *dpsect;
-            dpsect = X509V3_get_section(ctx, cnf->name);
+            dpsect = YX509V3_get_section(ctx, cnf->name);
             if (!dpsect)
                 goto err;
             point = crldp_from_section(ctx, dpsect);
-            X509V3_section_free(ctx, dpsect);
+            YX509V3_section_free(ctx, dpsect);
             if (!point)
                 goto err;
             sk_DIST_POINT_push(crld, point); /* no failure as it was reserved */
@@ -282,7 +282,7 @@ static void *v2i_crld(const X509V3_EXT_METHOD *method,
     return crld;
 
  merr:
-    X509V3err(X509V3_F_V2I_CRLD, ERR_R_MALLOC_FAILURE);
+    YX509V3err(YX509V3_F_V2I_CRLD, ERR_R_MALLOC_FAILURE);
  err:
     GENERAL_NAME_free(gen);
     GENERAL_NAMES_free(gens);
@@ -290,65 +290,65 @@ static void *v2i_crld(const X509V3_EXT_METHOD *method,
     return NULL;
 }
 
-static int dpn_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int dpn_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
                   void *exarg)
 {
     DIST_POINT_NAME *dpn = (DIST_POINT_NAME *)*pval;
 
     switch (operation) {
-    case ASN1_OP_NEW_POST:
+    case YASN1_OP_NEW_POST:
         dpn->dpname = NULL;
         break;
 
-    case ASN1_OP_FREE_POST:
-        X509_NAME_free(dpn->dpname);
+    case YASN1_OP_FREE_POST:
+        YX509_NAME_free(dpn->dpname);
         break;
     }
     return 1;
 }
 
 
-ASN1_CHOICE_cb(DIST_POINT_NAME, dpn_cb) = {
-        ASN1_IMP_SEQUENCE_OF(DIST_POINT_NAME, name.fullname, GENERAL_NAME, 0),
-        ASN1_IMP_SET_OF(DIST_POINT_NAME, name.relativename, X509_NAME_ENTRY, 1)
-} ASN1_CHOICE_END_cb(DIST_POINT_NAME, DIST_POINT_NAME, type)
+YASN1_CHOICE_cb(DIST_POINT_NAME, dpn_cb) = {
+        YASN1_IMP_SEQUENCE_OF(DIST_POINT_NAME, name.fullname, GENERAL_NAME, 0),
+        YASN1_IMP_SET_OF(DIST_POINT_NAME, name.relativename, YX509_NAME_ENTRY, 1)
+} YASN1_CHOICE_END_cb(DIST_POINT_NAME, DIST_POINT_NAME, type)
 
 
-IMPLEMENT_ASN1_FUNCTIONS(DIST_POINT_NAME)
+IMPLEMENT_YASN1_FUNCTIONS(DIST_POINT_NAME)
 
-ASN1_SEQUENCE(DIST_POINT) = {
-        ASN1_EXP_OPT(DIST_POINT, distpoint, DIST_POINT_NAME, 0),
-        ASN1_IMP_OPT(DIST_POINT, reasons, ASN1_BIT_STRING, 1),
-        ASN1_IMP_SEQUENCE_OF_OPT(DIST_POINT, CRLissuer, GENERAL_NAME, 2)
-} ASN1_SEQUENCE_END(DIST_POINT)
+YASN1_SEQUENCE(DIST_POINT) = {
+        YASN1_EXP_OPT(DIST_POINT, distpoint, DIST_POINT_NAME, 0),
+        YASN1_IMP_OPT(DIST_POINT, reasons, YASN1_BIT_STRING, 1),
+        YASN1_IMP_SEQUENCE_OF_OPT(DIST_POINT, CRLissuer, GENERAL_NAME, 2)
+} YASN1_SEQUENCE_END(DIST_POINT)
 
-IMPLEMENT_ASN1_FUNCTIONS(DIST_POINT)
+IMPLEMENT_YASN1_FUNCTIONS(DIST_POINT)
 
-ASN1_ITEM_TEMPLATE(CRL_DIST_POINTS) =
-        ASN1_EX_TEMPLATE_TYPE(ASN1_TFLG_SEQUENCE_OF, 0, CRLDistributionPoints, DIST_POINT)
-ASN1_ITEM_TEMPLATE_END(CRL_DIST_POINTS)
+YASN1_ITEM_TEMPLATE(CRL_DIST_POINTS) =
+        YASN1_EX_TEMPLATE_TYPE(YASN1_TFLG_SEQUENCE_OF, 0, CRLDistributionPoints, DIST_POINT)
+YASN1_ITEM_TEMPLATE_END(CRL_DIST_POINTS)
 
-IMPLEMENT_ASN1_FUNCTIONS(CRL_DIST_POINTS)
+IMPLEMENT_YASN1_FUNCTIONS(CRL_DIST_POINTS)
 
-ASN1_SEQUENCE(ISSUING_DIST_POINT) = {
-        ASN1_EXP_OPT(ISSUING_DIST_POINT, distpoint, DIST_POINT_NAME, 0),
-        ASN1_IMP_OPT(ISSUING_DIST_POINT, onlyuser, ASN1_FBOOLEAN, 1),
-        ASN1_IMP_OPT(ISSUING_DIST_POINT, onlyCA, ASN1_FBOOLEAN, 2),
-        ASN1_IMP_OPT(ISSUING_DIST_POINT, onlysomereasons, ASN1_BIT_STRING, 3),
-        ASN1_IMP_OPT(ISSUING_DIST_POINT, indirectCRL, ASN1_FBOOLEAN, 4),
-        ASN1_IMP_OPT(ISSUING_DIST_POINT, onlyattr, ASN1_FBOOLEAN, 5)
-} ASN1_SEQUENCE_END(ISSUING_DIST_POINT)
+YASN1_SEQUENCE(ISSUING_DIST_POINT) = {
+        YASN1_EXP_OPT(ISSUING_DIST_POINT, distpoint, DIST_POINT_NAME, 0),
+        YASN1_IMP_OPT(ISSUING_DIST_POINT, onlyuser, YASN1_FBOOLEAN, 1),
+        YASN1_IMP_OPT(ISSUING_DIST_POINT, onlyCA, YASN1_FBOOLEAN, 2),
+        YASN1_IMP_OPT(ISSUING_DIST_POINT, onlysomereasons, YASN1_BIT_STRING, 3),
+        YASN1_IMP_OPT(ISSUING_DIST_POINT, indirectCRL, YASN1_FBOOLEAN, 4),
+        YASN1_IMP_OPT(ISSUING_DIST_POINT, onlyattr, YASN1_FBOOLEAN, 5)
+} YASN1_SEQUENCE_END(ISSUING_DIST_POINT)
 
-IMPLEMENT_ASN1_FUNCTIONS(ISSUING_DIST_POINT)
+IMPLEMENT_YASN1_FUNCTIONS(ISSUING_DIST_POINT)
 
-static int i2r_idp(const X509V3_EXT_METHOD *method, void *pidp, BIO *out,
+static int i2r_idp(const YX509V3_EXT_METHOD *method, void *pidp, BIO *out,
                    int indent);
-static void *v2i_idp(const X509V3_EXT_METHOD *method, X509V3_CTX *ctx,
+static void *v2i_idp(const YX509V3_EXT_METHOD *method, YX509V3_CTX *ctx,
                      STACK_OF(CONF_VALUE) *nval);
 
-const X509V3_EXT_METHOD v3_idp = {
-    NID_issuing_distribution_point, X509V3_EXT_MULTILINE,
-    ASN1_ITEM_ref(ISSUING_DIST_POINT),
+const YX509V3_EXT_METHOD v3_idp = {
+    NID_issuing_distribution_point, YX509V3_EXT_MULTILINE,
+    YASN1_ITEM_ref(ISSUING_DIST_POINT),
     0, 0, 0, 0,
     0, 0,
     0,
@@ -357,7 +357,7 @@ const X509V3_EXT_METHOD v3_idp = {
     NULL
 };
 
-static void *v2i_idp(const X509V3_EXT_METHOD *method, X509V3_CTX *ctx,
+static void *v2i_idp(const YX509V3_EXT_METHOD *method, YX509V3_CTX *ctx,
                      STACK_OF(CONF_VALUE) *nval)
 {
     ISSUING_DIST_POINT *idp = NULL;
@@ -377,30 +377,30 @@ static void *v2i_idp(const X509V3_EXT_METHOD *method, X509V3_CTX *ctx,
         if (ret < 0)
             goto err;
         if (strcmp(name, "onlyuser") == 0) {
-            if (!X509V3_get_value_bool(cnf, &idp->onlyuser))
+            if (!YX509V3_get_value_bool(cnf, &idp->onlyuser))
                 goto err;
         } else if (strcmp(name, "onlyCA") == 0) {
-            if (!X509V3_get_value_bool(cnf, &idp->onlyCA))
+            if (!YX509V3_get_value_bool(cnf, &idp->onlyCA))
                 goto err;
         } else if (strcmp(name, "onlyAA") == 0) {
-            if (!X509V3_get_value_bool(cnf, &idp->onlyattr))
+            if (!YX509V3_get_value_bool(cnf, &idp->onlyattr))
                 goto err;
         } else if (strcmp(name, "indirectCRL") == 0) {
-            if (!X509V3_get_value_bool(cnf, &idp->indirectCRL))
+            if (!YX509V3_get_value_bool(cnf, &idp->indirectCRL))
                 goto err;
         } else if (strcmp(name, "onlysomereasons") == 0) {
             if (!set_reasons(&idp->onlysomereasons, val))
                 goto err;
         } else {
-            X509V3err(X509V3_F_V2I_IDP, X509V3_R_INVALID_NAME);
-            X509V3_conf_err(cnf);
+            YX509V3err(YX509V3_F_V2I_IDP, YX509V3_R_INVALID_NAME);
+            YX509V3_conf_err(cnf);
             goto err;
         }
     }
     return idp;
 
  merr:
-    X509V3err(X509V3_F_V2I_IDP, ERR_R_MALLOC_FAILURE);
+    YX509V3err(YX509V3_F_V2I_IDP, ERR_R_MALLOC_FAILURE);
  err:
     ISSUING_DIST_POINT_free(idp);
     return NULL;
@@ -410,7 +410,7 @@ static int print_gens(BIO *out, STACK_OF(GENERAL_NAME) *gens, int indent)
 {
     int i;
     for (i = 0; i < sk_GENERAL_NAME_num(gens); i++) {
-        BIO_printf(out, "%*s", indent + 2, "");
+        BIO_pprintf(out, "%*s", indent + 2, "");
         GENERAL_NAME_print(out, sk_GENERAL_NAME_value(gens, i));
         BIO_puts(out, "\n");
     }
@@ -420,43 +420,43 @@ static int print_gens(BIO *out, STACK_OF(GENERAL_NAME) *gens, int indent)
 static int print_distpoint(BIO *out, DIST_POINT_NAME *dpn, int indent)
 {
     if (dpn->type == 0) {
-        BIO_printf(out, "%*sFull Name:\n", indent, "");
+        BIO_pprintf(out, "%*sFull Name:\n", indent, "");
         print_gens(out, dpn->name.fullname, indent);
     } else {
-        X509_NAME ntmp;
+        YX509_NAME ntmp;
         ntmp.entries = dpn->name.relativename;
-        BIO_printf(out, "%*sRelative Name:\n%*s", indent, "", indent + 2, "");
-        X509_NAME_print_ex(out, &ntmp, 0, XN_FLAG_ONELINE);
+        BIO_pprintf(out, "%*sRelative Name:\n%*s", indent, "", indent + 2, "");
+        YX509_NAME_print_ex(out, &ntmp, 0, XN_FLAG_ONELINE);
         BIO_puts(out, "\n");
     }
     return 1;
 }
 
-static int i2r_idp(const X509V3_EXT_METHOD *method, void *pidp, BIO *out,
+static int i2r_idp(const YX509V3_EXT_METHOD *method, void *pidp, BIO *out,
                    int indent)
 {
     ISSUING_DIST_POINT *idp = pidp;
     if (idp->distpoint)
         print_distpoint(out, idp->distpoint, indent);
     if (idp->onlyuser > 0)
-        BIO_printf(out, "%*sOnly User Certificates\n", indent, "");
+        BIO_pprintf(out, "%*sOnly User Certificates\n", indent, "");
     if (idp->onlyCA > 0)
-        BIO_printf(out, "%*sOnly CA Certificates\n", indent, "");
+        BIO_pprintf(out, "%*sOnly CA Certificates\n", indent, "");
     if (idp->indirectCRL > 0)
-        BIO_printf(out, "%*sIndirect CRL\n", indent, "");
+        BIO_pprintf(out, "%*sIndirect CRL\n", indent, "");
     if (idp->onlysomereasons)
         print_reasons(out, "Only Some Reasons", idp->onlysomereasons, indent);
     if (idp->onlyattr > 0)
-        BIO_printf(out, "%*sOnly Attribute Certificates\n", indent, "");
+        BIO_pprintf(out, "%*sOnly Attribute Certificates\n", indent, "");
     if (!idp->distpoint && (idp->onlyuser <= 0) && (idp->onlyCA <= 0)
         && (idp->indirectCRL <= 0) && !idp->onlysomereasons
         && (idp->onlyattr <= 0))
-        BIO_printf(out, "%*s<EMPTY>\n", indent, "");
+        BIO_pprintf(out, "%*s<EMPTY>\n", indent, "");
 
     return 1;
 }
 
-static int i2r_crldp(const X509V3_EXT_METHOD *method, void *pcrldp, BIO *out,
+static int i2r_crldp(const YX509V3_EXT_METHOD *method, void *pcrldp, BIO *out,
                      int indent)
 {
     STACK_OF(DIST_POINT) *crld = pcrldp;
@@ -470,35 +470,35 @@ static int i2r_crldp(const X509V3_EXT_METHOD *method, void *pcrldp, BIO *out,
         if (point->reasons)
             print_reasons(out, "Reasons", point->reasons, indent);
         if (point->CRLissuer) {
-            BIO_printf(out, "%*sCRL Issuer:\n", indent, "");
+            BIO_pprintf(out, "%*sCRL Issuer:\n", indent, "");
             print_gens(out, point->CRLissuer, indent);
         }
     }
     return 1;
 }
 
-int DIST_POINT_set_dpname(DIST_POINT_NAME *dpn, X509_NAME *iname)
+int DIST_POINT_set_dpname(DIST_POINT_NAME *dpn, YX509_NAME *iname)
 {
     int i;
-    STACK_OF(X509_NAME_ENTRY) *frag;
-    X509_NAME_ENTRY *ne;
+    STACK_OF(YX509_NAME_ENTRY) *frag;
+    YX509_NAME_ENTRY *ne;
     if (!dpn || (dpn->type != 1))
         return 1;
     frag = dpn->name.relativename;
-    dpn->dpname = X509_NAME_dup(iname);
+    dpn->dpname = YX509_NAME_dup(iname);
     if (!dpn->dpname)
         return 0;
-    for (i = 0; i < sk_X509_NAME_ENTRY_num(frag); i++) {
-        ne = sk_X509_NAME_ENTRY_value(frag, i);
-        if (!X509_NAME_add_entry(dpn->dpname, ne, -1, i ? 0 : 1)) {
-            X509_NAME_free(dpn->dpname);
+    for (i = 0; i < sk_YX509_NAME_ENTRY_num(frag); i++) {
+        ne = sk_YX509_NAME_ENTRY_value(frag, i);
+        if (!YX509_NAME_add_entry(dpn->dpname, ne, -1, i ? 0 : 1)) {
+            YX509_NAME_free(dpn->dpname);
             dpn->dpname = NULL;
             return 0;
         }
     }
     /* generate cached encoding of name */
-    if (i2d_X509_NAME(dpn->dpname, NULL) < 0) {
-        X509_NAME_free(dpn->dpname);
+    if (i2d_YX509_NAME(dpn->dpname, NULL) < 0) {
+        YX509_NAME_free(dpn->dpname);
         dpn->dpname = NULL;
         return 0;
     }

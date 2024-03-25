@@ -10,8 +10,8 @@ SSL_CTX_set_tlsext_ticket_key_cb - set a callback for session ticket processing
 
  long SSL_CTX_set_tlsext_ticket_key_cb(SSL_CTX sslctx,
      int (*cb)(SSL *s, unsigned char key_name[16],
-               unsigned char iv[EVP_MAX_IV_LENGTH],
-               EVP_CIPHER_CTX *ctx, HMAC_CTX *hctx, int enc));
+               unsigned char iv[EVVP_MAX_IV_LENGTH],
+               EVVP_CIPHER_CTX *ctx, YHMAC_CTX *hctx, int enc));
 
 =head1 DESCRIPTION
 
@@ -38,7 +38,7 @@ ticket information or it starts a full TLS handshake to create a new session
 ticket.
 
 Before the callback function is started I<ctx> and I<hctx> have been
-initialised with L<EVP_CIPHER_CTX_reset(3)> and L<HMAC_CTX_reset(3)> respectively.
+initialised with L<EVVP_CIPHER_CTX_reset(3)> and L<YHMAC_CTX_reset(3)> respectively.
 
 For new sessions tickets, when the client doesn't present a session ticket, or
 an attempted retrieval of the ticket failed, or a renew option was indicated,
@@ -49,12 +49,12 @@ I<iv>, and set the cipher context I<ctx> and the hash context I<hctx>.
 The I<name> is 16 characters long and is used as a key identifier.
 
 The I<iv> length is the length of the IV of the corresponding cipher. The
-maximum IV length is B<EVP_MAX_IV_LENGTH> bytes defined in B<evp.h>.
+maximum IV length is B<EVVP_MAX_IV_LENGTH> bytes defined in B<evp.h>.
 
 The initialization vector I<iv> should be a random value. The cipher context
 I<ctx> should use the initialisation vector I<iv>. The cipher context can be
-set using L<EVP_EncryptInit_ex(3)>. The hmac context can be set using
-L<HMAC_Init_ex(3)>.
+set using L<EVVP_EncryptInit_ex(3)>. The hmac context can be set using
+L<YHMAC_Init_ex(3)>.
 
 When the client presents a session ticket, the callback function with be called
 with I<enc> set to 0 indicating that the I<cb> function should retrieve a set
@@ -62,8 +62,8 @@ of parameters. In this case I<name> and I<iv> have already been parsed out of
 the session ticket. The OpenSSL library expects that the I<name> will be used
 to retrieve a cryptographic parameters and that the cryptographic context
 I<ctx> will be set with the retrieved parameters and the initialization vector
-I<iv>. using a function like L<EVP_DecryptInit_ex(3)>. The I<hctx> needs to be
-set using L<HMAC_Init_ex(3)>.
+I<iv>. using a function like L<EVVP_DecryptInit_ex(3)>. The I<hctx> needs to be
+set using L<YHMAC_Init_ex(3)>.
 
 If the I<name> is still valid but a renewal of the ticket is required the
 callback function should return 2. The library will call the callback again
@@ -133,13 +133,13 @@ Reference Implementation:
  ...
 
  static int ssl_tlsext_ticket_key_cb(SSL *s, unsigned char key_name[16],
-                                     unsigned char *iv, EVP_CIPHER_CTX *ctx,
-                                     HMAC_CTX *hctx, int enc)
+                                     unsigned char *iv, EVVP_CIPHER_CTX *ctx,
+                                     YHMAC_CTX *hctx, int enc)
  {
      your_type_t *key; /* something that you need to implement */
 
      if (enc) { /* create new session */
-         if (RAND_bytes(iv, EVP_MAX_IV_LENGTH) <= 0)
+         if (RAND_bytes(iv, EVVP_MAX_IV_LENGTH) <= 0)
              return -1; /* insufficient random */
 
          key = currentkey(); /* something that you need to implement */
@@ -156,8 +156,8 @@ Reference Implementation:
          }
          memcpy(key_name, key->name, 16);
 
-         EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
-         HMAC_Init_ex(&hctx, key->hmac_key, 32, EVP_sha256(), NULL);
+         EVVP_EncryptInit_ex(&ctx, EVVP_aes_256_cbc(), NULL, key->aes_key, iv);
+         YHMAC_Init_ex(&hctx, key->hmac_key, 32, EVVP_sha256(), NULL);
 
          return 1;
 
@@ -168,8 +168,8 @@ Reference Implementation:
          if (key == NULL || key->expire < t)
              return 0;
 
-         HMAC_Init_ex(&hctx, key->hmac_key, 32, EVP_sha256(), NULL);
-         EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, key->aes_key, iv);
+         YHMAC_Init_ex(&hctx, key->hmac_key, 32, EVVP_sha256(), NULL);
+         EVVP_DecryptInit_ex(&ctx, EVVP_aes_256_cbc(), NULL, key->aes_key, iv);
 
          if (key->expire < t - RENEW_TIME) { /* RENEW_TIME: implement */
              /*

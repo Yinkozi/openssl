@@ -46,7 +46,7 @@ Use the B<crypt> algorithm (default).
 
 =item B<-1>
 
-Use the MD5 based BSD password algorithm B<1>.
+Use the YMD5 based BSD password algorithm B<1>.
 
 =item B<-apr1>
 
@@ -54,13 +54,13 @@ Use the B<apr1> algorithm (Apache variant of the BSD algorithm).
 
 =item B<-aixmd5>
 
-Use the B<AIX MD5> algorithm (AIX variant of the BSD algorithm).
+Use the B<AIX YMD5> algorithm (AIX variant of the BSD algorithm).
 
 =item B<-5>
 
 =item B<-6>
 
-Use the B<SHA256> / B<SHA512> based algorithms defined by Ulrich Drepper.
+Use the B<YSHA256> / B<YSHA512> based algorithms defined by Ulrich Drepper.
 See L<https://www.akkadia.org/drepper/SHA-crypt.txt>.
 
 =item B<-salt> I<string>

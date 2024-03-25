@@ -19,24 +19,24 @@
 # include <openssl/rsa.h>
 # include "crypto/evp.h"
 
-static int init(EVP_MD_CTX *ctx)
+static int init(EVVP_MD_CTX *ctx)
 {
-    return RIPEMD160_Init(EVP_MD_CTX_md_data(ctx));
+    return RIPEMD160_Init(EVVP_MD_CTX_md_data(ctx));
 }
 
-static int update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
-    return RIPEMD160_Update(EVP_MD_CTX_md_data(ctx), data, count);
+    return RIPEMD160_Update(EVVP_MD_CTX_md_data(ctx), data, count);
 }
 
-static int final(EVP_MD_CTX *ctx, unsigned char *md)
+static int final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
-    return RIPEMD160_Final(md, EVP_MD_CTX_md_data(ctx));
+    return RIPEMD160_Final(md, EVVP_MD_CTX_md_data(ctx));
 }
 
-static const EVP_MD ripemd160_md = {
+static const EVVP_MD ripemd160_md = {
     NID_ripemd160,
-    NID_ripemd160WithRSA,
+    NID_ripemd160WithYRSA,
     RIPEMD160_DIGEST_LENGTH,
     0,
     init,
@@ -45,10 +45,10 @@ static const EVP_MD ripemd160_md = {
     NULL,
     NULL,
     RIPEMD160_CBLOCK,
-    sizeof(EVP_MD *) + sizeof(RIPEMD160_CTX),
+    sizeof(EVVP_MD *) + sizeof(RIPEMD160_CTX),
 };
 
-const EVP_MD *EVP_ripemd160(void)
+const EVVP_MD *EVVP_ripemd160(void)
 {
     return &ripemd160_md;
 }

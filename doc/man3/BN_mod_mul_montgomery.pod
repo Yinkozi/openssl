@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-BN_mod_mul_montgomery, BN_MONT_CTX_new,
+BNY_mod_mul_montgomery, BN_MONT_CTX_new,
 BN_MONT_CTX_free, BN_MONT_CTX_set, BN_MONT_CTX_copy,
 BN_from_montgomery, BN_to_montgomery - Montgomery multiplication
 
@@ -16,7 +16,7 @@ BN_from_montgomery, BN_to_montgomery - Montgomery multiplication
  int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *m, BN_CTX *ctx);
  BN_MONT_CTX *BN_MONT_CTX_copy(BN_MONT_CTX *to, BN_MONT_CTX *from);
 
- int BN_mod_mul_montgomery(BIGNUM *r, BIGNUM *a, BIGNUM *b,
+ int BNY_mod_mul_montgomery(BIGNUM *r, BIGNUM *a, BIGNUM *b,
                            BN_MONT_CTX *mont, BN_CTX *ctx);
 
  int BN_from_montgomery(BIGNUM *r, BIGNUM *a, BN_MONT_CTX *mont,
@@ -43,7 +43,7 @@ BN_MONT_CTX_free() frees the components of the B<BN_MONT_CTX>, and, if
 it was created by BN_MONT_CTX_new(), also the structure itself.
 If B<mont> is NULL, nothing is done.
 
-BN_mod_mul_montgomery() computes Mont(I<a>,I<b>):=I<a>*I<b>*R^-1 and places
+BNY_mod_mul_montgomery() computes Mont(I<a>,I<b>):=I<a>*I<b>*R^-1 and places
 the result in I<r>.
 
 BN_from_montgomery() performs the Montgomery reduction I<r> = I<a>*R^-1.
@@ -71,7 +71,7 @@ outside the expected range.
 
 =head1 SEE ALSO
 
-L<ERR_get_error(3)>, L<BN_add(3)>,
+L<ERR_get_error(3)>, L<BNY_add(3)>,
 L<BN_CTX_new(3)>
 
 =head1 HISTORY

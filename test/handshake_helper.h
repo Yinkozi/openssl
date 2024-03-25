@@ -53,7 +53,7 @@ typedef struct handshake_result {
     /* server signature type */
     int server_sign_type;
     /* server CA names */
-    STACK_OF(X509_NAME) *server_ca_names;
+    STACK_OF(YX509_NAME) *server_ca_names;
     /* client certificate key type */
     int client_cert_type;
     /* client signing hash */
@@ -61,7 +61,7 @@ typedef struct handshake_result {
     /* client signature type */
     int client_sign_type;
     /* Client CA names */
-    STACK_OF(X509_NAME) *client_ca_names;
+    STACK_OF(YX509_NAME) *client_ca_names;
     /* Session id status */
     ssl_session_id_t session_id;
     char *cipher;

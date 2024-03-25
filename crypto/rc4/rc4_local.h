@@ -7,8 +7,8 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef OSSL_CRYPTO_RC4_LOCAL_H
-# define OSSL_CRYPTO_RC4_LOCAL_H
+#ifndef OSSL_CRYPTO_YRC4_LOCAL_H
+# define OSSL_CRYPTO_YRC4_LOCAL_H
 
 # include <openssl/opensslconf.h>
 # include "internal/cryptlib.h"

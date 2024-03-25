@@ -15,35 +15,35 @@
 #include <openssl/x509v3.h>
 #include "crypto/x509.h"
 
-ASN1_SEQUENCE_enc(X509_CINF, enc, 0) = {
-        ASN1_EXP_OPT(X509_CINF, version, ASN1_INTEGER, 0),
-        ASN1_EMBED(X509_CINF, serialNumber, ASN1_INTEGER),
-        ASN1_EMBED(X509_CINF, signature, X509_ALGOR),
-        ASN1_SIMPLE(X509_CINF, issuer, X509_NAME),
-        ASN1_EMBED(X509_CINF, validity, X509_VAL),
-        ASN1_SIMPLE(X509_CINF, subject, X509_NAME),
-        ASN1_SIMPLE(X509_CINF, key, X509_PUBKEY),
-        ASN1_IMP_OPT(X509_CINF, issuerUID, ASN1_BIT_STRING, 1),
-        ASN1_IMP_OPT(X509_CINF, subjectUID, ASN1_BIT_STRING, 2),
-        ASN1_EXP_SEQUENCE_OF_OPT(X509_CINF, extensions, X509_EXTENSION, 3)
-} ASN1_SEQUENCE_END_enc(X509_CINF, X509_CINF)
+YASN1_SEQUENCE_enc(YX509_CINF, enc, 0) = {
+        YASN1_EXP_OPT(YX509_CINF, version, YASN1_INTEGER, 0),
+        YASN1_EMBED(YX509_CINF, serialNumber, YASN1_INTEGER),
+        YASN1_EMBED(YX509_CINF, signature, YX509_ALGOR),
+        YASN1_SIMPLE(YX509_CINF, issuer, YX509_NAME),
+        YASN1_EMBED(YX509_CINF, validity, YX509_VAL),
+        YASN1_SIMPLE(YX509_CINF, subject, YX509_NAME),
+        YASN1_SIMPLE(YX509_CINF, key, YX509_PUBKEY),
+        YASN1_IMP_OPT(YX509_CINF, issuerUID, YASN1_BIT_STRING, 1),
+        YASN1_IMP_OPT(YX509_CINF, subjectUID, YASN1_BIT_STRING, 2),
+        YASN1_EXP_SEQUENCE_OF_OPT(YX509_CINF, extensions, YX509_EXTENSION, 3)
+} YASN1_SEQUENCE_END_enc(YX509_CINF, YX509_CINF)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_CINF)
-/* X509 top level structure needs a bit of customisation */
+IMPLEMENT_YASN1_FUNCTIONS(YX509_CINF)
+/* YX509 top level structure needs a bit of customisation */
 
-extern void policy_cache_free(X509_POLICY_CACHE *cache);
+extern void policy_cache_free(YX509_POLICY_CACHE *cache);
 
-static int x509_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int x509_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
                    void *exarg)
 {
-    X509 *ret = (X509 *)*pval;
+    YX509 *ret = (YX509 *)*pval;
 
     switch (operation) {
 
-    case ASN1_OP_D2I_PRE:
-        CRYPTO_free_ex_data(CRYPTO_EX_INDEX_X509, ret, &ret->ex_data);
-        X509_CERT_AUX_free(ret->aux);
-        ASN1_OCTET_STRING_free(ret->skid);
+    case YASN1_OP_D2I_PRE:
+        CRYPTO_free_ex_data(CRYPTO_EX_INDEX_YX509, ret, &ret->ex_data);
+        YX509_CERT_AUX_free(ret->aux);
+        YASN1_OCTET_STRING_free(ret->skid);
         AUTHORITY_KEYID_free(ret->akid);
         CRL_DIST_POINTS_free(ret->crldp);
         policy_cache_free(ret->policy_cache);
@@ -56,7 +56,7 @@ static int x509_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 
         /* fall thru */
 
-    case ASN1_OP_NEW_POST:
+    case YASN1_OP_NEW_POST:
         ret->ex_cached = 0;
         ret->ex_kusage = 0;
         ret->ex_xkusage = 0;
@@ -75,14 +75,14 @@ static int x509_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 #endif
         ret->aux = NULL;
         ret->crldp = NULL;
-        if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_X509, ret, &ret->ex_data))
+        if (!CRYPTO_new_ex_data(CRYPTO_EX_INDEX_YX509, ret, &ret->ex_data))
             return 0;
         break;
 
-    case ASN1_OP_FREE_POST:
-        CRYPTO_free_ex_data(CRYPTO_EX_INDEX_X509, ret, &ret->ex_data);
-        X509_CERT_AUX_free(ret->aux);
-        ASN1_OCTET_STRING_free(ret->skid);
+    case YASN1_OP_FREE_POST:
+        CRYPTO_free_ex_data(CRYPTO_EX_INDEX_YX509, ret, &ret->ex_data);
+        YX509_CERT_AUX_free(ret->aux);
+        YASN1_OCTET_STRING_free(ret->skid);
         AUTHORITY_KEYID_free(ret->akid);
         CRL_DIST_POINTS_free(ret->crldp);
         policy_cache_free(ret->policy_cache);
@@ -100,37 +100,37 @@ static int x509_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
 
 }
 
-ASN1_SEQUENCE_ref(X509, x509_cb) = {
-        ASN1_EMBED(X509, cert_info, X509_CINF),
-        ASN1_EMBED(X509, sig_alg, X509_ALGOR),
-        ASN1_EMBED(X509, signature, ASN1_BIT_STRING)
-} ASN1_SEQUENCE_END_ref(X509, X509)
+YASN1_SEQUENCE_ref(YX509, x509_cb) = {
+        YASN1_EMBED(YX509, cert_info, YX509_CINF),
+        YASN1_EMBED(YX509, sig_alg, YX509_ALGOR),
+        YASN1_EMBED(YX509, signature, YASN1_BIT_STRING)
+} YASN1_SEQUENCE_END_ref(YX509, YX509)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509)
+IMPLEMENT_YASN1_FUNCTIONS(YX509)
 
-IMPLEMENT_ASN1_DUP_FUNCTION(X509)
+IMPLEMENT_YASN1_DUP_FUNCTION(YX509)
 
-int X509_set_ex_data(X509 *r, int idx, void *arg)
+int YX509_set_ex_data(YX509 *r, int idx, void *arg)
 {
     return CRYPTO_set_ex_data(&r->ex_data, idx, arg);
 }
 
-void *X509_get_ex_data(X509 *r, int idx)
+void *YX509_get_ex_data(YX509 *r, int idx)
 {
     return CRYPTO_get_ex_data(&r->ex_data, idx);
 }
 
 /*
- * X509_AUX ASN1 routines. X509_AUX is the name given to a certificate with
+ * YX509_AUX YASN1 routines. YX509_AUX is the name given to a certificate with
  * extra info tagged on the end. Since these functions set how a certificate
  * is trusted they should only be used when the certificate comes from a
  * reliable source such as local storage.
  */
 
-X509 *d2i_X509_AUX(X509 **a, const unsigned char **pp, long length)
+YX509 *d2i_YX509_AUX(YX509 **a, const unsigned char **pp, long length)
 {
     const unsigned char *q;
-    X509 *ret;
+    YX509 *ret;
     int freeret = 0;
 
     /* Save start position */
@@ -138,19 +138,19 @@ X509 *d2i_X509_AUX(X509 **a, const unsigned char **pp, long length)
 
     if (a == NULL || *a == NULL)
         freeret = 1;
-    ret = d2i_X509(a, &q, length);
+    ret = d2i_YX509(a, &q, length);
     /* If certificate unreadable then forget it */
     if (ret == NULL)
         return NULL;
     /* update length */
     length -= q - *pp;
-    if (length > 0 && !d2i_X509_CERT_AUX(&ret->aux, &q, length))
+    if (length > 0 && !d2i_YX509_CERT_AUX(&ret->aux, &q, length))
         goto err;
     *pp = q;
     return ret;
  err:
     if (freeret) {
-        X509_free(ret);
+        YX509_free(ret);
         if (a)
             *a = NULL;
     }
@@ -163,21 +163,21 @@ X509 *d2i_X509_AUX(X509 **a, const unsigned char **pp, long length)
  * error path, but that depends on similar hygiene in lower-level functions.
  * Here we avoid compounding the problem.
  */
-static int i2d_x509_aux_internal(X509 *a, unsigned char **pp)
+static int i2d_x509_aux_internal(YX509 *a, unsigned char **pp)
 {
     int length, tmplen;
     unsigned char *start = pp != NULL ? *pp : NULL;
 
     /*
-     * This might perturb *pp on error, but fixing that belongs in i2d_X509()
+     * This might perturb *pp on error, but fixing that belongs in i2d_YX509()
      * not here.  It should be that if a == NULL length is zero, but we check
      * both just in case.
      */
-    length = i2d_X509(a, pp);
+    length = i2d_YX509(a, pp);
     if (length <= 0 || a == NULL)
         return length;
 
-    tmplen = i2d_X509_CERT_AUX(a->aux, pp);
+    tmplen = i2d_YX509_CERT_AUX(a->aux, pp);
     if (tmplen < 0) {
         if (start != NULL)
             *pp = start;
@@ -193,11 +193,11 @@ static int i2d_x509_aux_internal(X509 *a, unsigned char **pp)
  * length if pp == NULL.
  *
  * When pp is not NULL, but *pp == NULL, we allocate the buffer, but since
- * we're writing two ASN.1 objects back to back, we can't have i2d_X509() do
- * the allocation, nor can we allow i2d_X509_CERT_AUX() to increment the
+ * we're writing two ASN.1 objects back to back, we can't have i2d_YX509() do
+ * the allocation, nor can we allow i2d_YX509_CERT_AUX() to increment the
  * allocated buffer.
  */
-int i2d_X509_AUX(X509 *a, unsigned char **pp)
+int i2d_YX509_AUX(YX509 *a, unsigned char **pp)
 {
     int length;
     unsigned char *tmp;
@@ -213,7 +213,7 @@ int i2d_X509_AUX(X509 *a, unsigned char **pp)
     /* Allocate requisite combined storage */
     *pp = tmp = OPENSSL_malloc(length);
     if (tmp == NULL) {
-        X509err(X509_F_I2D_X509_AUX, ERR_R_MALLOC_FAILURE);
+        YX509err(YX509_F_I2D_YX509_AUX, ERR_R_MALLOC_FAILURE);
         return -1;
     }
 
@@ -226,14 +226,14 @@ int i2d_X509_AUX(X509 *a, unsigned char **pp)
     return length;
 }
 
-int i2d_re_X509_tbs(X509 *x, unsigned char **pp)
+int i2d_re_YX509_tbs(YX509 *x, unsigned char **pp)
 {
     x->cert_info.enc.modified = 1;
-    return i2d_X509_CINF(&x->cert_info, pp);
+    return i2d_YX509_CINF(&x->cert_info, pp);
 }
 
-void X509_get0_signature(const ASN1_BIT_STRING **psig,
-                         const X509_ALGOR **palg, const X509 *x)
+void YX509_get0_signature(const YASN1_BIT_STRING **psig,
+                         const YX509_ALGOR **palg, const YX509 *x)
 {
     if (psig)
         *psig = &x->signature;
@@ -241,7 +241,7 @@ void X509_get0_signature(const ASN1_BIT_STRING **psig,
         *palg = &x->sig_alg;
 }
 
-int X509_get_signature_nid(const X509 *x)
+int YX509_get_signature_nid(const YX509 *x)
 {
     return OBJ_obj2nid(x->sig_alg.algorithm);
 }

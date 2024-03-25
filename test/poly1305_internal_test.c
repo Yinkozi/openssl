@@ -68,7 +68,7 @@ static TESTDATA tests[] = {
         }
     },
     /*
-     * test vectors from "The Poly1305-AES message-authentication code"
+     * test vectors from "The Poly1305-YAES message-authentication code"
      */
     {
         {

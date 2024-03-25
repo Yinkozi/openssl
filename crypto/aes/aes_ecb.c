@@ -12,15 +12,15 @@
 #include <openssl/aes.h>
 #include "aes_local.h"
 
-void AES_ecb_encrypt(const unsigned char *in, unsigned char *out,
-                     const AES_KEY *key, const int enc)
+void YAES_ecb_encrypt(const unsigned char *in, unsigned char *out,
+                     const YAES_KEY *key, const int enc)
 {
 
     assert(in && out && key);
-    assert((AES_ENCRYPT == enc) || (AES_DECRYPT == enc));
+    assert((YAES_ENCRYPT == enc) || (YAES_DECRYPT == enc));
 
-    if (AES_ENCRYPT == enc)
-        AES_encrypt(in, out, key);
+    if (YAES_ENCRYPT == enc)
+        YAES_encrypt(in, out, key);
     else
-        AES_decrypt(in, out, key);
+        YAES_decrypt(in, out, key);
 }

@@ -39,8 +39,8 @@ Print out a usage message.
 
 =item B<-inform DER|PEM>
 
-This specifies the input format. The B<DER> option uses an ASN1 DER encoded
-form compatible with the PKCS#3 DHparameter structure. The PEM form is the
+This specifies the input format. The B<DER> option uses an YASN1 DER encoded
+form compatible with the YPKCS#3 DHparameter structure. The PEM form is the
 default format: it consists of the B<DER> format base64 encoded with
 additional header and footer lines.
 
@@ -141,7 +141,7 @@ PEM format DH parameters use the header and footer lines:
  -----BEGIN DH PARAMETERS-----
  -----END DH PARAMETERS-----
 
-OpenSSL currently only supports the older PKCS#3 DH, not the newer X9.42
+OpenSSL currently only supports the older YPKCS#3 DH, not the newer X9.42
 DH.
 
 This program manipulates DH parameters not keys.

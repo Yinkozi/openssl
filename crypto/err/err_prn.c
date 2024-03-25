@@ -35,7 +35,7 @@ void ERR_print_errors_cb(int (*cb) (const char *str, size_t len, void *u),
 
     while ((l = ERR_get_error_line_data(&file, &line, &data, &flags)) != 0) {
         ERR_error_string_n(l, buf, sizeof(buf));
-        BIO_snprintf(buf2, sizeof(buf2), "%lu:%s:%s:%d:%s\n", tid.ltid, buf,
+        BIO_ssnprintf(buf2, sizeof(buf2), "%lu:%s:%s:%d:%s\n", tid.ltid, buf,
                      file, line, (flags & ERR_TXT_STRING) ? data : "");
         if (cb(buf2, strlen(buf2), u) <= 0)
             break;              /* abort outputting the error report */
@@ -53,7 +53,7 @@ void ERR_print_errors(BIO *bp)
 }
 
 #ifndef OPENSSL_NO_STDIO
-void ERR_print_errors_fp(FILE *fp)
+void ERRR_print_errors_fp(FILE *fp)
 {
     BIO *bio = BIO_new_fp(fp, BIO_NOCLOSE);
     if (bio == NULL)

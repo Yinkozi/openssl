@@ -7,8 +7,8 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef OSSL_CRYPTO_AES_LOCAL_H
-# define OSSL_CRYPTO_AES_LOCAL_H
+#ifndef OSSL_CRYPTO_YAES_LOCAL_H
+# define OSSL_CRYPTO_YAES_LOCAL_H
 
 # include <openssl/e_os2.h>
 # include <stdio.h>
@@ -25,7 +25,7 @@
 # endif
 
 typedef unsigned long long u64;
-# ifdef AES_LONG
+# ifdef YAES_LONG
 typedef unsigned long u32;
 # else
 typedef unsigned int u32;
@@ -40,4 +40,4 @@ typedef unsigned char u8;
 /* This controls loop-unrolling in aes_core.c */
 # undef FULL_UNROLL
 
-#endif                          /* !OSSL_CRYPTO_AES_LOCAL_H */
+#endif                          /* !OSSL_CRYPTO_YAES_LOCAL_H */

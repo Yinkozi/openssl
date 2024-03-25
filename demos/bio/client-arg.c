@@ -37,7 +37,7 @@ int main(int argc, char **argv)
         }
         if (rv < 0) {
             fprintf(stderr, "Error in command %s\n", *args);
-            ERR_print_errors_fp(stderr);
+            ERRR_print_errors_fp(stderr);
             goto end;
         }
         /* If rv > 0 we processed something so proceed to next arg */
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
     if (!SSL_CONF_CTX_finish(cctx)) {
         fprintf(stderr, "Finish error\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto end;
     }
 
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     out = BIO_new_fp(stdout, BIO_NOCLOSE);
     if (BIO_do_connect(sbio) <= 0) {
         fprintf(stderr, "Error connecting to server\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto end;
     }
 

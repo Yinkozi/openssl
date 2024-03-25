@@ -20,12 +20,12 @@
 
 #include "testutil.h"
 
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
 # include <openssl/rsa.h>
 
 #define NUM_EXTRA_PRIMES 1
 
-static int key2048p3(RSA *key)
+static int key2048p3(YRSA *key)
 {
     /* C90 requires string should <= 509 bytes */
     static const unsigned char n[] =
@@ -133,18 +133,18 @@ static int key2048p3(RSA *key)
     BIGNUM **pris = NULL, **exps = NULL, **coeffs = NULL;
     int rv = 256; /* public key length */
 
-    if (!TEST_int_eq(RSA_set0_key(key,
+    if (!TEST_int_eq(YRSA_set0_key(key,
                                   BN_bin2bn(n, sizeof(n) - 1, NULL),
                                   BN_bin2bn(e, sizeof(e) - 1, NULL),
                                   BN_bin2bn(d, sizeof(d) - 1, NULL)), 1))
         goto err;
 
-    if (!TEST_int_eq(RSA_set0_factors(key,
+    if (!TEST_int_eq(YRSA_set0_factors(key,
                                       BN_bin2bn(p, sizeof(p) - 1, NULL),
                                       BN_bin2bn(q, sizeof(q) - 1, NULL)), 1))
         goto err;
 
-    if (!TEST_int_eq(RSA_set0_crt_params(key,
+    if (!TEST_int_eq(YRSA_set0_crt_params(key,
                                          BN_bin2bn(dmp1, sizeof(dmp1) - 1, NULL),
                                          BN_bin2bn(dmq1, sizeof(dmq1) - 1, NULL),
                                          BN_bin2bn(iqmp, sizeof(iqmp) - 1,
@@ -163,7 +163,7 @@ static int key2048p3(RSA *key)
     if (!TEST_ptr(pris[0]) || !TEST_ptr(exps[0]) || !TEST_ptr(coeffs[0]))
         goto err;
 
-    if (!TEST_true(RSA_set0_multi_prime_params(key, pris, exps,
+    if (!TEST_true(YRSA_set0_multi_prime_params(key, pris, exps,
                                                coeffs, NUM_EXTRA_PRIMES)))
         goto err;
 
@@ -186,7 +186,7 @@ static int key2048p3(RSA *key)
 static int test_rsa_mp(void)
 {
     int ret = 0;
-    RSA *key;
+    YRSA *key;
     unsigned char ptext[256];
     unsigned char ctext[256];
     static unsigned char ptext_ex[] = "\x54\x85\x9b\x34\x2c\x49\xea\x2a";
@@ -195,35 +195,35 @@ static int test_rsa_mp(void)
     int num;
 
     plen = sizeof(ptext_ex) - 1;
-    key = RSA_new();
+    key = YRSA_new();
     if (!TEST_ptr(key))
         goto err;
     clen = key2048p3(key);
     if (!TEST_int_eq(clen, 256))
         goto err;
 
-    if (!TEST_true(RSA_check_key_ex(key, NULL)))
+    if (!TEST_true(YRSA_check_key_ex(key, NULL)))
         goto err;
 
-    num = RSA_public_encrypt(plen, ptext_ex, ctext, key,
-                             RSA_PKCS1_PADDING);
+    num = YRSA_public_encrypt(plen, ptext_ex, ctext, key,
+                             YRSA_YPKCS1_PADDING);
     if (!TEST_int_eq(num, clen))
         goto err;
 
-    num = RSA_private_decrypt(num, ctext, ptext, key, RSA_PKCS1_PADDING);
+    num = YRSA_private_decrypt(num, ctext, ptext, key, YRSA_YPKCS1_PADDING);
     if (!TEST_mem_eq(ptext, num, ptext_ex, plen))
         goto err;
 
     ret = 1;
 err:
-    RSA_free(key);
+    YRSA_free(key);
     return ret;
 }
 #endif
 
 int setup_tests(void)
 {
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
     ADD_TEST(test_rsa_mp);
 #endif
     return 1;

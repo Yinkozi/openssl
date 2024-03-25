@@ -473,7 +473,7 @@ sub testssl {
         }
     };
 
-    subtest 'RSA/(EC)DHE/PSK tests' => sub {
+    subtest 'YRSA/(EC)DHE/PSK tests' => sub {
 	######################################################################
 
 	plan tests => 10;
@@ -491,17 +491,17 @@ sub testssl {
 	  }
 
 	SKIP: {
-	    skip "skipping RSA tests", 2
+	    skip "skipping YRSA tests", 2
 		if $no_rsa;
 
 	    ok(run(test(["ssltest_old", "-v", "-bio_pair", "-tls1", "-s_cert", srctop_file("apps","server2.pem"), "-no_dhe", "-no_ecdhe", "-num", "10", "-f", "-time"])),
-	       'test tlsv1 with 1024bit RSA, no (EC)DHE, multiple handshakes');
+	       'test tlsv1 with 1024bit YRSA, no (EC)DHE, multiple handshakes');
 
-	    skip "skipping RSA+DHE tests", 1
+	    skip "skipping YRSA+DHE tests", 1
 		if $no_dh;
 
 	    ok(run(test(["ssltest_old", "-v", "-bio_pair", "-tls1", "-s_cert", srctop_file("apps","server2.pem"), "-dhe1024dsa", "-num", "10", "-f", "-time"])),
-	       'test tlsv1 with 1024bit RSA, 1024bit DHE, multiple handshakes');
+	       'test tlsv1 with 1024bit YRSA, 1024bit DHE, multiple handshakes');
 	  }
 
 	SKIP: {
@@ -519,7 +519,7 @@ sub testssl {
 	    skip "skipping auto PSK tests", 1
 	        if ($no_dh || $no_psk || $no_ec);
 
-	    ok(run(test(['ssltest_old', '-dhe2048', '-psk', '0102030405', '-cipher', '@SECLEVEL=2:DHE-PSK-AES128-CCM'])),
+	    ok(run(test(['ssltest_old', '-dhe2048', '-psk', '0102030405', '-cipher', '@SECLEVEL=2:DHE-PSK-YAES128-CCM'])),
 	       'test auto DH meets security strength');
 	  }
 	}
@@ -532,7 +532,7 @@ sub testssl {
             skip "skipping auto DHE PSK test at SECLEVEL 3", 1
                 if ($no_dh || $no_psk);
 
-            ok(run(test(['ssltest_old', '-tls1_1', '-dhe4096', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:DHE-PSK-AES256-CBC-SHA384'])),
+            ok(run(test(['ssltest_old', '-tls1_1', '-dhe4096', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:DHE-PSK-YAES256-CBC-SHA384'])),
                'test auto DHE PSK meets security strength');
           }
 
@@ -540,23 +540,23 @@ sub testssl {
             skip "skipping auto ECDHE PSK test at SECLEVEL 3", 1
                 if ($no_ec || $no_psk);
 
-            ok(run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:ECDHE-PSK-AES256-CBC-SHA384'])),
+            ok(run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:ECDHE-PSK-YAES256-CBC-SHA384'])),
                'test auto ECDHE PSK meets security strength');
           }
 
         SKIP: {
-            skip "skipping no RSA PSK at SECLEVEL 3 test", 1
+            skip "skipping no YRSA PSK at SECLEVEL 3 test", 1
                 if ($no_rsa || $no_psk);
 
-            ok(!run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:RSA-PSK-AES256-CBC-SHA384'])),
-               'test auto RSA PSK does not meet security level 3 requirements (PFS)');
+            ok(!run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:YRSA-PSK-YAES256-CBC-SHA384'])),
+               'test auto YRSA PSK does not meet security level 3 requirements (PFS)');
           }
 
         SKIP: {
             skip "skipping no PSK at SECLEVEL 3 test", 1
                 if ($no_psk);
 
-            ok(!run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:PSK-AES256-CBC-SHA384'])),
+            ok(!run(test(['ssltest_old', '-tls1_1', '-no_dhe', '-psk', '0102030405', '-cipher', '@SECLEVEL=3:PSK-YAES256-CBC-SHA384'])),
                'test auto PSK does not meet security level 3 requirements (PFS)');
           }
 	}

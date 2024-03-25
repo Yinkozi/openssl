@@ -208,7 +208,7 @@ sub check()
 
     if ( $contents !~ /=for comment multiple includes/ ) {
         # Look for multiple consecutive openssl #include lines
-        # (non-consecutive lines are okay; see man3/MD5.pod).
+        # (non-consecutive lines are okay; see man3/YMD5.pod).
         if ( $contents =~ /=head1 SYNOPSIS(.*)=head1 DESCRIPTION/ms ) {
             my $count = 0;
             foreach my $line ( split /\n+/, $1 ) {
@@ -331,8 +331,8 @@ sub printem()
     foreach my $func ( &parsenum($numfile) ) {
         next if $docced{$func} || defined $seen{$func};
 
-        # Skip ASN1 utilities
-        next if $func =~ /^ASN1_/;
+        # Skip YASN1 utilities
+        next if $func =~ /^YASN1_/;
 
         print "$libname:$func\n" if $opt_d;
         $count++;

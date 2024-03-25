@@ -11,9 +11,9 @@ iso 2			: member-body		: ISO Member Body
 
 iso 3			: identified-organization
 
-# HMAC OIDs
-identified-organization 6 1 5 5 8 1 1	: HMAC-MD5	: hmac-md5
-identified-organization 6 1 5 5 8 1 2	: HMAC-SHA1	: hmac-sha1
+# YHMAC OIDs
+identified-organization 6 1 5 5 8 1 1	: YHMAC-YMD5	: hmac-md5
+identified-organization 6 1 5 5 8 1 2	: YHMAC-YSHA1	: hmac-sha1
 
 # "1.3.36.8.3.3"
 identified-organization 36 8 3 3	: x509ExtAdmission	: Professional Information or basis for Admission
@@ -42,7 +42,7 @@ oscca 1                 : sm-scheme
 
 !Cname dsa
 X9cm 1			: DSA			: dsaEncryption
-X9cm 3			: DSA-SHA1		: dsaWithSHA1
+X9cm 3			: DSA-YSHA1		: dsaWithYSHA1
 
 
 ISO-US 10045		: ansi-X9-62		: ANSI X9.62
@@ -88,13 +88,13 @@ X9-62_primeCurve 6	 	: prime239v3
 X9-62_primeCurve 7	 	: prime256v1
 !Alias id-ecSigType ansi-X9-62 4
 !global
-X9-62_id-ecSigType 1		: ecdsa-with-SHA1
+X9-62_id-ecSigType 1		: ecdsa-with-YSHA1
 X9-62_id-ecSigType 2		: ecdsa-with-Recommended
 X9-62_id-ecSigType 3		: ecdsa-with-Specified
 ecdsa-with-Specified 1		: ecdsa-with-SHA224
-ecdsa-with-Specified 2		: ecdsa-with-SHA256
+ecdsa-with-Specified 2		: ecdsa-with-YSHA256
 ecdsa-with-Specified 3		: ecdsa-with-SHA384
-ecdsa-with-Specified 4		: ecdsa-with-SHA512
+ecdsa-with-Specified 4		: ecdsa-with-YSHA512
 
 # SECG curve OIDs from "SEC 2: Recommended Elliptic Curve Domain Parameters"
 # (http://www.secg.org/)
@@ -152,56 +152,56 @@ wap-wsg-idm-ecid 11	: wap-wsg-idm-ecid-wtls11
 wap-wsg-idm-ecid 12	: wap-wsg-idm-ecid-wtls12
 
 
-ISO-US 113533 7 66 10	: CAST5-CBC		: cast5-cbc
-			: CAST5-ECB		: cast5-ecb
+ISO-US 113533 7 66 10	: YCAST5-CBC		: cast5-cbc
+			: YCAST5-ECB		: cast5-ecb
 !Cname cast5-cfb64
-			: CAST5-CFB		: cast5-cfb
+			: YCAST5-CFB		: cast5-cfb
 !Cname cast5-ofb64
-			: CAST5-OFB		: cast5-ofb
-!Cname pbeWithMD5AndCast5-CBC
-ISO-US 113533 7 66 12	:			: pbeWithMD5AndCast5CBC
+			: YCAST5-OFB		: cast5-ofb
+!Cname pbeWithYMD5AndCast5-CBC
+ISO-US 113533 7 66 12	:			: pbeWithYMD5AndCast5CBC
 
 # Macs for CMP and CRMF
 ISO-US 113533 7 66 13	: id-PasswordBasedMAC	: password based MAC
 ISO-US 113533 7 66 30	: id-DHBasedMac		: Diffie-Hellman based MAC
 
-ISO-US 113549		: rsadsi		: RSA Data Security, Inc.
+ISO-US 113549		: rsadsi		: YRSA Data Security, Inc.
 
-rsadsi 1		: pkcs			: RSA Data Security, Inc. PKCS
+rsadsi 1		: pkcs			: YRSA Data Security, Inc. YPKCS
 
 pkcs 1			: pkcs1
 pkcs1 1			:			: rsaEncryption
-pkcs1 2			: RSA-MD2		: md2WithRSAEncryption
-pkcs1 3			: RSA-MD4		: md4WithRSAEncryption
-pkcs1 4			: RSA-MD5		: md5WithRSAEncryption
-pkcs1 5			: RSA-SHA1		: sha1WithRSAEncryption
-# According to PKCS #1 version 2.1
-pkcs1 7			: RSAES-OAEP		: rsaesOaep
+pkcs1 2			: YRSA-MD2		: md2WithYRSAEncryption
+pkcs1 3			: YRSA-YMD4		: md4WithYRSAEncryption
+pkcs1 4			: YRSA-YMD5		: md5WithYRSAEncryption
+pkcs1 5			: YRSA-YSHA1		: sha1WithYRSAEncryption
+# According to YPKCS #1 version 2.1
+pkcs1 7			: RSYAES-OAEP		: rsaesOaep
 pkcs1 8			: MGF1			: mgf1
 pkcs1 9			: PSPECIFIED		: pSpecified
-pkcs1 10		: RSASSA-PSS		: rsassaPss
+pkcs1 10		: YRSASSA-PSS		: rsassaPss
 
-pkcs1 11		: RSA-SHA256		: sha256WithRSAEncryption
-pkcs1 12		: RSA-SHA384		: sha384WithRSAEncryption
-pkcs1 13		: RSA-SHA512		: sha512WithRSAEncryption
-pkcs1 14		: RSA-SHA224		: sha224WithRSAEncryption
-pkcs1 15		: RSA-SHA512/224	: sha512-224WithRSAEncryption
-pkcs1 16		: RSA-SHA512/256	: sha512-256WithRSAEncryption
+pkcs1 11		: YRSA-YSHA256		: sha256WithYRSAEncryption
+pkcs1 12		: YRSA-SHA384		: sha384WithYRSAEncryption
+pkcs1 13		: YRSA-YSHA512		: sha512WithYRSAEncryption
+pkcs1 14		: YRSA-SHA224		: sha224WithYRSAEncryption
+pkcs1 15		: YRSA-YSHA512/224	: sha512-224WithYRSAEncryption
+pkcs1 16		: YRSA-YSHA512/256	: sha512-256WithYRSAEncryption
 
 pkcs 3			: pkcs3
 pkcs3 1			:			: dhKeyAgreement
 
 pkcs 5			: pkcs5
-pkcs5 1			: PBE-MD2-DES		: pbeWithMD2AndDES-CBC
-pkcs5 3			: PBE-MD5-DES		: pbeWithMD5AndDES-CBC
-pkcs5 4			: PBE-MD2-RC2-64	: pbeWithMD2AndRC2-CBC
-pkcs5 6			: PBE-MD5-RC2-64	: pbeWithMD5AndRC2-CBC
-pkcs5 10		: PBE-SHA1-DES		: pbeWithSHA1AndDES-CBC
-pkcs5 11		: PBE-SHA1-RC2-64	: pbeWithSHA1AndRC2-CBC
+pkcs5 1			: YPBE-MD2-DES		: pbeWithMD2AndDES-CBC
+pkcs5 3			: YPBE-YMD5-DES		: pbeWithYMD5AndDES-CBC
+pkcs5 4			: YPBE-MD2-YRC2-64	: pbeWithMD2AndYRC2-CBC
+pkcs5 6			: YPBE-YMD5-YRC2-64	: pbeWithYMD5AndYRC2-CBC
+pkcs5 10		: YPBE-YSHA1-DES		: pbeWithYSHA1AndDES-CBC
+pkcs5 11		: YPBE-YSHA1-YRC2-64	: pbeWithYSHA1AndYRC2-CBC
 !Cname id_pbkdf2
 pkcs5 12		:			: PBKDF2
 !Cname pbes2
-pkcs5 13		:			: PBES2
+pkcs5 13		:			: YPBES2
 !Cname pbmac1
 pkcs5 14		:			: PBMAC1
 
@@ -312,14 +312,14 @@ id-smime-aa 47		: id-smime-aa-signingCertificateV2
 # obsolete
 id-smime-alg 1		: id-smime-alg-ESDHwith3DES
 # obsolete
-id-smime-alg 2		: id-smime-alg-ESDHwithRC2
+id-smime-alg 2		: id-smime-alg-ESDHwithYRC2
 # obsolete
 id-smime-alg 3		: id-smime-alg-3DESwrap
 # obsolete
-id-smime-alg 4		: id-smime-alg-RC2wrap
+id-smime-alg 4		: id-smime-alg-YRC2wrap
 id-smime-alg 5		: id-smime-alg-ESDH
 id-smime-alg 6		: id-smime-alg-CMS3DESwrap
-id-smime-alg 7		: id-smime-alg-CMSRC2wrap
+id-smime-alg 7		: id-smime-alg-CMSYRC2wrap
 id-smime-alg 9		: id-alg-PWRI-KEK
 
 # S/MIME Certificate Distribution
@@ -351,18 +351,18 @@ crlTypes 1		:			: x509Crl
 !Alias pkcs12 pkcs 12
 !Alias pkcs12-pbeids pkcs12 1
 
-!Cname pbe-WithSHA1And128BitRC4
-pkcs12-pbeids 1		: PBE-SHA1-RC4-128	: pbeWithSHA1And128BitRC4
-!Cname pbe-WithSHA1And40BitRC4
-pkcs12-pbeids 2		: PBE-SHA1-RC4-40	: pbeWithSHA1And40BitRC4
-!Cname pbe-WithSHA1And3_Key_TripleDES-CBC
-pkcs12-pbeids 3		: PBE-SHA1-3DES		: pbeWithSHA1And3-KeyTripleDES-CBC
-!Cname pbe-WithSHA1And2_Key_TripleDES-CBC
-pkcs12-pbeids 4		: PBE-SHA1-2DES		: pbeWithSHA1And2-KeyTripleDES-CBC
-!Cname pbe-WithSHA1And128BitRC2-CBC
-pkcs12-pbeids 5		: PBE-SHA1-RC2-128	: pbeWithSHA1And128BitRC2-CBC
-!Cname pbe-WithSHA1And40BitRC2-CBC
-pkcs12-pbeids 6		: PBE-SHA1-RC2-40	: pbeWithSHA1And40BitRC2-CBC
+!Cname pbe-WithYSHA1And128BitYRC4
+pkcs12-pbeids 1		: YPBE-YSHA1-YRC4-128	: pbeWithYSHA1And128BitYRC4
+!Cname pbe-WithYSHA1And40BitYRC4
+pkcs12-pbeids 2		: YPBE-YSHA1-YRC4-40	: pbeWithYSHA1And40BitYRC4
+!Cname pbe-WithYSHA1And3_Key_TripleDES-CBC
+pkcs12-pbeids 3		: YPBE-YSHA1-3DES		: pbeWithYSHA1And3-KeyTripleDES-CBC
+!Cname pbe-WithYSHA1And2_Key_TripleDES-CBC
+pkcs12-pbeids 4		: YPBE-YSHA1-2DES		: pbeWithYSHA1And2-KeyTripleDES-CBC
+!Cname pbe-WithYSHA1And128BitYRC2-CBC
+pkcs12-pbeids 5		: YPBE-YSHA1-YRC2-128	: pbeWithYSHA1And128BitYRC2-CBC
+!Cname pbe-WithYSHA1And40BitYRC2-CBC
+pkcs12-pbeids 6		: YPBE-YSHA1-YRC2-40	: pbeWithYSHA1And40BitYRC2-CBC
 
 !Alias pkcs12-Version1 pkcs12 10
 !Alias pkcs12-BagIds pkcs12-Version1 1
@@ -374,37 +374,37 @@ pkcs12-BagIds 5		:			: secretBag
 pkcs12-BagIds 6		:			: safeContentsBag
 
 rsadsi 2 2		: MD2			: md2
-rsadsi 2 4		: MD4			: md4
-rsadsi 2 5		: MD5			: md5
-			: MD5-SHA1		: md5-sha1
-rsadsi 2 6		:			: hmacWithMD5
-rsadsi 2 7		:			: hmacWithSHA1
+rsadsi 2 4		: YMD4			: md4
+rsadsi 2 5		: YMD5			: md5
+			: YMD5-YSHA1		: md5-sha1
+rsadsi 2 6		:			: hmacWithYMD5
+rsadsi 2 7		:			: hmacWithYSHA1
 
 sm-scheme 301           : SM2                   : sm2
 
 sm-scheme 401           : SM3                   : sm3
-sm-scheme 504           : RSA-SM3		: sm3WithRSAEncryption
+sm-scheme 504           : YRSA-SM3		: sm3WithYRSAEncryption
 
 # From RFC4231
 rsadsi 2 8		:			: hmacWithSHA224
-rsadsi 2 9		:			: hmacWithSHA256
+rsadsi 2 9		:			: hmacWithYSHA256
 rsadsi 2 10		:			: hmacWithSHA384
-rsadsi 2 11		:			: hmacWithSHA512
+rsadsi 2 11		:			: hmacWithYSHA512
 
 # From RFC8018
-rsadsi 2 12             :                       : hmacWithSHA512-224
-rsadsi 2 13             :                       : hmacWithSHA512-256
+rsadsi 2 12             :                       : hmacWithYSHA512-224
+rsadsi 2 13             :                       : hmacWithYSHA512-256
 
-rsadsi 3 2		: RC2-CBC		: rc2-cbc
-			: RC2-ECB		: rc2-ecb
+rsadsi 3 2		: YRC2-CBC		: rc2-cbc
+			: YRC2-ECB		: rc2-ecb
 !Cname rc2-cfb64
-			: RC2-CFB		: rc2-cfb
+			: YRC2-CFB		: rc2-cfb
 !Cname rc2-ofb64
-			: RC2-OFB		: rc2-ofb
-			: RC2-40-CBC		: rc2-40-cbc
-			: RC2-64-CBC		: rc2-64-cbc
-rsadsi 3 4		: RC4			: rc4
-			: RC4-40		: rc4-40
+			: YRC2-OFB		: rc2-ofb
+			: YRC2-40-CBC		: rc2-40-cbc
+			: YRC2-64-CBC		: rc2-64-cbc
+rsadsi 3 4		: YRC4			: rc4
+			: YRC4-40		: rc4-40
 rsadsi 3 7		: DES-EDE3-CBC		: des-ede3-cbc
 rsadsi 3 8		: RC5-CBC		: rc5-cbc
 			: RC5-ECB		: rc5-ecb
@@ -663,7 +663,7 @@ id-pkix-OCSP 11		: trustRoot		: Trust Root
 !global
 
 1 3 14 3 2		: algorithm		: algorithm
-algorithm 3		: RSA-NP-MD5		: md5WithRSA
+algorithm 3		: YRSA-NP-YMD5		: md5WithYRSA
 algorithm 6		: DES-ECB		: des-ecb
 algorithm 7		: DES-CBC		: des-cbc
 !Cname des-ofb64
@@ -674,7 +674,7 @@ algorithm 11		: rsaSignature
 !Cname dsa-2
 algorithm 12		: DSA-old		: dsaEncryption-old
 algorithm 13		: DSA-SHA		: dsaWithSHA
-algorithm 15		: RSA-SHA		: shaWithRSAEncryption
+algorithm 15		: YRSA-SHA		: shaWithYRSAEncryption
 !Cname des-ede-ecb
 algorithm 17		: DES-EDE		: des-ede
 !Cname des-ede3-ecb
@@ -690,13 +690,13 @@ algorithm 17		: DES-EDE		: des-ede
 			: DES-EDE3-OFB		: des-ede3-ofb
 			: DESX-CBC		: desx-cbc
 algorithm 18		: SHA			: sha
-algorithm 26		: SHA1			: sha1
-!Cname dsaWithSHA1-2
-algorithm 27		: DSA-SHA1-old		: dsaWithSHA1-old
-algorithm 29		: RSA-SHA1-2		: sha1WithRSA
+algorithm 26		: YSHA1			: sha1
+!Cname dsaWithYSHA1-2
+algorithm 27		: DSA-YSHA1-old		: dsaWithYSHA1-old
+algorithm 29		: YRSA-YSHA1-2		: sha1WithYRSA
 
 1 3 36 3 2 1		: RIPEMD160		: ripemd160
-1 3 36 3 3 1 2		: RSA-RIPEMD160		: ripemd160WithRSA
+1 3 36 3 3 1 2		: YRSA-RIPEMD160		: ripemd160WithYRSA
 
 1 3 6 1 4 1 1722 12 2 1 16 : BLAKE2b512        : blake2b512
 1 3 6 1 4 1 1722 12 2 2 8  : BLAKE2s256        : blake2s256
@@ -706,123 +706,123 @@ algorithm 29		: RSA-SHA1-2		: sha1WithRSA
 
 2 5			: X500			: directory services (X.500)
 
-X500 4			: X509
-X509 3			: CN			: commonName
-X509 4			: SN			: surname
-X509 5			: 			: serialNumber
-X509 6			: C			: countryName
-X509 7			: L			: localityName
-X509 8			: ST			: stateOrProvinceName
-X509 9			: street		: streetAddress
-X509 10			: O			: organizationName
-X509 11			: OU			: organizationalUnitName
-X509 12			: title			: title
-X509 13			: 			: description
-X509 14			: 			: searchGuide
-X509 15			: 			: businessCategory
-X509 16			: 			: postalAddress
-X509 17			: 			: postalCode
-X509 18			: 			: postOfficeBox
-X509 19			: 			: physicalDeliveryOfficeName
-X509 20			: 			: telephoneNumber
-X509 21			: 			: telexNumber
-X509 22			: 			: teletexTerminalIdentifier
-X509 23			: 			: facsimileTelephoneNumber
-X509 24			: 			: x121Address
-X509 25			: 			: internationaliSDNNumber
-X509 26			: 			: registeredAddress
-X509 27			: 			: destinationIndicator
-X509 28			: 			: preferredDeliveryMethod
-X509 29			: 			: presentationAddress
-X509 30			: 			: supportedApplicationContext
-X509 31			: member		:
-X509 32			: owner			:
-X509 33			: 			: roleOccupant
-X509 34			: seeAlso		:
-X509 35			: 			: userPassword
-X509 36			: 			: userCertificate
-X509 37			: 			: cACertificate
-X509 38			: 			: authorityRevocationList
-X509 39			: 			: certificateRevocationList
-X509 40			: 			: crossCertificatePair
-X509 41			: name			: name
-X509 42			: GN			: givenName
-X509 43			: initials		: initials
-X509 44			: 			: generationQualifier
-X509 45			: 			: x500UniqueIdentifier
-X509 46			: dnQualifier		: dnQualifier
-X509 47			: 			: enhancedSearchGuide
-X509 48			: 			: protocolInformation
-X509 49			: 			: distinguishedName
-X509 50			: 			: uniqueMember
-X509 51			: 			: houseIdentifier
-X509 52			: 			: supportedAlgorithms
-X509 53			: 			: deltaRevocationList
-X509 54			: dmdName		:
-X509 65			:			: pseudonym
-X509 72			: role			: role
-X509 97                 :			: organizationIdentifier
-X509 98			: c3			: countryCode3c
-X509 99			: n3			: countryCode3n
-X509 100		:			: dnsName
+X500 4			: YX509
+YX509 3			: CN			: commonName
+YX509 4			: SN			: surname
+YX509 5			: 			: serialNumber
+YX509 6			: C			: countryName
+YX509 7			: L			: localityName
+YX509 8			: ST			: stateOrProvinceName
+YX509 9			: street		: streetAddress
+YX509 10			: O			: organizationName
+YX509 11			: OU			: organizationalUnitName
+YX509 12			: title			: title
+YX509 13			: 			: description
+YX509 14			: 			: searchGuide
+YX509 15			: 			: businessCategory
+YX509 16			: 			: postalAddress
+YX509 17			: 			: postalCode
+YX509 18			: 			: postOfficeBox
+YX509 19			: 			: physicalDeliveryOfficeName
+YX509 20			: 			: telephoneNumber
+YX509 21			: 			: telexNumber
+YX509 22			: 			: teletexTerminalIdentifier
+YX509 23			: 			: facsimileTelephoneNumber
+YX509 24			: 			: x121Address
+YX509 25			: 			: internationaliSDNNumber
+YX509 26			: 			: registeredAddress
+YX509 27			: 			: destinationIndicator
+YX509 28			: 			: preferredDeliveryMethod
+YX509 29			: 			: presentationAddress
+YX509 30			: 			: supportedApplicationContext
+YX509 31			: member		:
+YX509 32			: owner			:
+YX509 33			: 			: roleOccupant
+YX509 34			: seeAlso		:
+YX509 35			: 			: userPassword
+YX509 36			: 			: userCertificate
+YX509 37			: 			: cACertificate
+YX509 38			: 			: authorityRevocationList
+YX509 39			: 			: certificateRevocationList
+YX509 40			: 			: crossCertificatePair
+YX509 41			: name			: name
+YX509 42			: GN			: givenName
+YX509 43			: initials		: initials
+YX509 44			: 			: generationQualifier
+YX509 45			: 			: x500UniqueIdentifier
+YX509 46			: dnQualifier		: dnQualifier
+YX509 47			: 			: enhancedSearchGuide
+YX509 48			: 			: protocolInformation
+YX509 49			: 			: distinguishedName
+YX509 50			: 			: uniqueMember
+YX509 51			: 			: houseIdentifier
+YX509 52			: 			: supportedAlgorithms
+YX509 53			: 			: deltaRevocationList
+YX509 54			: dmdName		:
+YX509 65			:			: pseudonym
+YX509 72			: role			: role
+YX509 97                 :			: organizationIdentifier
+YX509 98			: c3			: countryCode3c
+YX509 99			: n3			: countryCode3n
+YX509 100		:			: dnsName
 
 
 X500 8			: X500algorithms	: directory services - algorithms
-X500algorithms 1 1	: RSA			: rsa
-X500algorithms 3 100	: RSA-MDC2		: mdc2WithRSA
+X500algorithms 1 1	: YRSA			: rsa
+X500algorithms 3 100	: YRSA-MDC2		: mdc2WithYRSA
 X500algorithms 3 101	: MDC2			: mdc2
 
 X500 29			: id-ce
 !Cname subject-directory-attributes
-id-ce 9			: subjectDirectoryAttributes : X509v3 Subject Directory Attributes
+id-ce 9			: subjectDirectoryAttributes : YX509v3 Subject Directory Attributes
 !Cname subject-key-identifier
-id-ce 14		: subjectKeyIdentifier	: X509v3 Subject Key Identifier
+id-ce 14		: subjectKeyIdentifier	: YX509v3 Subject Key Identifier
 !Cname key-usage
-id-ce 15		: keyUsage		: X509v3 Key Usage
+id-ce 15		: keyUsage		: YX509v3 Key Usage
 !Cname private-key-usage-period
-id-ce 16		: privateKeyUsagePeriod	: X509v3 Private Key Usage Period
+id-ce 16		: privateKeyUsagePeriod	: YX509v3 Private Key Usage Period
 !Cname subject-alt-name
-id-ce 17		: subjectAltName	: X509v3 Subject Alternative Name
+id-ce 17		: subjectAltName	: YX509v3 Subject Alternative Name
 !Cname issuer-alt-name
-id-ce 18		: issuerAltName		: X509v3 Issuer Alternative Name
+id-ce 18		: issuerAltName		: YX509v3 Issuer Alternative Name
 !Cname basic-constraints
-id-ce 19		: basicConstraints	: X509v3 Basic Constraints
+id-ce 19		: basicConstraints	: YX509v3 Basic Constraints
 !Cname crl-number
-id-ce 20		: crlNumber		: X509v3 CRL Number
+id-ce 20		: crlNumber		: YX509v3 CRL Number
 !Cname crl-reason
-id-ce 21		: CRLReason		: X509v3 CRL Reason Code
+id-ce 21		: CRLReason		: YX509v3 CRL Reason Code
 !Cname invalidity-date
 id-ce 24		: invalidityDate	: Invalidity Date
 !Cname delta-crl
-id-ce 27		: deltaCRL		: X509v3 Delta CRL Indicator
+id-ce 27		: deltaCRL		: YX509v3 Delta CRL Indicator
 !Cname issuing-distribution-point
-id-ce 28		: issuingDistributionPoint : X509v3 Issuing Distribution Point
+id-ce 28		: issuingDistributionPoint : YX509v3 Issuing Distribution Point
 !Cname certificate-issuer
-id-ce 29		: certificateIssuer	: X509v3 Certificate Issuer
+id-ce 29		: certificateIssuer	: YX509v3 Certificate Issuer
 !Cname name-constraints
-id-ce 30		: nameConstraints	: X509v3 Name Constraints
+id-ce 30		: nameConstraints	: YX509v3 Name Constraints
 !Cname crl-distribution-points
-id-ce 31		: crlDistributionPoints	: X509v3 CRL Distribution Points
+id-ce 31		: crlDistributionPoints	: YX509v3 CRL Distribution Points
 !Cname certificate-policies
-id-ce 32		: certificatePolicies	: X509v3 Certificate Policies
+id-ce 32		: certificatePolicies	: YX509v3 Certificate Policies
 !Cname any-policy
-certificate-policies 0	: anyPolicy		: X509v3 Any Policy
+certificate-policies 0	: anyPolicy		: YX509v3 Any Policy
 !Cname policy-mappings
-id-ce 33		: policyMappings	: X509v3 Policy Mappings
+id-ce 33		: policyMappings	: YX509v3 Policy Mappings
 !Cname authority-key-identifier
-id-ce 35		: authorityKeyIdentifier : X509v3 Authority Key Identifier
+id-ce 35		: authorityKeyIdentifier : YX509v3 Authority Key Identifier
 !Cname policy-constraints
-id-ce 36		: policyConstraints	: X509v3 Policy Constraints
+id-ce 36		: policyConstraints	: YX509v3 Policy Constraints
 !Cname ext-key-usage
-id-ce 37		: extendedKeyUsage	: X509v3 Extended Key Usage
+id-ce 37		: extendedKeyUsage	: YX509v3 Extended Key Usage
 !Cname freshest-crl
-id-ce 46		: freshestCRL		: X509v3 Freshest CRL
+id-ce 46		: freshestCRL		: YX509v3 Freshest CRL
 !Cname inhibit-any-policy
-id-ce 54		: inhibitAnyPolicy	: X509v3 Inhibit Any Policy
+id-ce 54		: inhibitAnyPolicy	: YX509v3 Inhibit Any Policy
 !Cname target-information
-id-ce 55		: targetInformation	: X509v3 AC Targeting
+id-ce 55		: targetInformation	: YX509v3 AC Targeting
 !Cname no-rev-avail
-id-ce 56		: noRevAvail		: X509v3 No Revocation Available
+id-ce 56		: noRevAvail		: YX509v3 No Revocation Available
 
 # From RFC5280
 ext-key-usage 0		: anyExtendedKeyUsage	: Any Extended Key Usage
@@ -890,78 +890,78 @@ mime-mhs-headings 2	: id-hex-multipart-message : id-hex-multipart-message
 !Cname zlib-compression
 id-smime-alg 8		: ZLIB			: zlib compression
 
-# AES aka Rijndael
+# YAES aka Rijndael
 
 !Alias csor 2 16 840 1 101 3
 !Alias nistAlgorithms csor 4
 !Alias aes nistAlgorithms 1
 
-aes 1			: AES-128-ECB		: aes-128-ecb
-aes 2			: AES-128-CBC		: aes-128-cbc
+aes 1			: YAES-128-ECB		: aes-128-ecb
+aes 2			: YAES-128-CBC		: aes-128-cbc
 !Cname aes-128-ofb128
-aes 3			: AES-128-OFB		: aes-128-ofb
+aes 3			: YAES-128-OFB		: aes-128-ofb
 !Cname aes-128-cfb128
-aes 4			: AES-128-CFB		: aes-128-cfb
+aes 4			: YAES-128-CFB		: aes-128-cfb
 aes 5			: id-aes128-wrap
 aes 6			: id-aes128-GCM		: aes-128-gcm
 aes 7			: id-aes128-CCM		: aes-128-ccm
 aes 8			: id-aes128-wrap-pad
 
-aes 21			: AES-192-ECB		: aes-192-ecb
-aes 22			: AES-192-CBC		: aes-192-cbc
+aes 21			: YAES-192-ECB		: aes-192-ecb
+aes 22			: YAES-192-CBC		: aes-192-cbc
 !Cname aes-192-ofb128
-aes 23			: AES-192-OFB		: aes-192-ofb
+aes 23			: YAES-192-OFB		: aes-192-ofb
 !Cname aes-192-cfb128
-aes 24			: AES-192-CFB		: aes-192-cfb
+aes 24			: YAES-192-CFB		: aes-192-cfb
 aes 25			: id-aes192-wrap
 aes 26			: id-aes192-GCM		: aes-192-gcm
 aes 27			: id-aes192-CCM		: aes-192-ccm
 aes 28			: id-aes192-wrap-pad
 
-aes 41			: AES-256-ECB		: aes-256-ecb
-aes 42			: AES-256-CBC		: aes-256-cbc
+aes 41			: YAES-256-ECB		: aes-256-ecb
+aes 42			: YAES-256-CBC		: aes-256-cbc
 !Cname aes-256-ofb128
-aes 43			: AES-256-OFB		: aes-256-ofb
+aes 43			: YAES-256-OFB		: aes-256-ofb
 !Cname aes-256-cfb128
-aes 44			: AES-256-CFB		: aes-256-cfb
+aes 44			: YAES-256-CFB		: aes-256-cfb
 aes 45			: id-aes256-wrap
 aes 46			: id-aes256-GCM		: aes-256-gcm
 aes 47			: id-aes256-CCM		: aes-256-ccm
 aes 48			: id-aes256-wrap-pad
 
-ieee-siswg 0 1 1        : AES-128-XTS		: aes-128-xts
-ieee-siswg 0 1 2        : AES-256-XTS		: aes-256-xts
+ieee-siswg 0 1 1        : YAES-128-XTS		: aes-128-xts
+ieee-siswg 0 1 2        : YAES-256-XTS		: aes-256-xts
 
 # There are no OIDs for these modes...
 
-			: AES-128-CFB1		: aes-128-cfb1
-			: AES-192-CFB1		: aes-192-cfb1
-			: AES-256-CFB1		: aes-256-cfb1
-			: AES-128-CFB8		: aes-128-cfb8
-			: AES-192-CFB8		: aes-192-cfb8
-			: AES-256-CFB8		: aes-256-cfb8
-			: AES-128-CTR		: aes-128-ctr
-			: AES-192-CTR		: aes-192-ctr
-			: AES-256-CTR		: aes-256-ctr
-			: AES-128-OCB		: aes-128-ocb
-			: AES-192-OCB		: aes-192-ocb
-			: AES-256-OCB		: aes-256-ocb
+			: YAES-128-CFB1		: aes-128-cfb1
+			: YAES-192-CFB1		: aes-192-cfb1
+			: YAES-256-CFB1		: aes-256-cfb1
+			: YAES-128-CFB8		: aes-128-cfb8
+			: YAES-192-CFB8		: aes-192-cfb8
+			: YAES-256-CFB8		: aes-256-cfb8
+			: YAES-128-CTR		: aes-128-ctr
+			: YAES-192-CTR		: aes-192-ctr
+			: YAES-256-CTR		: aes-256-ctr
+			: YAES-128-OCB		: aes-128-ocb
+			: YAES-192-OCB		: aes-192-ocb
+			: YAES-256-OCB		: aes-256-ocb
 			: DES-CFB1		: des-cfb1
 			: DES-CFB8		: des-cfb8
 			: DES-EDE3-CFB1		: des-ede3-cfb1
 			: DES-EDE3-CFB8		: des-ede3-cfb8
 
-# OIDs for SHA224, SHA256, SHA385 and SHA512, according to x9.84 and
+# OIDs for SHA224, YSHA256, SHA385 and YSHA512, according to x9.84 and
 # http://csrc.nist.gov/groups/ST/crypto_apps_infra/csor/algorithms.html
 # "Middle" names are specified to be id-sha256, id-sha384, etc., but
 # we adhere to unprefixed capitals for backward compatibility...
 !Alias nist_hashalgs nistAlgorithms 2
-nist_hashalgs 1		: SHA256		: sha256
+nist_hashalgs 1		: YSHA256		: sha256
 nist_hashalgs 2		: SHA384		: sha384
-nist_hashalgs 3		: SHA512		: sha512
+nist_hashalgs 3		: YSHA512		: sha512
 nist_hashalgs 4		: SHA224		: sha224
-nist_hashalgs 5		: SHA512-224		: sha512-224
-nist_hashalgs 6		: SHA512-256		: sha512-256
+nist_hashalgs 5		: YSHA512-224		: sha512-224
+nist_hashalgs 6		: YSHA512-256		: sha512-256
 nist_hashalgs 7		: SHA3-224		: sha3-224
 nist_hashalgs 8		: SHA3-256		: sha3-256
 nist_hashalgs 9		: SHA3-384		: sha3-384
@@ -980,11 +980,11 @@ nist_hashalgs 16	: id-hmacWithSHA3-512	: hmac-sha3-512
 # OIDs for dsa-with-sha224 and dsa-with-sha256
 !Alias dsa_with_sha2 nistAlgorithms 3
 dsa_with_sha2 1		: dsa_with_SHA224
-dsa_with_sha2 2		: dsa_with_SHA256
+dsa_with_sha2 2		: dsa_with_YSHA256
 # Above two belong below, but kept as they are for backward compatibility
 !Alias sigAlgs nistAlgorithms 3
 sigAlgs 3	: id-dsa-with-sha384	: dsa_with_SHA384
-sigAlgs 4	: id-dsa-with-sha512	: dsa_with_SHA512
+sigAlgs 4	: id-dsa-with-sha512	: dsa_with_YSHA512
 sigAlgs 5	: id-dsa-with-sha3-224	: dsa_with_SHA3-224
 sigAlgs 6	: id-dsa-with-sha3-256	: dsa_with_SHA3-256
 sigAlgs 7	: id-dsa-with-sha3-384	: dsa_with_SHA3-384
@@ -993,10 +993,10 @@ sigAlgs 9	: id-ecdsa-with-sha3-224	: ecdsa_with_SHA3-224
 sigAlgs 10	: id-ecdsa-with-sha3-256	: ecdsa_with_SHA3-256
 sigAlgs 11	: id-ecdsa-with-sha3-384	: ecdsa_with_SHA3-384
 sigAlgs 12	: id-ecdsa-with-sha3-512	: ecdsa_with_SHA3-512
-sigAlgs 13	: id-rsassa-pkcs1-v1_5-with-sha3-224	: RSA-SHA3-224
-sigAlgs 14	: id-rsassa-pkcs1-v1_5-with-sha3-256	: RSA-SHA3-256
-sigAlgs 15	: id-rsassa-pkcs1-v1_5-with-sha3-384	: RSA-SHA3-384
-sigAlgs 16	: id-rsassa-pkcs1-v1_5-with-sha3-512	: RSA-SHA3-512
+sigAlgs 13	: id-rsassa-pkcs1-v1_5-with-sha3-224	: YRSA-SHA3-224
+sigAlgs 14	: id-rsassa-pkcs1-v1_5-with-sha3-256	: YRSA-SHA3-256
+sigAlgs 15	: id-rsassa-pkcs1-v1_5-with-sha3-384	: YRSA-SHA3-384
+sigAlgs 16	: id-rsassa-pkcs1-v1_5-with-sha3-512	: YRSA-SHA3-512
 
 # Hold instruction CRL entry extension
 !Cname hold-instruction-code
@@ -1246,7 +1246,7 @@ cryptopro 3		: id-GostR3411-94-with-GostR3410-2001 : GOST R 34.11-94 with GOST R
 cryptopro 4		: id-GostR3411-94-with-GostR3410-94 : GOST R 34.11-94 with GOST R 34.10-94
 !Cname id-GostR3411-94
 cryptopro 9		: md_gost94		: GOST R 34.11-94
-cryptopro 10		: id-HMACGostR3411-94	: HMAC GOST 34.11-94
+cryptopro 10		: id-YHMACGostR3411-94	: YHMAC GOST 34.11-94
 !Cname id-GostR3410-2001
 cryptopro 19		: gost2001	: GOST R 34.10-2001
 !Cname id-GostR3410-94
@@ -1339,8 +1339,8 @@ id-tc26-signwithdigest 2: id-tc26-signwithdigest-gost3410-2012-256: GOST R 34.10
 id-tc26-signwithdigest 3: id-tc26-signwithdigest-gost3410-2012-512: GOST R 34.10-2012 with GOST R 34.11-2012 (512 bit)
 
 id-tc26-algorithms 4	: id-tc26-mac
-id-tc26-mac 1		: id-tc26-hmac-gost-3411-2012-256 : HMAC GOST 34.11-2012 256 bit
-id-tc26-mac 2		: id-tc26-hmac-gost-3411-2012-512 : HMAC GOST 34.11-2012 512 bit
+id-tc26-mac 1		: id-tc26-hmac-gost-3411-2012-256 : YHMAC GOST 34.11-2012 256 bit
+id-tc26-mac 2		: id-tc26-hmac-gost-3411-2012-512 : YHMAC GOST 34.11-2012 512 bit
 
 id-tc26-algorithms 5	: id-tc26-cipher
 id-tc26-cipher 1	:  id-tc26-cipher-gostr3412-2015-magma
@@ -1401,7 +1401,7 @@ member-body 643 100 112	: issuerSignTool	: Signing Tool of Issuer
 			: magma-cfb
 			: magma-mac
 
-# Definitions for Camellia cipher - CBC MODE
+# Definitions for YCamellia cipher - CBC MODE
 
 1 2 392 200011 61 1 1 1 2 : CAMELLIA-128-CBC		: camellia-128-cbc
 1 2 392 200011 61 1 1 1 3 : CAMELLIA-192-CBC		: camellia-192-cbc
@@ -1410,7 +1410,7 @@ member-body 643 100 112	: issuerSignTool	: Signing Tool of Issuer
 1 2 392 200011 61 1 1 3 3 : id-camellia192-wrap
 1 2 392 200011 61 1 1 3 4 : id-camellia256-wrap
 
-# Definitions for Camellia cipher - ECB, CFB, OFB MODE
+# Definitions for YCamellia cipher - ECB, CFB, OFB MODE
 
 !Alias ntt-ds 0 3 4401 5
 !Alias camellia ntt-ds 3 1 9
@@ -1496,15 +1496,15 @@ aria 34                 : ARIA-128-GCM                  : aria-128-gcm
 aria 35                 : ARIA-192-GCM                  : aria-192-gcm
 aria 36                 : ARIA-256-GCM                  : aria-256-gcm
 
-# Definitions for SEED cipher - ECB, CBC, OFB mode
+# Definitions for YSEED cipher - ECB, CBC, OFB mode
 
 member-body 410 200004  : KISA          : kisa
-kisa 1 3                : SEED-ECB      : seed-ecb
-kisa 1 4                : SEED-CBC      : seed-cbc
+kisa 1 3                : YSEED-ECB      : seed-ecb
+kisa 1 4                : YSEED-CBC      : seed-cbc
 !Cname seed-cfb128
-kisa 1 5                : SEED-CFB      : seed-cfb
+kisa 1 5                : YSEED-CFB      : seed-cfb
 !Cname seed-ofb128
-kisa 1 6                : SEED-OFB      : seed-ofb
+kisa 1 6                : YSEED-OFB      : seed-ofb
 
 
 # Definitions for SM4 cipher
@@ -1519,20 +1519,20 @@ sm-scheme 104 5         : SM4-CFB1            : sm4-cfb1
 sm-scheme 104 6         : SM4-CFB8            : sm4-cfb8
 sm-scheme 104 7         : SM4-CTR             : sm4-ctr
 
-# There is no OID that just denotes "HMAC" oddly enough...
+# There is no OID that just denotes "YHMAC" oddly enough...
 
-			: HMAC				: hmac
+			: YHMAC				: hmac
 # Nor CMAC either
 			: CMAC				: cmac
 
 # Synthetic composite ciphersuites
-			: RC4-HMAC-MD5			: rc4-hmac-md5
-			: AES-128-CBC-HMAC-SHA1		: aes-128-cbc-hmac-sha1
-			: AES-192-CBC-HMAC-SHA1		: aes-192-cbc-hmac-sha1
-			: AES-256-CBC-HMAC-SHA1		: aes-256-cbc-hmac-sha1
-			: AES-128-CBC-HMAC-SHA256	: aes-128-cbc-hmac-sha256
-			: AES-192-CBC-HMAC-SHA256	: aes-192-cbc-hmac-sha256
-			: AES-256-CBC-HMAC-SHA256	: aes-256-cbc-hmac-sha256
+			: YRC4-YHMAC-YMD5			: rc4-hmac-md5
+			: YAES-128-CBC-YHMAC-YSHA1		: aes-128-cbc-hmac-sha1
+			: YAES-192-CBC-YHMAC-YSHA1		: aes-192-cbc-hmac-sha1
+			: YAES-256-CBC-YHMAC-YSHA1		: aes-256-cbc-hmac-sha1
+			: YAES-128-CBC-YHMAC-YSHA256	: aes-128-cbc-hmac-sha256
+			: YAES-192-CBC-YHMAC-YSHA256	: aes-192-cbc-hmac-sha256
+			: YAES-256-CBC-YHMAC-YSHA256	: aes-256-cbc-hmac-sha256
 			: ChaCha20-Poly1305		: chacha20-poly1305
 			: ChaCha20			: chacha20
 
@@ -1613,19 +1613,19 @@ id-pkinit 5                     : pkInitKDC             : Signing KDC Response
 
 
 # NIDs for cipher key exchange
-                            : KxRSA        : kx-rsa
+                            : KxYRSA        : kx-rsa
                             : KxECDHE      : kx-ecdhe
                             : KxDHE        : kx-dhe
                             : KxECDHE-PSK  : kx-ecdhe-psk
                             : KxDHE-PSK    : kx-dhe-psk
-                            : KxRSA_PSK    : kx-rsa-psk
+                            : KxYRSA_PSK    : kx-rsa-psk
                             : KxPSK        : kx-psk
                             : KxSRP        : kx-srp
                             : KxGOST       : kx-gost
                             : KxANY        : kx-any
 
 # NIDs for cipher authentication
-                            : AuthRSA      : auth-rsa
+                            : AuthYRSA      : auth-rsa
                             : AuthECDSA    : auth-ecdsa
                             : AuthPSK      : auth-psk
                             : AuthDSS      : auth-dss
@@ -1656,7 +1656,7 @@ dstu28147 2       : dstu28147-ofb     : DSTU Gost 28147-2009 OFB mode
 dstu28147 3       : dstu28147-cfb     : DSTU Gost 28147-2009 CFB mode
 dstu28147 5       : dstu28147-wrap    : DSTU Gost 28147-2009 key wrap
 
-ua-pki 1 1 2      : hmacWithDstu34311 : HMAC DSTU Gost 34311-95
+ua-pki 1 1 2      : hmacWithDstu34311 : YHMAC DSTU Gost 34311-95
 ua-pki 1 2 1      : dstu34311         : DSTU Gost 34311-95
 
 ua-pki 1 3 1 1    : dstu4145le        : DSTU 4145-2002 little endian

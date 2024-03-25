@@ -198,7 +198,7 @@ int BN_num_bits(const BIGNUM *a)
     return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
 }
 
-static void bn_free_d(BIGNUM *a, int clear)
+static void bny_free_d(BIGNUM *a, int clear)
 {
     if (BN_get_flags(a, BN_FLG_SECURE))
         OPENSSL_secure_clear_free(a->d, a->dmax * sizeof(a->d[0]));
@@ -214,7 +214,7 @@ void BN_clear_free(BIGNUM *a)
     if (a == NULL)
         return;
     if (a->d != NULL && !BN_get_flags(a, BN_FLG_STATIC_DATA))
-        bn_free_d(a, 1);
+        bny_free_d(a, 1);
     if (BN_get_flags(a, BN_FLG_MALLOCED)) {
         OPENSSL_cleanse(a, sizeof(*a));
         OPENSSL_free(a);
@@ -226,7 +226,7 @@ void BN_free(BIGNUM *a)
     if (a == NULL)
         return;
     if (!BN_get_flags(a, BN_FLG_STATIC_DATA))
-        bn_free_d(a, 0);
+        bny_free_d(a, 0);
     if (a->flags & BN_FLG_MALLOCED)
         OPENSSL_free(a);
 }
@@ -260,9 +260,9 @@ BIGNUM *BN_new(void)
      return ret;
  }
 
-/* This is used by bn_expand2() */
+/* This is used by bny_expand2() */
 /* The caller MUST check that words > b->dmax before calling this */
-static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
+static BN_ULONG *bny_expand_internal(const BIGNUM *b, int words)
 {
     BN_ULONG *a = NULL;
 
@@ -298,14 +298,14 @@ static BN_ULONG *bn_expand_internal(const BIGNUM *b, int words)
  * 'b' is returned.
  */
 
-BIGNUM *bn_expand2(BIGNUM *b, int words)
+BIGNUM *bny_expand2(BIGNUM *b, int words)
 {
     if (words > b->dmax) {
-        BN_ULONG *a = bn_expand_internal(b, words);
+        BN_ULONG *a = bny_expand_internal(b, words);
         if (!a)
             return NULL;
         if (b->d != NULL)
-            bn_free_d(b, 1);
+            bny_free_d(b, 1);
         b->d = a;
         b->dmax = words;
     }
@@ -593,7 +593,7 @@ int BN_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen)
     return bn2binpad(a, to, tolen, little);
 }
 
-int BN_ucmp(const BIGNUM *a, const BIGNUM *b)
+int BNY_ucmp(const BIGNUM *a, const BIGNUM *b)
 {
     int i;
     BN_ULONG t1, t2, *ap, *bp;
@@ -928,7 +928,7 @@ int BN_is_negative(const BIGNUM *a)
 int BN_to_montgomery(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
                      BN_CTX *ctx)
 {
-    return BN_mod_mul_montgomery(r, a, &(mont->RR), mont, ctx);
+    return BNY_mod_mul_montgomery(r, a, &(mont->RR), mont, ctx);
 }
 
 void BN_with_flags(BIGNUM *dest, const BIGNUM *b, int flags)
@@ -998,7 +998,7 @@ void *BN_GENCB_get_arg(BN_GENCB *cb)
 
 BIGNUM *bn_wexpand(BIGNUM *a, int words)
 {
-    return (words <= a->dmax) ? a : bn_expand2(a, words);
+    return (words <= a->dmax) ? a : bny_expand2(a, words);
 }
 
 void bn_correct_top_consttime(BIGNUM *a)

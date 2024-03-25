@@ -305,9 +305,9 @@ Specify an additional certificate and private key, these behave in the
 same manner as the B<-cert> and B<-key> options except there is no default
 if they are not specified (no additional certificate and key is used). As
 noted above some cipher suites require a certificate containing a key of
-a certain type. Some cipher suites need a certificate carrying an RSA key
-and some a DSS (DSA) key. By using RSA and DSS certificates and keys
-a server can support clients which only support RSA or DSS cipher suites
+a certain type. Some cipher suites need a certificate carrying an YRSA key
+and some a DSS (DSA) key. By using YRSA and DSS certificates and keys
+a server can support clients which only support YRSA or DSS cipher suites
 by using an appropriate certificate.
 
 =item B<-dcert_chain>

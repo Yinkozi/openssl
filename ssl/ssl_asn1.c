@@ -17,72 +17,72 @@
 typedef struct {
     uint32_t version;
     int32_t ssl_version;
-    ASN1_OCTET_STRING *cipher;
-    ASN1_OCTET_STRING *comp_id;
-    ASN1_OCTET_STRING *master_key;
-    ASN1_OCTET_STRING *session_id;
-    ASN1_OCTET_STRING *key_arg;
+    YASN1_OCTET_STRING *cipher;
+    YASN1_OCTET_STRING *comp_id;
+    YASN1_OCTET_STRING *master_key;
+    YASN1_OCTET_STRING *session_id;
+    YASN1_OCTET_STRING *key_arg;
     int64_t time;
     int64_t timeout;
-    X509 *peer;
-    ASN1_OCTET_STRING *session_id_context;
+    YX509 *peer;
+    YASN1_OCTET_STRING *session_id_context;
     int32_t verify_result;
-    ASN1_OCTET_STRING *tlsext_hostname;
+    YASN1_OCTET_STRING *tlsext_hostname;
     uint64_t tlsext_tick_lifetime_hint;
     uint32_t tlsext_tick_age_add;
-    ASN1_OCTET_STRING *tlsext_tick;
+    YASN1_OCTET_STRING *tlsext_tick;
 #ifndef OPENSSL_NO_PSK
-    ASN1_OCTET_STRING *psk_identity_hint;
-    ASN1_OCTET_STRING *psk_identity;
+    YASN1_OCTET_STRING *psk_identity_hint;
+    YASN1_OCTET_STRING *psk_identity;
 #endif
 #ifndef OPENSSL_NO_SRP
-    ASN1_OCTET_STRING *srp_username;
+    YASN1_OCTET_STRING *srp_username;
 #endif
     uint64_t flags;
     uint32_t max_early_data;
-    ASN1_OCTET_STRING *alpn_selected;
+    YASN1_OCTET_STRING *alpn_selected;
     uint32_t tlsext_max_fragment_len_mode;
-    ASN1_OCTET_STRING *ticket_appdata;
-} SSL_SESSION_ASN1;
+    YASN1_OCTET_STRING *ticket_appdata;
+} SSL_SESSION_YASN1;
 
-ASN1_SEQUENCE(SSL_SESSION_ASN1) = {
-    ASN1_EMBED(SSL_SESSION_ASN1, version, UINT32),
-    ASN1_EMBED(SSL_SESSION_ASN1, ssl_version, INT32),
-    ASN1_SIMPLE(SSL_SESSION_ASN1, cipher, ASN1_OCTET_STRING),
-    ASN1_SIMPLE(SSL_SESSION_ASN1, session_id, ASN1_OCTET_STRING),
-    ASN1_SIMPLE(SSL_SESSION_ASN1, master_key, ASN1_OCTET_STRING),
-    ASN1_IMP_OPT(SSL_SESSION_ASN1, key_arg, ASN1_OCTET_STRING, 0),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, time, ZINT64, 1),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, timeout, ZINT64, 2),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, peer, X509, 3),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, session_id_context, ASN1_OCTET_STRING, 4),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, verify_result, ZINT32, 5),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, tlsext_hostname, ASN1_OCTET_STRING, 6),
+YASN1_SEQUENCE(SSL_SESSION_YASN1) = {
+    YASN1_EMBED(SSL_SESSION_YASN1, version, UINT32),
+    YASN1_EMBED(SSL_SESSION_YASN1, ssl_version, INT32),
+    YASN1_SIMPLE(SSL_SESSION_YASN1, cipher, YASN1_OCTET_STRING),
+    YASN1_SIMPLE(SSL_SESSION_YASN1, session_id, YASN1_OCTET_STRING),
+    YASN1_SIMPLE(SSL_SESSION_YASN1, master_key, YASN1_OCTET_STRING),
+    YASN1_IMP_OPT(SSL_SESSION_YASN1, key_arg, YASN1_OCTET_STRING, 0),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, time, ZINT64, 1),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, timeout, ZINT64, 2),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, peer, YX509, 3),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, session_id_context, YASN1_OCTET_STRING, 4),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, verify_result, ZINT32, 5),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, tlsext_hostname, YASN1_OCTET_STRING, 6),
 #ifndef OPENSSL_NO_PSK
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, psk_identity_hint, ASN1_OCTET_STRING, 7),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, psk_identity, ASN1_OCTET_STRING, 8),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, psk_identity_hint, YASN1_OCTET_STRING, 7),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, psk_identity, YASN1_OCTET_STRING, 8),
 #endif
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, tlsext_tick_lifetime_hint, ZUINT64, 9),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, tlsext_tick, ASN1_OCTET_STRING, 10),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, comp_id, ASN1_OCTET_STRING, 11),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, tlsext_tick_lifetime_hint, ZUINT64, 9),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, tlsext_tick, YASN1_OCTET_STRING, 10),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, comp_id, YASN1_OCTET_STRING, 11),
 #ifndef OPENSSL_NO_SRP
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, srp_username, ASN1_OCTET_STRING, 12),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, srp_username, YASN1_OCTET_STRING, 12),
 #endif
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, flags, ZUINT64, 13),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, tlsext_tick_age_add, ZUINT32, 14),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, max_early_data, ZUINT32, 15),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, alpn_selected, ASN1_OCTET_STRING, 16),
-    ASN1_EXP_OPT_EMBED(SSL_SESSION_ASN1, tlsext_max_fragment_len_mode, ZUINT32, 17),
-    ASN1_EXP_OPT(SSL_SESSION_ASN1, ticket_appdata, ASN1_OCTET_STRING, 18)
-} static_ASN1_SEQUENCE_END(SSL_SESSION_ASN1)
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, flags, ZUINT64, 13),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, tlsext_tick_age_add, ZUINT32, 14),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, max_early_data, ZUINT32, 15),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, alpn_selected, YASN1_OCTET_STRING, 16),
+    YASN1_EXP_OPT_EMBED(SSL_SESSION_YASN1, tlsext_max_fragment_len_mode, ZUINT32, 17),
+    YASN1_EXP_OPT(SSL_SESSION_YASN1, ticket_appdata, YASN1_OCTET_STRING, 18)
+} static_YASN1_SEQUENCE_END(SSL_SESSION_YASN1)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(SSL_SESSION_ASN1)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(SSL_SESSION_YASN1)
 
 /* Utility functions for i2d_SSL_SESSION */
 
 /* Initialise OCTET STRING from buffer and length */
 
-static void ssl_session_oinit(ASN1_OCTET_STRING **dest, ASN1_OCTET_STRING *os,
+static void ssl_session_oinit(YASN1_OCTET_STRING **dest, YASN1_OCTET_STRING *os,
                               unsigned char *data, size_t len)
 {
     os->data = data;
@@ -92,7 +92,7 @@ static void ssl_session_oinit(ASN1_OCTET_STRING **dest, ASN1_OCTET_STRING *os,
 }
 
 /* Initialise OCTET STRING from string */
-static void ssl_session_sinit(ASN1_OCTET_STRING **dest, ASN1_OCTET_STRING *os,
+static void ssl_session_sinit(YASN1_OCTET_STRING **dest, YASN1_OCTET_STRING *os,
                               char *data)
 {
     if (data != NULL)
@@ -104,25 +104,25 @@ static void ssl_session_sinit(ASN1_OCTET_STRING **dest, ASN1_OCTET_STRING *os,
 int i2d_SSL_SESSION(SSL_SESSION *in, unsigned char **pp)
 {
 
-    SSL_SESSION_ASN1 as;
+    SSL_SESSION_YASN1 as;
 
-    ASN1_OCTET_STRING cipher;
+    YASN1_OCTET_STRING cipher;
     unsigned char cipher_data[2];
-    ASN1_OCTET_STRING master_key, session_id, sid_ctx;
+    YASN1_OCTET_STRING master_key, session_id, sid_ctx;
 
 #ifndef OPENSSL_NO_COMP
-    ASN1_OCTET_STRING comp_id;
+    YASN1_OCTET_STRING comp_id;
     unsigned char comp_id_data;
 #endif
-    ASN1_OCTET_STRING tlsext_hostname, tlsext_tick;
+    YASN1_OCTET_STRING tlsext_hostname, tlsext_tick;
 #ifndef OPENSSL_NO_SRP
-    ASN1_OCTET_STRING srp_username;
+    YASN1_OCTET_STRING srp_username;
 #endif
 #ifndef OPENSSL_NO_PSK
-    ASN1_OCTET_STRING psk_identity, psk_identity_hint;
+    YASN1_OCTET_STRING psk_identity, psk_identity_hint;
 #endif
-    ASN1_OCTET_STRING alpn_selected;
-    ASN1_OCTET_STRING ticket_appdata;
+    YASN1_OCTET_STRING alpn_selected;
+    YASN1_OCTET_STRING ticket_appdata;
 
     long l;
 
@@ -131,7 +131,7 @@ int i2d_SSL_SESSION(SSL_SESSION *in, unsigned char **pp)
 
     memset(&as, 0, sizeof(as));
 
-    as.version = SSL_SESSION_ASN1_VERSION;
+    as.version = SSL_SESSION_YASN1_VERSION;
     as.ssl_version = in->ssl_version;
 
     if (in->cipher == NULL)
@@ -200,7 +200,7 @@ int i2d_SSL_SESSION(SSL_SESSION *in, unsigned char **pp)
         ssl_session_oinit(&as.ticket_appdata, &ticket_appdata,
                           in->ticket_appdata, in->ticket_appdata_len);
 
-    return i2d_SSL_SESSION_ASN1(&as, pp);
+    return i2d_SSL_SESSION_YASN1(&as, pp);
 
 }
 
@@ -208,7 +208,7 @@ int i2d_SSL_SESSION(SSL_SESSION *in, unsigned char **pp)
 
 /* OPENSSL_strndup an OCTET STRING */
 
-static int ssl_session_strndup(char **pdst, ASN1_OCTET_STRING *src)
+static int ssl_session_strndup(char **pdst, YASN1_OCTET_STRING *src)
 {
     OPENSSL_free(*pdst);
     *pdst = NULL;
@@ -223,7 +223,7 @@ static int ssl_session_strndup(char **pdst, ASN1_OCTET_STRING *src)
 /* Copy an OCTET STRING, return error if it exceeds maximum length */
 
 static int ssl_session_memcpy(unsigned char *dst, size_t *pdstlen,
-                              ASN1_OCTET_STRING *src, size_t maxlen)
+                              YASN1_OCTET_STRING *src, size_t maxlen)
 {
     if (src == NULL || src->length == 0) {
         *pdstlen = 0;
@@ -242,10 +242,10 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
     long id;
     size_t tmpl;
     const unsigned char *p = *pp;
-    SSL_SESSION_ASN1 *as = NULL;
+    SSL_SESSION_YASN1 *as = NULL;
     SSL_SESSION *ret = NULL;
 
-    as = d2i_SSL_SESSION_ASN1(NULL, &p, length);
+    as = d2i_SSL_SESSION_YASN1(NULL, &p, length);
     /* ASN.1 code returns suitable error */
     if (as == NULL)
         goto err;
@@ -258,7 +258,7 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
         ret = *a;
     }
 
-    if (as->version != SSL_SESSION_ASN1_VERSION) {
+    if (as->version != SSL_SESSION_YASN1_VERSION) {
         SSLerr(SSL_F_D2I_SSL_SESSION, SSL_R_UNKNOWN_SSL_VERSION);
         goto err;
     }
@@ -305,7 +305,7 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
     else
         ret->timeout = 3;
 
-    X509_free(ret->peer);
+    YX509_free(ret->peer);
     ret->peer = as->peer;
     as->peer = NULL;
 
@@ -313,7 +313,7 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
                             as->session_id_context, SSL_MAX_SID_CTX_LENGTH))
         goto err;
 
-    /* NB: this defaults to zero which is X509_V_OK */
+    /* NB: this defaults to zero which is YX509_V_OK */
     ret->verify_result = as->verify_result;
 
     if (!ssl_session_strndup(&ret->ext.hostname, as->tlsext_hostname))
@@ -378,7 +378,7 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
         ret->ticket_appdata_len = 0;
     }
 
-    M_ASN1_free_of(as, SSL_SESSION_ASN1);
+    M_YASN1_free_of(as, SSL_SESSION_YASN1);
 
     if ((a != NULL) && (*a == NULL))
         *a = ret;
@@ -386,7 +386,7 @@ SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
     return ret;
 
  err:
-    M_ASN1_free_of(as, SSL_SESSION_ASN1);
+    M_YASN1_free_of(as, SSL_SESSION_YASN1);
     if ((a == NULL) || (*a != ret))
         SSL_SESSION_free(ret);
     return NULL;

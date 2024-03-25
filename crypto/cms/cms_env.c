@@ -33,7 +33,7 @@ CMS_EnvelopedData *cms_get0_enveloped(CMS_ContentInfo *cms)
 static CMS_EnvelopedData *cms_enveloped_data_init(CMS_ContentInfo *cms)
 {
     if (cms->d.other == NULL) {
-        cms->d.envelopedData = M_ASN1_new_of(CMS_EnvelopedData);
+        cms->d.envelopedData = M_YASN1_new_of(CMS_EnvelopedData);
         if (!cms->d.envelopedData) {
             CMSerr(CMS_F_CMS_ENVELOPED_DATA_INIT, ERR_R_MALLOC_FAILURE);
             return NULL;
@@ -41,7 +41,7 @@ static CMS_EnvelopedData *cms_enveloped_data_init(CMS_ContentInfo *cms)
         cms->d.envelopedData->version = 0;
         cms->d.envelopedData->encryptedContentInfo->contentType =
             OBJ_nid2obj(NID_pkcs7_data);
-        ASN1_OBJECT_free(cms->contentType);
+        YASN1_OBJECT_free(cms->contentType);
         cms->contentType = OBJ_nid2obj(NID_pkcs7_enveloped);
         return cms->d.envelopedData;
     }
@@ -50,29 +50,29 @@ static CMS_EnvelopedData *cms_enveloped_data_init(CMS_ContentInfo *cms)
 
 int cms_env_asn1_ctrl(CMS_RecipientInfo *ri, int cmd)
 {
-    EVP_PKEY *pkey;
+    EVVP_PKEY *pkey;
     int i;
     if (ri->type == CMS_RECIPINFO_TRANS)
         pkey = ri->d.ktri->pkey;
     else if (ri->type == CMS_RECIPINFO_AGREE) {
-        EVP_PKEY_CTX *pctx = ri->d.kari->pctx;
+        EVVP_PKEY_CTX *pctx = ri->d.kari->pctx;
         if (!pctx)
             return 0;
-        pkey = EVP_PKEY_CTX_get0_pkey(pctx);
+        pkey = EVVP_PKEY_CTX_get0_pkey(pctx);
         if (!pkey)
             return 0;
     } else
         return 0;
     if (!pkey->ameth || !pkey->ameth->pkey_ctrl)
         return 1;
-    i = pkey->ameth->pkey_ctrl(pkey, ASN1_PKEY_CTRL_CMS_ENVELOPE, cmd, ri);
+    i = pkey->ameth->pkey_ctrl(pkey, YASN1_PKEY_CTRL_CMS_ENVELOPE, cmd, ri);
     if (i == -2) {
-        CMSerr(CMS_F_CMS_ENV_ASN1_CTRL,
+        CMSerr(CMS_F_CMS_ENV_YASN1_CTRL,
                CMS_R_NOT_SUPPORTED_FOR_THIS_KEY_TYPE);
         return 0;
     }
     if (i <= 0) {
-        CMSerr(CMS_F_CMS_ENV_ASN1_CTRL, CMS_R_CTRL_FAILURE);
+        CMSerr(CMS_F_CMS_ENV_YASN1_CTRL, CMS_R_CTRL_FAILURE);
         return 0;
     }
     return 1;
@@ -92,7 +92,7 @@ int CMS_RecipientInfo_type(CMS_RecipientInfo *ri)
     return ri->type;
 }
 
-EVP_PKEY_CTX *CMS_RecipientInfo_get0_pkey_ctx(CMS_RecipientInfo *ri)
+EVVP_PKEY_CTX *CMS_RecipientInfo_get0_pkey_ctx(CMS_RecipientInfo *ri)
 {
     if (ri->type == CMS_RECIPINFO_TRANS)
         return ri->d.ktri->pctx;
@@ -101,7 +101,7 @@ EVP_PKEY_CTX *CMS_RecipientInfo_get0_pkey_ctx(CMS_RecipientInfo *ri)
     return NULL;
 }
 
-CMS_ContentInfo *CMS_EnvelopedData_create(const EVP_CIPHER *cipher)
+CMS_ContentInfo *CMS_EnvelopedData_create(const EVVP_CIPHER *cipher)
 {
     CMS_ContentInfo *cms;
     CMS_EnvelopedData *env;
@@ -125,13 +125,13 @@ CMS_ContentInfo *CMS_EnvelopedData_create(const EVP_CIPHER *cipher)
 
 /* Initialise a ktri based on passed certificate and key */
 
-static int cms_RecipientInfo_ktri_init(CMS_RecipientInfo *ri, X509 *recip,
-                                       EVP_PKEY *pk, unsigned int flags)
+static int cms_RecipientInfo_ktri_init(CMS_RecipientInfo *ri, YX509 *recip,
+                                       EVVP_PKEY *pk, unsigned int flags)
 {
     CMS_KeyTransRecipientInfo *ktri;
     int idtype;
 
-    ri->d.ktri = M_ASN1_new_of(CMS_KeyTransRecipientInfo);
+    ri->d.ktri = M_YASN1_new_of(CMS_KeyTransRecipientInfo);
     if (!ri->d.ktri)
         return 0;
     ri->type = CMS_RECIPINFO_TRANS;
@@ -154,17 +154,17 @@ static int cms_RecipientInfo_ktri_init(CMS_RecipientInfo *ri, X509 *recip,
     if (!cms_set1_SignerIdentifier(ktri->rid, recip, idtype))
         return 0;
 
-    X509_up_ref(recip);
-    EVP_PKEY_up_ref(pk);
+    YX509_up_ref(recip);
+    EVVP_PKEY_up_ref(pk);
 
     ktri->pkey = pk;
     ktri->recip = recip;
 
     if (flags & CMS_KEY_PARAM) {
-        ktri->pctx = EVP_PKEY_CTX_new(ktri->pkey, NULL);
+        ktri->pctx = EVVP_PKEY_CTX_new(ktri->pkey, NULL);
         if (ktri->pctx == NULL)
             return 0;
-        if (EVP_PKEY_encrypt_init(ktri->pctx) <= 0)
+        if (EVVP_PKEY_encrypt_init(ktri->pctx) <= 0)
             return 0;
     } else if (!cms_env_asn1_ctrl(ri, 0))
         return 0;
@@ -176,21 +176,21 @@ static int cms_RecipientInfo_ktri_init(CMS_RecipientInfo *ri, X509 *recip,
  */
 
 CMS_RecipientInfo *CMS_add1_recipient_cert(CMS_ContentInfo *cms,
-                                           X509 *recip, unsigned int flags)
+                                           YX509 *recip, unsigned int flags)
 {
     CMS_RecipientInfo *ri = NULL;
     CMS_EnvelopedData *env;
-    EVP_PKEY *pk = NULL;
+    EVVP_PKEY *pk = NULL;
     env = cms_get0_enveloped(cms);
     if (!env)
         goto err;
 
     /* Initialize recipient info */
-    ri = M_ASN1_new_of(CMS_RecipientInfo);
+    ri = M_YASN1_new_of(CMS_RecipientInfo);
     if (!ri)
         goto merr;
 
-    pk = X509_get0_pubkey(recip);
+    pk = YX509_get0_pubkey(recip);
     if (!pk) {
         CMSerr(CMS_F_CMS_ADD1_RECIPIENT_CERT, CMS_R_ERROR_GETTING_PUBLIC_KEY);
         goto err;
@@ -223,14 +223,14 @@ CMS_RecipientInfo *CMS_add1_recipient_cert(CMS_ContentInfo *cms,
  merr:
     CMSerr(CMS_F_CMS_ADD1_RECIPIENT_CERT, ERR_R_MALLOC_FAILURE);
  err:
-    M_ASN1_free_of(ri, CMS_RecipientInfo);
+    M_YASN1_free_of(ri, CMS_RecipientInfo);
     return NULL;
 
 }
 
 int CMS_RecipientInfo_ktri_get0_algs(CMS_RecipientInfo *ri,
-                                     EVP_PKEY **pk, X509 **recip,
-                                     X509_ALGOR **palg)
+                                     EVVP_PKEY **pk, YX509 **recip,
+                                     YX509_ALGOR **palg)
 {
     CMS_KeyTransRecipientInfo *ktri;
     if (ri->type != CMS_RECIPINFO_TRANS) {
@@ -251,9 +251,9 @@ int CMS_RecipientInfo_ktri_get0_algs(CMS_RecipientInfo *ri,
 }
 
 int CMS_RecipientInfo_ktri_get0_signer_id(CMS_RecipientInfo *ri,
-                                          ASN1_OCTET_STRING **keyid,
-                                          X509_NAME **issuer,
-                                          ASN1_INTEGER **sno)
+                                          YASN1_OCTET_STRING **keyid,
+                                          YX509_NAME **issuer,
+                                          YASN1_INTEGER **sno)
 {
     CMS_KeyTransRecipientInfo *ktri;
     if (ri->type != CMS_RECIPINFO_TRANS) {
@@ -266,7 +266,7 @@ int CMS_RecipientInfo_ktri_get0_signer_id(CMS_RecipientInfo *ri,
     return cms_SignerIdentifier_get0_signer_id(ktri->rid, keyid, issuer, sno);
 }
 
-int CMS_RecipientInfo_ktri_cert_cmp(CMS_RecipientInfo *ri, X509 *cert)
+int CMS_RecipientInfo_ktri_cert_cmp(CMS_RecipientInfo *ri, YX509 *cert)
 {
     if (ri->type != CMS_RECIPINFO_TRANS) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_CERT_CMP,
@@ -276,13 +276,13 @@ int CMS_RecipientInfo_ktri_cert_cmp(CMS_RecipientInfo *ri, X509 *cert)
     return cms_SignerIdentifier_cert_cmp(ri->d.ktri->rid, cert);
 }
 
-int CMS_RecipientInfo_set0_pkey(CMS_RecipientInfo *ri, EVP_PKEY *pkey)
+int CMS_RecipientInfo_set0_pkey(CMS_RecipientInfo *ri, EVVP_PKEY *pkey)
 {
     if (ri->type != CMS_RECIPINFO_TRANS) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_SET0_PKEY, CMS_R_NOT_KEY_TRANSPORT);
         return 0;
     }
-    EVP_PKEY_free(ri->d.ktri->pkey);
+    EVVP_PKEY_free(ri->d.ktri->pkey);
     ri->d.ktri->pkey = pkey;
     return 1;
 }
@@ -294,7 +294,7 @@ static int cms_RecipientInfo_ktri_encrypt(CMS_ContentInfo *cms,
 {
     CMS_KeyTransRecipientInfo *ktri;
     CMS_EncryptedContentInfo *ec;
-    EVP_PKEY_CTX *pctx;
+    EVVP_PKEY_CTX *pctx;
     unsigned char *ek = NULL;
     size_t eklen;
 
@@ -313,21 +313,21 @@ static int cms_RecipientInfo_ktri_encrypt(CMS_ContentInfo *cms,
         if (!cms_env_asn1_ctrl(ri, 0))
             goto err;
     } else {
-        pctx = EVP_PKEY_CTX_new(ktri->pkey, NULL);
+        pctx = EVVP_PKEY_CTX_new(ktri->pkey, NULL);
         if (pctx == NULL)
             return 0;
 
-        if (EVP_PKEY_encrypt_init(pctx) <= 0)
+        if (EVVP_PKEY_encrypt_init(pctx) <= 0)
             goto err;
     }
 
-    if (EVP_PKEY_CTX_ctrl(pctx, -1, EVP_PKEY_OP_ENCRYPT,
-                          EVP_PKEY_CTRL_CMS_ENCRYPT, 0, ri) <= 0) {
+    if (EVVP_PKEY_CTX_ctrl(pctx, -1, EVVP_PKEY_OP_ENCRYPT,
+                          EVVP_PKEY_CTRL_CMS_ENCRYPT, 0, ri) <= 0) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_ENCRYPT, CMS_R_CTRL_ERROR);
         goto err;
     }
 
-    if (EVP_PKEY_encrypt(pctx, NULL, &eklen, ec->key, ec->keylen) <= 0)
+    if (EVVP_PKEY_encrypt(pctx, NULL, &eklen, ec->key, ec->keylen) <= 0)
         goto err;
 
     ek = OPENSSL_malloc(eklen);
@@ -337,16 +337,16 @@ static int cms_RecipientInfo_ktri_encrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    if (EVP_PKEY_encrypt(pctx, ek, &eklen, ec->key, ec->keylen) <= 0)
+    if (EVVP_PKEY_encrypt(pctx, ek, &eklen, ec->key, ec->keylen) <= 0)
         goto err;
 
-    ASN1_STRING_set0(ktri->encryptedKey, ek, eklen);
+    YASN1_STRING_set0(ktri->encryptedKey, ek, eklen);
     ek = NULL;
 
     ret = 1;
 
  err:
-    EVP_PKEY_CTX_free(pctx);
+    EVVP_PKEY_CTX_free(pctx);
     ktri->pctx = NULL;
     OPENSSL_free(ek);
     return ret;
@@ -359,7 +359,7 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
                                           CMS_RecipientInfo *ri)
 {
     CMS_KeyTransRecipientInfo *ktri = ri->d.ktri;
-    EVP_PKEY *pkey = ktri->pkey;
+    EVVP_PKEY *pkey = ktri->pkey;
     unsigned char *ek = NULL;
     size_t eklen;
     int ret = 0;
@@ -374,34 +374,34 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
 
     if (cms->d.envelopedData->encryptedContentInfo->havenocert
             && !cms->d.envelopedData->encryptedContentInfo->debug) {
-        X509_ALGOR *calg = ec->contentEncryptionAlgorithm;
-        const EVP_CIPHER *ciph = EVP_get_cipherbyobj(calg->algorithm);
+        YX509_ALGOR *calg = ec->contentEncryptionAlgorithm;
+        const EVVP_CIPHER *ciph = EVVP_get_cipherbyobj(calg->algorithm);
 
         if (ciph == NULL) {
             CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_DECRYPT, CMS_R_UNKNOWN_CIPHER);
             return 0;
         }
 
-        fixlen = EVP_CIPHER_key_length(ciph);
+        fixlen = EVVP_CIPHER_key_length(ciph);
     }
 
-    ktri->pctx = EVP_PKEY_CTX_new(pkey, NULL);
+    ktri->pctx = EVVP_PKEY_CTX_new(pkey, NULL);
     if (ktri->pctx == NULL)
         return 0;
 
-    if (EVP_PKEY_decrypt_init(ktri->pctx) <= 0)
+    if (EVVP_PKEY_decrypt_init(ktri->pctx) <= 0)
         goto err;
 
     if (!cms_env_asn1_ctrl(ri, 1))
         goto err;
 
-    if (EVP_PKEY_CTX_ctrl(ktri->pctx, -1, EVP_PKEY_OP_DECRYPT,
-                          EVP_PKEY_CTRL_CMS_DECRYPT, 0, ri) <= 0) {
+    if (EVVP_PKEY_CTX_ctrl(ktri->pctx, -1, EVVP_PKEY_OP_DECRYPT,
+                          EVVP_PKEY_CTRL_CMS_DECRYPT, 0, ri) <= 0) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KTRI_DECRYPT, CMS_R_CTRL_ERROR);
         goto err;
     }
 
-    if (EVP_PKEY_decrypt(ktri->pctx, NULL, &eklen,
+    if (EVVP_PKEY_decrypt(ktri->pctx, NULL, &eklen,
                          ktri->encryptedKey->data,
                          ktri->encryptedKey->length) <= 0)
         goto err;
@@ -413,7 +413,7 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    if (EVP_PKEY_decrypt(ktri->pctx, ek, &eklen,
+    if (EVVP_PKEY_decrypt(ktri->pctx, ek, &eklen,
                          ktri->encryptedKey->data,
                          ktri->encryptedKey->length) <= 0
             || eklen == 0
@@ -429,7 +429,7 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
     ec->keylen = eklen;
 
  err:
-    EVP_PKEY_CTX_free(ktri->pctx);
+    EVVP_PKEY_CTX_free(ktri->pctx);
     ktri->pctx = NULL;
     if (!ret)
         OPENSSL_free(ek);
@@ -442,21 +442,21 @@ static int cms_RecipientInfo_ktri_decrypt(CMS_ContentInfo *cms,
 int CMS_RecipientInfo_kekri_id_cmp(CMS_RecipientInfo *ri,
                                    const unsigned char *id, size_t idlen)
 {
-    ASN1_OCTET_STRING tmp_os;
+    YASN1_OCTET_STRING tmp_os;
     CMS_KEKRecipientInfo *kekri;
     if (ri->type != CMS_RECIPINFO_KEK) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_ID_CMP, CMS_R_NOT_KEK);
         return -2;
     }
     kekri = ri->d.kekri;
-    tmp_os.type = V_ASN1_OCTET_STRING;
+    tmp_os.type = V_YASN1_OCTET_STRING;
     tmp_os.flags = 0;
     tmp_os.data = (unsigned char *)id;
     tmp_os.length = (int)idlen;
-    return ASN1_OCTET_STRING_cmp(&tmp_os, kekri->kekid->keyIdentifier);
+    return YASN1_OCTET_STRING_cmp(&tmp_os, kekri->kekid->keyIdentifier);
 }
 
-/* For now hard code AES key wrap info */
+/* For now hard code YAES key wrap info */
 
 static size_t aes_wrap_keylen(int nid)
 {
@@ -478,9 +478,9 @@ static size_t aes_wrap_keylen(int nid)
 CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
                                           unsigned char *key, size_t keylen,
                                           unsigned char *id, size_t idlen,
-                                          ASN1_GENERALIZEDTIME *date,
-                                          ASN1_OBJECT *otherTypeId,
-                                          ASN1_TYPE *otherType)
+                                          YASN1_GENERALIZEDTIME *date,
+                                          YASN1_OBJECT *otherTypeId,
+                                          YASN1_TYPE *otherType)
 {
     CMS_RecipientInfo *ri = NULL;
     CMS_EnvelopedData *env;
@@ -526,11 +526,11 @@ CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
     }
 
     /* Initialize recipient info */
-    ri = M_ASN1_new_of(CMS_RecipientInfo);
+    ri = M_YASN1_new_of(CMS_RecipientInfo);
     if (!ri)
         goto merr;
 
-    ri->d.kekri = M_ASN1_new_of(CMS_KEKRecipientInfo);
+    ri->d.kekri = M_YASN1_new_of(CMS_KEKRecipientInfo);
     if (!ri->d.kekri)
         goto merr;
     ri->type = CMS_RECIPINFO_KEK;
@@ -538,7 +538,7 @@ CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
     kekri = ri->d.kekri;
 
     if (otherTypeId) {
-        kekri->kekid->other = M_ASN1_new_of(CMS_OtherKeyAttribute);
+        kekri->kekid->other = M_YASN1_new_of(CMS_OtherKeyAttribute);
         if (kekri->kekid->other == NULL)
             goto merr;
     }
@@ -553,7 +553,7 @@ CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
     kekri->key = key;
     kekri->keylen = keylen;
 
-    ASN1_STRING_set0(kekri->kekid->keyIdentifier, id, idlen);
+    YASN1_STRING_set0(kekri->kekid->keyIdentifier, id, idlen);
 
     kekri->kekid->date = date;
 
@@ -562,25 +562,25 @@ CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
         kekri->kekid->other->keyAttr = otherType;
     }
 
-    X509_ALGOR_set0(kekri->keyEncryptionAlgorithm,
-                    OBJ_nid2obj(nid), V_ASN1_UNDEF, NULL);
+    YX509_ALGOR_set0(kekri->keyEncryptionAlgorithm,
+                    OBJ_nid2obj(nid), V_YASN1_UNDEF, NULL);
 
     return ri;
 
  merr:
     CMSerr(CMS_F_CMS_ADD0_RECIPIENT_KEY, ERR_R_MALLOC_FAILURE);
  err:
-    M_ASN1_free_of(ri, CMS_RecipientInfo);
+    M_YASN1_free_of(ri, CMS_RecipientInfo);
     return NULL;
 
 }
 
 int CMS_RecipientInfo_kekri_get0_id(CMS_RecipientInfo *ri,
-                                    X509_ALGOR **palg,
-                                    ASN1_OCTET_STRING **pid,
-                                    ASN1_GENERALIZEDTIME **pdate,
-                                    ASN1_OBJECT **potherid,
-                                    ASN1_TYPE **pothertype)
+                                    YX509_ALGOR **palg,
+                                    YASN1_OCTET_STRING **pid,
+                                    YASN1_GENERALIZEDTIME **pdate,
+                                    YASN1_OBJECT **potherid,
+                                    YASN1_TYPE **pothertype)
 {
     CMS_KEKIdentifier *rkid;
     if (ri->type != CMS_RECIPINFO_KEK) {
@@ -631,7 +631,7 @@ static int cms_RecipientInfo_kekri_encrypt(CMS_ContentInfo *cms,
 {
     CMS_EncryptedContentInfo *ec;
     CMS_KEKRecipientInfo *kekri;
-    AES_KEY actx;
+    YAES_KEY actx;
     unsigned char *wkey = NULL;
     int wkeylen;
     int r = 0;
@@ -645,7 +645,7 @@ static int cms_RecipientInfo_kekri_encrypt(CMS_ContentInfo *cms,
         return 0;
     }
 
-    if (AES_set_encrypt_key(kekri->key, kekri->keylen << 3, &actx)) {
+    if (YAES_set_encrypt_key(kekri->key, kekri->keylen << 3, &actx)) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_ENCRYPT,
                CMS_R_ERROR_SETTING_KEY);
         goto err;
@@ -658,14 +658,14 @@ static int cms_RecipientInfo_kekri_encrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    wkeylen = AES_wrap_key(&actx, NULL, wkey, ec->key, ec->keylen);
+    wkeylen = YAES_wrap_key(&actx, NULL, wkey, ec->key, ec->keylen);
 
     if (wkeylen <= 0) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_ENCRYPT, CMS_R_WRAP_ERROR);
         goto err;
     }
 
-    ASN1_STRING_set0(kekri->encryptedKey, wkey, wkeylen);
+    YASN1_STRING_set0(kekri->encryptedKey, wkey, wkeylen);
 
     r = 1;
 
@@ -686,7 +686,7 @@ static int cms_RecipientInfo_kekri_decrypt(CMS_ContentInfo *cms,
 {
     CMS_EncryptedContentInfo *ec;
     CMS_KEKRecipientInfo *kekri;
-    AES_KEY actx;
+    YAES_KEY actx;
     unsigned char *ukey = NULL;
     int ukeylen;
     int r = 0, wrap_nid;
@@ -715,7 +715,7 @@ static int cms_RecipientInfo_kekri_decrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    if (AES_set_decrypt_key(kekri->key, kekri->keylen << 3, &actx)) {
+    if (YAES_set_decrypt_key(kekri->key, kekri->keylen << 3, &actx)) {
         CMSerr(CMS_F_CMS_RECIPIENTINFO_KEKRI_DECRYPT,
                CMS_R_ERROR_SETTING_KEY);
         goto err;
@@ -728,7 +728,7 @@ static int cms_RecipientInfo_kekri_decrypt(CMS_ContentInfo *cms,
         goto err;
     }
 
-    ukeylen = AES_unwrap_key(&actx, NULL, ukey,
+    ukeylen = YAES_unwrap_key(&actx, NULL, ukey,
                              kekri->encryptedKey->data,
                              kekri->encryptedKey->length);
 
@@ -908,11 +908,11 @@ BIO *cms_EnvelopedData_init_bio(CMS_ContentInfo *cms)
  * retain compatibility with previous behaviour if the ctrl value isn't
  * supported we assume key transport.
  */
-int cms_pkey_get_ri_type(EVP_PKEY *pk)
+int cms_pkey_get_ri_type(EVVP_PKEY *pk)
 {
     if (pk->ameth && pk->ameth->pkey_ctrl) {
         int i, r;
-        i = pk->ameth->pkey_ctrl(pk, ASN1_PKEY_CTRL_CMS_RI_TYPE, 0, &r);
+        i = pk->ameth->pkey_ctrl(pk, YASN1_PKEY_CTRL_CMS_RI_TYPE, 0, &r);
         if (i > 0)
             return r;
     }

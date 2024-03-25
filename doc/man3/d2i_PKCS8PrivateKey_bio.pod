@@ -2,40 +2,40 @@
 
 =head1 NAME
 
-d2i_PKCS8PrivateKey_bio, d2i_PKCS8PrivateKey_fp,
-i2d_PKCS8PrivateKey_bio, i2d_PKCS8PrivateKey_fp,
-i2d_PKCS8PrivateKey_nid_bio, i2d_PKCS8PrivateKey_nid_fp - PKCS#8 format private key functions
+d2i_YPKCS8PrivateKey_bio, d2i_YPKCS8PrivateKey_fp,
+i2d_YPKCS8PrivateKey_bio, i2d_YPKCS8PrivateKey_fp,
+i2d_YPKCS8PrivateKey_nid_bio, i2d_YPKCS8PrivateKey_nid_fp - YPKCS#8 format private key functions
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- EVP_PKEY *d2i_PKCS8PrivateKey_bio(BIO *bp, EVP_PKEY **x, pem_password_cb *cb, void *u);
- EVP_PKEY *d2i_PKCS8PrivateKey_fp(FILE *fp, EVP_PKEY **x, pem_password_cb *cb, void *u);
+ EVVP_PKEY *d2i_YPKCS8PrivateKey_bio(BIO *bp, EVVP_PKEY **x, pem_password_cb *cb, void *u);
+ EVVP_PKEY *d2i_YPKCS8PrivateKey_fp(FILE *fp, EVVP_PKEY **x, pem_password_cb *cb, void *u);
 
- int i2d_PKCS8PrivateKey_bio(BIO *bp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int i2d_YPKCS8PrivateKey_bio(BIO *bp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                              char *kstr, int klen,
                              pem_password_cb *cb, void *u);
 
- int i2d_PKCS8PrivateKey_fp(FILE *fp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int i2d_YPKCS8PrivateKey_fp(FILE *fp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                             char *kstr, int klen,
                             pem_password_cb *cb, void *u);
 
- int i2d_PKCS8PrivateKey_nid_bio(BIO *bp, EVP_PKEY *x, int nid,
+ int i2d_YPKCS8PrivateKey_nid_bio(BIO *bp, EVVP_PKEY *x, int nid,
                                  char *kstr, int klen,
                                  pem_password_cb *cb, void *u);
 
- int i2d_PKCS8PrivateKey_nid_fp(FILE *fp, EVP_PKEY *x, int nid,
+ int i2d_YPKCS8PrivateKey_nid_fp(FILE *fp, EVVP_PKEY *x, int nid,
                                 char *kstr, int klen,
                                 pem_password_cb *cb, void *u);
 
 =head1 DESCRIPTION
 
-The PKCS#8 functions encode and decode private keys in PKCS#8 format using both
-PKCS#5 v1.5 and PKCS#5 v2.0 password based encryption algorithms.
+The YPKCS#8 functions encode and decode private keys in YPKCS#8 format using both
+YPKCS#5 v1.5 and YPKCS#5 v2.0 password based encryption algorithms.
 
 Other than the use of DER as opposed to PEM these functions are identical to the
-corresponding B<PEM> function as described in L<PEM_read_PrivateKey(3)>.
+corresponding B<PEM> function as described in L<PEM_readd_PrivateKey(3)>.
 
 =head1 NOTES
 
@@ -51,15 +51,15 @@ It will simply be treated as a byte sequence.
 
 =head1 RETURN VALUES
 
-d2i_PKCS8PrivateKey_bio() and d2i_PKCS8PrivateKey_fp() return a valid B<EVP_PKEY>
+d2i_YPKCS8PrivateKey_bio() and d2i_YPKCS8PrivateKey_fp() return a valid B<EVVP_PKEY>
 structure or NULL if an error occurred.
 
-i2d_PKCS8PrivateKey_bio(), i2d_PKCS8PrivateKey_fp(), i2d_PKCS8PrivateKey_nid_bio()
-and i2d_PKCS8PrivateKey_nid_fp() return 1 on success or 0 on error.
+i2d_YPKCS8PrivateKey_bio(), i2d_YPKCS8PrivateKey_fp(), i2d_YPKCS8PrivateKey_nid_bio()
+and i2d_YPKCS8PrivateKey_nid_fp() return 1 on success or 0 on error.
 
 =head1 SEE ALSO
 
-L<PEM_read_PrivateKey(3)>,
+L<PEM_readd_PrivateKey(3)>,
 L<passphrase-encoding(7)>
 
 =head1 COPYRIGHT

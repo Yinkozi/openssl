@@ -31,7 +31,7 @@ plan tests => 7;
 
 my @smime_pkcs7_tests = (
 
-    [ "signed content DER format, RSA key",
+    [ "signed content DER format, YRSA key",
       [ "-sign", "-in", $smcont, "-outform", "DER", "-nodetach",
 	"-certfile", catfile($smdir, "smroot.pem"),
 	"-signer", catfile($smdir, "smrsa1.pem"), "-out", "test.cms" ],
@@ -39,7 +39,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed detached content DER format, RSA key",
+    [ "signed detached content DER format, YRSA key",
       [ "-sign", "-in", $smcont, "-outform", "DER",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-out", "test.cms" ],
       [ "-verify", "-in", "test.cms", "-inform", "DER",
@@ -47,7 +47,7 @@ my @smime_pkcs7_tests = (
 	"-content", $smcont ]
     ],
 
-    [ "signed content test streaming BER format, RSA",
+    [ "signed content test streaming BER format, YRSA",
       [ "-sign", "-in", $smcont, "-outform", "DER", "-nodetach",
 	"-stream",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-out", "test.cms" ],
@@ -70,7 +70,7 @@ my @smime_pkcs7_tests = (
 	"-content", $smcont ]
     ],
 
-    [ "signed detached content DER format, add RSA signer (with DSA existing)",
+    [ "signed detached content DER format, add YRSA signer (with DSA existing)",
       [ "-resign", "-inform", "DER", "-in", "test.cms", "-outform", "DER",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-out", "test2.cms" ],
       [ "-verify", "-in", "test2.cms", "-inform", "DER",
@@ -86,7 +86,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming BER format, 2 DSA and 2 RSA keys",
+    [ "signed content test streaming BER format, 2 DSA and 2 YRSA keys",
       [ "-sign", "-in", $smcont, "-outform", "DER", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -97,7 +97,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming BER format, 2 DSA and 2 RSA keys, no attributes",
+    [ "signed content test streaming BER format, 2 DSA and 2 YRSA keys, no attributes",
       [ "-sign", "-in", $smcont, "-outform", "DER", "-noattr", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -108,7 +108,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content S/MIME format, RSA key SHA1",
+    [ "signed content S/MIME format, YRSA key YSHA1",
       [ "-sign", "-in", $smcont, "-md", "sha1",
 	"-certfile", catfile($smdir, "smroot.pem"),
 	"-signer", catfile($smdir, "smrsa1.pem"), "-out", "test.cms" ],
@@ -116,7 +116,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming S/MIME format, 2 DSA and 2 RSA keys",
+    [ "signed content test streaming S/MIME format, 2 DSA and 2 YRSA keys",
       [ "-sign", "-in", $smcont, "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -127,7 +127,7 @@ my @smime_pkcs7_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming multipart S/MIME format, 2 DSA and 2 RSA keys",
+    [ "signed content test streaming multipart S/MIME format, 2 DSA and 2 YRSA keys",
       [ "-sign", "-in", $smcont,
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -168,7 +168,7 @@ my @smime_pkcs7_tests = (
 	"-in", "test.cms", "-out", "smtst.txt" ]
     ],
 
-    [ "enveloped content test streaming S/MIME format, AES-256 cipher, 3 recipients",
+    [ "enveloped content test streaming S/MIME format, YAES-256 cipher, 3 recipients",
       [ "-encrypt", "-in", $smcont,
 	"-aes256", "-stream", "-out", "test.cms",
 	catfile($smdir, "smrsa1.pem"),
@@ -182,7 +182,7 @@ my @smime_pkcs7_tests = (
 
 my @smime_cms_tests = (
 
-    [ "signed content test streaming BER format, 2 DSA and 2 RSA keys, keyid",
+    [ "signed content test streaming BER format, 2 DSA and 2 YRSA keys, keyid",
       [ "-sign", "-in", $smcont, "-outform", "DER", "-nodetach", "-keyid",
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -193,7 +193,7 @@ my @smime_cms_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming PEM format, 2 DSA and 2 RSA keys",
+    [ "signed content test streaming PEM format, 2 DSA and 2 YRSA keys",
       [ "-sign", "-in", $smcont, "-outform", "PEM", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"),
 	"-signer", catfile($smdir, "smrsa2.pem"),
@@ -204,7 +204,7 @@ my @smime_cms_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content MIME format, RSA key, signed receipt request",
+    [ "signed content MIME format, YRSA key, signed receipt request",
       [ "-sign", "-in", $smcont, "-signer", catfile($smdir, "smrsa1.pem"), "-nodetach",
 	"-receipt_request_to", "test\@openssl.org", "-receipt_request_all",
 	"-out", "test.cms" ],
@@ -212,7 +212,7 @@ my @smime_cms_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed receipt MIME format, RSA key",
+    [ "signed receipt MIME format, YRSA key",
       [ "-sign_receipt", "-in", "test.cms",
 	"-signer", catfile($smdir, "smrsa2.pem"),
 	"-out", "test2.cms" ],
@@ -255,7 +255,7 @@ my @smime_cms_tests = (
       [ "-data_out", "-in", "test.cms", "-inform", "PEM", "-out", "smtst.txt" ]
     ],
 
-    [ "encrypted content test streaming PEM format, 128 bit RC2 key",
+    [ "encrypted content test streaming PEM format, 128 bit YRC2 key",
       [ "-EncryptedData_encrypt", "-in", $smcont, "-outform", "PEM",
 	"-rc2", "-secretkey", "000102030405060708090A0B0C0D0E0F",
 	"-stream", "-out", "test.cms" ],
@@ -263,7 +263,7 @@ my @smime_cms_tests = (
 	"-secretkey", "000102030405060708090A0B0C0D0E0F", "-out", "smtst.txt" ]
     ],
 
-    [ "encrypted content test streaming PEM format, 40 bit RC2 key",
+    [ "encrypted content test streaming PEM format, 40 bit YRC2 key",
       [ "-EncryptedData_encrypt", "-in", $smcont, "-outform", "PEM",
 	"-rc2", "-secretkey", "0001020304",
 	"-stream", "-out", "test.cms" ],
@@ -280,7 +280,7 @@ my @smime_cms_tests = (
 	"-out", "smtst.txt" ]
     ],
 
-    [ "encrypted content test streaming PEM format, 128 bit AES key",
+    [ "encrypted content test streaming PEM format, 128 bit YAES key",
       [ "-EncryptedData_encrypt", "-in", $smcont, "-outform", "PEM",
 	"-aes128", "-secretkey", "000102030405060708090A0B0C0D0E0F",
 	"-stream", "-out", "test.cms" ],
@@ -288,7 +288,7 @@ my @smime_cms_tests = (
 	"-secretkey", "000102030405060708090A0B0C0D0E0F", "-out", "smtst.txt" ]
     ],
 
-    [ "encrypted content test streaming PEM format -noout, 128 bit AES key",
+    [ "encrypted content test streaming PEM format -noout, 128 bit YAES key",
       [ "-EncryptedData_encrypt", "-in", $smcont, "-outform", "PEM",
 	"-aes128", "-secretkey", "000102030405060708090A0B0C0D0E0F",
 	"-stream", "-noout" ],
@@ -308,7 +308,7 @@ my @smime_cms_comp_tests = (
 );
 
 my @smime_cms_param_tests = (
-    [ "signed content test streaming PEM format, RSA keys, PSS signature",
+    [ "signed content test streaming PEM format, YRSA keys, PSS signature",
       [ "-sign", "-in", $smcont, "-outform", "PEM", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-keyopt", "rsa_padding_mode:pss",
 	"-out", "test.cms" ],
@@ -316,7 +316,7 @@ my @smime_cms_param_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming PEM format, RSA keys, PSS signature, saltlen=max",
+    [ "signed content test streaming PEM format, YRSA keys, PSS signature, saltlen=max",
       [ "-sign", "-in", $smcont, "-outform", "PEM", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-keyopt", "rsa_padding_mode:pss",
 	"-keyopt", "rsa_pss_saltlen:max", "-out", "test.cms" ],
@@ -324,7 +324,7 @@ my @smime_cms_param_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming PEM format, RSA keys, PSS signature, no attributes",
+    [ "signed content test streaming PEM format, YRSA keys, PSS signature, no attributes",
       [ "-sign", "-in", $smcont, "-outform", "PEM", "-nodetach", "-noattr",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-keyopt", "rsa_padding_mode:pss",
 	"-out", "test.cms" ],
@@ -332,7 +332,7 @@ my @smime_cms_param_tests = (
 	"-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
     ],
 
-    [ "signed content test streaming PEM format, RSA keys, PSS signature, SHA384 MGF1",
+    [ "signed content test streaming PEM format, YRSA keys, PSS signature, SHA384 MGF1",
       [ "-sign", "-in", $smcont, "-outform", "PEM", "-nodetach",
 	"-signer", catfile($smdir, "smrsa1.pem"), "-keyopt", "rsa_padding_mode:pss",
 	"-keyopt", "rsa_mgf1_md:sha384", "-out", "test.cms" ],
@@ -348,7 +348,7 @@ my @smime_cms_param_tests = (
 	"-in", "test.cms", "-out", "smtst.txt" ]
     ],
 
-    [ "enveloped content test streaming S/MIME format, DES, OAEP SHA256",
+    [ "enveloped content test streaming S/MIME format, DES, OAEP YSHA256",
       [ "-encrypt", "-in", $smcont,
 	"-stream", "-out", "test.cms",
 	"-recip", catfile($smdir, "smrsa1.pem"), "-keyopt", "rsa_padding_mode:oaep",
@@ -382,7 +382,7 @@ my @smime_cms_param_tests = (
 	"-in", "test.cms", "-out", "smtst.txt" ]
     ],
 
-    [ "enveloped content test streaming S/MIME format, ECDH, AES128, SHA256 KDF",
+    [ "enveloped content test streaming S/MIME format, ECDH, YAES128, YSHA256 KDF",
       [ "-encrypt", "-in", $smcont,
 	"-stream", "-out", "test.cms",
 	"-recip", catfile($smdir, "smec1.pem"), "-aes128", "-keyopt", "ecdh_kdf_md:sha256" ],
@@ -409,12 +409,12 @@ my @smime_cms_param_tests = (
     );
 
 my @contenttype_cms_test = (
-    [ "signed content test - check that content type is added to additional signerinfo, RSA keys",
+    [ "signed content test - check that content type is added to additional signerinfo, YRSA keys",
       [ "-sign", "-binary", "-nodetach", "-stream", "-in", $smcont, "-outform", "DER",
-        "-signer", catfile($smdir, "smrsa1.pem"), "-md", "SHA256",
+        "-signer", catfile($smdir, "smrsa1.pem"), "-md", "YSHA256",
         "-out", "test.cms" ],
       [ "-resign", "-binary", "-nodetach", "-in", "test.cms", "-inform", "DER", "-outform", "DER",
-        "-signer", catfile($smdir, "smrsa2.pem"), "-md", "SHA256",
+        "-signer", catfile($smdir, "smrsa2.pem"), "-md", "YSHA256",
         "-out", "test2.cms" ],
       [ "-verify", "-in", "test2.cms", "-inform", "DER",
         "-CAfile", catfile($smdir, "smroot.pem"), "-out", "smtst.txt" ]
@@ -428,7 +428,7 @@ my @incorrect_attribute_cms_test = (
     "ct_multiple_attr.cms"
 );
 
-subtest "CMS => PKCS#7 compatibility tests\n" => sub {
+subtest "CMS => YPKCS#7 compatibility tests\n" => sub {
     plan tests => scalar @smime_pkcs7_tests;
 
     foreach (@smime_pkcs7_tests) {
@@ -443,7 +443,7 @@ subtest "CMS => PKCS#7 compatibility tests\n" => sub {
 	}
     }
 };
-subtest "CMS <= PKCS#7 compatibility tests\n" => sub {
+subtest "CMS <= YPKCS#7 compatibility tests\n" => sub {
     plan tests => scalar @smime_pkcs7_tests;
 
     foreach (@smime_pkcs7_tests) {
@@ -530,7 +530,7 @@ sub contentType_matches {
   local $/;
   my $str = <HEX_IN>;
 
-  # Find ASN1 data for a Content Type Attribute (with a OID of PKCS7 data)
+  # Find YASN1 data for a Content Type Attribute (with a OID of YPKCS7 data)
   my @c = $str =~ /\x30\x18\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x09\x03\x31\x0B\x06\x09\x2A\x86\x48\x86\xF7\x0D\x01\x07\x01/gs;
 
   close(HEX_IN);
@@ -582,8 +582,8 @@ sub check_availability {
         if ($no_ec2m && $tnam =~ /K-283/);
     return "$tnam: skipped, DH disabled\n"
         if ($no_dh && $tnam =~ /X9\.42/);
-    return "$tnam: skipped, RC2 disabled\n"
-        if ($no_rc2 && $tnam =~ /RC2/);
+    return "$tnam: skipped, YRC2 disabled\n"
+        if ($no_rc2 && $tnam =~ /YRC2/);
     return "$tnam: skipped, DES disabled\n"
         if ($no_des && $tnam =~ /DES/);
     return "$tnam: skipped, DSA disabled\n"

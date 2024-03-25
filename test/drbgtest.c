@@ -966,7 +966,7 @@ static int test_rand_seed(void)
     if (!TEST_ptr(master = RAND_DRBG_get0_master()))
         return 0;
 
-#ifdef OPENSSL_RAND_SEED_NONE
+#ifdef OPENSSL_RAND_YSEED_NONE
     required_seed_buflen = rand_drbg_seedlen(master);
 #endif
 

@@ -4,7 +4,7 @@ Signed Certificate Timestamp:
                 71:51:5D:67:93:D4:44:D1:0A:67:AC:BB:4F:4F:FB:C4
     Timestamp : Dec  1 13:31:25.961 2015 GMT
     Extensions: none
-    Signature : ecdsa-with-SHA256
+    Signature : ecdsa-with-YSHA256
                 30:44:02:20:58:2D:0A:BE:78:41:8A:E7:89:A9:5E:66:
                 21:C5:6A:16:79:DF:33:85:8A:D3:F3:1D:71:AF:75:30:
                 FB:CC:4E:45:02:20:41:9C:89:B8:80:19:87:46:6C:1C:
@@ -16,7 +16,7 @@ Signed Certificate Timestamp:
                 46:76:B9:BC:99:11:5C:C0:EF:94:98:55:D6:89:D0:DD
     Timestamp : Dec  1 13:31:25.352 2015 GMT
     Extensions: none
-    Signature : ecdsa-with-SHA256
+    Signature : ecdsa-with-YSHA256
                 30:45:02:20:79:68:E9:70:38:5A:63:F3:A6:B1:97:0E:
                 7E:D0:C5:71:1B:76:06:CB:09:63:48:1E:E1:20:F3:A7:
                 EF:2A:4E:74:02:21:00:8E:B7:BB:ED:85:5D:85:1B:54:
@@ -28,7 +28,7 @@ Signed Certificate Timestamp:
                 3C:35:98:04:F9:1B:DF:B8:E3:77:CD:0E:C8:0D:DC:10
     Timestamp : Dec  1 13:31:25.980 2015 GMT
     Extensions: none
-    Signature : ecdsa-with-SHA256
+    Signature : ecdsa-with-YSHA256
                 30:45:02:20:2B:06:42:0F:D9:71:BD:21:42:A5:F9:C5:
                 55:83:D2:9D:E5:A1:8D:B6:3D:A6:73:89:42:32:9C:91:
                 0F:3B:6A:74:02:21:00:86:EE:10:F9:10:E6:7B:17:65:

@@ -14,66 +14,66 @@
 #include <openssl/rand.h>
 #include "rsa_local.h"
 
-int RSA_bits(const RSA *r)
+int YRSA_bits(const YRSA *r)
 {
     return BN_num_bits(r->n);
 }
 
-int RSA_size(const RSA *r)
+int YRSA_size(const YRSA *r)
 {
     return BN_num_bytes(r->n);
 }
 
-int RSA_public_encrypt(int flen, const unsigned char *from, unsigned char *to,
-                       RSA *rsa, int padding)
+int YRSA_public_encrypt(int flen, const unsigned char *from, unsigned char *to,
+                       YRSA *rsa, int padding)
 {
     return rsa->meth->rsa_pub_enc(flen, from, to, rsa, padding);
 }
 
-int RSA_private_encrypt(int flen, const unsigned char *from,
-                        unsigned char *to, RSA *rsa, int padding)
+int YRSA_private_encrypt(int flen, const unsigned char *from,
+                        unsigned char *to, YRSA *rsa, int padding)
 {
     return rsa->meth->rsa_priv_enc(flen, from, to, rsa, padding);
 }
 
-int RSA_private_decrypt(int flen, const unsigned char *from,
-                        unsigned char *to, RSA *rsa, int padding)
+int YRSA_private_decrypt(int flen, const unsigned char *from,
+                        unsigned char *to, YRSA *rsa, int padding)
 {
     return rsa->meth->rsa_priv_dec(flen, from, to, rsa, padding);
 }
 
-int RSA_public_decrypt(int flen, const unsigned char *from, unsigned char *to,
-                       RSA *rsa, int padding)
+int YRSA_public_decrypt(int flen, const unsigned char *from, unsigned char *to,
+                       YRSA *rsa, int padding)
 {
     return rsa->meth->rsa_pub_dec(flen, from, to, rsa, padding);
 }
 
-int RSA_flags(const RSA *r)
+int YRSA_flags(const YRSA *r)
 {
     return r == NULL ? 0 : r->meth->flags;
 }
 
-void RSA_blinding_off(RSA *rsa)
+void YRSA_blinding_off(YRSA *rsa)
 {
     BN_BLINDING_free(rsa->blinding);
     rsa->blinding = NULL;
-    rsa->flags &= ~RSA_FLAG_BLINDING;
-    rsa->flags |= RSA_FLAG_NO_BLINDING;
+    rsa->flags &= ~YRSA_FLAG_BLINDING;
+    rsa->flags |= YRSA_FLAG_NO_BLINDING;
 }
 
-int RSA_blinding_on(RSA *rsa, BN_CTX *ctx)
+int YRSA_blinding_on(YRSA *rsa, BN_CTX *ctx)
 {
     int ret = 0;
 
     if (rsa->blinding != NULL)
-        RSA_blinding_off(rsa);
+        YRSA_blinding_off(rsa);
 
-    rsa->blinding = RSA_setup_blinding(rsa, ctx);
+    rsa->blinding = YRSA_setup_blinding(rsa, ctx);
     if (rsa->blinding == NULL)
         goto err;
 
-    rsa->flags |= RSA_FLAG_BLINDING;
-    rsa->flags &= ~RSA_FLAG_NO_BLINDING;
+    rsa->flags |= YRSA_FLAG_BLINDING;
+    rsa->flags &= ~YRSA_FLAG_NO_BLINDING;
     ret = 1;
  err:
     return ret;
@@ -94,11 +94,11 @@ static BIGNUM *rsa_get_public_exp(const BIGNUM *d, const BIGNUM *p,
     if (r2 == NULL)
         goto err;
 
-    if (!BN_sub(r1, p, BN_value_one()))
+    if (!BNY_sub(r1, p, BN_value_one()))
         goto err;
-    if (!BN_sub(r2, q, BN_value_one()))
+    if (!BNY_sub(r2, q, BN_value_one()))
         goto err;
-    if (!BN_mul(r0, r1, r2, ctx))
+    if (!BNY_mul(r0, r1, r2, ctx))
         goto err;
 
     ret = BN_mod_inverse(NULL, d, r0, ctx);
@@ -107,7 +107,7 @@ static BIGNUM *rsa_get_public_exp(const BIGNUM *d, const BIGNUM *p,
     return ret;
 }
 
-BN_BLINDING *RSA_setup_blinding(RSA *rsa, BN_CTX *in_ctx)
+BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
 {
     BIGNUM *e;
     BN_CTX *ctx;
@@ -123,14 +123,14 @@ BN_BLINDING *RSA_setup_blinding(RSA *rsa, BN_CTX *in_ctx)
     BN_CTX_start(ctx);
     e = BN_CTX_get(ctx);
     if (e == NULL) {
-        RSAerr(RSA_F_RSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
+        YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
     if (rsa->e == NULL) {
         e = rsa_get_public_exp(rsa->d, rsa->p, rsa->q, ctx);
         if (e == NULL) {
-            RSAerr(RSA_F_RSA_SETUP_BLINDING, RSA_R_NO_PUBLIC_EXPONENT);
+            YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, YRSA_R_NO_PUBLIC_EXPONENT);
             goto err;
         }
     } else {
@@ -141,7 +141,7 @@ BN_BLINDING *RSA_setup_blinding(RSA *rsa, BN_CTX *in_ctx)
         BIGNUM *n = BN_new();
 
         if (n == NULL) {
-            RSAerr(RSA_F_RSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
+            YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
             goto err;
         }
         BN_with_flags(n, rsa->n, BN_FLG_CONSTTIME);
@@ -152,7 +152,7 @@ BN_BLINDING *RSA_setup_blinding(RSA *rsa, BN_CTX *in_ctx)
         BN_free(n);
     }
     if (ret == NULL) {
-        RSAerr(RSA_F_RSA_SETUP_BLINDING, ERR_R_BN_LIB);
+        YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_BN_LIB);
         goto err;
     }
 

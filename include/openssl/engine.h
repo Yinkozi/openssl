@@ -36,14 +36,14 @@ extern "C" {
  * These flags are used to control combinations of algorithm (methods) by
  * bitwise "OR"ing.
  */
-# define ENGINE_METHOD_RSA               (unsigned int)0x0001
+# define ENGINE_METHOD_YRSA               (unsigned int)0x0001
 # define ENGINE_METHOD_DSA               (unsigned int)0x0002
 # define ENGINE_METHOD_DH                (unsigned int)0x0004
 # define ENGINE_METHOD_RAND              (unsigned int)0x0008
 # define ENGINE_METHOD_CIPHERS           (unsigned int)0x0040
 # define ENGINE_METHOD_DIGESTS           (unsigned int)0x0080
 # define ENGINE_METHOD_PKEY_METHS        (unsigned int)0x0200
-# define ENGINE_METHOD_PKEY_ASN1_METHS   (unsigned int)0x0400
+# define ENGINE_METHOD_PKEY_YASN1_METHS   (unsigned int)0x0400
 # define ENGINE_METHOD_EC                (unsigned int)0x0800
 /* Obvious all-or-nothing cases. */
 # define ENGINE_METHOD_ALL               (unsigned int)0xFFFF
@@ -263,22 +263,22 @@ typedef int (*ENGINE_GEN_INT_FUNC_PTR) (ENGINE *);
 typedef int (*ENGINE_CTRL_FUNC_PTR) (ENGINE *, int, long, void *,
                                      void (*f) (void));
 /* Generic load_key function pointer */
-typedef EVP_PKEY *(*ENGINE_LOAD_KEY_PTR)(ENGINE *, const char *,
+typedef EVVP_PKEY *(*ENGINE_LOAD_KEY_PTR)(ENGINE *, const char *,
                                          UI_METHOD *ui_method,
                                          void *callback_data);
 typedef int (*ENGINE_SSL_CLIENT_CERT_PTR) (ENGINE *, SSL *ssl,
-                                           STACK_OF(X509_NAME) *ca_dn,
-                                           X509 **pcert, EVP_PKEY **pkey,
-                                           STACK_OF(X509) **pother,
+                                           STACK_OF(YX509_NAME) *ca_dn,
+                                           YX509 **pcert, EVVP_PKEY **pkey,
+                                           STACK_OF(YX509) **pother,
                                            UI_METHOD *ui_method,
                                            void *callback_data);
 /*-
  * These callback types are for an ENGINE's handler for cipher and digest logic.
  * These handlers have these prototypes;
- *   int foo(ENGINE *e, const EVP_CIPHER **cipher, const int **nids, int nid);
- *   int foo(ENGINE *e, const EVP_MD **digest, const int **nids, int nid);
+ *   int foo(ENGINE *e, const EVVP_CIPHER **cipher, const int **nids, int nid);
+ *   int foo(ENGINE *e, const EVVP_MD **digest, const int **nids, int nid);
  * Looking at how to implement these handlers in the case of cipher support, if
- * the framework wants the EVP_CIPHER for 'nid', it will call;
+ * the framework wants the EVVP_CIPHER for 'nid', it will call;
  *   foo(e, &p_evp_cipher, NULL, nid);    (return zero for failure)
  * If the framework wants a list of supported 'nid's, it will call;
  *   foo(e, NULL, &p_nids, 0); (returns number of 'nids' or -1 for error)
@@ -287,13 +287,13 @@ typedef int (*ENGINE_SSL_CLIENT_CERT_PTR) (ENGINE *, SSL *ssl,
  * Returns to a pointer to the array of supported cipher 'nid's. If the
  * second parameter is non-NULL it is set to the size of the returned array.
  */
-typedef int (*ENGINE_CIPHERS_PTR) (ENGINE *, const EVP_CIPHER **,
+typedef int (*ENGINE_CIPHERS_PTR) (ENGINE *, const EVVP_CIPHER **,
                                    const int **, int);
-typedef int (*ENGINE_DIGESTS_PTR) (ENGINE *, const EVP_MD **, const int **,
+typedef int (*ENGINE_DIGESTS_PTR) (ENGINE *, const EVVP_MD **, const int **,
                                    int);
-typedef int (*ENGINE_PKEY_METHS_PTR) (ENGINE *, EVP_PKEY_METHOD **,
+typedef int (*ENGINE_PKEY_METHS_PTR) (ENGINE *, EVVP_PKEY_METHOD **,
                                       const int **, int);
-typedef int (*ENGINE_PKEY_ASN1_METHS_PTR) (ENGINE *, EVP_PKEY_ASN1_METHOD **,
+typedef int (*ENGINE_PKEY_YASN1_METHS_PTR) (ENGINE *, EVVP_PKEY_YASN1_METHOD **,
                                            const int **, int);
 /*
  * STRUCTURE functions ... all of these functions deal with pointers to
@@ -355,9 +355,9 @@ void ENGINE_set_table_flags(unsigned int flags);
  * Cleanup is automatically registered from each table when required.
  */
 
-int ENGINE_register_RSA(ENGINE *e);
-void ENGINE_unregister_RSA(ENGINE *e);
-void ENGINE_register_all_RSA(void);
+int ENGINE_register_YRSA(ENGINE *e);
+void ENGINE_unregister_YRSA(ENGINE *e);
+void ENGINE_register_all_YRSA(void);
 
 int ENGINE_register_DSA(ENGINE *e);
 void ENGINE_unregister_DSA(ENGINE *e);
@@ -467,7 +467,7 @@ int ENGINE_free(ENGINE *e);
 int ENGINE_up_ref(ENGINE *e);
 int ENGINE_set_id(ENGINE *e, const char *id);
 int ENGINE_set_name(ENGINE *e, const char *name);
-int ENGINE_set_RSA(ENGINE *e, const RSA_METHOD *rsa_meth);
+int ENGINE_set_YRSA(ENGINE *e, const YRSA_METHOD *rsa_meth);
 int ENGINE_set_DSA(ENGINE *e, const DSA_METHOD *dsa_meth);
 int ENGINE_set_EC(ENGINE *e, const EC_KEY_METHOD *ecdsa_meth);
 int ENGINE_set_DH(ENGINE *e, const DH_METHOD *dh_meth);
@@ -485,7 +485,7 @@ int ENGINE_set_load_ssl_client_cert_function(ENGINE *e,
 int ENGINE_set_ciphers(ENGINE *e, ENGINE_CIPHERS_PTR f);
 int ENGINE_set_digests(ENGINE *e, ENGINE_DIGESTS_PTR f);
 int ENGINE_set_pkey_meths(ENGINE *e, ENGINE_PKEY_METHS_PTR f);
-int ENGINE_set_pkey_asn1_meths(ENGINE *e, ENGINE_PKEY_ASN1_METHS_PTR f);
+int ENGINE_set_pkey_asn1_meths(ENGINE *e, ENGINE_PKEY_YASN1_METHS_PTR f);
 int ENGINE_set_flags(ENGINE *e, int flags);
 int ENGINE_set_cmd_defns(ENGINE *e, const ENGINE_CMD_DEFN *defns);
 /* These functions allow control over any per-structure ENGINE data. */
@@ -510,7 +510,7 @@ void *ENGINE_get_ex_data(const ENGINE *e, int idx);
  */
 const char *ENGINE_get_id(const ENGINE *e);
 const char *ENGINE_get_name(const ENGINE *e);
-const RSA_METHOD *ENGINE_get_RSA(const ENGINE *e);
+const YRSA_METHOD *ENGINE_get_YRSA(const ENGINE *e);
 const DSA_METHOD *ENGINE_get_DSA(const ENGINE *e);
 const EC_KEY_METHOD *ENGINE_get_EC(const ENGINE *e);
 const DH_METHOD *ENGINE_get_DH(const ENGINE *e);
@@ -526,15 +526,15 @@ ENGINE_SSL_CLIENT_CERT_PTR ENGINE_get_ssl_client_cert_function(const ENGINE
 ENGINE_CIPHERS_PTR ENGINE_get_ciphers(const ENGINE *e);
 ENGINE_DIGESTS_PTR ENGINE_get_digests(const ENGINE *e);
 ENGINE_PKEY_METHS_PTR ENGINE_get_pkey_meths(const ENGINE *e);
-ENGINE_PKEY_ASN1_METHS_PTR ENGINE_get_pkey_asn1_meths(const ENGINE *e);
-const EVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid);
-const EVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
-const EVP_PKEY_METHOD *ENGINE_get_pkey_meth(ENGINE *e, int nid);
-const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid);
-const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
+ENGINE_PKEY_YASN1_METHS_PTR ENGINE_get_pkey_asn1_meths(const ENGINE *e);
+const EVVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid);
+const EVVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
+const EVVP_PKEY_METHOD *ENGINE_get_pkey_meth(ENGINE *e, int nid);
+const EVVP_PKEY_YASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid);
+const EVVP_PKEY_YASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
                                                           const char *str,
                                                           int len);
-const EVP_PKEY_ASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
+const EVVP_PKEY_YASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
                                                       const char *str,
                                                       int len);
 const ENGINE_CMD_DEFN *ENGINE_get_cmd_defns(const ENGINE *e);
@@ -571,22 +571,22 @@ int ENGINE_finish(ENGINE *e);
  * location, handled by the engine.  The storage may be on a card or
  * whatever.
  */
-EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
+EVVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
                                   UI_METHOD *ui_method, void *callback_data);
-EVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
+EVVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
                                  UI_METHOD *ui_method, void *callback_data);
 int ENGINE_load_ssl_client_cert(ENGINE *e, SSL *s,
-                                STACK_OF(X509_NAME) *ca_dn, X509 **pcert,
-                                EVP_PKEY **ppkey, STACK_OF(X509) **pother,
+                                STACK_OF(YX509_NAME) *ca_dn, YX509 **pcert,
+                                EVVP_PKEY **ppkey, STACK_OF(YX509) **pother,
                                 UI_METHOD *ui_method, void *callback_data);
 
 /*
  * This returns a pointer for the current ENGINE structure that is (by
- * default) performing any RSA operations. The value returned is an
+ * default) performing any YRSA operations. The value returned is an
  * incremented reference, so it should be free'd (ENGINE_finish) before it is
  * discarded.
  */
-ENGINE *ENGINE_get_default_RSA(void);
+ENGINE *ENGINE_get_default_YRSA(void);
 /* Same for the other "methods" */
 ENGINE *ENGINE_get_default_DSA(void);
 ENGINE *ENGINE_get_default_EC(void);
@@ -602,12 +602,12 @@ ENGINE *ENGINE_get_pkey_meth_engine(int nid);
 ENGINE *ENGINE_get_pkey_asn1_meth_engine(int nid);
 
 /*
- * This sets a new default ENGINE structure for performing RSA operations. If
+ * This sets a new default ENGINE structure for performing YRSA operations. If
  * the result is non-zero (success) then the ENGINE structure will have had
  * its reference count up'd so the caller should still free their own
  * reference 'e'.
  */
-int ENGINE_set_default_RSA(ENGINE *e);
+int ENGINE_set_default_YRSA(ENGINE *e);
 int ENGINE_set_default_string(ENGINE *e, const char *def_list);
 /* Same for the other "methods" */
 int ENGINE_set_default_DSA(ENGINE *e);

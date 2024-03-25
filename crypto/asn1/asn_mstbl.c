@@ -26,13 +26,13 @@ static int stbl_module_init(CONF_IMODULE *md, const CONF *cnf)
 
     stbl_section = CONF_imodule_get_value(md);
     if ((sktmp = NCONF_get_section(cnf, stbl_section)) == NULL) {
-        ASN1err(ASN1_F_STBL_MODULE_INIT, ASN1_R_ERROR_LOADING_SECTION);
+        YASN1err(YASN1_F_STBL_MODULE_INIT, YASN1_R_ERROR_LOADING_SECTION);
         return 0;
     }
     for (i = 0; i < sk_CONF_VALUE_num(sktmp); i++) {
         mval = sk_CONF_VALUE_value(sktmp, i);
         if (!do_tcreate(mval->value, mval->name)) {
-            ASN1err(ASN1_F_STBL_MODULE_INIT, ASN1_R_INVALID_VALUE);
+            YASN1err(YASN1_F_STBL_MODULE_INIT, YASN1_R_INVALID_VALUE);
             return 0;
         }
     }
@@ -41,10 +41,10 @@ static int stbl_module_init(CONF_IMODULE *md, const CONF *cnf)
 
 static void stbl_module_finish(CONF_IMODULE *md)
 {
-    ASN1_STRING_TABLE_cleanup();
+    YASN1_STRING_TABLE_cleanup();
 }
 
-void ASN1_add_stable_module(void)
+void YASN1_add_stable_module(void)
 {
     CONF_module_add("stbl_section", stbl_module_init, stbl_module_finish);
 }
@@ -67,7 +67,7 @@ static int do_tcreate(const char *value, const char *name)
         nid = OBJ_ln2nid(name);
     if (nid == NID_undef)
         goto err;
-    lst = X509V3_parse_list(value);
+    lst = YX509V3_parse_list(value);
     if (!lst)
         goto err;
     for (i = 0; i < sk_CONF_VALUE_num(lst); i++) {
@@ -81,7 +81,7 @@ static int do_tcreate(const char *value, const char *name)
             if (*eptr)
                 goto err;
         } else if (strcmp(cnf->name, "mask") == 0) {
-            if (!ASN1_str2mask(cnf->value, &tbl_mask) || !tbl_mask)
+            if (!YASN1_str2mask(cnf->value, &tbl_mask) || !tbl_mask)
                 goto err;
         } else if (strcmp(cnf->name, "flags") == 0) {
             if (strcmp(cnf->value, "nomask") == 0)
@@ -96,18 +96,18 @@ static int do_tcreate(const char *value, const char *name)
     rv = 1;
  err:
     if (rv == 0) {
-        ASN1err(ASN1_F_DO_TCREATE, ASN1_R_INVALID_STRING_TABLE_VALUE);
+        YASN1err(YASN1_F_DO_TCREATE, YASN1_R_INVALID_STRING_TABLE_VALUE);
         if (cnf)
             ERR_add_error_data(4, "field=", cnf->name,
                                ", value=", cnf->value);
         else
             ERR_add_error_data(4, "name=", name, ", value=", value);
     } else {
-        rv = ASN1_STRING_TABLE_add(nid, tbl_min, tbl_max,
+        rv = YASN1_STRING_TABLE_add(nid, tbl_min, tbl_max,
                                    tbl_mask, tbl_flags);
         if (!rv)
-            ASN1err(ASN1_F_DO_TCREATE, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_DO_TCREATE, ERR_R_MALLOC_FAILURE);
     }
-    sk_CONF_VALUE_pop_free(lst, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(lst, YX509V3_conf_free);
     return rv;
 }

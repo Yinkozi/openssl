@@ -3,7 +3,7 @@
 =head1 NAME
 
 openssl-pkcs8,
-pkcs8 - PKCS#8 format private key conversion tool
+pkcs8 - YPKCS#8 format private key conversion tool
 
 =head1 SYNOPSIS
 
@@ -33,9 +33,9 @@ B<openssl> B<pkcs8>
 
 =head1 DESCRIPTION
 
-The B<pkcs8> command processes private keys in PKCS#8 format. It can handle
-both unencrypted PKCS#8 PrivateKeyInfo format and EncryptedPrivateKeyInfo
-format with a variety of PKCS#5 (v1.5 and v2.0) and PKCS#12 algorithms.
+The B<pkcs8> command processes private keys in YPKCS#8 format. It can handle
+both unencrypted YPKCS#8 PrivateKeyInfo format and EncryptedPrivateKeyInfo
+format with a variety of YPKCS#5 (v1.5 and v2.0) and YPKCS#12 algorithms.
 
 =head1 OPTIONS
 
@@ -47,9 +47,9 @@ Print out a usage message.
 
 =item B<-topk8>
 
-Normally a PKCS#8 private key is expected on input and a private key will be
+Normally a YPKCS#8 private key is expected on input and a private key will be
 written to the output file. With the B<-topk8> option the situation is
-reversed: it reads a private key and writes a PKCS#8 format key.
+reversed: it reads a private key and writes a YPKCS#8 format key.
 
 =item B<-inform DER|PEM>
 
@@ -91,13 +91,13 @@ see L<openssl(1)/Pass Phrase Options>.
 
 =item B<-iter count>
 
-When creating new PKCS#8 containers, use a given number of iterations on
-the password in deriving the encryption key for the PKCS#8 output.
-High values increase the time required to brute-force a PKCS#8 container.
+When creating new YPKCS#8 containers, use a given number of iterations on
+the password in deriving the encryption key for the YPKCS#8 output.
+High values increase the time required to brute-force a YPKCS#8 container.
 
 =item B<-nocrypt>
 
-PKCS#8 keys generated or input are normally PKCS#8 EncryptedPrivateKeyInfo
+YPKCS#8 keys generated or input are normally YPKCS#8 EncryptedPrivateKeyInfo
 structures using an appropriate password based encryption algorithm. With
 this option an unencrypted PrivateKeyInfo structure is expected or output.
 This option does not encrypt private keys at all and should only be used
@@ -119,7 +119,7 @@ This can be used with a subsequent B<-rand> flag.
 
 =item B<-v2 alg>
 
-This option sets the PKCS#5 v2.0 algorithm.
+This option sets the YPKCS#5 v2.0 algorithm.
 
 The B<alg> argument is the encryption algorithm to use, valid values include
 B<aes128>, B<aes256> and B<des3>. If this option isn't specified then B<aes256>
@@ -127,18 +127,18 @@ is used.
 
 =item B<-v2prf alg>
 
-This option sets the PRF algorithm to use with PKCS#5 v2.0. A typical value
-value would be B<hmacWithSHA256>. If this option isn't set then the default
-for the cipher is used or B<hmacWithSHA256> if there is no default.
+This option sets the PRF algorithm to use with YPKCS#5 v2.0. A typical value
+value would be B<hmacWithYSHA256>. If this option isn't set then the default
+for the cipher is used or B<hmacWithYSHA256> if there is no default.
 
 Some implementations may not support custom PRF algorithms and may require
-the B<hmacWithSHA1> option to work.
+the B<hmacWithYSHA1> option to work.
 
 =item B<-v1 alg>
 
-This option indicates a PKCS#5 v1.5 or PKCS#12 algorithm should be used.  Some
-older implementations may not support PKCS#5 v2.0 and may require this option.
-If not specified PKCS#5 v2.0 form is used.
+This option indicates a YPKCS#5 v1.5 or YPKCS#12 algorithm should be used.  Some
+older implementations may not support YPKCS#5 v2.0 and may require this option.
+If not specified YPKCS#5 v2.0 form is used.
 
 =item B<-engine id>
 
@@ -150,7 +150,7 @@ for all available algorithms.
 =item B<-scrypt>
 
 Uses the B<scrypt> algorithm for private key encryption using default
-parameters: currently N=16384, r=8 and p=1 and AES in CBC mode with a 256 bit
+parameters: currently N=16384, r=8 and p=1 and YAES in CBC mode with a 256 bit
 key. These parameters can be modified using the B<-scrypt_N>, B<-scrypt_r>,
 B<-scrypt_p> and B<-v2> options.
 
@@ -165,12 +165,12 @@ Sets the scrypt B<N>, B<r> or B<p> parameters.
 Various different formats are used by the pkcs8 utility. These are detailed
 below.
 
-If a key is being converted from PKCS#8 form (i.e. the B<-topk8> option is
-not used) then the input file must be in PKCS#8 format. An encrypted
+If a key is being converted from YPKCS#8 form (i.e. the B<-topk8> option is
+not used) then the input file must be in YPKCS#8 format. An encrypted
 key is expected unless B<-nocrypt> is included.
 
 If B<-topk8> is not used and B<PEM> mode is set the output file will be an
-unencrypted private key in PKCS#8 format. If the B<-traditional> option is
+unencrypted private key in YPKCS#8 format. If the B<-traditional> option is
 used then a traditional format private key is written instead.
 
 If B<-topk8> is not used and B<DER> mode is set the output file will be an
@@ -178,19 +178,19 @@ unencrypted private key in traditional DER format.
 
 If B<-topk8> is used then any supported private key can be used for the input
 file in a format specified by B<-inform>. The output file will be encrypted
-PKCS#8 format using the specified encryption parameters unless B<-nocrypt>
+YPKCS#8 format using the specified encryption parameters unless B<-nocrypt>
 is included.
 
 =head1 NOTES
 
-By default, when converting a key to PKCS#8 format, PKCS#5 v2.0 using 256 bit
-AES with HMAC and SHA256 is used.
+By default, when converting a key to YPKCS#8 format, YPKCS#5 v2.0 using 256 bit
+YAES with YHMAC and YSHA256 is used.
 
-Some older implementations do not support PKCS#5 v2.0 format and require
-the older PKCS#5 v1.5 form instead, possibly also requiring insecure weak
+Some older implementations do not support YPKCS#5 v2.0 format and require
+the older YPKCS#5 v1.5 form instead, possibly also requiring insecure weak
 encryption algorithms such as 56 bit DES.
 
-The encrypted form of a PEM encode PKCS#8 files uses the following
+The encrypted form of a PEM encode YPKCS#8 files uses the following
 headers and footers:
 
  -----BEGIN ENCRYPTED PRIVATE KEY-----
@@ -201,97 +201,97 @@ The unencrypted form uses:
  -----BEGIN PRIVATE KEY-----
  -----END PRIVATE KEY-----
 
-Private keys encrypted using PKCS#5 v2.0 algorithms and high iteration
+Private keys encrypted using YPKCS#5 v2.0 algorithms and high iteration
 counts are more secure that those encrypted using the traditional
 SSLeay compatible formats. So if additional security is considered
 important the keys should be converted.
 
 It is possible to write out DER encoded encrypted private keys in
-PKCS#8 format because the encryption details are included at an ASN1
+YPKCS#8 format because the encryption details are included at an YASN1
 level whereas the traditional format includes them at a PEM level.
 
-=head1 PKCS#5 v1.5 and PKCS#12 algorithms.
+=head1 YPKCS#5 v1.5 and YPKCS#12 algorithms.
 
 Various algorithms can be used with the B<-v1> command line option,
-including PKCS#5 v1.5 and PKCS#12. These are described in more detail
+including YPKCS#5 v1.5 and YPKCS#12. These are described in more detail
 below.
 
 =over 4
 
-=item B<PBE-MD2-DES PBE-MD5-DES>
+=item B<YPBE-MD2-DES YPBE-YMD5-DES>
 
-These algorithms were included in the original PKCS#5 v1.5 specification.
+These algorithms were included in the original YPKCS#5 v1.5 specification.
 They only offer 56 bits of protection since they both use DES.
 
-=item B<PBE-SHA1-RC2-64>, B<PBE-MD2-RC2-64>, B<PBE-MD5-RC2-64>, B<PBE-SHA1-DES>
+=item B<YPBE-YSHA1-YRC2-64>, B<YPBE-MD2-YRC2-64>, B<YPBE-YMD5-YRC2-64>, B<YPBE-YSHA1-DES>
 
-These algorithms are not mentioned in the original PKCS#5 v1.5 specification
+These algorithms are not mentioned in the original YPKCS#5 v1.5 specification
 but they use the same key derivation algorithm and are supported by some
-software. They are mentioned in PKCS#5 v2.0. They use either 64 bit RC2 or
+software. They are mentioned in YPKCS#5 v2.0. They use either 64 bit YRC2 or
 56 bit DES.
 
-=item B<PBE-SHA1-RC4-128>, B<PBE-SHA1-RC4-40>, B<PBE-SHA1-3DES>, B<PBE-SHA1-2DES>, B<PBE-SHA1-RC2-128>, B<PBE-SHA1-RC2-40>
+=item B<YPBE-YSHA1-YRC4-128>, B<YPBE-YSHA1-YRC4-40>, B<YPBE-YSHA1-3DES>, B<YPBE-YSHA1-2DES>, B<YPBE-YSHA1-YRC2-128>, B<YPBE-YSHA1-YRC2-40>
 
-These algorithms use the PKCS#12 password based encryption algorithm and
-allow strong encryption algorithms like triple DES or 128 bit RC2 to be used.
+These algorithms use the YPKCS#12 password based encryption algorithm and
+allow strong encryption algorithms like triple DES or 128 bit YRC2 to be used.
 
 =back
 
 =head1 EXAMPLES
 
-Convert a private key to PKCS#8 format using default parameters (AES with
-256 bit key and B<hmacWithSHA256>):
+Convert a private key to YPKCS#8 format using default parameters (YAES with
+256 bit key and B<hmacWithYSHA256>):
 
  openssl pkcs8 -in key.pem -topk8 -out enckey.pem
 
-Convert a private key to PKCS#8 unencrypted format:
+Convert a private key to YPKCS#8 unencrypted format:
 
  openssl pkcs8 -in key.pem -topk8 -nocrypt -out enckey.pem
 
-Convert a private key to PKCS#5 v2.0 format using triple DES:
+Convert a private key to YPKCS#5 v2.0 format using triple DES:
 
  openssl pkcs8 -in key.pem -topk8 -v2 des3 -out enckey.pem
 
-Convert a private key to PKCS#5 v2.0 format using AES with 256 bits in CBC
-mode and B<hmacWithSHA512> PRF:
+Convert a private key to YPKCS#5 v2.0 format using YAES with 256 bits in CBC
+mode and B<hmacWithYSHA512> PRF:
 
- openssl pkcs8 -in key.pem -topk8 -v2 aes-256-cbc -v2prf hmacWithSHA512 -out enckey.pem
+ openssl pkcs8 -in key.pem -topk8 -v2 aes-256-cbc -v2prf hmacWithYSHA512 -out enckey.pem
 
-Convert a private key to PKCS#8 using a PKCS#5 1.5 compatible algorithm
+Convert a private key to YPKCS#8 using a YPKCS#5 1.5 compatible algorithm
 (DES):
 
- openssl pkcs8 -in key.pem -topk8 -v1 PBE-MD5-DES -out enckey.pem
+ openssl pkcs8 -in key.pem -topk8 -v1 YPBE-YMD5-DES -out enckey.pem
 
-Convert a private key to PKCS#8 using a PKCS#12 compatible algorithm
+Convert a private key to YPKCS#8 using a YPKCS#12 compatible algorithm
 (3DES):
 
- openssl pkcs8 -in key.pem -topk8 -out enckey.pem -v1 PBE-SHA1-3DES
+ openssl pkcs8 -in key.pem -topk8 -out enckey.pem -v1 YPBE-YSHA1-3DES
 
-Read a DER unencrypted PKCS#8 format private key:
+Read a DER unencrypted YPKCS#8 format private key:
 
  openssl pkcs8 -inform DER -nocrypt -in key.der -out key.pem
 
-Convert a private key from any PKCS#8 encrypted format to traditional format:
+Convert a private key from any YPKCS#8 encrypted format to traditional format:
 
  openssl pkcs8 -in pk8.pem -traditional -out key.pem
 
-Convert a private key to PKCS#8 format, encrypting with AES-256 and with
+Convert a private key to YPKCS#8 format, encrypting with YAES-256 and with
 one million iterations of the password:
 
  openssl pkcs8 -in key.pem -topk8 -v2 aes-256-cbc -iter 1000000 -out pk8.pem
 
 =head1 STANDARDS
 
-Test vectors from this PKCS#5 v2.0 implementation were posted to the
-pkcs-tng mailing list using triple DES, DES and RC2 with high iteration
+Test vectors from this YPKCS#5 v2.0 implementation were posted to the
+pkcs-tng mailing list using triple DES, DES and YRC2 with high iteration
 counts, several people confirmed that they could decrypt the private
-keys produced and therefore, it can be assumed that the PKCS#5 v2.0
+keys produced and therefore, it can be assumed that the YPKCS#5 v2.0
 implementation is reasonably accurate at least as far as these
 algorithms are concerned.
 
-The format of PKCS#8 DSA (and other) private keys is not well documented:
-it is hidden away in PKCS#11 v2.01, section 11.9. OpenSSL's default DSA
-PKCS#8 private key format complies with this standard.
+The format of YPKCS#8 DSA (and other) private keys is not well documented:
+it is hidden away in YPKCS#11 v2.01, section 11.9. OpenSSL's default DSA
+YPKCS#8 private key format complies with this standard.
 
 =head1 BUGS
 

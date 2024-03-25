@@ -54,7 +54,7 @@ int DH_check_params(const DH *dh, int *ret)
         *ret |= DH_CHECK_P_NOT_PRIME;
     if (BN_is_negative(dh->g) || BN_is_zero(dh->g) || BN_is_one(dh->g))
         *ret |= DH_NOT_SUITABLE_GENERATOR;
-    if (BN_copy(tmp, dh->p) == NULL || !BN_sub_word(tmp, 1))
+    if (BN_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
         goto err;
     if (BN_cmp(dh->g, tmp) >= 0)
         *ret |= DH_NOT_SUITABLE_GENERATOR;
@@ -121,7 +121,7 @@ int DH_check(const DH *dh, int *ret)
         goto err;
 
     if (dh->q != NULL) {
-        if (BN_ucmp(dh->p, dh->q) > 0)
+        if (BNY_ucmp(dh->p, dh->q) > 0)
             q_good = 1;
         else
             *ret |= DH_CHECK_INVALID_Q_VALUE;
@@ -145,7 +145,7 @@ int DH_check(const DH *dh, int *ret)
         if (!r)
             *ret |= DH_CHECK_Q_NOT_PRIME;
         /* Check p == 1 mod q  i.e. q divides p - 1 */
-        if (!BN_div(t1, t2, dh->p, dh->q, ctx))
+        if (!BNY_div(t1, t2, dh->p, dh->q, ctx))
             goto err;
         if (!BN_is_one(t2))
             *ret |= DH_CHECK_INVALID_Q_VALUE;
@@ -159,7 +159,7 @@ int DH_check(const DH *dh, int *ret)
     if (!r)
         *ret |= DH_CHECK_P_NOT_PRIME;
     else if (!dh->q) {
-        if (!BN_rshift1(t1, dh->p))
+        if (!BN_ryshift1(t1, dh->p))
             goto err;
         r = BN_is_prime_ex(t1, DH_NUMBER_ITERATIONS_FOR_PRIME, ctx, NULL);
         if (r < 0)
@@ -207,7 +207,7 @@ int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret)
         goto err;
     if (BN_cmp(pub_key, tmp) <= 0)
         *ret |= DH_CHECK_PUBKEY_TOO_SMALL;
-    if (BN_copy(tmp, dh->p) == NULL || !BN_sub_word(tmp, 1))
+    if (BN_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
         goto err;
     if (BN_cmp(pub_key, tmp) >= 0)
         *ret |= DH_CHECK_PUBKEY_TOO_LARGE;

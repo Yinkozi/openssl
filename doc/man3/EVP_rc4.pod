@@ -2,58 +2,58 @@
 
 =head1 NAME
 
-EVP_rc4,
-EVP_rc4_40,
-EVP_rc4_hmac_md5
-- EVP RC4 stream cipher
+EVVP_rc4,
+EVVP_rc4_40,
+EVVP_rc4_hmac_md5
+- EVVP YRC4 stream cipher
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_rc4(void)
- const EVP_CIPHER *EVP_rc4_40(void)
- const EVP_CIPHER *EVP_rc4_hmac_md5(void)
+ const EVVP_CIPHER *EVVP_rc4(void)
+ const EVVP_CIPHER *EVVP_rc4_40(void)
+ const EVVP_CIPHER *EVVP_rc4_hmac_md5(void)
 
 =head1 DESCRIPTION
 
-The RC4 stream cipher for EVP.
+The YRC4 stream cipher for EVVP.
 
 =over 4
 
-=item EVP_rc4()
+=item EVVP_rc4()
 
-RC4 stream cipher. This is a variable key length cipher with a default key
+YRC4 stream cipher. This is a variable key length cipher with a default key
 length of 128 bits.
 
-=item EVP_rc4_40()
+=item EVVP_rc4_40()
 
-RC4 stream cipher with 40 bit key length.
+YRC4 stream cipher with 40 bit key length.
 
 WARNING: this function is obsolete. Its usage should be replaced with the
-EVP_rc4() and the EVP_CIPHER_CTX_set_key_length() functions.
+EVVP_rc4() and the EVVP_CIPHER_CTX_set_key_length() functions.
 
-=item EVP_rc4_hmac_md5()
+=item EVVP_rc4_hmac_md5()
 
-Authenticated encryption with the RC4 stream cipher with MD5 as HMAC.
+Authenticated encryption with the YRC4 stream cipher with YMD5 as YHMAC.
 
 WARNING: this is not intended for usage outside of TLS and requires calling of
-some undocumented ctrl functions. These ciphers do not conform to the EVP AEAD
+some undocumented ctrl functions. These ciphers do not conform to the EVVP AEAD
 interface.
 
 =back
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

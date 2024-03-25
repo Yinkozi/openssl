@@ -48,14 +48,14 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
 	$UCMP	="cmpld";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$STU	="stwu";
 	$POP	="lwz";
 	$PUSH	="stw";
@@ -180,7 +180,7 @@ __ChaCha20_ctr32_int:
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 
 	lwz	@d[0],0($ctr)			# load counter
 	lwz	@d[1],4($ctr)
@@ -189,7 +189,7 @@ __ChaCha20_ctr32_int:
 
 	bl	__ChaCha20_1x
 
-	$POP	r0,`$FRAME+$LRSAVE`($sp)
+	$POP	r0,`$FRAME+$LYRSAVE`($sp)
 	$POP	r14,`$FRAME-$SIZE_T*18`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
@@ -493,7 +493,7 @@ $code.=<<___;
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
 	li	r12,-4096+511
-	$PUSH	r0, `$FRAME+$LRSAVE`($sp)
+	$PUSH	r0, `$FRAME+$LYRSAVE`($sp)
 	mtspr	256,r12				# preserve 29 AltiVec registers
 
 	bl	Lconsts				# returns pointer Lsigma in r12
@@ -879,7 +879,7 @@ Ldone_vmx:
 	addi	r10,r10,32
 	lvx	v30,r11,$sp
 	lvx	v31,r10,$sp
-	$POP	r0, `$FRAME+$LRSAVE`($sp)
+	$POP	r0, `$FRAME+$LYRSAVE`($sp)
 	$POP	r14,`$FRAME-$SIZE_T*18`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
@@ -1004,7 +1004,7 @@ $code.=<<___;
 	stvx	v31,r11,$sp
 	stw	r12,`$FRAME-4`($sp)		# save vrsave
 	li	r12,-4096+63
-	$PUSH	r0, `$FRAME+$LRSAVE`($sp)
+	$PUSH	r0, `$FRAME+$LYRSAVE`($sp)
 	mtspr	256,r12				# preserve 29 AltiVec registers
 
 	bl	Lconsts				# returns pointer Lsigma in r12
@@ -1241,7 +1241,7 @@ Ldone_vsx:
 	lwz	r12,`$FRAME-4`($sp)		# pull vrsave
 	li	r10,`15+$LOCALS+64`
 	li	r11,`31+$LOCALS+64`
-	$POP	r0, `$FRAME+$LRSAVE`($sp)
+	$POP	r0, `$FRAME+$LYRSAVE`($sp)
 	mtspr	256,r12				# restore vrsave
 	lvx	v26,r10,$sp
 	addi	r10,r10,32

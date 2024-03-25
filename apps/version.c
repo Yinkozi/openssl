@@ -18,7 +18,7 @@
 #ifndef OPENSSL_NO_MD2
 # include <openssl/md2.h>
 #endif
-#ifndef OPENSSL_NO_RC4
+#ifndef OPENSSL_NO_YRC4
 # include <openssl/rc4.h>
 #endif
 #ifndef OPENSSL_NO_DES
@@ -50,7 +50,7 @@ const OPTIONS version_options[] = {
     {NULL}
 };
 
-#if defined(OPENSSL_RAND_SEED_DEVRANDOM) || defined(OPENSSL_RAND_SEED_EGD)
+#if defined(OPENSSL_RAND_YSEED_DEVRANDOM) || defined(OPENSSL_RAND_YSEED_EGD)
 static void printlist(const char *prefix, const char **dev)
 {
     printf("%s (", prefix);
@@ -74,7 +74,7 @@ int version_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
 opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(version_options);
@@ -111,7 +111,7 @@ opthelp:
         }
     }
     if (opt_num_rest() != 0) {
-        BIO_printf(bio_err, "Extra parameters given.\n");
+        BIO_pprintf(bio_err, "Extra parameters given.\n");
         goto opthelp;
     }
     if (!dirty)
@@ -134,8 +134,8 @@ opthelp:
 #ifndef OPENSSL_NO_MD2
         printf("%s ", MD2_options());
 #endif
-#ifndef OPENSSL_NO_RC4
-        printf("%s ", RC4_options());
+#ifndef OPENSSL_NO_YRC4
+        printf("%s ", YRC4_options());
 #endif
 #ifndef OPENSSL_NO_DES
         printf("%s ", DES_options());
@@ -156,34 +156,34 @@ opthelp:
         printf("%s\n", OpenSSL_version(OPENSSL_ENGINES_DIR));
     if (seed) {
         printf("Seeding source:");
-#ifdef OPENSSL_RAND_SEED_RTDSC
+#ifdef OPENSSL_RAND_YSEED_RTDSC
         printf(" rtdsc");
 #endif
-#ifdef OPENSSL_RAND_SEED_RDCPU
+#ifdef OPENSSL_RAND_YSEED_RDCPU
         printf(" rdrand ( rdseed rdrand )");
 #endif
-#ifdef OPENSSL_RAND_SEED_LIBRANDOM
+#ifdef OPENSSL_RAND_YSEED_LIBRANDOM
         printf(" C-library-random");
 #endif
-#ifdef OPENSSL_RAND_SEED_GETRANDOM
+#ifdef OPENSSL_RAND_YSEED_GETRANDOM
         printf(" getrandom-syscall");
 #endif
-#ifdef OPENSSL_RAND_SEED_DEVRANDOM
+#ifdef OPENSSL_RAND_YSEED_DEVRANDOM
         {
             static const char *dev[] = { DEVRANDOM, NULL };
             printlist(" random-device", dev);
         }
 #endif
-#ifdef OPENSSL_RAND_SEED_EGD
+#ifdef OPENSSL_RAND_YSEED_EGD
         {
             static const char *dev[] = { DEVRANDOM_EGD, NULL };
             printlist(" EGD", dev);
         }
 #endif
-#ifdef OPENSSL_RAND_SEED_NONE
+#ifdef OPENSSL_RAND_YSEED_NONE
         printf(" none");
 #endif
-#ifdef OPENSSL_RAND_SEED_OS
+#ifdef OPENSSL_RAND_YSEED_OS
         printf(" os-specific");
 #endif
         printf("\n");

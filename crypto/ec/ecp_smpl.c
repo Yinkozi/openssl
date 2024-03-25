@@ -162,7 +162,7 @@ int ec_GFp_simple_group_set_curve(EC_GROUP *group,
     BN_set_negative(group->field, 0);
 
     /* group->a */
-    if (!BN_nnmod(tmp_a, a, p, ctx))
+    if (!BNY_nnmod(tmp_a, a, p, ctx))
         goto err;
     if (group->meth->field_encode) {
         if (!group->meth->field_encode(group, group->a, tmp_a, ctx))
@@ -171,14 +171,14 @@ int ec_GFp_simple_group_set_curve(EC_GROUP *group,
         goto err;
 
     /* group->b */
-    if (!BN_nnmod(group->b, b, p, ctx))
+    if (!BNY_nnmod(group->b, b, p, ctx))
         goto err;
     if (group->meth->field_encode)
         if (!group->meth->field_encode(group, group->b, group->b, ctx))
             goto err;
 
     /* group->a_is_minus3 */
-    if (!BN_add_word(tmp_a, 3))
+    if (!BNY_add_word(tmp_a, 3))
         goto err;
     group->a_is_minus3 = (0 == BN_cmp(tmp_a, group->field));
 
@@ -295,7 +295,7 @@ int ec_GFp_simple_group_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
 
         if (!BN_mod_sqr(tmp_2, b, p, ctx))
             goto err;
-        if (!BN_mul_word(tmp_2, 27))
+        if (!BNY_mul_word(tmp_2, 27))
             goto err;
         /* tmp_2 = 27*b^2 */
 
@@ -382,7 +382,7 @@ int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
     }
 
     if (x != NULL) {
-        if (!BN_nnmod(point->X, x, group->field, ctx))
+        if (!BNY_nnmod(point->X, x, group->field, ctx))
             goto err;
         if (group->meth->field_encode) {
             if (!group->meth->field_encode(group, point->X, point->X, ctx))
@@ -391,7 +391,7 @@ int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
     }
 
     if (y != NULL) {
-        if (!BN_nnmod(point->Y, y, group->field, ctx))
+        if (!BNY_nnmod(point->Y, y, group->field, ctx))
             goto err;
         if (group->meth->field_encode) {
             if (!group->meth->field_encode(group, point->Y, point->Y, ctx))
@@ -402,7 +402,7 @@ int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
     if (z != NULL) {
         int Z_is_one;
 
-        if (!BN_nnmod(point->Z, z, group->field, ctx))
+        if (!BNY_nnmod(point->Z, z, group->field, ctx))
             goto err;
         Z_is_one = BN_is_one(point->Z);
         if (group->meth->field_encode) {
@@ -776,10 +776,10 @@ int ec_GFp_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
     if (!BN_mod_sub_quick(n0, n0, n1, p))
         goto end;
     if (BN_is_odd(n0))
-        if (!BN_add(n0, n0, p))
+        if (!BNY_add(n0, n0, p))
             goto end;
     /* now  0 <= n0 < 2*p,  and n0 is even */
-    if (!BN_rshift1(r->Y, n0))
+    if (!BN_ryshift1(r->Y, n0))
         goto end;
     /* Y_r = (n6 * 'n9' - 'n8' * 'n5^3') / 2 */
 
@@ -939,7 +939,7 @@ int ec_GFp_simple_invert(const EC_GROUP *group, EC_POINT *point, BN_CTX *ctx)
         /* point is its own inverse */
         return 1;
 
-    return BN_usub(point->Y, group->field, point->Y);
+    return BNY_usub(point->Y, group->field, point->Y);
 }
 
 int ec_GFp_simple_is_at_infinity(const EC_GROUP *group, const EC_POINT *point)
@@ -1042,7 +1042,7 @@ int ec_GFp_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
     if (!field_sqr(group, tmp, point->Y, ctx))
         goto err;
 
-    ret = (0 == BN_ucmp(tmp, rh));
+    ret = (0 == BNY_ucmp(tmp, rh));
 
  err:
     BN_CTX_end(ctx);

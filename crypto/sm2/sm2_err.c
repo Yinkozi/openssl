@@ -38,7 +38,7 @@ static const ERR_STRING_DATA SM2_str_functs[] = {
 };
 
 static const ERR_STRING_DATA SM2_str_reasons[] = {
-    {ERR_PACK(ERR_LIB_SM2, 0, SM2_R_ASN1_ERROR), "asn1 error"},
+    {ERR_PACK(ERR_LIB_SM2, 0, SM2_R_YASN1_ERROR), "asn1 error"},
     {ERR_PACK(ERR_LIB_SM2, 0, SM2_R_BAD_SIGNATURE), "bad signature"},
     {ERR_PACK(ERR_LIB_SM2, 0, SM2_R_BUFFER_TOO_SMALL), "buffer too small"},
     {ERR_PACK(ERR_LIB_SM2, 0, SM2_R_DIST_ID_TOO_LARGE), "dist id too large"},

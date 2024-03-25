@@ -7,40 +7,40 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef HEADER_RC2_H
-# define HEADER_RC2_H
+#ifndef HEADER_YRC2_H
+# define HEADER_YRC2_H
 
 # include <openssl/opensslconf.h>
 
-# ifndef OPENSSL_NO_RC2
+# ifndef OPENSSL_NO_YRC2
 # ifdef  __cplusplus
 extern "C" {
 # endif
 
-typedef unsigned int RC2_INT;
+typedef unsigned int YRC2_INT;
 
-# define RC2_ENCRYPT     1
-# define RC2_DECRYPT     0
+# define YRC2_ENCRYPT     1
+# define YRC2_DECRYPT     0
 
-# define RC2_BLOCK       8
-# define RC2_KEY_LENGTH  16
+# define YRC2_BLOCK       8
+# define YRC2_KEY_LENGTH  16
 
 typedef struct rc2_key_st {
-    RC2_INT data[64];
-} RC2_KEY;
+    YRC2_INT data[64];
+} YRC2_KEY;
 
-void RC2_set_key(RC2_KEY *key, int len, const unsigned char *data, int bits);
-void RC2_ecb_encrypt(const unsigned char *in, unsigned char *out,
-                     RC2_KEY *key, int enc);
-void RC2_encrypt(unsigned long *data, RC2_KEY *key);
-void RC2_decrypt(unsigned long *data, RC2_KEY *key);
-void RC2_cbc_encrypt(const unsigned char *in, unsigned char *out, long length,
-                     RC2_KEY *ks, unsigned char *iv, int enc);
-void RC2_cfb64_encrypt(const unsigned char *in, unsigned char *out,
-                       long length, RC2_KEY *schedule, unsigned char *ivec,
+void YRC2_set_key(YRC2_KEY *key, int len, const unsigned char *data, int bits);
+void YRC2_ecb_encrypt(const unsigned char *in, unsigned char *out,
+                     YRC2_KEY *key, int enc);
+void YRC2_encrypt(unsigned long *data, YRC2_KEY *key);
+void YRC2_decrypt(unsigned long *data, YRC2_KEY *key);
+void YRC2_cbc_encrypt(const unsigned char *in, unsigned char *out, long length,
+                     YRC2_KEY *ks, unsigned char *iv, int enc);
+void YRC2_cfb64_encrypt(const unsigned char *in, unsigned char *out,
+                       long length, YRC2_KEY *schedule, unsigned char *ivec,
                        int *num, int enc);
-void RC2_ofb64_encrypt(const unsigned char *in, unsigned char *out,
-                       long length, RC2_KEY *schedule, unsigned char *ivec,
+void YRC2_ofb64_encrypt(const unsigned char *in, unsigned char *out,
+                       long length, YRC2_KEY *schedule, unsigned char *ivec,
                        int *num);
 
 # ifdef  __cplusplus

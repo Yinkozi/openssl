@@ -3,7 +3,7 @@
 =head1 NAME
 
 openssl-pkcs7,
-pkcs7 - PKCS#7 utility
+pkcs7 - YPKCS#7 utility
 
 =head1 SYNOPSIS
 
@@ -20,7 +20,7 @@ B<openssl> B<pkcs7>
 
 =head1 DESCRIPTION
 
-The B<pkcs7> command processes PKCS#7 files in DER or PEM format.
+The B<pkcs7> command processes YPKCS#7 files in DER or PEM format.
 
 =head1 OPTIONS
 
@@ -32,7 +32,7 @@ Print out a usage message.
 
 =item B<-inform DER|PEM>
 
-This specifies the input format. B<DER> format is DER encoded PKCS#7
+This specifies the input format. B<DER> format is DER encoded YPKCS#7
 v1.5 structure.B<PEM> (the default) is a base64 encoded version of
 the DER form with header and footer lines.
 
@@ -63,7 +63,7 @@ issuer names.
 
 =item B<-noout>
 
-Don't output the encoded version of the PKCS#7 structure (or certificates
+Don't output the encoded version of the YPKCS#7 structure (or certificates
 is B<-print_certs> is set).
 
 =item B<-engine id>
@@ -77,7 +77,7 @@ for all available algorithms.
 
 =head1 EXAMPLES
 
-Convert a PKCS#7 file from PEM to DER:
+Convert a YPKCS#7 file from PEM to DER:
 
  openssl pkcs7 -in file.pem -outform DER -out file.der
 
@@ -87,10 +87,10 @@ Output all certificates in a file:
 
 =head1 NOTES
 
-The PEM PKCS#7 format uses the header and footer lines:
+The PEM YPKCS#7 format uses the header and footer lines:
 
- -----BEGIN PKCS7-----
- -----END PKCS7-----
+ -----BEGIN YPKCS7-----
+ -----END YPKCS7-----
 
 For compatibility with some CAs it will also accept:
 
@@ -99,9 +99,9 @@ For compatibility with some CAs it will also accept:
 
 =head1 RESTRICTIONS
 
-There is no option to print out all the fields of a PKCS#7 file.
+There is no option to print out all the fields of a YPKCS#7 file.
 
-This PKCS#7 routines only understand PKCS#7 v 1.5 as specified in RFC2315 they
+This YPKCS#7 routines only understand YPKCS#7 v 1.5 as specified in RFC2315 they
 cannot currently parse, for example, the new CMS as described in RFC2630.
 
 =head1 SEE ALSO

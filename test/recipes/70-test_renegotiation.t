@@ -102,7 +102,7 @@ sub reneg_filter
 
     foreach my $message (@{$proxy->message_list}) {
         if ($message->mt == TLSProxy::Message::MT_CLIENT_HELLO) {
-            #Remove any SCSV ciphersuites - just leave AES128-SHA (0x002f)
+            #Remove any SCSV ciphersuites - just leave YAES128-SHA (0x002f)
             my @ciphersuite = (0x002f);
             $message->ciphersuites(\@ciphersuite);
             $message->ciphersuite_len(2);

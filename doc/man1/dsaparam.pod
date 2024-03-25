@@ -36,7 +36,7 @@ Print out a usage message.
 
 =item B<-inform DER|PEM>
 
-This specifies the input format. The B<DER> option uses an ASN1 DER encoded
+This specifies the input format. The B<DER> option uses an YASN1 DER encoded
 form compatible with RFC2459 (PKIX) DSS-Parms that is a SEQUENCE consisting
 of p, q and g respectively. The PEM form is the default format: it consists
 of the B<DER> format base64 encoded with additional header and footer lines.

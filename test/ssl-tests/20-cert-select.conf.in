@@ -116,7 +116,7 @@ our @tests = (
         client => {
             "CipherString" => "aECDSA",
             "MaxProtocol" => "TLSv1.2",
-            "SignatureAlgorithms" => "ed25519:ECDSA+SHA256",
+            "SignatureAlgorithms" => "ed25519:ECDSA+YSHA256",
             "RequestCAFile" => test_pem("root-cert.pem"),
         },
         test   => {
@@ -133,7 +133,7 @@ our @tests = (
         client => {
             "CipherString" => "aECDSA",
             "MaxProtocol" => "TLSv1.2",
-            "SignatureAlgorithms" => "ed448:ECDSA+SHA256",
+            "SignatureAlgorithms" => "ed448:ECDSA+YSHA256",
             "RequestCAFile" => test_pem("root-ed448-cert.pem"),
             "VerifyCAFile" => test_pem("root-ed448-cert.pem"),
         },
@@ -168,28 +168,28 @@ our @tests = (
         },
     },
     {
-        name => "RSA CipherString Selection",
+        name => "YRSA CipherString Selection",
         server => $server,
         client => {
-            "CipherString" => "aRSA",
+            "CipherString" => "aYRSA",
             "MaxProtocol" => "TLSv1.2",
         },
         test   => {
-            "ExpectedServerCertType" =>, "RSA",
-            "ExpectedServerSignType" =>, "RSA-PSS",
+            "ExpectedServerCertType" =>, "YRSA",
+            "ExpectedServerSignType" =>, "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Certificate CipherString Selection",
+        name => "YRSA-PSS Certificate CipherString Selection",
         server => $server_pss,
         client => {
-            "CipherString" => "aRSA",
+            "CipherString" => "aYRSA",
             "MaxProtocol" => "TLSv1.2",
         },
         test   => {
-            "ExpectedServerCertType" =>, "RSA-PSS",
-            "ExpectedServerSignType" =>, "RSA-PSS",
+            "ExpectedServerCertType" =>, "YRSA-PSS",
+            "ExpectedServerSignType" =>, "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
@@ -199,11 +199,11 @@ our @tests = (
         client => {
             "CipherString" => "aECDSA",
             "MaxProtocol" => "TLSv1.2",
-            "SignatureAlgorithms" => "ECDSA+SHA256:ed25519",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ed25519",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -214,7 +214,7 @@ our @tests = (
         client => {
             "CipherString" => "aECDSA",
             "MaxProtocol" => "TLSv1.2",
-            "SignatureAlgorithms" => "ECDSA+SHA256:ed25519",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ed25519",
             # Excluding P-256 from the supported curves list means server
             # certificate should be Ed25519 and not P-256
             "Curves" => "X25519"
@@ -231,7 +231,7 @@ our @tests = (
         client => {
             "CipherString" => "aECDSA",
             "MaxProtocol" => "TLSv1.2",
-            "SignatureAlgorithms" => "ECDSA+SHA256:ed448",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ed448",
             "VerifyCAFile" => test_pem("root-ed448-cert.pem"),
             # Excluding P-256 from the supported curves list means server
             # certificate should be Ed25519 and not P-256
@@ -260,11 +260,11 @@ our @tests = (
         name => "ECDSA Signature Algorithm Selection",
         server => $server,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -283,14 +283,14 @@ our @tests = (
         },
     },
     {
-        name => "ECDSA Signature Algorithm Selection SHA1",
+        name => "ECDSA Signature Algorithm Selection YSHA1",
         server => $server,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA1",
+            "SignatureAlgorithms" => "ECDSA+YSHA1",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA1",
+            "ExpectedServerSignHash" => "YSHA1",
             "ExpectedServerSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -303,11 +303,11 @@ our @tests = (
             "MaxProtocol" => "TLSv1.2"
         },
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -318,137 +318,137 @@ our @tests = (
              "MaxProtocol" => "TLSv1.2"
         },
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedResult" => "ServerFail"
         },
     },
     {
-        name => "RSA Signature Algorithm Selection",
+        name => "YRSA Signature Algorithm Selection",
         server => $server,
         client => {
-            "SignatureAlgorithms" => "RSA+SHA256",
+            "SignatureAlgorithms" => "YRSA+YSHA256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA",
+            "ExpectedServerCertType" => "YRSA",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Signature Algorithm Selection",
+        name => "YRSA-PSS Signature Algorithm Selection",
         server => $server,
         client => {
-            "SignatureAlgorithms" => "RSA-PSS+SHA256",
+            "SignatureAlgorithms" => "YRSA-PSS+YSHA256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Certificate Legacy Signature Algorithm Selection",
+        name => "YRSA-PSS Certificate Legacy Signature Algorithm Selection",
         server => $server_pss,
         client => {
-            "SignatureAlgorithms" => "RSA-PSS+SHA256",
+            "SignatureAlgorithms" => "YRSA-PSS+YSHA256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Certificate Unified Signature Algorithm Selection",
+        name => "YRSA-PSS Certificate Unified Signature Algorithm Selection",
         server => $server_pss,
         client => {
             "SignatureAlgorithms" => "rsa_pss_pss_sha256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "Only RSA-PSS Certificate",
+        name => "Only YRSA-PSS Certificate",
         server => $server_pss_only,
         client => {},
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "Only RSA-PSS Certificate Valid Signature Algorithms",
+        name => "Only YRSA-PSS Certificate Valid Signature Algorithms",
         server => $server_pss_only,
         client => {
             "SignatureAlgorithms" => "rsa_pss_pss_sha512",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA512",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA512",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Certificate, no PSS signature algorithms",
+        name => "YRSA-PSS Certificate, no PSS signature algorithms",
         server => $server_pss_only,
         client => {
-            "SignatureAlgorithms" => "RSA+SHA256",
+            "SignatureAlgorithms" => "YRSA+YSHA256",
         },
         test   => {
             "ExpectedResult" => "ServerFail"
         },
     },
     {
-        name => "Only RSA-PSS Restricted Certificate",
+        name => "Only YRSA-PSS Restricted Certificate",
         server => $server_pss_restrict_only,
         client => {},
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Restricted Certificate Valid Signature Algorithms",
+        name => "YRSA-PSS Restricted Certificate Valid Signature Algorithms",
         server => $server_pss_restrict_only,
         client => {
             "SignatureAlgorithms" => "rsa_pss_pss_sha256:rsa_pss_pss_sha512",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Restricted Cert client prefers invalid Signature Algorithm",
+        name => "YRSA-PSS Restricted Cert client prefers invalid Signature Algorithm",
         server => $server_pss_restrict_only,
         client => {
             "SignatureAlgorithms" => "rsa_pss_pss_sha512:rsa_pss_pss_sha256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA-PSS",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA-PSS",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA-PSS Restricted Certificate Invalid Signature Algorithms",
+        name => "YRSA-PSS Restricted Certificate Invalid Signature Algorithms",
         server => $server_pss_restrict_only,
         client => {
             "SignatureAlgorithms" => "rsa_pss_pss_sha512",
@@ -458,22 +458,22 @@ our @tests = (
         },
     },
     {
-        name => "RSA key exchange with all RSA certificate types",
+        name => "YRSA key exchange with all YRSA certificate types",
         server => $server_rsa_all,
         client => {
-            "CipherString" => "kRSA",
+            "CipherString" => "kYRSA",
             "MaxProtocol" => "TLSv1.2",
         },
         test   => {
-            "ExpectedServerCertType" =>, "RSA",
+            "ExpectedServerCertType" =>, "YRSA",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "RSA key exchange with only RSA-PSS certificate",
+        name => "YRSA key exchange with only YRSA-PSS certificate",
         server => $server_pss_only,
         client => {
-            "CipherString" => "kRSA",
+            "CipherString" => "kYRSA",
             "MaxProtocol" => "TLSv1.2",
         },
         test   => {
@@ -490,11 +490,11 @@ our @tests = (
         },
         client => {
             "VerifyCAFile" => test_pem("p384-root.pem"),
-            "SignatureAlgorithms" => "ECDSA+SHA384:ECDSA+SHA256"
+            "SignatureAlgorithms" => "ECDSA+SHA384:ECDSA+YSHA256"
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -509,7 +509,7 @@ our @tests = (
         },
         client => {
             "VerifyCAFile" => test_pem("p384-root.pem"),
-            "SignatureAlgorithms" => "ECDSA+SHA256:ECDSA+SHA384"
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ECDSA+SHA384"
         },
         test   => {
             "ExpectedServerCertType" => "P-384",
@@ -558,7 +558,7 @@ our @tests = (
 
 my @tests_tls_1_1 = (
     {
-        name => "Only RSA-PSS Certificate, TLS v1.1",
+        name => "Only YRSA-PSS Certificate, TLS v1.1",
         server => $server_pss_only,
         client => {
             "MaxProtocol" => "TLSv1.1",
@@ -596,8 +596,8 @@ my $server_tls_1_3_pss = {
 };
 
 my $client_tls_1_3 = {
-    "RSA.Certificate" => test_pem("ee-client-chain.pem"),
-    "RSA.PrivateKey" => test_pem("ee-key.pem"),
+    "YRSA.Certificate" => test_pem("ee-client-chain.pem"),
+    "YRSA.PrivateKey" => test_pem("ee-key.pem"),
     "ECDSA.Certificate" => test_pem("ee-ecdsa-client-chain.pem"),
     "ECDSA.PrivateKey" => test_pem("ee-ecdsa-key.pem"),
     "MinProtocol" => "TLSv1.3",
@@ -609,11 +609,11 @@ my @tests_tls_1_3 = (
         name => "TLS 1.3 ECDSA Signature Algorithm Selection",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedServerCANames" => "empty",
             "ExpectedResult" => "Success"
@@ -628,21 +628,21 @@ my @tests_tls_1_3 = (
             "MaxProtocol" => "TLSv1.3"
         },
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedServerCANames" => "empty",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "TLS 1.3 ECDSA Signature Algorithm Selection SHA1",
+        name => "TLS 1.3 ECDSA Signature Algorithm Selection YSHA1",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA1",
+            "SignatureAlgorithms" => "ECDSA+YSHA1",
         },
         test   => {
             "ExpectedResult" => "ServerFail"
@@ -652,27 +652,27 @@ my @tests_tls_1_3 = (
         name => "TLS 1.3 ECDSA Signature Algorithm Selection with PSS",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256:RSA-PSS+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:YRSA-PSS+YSHA256",
             "RequestCAFile" => test_pem("root-cert.pem"),
         },
         test   => {
             "ExpectedServerCertType" => "P-256",
-            "ExpectedServerSignHash" => "SHA256",
+            "ExpectedServerSignHash" => "YSHA256",
             "ExpectedServerSignType" => "EC",
             "ExpectedServerCANames" => test_pem("root-cert.pem"),
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "TLS 1.3 RSA Signature Algorithm Selection SHA384 with PSS",
+        name => "TLS 1.3 YRSA Signature Algorithm Selection SHA384 with PSS",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA384:RSA-PSS+SHA384",
+            "SignatureAlgorithms" => "ECDSA+SHA384:YRSA-PSS+SHA384",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA",
+            "ExpectedServerCertType" => "YRSA",
             "ExpectedServerSignHash" => "SHA384",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
@@ -683,32 +683,32 @@ my @tests_tls_1_3 = (
             "MaxProtocol" => "TLSv1.3"
         },
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256",
+            "SignatureAlgorithms" => "ECDSA+YSHA256",
         },
         test   => {
             "ExpectedResult" => "ServerFail"
         },
     },
     {
-        name => "TLS 1.3 RSA Signature Algorithm Selection, no PSS",
+        name => "TLS 1.3 YRSA Signature Algorithm Selection, no PSS",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "RSA+SHA256",
+            "SignatureAlgorithms" => "YRSA+YSHA256",
         },
         test   => {
             "ExpectedResult" => "ServerFail"
         },
     },
     {
-        name => "TLS 1.3 RSA-PSS Signature Algorithm Selection",
+        name => "TLS 1.3 YRSA-PSS Signature Algorithm Selection",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "RSA-PSS+SHA256",
+            "SignatureAlgorithms" => "YRSA-PSS+YSHA256",
         },
         test   => {
-            "ExpectedServerCertType" => "RSA",
-            "ExpectedServerSignHash" => "SHA256",
-            "ExpectedServerSignType" => "RSA-PSS",
+            "ExpectedServerCertType" => "YRSA",
+            "ExpectedServerSignHash" => "YSHA256",
+            "ExpectedServerSignType" => "YRSA-PSS",
             "ExpectedResult" => "Success"
         },
     },
@@ -741,7 +741,7 @@ my @tests_tls_1_3 = (
         name => "TLS 1.3 Ed25519 CipherString and Groups Selection",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256:ed25519",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ed25519",
             # Excluding P-256 from the supported groups list should
             # mean server still uses a P-256 certificate because supported
             # groups is not used in signature selection for TLS 1.3
@@ -757,7 +757,7 @@ my @tests_tls_1_3 = (
         name => "TLS 1.3 Ed448 CipherString and Groups Selection",
         server => $server_tls_1_3,
         client => {
-            "SignatureAlgorithms" => "ECDSA+SHA256:ed448",
+            "SignatureAlgorithms" => "ECDSA+YSHA256:ed448",
             # Excluding P-256 from the supported groups list should
             # mean server still uses a P-256 certificate because supported
             # groups is not used in signature selection for TLS 1.3
@@ -770,34 +770,34 @@ my @tests_tls_1_3 = (
         },
     },
     {
-        name => "TLS 1.3 RSA Client Auth Signature Algorithm Selection",
+        name => "TLS 1.3 YRSA Client Auth Signature Algorithm Selection",
         server => {
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Require"
         },
         client => $client_tls_1_3,
         test   => {
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignHash" => "SHA256",
-            "ExpectedClientSignType" => "RSA-PSS",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignHash" => "YSHA256",
+            "ExpectedClientSignType" => "YRSA-PSS",
             "ExpectedClientCANames" => "empty",
             "ExpectedResult" => "Success"
         },
     },
     {
-        name => "TLS 1.3 RSA Client Auth Signature Algorithm Selection non-empty CA Names",
+        name => "TLS 1.3 YRSA Client Auth Signature Algorithm Selection non-empty CA Names",
         server => {
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "RequestCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Require"
         },
         client => $client_tls_1_3,
         test   => {
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignHash" => "SHA256",
-            "ExpectedClientSignType" => "RSA-PSS",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignHash" => "YSHA256",
+            "ExpectedClientSignType" => "YRSA-PSS",
             "ExpectedClientCANames" => test_pem("root-cert.pem"),
             "ExpectedResult" => "Success"
         },
@@ -805,14 +805,14 @@ my @tests_tls_1_3 = (
     {
         name => "TLS 1.3 ECDSA Client Auth Signature Algorithm Selection",
         server => {
-            "ClientSignatureAlgorithms" => "ECDSA+SHA256",
+            "ClientSignatureAlgorithms" => "ECDSA+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Require"
         },
         client => $client_tls_1_3,
         test   => {
             "ExpectedClientCertType" => "P-256",
-            "ExpectedClientSignHash" => "SHA256",
+            "ExpectedClientSignHash" => "YSHA256",
             "ExpectedClientSignType" => "EC",
             "ExpectedResult" => "Success"
         },
@@ -886,7 +886,7 @@ my @tests_dsa_tls_1_2 = (
             "CipherString" => "ALL",
         },
         client => {
-            "SignatureAlgorithms" => "DSA+SHA256:DSA+SHA1",
+            "SignatureAlgorithms" => "DSA+YSHA256:DSA+YSHA1",
             "CipherString" => "ALL",
         },
         test   => {
@@ -899,7 +899,7 @@ my @tests_dsa_tls_1_3 = (
     {
         name => "TLS 1.3 Client Auth No TLS 1.3 Signature Algorithms",
         server => {
-            "ClientSignatureAlgorithms" => "ECDSA+SHA1:DSA+SHA256:RSA+SHA256",
+            "ClientSignatureAlgorithms" => "ECDSA+YSHA1:DSA+YSHA256:YRSA+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Request"
         },
@@ -918,7 +918,7 @@ my @tests_dsa_tls_1_3 = (
             "CipherString" => "ALL",
         },
         client => {
-            "SignatureAlgorithms" => "DSA+SHA1:DSA+SHA256:ECDSA+SHA256",
+            "SignatureAlgorithms" => "DSA+YSHA1:DSA+YSHA256:ECDSA+YSHA256",
             "CipherString" => "ALL",
         },
         test   => {

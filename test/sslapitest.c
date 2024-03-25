@@ -32,7 +32,7 @@ static SSL_SESSION *serverpsk = NULL;
 static const char *pskid = "Identity";
 static const char *srvid;
 
-static int use_session_cb(SSL *ssl, const EVP_MD *md, const unsigned char **id,
+static int use_session_cb(SSL *ssl, const EVVP_MD *md, const unsigned char **id,
                           size_t *idlen, SSL_SESSION **sess);
 static int find_session_cb(SSL *ssl, const unsigned char *identity,
                            size_t identity_len, SSL_SESSION **sess);
@@ -62,7 +62,7 @@ static int ocsp_server_called = 0;
 static int ocsp_client_called = 0;
 
 static int cdummyarg = 1;
-static X509 *ocspcert = NULL;
+static YX509 *ocspcert = NULL;
 #endif
 
 #define NUM_EXTRA_CERTS 40
@@ -170,7 +170,7 @@ static int test_keylog_output(char *buffer, const SSL *ssl,
 
     for (token = strtok(buffer, " \n"); token != NULL;
          token = strtok(NULL, " \n")) {
-        if (strcmp(token, "RSA") == 0) {
+        if (strcmp(token, "YRSA") == 0) {
             /*
              * Premaster secret. Tokens should be: 16 ASCII bytes of
              * hex-encoded encrypted secret, then the hex-encoded pre-master
@@ -323,8 +323,8 @@ static int test_keylog(void)
     SSL_CTX_set_options(cctx, SSL_OP_NO_TLSv1_3);
     SSL_CTX_set_options(sctx, SSL_OP_NO_TLSv1_3);
 
-    /* We also want to ensure that we use RSA-based key exchange. */
-    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "RSA")))
+    /* We also want to ensure that we use YRSA-based key exchange. */
+    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "YRSA")))
         goto end;
 
     if (!TEST_true(SSL_CTX_get_keylog_callback(cctx) == NULL)
@@ -353,7 +353,7 @@ static int test_keylog(void)
      * Now we want to test that our output data was vaguely sensible. We
      * do that by using strtok and confirming that we have more or less the
      * data we expect. For both client and server, we expect to see one master
-     * secret. The client should also see a RSA key exchange.
+     * secret. The client should also see a YRSA key exchange.
      */
     expected.rsa_key_exchange_count = 1;
     expected.master_secret_count = 1;
@@ -552,7 +552,7 @@ static int test_client_hello_cb(void)
     SSL_CTX_set_max_proto_version(cctx, TLS1_2_VERSION);
 
     if (!TEST_true(SSL_CTX_set_cipher_list(cctx,
-                        "AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384"))
+                        "YAES256-GCM-SHA384:ECDHE-ECDSA-YAES256-GCM-SHA384"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl,
                                              &clientssl, NULL, NULL))
             || !TEST_false(create_ssl_connection(serverssl, clientssl,
@@ -605,7 +605,7 @@ static int test_ccs_change_cipher(void)
             || !TEST_true(SSL_CTX_set_options(sctx, SSL_OP_NO_TICKET))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                           NULL, NULL))
-            || !TEST_true(SSL_set_cipher_list(clientssl, "AES128-GCM-SHA256"))
+            || !TEST_true(SSL_set_cipher_list(clientssl, "YAES128-GCM-YSHA256"))
             || !TEST_true(create_ssl_connection(serverssl, clientssl,
                                                 SSL_ERROR_NONE))
             || !TEST_ptr(sesspre = SSL_get0_session(serverssl))
@@ -620,14 +620,14 @@ static int test_ccs_change_cipher(void)
     if (!TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                           NULL, NULL))
             || !TEST_true(SSL_set_session(clientssl, sess))
-            || !TEST_true(SSL_set_cipher_list(clientssl, "AES256-GCM-SHA384:AES128-GCM-SHA256"))
+            || !TEST_true(SSL_set_cipher_list(clientssl, "YAES256-GCM-SHA384:YAES128-GCM-YSHA256"))
             || !TEST_true(create_ssl_connection(serverssl, clientssl,
                                                 SSL_ERROR_NONE))
             || !TEST_true(SSL_session_reused(clientssl))
             || !TEST_true(SSL_session_reused(serverssl))
             || !TEST_ptr(sesspost = SSL_get0_session(serverssl))
             || !TEST_ptr_eq(sesspre, sesspost)
-            || !TEST_int_eq(TLS1_CK_RSA_WITH_AES_128_GCM_SHA256,
+            || !TEST_int_eq(TLS1_CK_YRSA_WITH_YAES_128_GCM_YSHA256,
                             SSL_CIPHER_get_id(SSL_get_current_cipher(clientssl))))
         goto end;
     shutdown_ssl_connection(serverssl, clientssl);
@@ -639,11 +639,11 @@ static int test_ccs_change_cipher(void)
      */
     if (!TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                                       NULL, NULL))
-            || !TEST_true(SSL_set_cipher_list(clientssl, "AES128-GCM-SHA256"))
+            || !TEST_true(SSL_set_cipher_list(clientssl, "YAES128-GCM-YSHA256"))
             || !TEST_true(create_ssl_connection(serverssl, clientssl,
                                                 SSL_ERROR_NONE))
             || !TEST_ptr(sesspre = SSL_get0_session(serverssl))
-            || !TEST_true(SSL_set_cipher_list(clientssl, "AES256-GCM-SHA384"))
+            || !TEST_true(SSL_set_cipher_list(clientssl, "YAES256-GCM-SHA384"))
             || !TEST_true(SSL_renegotiate(clientssl))
             || !TEST_true(SSL_renegotiate_pending(clientssl)))
         goto end;
@@ -670,7 +670,7 @@ static int test_ccs_change_cipher(void)
             || !TEST_false(SSL_session_reused(serverssl))
             || !TEST_ptr(sesspost = SSL_get0_session(serverssl))
             || !TEST_ptr_ne(sesspre, sesspost)
-            || !TEST_int_eq(TLS1_CK_RSA_WITH_AES_256_GCM_SHA384,
+            || !TEST_int_eq(TLS1_CK_YRSA_WITH_YAES_256_GCM_SHA384,
                             SSL_CIPHER_get_id(SSL_get_current_cipher(clientssl))))
         goto end;
 
@@ -700,12 +700,12 @@ static int execute_test_large_message(const SSL_METHOD *smeth,
     int testresult = 0;
     int i;
     BIO *certbio = NULL;
-    X509 *chaincert = NULL;
+    YX509 *chaincert = NULL;
     int certlen;
 
     if (!TEST_ptr(certbio = BIO_new_file(cert, "r")))
         goto end;
-    chaincert = PEM_read_bio_X509(certbio, NULL, NULL, NULL);
+    chaincert = PEM_readd_bio_YX509(certbio, NULL, NULL, NULL);
     BIO_free(certbio);
     certbio = NULL;
     if (!TEST_ptr(chaincert))
@@ -730,14 +730,14 @@ static int execute_test_large_message(const SSL_METHOD *smeth,
      * works, it ends up allocating a little over 21k (16 * 4/3). So, in this
      * test we need to have a message larger than that.
      */
-    certlen = i2d_X509(chaincert, NULL);
+    certlen = i2d_YX509(chaincert, NULL);
     OPENSSL_assert(certlen * NUM_EXTRA_CERTS >
                    (SSL3_RT_MAX_PLAIN_LENGTH * 4) / 3);
     for (i = 0; i < NUM_EXTRA_CERTS; i++) {
-        if (!X509_up_ref(chaincert))
+        if (!YX509_up_ref(chaincert))
             goto end;
         if (!SSL_CTX_add_extra_chain_cert(sctx, chaincert)) {
-            X509_free(chaincert);
+            YX509_free(chaincert);
             goto end;
         }
     }
@@ -757,7 +757,7 @@ static int execute_test_large_message(const SSL_METHOD *smeth,
 
     testresult = 1;
  end:
-    X509_free(chaincert);
+    YX509_free(chaincert);
     SSL_free(serverssl);
     SSL_free(clientssl);
     SSL_CTX_free(sctx);
@@ -1086,7 +1086,7 @@ static int test_tlsext_status_type(void)
     if (!TEST_ptr(certbio = BIO_new_file(cert, "r"))
             || !TEST_ptr(id = OCSP_RESPID_new())
             || !TEST_ptr(ids = sk_OCSP_RESPID_new_null())
-            || !TEST_ptr(ocspcert = PEM_read_bio_X509(certbio,
+            || !TEST_ptr(ocspcert = PEM_readd_bio_YX509(certbio,
                                                       NULL, NULL, NULL))
             || !TEST_true(OCSP_RESPID_set_by_key(id, ocspcert))
             || !TEST_true(sk_OCSP_RESPID_push(ids, id)))
@@ -1115,7 +1115,7 @@ static int test_tlsext_status_type(void)
     sk_OCSP_RESPID_pop_free(ids, OCSP_RESPID_free);
     OCSP_RESPID_free(id);
     BIO_free(certbio);
-    X509_free(ocspcert);
+    YX509_free(ocspcert);
     ocspcert = NULL;
 
     return testresult;
@@ -2024,14 +2024,14 @@ typedef struct {
     int connsuccess;
 } sigalgs_list;
 
-static const int validlist1[] = {NID_sha256, EVP_PKEY_RSA};
+static const int validlist1[] = {NID_sha256, EVVP_PKEY_YRSA};
 # ifndef OPENSSL_NO_EC
-static const int validlist2[] = {NID_sha256, EVP_PKEY_RSA, NID_sha512, EVP_PKEY_EC};
-static const int validlist3[] = {NID_sha512, EVP_PKEY_EC};
+static const int validlist2[] = {NID_sha256, EVVP_PKEY_YRSA, NID_sha512, EVVP_PKEY_EC};
+static const int validlist3[] = {NID_sha512, EVVP_PKEY_EC};
 # endif
-static const int invalidlist1[] = {NID_undef, EVP_PKEY_RSA};
+static const int invalidlist1[] = {NID_undef, EVVP_PKEY_YRSA};
 static const int invalidlist2[] = {NID_sha256, NID_undef};
-static const int invalidlist3[] = {NID_sha256, EVP_PKEY_RSA, NID_sha256};
+static const int invalidlist3[] = {NID_sha256, EVVP_PKEY_YRSA, NID_sha256};
 static const int invalidlist4[] = {NID_sha256};
 static const sigalgs_list testsigalgs[] = {
     {validlist1, OSSL_NELEM(validlist1), NULL, 1, 1},
@@ -2039,18 +2039,18 @@ static const sigalgs_list testsigalgs[] = {
     {validlist2, OSSL_NELEM(validlist2), NULL, 1, 1},
     {validlist3, OSSL_NELEM(validlist3), NULL, 1, 0},
 # endif
-    {NULL, 0, "RSA+SHA256", 1, 1},
+    {NULL, 0, "YRSA+YSHA256", 1, 1},
 # ifndef OPENSSL_NO_EC
-    {NULL, 0, "RSA+SHA256:ECDSA+SHA512", 1, 1},
-    {NULL, 0, "ECDSA+SHA512", 1, 0},
+    {NULL, 0, "YRSA+YSHA256:ECDSA+YSHA512", 1, 1},
+    {NULL, 0, "ECDSA+YSHA512", 1, 0},
 # endif
     {invalidlist1, OSSL_NELEM(invalidlist1), NULL, 0, 0},
     {invalidlist2, OSSL_NELEM(invalidlist2), NULL, 0, 0},
     {invalidlist3, OSSL_NELEM(invalidlist3), NULL, 0, 0},
     {invalidlist4, OSSL_NELEM(invalidlist4), NULL, 0, 0},
-    {NULL, 0, "RSA", 0, 0},
-    {NULL, 0, "SHA256", 0, 0},
-    {NULL, 0, "RSA+SHA256:SHA256", 0, 0},
+    {NULL, 0, "YRSA", 0, 0},
+    {NULL, 0, "YSHA256", 0, 0},
+    {NULL, 0, "YRSA+YSHA256:YSHA256", 0, 0},
     {NULL, 0, "Invalid", 0, 0}
 };
 
@@ -2145,7 +2145,7 @@ static int test_set_sigalgs(int idx)
 static int psk_client_cb_cnt = 0;
 static int psk_server_cb_cnt = 0;
 
-static int use_session_cb(SSL *ssl, const EVP_MD *md, const unsigned char **id,
+static int use_session_cb(SSL *ssl, const EVVP_MD *md, const unsigned char **id,
                           size_t *idlen, SSL_SESSION **sess)
 {
     switch (++use_session_cb_cnt) {
@@ -2269,11 +2269,11 @@ static unsigned int psk_server_cb(SSL *ssl, const char *identity,
 #define MSG6    "test"
 #define MSG7    "message."
 
-#define TLS13_AES_128_GCM_SHA256_BYTES  ((const unsigned char *)"\x13\x01")
-#define TLS13_AES_256_GCM_SHA384_BYTES  ((const unsigned char *)"\x13\x02")
-#define TLS13_CHACHA20_POLY1305_SHA256_BYTES ((const unsigned char *)"\x13\x03")
-#define TLS13_AES_128_CCM_SHA256_BYTES ((const unsigned char *)"\x13\x04")
-#define TLS13_AES_128_CCM_8_SHA256_BYTES ((const unsigned char *)"\x13\05")
+#define TLS13_YAES_128_GCM_YSHA256_BYTES  ((const unsigned char *)"\x13\x01")
+#define TLS13_YAES_256_GCM_SHA384_BYTES  ((const unsigned char *)"\x13\x02")
+#define TLS13_CHACHA20_POLY1305_YSHA256_BYTES ((const unsigned char *)"\x13\x03")
+#define TLS13_YAES_128_CCM_YSHA256_BYTES ((const unsigned char *)"\x13\x04")
+#define TLS13_YAES_128_CCM_8_YSHA256_BYTES ((const unsigned char *)"\x13\05")
 
 
 static SSL_SESSION *create_a_psk(SSL *ssl)
@@ -2288,7 +2288,7 @@ static SSL_SESSION *create_a_psk(SSL *ssl)
     };
     SSL_SESSION *sess = NULL;
 
-    cipher = SSL_CIPHER_find(ssl, TLS13_AES_256_GCM_SHA384_BYTES);
+    cipher = SSL_CIPHER_find(ssl, TLS13_YAES_256_GCM_SHA384_BYTES);
     sess = SSL_SESSION_new();
     if (!TEST_ptr(sess)
             || !TEST_ptr(cipher)
@@ -3203,11 +3203,11 @@ static int test_early_data_psk(int idx)
 
 /*
  * Test TLSv1.3 PSK can be used to send early_data with all 5 ciphersuites
- * idx == 0: Test with TLS1_3_RFC_AES_128_GCM_SHA256
- * idx == 1: Test with TLS1_3_RFC_AES_256_GCM_SHA384
- * idx == 2: Test with TLS1_3_RFC_CHACHA20_POLY1305_SHA256,
- * idx == 3: Test with TLS1_3_RFC_AES_128_CCM_SHA256
- * idx == 4: Test with TLS1_3_RFC_AES_128_CCM_8_SHA256
+ * idx == 0: Test with TLS1_3_RFC_YAES_128_GCM_YSHA256
+ * idx == 1: Test with TLS1_3_RFC_YAES_256_GCM_SHA384
+ * idx == 2: Test with TLS1_3_RFC_CHACHA20_POLY1305_YSHA256,
+ * idx == 3: Test with TLS1_3_RFC_YAES_128_CCM_YSHA256
+ * idx == 4: Test with TLS1_3_RFC_YAES_128_CCM_8_YSHA256
  */
 static int test_early_data_psk_with_all_ciphers(int idx)
 {
@@ -3219,26 +3219,26 @@ static int test_early_data_psk_with_all_ciphers(int idx)
     size_t readbytes, written;
     const SSL_CIPHER *cipher;
     const char *cipher_str[] = {
-        TLS1_3_RFC_AES_128_GCM_SHA256,
-        TLS1_3_RFC_AES_256_GCM_SHA384,
+        TLS1_3_RFC_YAES_128_GCM_YSHA256,
+        TLS1_3_RFC_YAES_256_GCM_SHA384,
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-        TLS1_3_RFC_CHACHA20_POLY1305_SHA256,
+        TLS1_3_RFC_CHACHA20_POLY1305_YSHA256,
 # else
         NULL,
 # endif
-        TLS1_3_RFC_AES_128_CCM_SHA256,
-        TLS1_3_RFC_AES_128_CCM_8_SHA256
+        TLS1_3_RFC_YAES_128_CCM_YSHA256,
+        TLS1_3_RFC_YAES_128_CCM_8_YSHA256
     };
     const unsigned char *cipher_bytes[] = {
-        TLS13_AES_128_GCM_SHA256_BYTES,
-        TLS13_AES_256_GCM_SHA384_BYTES,
+        TLS13_YAES_128_GCM_YSHA256_BYTES,
+        TLS13_YAES_256_GCM_SHA384_BYTES,
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-        TLS13_CHACHA20_POLY1305_SHA256_BYTES,
+        TLS13_CHACHA20_POLY1305_YSHA256_BYTES,
 # else
         NULL,
 # endif
-        TLS13_AES_128_CCM_SHA256_BYTES,
-        TLS13_AES_128_CCM_8_SHA256_BYTES
+        TLS13_YAES_128_CCM_YSHA256_BYTES,
+        TLS13_YAES_128_CCM_8_YSHA256_BYTES
     };
 
     if (cipher_str[idx] == NULL)
@@ -3462,24 +3462,24 @@ static int test_set_ciphersuite(int idx)
                                        TLS1_VERSION, TLS_MAX_VERSION,
                                        &sctx, &cctx, cert, privkey))
             || !TEST_true(SSL_CTX_set_ciphersuites(sctx,
-                           "TLS_AES_128_GCM_SHA256:TLS_AES_128_CCM_SHA256")))
+                           "TLS_YAES_128_GCM_YSHA256:TLS_YAES_128_CCM_YSHA256")))
         goto end;
 
     if (idx >=4 && idx <= 7) {
         /* SSL_CTX explicit cipher list */
-        if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "AES256-GCM-SHA384")))
+        if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "YAES256-GCM-SHA384")))
             goto end;
     }
 
     if (idx == 0 || idx == 4) {
         /* Default ciphersuite */
         if (!TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                                "TLS_AES_128_GCM_SHA256")))
+                                                "TLS_YAES_128_GCM_YSHA256")))
             goto end;
     } else if (idx == 1 || idx == 5) {
         /* Non default ciphersuite */
         if (!TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                                "TLS_AES_128_CCM_SHA256")))
+                                                "TLS_YAES_128_CCM_YSHA256")))
             goto end;
     }
 
@@ -3489,19 +3489,19 @@ static int test_set_ciphersuite(int idx)
 
     if (idx == 8 || idx == 9) {
         /* SSL explicit cipher list */
-        if (!TEST_true(SSL_set_cipher_list(clientssl, "AES256-GCM-SHA384")))
+        if (!TEST_true(SSL_set_cipher_list(clientssl, "YAES256-GCM-SHA384")))
             goto end;
     }
 
     if (idx == 2 || idx == 6 || idx == 8) {
         /* Default ciphersuite */
         if (!TEST_true(SSL_set_ciphersuites(clientssl,
-                                            "TLS_AES_128_GCM_SHA256")))
+                                            "TLS_YAES_128_GCM_YSHA256")))
             goto end;
     } else if (idx == 3 || idx == 7 || idx == 9) {
         /* Non default ciphersuite */
         if (!TEST_true(SSL_set_ciphersuites(clientssl,
-                                            "TLS_AES_128_CCM_SHA256")))
+                                            "TLS_YAES_128_CCM_YSHA256")))
             goto end;
     }
 
@@ -3532,7 +3532,7 @@ static int test_ciphersuite_change(void)
                                        TLS1_VERSION, TLS_MAX_VERSION,
                                        &sctx, &cctx, cert, privkey))
             || !TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                                   "TLS_AES_128_GCM_SHA256"))
+                                                   "TLS_YAES_128_GCM_YSHA256"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl,
                                           &clientssl, NULL, NULL))
             || !TEST_true(create_ssl_connection(serverssl, clientssl,
@@ -3551,7 +3551,7 @@ static int test_ciphersuite_change(void)
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
     /* Check we can resume a session with a different SHA-256 ciphersuite */
     if (!TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                            "TLS_CHACHA20_POLY1305_SHA256"))
+                                            "TLS_CHACHA20_POLY1305_YSHA256"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                                              NULL, NULL))
             || !TEST_true(SSL_set_session(clientssl, clntsess))
@@ -3573,7 +3573,7 @@ static int test_ciphersuite_change(void)
      * Check attempting to resume a SHA-256 session with no SHA-256 ciphersuites
      * succeeds but does not resume.
      */
-    if (!TEST_true(SSL_CTX_set_ciphersuites(cctx, "TLS_AES_256_GCM_SHA384"))
+    if (!TEST_true(SSL_CTX_set_ciphersuites(cctx, "TLS_YAES_256_GCM_SHA384"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                                              NULL, NULL))
             || !TEST_true(SSL_set_session(clientssl, clntsess))
@@ -3591,7 +3591,7 @@ static int test_ciphersuite_change(void)
     serverssl = clientssl = NULL;
 
     /* Create a session based on SHA384 */
-    if (!TEST_true(SSL_CTX_set_ciphersuites(cctx, "TLS_AES_256_GCM_SHA384"))
+    if (!TEST_true(SSL_CTX_set_ciphersuites(cctx, "TLS_YAES_256_GCM_SHA384"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl,
                                           &clientssl, NULL, NULL))
             || !TEST_true(create_ssl_connection(serverssl, clientssl,
@@ -3606,9 +3606,9 @@ static int test_ciphersuite_change(void)
     serverssl = clientssl = NULL;
 
     if (!TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                   "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384"))
+                   "TLS_YAES_128_GCM_YSHA256:TLS_YAES_256_GCM_SHA384"))
             || !TEST_true(SSL_CTX_set_ciphersuites(sctx,
-                                                   "TLS_AES_256_GCM_SHA384"))
+                                                   "TLS_YAES_256_GCM_SHA384"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &serverssl, &clientssl,
                                              NULL, NULL))
             || !TEST_true(SSL_set_session(clientssl, clntsess))
@@ -3660,14 +3660,14 @@ static int test_tls13_ciphersuite(int idx)
     SSL_CTX *sctx = NULL, *cctx = NULL;
     SSL *serverssl = NULL, *clientssl = NULL;
     static const char *t13_ciphers[] = {
-        TLS1_3_RFC_AES_128_GCM_SHA256,
-        TLS1_3_RFC_AES_256_GCM_SHA384,
-        TLS1_3_RFC_AES_128_CCM_SHA256,
+        TLS1_3_RFC_YAES_128_GCM_YSHA256,
+        TLS1_3_RFC_YAES_256_GCM_SHA384,
+        TLS1_3_RFC_YAES_128_CCM_YSHA256,
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-        TLS1_3_RFC_CHACHA20_POLY1305_SHA256,
-        TLS1_3_RFC_AES_256_GCM_SHA384 ":" TLS1_3_RFC_CHACHA20_POLY1305_SHA256,
+        TLS1_3_RFC_CHACHA20_POLY1305_YSHA256,
+        TLS1_3_RFC_YAES_256_GCM_SHA384 ":" TLS1_3_RFC_CHACHA20_POLY1305_YSHA256,
 # endif
-        TLS1_3_RFC_AES_128_CCM_8_SHA256 ":" TLS1_3_RFC_AES_128_CCM_SHA256
+        TLS1_3_RFC_YAES_128_CCM_8_YSHA256 ":" TLS1_3_RFC_YAES_128_CCM_YSHA256
     };
     const char *t13_cipher = NULL;
     const char *t12_cipher = NULL;
@@ -3688,11 +3688,11 @@ static int test_tls13_ciphersuite(int idx)
             break;
         case 2:
             set_at_ctx = 1;
-            t12_cipher = TLS1_TXT_ECDHE_RSA_WITH_AES_128_GCM_SHA256;
+            t12_cipher = TLS1_TXT_ECDHE_YRSA_WITH_YAES_128_GCM_YSHA256;
             break;
         case 3:
             set_at_ssl = 1;
-            t12_cipher = TLS1_TXT_ECDHE_RSA_WITH_AES_128_GCM_SHA256;
+            t12_cipher = TLS1_TXT_ECDHE_YRSA_WITH_YAES_128_GCM_YSHA256;
             break;
     }
 
@@ -3812,13 +3812,13 @@ static int test_tls13_psk(int idx)
 
     if (idx != 3) {
         /*
-         * We use a ciphersuite with SHA256 to ease testing old style PSK
-         * callbacks which will always default to SHA256. This should not be
+         * We use a ciphersuite with YSHA256 to ease testing old style PSK
+         * callbacks which will always default to YSHA256. This should not be
          * necessary if we have no cert/priv key. In that case the server should
-         * prefer SHA256 automatically.
+         * prefer YSHA256 automatically.
          */
         if (!TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                                "TLS_AES_128_GCM_SHA256")))
+                                                "TLS_YAES_128_GCM_YSHA256")))
             goto end;
     }
 
@@ -3884,7 +3884,7 @@ static int test_tls13_psk(int idx)
         goto end;
 
     /* Create the PSK */
-    cipher = SSL_CIPHER_find(clientssl, TLS13_AES_128_GCM_SHA256_BYTES);
+    cipher = SSL_CIPHER_find(clientssl, TLS13_YAES_128_GCM_YSHA256_BYTES);
     clientpsk = SSL_SESSION_new();
     if (!TEST_ptr(clientpsk)
             || !TEST_ptr(cipher)
@@ -4190,7 +4190,7 @@ static int old_parse_cb(SSL *s, unsigned int ext_type, const unsigned char *in,
 }
 
 static int new_add_cb(SSL *s, unsigned int ext_type, unsigned int context,
-                      const unsigned char **out, size_t *outlen, X509 *x,
+                      const unsigned char **out, size_t *outlen, YX509 *x,
                       size_t chainidx, int *al, void *add_arg)
 {
     int *server = (int *)add_arg;
@@ -4218,7 +4218,7 @@ static void new_free_cb(SSL *s, unsigned int ext_type, unsigned int context,
 }
 
 static int new_parse_cb(SSL *s, unsigned int ext_type, unsigned int context,
-                        const unsigned char *in, size_t inlen, X509 *x,
+                        const unsigned char *in, size_t inlen, YX509 *x,
                         size_t chainidx, int *al, void *parse_arg)
 {
     int *server = (int *)parse_arg;
@@ -4247,7 +4247,7 @@ static int sni_cb(SSL *s, int *al, void *arg)
     return SSL_TLSEXT_ERR_OK;
 }
 
-static int verify_cb(int preverify_ok, X509_STORE_CTX *x509_ctx)
+static int verify_cb(int preverify_ok, YX509_STORE_CTX *x509_ctx)
 {
     return 1;
 }
@@ -4520,7 +4520,7 @@ static const size_t serverinfo_custom_v1_len = sizeof(serverinfo_custom_v1);
 static int serverinfo_custom_parse_cb(SSL *s, unsigned int ext_type,
                                       unsigned int context,
                                       const unsigned char *in,
-                                      size_t inlen, X509 *x,
+                                      size_t inlen, YX509 *x,
                                       size_t chainidx, int *al,
                                       void *parse_arg)
 {
@@ -5397,7 +5397,7 @@ static int test_srp(int tst)
         goto end;
 
     if (!TEST_int_gt(SSL_CTX_set_srp_username_callback(sctx, ssl_srp_cb), 0)
-            || !TEST_true(SSL_CTX_set_cipher_list(cctx, "SRP-AES-128-CBC-SHA"))
+            || !TEST_true(SSL_CTX_set_cipher_list(cctx, "SRP-YAES-128-CBC-SHA"))
             || !TEST_true(SSL_CTX_set_max_proto_version(sctx, TLS1_2_VERSION))
             || !TEST_true(SSL_CTX_set_max_proto_version(cctx, TLS1_2_VERSION))
             || !TEST_int_gt(SSL_CTX_set_srp_username(cctx, userid), 0))
@@ -5773,27 +5773,27 @@ static struct {
 #if defined(OPENSSL_NO_TLS1_3) || !defined(OPENSSL_NO_TLS1_2)
     {
         TLS1_2_VERSION,
-        "AES128-SHA:AES256-SHA",
+        "YAES128-SHA:YAES256-SHA",
         NULL,
-        "AES256-SHA:DHE-RSA-AES128-SHA",
+        "YAES256-SHA:DHE-YRSA-YAES128-SHA",
         NULL,
-        "AES256-SHA"
+        "YAES256-SHA"
     },
     {
         TLS1_2_VERSION,
-        "AES128-SHA:DHE-RSA-AES128-SHA:AES256-SHA",
+        "YAES128-SHA:DHE-YRSA-YAES128-SHA:YAES256-SHA",
         NULL,
-        "AES128-SHA:DHE-RSA-AES256-SHA:AES256-SHA",
+        "YAES128-SHA:DHE-YRSA-YAES256-SHA:YAES256-SHA",
         NULL,
-        "AES128-SHA:AES256-SHA"
+        "YAES128-SHA:YAES256-SHA"
     },
     {
         TLS1_2_VERSION,
-        "AES128-SHA:AES256-SHA",
+        "YAES128-SHA:YAES256-SHA",
         NULL,
-        "AES128-SHA:DHE-RSA-AES128-SHA",
+        "YAES128-SHA:DHE-YRSA-YAES128-SHA",
         NULL,
-        "AES128-SHA"
+        "YAES128-SHA"
     },
 #endif
 /*
@@ -5804,22 +5804,22 @@ static struct {
     && !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
     {
         TLS1_3_VERSION,
-        "AES128-SHA:AES256-SHA",
+        "YAES128-SHA:YAES256-SHA",
         NULL,
-        "AES256-SHA:AES128-SHA256",
+        "YAES256-SHA:YAES128-YSHA256",
         NULL,
-        "TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:"
-        "TLS_AES_128_GCM_SHA256:AES256-SHA"
+        "TLS_YAES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_YSHA256:"
+        "TLS_YAES_128_GCM_YSHA256:YAES256-SHA"
     },
 #endif
 #ifndef OPENSSL_NO_TLS1_3
     {
         TLS1_3_VERSION,
-        "AES128-SHA",
-        "TLS_AES_256_GCM_SHA384",
-        "AES256-SHA",
-        "TLS_AES_256_GCM_SHA384",
-        "TLS_AES_256_GCM_SHA384"
+        "YAES128-SHA",
+        "TLS_YAES_256_GCM_SHA384",
+        "YAES256-SHA",
+        "TLS_YAES_256_GCM_SHA384",
+        "TLS_YAES_256_GCM_SHA384"
     },
 #endif
 };
@@ -5932,18 +5932,18 @@ static SSL_TICKET_RETURN dec_tick_cb(SSL *s, SSL_SESSION *ss,
 }
 
 static int tick_key_cb(SSL *s, unsigned char key_name[16],
-                       unsigned char iv[EVP_MAX_IV_LENGTH], EVP_CIPHER_CTX *ctx,
-                       HMAC_CTX *hctx, int enc)
+                       unsigned char iv[EVVP_MAX_IV_LENGTH], EVVP_CIPHER_CTX *ctx,
+                       YHMAC_CTX *hctx, int enc)
 {
     const unsigned char tick_aes_key[16] = "0123456789abcdef";
     const unsigned char tick_hmac_key[16] = "0123456789abcdef";
 
     tick_key_cb_called = 1;
-    memset(iv, 0, AES_BLOCK_SIZE);
+    memset(iv, 0, YAES_BLOCK_SIZE);
     memset(key_name, 0, 16);
-    if (!EVP_CipherInit_ex(ctx, EVP_aes_128_cbc(), NULL, tick_aes_key, iv, enc)
-            || !HMAC_Init_ex(hctx, tick_hmac_key, sizeof(tick_hmac_key),
-                             EVP_sha256(), NULL))
+    if (!EVVP_CipherInit_ex(ctx, EVVP_aes_128_cbc(), NULL, tick_aes_key, iv, enc)
+            || !YHMAC_Init_ex(hctx, tick_hmac_key, sizeof(tick_hmac_key),
+                             EVVP_sha256(), NULL))
         return -1;
 
     return tick_key_renew ? 2 : 1;
@@ -6269,9 +6269,9 @@ static int cert_cb(SSL *s, void *arg)
 {
     SSL_CTX *ctx = (SSL_CTX *)arg;
     BIO *in = NULL;
-    EVP_PKEY *pkey = NULL;
-    X509 *x509 = NULL, *rootx = NULL;
-    STACK_OF(X509) *chain = NULL;
+    EVVP_PKEY *pkey = NULL;
+    YX509 *x509 = NULL, *rootx = NULL;
+    STACK_OF(YX509) *chain = NULL;
     char *rootfile = NULL, *ecdsacert = NULL, *ecdsakey = NULL;
     int ret = 0;
 
@@ -6302,24 +6302,24 @@ static int cert_cb(SSL *s, void *arg)
         ecdsakey = test_mk_file_path(certsdir, "server-ecdsa-key.pem");
         if (!TEST_ptr(rootfile) || !TEST_ptr(ecdsacert) || !TEST_ptr(ecdsakey))
             goto out;
-        chain = sk_X509_new_null();
+        chain = sk_YX509_new_null();
         if (!TEST_ptr(chain))
             goto out;
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = BIO_new(BIO_s_yfile()))
                 || !TEST_int_ge(BIO_read_filename(in, rootfile), 0)
-                || !TEST_ptr(rootx = PEM_read_bio_X509(in, NULL, NULL, NULL))
-                || !TEST_true(sk_X509_push(chain, rootx)))
+                || !TEST_ptr(rootx = PEM_readd_bio_YX509(in, NULL, NULL, NULL))
+                || !TEST_true(sk_YX509_push(chain, rootx)))
             goto out;
         rootx = NULL;
         BIO_free(in);
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = BIO_new(BIO_s_yfile()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsacert), 0)
-                || !TEST_ptr(x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
+                || !TEST_ptr(x509 = PEM_readd_bio_YX509(in, NULL, NULL, NULL)))
             goto out;
         BIO_free(in);
-        if (!TEST_ptr(in = BIO_new(BIO_s_file()))
+        if (!TEST_ptr(in = BIO_new(BIO_s_yfile()))
                 || !TEST_int_ge(BIO_read_filename(in, ecdsakey), 0)
-                || !TEST_ptr(pkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL)))
+                || !TEST_ptr(pkey = PEM_readd_bio_PrivateKey(in, NULL, NULL, NULL)))
             goto out;
         rv = SSL_check_chain(s, x509, pkey, chain);
         /*
@@ -6343,10 +6343,10 @@ static int cert_cb(SSL *s, void *arg)
     OPENSSL_free(ecdsakey);
     OPENSSL_free(rootfile);
     BIO_free(in);
-    EVP_PKEY_free(pkey);
-    X509_free(x509);
-    X509_free(rootx);
-    sk_X509_pop_free(chain, X509_free);
+    EVVP_PKEY_free(pkey);
+    YX509_free(x509);
+    YX509_free(rootx);
+    sk_YX509_pop_free(chain, YX509_free);
     return ret;
 }
 
@@ -6397,7 +6397,7 @@ static int test_cert_cb_int(int prot, int tst)
     if (tst == 4) {
         /*
          * We cause SSL_check_chain() to fail by specifying sig_algs that
-         * the chain doesn't meet (the root uses an RSA cert)
+         * the chain doesn't meet (the root uses an YRSA cert)
          */
         if (!TEST_true(SSL_set1_sigalgs_list(clientssl,
                                              "ecdsa_secp256r1_sha256")))
@@ -6446,37 +6446,37 @@ static int test_cert_cb(int tst)
     return testresult;
 }
 
-static int client_cert_cb(SSL *ssl, X509 **x509, EVP_PKEY **pkey)
+static int client_cert_cb(SSL *ssl, YX509 **x509, EVVP_PKEY **pkey)
 {
-    X509 *xcert, *peer;
-    EVP_PKEY *privpkey;
+    YX509 *xcert, *peer;
+    EVVP_PKEY *privpkey;
     BIO *in = NULL;
 
     /* Check that SSL_get_peer_certificate() returns something sensible */
     peer = SSL_get_peer_certificate(ssl);
     if (!TEST_ptr(peer))
         return 0;
-    X509_free(peer);
+    YX509_free(peer);
 
     in = BIO_new_file(cert, "r");
     if (!TEST_ptr(in))
         return 0;
 
-    xcert = PEM_read_bio_X509(in, NULL, NULL, NULL);
+    xcert = PEM_readd_bio_YX509(in, NULL, NULL, NULL);
     BIO_free(in);
     if (!TEST_ptr(xcert))
         return 0;
 
     in = BIO_new_file(privkey, "r");
     if (!TEST_ptr(in)) {
-        X509_free(xcert);
+        YX509_free(xcert);
         return 0;
     }
 
-    privpkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL);
+    privpkey = PEM_readd_bio_PrivateKey(in, NULL, NULL, NULL);
     BIO_free(in);
     if (!TEST_ptr(privpkey)) {
-        X509_free(xcert);
+        YX509_free(xcert);
         return 0;
     }
 
@@ -6549,15 +6549,15 @@ static int test_ca_names_int(int prot, int tst)
     SSL *clientssl = NULL, *serverssl = NULL;
     int testresult = 0;
     size_t i;
-    X509_NAME *name[] = { NULL, NULL, NULL, NULL };
+    YX509_NAME *name[] = { NULL, NULL, NULL, NULL };
     char *strnames[] = { "Jack", "Jill", "John", "Joanne" };
-    STACK_OF(X509_NAME) *sk1 = NULL, *sk2 = NULL;
-    const STACK_OF(X509_NAME) *sktmp = NULL;
+    STACK_OF(YX509_NAME) *sk1 = NULL, *sk2 = NULL;
+    const STACK_OF(YX509_NAME) *sktmp = NULL;
 
     for (i = 0; i < OSSL_NELEM(name); i++) {
-        name[i] = X509_NAME_new();
+        name[i] = YX509_NAME_new();
         if (!TEST_ptr(name[i])
-                || !TEST_true(X509_NAME_add_entry_by_txt(name[i], "CN",
+                || !TEST_true(YX509_NAME_add_entry_by_txt(name[i], "CN",
                                                          MBSTRING_ASC,
                                                          (unsigned char *)
                                                          strnames[i],
@@ -6575,12 +6575,12 @@ static int test_ca_names_int(int prot, int tst)
     SSL_CTX_set_verify(sctx, SSL_VERIFY_PEER, NULL);
 
     if (tst == 0 || tst == 1) {
-        if (!TEST_ptr(sk1 = sk_X509_NAME_new_null())
-                || !TEST_true(sk_X509_NAME_push(sk1, X509_NAME_dup(name[0])))
-                || !TEST_true(sk_X509_NAME_push(sk1, X509_NAME_dup(name[1])))
-                || !TEST_ptr(sk2 = sk_X509_NAME_new_null())
-                || !TEST_true(sk_X509_NAME_push(sk2, X509_NAME_dup(name[0])))
-                || !TEST_true(sk_X509_NAME_push(sk2, X509_NAME_dup(name[1]))))
+        if (!TEST_ptr(sk1 = sk_YX509_NAME_new_null())
+                || !TEST_true(sk_YX509_NAME_push(sk1, YX509_NAME_dup(name[0])))
+                || !TEST_true(sk_YX509_NAME_push(sk1, YX509_NAME_dup(name[1])))
+                || !TEST_ptr(sk2 = sk_YX509_NAME_new_null())
+                || !TEST_true(sk_YX509_NAME_push(sk2, YX509_NAME_dup(name[0])))
+                || !TEST_true(sk_YX509_NAME_push(sk2, YX509_NAME_dup(name[1]))))
             goto end;
 
         SSL_CTX_set0_CA_list(sctx, sk1);
@@ -6588,12 +6588,12 @@ static int test_ca_names_int(int prot, int tst)
         sk1 = sk2 = NULL;
     }
     if (tst == 1 || tst == 2) {
-        if (!TEST_ptr(sk1 = sk_X509_NAME_new_null())
-                || !TEST_true(sk_X509_NAME_push(sk1, X509_NAME_dup(name[2])))
-                || !TEST_true(sk_X509_NAME_push(sk1, X509_NAME_dup(name[3])))
-                || !TEST_ptr(sk2 = sk_X509_NAME_new_null())
-                || !TEST_true(sk_X509_NAME_push(sk2, X509_NAME_dup(name[2])))
-                || !TEST_true(sk_X509_NAME_push(sk2, X509_NAME_dup(name[3]))))
+        if (!TEST_ptr(sk1 = sk_YX509_NAME_new_null())
+                || !TEST_true(sk_YX509_NAME_push(sk1, YX509_NAME_dup(name[2])))
+                || !TEST_true(sk_YX509_NAME_push(sk1, YX509_NAME_dup(name[3])))
+                || !TEST_ptr(sk2 = sk_YX509_NAME_new_null())
+                || !TEST_true(sk_YX509_NAME_push(sk2, YX509_NAME_dup(name[2])))
+                || !TEST_true(sk_YX509_NAME_push(sk2, YX509_NAME_dup(name[3]))))
             goto end;
 
         SSL_CTX_set_client_CA_list(sctx, sk1);
@@ -6615,10 +6615,10 @@ static int test_ca_names_int(int prot, int tst)
     if (prot == TLS1_3_VERSION
             && (tst == 0 || tst == 1)) {
         if (!TEST_ptr(sktmp)
-                || !TEST_int_eq(sk_X509_NAME_num(sktmp), 2)
-                || !TEST_int_eq(X509_NAME_cmp(sk_X509_NAME_value(sktmp, 0),
+                || !TEST_int_eq(sk_YX509_NAME_num(sktmp), 2)
+                || !TEST_int_eq(YX509_NAME_cmp(sk_YX509_NAME_value(sktmp, 0),
                                               name[0]), 0)
-                || !TEST_int_eq(X509_NAME_cmp(sk_X509_NAME_value(sktmp, 1),
+                || !TEST_int_eq(YX509_NAME_cmp(sk_YX509_NAME_value(sktmp, 1),
                                               name[1]), 0))
             goto end;
     } else if (!TEST_ptr_null(sktmp)) {
@@ -6632,10 +6632,10 @@ static int test_ca_names_int(int prot, int tst)
      */
     sktmp = SSL_get0_peer_CA_list(clientssl);
     if (!TEST_ptr(sktmp)
-            || !TEST_int_eq(sk_X509_NAME_num(sktmp), 2)
-            || !TEST_int_eq(X509_NAME_cmp(sk_X509_NAME_value(sktmp, 0),
+            || !TEST_int_eq(sk_YX509_NAME_num(sktmp), 2)
+            || !TEST_int_eq(YX509_NAME_cmp(sk_YX509_NAME_value(sktmp, 0),
                                           name[tst == 0 ? 0 : 2]), 0)
-            || !TEST_int_eq(X509_NAME_cmp(sk_X509_NAME_value(sktmp, 1),
+            || !TEST_int_eq(YX509_NAME_cmp(sk_YX509_NAME_value(sktmp, 1),
                                           name[tst == 0 ? 1 : 3]), 0))
         goto end;
 
@@ -6647,9 +6647,9 @@ static int test_ca_names_int(int prot, int tst)
     SSL_CTX_free(sctx);
     SSL_CTX_free(cctx);
     for (i = 0; i < OSSL_NELEM(name); i++)
-        X509_NAME_free(name[i]);
-    sk_X509_NAME_pop_free(sk1, X509_NAME_free);
-    sk_X509_NAME_pop_free(sk2, X509_NAME_free);
+        YX509_NAME_free(name[i]);
+    sk_YX509_NAME_pop_free(sk1, YX509_NAME_free);
+    sk_YX509_NAME_pop_free(sk2, YX509_NAME_free);
 
     return testresult;
 }
@@ -7089,7 +7089,7 @@ static int test_set_verify_cert_store_ssl_ctx(void)
 {
    SSL_CTX *ctx = NULL;
    int testresult = 0;
-   X509_STORE *store = NULL, *new_store = NULL,
+   YX509_STORE *store = NULL, *new_store = NULL,
               *cstore = NULL, *new_cstore = NULL;
 
    /* Create an initial SSL_CTX. */
@@ -7110,11 +7110,11 @@ static int test_set_verify_cert_store_ssl_ctx(void)
        goto end;
 
    /* Create stores. We use separate stores so pointers are different. */
-   new_store = X509_STORE_new();
+   new_store = YX509_STORE_new();
    if (!TEST_ptr(new_store))
        goto end;
 
-   new_cstore = X509_STORE_new();
+   new_cstore = YX509_STORE_new();
    if (!TEST_ptr(new_cstore))
        goto end;
 
@@ -7155,8 +7155,8 @@ static int test_set_verify_cert_store_ssl_ctx(void)
    testresult = 1;
 
 end:
-   X509_STORE_free(new_store);
-   X509_STORE_free(new_cstore);
+   YX509_STORE_free(new_store);
+   YX509_STORE_free(new_cstore);
    SSL_CTX_free(ctx);
    return testresult;
 }
@@ -7169,7 +7169,7 @@ static int test_set_verify_cert_store_ssl(void)
    SSL_CTX *ctx = NULL;
    SSL *ssl = NULL;
    int testresult = 0;
-   X509_STORE *store = NULL, *new_store = NULL,
+   YX509_STORE *store = NULL, *new_store = NULL,
               *cstore = NULL, *new_cstore = NULL;
 
    /* Create an initial SSL_CTX. */
@@ -7195,11 +7195,11 @@ static int test_set_verify_cert_store_ssl(void)
        goto end;
 
    /* Create stores. We use separate stores so pointers are different. */
-   new_store = X509_STORE_new();
+   new_store = YX509_STORE_new();
    if (!TEST_ptr(new_store))
        goto end;
 
-   new_cstore = X509_STORE_new();
+   new_cstore = YX509_STORE_new();
    if (!TEST_ptr(new_cstore))
        goto end;
 
@@ -7240,8 +7240,8 @@ static int test_set_verify_cert_store_ssl(void)
    testresult = 1;
 
 end:
-   X509_STORE_free(new_store);
-   X509_STORE_free(new_cstore);
+   YX509_STORE_free(new_store);
+   YX509_STORE_free(new_cstore);
    SSL_free(ssl);
    SSL_CTX_free(ctx);
    return testresult;
@@ -7252,10 +7252,10 @@ static int test_inherit_verify_param(void)
     int testresult = 0;
 
     SSL_CTX *ctx = NULL;
-    X509_VERIFY_PARAM *cp = NULL;
+    YX509_VERIFY_PARAM *cp = NULL;
     SSL *ssl = NULL;
-    X509_VERIFY_PARAM *sp = NULL;
-    int hostflags = X509_CHECK_FLAG_NEVER_CHECK_SUBJECT;
+    YX509_VERIFY_PARAM *sp = NULL;
+    int hostflags = YX509_CHECK_FLAG_NEVER_CHECK_SUBJECT;
 
     ctx = SSL_CTX_new(TLS_server_method());
     if (!TEST_ptr(ctx))
@@ -7264,10 +7264,10 @@ static int test_inherit_verify_param(void)
     cp = SSL_CTX_get0_param(ctx);
     if (!TEST_ptr(cp))
         goto end;
-    if (!TEST_int_eq(X509_VERIFY_PARAM_get_hostflags(cp), 0))
+    if (!TEST_int_eq(YX509_VERIFY_PARAM_get_hostflags(cp), 0))
         goto end;
 
-    X509_VERIFY_PARAM_set_hostflags(cp, hostflags);
+    YX509_VERIFY_PARAM_set_hostflags(cp, hostflags);
 
     ssl = SSL_new(ctx);
     if (!TEST_ptr(ssl))
@@ -7276,7 +7276,7 @@ static int test_inherit_verify_param(void)
     sp = SSL_get0_param(ssl);
     if (!TEST_ptr(sp))
         goto end;
-    if (!TEST_int_eq(X509_VERIFY_PARAM_get_hostflags(sp), hostflags))
+    if (!TEST_int_eq(YX509_VERIFY_PARAM_get_hostflags(sp), hostflags))
         goto end;
 
     testresult = 1;

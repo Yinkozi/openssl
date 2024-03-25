@@ -7,21 +7,21 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef OSSL_CRYPTO_X509V3_V3_ADMIS_H
-# define OSSL_CRYPTO_X509V3_V3_ADMIS_H
+#ifndef OSSL_CRYPTO_YX509V3_V3_ADMIS_H
+# define OSSL_CRYPTO_YX509V3_V3_ADMIS_H
 
 struct NamingAuthority_st {
-    ASN1_OBJECT* namingAuthorityId;
-    ASN1_IA5STRING* namingAuthorityUrl;
-    ASN1_STRING* namingAuthorityText;          /* i.e. DIRECTORYSTRING */
+    YASN1_OBJECT* namingAuthorityId;
+    YASN1_IA5STRING* namingAuthorityUrl;
+    YASN1_STRING* namingAuthorityText;          /* i.e. DIRECTORYSTRING */
 };
 
 struct ProfessionInfo_st {
     NAMING_AUTHORITY* namingAuthority;
-    STACK_OF(ASN1_STRING)* professionItems;    /* i.e. DIRECTORYSTRING */
-    STACK_OF(ASN1_OBJECT)* professionOIDs;
-    ASN1_PRINTABLESTRING* registrationNumber;
-    ASN1_OCTET_STRING* addProfessionInfo;
+    STACK_OF(YASN1_STRING)* professionItems;    /* i.e. DIRECTORYSTRING */
+    STACK_OF(YASN1_OBJECT)* professionOIDs;
+    YASN1_PRINTABLESTRING* registrationNumber;
+    YASN1_OCTET_STRING* addProfessionInfo;
 };
 
 struct Admissions_st {

@@ -15,37 +15,37 @@
 #include <string.h>
 #include "asn1_local.h"
 
-static int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int asn1_item_embed_new(YASN1_VALUE **pval, const YASN1_ITEM *it,
                                int embed);
-static int asn1_primitive_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int asn1_primitive_new(YASN1_VALUE **pval, const YASN1_ITEM *it,
                               int embed);
-static void asn1_item_clear(ASN1_VALUE **pval, const ASN1_ITEM *it);
-static int asn1_template_new(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt);
-static void asn1_template_clear(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt);
-static void asn1_primitive_clear(ASN1_VALUE **pval, const ASN1_ITEM *it);
+static void asn1_item_clear(YASN1_VALUE **pval, const YASN1_ITEM *it);
+static int asn1_template_new(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt);
+static void asn1_template_clear(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt);
+static void asn1_primitive_clear(YASN1_VALUE **pval, const YASN1_ITEM *it);
 
-ASN1_VALUE *ASN1_item_new(const ASN1_ITEM *it)
+YASN1_VALUE *YASN1_item_new(const YASN1_ITEM *it)
 {
-    ASN1_VALUE *ret = NULL;
-    if (ASN1_item_ex_new(&ret, it) > 0)
+    YASN1_VALUE *ret = NULL;
+    if (YASN1_item_ex_new(&ret, it) > 0)
         return ret;
     return NULL;
 }
 
-/* Allocate an ASN1 structure */
+/* Allocate an YASN1 structure */
 
-int ASN1_item_ex_new(ASN1_VALUE **pval, const ASN1_ITEM *it)
+int YASN1_item_ex_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     return asn1_item_embed_new(pval, it, 0);
 }
 
-int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
+int asn1_item_embed_new(YASN1_VALUE **pval, const YASN1_ITEM *it, int embed)
 {
-    const ASN1_TEMPLATE *tt = NULL;
-    const ASN1_EXTERN_FUNCS *ef;
-    const ASN1_AUX *aux = it->funcs;
-    ASN1_aux_cb *asn1_cb;
-    ASN1_VALUE **pseqval;
+    const YASN1_TEMPLATE *tt = NULL;
+    const YASN1_EXTERN_FUNCS *ef;
+    const YASN1_AUX *aux = it->funcs;
+    YASN1_aux_cb *asn1_cb;
+    YASN1_VALUE **pseqval;
     int i;
     if (aux && aux->asn1_cb)
         asn1_cb = aux->asn1_cb;
@@ -58,7 +58,7 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
 
     switch (it->itype) {
 
-    case ASN1_ITYPE_EXTERN:
+    case YASN1_ITYPE_EXTERN:
         ef = it->funcs;
         if (ef && ef->asn1_ex_new) {
             if (!ef->asn1_ex_new(pval, it))
@@ -66,7 +66,7 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
         }
         break;
 
-    case ASN1_ITYPE_PRIMITIVE:
+    case YASN1_ITYPE_PRIMITIVE:
         if (it->templates) {
             if (!asn1_template_new(pval, it->templates))
                 goto memerr;
@@ -74,14 +74,14 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
             goto memerr;
         break;
 
-    case ASN1_ITYPE_MSTRING:
+    case YASN1_ITYPE_MSTRING:
         if (!asn1_primitive_new(pval, it, embed))
             goto memerr;
         break;
 
-    case ASN1_ITYPE_CHOICE:
+    case YASN1_ITYPE_CHOICE:
         if (asn1_cb) {
-            i = asn1_cb(ASN1_OP_NEW_PRE, pval, it, NULL);
+            i = asn1_cb(YASN1_OP_NEW_PRE, pval, it, NULL);
             if (!i)
                 goto auxerr;
             if (i == 2) {
@@ -98,15 +98,15 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
             if (*pval == NULL)
                 goto memerr;
         }
-        asn1_set_choice_selector(pval, -1, it);
-        if (asn1_cb && !asn1_cb(ASN1_OP_NEW_POST, pval, it, NULL))
+        asn1_set_choice_sselector(pval, -1, it);
+        if (asn1_cb && !asn1_cb(YASN1_OP_NEW_POST, pval, it, NULL))
             goto auxerr2;
         break;
 
-    case ASN1_ITYPE_NDEF_SEQUENCE:
-    case ASN1_ITYPE_SEQUENCE:
+    case YASN1_ITYPE_NDEF_SEQUENCE:
+    case YASN1_ITYPE_SEQUENCE:
         if (asn1_cb) {
-            i = asn1_cb(ASN1_OP_NEW_PRE, pval, it, NULL);
+            i = asn1_cb(YASN1_OP_NEW_PRE, pval, it, NULL);
             if (!i)
                 goto auxerr;
             if (i == 2) {
@@ -124,20 +124,20 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
                 goto memerr;
         }
         /* 0 : init. lock */
-        if (asn1_do_lock(pval, 0, it) < 0) {
+        if (asn1_ddo_lock(pval, 0, it) < 0) {
             if (!embed) {
                 OPENSSL_free(*pval);
                 *pval = NULL;
             }
             goto memerr;
         }
-        asn1_enc_init(pval, it);
+        asn1_encc_init(pval, it);
         for (i = 0, tt = it->templates; i < it->tcount; tt++, i++) {
-            pseqval = asn1_get_field_ptr(pval, tt);
+            pseqval = asn1_get_ffield_ptr(pval, tt);
             if (!asn1_template_new(pseqval, tt))
                 goto memerr2;
         }
-        if (asn1_cb && !asn1_cb(ASN1_OP_NEW_POST, pval, it, NULL))
+        if (asn1_cb && !asn1_cb(YASN1_OP_NEW_POST, pval, it, NULL))
             goto auxerr2;
         break;
     }
@@ -149,7 +149,7 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
  memerr2:
     asn1_item_embed_free(pval, it, embed);
  memerr:
-    ASN1err(ASN1_F_ASN1_ITEM_EMBED_NEW, ERR_R_MALLOC_FAILURE);
+    YASN1err(YASN1_F_YASN1_ITEM_EMBED_NEW, ERR_R_MALLOC_FAILURE);
 #ifndef OPENSSL_NO_CRYPTO_MDEBUG
     OPENSSL_mem_debug_pop();
 #endif
@@ -158,7 +158,7 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
  auxerr2:
     asn1_item_embed_free(pval, it, embed);
  auxerr:
-    ASN1err(ASN1_F_ASN1_ITEM_EMBED_NEW, ASN1_R_AUX_ERROR);
+    YASN1err(YASN1_F_YASN1_ITEM_EMBED_NEW, YASN1_R_AUX_ERROR);
 #ifndef OPENSSL_NO_CRYPTO_MDEBUG
     OPENSSL_mem_debug_pop();
 #endif
@@ -166,13 +166,13 @@ int asn1_item_embed_new(ASN1_VALUE **pval, const ASN1_ITEM *it, int embed)
 
 }
 
-static void asn1_item_clear(ASN1_VALUE **pval, const ASN1_ITEM *it)
+static void asn1_item_clear(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    const ASN1_EXTERN_FUNCS *ef;
+    const YASN1_EXTERN_FUNCS *ef;
 
     switch (it->itype) {
 
-    case ASN1_ITYPE_EXTERN:
+    case YASN1_ITYPE_EXTERN:
         ef = it->funcs;
         if (ef && ef->asn1_ex_clear)
             ef->asn1_ex_clear(pval, it);
@@ -180,42 +180,42 @@ static void asn1_item_clear(ASN1_VALUE **pval, const ASN1_ITEM *it)
             *pval = NULL;
         break;
 
-    case ASN1_ITYPE_PRIMITIVE:
+    case YASN1_ITYPE_PRIMITIVE:
         if (it->templates)
             asn1_template_clear(pval, it->templates);
         else
             asn1_primitive_clear(pval, it);
         break;
 
-    case ASN1_ITYPE_MSTRING:
+    case YASN1_ITYPE_MSTRING:
         asn1_primitive_clear(pval, it);
         break;
 
-    case ASN1_ITYPE_CHOICE:
-    case ASN1_ITYPE_SEQUENCE:
-    case ASN1_ITYPE_NDEF_SEQUENCE:
+    case YASN1_ITYPE_CHOICE:
+    case YASN1_ITYPE_SEQUENCE:
+    case YASN1_ITYPE_NDEF_SEQUENCE:
         *pval = NULL;
         break;
     }
 }
 
-static int asn1_template_new(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
+static int asn1_template_new(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt)
 {
-    const ASN1_ITEM *it = ASN1_ITEM_ptr(tt->item);
-    int embed = tt->flags & ASN1_TFLG_EMBED;
-    ASN1_VALUE *tval;
+    const YASN1_ITEM *it = YASN1_ITEM_ptr(tt->item);
+    int embed = tt->flags & YASN1_TFLG_EMBED;
+    YASN1_VALUE *tval;
     int ret;
     if (embed) {
-        tval = (ASN1_VALUE *)pval;
+        tval = (YASN1_VALUE *)pval;
         pval = &tval;
     }
-    if (tt->flags & ASN1_TFLG_OPTIONAL) {
+    if (tt->flags & YASN1_TFLG_OPTIONAL) {
         asn1_template_clear(pval, tt);
         return 1;
     }
     /* If ANY DEFINED BY nothing to do */
 
-    if (tt->flags & ASN1_TFLG_ADB_MASK) {
+    if (tt->flags & YASN1_TFLG_ADB_MASK) {
         *pval = NULL;
         return 1;
     }
@@ -224,15 +224,15 @@ static int asn1_template_new(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
             ? tt->field_name : "asn1_template_new");
 #endif
     /* If SET OF or SEQUENCE OF, its a STACK */
-    if (tt->flags & ASN1_TFLG_SK_MASK) {
-        STACK_OF(ASN1_VALUE) *skval;
-        skval = sk_ASN1_VALUE_new_null();
+    if (tt->flags & YASN1_TFLG_SK_MASK) {
+        STACK_OF(YASN1_VALUE) *skval;
+        skval = sk_YASN1_VALUE_new_null();
         if (!skval) {
-            ASN1err(ASN1_F_ASN1_TEMPLATE_NEW, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_YASN1_TEMPLATE_NEW, ERR_R_MALLOC_FAILURE);
             ret = 0;
             goto done;
         }
-        *pval = (ASN1_VALUE *)skval;
+        *pval = (YASN1_VALUE *)skval;
         ret = 1;
         goto done;
     }
@@ -245,13 +245,13 @@ static int asn1_template_new(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
     return ret;
 }
 
-static void asn1_template_clear(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
+static void asn1_template_clear(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt)
 {
     /* If ADB or STACK just NULL the field */
-    if (tt->flags & (ASN1_TFLG_ADB_MASK | ASN1_TFLG_SK_MASK))
+    if (tt->flags & (YASN1_TFLG_ADB_MASK | YASN1_TFLG_SK_MASK))
         *pval = NULL;
     else
-        asn1_item_clear(pval, ASN1_ITEM_ptr(tt->item));
+        asn1_item_clear(pval, YASN1_ITEM_ptr(tt->item));
 }
 
 /*
@@ -259,18 +259,18 @@ static void asn1_template_clear(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
  * all the old functions.
  */
 
-static int asn1_primitive_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int asn1_primitive_new(YASN1_VALUE **pval, const YASN1_ITEM *it,
                               int embed)
 {
-    ASN1_TYPE *typ;
-    ASN1_STRING *str;
+    YASN1_TYPE *typ;
+    YASN1_STRING *str;
     int utype;
 
     if (!it)
         return 0;
 
     if (it->funcs) {
-        const ASN1_PRIMITIVE_FUNCS *pf = it->funcs;
+        const YASN1_PRIMITIVE_FUNCS *pf = it->funcs;
         if (embed) {
             if (pf->prim_clear) {
                 pf->prim_clear(pval, it);
@@ -281,45 +281,45 @@ static int asn1_primitive_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
         }
     }
 
-    if (it->itype == ASN1_ITYPE_MSTRING)
+    if (it->itype == YASN1_ITYPE_MSTRING)
         utype = -1;
     else
         utype = it->utype;
     switch (utype) {
-    case V_ASN1_OBJECT:
-        *pval = (ASN1_VALUE *)OBJ_nid2obj(NID_undef);
+    case V_YASN1_OBJECT:
+        *pval = (YASN1_VALUE *)OBJ_nid2obj(NID_undef);
         return 1;
 
-    case V_ASN1_BOOLEAN:
-        *(ASN1_BOOLEAN *)pval = it->size;
+    case V_YASN1_BOOLEAN:
+        *(YASN1_BOOLEAN *)pval = it->size;
         return 1;
 
-    case V_ASN1_NULL:
-        *pval = (ASN1_VALUE *)1;
+    case V_YASN1_NULL:
+        *pval = (YASN1_VALUE *)1;
         return 1;
 
-    case V_ASN1_ANY:
+    case V_YASN1_ANY:
         if ((typ = OPENSSL_malloc(sizeof(*typ))) == NULL) {
-            ASN1err(ASN1_F_ASN1_PRIMITIVE_NEW, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_YASN1_PRIMITIVE_NEW, ERR_R_MALLOC_FAILURE);
             return 0;
         }
         typ->value.ptr = NULL;
         typ->type = -1;
-        *pval = (ASN1_VALUE *)typ;
+        *pval = (YASN1_VALUE *)typ;
         break;
 
     default:
         if (embed) {
-            str = *(ASN1_STRING **)pval;
+            str = *(YASN1_STRING **)pval;
             memset(str, 0, sizeof(*str));
             str->type = utype;
-            str->flags = ASN1_STRING_FLAG_EMBED;
+            str->flags = YASN1_STRING_FLAG_EMBED;
         } else {
-            str = ASN1_STRING_type_new(utype);
-            *pval = (ASN1_VALUE *)str;
+            str = YASN1_STRING_type_new(utype);
+            *pval = (YASN1_VALUE *)str;
         }
-        if (it->itype == ASN1_ITYPE_MSTRING && str)
-            str->flags |= ASN1_STRING_FLAG_MSTRING;
+        if (it->itype == YASN1_ITYPE_MSTRING && str)
+            str->flags |= YASN1_STRING_FLAG_MSTRING;
         break;
     }
     if (*pval)
@@ -327,23 +327,23 @@ static int asn1_primitive_new(ASN1_VALUE **pval, const ASN1_ITEM *it,
     return 0;
 }
 
-static void asn1_primitive_clear(ASN1_VALUE **pval, const ASN1_ITEM *it)
+static void asn1_primitive_clear(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     int utype;
     if (it && it->funcs) {
-        const ASN1_PRIMITIVE_FUNCS *pf = it->funcs;
+        const YASN1_PRIMITIVE_FUNCS *pf = it->funcs;
         if (pf->prim_clear)
             pf->prim_clear(pval, it);
         else
             *pval = NULL;
         return;
     }
-    if (!it || (it->itype == ASN1_ITYPE_MSTRING))
+    if (!it || (it->itype == YASN1_ITYPE_MSTRING))
         utype = -1;
     else
         utype = it->utype;
-    if (utype == V_ASN1_BOOLEAN)
-        *(ASN1_BOOLEAN *)pval = it->size;
+    if (utype == V_YASN1_BOOLEAN)
+        *(YASN1_BOOLEAN *)pval = it->size;
     else
         *pval = NULL;
 }

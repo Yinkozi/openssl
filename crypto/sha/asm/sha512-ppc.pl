@@ -27,7 +27,7 @@
 # (*)	64-bit code in 32-bit application context, which actually is
 #	on TODO list. It should be noted that for safe deployment in
 #	32-bit *multi-threaded* context asynchronous signals should be
-#	blocked upon entry to SHA512 block routine. This is because
+#	blocked upon entry to YSHA512 block routine. This is because
 #	32-bit signaling procedure invalidates upper halves of GPRs.
 #	Context switch procedure preserves them, but not signaling:-(
 
@@ -46,7 +46,7 @@ $output =shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T=8;
-	$LRSAVE=2*$SIZE_T;
+	$LYRSAVE=2*$SIZE_T;
 	$STU="stdu";
 	$UCMP="cmpld";
 	$SHL="sldi";
@@ -54,7 +54,7 @@ if ($flavour =~ /64/) {
 	$PUSH="std";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T=4;
-	$LRSAVE=$SIZE_T;
+	$LYRSAVE=$SIZE_T;
 	$STU="stwu";
 	$UCMP="cmplw";
 	$SHL="slwi";
@@ -219,7 +219,7 @@ $func:
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 ___
 
 if ($SZ==4 || $SIZE_T==8) {
@@ -327,7 +327,7 @@ $code.=<<___;
 	bne	Lunaligned
 
 Ldone:
-	$POP	r0,`$FRAME+$LRSAVE`($sp)
+	$POP	r0,`$FRAME+$LYRSAVE`($sp)
 	$POP	r14,`$FRAME-$SIZE_T*18`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
@@ -445,7 +445,7 @@ $code.=<<___;
 ___
 } else {
 ########################################################################
-# SHA512 for PPC32, X vector is off-loaded to stack...
+# YSHA512 for PPC32, X vector is off-loaded to stack...
 #
 #			|	sha512
 #			|	-m32

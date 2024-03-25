@@ -16,78 +16,78 @@
 #include <openssl/x509v3.h>
 
 #ifndef OPENSSL_NO_STDIO
-int X509_CRL_print_fp(FILE *fp, X509_CRL *x)
+int YX509_CRL_print_fp(FILE *fp, YX509_CRL *x)
 {
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
-        X509err(X509_F_X509_CRL_PRINT_FP, ERR_R_BUF_LIB);
+    if ((b = BIO_new(BIO_s_yfile())) == NULL) {
+        YX509err(YX509_F_YX509_CRL_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = X509_CRL_print(b, x);
+    ret = YX509_CRL_print(b, x);
     BIO_free(b);
     return ret;
 }
 #endif
 
-int X509_CRL_print(BIO *out, X509_CRL *x)
+int YX509_CRL_print(BIO *out, YX509_CRL *x)
 {
-  return X509_CRL_print_ex(out, x, XN_FLAG_COMPAT);
+  return YX509_CRL_print_ex(out, x, XN_FLAG_COMPAT);
 }
 
-int X509_CRL_print_ex(BIO *out, X509_CRL *x, unsigned long nmflag)
+int YX509_CRL_print_ex(BIO *out, YX509_CRL *x, unsigned long nmflag)
 {
-    STACK_OF(X509_REVOKED) *rev;
-    X509_REVOKED *r;
-    const X509_ALGOR *sig_alg;
-    const ASN1_BIT_STRING *sig;
+    STACK_OF(YX509_REVOKED) *rev;
+    YX509_REVOKED *r;
+    const YX509_ALGOR *sig_alg;
+    const YASN1_BIT_STRING *sig;
     long l;
     int i;
 
-    BIO_printf(out, "Certificate Revocation List (CRL):\n");
-    l = X509_CRL_get_version(x);
+    BIO_pprintf(out, "Certificate Revocation List (CRL):\n");
+    l = YX509_CRL_get_version(x);
     if (l >= 0 && l <= 1)
-        BIO_printf(out, "%8sVersion %ld (0x%lx)\n", "", l + 1, (unsigned long)l);
+        BIO_pprintf(out, "%8sVersion %ld (0x%lx)\n", "", l + 1, (unsigned long)l);
     else
-        BIO_printf(out, "%8sVersion unknown (%ld)\n", "", l);
-    X509_CRL_get0_signature(x, &sig, &sig_alg);
+        BIO_pprintf(out, "%8sVersion unknown (%ld)\n", "", l);
+    YX509_CRL_get0_signature(x, &sig, &sig_alg);
     BIO_puts(out, "    ");
-    X509_signature_print(out, sig_alg, NULL);
-    BIO_printf(out, "%8sIssuer: ", "");
-    X509_NAME_print_ex(out, X509_CRL_get_issuer(x), 0, nmflag);
+    YX509_signature_print(out, sig_alg, NULL);
+    BIO_pprintf(out, "%8sIssuer: ", "");
+    YX509_NAME_print_ex(out, YX509_CRL_get_issuer(x), 0, nmflag);
     BIO_puts(out, "\n");
-    BIO_printf(out, "%8sLast Update: ", "");
-    ASN1_TIME_print(out, X509_CRL_get0_lastUpdate(x));
-    BIO_printf(out, "\n%8sNext Update: ", "");
-    if (X509_CRL_get0_nextUpdate(x))
-        ASN1_TIME_print(out, X509_CRL_get0_nextUpdate(x));
+    BIO_pprintf(out, "%8sLast Update: ", "");
+    YASN1_TIME_print(out, YX509_CRL_get0_lastUpdate(x));
+    BIO_pprintf(out, "\n%8sNext Update: ", "");
+    if (YX509_CRL_get0_nextUpdate(x))
+        YASN1_TIME_print(out, YX509_CRL_get0_nextUpdate(x));
     else
-        BIO_printf(out, "NONE");
-    BIO_printf(out, "\n");
+        BIO_pprintf(out, "NONE");
+    BIO_pprintf(out, "\n");
 
-    X509V3_extensions_print(out, "CRL extensions",
-                            X509_CRL_get0_extensions(x), 0, 8);
+    YX509V3_extensions_print(out, "CRL extensions",
+                            YX509_CRL_get0_extensions(x), 0, 8);
 
-    rev = X509_CRL_get_REVOKED(x);
+    rev = YX509_CRL_get_REVOKED(x);
 
-    if (sk_X509_REVOKED_num(rev) > 0)
-        BIO_printf(out, "Revoked Certificates:\n");
+    if (sk_YX509_REVOKED_num(rev) > 0)
+        BIO_pprintf(out, "Revoked Certificates:\n");
     else
-        BIO_printf(out, "No Revoked Certificates.\n");
+        BIO_pprintf(out, "No Revoked Certificates.\n");
 
-    for (i = 0; i < sk_X509_REVOKED_num(rev); i++) {
-        r = sk_X509_REVOKED_value(rev, i);
-        BIO_printf(out, "    Serial Number: ");
-        i2a_ASN1_INTEGER(out, X509_REVOKED_get0_serialNumber(r));
-        BIO_printf(out, "\n        Revocation Date: ");
-        ASN1_TIME_print(out, X509_REVOKED_get0_revocationDate(r));
-        BIO_printf(out, "\n");
-        X509V3_extensions_print(out, "CRL entry extensions",
-                                X509_REVOKED_get0_extensions(r), 0, 8);
+    for (i = 0; i < sk_YX509_REVOKED_num(rev); i++) {
+        r = sk_YX509_REVOKED_value(rev, i);
+        BIO_pprintf(out, "    Serial Number: ");
+        i2a_YASN1_INTEGER(out, YX509_REVOKED_get0_serialNumber(r));
+        BIO_pprintf(out, "\n        Revocation Date: ");
+        YASN1_TIME_print(out, YX509_REVOKED_get0_revocationDate(r));
+        BIO_pprintf(out, "\n");
+        YX509V3_extensions_print(out, "CRL entry extensions",
+                                YX509_REVOKED_get0_extensions(r), 0, 8);
     }
-    X509_signature_print(out, sig_alg, sig);
+    YX509_signature_print(out, sig_alg, sig);
 
     return 1;
 

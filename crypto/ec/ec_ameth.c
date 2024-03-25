@@ -35,18 +35,18 @@ static int eckey_param2type(int *pptype, void **ppval, const EC_KEY *ec_key)
         && (nid = EC_GROUP_get_curve_name(group)))
         /* we have a 'named curve' => just set the OID */
     {
-        ASN1_OBJECT *asn1obj = OBJ_nid2obj(nid);
+        YASN1_OBJECT *asn1obj = OBJ_nid2obj(nid);
 
         if (asn1obj == NULL || OBJ_length(asn1obj) == 0) {
             ECerr(EC_F_ECKEY_PARAM2TYPE, EC_R_MISSING_OID);
             return 0;
         }
         *ppval = asn1obj;
-        *pptype = V_ASN1_OBJECT;
+        *pptype = V_YASN1_OBJECT;
     } else {                    /* explicit parameters */
 
-        ASN1_STRING *pstr = NULL;
-        pstr = ASN1_STRING_new();
+        YASN1_STRING *pstr = NULL;
+        pstr = YASN1_STRING_new();
         if (pstr == NULL)
             return 0;
 
@@ -61,17 +61,17 @@ static int eckey_param2type(int *pptype, void **ppval, const EC_KEY *ec_key)
          */
         pstr->length = i2d_ECParameters((EC_KEY *)ec_key, &pstr->data);
         if (pstr->length <= 0) {
-            ASN1_STRING_free(pstr);
+            YASN1_STRING_free(pstr);
             ECerr(EC_F_ECKEY_PARAM2TYPE, ERR_R_EC_LIB);
             return 0;
         }
         *ppval = pstr;
-        *pptype = V_ASN1_SEQUENCE;
+        *pptype = V_YASN1_SEQUENCE;
     }
     return 1;
 }
 
-static int eckey_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
+static int eckey_pub_encode(YX509_PUBKEY *pk, const EVVP_PKEY *pkey)
 {
     const EC_KEY *ec_key = pkey->pkey.ec;
     void *pval = NULL;
@@ -93,12 +93,12 @@ static int eckey_pub_encode(X509_PUBKEY *pk, const EVP_PKEY *pkey)
     penclen = i2o_ECPublicKey(ec_key, &p);
     if (penclen <= 0)
         goto err;
-    if (X509_PUBKEY_set0_param(pk, OBJ_nid2obj(EVP_PKEY_EC),
+    if (YX509_PUBKEY_set0_param(pk, OBJ_nid2obj(EVVP_PKEY_EC),
                                ptype, pval, penc, penclen))
         return 1;
  err:
-    if (ptype == V_ASN1_SEQUENCE)
-        ASN1_STRING_free(pval);
+    if (ptype == V_YASN1_SEQUENCE)
+        YASN1_STRING_free(pval);
     OPENSSL_free(penc);
     return 0;
 }
@@ -108,8 +108,8 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
     EC_KEY *eckey = NULL;
     EC_GROUP *group = NULL;
 
-    if (ptype == V_ASN1_SEQUENCE) {
-        const ASN1_STRING *pstr = pval;
+    if (ptype == V_YASN1_SEQUENCE) {
+        const YASN1_STRING *pstr = pval;
         const unsigned char *pm = pstr->data;
         int pmlen = pstr->length;
 
@@ -117,17 +117,17 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
             ECerr(EC_F_ECKEY_TYPE2PARAM, EC_R_DECODE_ERROR);
             goto ecerr;
         }
-    } else if (ptype == V_ASN1_OBJECT) {
-        const ASN1_OBJECT *poid = pval;
+    } else if (ptype == V_YASN1_OBJECT) {
+        const YASN1_OBJECT *poid = pval;
 
         /*
-         * type == V_ASN1_OBJECT => the parameters are given by an asn1 OID
+         * type == V_YASN1_OBJECT => the parameters are given by an asn1 OID
          */
         if ((eckey = EC_KEY_new()) == NULL) {
             ECerr(EC_F_ECKEY_TYPE2PARAM, ERR_R_MALLOC_FAILURE);
             goto ecerr;
         }
-        group = EC_GROUP_new_by_curve_name(OBJ_obj2nid(poid));
+        group = EC_GROUP_new_by_curve_mame(OBJ_obj2nid(poid));
         if (group == NULL)
             goto ecerr;
         EC_GROUP_set_asn1_flag(group, OPENSSL_EC_NAMED_CURVE);
@@ -147,17 +147,17 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
     return NULL;
 }
 
-static int eckey_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
+static int eckey_pub_decode(EVVP_PKEY *pkey, YX509_PUBKEY *pubkey)
 {
     const unsigned char *p = NULL;
     const void *pval;
     int ptype, pklen;
     EC_KEY *eckey = NULL;
-    X509_ALGOR *palg;
+    YX509_ALGOR *palg;
 
-    if (!X509_PUBKEY_get0_param(NULL, &p, &pklen, &palg, pubkey))
+    if (!YX509_PUBKEY_get0_param(NULL, &p, &pklen, &palg, pubkey))
         return 0;
-    X509_ALGOR_get0(NULL, &ptype, &pval, palg);
+    YX509_ALGOR_get0(NULL, &ptype, &pval, palg);
 
     eckey = eckey_type2param(ptype, pval);
 
@@ -172,7 +172,7 @@ static int eckey_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
         goto ecerr;
     }
 
-    EVP_PKEY_assign_EC_KEY(pkey, eckey);
+    EVVP_PKEY_assign_EC_KEY(pkey, eckey);
     return 1;
 
  ecerr:
@@ -180,7 +180,7 @@ static int eckey_pub_decode(EVP_PKEY *pkey, X509_PUBKEY *pubkey)
     return 0;
 }
 
-static int eckey_pub_cmp(const EVP_PKEY *a, const EVP_PKEY *b)
+static int eckey_pub_cmp(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
     int r;
     const EC_GROUP *group = EC_KEY_get0_group(b->pkey.ec);
@@ -196,17 +196,17 @@ static int eckey_pub_cmp(const EVP_PKEY *a, const EVP_PKEY *b)
     return -2;
 }
 
-static int eckey_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
+static int eckey_priv_decode(EVVP_PKEY *pkey, const YPKCS8_PRIV_KEY_INFO *p8)
 {
     const unsigned char *p = NULL;
     const void *pval;
     int ptype, pklen;
     EC_KEY *eckey = NULL;
-    const X509_ALGOR *palg;
+    const YX509_ALGOR *palg;
 
-    if (!PKCS8_pkey_get0(NULL, &p, &pklen, &palg, p8))
+    if (!YPKCS8_pkey_get0(NULL, &p, &pklen, &palg, p8))
         return 0;
-    X509_ALGOR_get0(NULL, &ptype, &pval, palg);
+    YX509_ALGOR_get0(NULL, &ptype, &pval, palg);
 
     eckey = eckey_type2param(ptype, pval);
 
@@ -219,7 +219,7 @@ static int eckey_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
         goto ecerr;
     }
 
-    EVP_PKEY_assign_EC_KEY(pkey, eckey);
+    EVVP_PKEY_assign_EC_KEY(pkey, eckey);
     return 1;
 
  ecliberr:
@@ -229,7 +229,7 @@ static int eckey_priv_decode(EVP_PKEY *pkey, const PKCS8_PRIV_KEY_INFO *p8)
     return 0;
 }
 
-static int eckey_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
+static int eckey_priv_encode(YPKCS8_PRIV_KEY_INFO *p8, const EVVP_PKEY *pkey)
 {
     EC_KEY ec_key = *(pkey->pkey.ec);
     unsigned char *ep, *p;
@@ -245,7 +245,7 @@ static int eckey_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
     /* set the private key */
 
     /*
-     * do not include the parameters in the SEC1 private key see PKCS#11
+     * do not include the parameters in the SEC1 private key see YPKCS#11
      * 12.11
      */
     old_flags = EC_KEY_get_enc_flags(&ec_key);
@@ -253,49 +253,49 @@ static int eckey_priv_encode(PKCS8_PRIV_KEY_INFO *p8, const EVP_PKEY *pkey)
 
     eplen = i2d_ECPrivateKey(&ec_key, NULL);
     if (!eplen) {
-        if (ptype == V_ASN1_SEQUENCE)
-            ASN1_STRING_free(pval);
+        if (ptype == V_YASN1_SEQUENCE)
+            YASN1_STRING_free(pval);
         ECerr(EC_F_ECKEY_PRIV_ENCODE, ERR_R_EC_LIB);
         return 0;
     }
     ep = OPENSSL_malloc(eplen);
     if (ep == NULL) {
-        if (ptype == V_ASN1_SEQUENCE)
-            ASN1_STRING_free(pval);
+        if (ptype == V_YASN1_SEQUENCE)
+            YASN1_STRING_free(pval);
         ECerr(EC_F_ECKEY_PRIV_ENCODE, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     p = ep;
     if (!i2d_ECPrivateKey(&ec_key, &p)) {
         OPENSSL_clear_free(ep, eplen);
-        if (ptype == V_ASN1_SEQUENCE)
-            ASN1_STRING_free(pval);
+        if (ptype == V_YASN1_SEQUENCE)
+            YASN1_STRING_free(pval);
         ECerr(EC_F_ECKEY_PRIV_ENCODE, ERR_R_EC_LIB);
         return 0;
     }
 
-    if (!PKCS8_pkey_set0(p8, OBJ_nid2obj(NID_X9_62_id_ecPublicKey), 0,
+    if (!YPKCS8_pkey_set0(p8, OBJ_nid2obj(NID_X9_62_id_ecPublicKey), 0,
                          ptype, pval, ep, eplen)) {
         OPENSSL_clear_free(ep, eplen);
-        if (ptype == V_ASN1_SEQUENCE)
-            ASN1_STRING_free(pval);
+        if (ptype == V_YASN1_SEQUENCE)
+            YASN1_STRING_free(pval);
         return 0;
     }
 
     return 1;
 }
 
-static int int_ec_size(const EVP_PKEY *pkey)
+static int int_ec_size(const EVVP_PKEY *pkey)
 {
     return ECDSA_size(pkey->pkey.ec);
 }
 
-static int ec_bits(const EVP_PKEY *pkey)
+static int ec_bits(const EVVP_PKEY *pkey)
 {
     return EC_GROUP_order_bits(EC_KEY_get0_group(pkey->pkey.ec));
 }
 
-static int ec_security_bits(const EVP_PKEY *pkey)
+static int ec_security_bits(const EVVP_PKEY *pkey)
 {
     int ecbits = ec_bits(pkey);
     if (ecbits >= 512)
@@ -311,14 +311,14 @@ static int ec_security_bits(const EVP_PKEY *pkey)
     return ecbits / 2;
 }
 
-static int ec_missing_parameters(const EVP_PKEY *pkey)
+static int ec_missing_parameters(const EVVP_PKEY *pkey)
 {
     if (pkey->pkey.ec == NULL || EC_KEY_get0_group(pkey->pkey.ec) == NULL)
         return 1;
     return 0;
 }
 
-static int ec_copy_parameters(EVP_PKEY *to, const EVP_PKEY *from)
+static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
 {
     EC_GROUP *group = EC_GROUP_dup(EC_KEY_get0_group(from->pkey.ec));
 
@@ -338,7 +338,7 @@ static int ec_copy_parameters(EVP_PKEY *to, const EVP_PKEY *from)
     return 0;
 }
 
-static int ec_cmp_parameters(const EVP_PKEY *a, const EVP_PKEY *b)
+static int ec_cmp_parameters(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
     const EC_GROUP *group_a = EC_KEY_get0_group(a->pkey.ec),
         *group_b = EC_KEY_get0_group(b->pkey.ec);
@@ -350,7 +350,7 @@ static int ec_cmp_parameters(const EVP_PKEY *a, const EVP_PKEY *b)
         return 1;
 }
 
-static void int_ec_free(EVP_PKEY *pkey)
+static void int_ec_free(EVVP_PKEY *pkey)
 {
     EC_KEY_free(pkey->pkey.ec);
 }
@@ -395,25 +395,25 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
 
     if (!BIO_indent(bp, off, 128))
         goto err;
-    if (BIO_printf(bp, "%s: (%d bit)\n", ecstr,
+    if (BIO_pprintf(bp, "%s: (%d bit)\n", ecstr,
                    EC_GROUP_order_bits(group)) <= 0)
         goto err;
 
     if (privlen != 0) {
-        if (BIO_printf(bp, "%*spriv:\n", off, "") <= 0)
+        if (BIO_pprintf(bp, "%*spriv:\n", off, "") <= 0)
             goto err;
-        if (ASN1_buf_print(bp, priv, privlen, off + 4) == 0)
+        if (YASN1_buf_print(bp, priv, privlen, off + 4) == 0)
             goto err;
     }
 
     if (publen != 0) {
-        if (BIO_printf(bp, "%*spub:\n", off, "") <= 0)
+        if (BIO_pprintf(bp, "%*spub:\n", off, "") <= 0)
             goto err;
-        if (ASN1_buf_print(bp, pub, publen, off + 4) == 0)
+        if (YASN1_buf_print(bp, pub, publen, off + 4) == 0)
             goto err;
     }
 
-    if (!ECPKParameters_print(bp, group, off))
+    if (!ECPKParameters_prints(bp, group, off))
         goto err;
     ret = 1;
  err:
@@ -424,7 +424,7 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
     return ret;
 }
 
-static int eckey_param_decode(EVP_PKEY *pkey,
+static int eckey_param_decode(EVVP_PKEY *pkey,
                               const unsigned char **pder, int derlen)
 {
     EC_KEY *eckey;
@@ -433,34 +433,34 @@ static int eckey_param_decode(EVP_PKEY *pkey,
         ECerr(EC_F_ECKEY_PARAM_DECODE, ERR_R_EC_LIB);
         return 0;
     }
-    EVP_PKEY_assign_EC_KEY(pkey, eckey);
+    EVVP_PKEY_assign_EC_KEY(pkey, eckey);
     return 1;
 }
 
-static int eckey_param_encode(const EVP_PKEY *pkey, unsigned char **pder)
+static int eckey_param_encode(const EVVP_PKEY *pkey, unsigned char **pder)
 {
     return i2d_ECParameters(pkey->pkey.ec, pder);
 }
 
-static int eckey_param_print(BIO *bp, const EVP_PKEY *pkey, int indent,
-                             ASN1_PCTX *ctx)
+static int eckey_param_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
+                             YASN1_PCTX *ctx)
 {
     return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PARAM);
 }
 
-static int eckey_pub_print(BIO *bp, const EVP_PKEY *pkey, int indent,
-                           ASN1_PCTX *ctx)
+static int eckey_pub_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
+                           YASN1_PCTX *ctx)
 {
     return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PUBLIC);
 }
 
-static int eckey_priv_print(BIO *bp, const EVP_PKEY *pkey, int indent,
-                            ASN1_PCTX *ctx)
+static int eckey_priv_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
+                            YASN1_PCTX *ctx)
 {
     return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PRIVATE);
 }
 
-static int old_ec_priv_decode(EVP_PKEY *pkey,
+static int old_ec_priv_decode(EVVP_PKEY *pkey,
                               const unsigned char **pder, int derlen)
 {
     EC_KEY *ec;
@@ -469,64 +469,64 @@ static int old_ec_priv_decode(EVP_PKEY *pkey,
         ECerr(EC_F_OLD_EC_PRIV_DECODE, EC_R_DECODE_ERROR);
         return 0;
     }
-    EVP_PKEY_assign_EC_KEY(pkey, ec);
+    EVVP_PKEY_assign_EC_KEY(pkey, ec);
     return 1;
 }
 
-static int old_ec_priv_encode(const EVP_PKEY *pkey, unsigned char **pder)
+static int old_ec_priv_encode(const EVVP_PKEY *pkey, unsigned char **pder)
 {
     return i2d_ECPrivateKey(pkey->pkey.ec, pder);
 }
 
-static int ec_pkey_ctrl(EVP_PKEY *pkey, int op, long arg1, void *arg2)
+static int ec_pkey_ctrl(EVVP_PKEY *pkey, int op, long arg1, void *arg2)
 {
     switch (op) {
-    case ASN1_PKEY_CTRL_PKCS7_SIGN:
+    case YASN1_PKEY_CTRL_YPKCS7_SIGN:
         if (arg1 == 0) {
             int snid, hnid;
-            X509_ALGOR *alg1, *alg2;
-            PKCS7_SIGNER_INFO_get0_algs(arg2, NULL, &alg1, &alg2);
+            YX509_ALGOR *alg1, *alg2;
+            YPKCS7_SIGNER_INFO_get0_algs(arg2, NULL, &alg1, &alg2);
             if (alg1 == NULL || alg1->algorithm == NULL)
                 return -1;
             hnid = OBJ_obj2nid(alg1->algorithm);
             if (hnid == NID_undef)
                 return -1;
-            if (!OBJ_find_sigid_by_algs(&snid, hnid, EVP_PKEY_id(pkey)))
+            if (!OBJ_find_sigid_by_algs(&snid, hnid, EVVP_PKEY_id(pkey)))
                 return -1;
-            X509_ALGOR_set0(alg2, OBJ_nid2obj(snid), V_ASN1_UNDEF, 0);
+            YX509_ALGOR_set0(alg2, OBJ_nid2obj(snid), V_YASN1_UNDEF, 0);
         }
         return 1;
 #ifndef OPENSSL_NO_CMS
-    case ASN1_PKEY_CTRL_CMS_SIGN:
+    case YASN1_PKEY_CTRL_CMS_SIGN:
         if (arg1 == 0) {
             int snid, hnid;
-            X509_ALGOR *alg1, *alg2;
+            YX509_ALGOR *alg1, *alg2;
             CMS_SignerInfo_get0_algs(arg2, NULL, NULL, &alg1, &alg2);
             if (alg1 == NULL || alg1->algorithm == NULL)
                 return -1;
             hnid = OBJ_obj2nid(alg1->algorithm);
             if (hnid == NID_undef)
                 return -1;
-            if (!OBJ_find_sigid_by_algs(&snid, hnid, EVP_PKEY_id(pkey)))
+            if (!OBJ_find_sigid_by_algs(&snid, hnid, EVVP_PKEY_id(pkey)))
                 return -1;
-            X509_ALGOR_set0(alg2, OBJ_nid2obj(snid), V_ASN1_UNDEF, 0);
+            YX509_ALGOR_set0(alg2, OBJ_nid2obj(snid), V_YASN1_UNDEF, 0);
         }
         return 1;
 
-    case ASN1_PKEY_CTRL_CMS_ENVELOPE:
+    case YASN1_PKEY_CTRL_CMS_ENVELOPE:
         if (arg1 == 1)
             return ecdh_cms_decrypt(arg2);
         else if (arg1 == 0)
             return ecdh_cms_encrypt(arg2);
         return -2;
 
-    case ASN1_PKEY_CTRL_CMS_RI_TYPE:
+    case YASN1_PKEY_CTRL_CMS_RI_TYPE:
         *(int *)arg2 = CMS_RECIPINFO_AGREE;
         return 1;
 #endif
 
-    case ASN1_PKEY_CTRL_DEFAULT_MD_NID:
-        if (EVP_PKEY_id(pkey) == EVP_PKEY_SM2) {
+    case YASN1_PKEY_CTRL_DEFAULT_MD_NID:
+        if (EVVP_PKEY_id(pkey) == EVVP_PKEY_SM2) {
             /* For SM2, the only valid digest-alg is SM3 */
             *(int *)arg2 = NID_sm3;
         } else {
@@ -534,11 +534,11 @@ static int ec_pkey_ctrl(EVP_PKEY *pkey, int op, long arg1, void *arg2)
         }
         return 1;
 
-    case ASN1_PKEY_CTRL_SET1_TLS_ENCPT:
-        return EC_KEY_oct2key(EVP_PKEY_get0_EC_KEY(pkey), arg2, arg1, NULL);
+    case YASN1_PKEY_CTRL_SET1_TLS_ENCPT:
+        return EC_KEY_oct2key(EVVP_PKEY_get0_EC_KEY(pkey), arg2, arg1, NULL);
 
-    case ASN1_PKEY_CTRL_GET1_TLS_ENCPT:
-        return EC_KEY_key2buf(EVP_PKEY_get0_EC_KEY(pkey),
+    case YASN1_PKEY_CTRL_GET1_TLS_ENCPT:
+        return EC_KEY_key2buf(EVVP_PKEY_get0_EC_KEY(pkey),
                               POINT_CONVERSION_UNCOMPRESSED, arg2, NULL);
 
     default:
@@ -548,11 +548,11 @@ static int ec_pkey_ctrl(EVP_PKEY *pkey, int op, long arg1, void *arg2)
 
 }
 
-static int ec_pkey_check(const EVP_PKEY *pkey)
+static int ec_pkey_check(const EVVP_PKEY *pkey)
 {
     EC_KEY *eckey = pkey->pkey.ec;
 
-    /* stay consistent to what EVP_PKEY_check demands */
+    /* stay consistent to what EVVP_PKEY_check demands */
     if (eckey->priv_key == NULL) {
         ECerr(EC_F_EC_PKEY_CHECK, EC_R_MISSING_PRIVATE_KEY);
         return 0;
@@ -561,7 +561,7 @@ static int ec_pkey_check(const EVP_PKEY *pkey)
     return EC_KEY_check_key(eckey);
 }
 
-static int ec_pkey_public_check(const EVP_PKEY *pkey)
+static int ec_pkey_public_check(const EVVP_PKEY *pkey)
 {
     EC_KEY *eckey = pkey->pkey.ec;
 
@@ -577,11 +577,11 @@ static int ec_pkey_public_check(const EVP_PKEY *pkey)
     return EC_KEY_check_key(eckey);
 }
 
-static int ec_pkey_param_check(const EVP_PKEY *pkey)
+static int ec_pkey_param_check(const EVVP_PKEY *pkey)
 {
     EC_KEY *eckey = pkey->pkey.ec;
 
-    /* stay consistent to what EVP_PKEY_check demands */
+    /* stay consistent to what EVVP_PKEY_check demands */
     if (eckey->group == NULL) {
         ECerr(EC_F_EC_PKEY_PARAM_CHECK, EC_R_MISSING_PARAMETERS);
         return 0;
@@ -590,9 +590,9 @@ static int ec_pkey_param_check(const EVP_PKEY *pkey)
     return EC_GROUP_check(eckey->group, NULL);
 }
 
-const EVP_PKEY_ASN1_METHOD eckey_asn1_meth = {
-    EVP_PKEY_EC,
-    EVP_PKEY_EC,
+const EVVP_PKEY_YASN1_METHOD eckey_asn1_meth = {
+    EVVP_PKEY_EC,
+    EVVP_PKEY_EC,
     0,
     "EC",
     "OpenSSL EC algorithm",
@@ -631,10 +631,10 @@ const EVP_PKEY_ASN1_METHOD eckey_asn1_meth = {
 };
 
 #if !defined(OPENSSL_NO_SM2)
-const EVP_PKEY_ASN1_METHOD sm2_asn1_meth = {
-   EVP_PKEY_SM2,
-   EVP_PKEY_EC,
-   ASN1_PKEY_ALIAS
+const EVVP_PKEY_YASN1_METHOD sm2_asn1_meth = {
+   EVVP_PKEY_SM2,
+   EVVP_PKEY_EC,
+   YASN1_PKEY_ALIAS
 };
 #endif
 
@@ -653,25 +653,25 @@ int ECParameters_print(BIO *bp, const EC_KEY *x)
 
 #ifndef OPENSSL_NO_CMS
 
-static int ecdh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
-                                X509_ALGOR *alg, ASN1_BIT_STRING *pubkey)
+static int ecdh_cms_set_peerkey(EVVP_PKEY_CTX *pctx,
+                                YX509_ALGOR *alg, YASN1_BIT_STRING *pubkey)
 {
-    const ASN1_OBJECT *aoid;
+    const YASN1_OBJECT *aoid;
     int atype;
     const void *aval;
     int rv = 0;
-    EVP_PKEY *pkpeer = NULL;
+    EVVP_PKEY *pkpeer = NULL;
     EC_KEY *ecpeer = NULL;
     const unsigned char *p;
     int plen;
-    X509_ALGOR_get0(&aoid, &atype, &aval, alg);
+    YX509_ALGOR_get0(&aoid, &atype, &aval, alg);
     if (OBJ_obj2nid(aoid) != NID_X9_62_id_ecPublicKey)
         goto err;
     /* If absent parameters get group from main key */
-    if (atype == V_ASN1_UNDEF || atype == V_ASN1_NULL) {
+    if (atype == V_YASN1_UNDEF || atype == V_YASN1_NULL) {
         const EC_GROUP *grp;
-        EVP_PKEY *pk;
-        pk = EVP_PKEY_CTX_get0_pkey(pctx);
+        EVVP_PKEY *pk;
+        pk = EVVP_PKEY_CTX_get0_pkey(pctx);
         if (!pk)
             goto err;
         grp = EC_KEY_get0_group(pk->pkey.ec);
@@ -686,29 +686,29 @@ static int ecdh_cms_set_peerkey(EVP_PKEY_CTX *pctx,
             goto err;
     }
     /* We have parameters now set public key */
-    plen = ASN1_STRING_length(pubkey);
-    p = ASN1_STRING_get0_data(pubkey);
+    plen = YASN1_STRING_length(pubkey);
+    p = YASN1_STRING_get0_data(pubkey);
     if (!p || !plen)
         goto err;
     if (!o2i_ECPublicKey(&ecpeer, &p, plen))
         goto err;
-    pkpeer = EVP_PKEY_new();
+    pkpeer = EVVP_PKEY_new();
     if (pkpeer == NULL)
         goto err;
-    EVP_PKEY_set1_EC_KEY(pkpeer, ecpeer);
-    if (EVP_PKEY_derive_set_peer(pctx, pkpeer) > 0)
+    EVVP_PKEY_set1_EC_KEY(pkpeer, ecpeer);
+    if (EVVP_PKEY_derive_set_peer(pctx, pkpeer) > 0)
         rv = 1;
  err:
     EC_KEY_free(ecpeer);
-    EVP_PKEY_free(pkpeer);
+    EVVP_PKEY_free(pkpeer);
     return rv;
 }
 
 /* Set KDF parameters based on KDF NID */
-static int ecdh_cms_set_kdf_param(EVP_PKEY_CTX *pctx, int eckdf_nid)
+static int ecdh_cms_set_kdf_param(EVVP_PKEY_CTX *pctx, int eckdf_nid)
 {
     int kdf_nid, kdfmd_nid, cofactor;
-    const EVP_MD *kdf_md;
+    const EVVP_MD *kdf_md;
     if (eckdf_nid == NID_undef)
         return 0;
 
@@ -723,32 +723,32 @@ static int ecdh_cms_set_kdf_param(EVP_PKEY_CTX *pctx, int eckdf_nid)
     else
         return 0;
 
-    if (EVP_PKEY_CTX_set_ecdh_cofactor_mode(pctx, cofactor) <= 0)
+    if (EVVP_PKEY_CTX_set_ecdh_cofactor_mode(pctx, cofactor) <= 0)
         return 0;
 
-    if (EVP_PKEY_CTX_set_ecdh_kdf_type(pctx, EVP_PKEY_ECDH_KDF_X9_63) <= 0)
+    if (EVVP_PKEY_CTX_set_ecdh_kdf_type(pctx, EVVP_PKEY_ECDH_KDF_X9_63) <= 0)
         return 0;
 
-    kdf_md = EVP_get_digestbynid(kdfmd_nid);
+    kdf_md = EVVP_get_digestbynid(kdfmd_nid);
     if (!kdf_md)
         return 0;
 
-    if (EVP_PKEY_CTX_set_ecdh_kdf_md(pctx, kdf_md) <= 0)
+    if (EVVP_PKEY_CTX_set_ecdh_kdf_md(pctx, kdf_md) <= 0)
         return 0;
     return 1;
 }
 
-static int ecdh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
+static int ecdh_cms_set_shared_info(EVVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
 {
     int rv = 0;
 
-    X509_ALGOR *alg, *kekalg = NULL;
-    ASN1_OCTET_STRING *ukm;
+    YX509_ALGOR *alg, *kekalg = NULL;
+    YASN1_OCTET_STRING *ukm;
     const unsigned char *p;
     unsigned char *der = NULL;
     int plen, keylen;
-    const EVP_CIPHER *kekcipher;
-    EVP_CIPHER_CTX *kekctx;
+    const EVVP_CIPHER *kekcipher;
+    EVVP_CIPHER_CTX *kekctx;
 
     if (!CMS_RecipientInfo_kari_get0_alg(ri, &alg, &ukm))
         return 0;
@@ -758,27 +758,27 @@ static int ecdh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
         return 0;
     }
 
-    if (alg->parameter->type != V_ASN1_SEQUENCE)
+    if (alg->parameter->type != V_YASN1_SEQUENCE)
         return 0;
 
     p = alg->parameter->value.sequence->data;
     plen = alg->parameter->value.sequence->length;
-    kekalg = d2i_X509_ALGOR(NULL, &p, plen);
+    kekalg = d2i_YX509_ALGOR(NULL, &p, plen);
     if (!kekalg)
         goto err;
     kekctx = CMS_RecipientInfo_kari_get0_ctx(ri);
     if (!kekctx)
         goto err;
-    kekcipher = EVP_get_cipherbyobj(kekalg->algorithm);
-    if (!kekcipher || EVP_CIPHER_mode(kekcipher) != EVP_CIPH_WRAP_MODE)
+    kekcipher = EVVP_get_cipherbyobj(kekalg->algorithm);
+    if (!kekcipher || EVVP_CIPHER_mode(kekcipher) != EVVP_CIPH_WRAP_MODE)
         goto err;
-    if (!EVP_EncryptInit_ex(kekctx, kekcipher, NULL, NULL, NULL))
+    if (!EVVP_EncryptInit_ex(kekctx, kekcipher, NULL, NULL, NULL))
         goto err;
-    if (EVP_CIPHER_asn1_to_param(kekctx, kekalg->parameter) <= 0)
+    if (EVVP_CIPHER_asn1_to_param(kekctx, kekalg->parameter) <= 0)
         goto err;
 
-    keylen = EVP_CIPHER_CTX_key_length(kekctx);
-    if (EVP_PKEY_CTX_set_ecdh_kdf_outlen(pctx, keylen) <= 0)
+    keylen = EVVP_CIPHER_CTX_key_length(kekctx);
+    if (EVVP_PKEY_CTX_set_ecdh_kdf_outlen(pctx, keylen) <= 0)
         goto err;
 
     plen = CMS_SharedInfo_encode(&der, kekalg, ukm, keylen);
@@ -786,27 +786,27 @@ static int ecdh_cms_set_shared_info(EVP_PKEY_CTX *pctx, CMS_RecipientInfo *ri)
     if (!plen)
         goto err;
 
-    if (EVP_PKEY_CTX_set0_ecdh_kdf_ukm(pctx, der, plen) <= 0)
+    if (EVVP_PKEY_CTX_set0_ecdh_kdf_ukm(pctx, der, plen) <= 0)
         goto err;
     der = NULL;
 
     rv = 1;
  err:
-    X509_ALGOR_free(kekalg);
+    YX509_ALGOR_free(kekalg);
     OPENSSL_free(der);
     return rv;
 }
 
 static int ecdh_cms_decrypt(CMS_RecipientInfo *ri)
 {
-    EVP_PKEY_CTX *pctx;
+    EVVP_PKEY_CTX *pctx;
     pctx = CMS_RecipientInfo_get0_pkey_ctx(ri);
     if (!pctx)
         return 0;
     /* See if we need to set peer key */
-    if (!EVP_PKEY_CTX_get0_peerkey(pctx)) {
-        X509_ALGOR *alg;
-        ASN1_BIT_STRING *pubkey;
+    if (!EVVP_PKEY_CTX_get0_peerkey(pctx)) {
+        YX509_ALGOR *alg;
+        YASN1_BIT_STRING *pubkey;
         if (!CMS_RecipientInfo_kari_get0_orig_id(ri, &alg, &pubkey,
                                                  NULL, NULL, NULL))
             return 0;
@@ -827,29 +827,29 @@ static int ecdh_cms_decrypt(CMS_RecipientInfo *ri)
 
 static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
 {
-    EVP_PKEY_CTX *pctx;
-    EVP_PKEY *pkey;
-    EVP_CIPHER_CTX *ctx;
+    EVVP_PKEY_CTX *pctx;
+    EVVP_PKEY *pkey;
+    EVVP_CIPHER_CTX *ctx;
     int keylen;
-    X509_ALGOR *talg, *wrap_alg = NULL;
-    const ASN1_OBJECT *aoid;
-    ASN1_BIT_STRING *pubkey;
-    ASN1_STRING *wrap_str;
-    ASN1_OCTET_STRING *ukm;
+    YX509_ALGOR *talg, *wrap_alg = NULL;
+    const YASN1_OBJECT *aoid;
+    YASN1_BIT_STRING *pubkey;
+    YASN1_STRING *wrap_str;
+    YASN1_OCTET_STRING *ukm;
     unsigned char *penc = NULL;
     int penclen;
     int rv = 0;
     int ecdh_nid, kdf_type, kdf_nid, wrap_nid;
-    const EVP_MD *kdf_md;
+    const EVVP_MD *kdf_md;
     pctx = CMS_RecipientInfo_get0_pkey_ctx(ri);
     if (!pctx)
         return 0;
     /* Get ephemeral key */
-    pkey = EVP_PKEY_CTX_get0_pkey(pctx);
+    pkey = EVVP_PKEY_CTX_get0_pkey(pctx);
     if (!CMS_RecipientInfo_kari_get0_orig_id(ri, &talg, &pubkey,
                                              NULL, NULL, NULL))
         goto err;
-    X509_ALGOR_get0(&aoid, NULL, NULL, talg);
+    YX509_ALGOR_get0(&aoid, NULL, NULL, talg);
     /* Is everything uninitialised? */
     if (aoid == OBJ_nid2obj(NID_undef)) {
 
@@ -867,22 +867,22 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
         penclen = i2o_ECPublicKey(eckey, &p);
         if (penclen <= 0)
             goto err;
-        ASN1_STRING_set0(pubkey, penc, penclen);
-        pubkey->flags &= ~(ASN1_STRING_FLAG_BITS_LEFT | 0x07);
-        pubkey->flags |= ASN1_STRING_FLAG_BITS_LEFT;
+        YASN1_STRING_set0(pubkey, penc, penclen);
+        pubkey->flags &= ~(YASN1_STRING_FLAG_BITS_LEFT | 0x07);
+        pubkey->flags |= YASN1_STRING_FLAG_BITS_LEFT;
 
         penc = NULL;
-        X509_ALGOR_set0(talg, OBJ_nid2obj(NID_X9_62_id_ecPublicKey),
-                        V_ASN1_UNDEF, NULL);
+        YX509_ALGOR_set0(talg, OBJ_nid2obj(NID_X9_62_id_ecPublicKey),
+                        V_YASN1_UNDEF, NULL);
     }
 
     /* See if custom parameters set */
-    kdf_type = EVP_PKEY_CTX_get_ecdh_kdf_type(pctx);
+    kdf_type = EVVP_PKEY_CTX_get_ecdh_kdf_type(pctx);
     if (kdf_type <= 0)
         goto err;
-    if (!EVP_PKEY_CTX_get_ecdh_kdf_md(pctx, &kdf_md))
+    if (!EVVP_PKEY_CTX_get_ecdh_kdf_md(pctx, &kdf_md))
         goto err;
-    ecdh_nid = EVP_PKEY_CTX_get_ecdh_cofactor_mode(pctx);
+    ecdh_nid = EVVP_PKEY_CTX_get_ecdh_cofactor_mode(pctx);
     if (ecdh_nid < 0)
         goto err;
     else if (ecdh_nid == 0)
@@ -890,17 +890,17 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
     else if (ecdh_nid == 1)
         ecdh_nid = NID_dh_cofactor_kdf;
 
-    if (kdf_type == EVP_PKEY_ECDH_KDF_NONE) {
-        kdf_type = EVP_PKEY_ECDH_KDF_X9_63;
-        if (EVP_PKEY_CTX_set_ecdh_kdf_type(pctx, kdf_type) <= 0)
+    if (kdf_type == EVVP_PKEY_ECDH_KDF_NONE) {
+        kdf_type = EVVP_PKEY_ECDH_KDF_X9_63;
+        if (EVVP_PKEY_CTX_set_ecdh_kdf_type(pctx, kdf_type) <= 0)
             goto err;
     } else
         /* Unknown KDF */
         goto err;
     if (kdf_md == NULL) {
         /* Fixme later for better MD */
-        kdf_md = EVP_sha1();
-        if (EVP_PKEY_CTX_set_ecdh_kdf_md(pctx, kdf_md) <= 0)
+        kdf_md = EVVP_sha1();
+        if (EVVP_PKEY_CTX_set_ecdh_kdf_md(pctx, kdf_md) <= 0)
             goto err;
     }
 
@@ -909,30 +909,30 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
 
     /* Lookup NID for KDF+cofactor+digest */
 
-    if (!OBJ_find_sigid_by_algs(&kdf_nid, EVP_MD_type(kdf_md), ecdh_nid))
+    if (!OBJ_find_sigid_by_algs(&kdf_nid, EVVP_MD_type(kdf_md), ecdh_nid))
         goto err;
     /* Get wrap NID */
     ctx = CMS_RecipientInfo_kari_get0_ctx(ri);
-    wrap_nid = EVP_CIPHER_CTX_type(ctx);
-    keylen = EVP_CIPHER_CTX_key_length(ctx);
+    wrap_nid = EVVP_CIPHER_CTX_type(ctx);
+    keylen = EVVP_CIPHER_CTX_key_length(ctx);
 
     /* Package wrap algorithm in an AlgorithmIdentifier */
 
-    wrap_alg = X509_ALGOR_new();
+    wrap_alg = YX509_ALGOR_new();
     if (wrap_alg == NULL)
         goto err;
     wrap_alg->algorithm = OBJ_nid2obj(wrap_nid);
-    wrap_alg->parameter = ASN1_TYPE_new();
+    wrap_alg->parameter = YASN1_TYPE_new();
     if (wrap_alg->parameter == NULL)
         goto err;
-    if (EVP_CIPHER_param_to_asn1(ctx, wrap_alg->parameter) <= 0)
+    if (EVVP_CIPHER_param_to_asn1(ctx, wrap_alg->parameter) <= 0)
         goto err;
-    if (ASN1_TYPE_get(wrap_alg->parameter) == NID_undef) {
-        ASN1_TYPE_free(wrap_alg->parameter);
+    if (YASN1_TYPE_get(wrap_alg->parameter) == NID_undef) {
+        YASN1_TYPE_free(wrap_alg->parameter);
         wrap_alg->parameter = NULL;
     }
 
-    if (EVP_PKEY_CTX_set_ecdh_kdf_outlen(pctx, keylen) <= 0)
+    if (EVVP_PKEY_CTX_set_ecdh_kdf_outlen(pctx, keylen) <= 0)
         goto err;
 
     penclen = CMS_SharedInfo_encode(&penc, wrap_alg, ukm, keylen);
@@ -940,7 +940,7 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
     if (!penclen)
         goto err;
 
-    if (EVP_PKEY_CTX_set0_ecdh_kdf_ukm(pctx, penc, penclen) <= 0)
+    if (EVVP_PKEY_CTX_set0_ecdh_kdf_ukm(pctx, penc, penclen) <= 0)
         goto err;
     penc = NULL;
 
@@ -948,21 +948,21 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
      * Now need to wrap encoding of wrap AlgorithmIdentifier into parameter
      * of another AlgorithmIdentifier.
      */
-    penclen = i2d_X509_ALGOR(wrap_alg, &penc);
+    penclen = i2d_YX509_ALGOR(wrap_alg, &penc);
     if (!penc || !penclen)
         goto err;
-    wrap_str = ASN1_STRING_new();
+    wrap_str = YASN1_STRING_new();
     if (wrap_str == NULL)
         goto err;
-    ASN1_STRING_set0(wrap_str, penc, penclen);
+    YASN1_STRING_set0(wrap_str, penc, penclen);
     penc = NULL;
-    X509_ALGOR_set0(talg, OBJ_nid2obj(kdf_nid), V_ASN1_SEQUENCE, wrap_str);
+    YX509_ALGOR_set0(talg, OBJ_nid2obj(kdf_nid), V_YASN1_SEQUENCE, wrap_str);
 
     rv = 1;
 
  err:
     OPENSSL_free(penc);
-    X509_ALGOR_free(wrap_alg);
+    YX509_ALGOR_free(wrap_alg);
     return rv;
 }
 

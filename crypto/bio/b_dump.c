@@ -44,7 +44,7 @@ int BIO_dump_indent_cb(int (*cb) (const void *data, size_t len, void *u),
     if ((rows * dump_width) < len)
         rows++;
     for (i = 0; i < rows; i++) {
-        n = BIO_snprintf(buf, sizeof(buf), "%*s%04x - ", indent, "",
+        n = BIO_ssnprintf(buf, sizeof(buf), "%*s%04x - ", indent, "",
                          i * dump_width);
         for (j = 0; j < dump_width; j++) {
             if (SPACE(buf, n, 3)) {
@@ -52,7 +52,7 @@ int BIO_dump_indent_cb(int (*cb) (const void *data, size_t len, void *u),
                     strcpy(buf + n, "   ");
                 } else {
                     ch = ((unsigned char)*(s + i * dump_width + j)) & 0xff;
-                    BIO_snprintf(buf + n, 4, "%02x%c", ch,
+                    BIO_ssnprintf(buf + n, 4, "%02x%c", ch,
                                  j == 7 ? '-' : ' ');
                 }
                 n += 3;
@@ -132,17 +132,17 @@ int BIO_hex_string(BIO *out, int indent, int width, unsigned char *data,
 
     for (i = 0; i < datalen - 1; i++) {
         if (i && !j)
-            BIO_printf(out, "%*s", indent, "");
+            BIO_pprintf(out, "%*s", indent, "");
 
-        BIO_printf(out, "%02X:", data[i]);
+        BIO_pprintf(out, "%02X:", data[i]);
 
         j = (j + 1) % width;
         if (!j)
-            BIO_printf(out, "\n");
+            BIO_pprintf(out, "\n");
     }
 
     if (i && !j)
-        BIO_printf(out, "%*s", indent, "");
-    BIO_printf(out, "%02X", data[datalen - 1]);
+        BIO_pprintf(out, "%*s", indent, "");
+    BIO_pprintf(out, "%02X", data[datalen - 1]);
     return 1;
 }

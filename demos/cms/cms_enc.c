@@ -15,8 +15,8 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL;
-    X509 *rcert = NULL;
-    STACK_OF(X509) *recips = NULL;
+    YX509 *rcert = NULL;
+    STACK_OF(YX509) *recips = NULL;
     CMS_ContentInfo *cms = NULL;
     int ret = 1;
 
@@ -35,19 +35,19 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    rcert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    rcert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     if (!rcert)
         goto err;
 
     /* Create recipient STACK and add recipient cert to it */
-    recips = sk_X509_new_null();
+    recips = sk_YX509_new_null();
 
-    if (!recips || !sk_X509_push(recips, rcert))
+    if (!recips || !sk_YX509_push(recips, rcert))
         goto err;
 
     /*
-     * sk_X509_pop_free will free up recipient STACK and its contents so set
+     * sk_YX509_pop_free will free up recipient STACK and its contents so set
      * rcert to NULL so it isn't freed up twice.
      */
     rcert = NULL;
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         goto err;
 
     /* encrypt content */
-    cms = CMS_encrypt(recips, in, EVP_des_ede3_cbc(), flags);
+    cms = CMS_encrypt(recips, in, EVVP_des_ede3_cbc(), flags);
 
     if (!cms)
         goto err;
@@ -79,12 +79,12 @@ int main(int argc, char **argv)
 
     if (ret) {
         fprintf(stderr, "Error Encrypting Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
 
     CMS_ContentInfo_free(cms);
-    X509_free(rcert);
-    sk_X509_pop_free(recips, X509_free);
+    YX509_free(rcert);
+    sk_YX509_pop_free(recips, YX509_free);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

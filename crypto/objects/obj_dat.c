@@ -21,9 +21,9 @@
 /* obj_dat.h is generated from objects.h by obj_dat.pl */
 #include "obj_dat.h"
 
-DECLARE_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, sn);
-DECLARE_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, ln);
-DECLARE_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, obj);
+DECLARE_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, sn);
+DECLARE_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, ln);
+DECLARE_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, obj);
 
 #define ADDED_DATA      0
 #define ADDED_SNAME     1
@@ -32,29 +32,29 @@ DECLARE_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, obj);
 
 struct added_obj_st {
     int type;
-    ASN1_OBJECT *obj;
+    YASN1_OBJECT *obj;
 };
 
 static int new_nid = NUM_NID;
 static LHASH_OF(ADDED_OBJ) *added = NULL;
 
-static int sn_cmp(const ASN1_OBJECT *const *a, const unsigned int *b)
+static int sn_cmp(const YASN1_OBJECT *const *a, const unsigned int *b)
 {
     return strcmp((*a)->sn, nid_objs[*b].sn);
 }
 
-IMPLEMENT_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, sn);
+IMPLEMENT_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, sn);
 
-static int ln_cmp(const ASN1_OBJECT *const *a, const unsigned int *b)
+static int ln_cmp(const YASN1_OBJECT *const *a, const unsigned int *b)
 {
     return strcmp((*a)->ln, nid_objs[*b].ln);
 }
 
-IMPLEMENT_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, ln);
+IMPLEMENT_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, ln);
 
 static unsigned long added_obj_hash(const ADDED_OBJ *ca)
 {
-    const ASN1_OBJECT *a;
+    const YASN1_OBJECT *a;
     int i;
     unsigned long ret = 0;
     unsigned char *p;
@@ -87,7 +87,7 @@ static unsigned long added_obj_hash(const ADDED_OBJ *ca)
 
 static int added_obj_cmp(const ADDED_OBJ *ca, const ADDED_OBJ *cb)
 {
-    ASN1_OBJECT *a, *b;
+    YASN1_OBJECT *a, *b;
     int i;
 
     i = ca->type - cb->type;
@@ -134,8 +134,8 @@ static int init_added(void)
 static void cleanup1_doall(ADDED_OBJ *a)
 {
     a->obj->nid = 0;
-    a->obj->flags |= ASN1_OBJECT_FLAG_DYNAMIC |
-        ASN1_OBJECT_FLAG_DYNAMIC_STRINGS | ASN1_OBJECT_FLAG_DYNAMIC_DATA;
+    a->obj->flags |= YASN1_OBJECT_FLAG_DYNAMIC |
+        YASN1_OBJECT_FLAG_DYNAMIC_STRINGS | YASN1_OBJECT_FLAG_DYNAMIC_DATA;
 }
 
 static void cleanup2_doall(ADDED_OBJ *a)
@@ -146,7 +146,7 @@ static void cleanup2_doall(ADDED_OBJ *a)
 static void cleanup3_doall(ADDED_OBJ *a)
 {
     if (--a->obj->nid == 0)
-        ASN1_OBJECT_free(a->obj);
+        YASN1_OBJECT_free(a->obj);
     OPENSSL_free(a);
 }
 
@@ -171,9 +171,9 @@ int OBJ_new_nid(int num)
     return i;
 }
 
-int OBJ_add_object(const ASN1_OBJECT *obj)
+int OBJ_add_object(const YASN1_OBJECT *obj)
 {
-    ASN1_OBJECT *o;
+    YASN1_OBJECT *o;
     ADDED_OBJ *ao[4] = { NULL, NULL, NULL, NULL }, *aop;
     int i;
 
@@ -204,8 +204,8 @@ int OBJ_add_object(const ASN1_OBJECT *obj)
         }
     }
     o->flags &=
-        ~(ASN1_OBJECT_FLAG_DYNAMIC | ASN1_OBJECT_FLAG_DYNAMIC_STRINGS |
-          ASN1_OBJECT_FLAG_DYNAMIC_DATA);
+        ~(YASN1_OBJECT_FLAG_DYNAMIC | YASN1_OBJECT_FLAG_DYNAMIC_STRINGS |
+          YASN1_OBJECT_FLAG_DYNAMIC_DATA);
 
     return o->nid;
  err2:
@@ -213,21 +213,21 @@ int OBJ_add_object(const ASN1_OBJECT *obj)
  err:
     for (i = ADDED_DATA; i <= ADDED_NID; i++)
         OPENSSL_free(ao[i]);
-    ASN1_OBJECT_free(o);
+    YASN1_OBJECT_free(o);
     return NID_undef;
 }
 
-ASN1_OBJECT *OBJ_nid2obj(int n)
+YASN1_OBJECT *OBJ_nid2obj(int n)
 {
     ADDED_OBJ ad, *adp;
-    ASN1_OBJECT ob;
+    YASN1_OBJECT ob;
 
     if ((n >= 0) && (n < NUM_NID)) {
         if ((n != NID_undef) && (nid_objs[n].nid == NID_undef)) {
             OBJerr(OBJ_F_OBJ_NID2OBJ, OBJ_R_UNKNOWN_NID);
             return NULL;
         }
-        return (ASN1_OBJECT *)&(nid_objs[n]);
+        return (YASN1_OBJECT *)&(nid_objs[n]);
     } else if (added == NULL) {
         OBJerr(OBJ_F_OBJ_NID2OBJ, OBJ_R_UNKNOWN_NID);
         return NULL;
@@ -248,7 +248,7 @@ ASN1_OBJECT *OBJ_nid2obj(int n)
 const char *OBJ_nid2sn(int n)
 {
     ADDED_OBJ ad, *adp;
-    ASN1_OBJECT ob;
+    YASN1_OBJECT ob;
 
     if ((n >= 0) && (n < NUM_NID)) {
         if ((n != NID_undef) && (nid_objs[n].nid == NID_undef)) {
@@ -275,7 +275,7 @@ const char *OBJ_nid2sn(int n)
 const char *OBJ_nid2ln(int n)
 {
     ADDED_OBJ ad, *adp;
-    ASN1_OBJECT ob;
+    YASN1_OBJECT ob;
 
     if ((n >= 0) && (n < NUM_NID)) {
         if ((n != NID_undef) && (nid_objs[n].nid == NID_undef)) {
@@ -299,11 +299,11 @@ const char *OBJ_nid2ln(int n)
     }
 }
 
-static int obj_cmp(const ASN1_OBJECT *const *ap, const unsigned int *bp)
+static int obj_cmp(const YASN1_OBJECT *const *ap, const unsigned int *bp)
 {
     int j;
-    const ASN1_OBJECT *a = *ap;
-    const ASN1_OBJECT *b = &nid_objs[*bp];
+    const YASN1_OBJECT *a = *ap;
+    const YASN1_OBJECT *b = &nid_objs[*bp];
 
     j = (a->length - b->length);
     if (j)
@@ -313,9 +313,9 @@ static int obj_cmp(const ASN1_OBJECT *const *ap, const unsigned int *bp)
     return memcmp(a->data, b->data, a->length);
 }
 
-IMPLEMENT_OBJ_BSEARCH_CMP_FN(const ASN1_OBJECT *, unsigned int, obj);
+IMPLEMENT_OBJ_BSEARCH_CMP_FN(const YASN1_OBJECT *, unsigned int, obj);
 
-int OBJ_obj2nid(const ASN1_OBJECT *a)
+int OBJ_obj2nid(const YASN1_OBJECT *a)
 {
     const unsigned int *op;
     ADDED_OBJ ad, *adp;
@@ -330,7 +330,7 @@ int OBJ_obj2nid(const ASN1_OBJECT *a)
 
     if (added != NULL) {
         ad.type = ADDED_DATA;
-        ad.obj = (ASN1_OBJECT *)a; /* XXX: ugly but harmless */
+        ad.obj = (YASN1_OBJECT *)a; /* XXX: ugly but harmless */
         adp = lh_ADDED_OBJ_retrieve(added, &ad);
         if (adp != NULL)
             return adp->obj->nid;
@@ -342,16 +342,16 @@ int OBJ_obj2nid(const ASN1_OBJECT *a)
 }
 
 /*
- * Convert an object name into an ASN1_OBJECT if "noname" is not set then
+ * Convert an object name into an YASN1_OBJECT if "noname" is not set then
  * search for short and long names first. This will convert the "dotted" form
  * into an object: unlike OBJ_txt2nid it can be used with any objects, not
  * just registered ones.
  */
 
-ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
+YASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
 {
     int nid = NID_undef;
-    ASN1_OBJECT *op;
+    YASN1_OBJECT *op;
     unsigned char *buf;
     unsigned char *p;
     const unsigned char *cp;
@@ -364,7 +364,7 @@ ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
     }
 
     /* Work out size of content octets */
-    i = a2d_ASN1_OBJECT(NULL, 0, s, -1);
+    i = a2d_YASN1_OBJECT(NULL, 0, s, -1);
     if (i <= 0) {
         /* Don't clear the error */
         /*
@@ -373,7 +373,7 @@ ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
         return NULL;
     }
     /* Work out total size */
-    j = ASN1_object_size(0, i, V_ASN1_OBJECT);
+    j = YASN1_object_size(0, i, V_YASN1_OBJECT);
     if (j < 0)
         return NULL;
 
@@ -384,17 +384,17 @@ ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
 
     p = buf;
     /* Write out tag+length */
-    ASN1_put_object(&p, 0, i, V_ASN1_OBJECT, V_ASN1_UNIVERSAL);
+    YASN1_put_object(&p, 0, i, V_YASN1_OBJECT, V_YASN1_UNIVEYRSAL);
     /* Write out contents */
-    a2d_ASN1_OBJECT(p, i, s, -1);
+    a2d_YASN1_OBJECT(p, i, s, -1);
 
     cp = buf;
-    op = d2i_ASN1_OBJECT(NULL, &cp, j);
+    op = d2i_YASN1_OBJECT(NULL, &cp, j);
     OPENSSL_free(buf);
     return op;
 }
 
-int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
+int OBJ_obj2txt(char *buf, int buf_len, const YASN1_OBJECT *a, int no_name)
 {
     int i, n = 0, len, nid, first, use_bn;
     BIGNUM *bl;
@@ -456,7 +456,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
             if ((len == 0) && (c & 0x80))
                 goto err;
             if (use_bn) {
-                if (!BN_add_word(bl, c & 0x7f))
+                if (!BNY_add_word(bl, c & 0x7f))
                     goto err;
             } else
                 l |= c & 0x7f;
@@ -481,7 +481,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
             if (l >= 80) {
                 i = 2;
                 if (use_bn) {
-                    if (!BN_sub_word(bl, 80))
+                    if (!BNY_sub_word(bl, 80))
                         goto err;
                 } else
                     l -= 80;
@@ -522,7 +522,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
             n += i;
             OPENSSL_free(bndec);
         } else {
-            BIO_snprintf(tbuf, sizeof(tbuf), ".%lu", l);
+            BIO_ssnprintf(tbuf, sizeof(tbuf), ".%lu", l);
             i = strlen(tbuf);
             if (buf && (buf_len > 0)) {
                 OPENSSL_strlcpy(buf, tbuf, buf_len);
@@ -549,18 +549,18 @@ int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name)
 
 int OBJ_txt2nid(const char *s)
 {
-    ASN1_OBJECT *obj;
+    YASN1_OBJECT *obj;
     int nid;
     obj = OBJ_txt2obj(s, 0);
     nid = OBJ_obj2nid(obj);
-    ASN1_OBJECT_free(obj);
+    YASN1_OBJECT_free(obj);
     return nid;
 }
 
 int OBJ_ln2nid(const char *s)
 {
-    ASN1_OBJECT o;
-    const ASN1_OBJECT *oo = &o;
+    YASN1_OBJECT o;
+    const YASN1_OBJECT *oo = &o;
     ADDED_OBJ ad, *adp;
     const unsigned int *op;
 
@@ -580,8 +580,8 @@ int OBJ_ln2nid(const char *s)
 
 int OBJ_sn2nid(const char *s)
 {
-    ASN1_OBJECT o;
-    const ASN1_OBJECT *oo = &o;
+    YASN1_OBJECT o;
+    const YASN1_OBJECT *oo = &o;
     ADDED_OBJ ad, *adp;
     const unsigned int *op;
 
@@ -709,7 +709,7 @@ int OBJ_create_objects(BIO *in)
 
 int OBJ_create(const char *oid, const char *sn, const char *ln)
 {
-    ASN1_OBJECT *tmpoid = NULL;
+    YASN1_OBJECT *tmpoid = NULL;
     int ok = 0;
 
     /* Check to see if short or long name already present */
@@ -719,7 +719,7 @@ int OBJ_create(const char *oid, const char *sn, const char *ln)
         return 0;
     }
 
-    /* Convert numerical OID string to an ASN1_OBJECT structure */
+    /* Convert numerical OID string to an YASN1_OBJECT structure */
     tmpoid = OBJ_txt2obj(oid, 1);
     if (tmpoid == NULL)
         return 0;
@@ -740,18 +740,18 @@ int OBJ_create(const char *oid, const char *sn, const char *ln)
     tmpoid->ln = NULL;
 
  err:
-    ASN1_OBJECT_free(tmpoid);
+    YASN1_OBJECT_free(tmpoid);
     return ok;
 }
 
-size_t OBJ_length(const ASN1_OBJECT *obj)
+size_t OBJ_length(const YASN1_OBJECT *obj)
 {
     if (obj == NULL)
         return 0;
     return obj->length;
 }
 
-const unsigned char *OBJ_get0_data(const ASN1_OBJECT *obj)
+const unsigned char *OBJ_get0_data(const YASN1_OBJECT *obj)
 {
     if (obj == NULL)
         return NULL;

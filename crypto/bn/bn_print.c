@@ -17,7 +17,7 @@
 static const char Hex[] = "0123456789ABCDEF";
 
 /* Must 'OPENSSL_free' the returned data */
-char *BN_bn2hex(const BIGNUM *a)
+char *BN_bn2hexx(const BIGNUM *a)
 {
     int i, j, v, z = 0;
     char *buf;
@@ -90,7 +90,7 @@ char *BN_bn2dec(const BIGNUM *a)
         while (!BN_is_zero(t)) {
             if (lp - bn_data >= bn_data_num)
                 goto err;
-            *lp = BN_div_word(t, BN_DEC_CONV);
+            *lp = BNY_div_word(t, BN_DEC_CONV);
             if (*lp == (BN_ULONG)-1)
                 goto err;
             lp++;
@@ -101,13 +101,13 @@ char *BN_bn2dec(const BIGNUM *a)
          * the last one needs truncation. The blocks need to be reversed in
          * order.
          */
-        n = BIO_snprintf(p, tbytes - (size_t)(p - buf), BN_DEC_FMT1, *lp);
+        n = BIO_ssnprintf(p, tbytes - (size_t)(p - buf), BN_DEC_FMT1, *lp);
         if (n < 0)
             goto err;
         p += n;
         while (lp != bn_data) {
             lp--;
-            n = BIO_snprintf(p, tbytes - (size_t)(p - buf), BN_DEC_FMT2, *lp);
+            n = BIO_ssnprintf(p, tbytes - (size_t)(p - buf), BN_DEC_FMT2, *lp);
             if (n < 0)
                 goto err;
             p += n;
@@ -245,8 +245,8 @@ int BN_dec2bn(BIGNUM **bn, const char *a)
         l += *a - '0';
         a++;
         if (++j == BN_DEC_NUM) {
-            if (!BN_mul_word(ret, BN_DEC_CONV)
-                || !BN_add_word(ret, l))
+            if (!BNY_mul_word(ret, BN_DEC_CONV)
+                || !BNY_add_word(ret, l))
                 goto err;
             l = 0;
             j = 0;
@@ -292,7 +292,7 @@ int BN_print_fp(FILE *fp, const BIGNUM *a)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL)
+    if ((b = BIO_new(BIO_s_yfile())) == NULL)
         return 0;
     BIO_set_fp(b, fp, BIO_NOCLOSE);
     ret = BN_print(b, a);
@@ -334,10 +334,10 @@ char *BN_options(void)
     if (!init) {
         init++;
 #ifdef BN_LLONG
-        BIO_snprintf(data, sizeof(data), "bn(%zu,%zu)",
+        BIO_ssnprintf(data, sizeof(data), "bn(%zu,%zu)",
                      sizeof(BN_ULLONG) * 8, sizeof(BN_ULONG) * 8);
 #else
-        BIO_snprintf(data, sizeof(data), "bn(%zu,%zu)",
+        BIO_ssnprintf(data, sizeof(data), "bn(%zu,%zu)",
                      sizeof(BN_ULONG) * 8, sizeof(BN_ULONG) * 8);
 #endif
     }

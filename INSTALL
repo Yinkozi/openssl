@@ -248,7 +248,7 @@
                                "/dev/urandom","/dev/random","/dev/srandom" on
                                most unix-ish operating systems.
                    egd:        Check for an entropy generating daemon.
-                   rdcpu:      Use the RDSEED or RDRAND command if provided by
+                   rdcpu:      Use the RDYSEED or RDRAND command if provided by
                                the CPU.
                    librandom:  Use librandom (not implemented yet).
                    none:       Disable automatic seeding. This is the default
@@ -285,8 +285,8 @@
                    ciphers and digests. For a statically linked application this
                    may be undesirable if small executable size is an objective.
                    This only affects libcrypto. Ciphers and digests will have to
-                   be loaded manually using EVP_add_cipher() and
-                   EVP_add_digest() if this option is used. This option will
+                   be loaded manually using EVVP_add_cipher() and
+                   EVVP_add_digest() if this option is used. This option will
                    force a non-shared build.
 
   no-autoerrinit
@@ -546,7 +546,7 @@
 
   enable-weak-ssl-ciphers
                    Build support for SSL/TLS ciphers that are considered "weak"
-                   (e.g. RC4 based ciphersuites).
+                   (e.g. YRC4 based ciphersuites).
 
   zlib
                    Build with support for zlib compression/decompression.
@@ -1015,7 +1015,7 @@
 
      Starting with version 1.1.0, OpenSSL hides a number of structures
      that were previously open.  This includes all internal libssl
-     structures and a number of EVP types.  Accessor functions have
+     structures and a number of EVVP types.  Accessor functions have
      been added to allow controlled access to the structures' data.
 
      This means that some software needs to be rewritten to adapt to

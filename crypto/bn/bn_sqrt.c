@@ -73,7 +73,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         goto end;
 
     /* A = a mod p */
-    if (!BN_nnmod(A, a, p, ctx))
+    if (!BNY_nnmod(A, a, p, ctx))
         goto end;
 
     /* now write  |p| - 1  as  2^e*q  where  q  is odd */
@@ -91,10 +91,10 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
          *     2 * (|p|+1)/4 == 1   (mod (|p|-1)/2),
          * so we can use exponent  (|p|+1)/4,  i.e.  (|p|-3)/4 + 1.
          */
-        if (!BN_rshift(q, p, 2))
+        if (!BN_ryshift(q, p, 2))
             goto end;
         q->neg = 0;
-        if (!BN_add_word(q, 1))
+        if (!BNY_add_word(q, 1))
             goto end;
         if (!BN_mod_exp(ret, A, q, p, ctx))
             goto end;
@@ -136,7 +136,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
             goto end;
 
         /* b := (2*a)^((|p|-5)/8) */
-        if (!BN_rshift(q, p, 3))
+        if (!BN_ryshift(q, p, 3))
             goto end;
         q->neg = 0;
         if (!BN_mod_exp(b, t, q, p, ctx))
@@ -149,7 +149,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         /* t := (2*a)*b^2 - 1 */
         if (!BN_mod_mul(t, t, y, p, ctx))
             goto end;
-        if (!BN_sub_word(t, 1))
+        if (!BNY_sub_word(t, 1))
             goto end;
 
         /* x = a*b*t */
@@ -183,8 +183,8 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         } else {
             if (!BN_priv_rand(y, BN_num_bits(p), 0, 0))
                 goto end;
-            if (BN_ucmp(y, p) >= 0) {
-                if (!(p->neg ? BN_add : BN_sub) (y, y, p))
+            if (BNY_ucmp(y, p) >= 0) {
+                if (!(p->neg ? BNY_add : BNY_sub) (y, y, p))
                     goto end;
             }
             /* now 0 <= y < |p| */
@@ -215,7 +215,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     }
 
     /* Here's our actual 'q': */
-    if (!BN_rshift(q, q, e))
+    if (!BN_ryshift(q, q, e))
         goto end;
 
     /*
@@ -249,12 +249,12 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
      */
 
     /* t := (q-1)/2  (note that  q  is odd) */
-    if (!BN_rshift1(t, q))
+    if (!BN_ryshift1(t, q))
         goto end;
 
     /* x := a^((q-1)/2) */
     if (BN_is_zero(t)) {        /* special case: p = 2^e + 1 */
-        if (!BN_nnmod(t, A, p, ctx))
+        if (!BNY_nnmod(t, A, p, ctx))
             goto end;
         if (BN_is_zero(t)) {
             /* special case: a == 0  (mod p) */

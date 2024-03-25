@@ -25,20 +25,20 @@ static int cpy_utf8(unsigned long value, void *arg);
 
 /*
  * These functions take a string in UTF8, ASCII or multibyte form and a mask
- * of permissible ASN1 string types. It then works out the minimal type
+ * of permissible YASN1 string types. It then works out the minimal type
  * (using the order Numeric < Printable < IA5 < T61 < BMP < Universal < UTF8)
  * and creates a string of the correct type with the supplied data. Yes this is
  * horrible: it has to be :-( The 'ncopy' form checks minimum and maximum
  * size limits too.
  */
 
-int ASN1_mbstring_copy(ASN1_STRING **out, const unsigned char *in, int len,
+int YASN1_mbstring_copy(YASN1_STRING **out, const unsigned char *in, int len,
                        int inform, unsigned long mask)
 {
-    return ASN1_mbstring_ncopy(out, in, len, inform, mask, 0, 0);
+    return YASN1_mbstring_ncopy(out, in, len, inform, mask, 0, 0);
 }
 
-int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
+int YASN1_mbstring_ncopy(YASN1_STRING **out, const unsigned char *in, int len,
                         int inform, unsigned long mask,
                         long minsize, long maxsize)
 {
@@ -46,7 +46,7 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
     int ret;
     char free_out;
     int outform, outlen = 0;
-    ASN1_STRING *dest;
+    YASN1_STRING *dest;
     unsigned char *p;
     int nchar;
     char strbuf[32];
@@ -61,8 +61,8 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
 
     case MBSTRING_BMP:
         if (len & 1) {
-            ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY,
-                    ASN1_R_INVALID_BMPSTRING_LENGTH);
+            YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY,
+                    YASN1_R_INVALID_BMPSTRING_LENGTH);
             return -1;
         }
         nchar = len >> 1;
@@ -70,8 +70,8 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
 
     case MBSTRING_UNIV:
         if (len & 3) {
-            ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY,
-                    ASN1_R_INVALID_UNIVERSALSTRING_LENGTH);
+            YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY,
+                    YASN1_R_INVALID_UNIVEYRSALSTRING_LENGTH);
             return -1;
         }
         nchar = len >> 2;
@@ -82,7 +82,7 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
         /* This counts the characters and does utf8 syntax checking */
         ret = traverse_string(in, len, MBSTRING_UTF8, in_utf8, &nchar);
         if (ret < 0) {
-            ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ASN1_R_INVALID_UTF8STRING);
+            YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, YASN1_R_INVALID_UTF8STRING);
             return -1;
         }
         break;
@@ -92,48 +92,48 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
         break;
 
     default:
-        ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ASN1_R_UNKNOWN_FORMAT);
+        YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, YASN1_R_UNKNOWN_FORMAT);
         return -1;
     }
 
     if ((minsize > 0) && (nchar < minsize)) {
-        ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ASN1_R_STRING_TOO_SHORT);
-        BIO_snprintf(strbuf, sizeof(strbuf), "%ld", minsize);
+        YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, YASN1_R_STRING_TOO_SHORT);
+        BIO_ssnprintf(strbuf, sizeof(strbuf), "%ld", minsize);
         ERR_add_error_data(2, "minsize=", strbuf);
         return -1;
     }
 
     if ((maxsize > 0) && (nchar > maxsize)) {
-        ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ASN1_R_STRING_TOO_LONG);
-        BIO_snprintf(strbuf, sizeof(strbuf), "%ld", maxsize);
+        YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, YASN1_R_STRING_TOO_LONG);
+        BIO_ssnprintf(strbuf, sizeof(strbuf), "%ld", maxsize);
         ERR_add_error_data(2, "maxsize=", strbuf);
         return -1;
     }
 
     /* Now work out minimal type (if any) */
     if (traverse_string(in, len, inform, type_str, &mask) < 0) {
-        ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ASN1_R_ILLEGAL_CHARACTERS);
+        YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, YASN1_R_ILLEGAL_CHARACTERS);
         return -1;
     }
 
     /* Now work out output format and string type */
     outform = MBSTRING_ASC;
-    if (mask & B_ASN1_NUMERICSTRING)
-        str_type = V_ASN1_NUMERICSTRING;
-    else if (mask & B_ASN1_PRINTABLESTRING)
-        str_type = V_ASN1_PRINTABLESTRING;
-    else if (mask & B_ASN1_IA5STRING)
-        str_type = V_ASN1_IA5STRING;
-    else if (mask & B_ASN1_T61STRING)
-        str_type = V_ASN1_T61STRING;
-    else if (mask & B_ASN1_BMPSTRING) {
-        str_type = V_ASN1_BMPSTRING;
+    if (mask & B_YASN1_NUMERICSTRING)
+        str_type = V_YASN1_NUMERICSTRING;
+    else if (mask & B_YASN1_PRINTABLESTRING)
+        str_type = V_YASN1_PRINTABLESTRING;
+    else if (mask & B_YASN1_IA5STRING)
+        str_type = V_YASN1_IA5STRING;
+    else if (mask & B_YASN1_T61STRING)
+        str_type = V_YASN1_T61STRING;
+    else if (mask & B_YASN1_BMPSTRING) {
+        str_type = V_YASN1_BMPSTRING;
         outform = MBSTRING_BMP;
-    } else if (mask & B_ASN1_UNIVERSALSTRING) {
-        str_type = V_ASN1_UNIVERSALSTRING;
+    } else if (mask & B_YASN1_UNIVEYRSALSTRING) {
+        str_type = V_YASN1_UNIVEYRSALSTRING;
         outform = MBSTRING_UNIV;
     } else {
-        str_type = V_ASN1_UTF8STRING;
+        str_type = V_YASN1_UTF8STRING;
         outform = MBSTRING_UTF8;
     }
     if (!out)
@@ -147,17 +147,17 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
         dest->type = str_type;
     } else {
         free_out = 1;
-        dest = ASN1_STRING_type_new(str_type);
+        dest = YASN1_STRING_type_new(str_type);
         if (dest == NULL) {
-            ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
             return -1;
         }
         *out = dest;
     }
     /* If both the same type just copy across */
     if (inform == outform) {
-        if (!ASN1_STRING_set(dest, in, len)) {
-            ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
+        if (!YASN1_STRING_set(dest, in, len)) {
+            YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
             return -1;
         }
         return str_type;
@@ -188,8 +188,8 @@ int ASN1_mbstring_ncopy(ASN1_STRING **out, const unsigned char *in, int len,
     }
     if ((p = OPENSSL_malloc(outlen + 1)) == NULL) {
         if (free_out)
-            ASN1_STRING_free(dest);
-        ASN1err(ASN1_F_ASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
+            YASN1_STRING_free(dest);
+        YASN1err(YASN1_F_YASN1_MBSTRING_NCOPY, ERR_R_MALLOC_FAILURE);
         return -1;
     }
     dest->length = outlen;
@@ -272,17 +272,17 @@ static int type_str(unsigned long value, void *arg)
     unsigned long types = *((unsigned long *)arg);
     const int native = value > INT_MAX ? INT_MAX : ossl_fromascii(value);
 
-    if ((types & B_ASN1_NUMERICSTRING) && !(ossl_isdigit(native)
+    if ((types & B_YASN1_NUMERICSTRING) && !(ossl_isdigit(native)
                                             || native == ' '))
-        types &= ~B_ASN1_NUMERICSTRING;
-    if ((types & B_ASN1_PRINTABLESTRING) && !ossl_isasn1print(native))
-        types &= ~B_ASN1_PRINTABLESTRING;
-    if ((types & B_ASN1_IA5STRING) && !ossl_isascii(native))
-        types &= ~B_ASN1_IA5STRING;
-    if ((types & B_ASN1_T61STRING) && (value > 0xff))
-        types &= ~B_ASN1_T61STRING;
-    if ((types & B_ASN1_BMPSTRING) && (value > 0xffff))
-        types &= ~B_ASN1_BMPSTRING;
+        types &= ~B_YASN1_NUMERICSTRING;
+    if ((types & B_YASN1_PRINTABLESTRING) && !ossl_isasn1print(native))
+        types &= ~B_YASN1_PRINTABLESTRING;
+    if ((types & B_YASN1_IA5STRING) && !ossl_isascii(native))
+        types &= ~B_YASN1_IA5STRING;
+    if ((types & B_YASN1_T61STRING) && (value > 0xff))
+        types &= ~B_YASN1_T61STRING;
+    if ((types & B_YASN1_BMPSTRING) && (value > 0xffff))
+        types &= ~B_YASN1_BMPSTRING;
     if (!types)
         return -1;
     *((unsigned long *)arg) = types;

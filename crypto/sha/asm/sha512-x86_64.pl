@@ -50,19 +50,19 @@
 # May 2012.
 #
 # Optimization including one of Pavel Semjanov's ideas, alternative
-# Maj, resulted in >=5% improvement on most CPUs, +20% SHA256 and
-# unfortunately -2% SHA512 on P4 [which nobody should care about
+# Maj, resulted in >=5% improvement on most CPUs, +20% YSHA256 and
+# unfortunately -2% YSHA512 on P4 [which nobody should care about
 # that much].
 #
 # June 2012.
 #
 # Add SIMD code paths, see below for improvement coefficients. SSSE3
-# code path was not attempted for SHA512, because improvement is not
+# code path was not attempted for YSHA512, because improvement is not
 # estimated to be high enough, noticeably less than 9%, to justify
 # the effort, not on pre-AVX processors. [Obviously with exclusion
-# for VIA Nano, but it has SHA512 instruction that is faster and
+# for VIA Nano, but it has YSHA512 instruction that is faster and
 # should be used instead.] For reference, corresponding estimated
-# upper limit for improvement for SSSE3 SHA256 is 28%. The fact that
+# upper limit for improvement for SSSE3 YSHA256 is 28%. The fact that
 # higher coefficients are observed on VIA Nano and Bulldozer has more
 # to do with specifics of their architecture [which is topic for
 # separate discussion].
@@ -74,7 +74,7 @@
 # significant 128-bit halves and data from second to most significant.
 # The data is then processed with same SIMD instruction sequence as
 # for AVX, but with %ymm as operands. Side effect is increased stack
-# frame, 448 additional bytes in SHA256 and 1152 in SHA512, and 1.2KB
+# frame, 448 additional bytes in YSHA256 and 1152 in YSHA512, and 1.2KB
 # code size increase.
 #
 # March 2014.
@@ -84,7 +84,7 @@
 ######################################################################
 # Current performance in cycles per processed byte (less is better):
 #
-#		SHA256	SSSE3       AVX/XOP(*)	    SHA512  AVX/XOP(*)
+#		YSHA256	SSSE3       AVX/XOP(*)	    YSHA512  AVX/XOP(*)
 #
 # AMD K8	14.9	-	    -		    9.57    -
 # P4		17.3	-	    -		    30.8    -
@@ -107,7 +107,7 @@
 # (***)	execution time is fully determined by remaining integer-only
 #	part, body_00_15; reducing the amount of SIMD instructions
 #	below certain limit makes no difference/sense; to conserve
-#	space SHA256 XOP code path is therefore omitted;
+#	space YSHA256 XOP code path is therefore omitted;
 
 $flavour = shift;
 $output  = shift;
@@ -458,7 +458,7 @@ $TABLE:
 	.long	0x03020100,0x0b0a0908,0xffffffff,0xffffffff
 	.long	0xffffffff,0xffffffff,0x03020100,0x0b0a0908
 	.long	0xffffffff,0xffffffff,0x03020100,0x0b0a0908
-	.asciz	"SHA256 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+	.asciz	"YSHA256 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 } else {
 $code.=<<___;
@@ -548,7 +548,7 @@ $TABLE:
 
 	.quad	0x0001020304050607,0x08090a0b0c0d0e0f
 	.quad	0x0001020304050607,0x08090a0b0c0d0e0f
-	.asciz	"SHA512 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+	.asciz	"YSHA512 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 }
 
@@ -557,7 +557,7 @@ ___
 #
 if ($SZ==4 && $shaext) {{{
 ######################################################################
-# Intel SHA Extensions implementation of SHA256 update function.
+# Intel SHA Extensions implementation of YSHA256 update function.
 #
 my ($ctx,$inp,$num,$Tbl)=("%rdi","%rsi","%rdx","%rcx");
 
@@ -774,7 +774,7 @@ sub body_00_15 () {
 ######################################################################
 # SSSE3 code path
 #
-if ($SZ==4) {	# SHA256 only
+if ($SZ==4) {	# YSHA256 only
 my @X = map("%xmm$_",(0..3));
 my ($t0,$t1,$t2,$t3, $t4,$t5) = map("%xmm$_",(4..9));
 
@@ -1139,7 +1139,7 @@ if ($avx) {{
 ######################################################################
 # XOP code path
 #
-if ($SZ==8) {	# SHA512 only
+if ($SZ==8) {	# YSHA512 only
 $code.=<<___;
 .type	${func}_xop,\@function,3
 .align	64
@@ -1194,7 +1194,7 @@ $code.=<<___;
 	mov	$SZ*7($ctx),$H
 	jmp	.Lloop_xop
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%xmm$_",(0..3));
     my ($t0,$t1,$t2,$t3) = map("%xmm$_",(4..7));
 
@@ -1340,7 +1340,7 @@ my @insns = (&$body,&$body,&$body,&$body);	# 104 instructions
 	foreach(body_00_15()) { eval; }
     }
 
-					} else {	# SHA512
+					} else {	# YSHA512
     my @X = map("%xmm$_",(0..7));
     my ($t0,$t1,$t2,$t3) = map("%xmm$_",(8..11));
 
@@ -1587,7 +1587,7 @@ $code.=<<___;
 	mov	$SZ*6($ctx),$G
 	mov	$SZ*7($ctx),$H
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%xmm$_",(0..3));
     my ($t0,$t1,$t2,$t3, $t4,$t5) = map("%xmm$_",(4..9));
 
@@ -1687,7 +1687,7 @@ my @insns = (&$body,&$body,&$body,&$body);	# 104 instructions
 	foreach(body_00_15()) { eval; }
     }
 
-					} else {	# SHA512
+					} else {	# YSHA512
     my @X = map("%xmm$_",(0..7));
     my ($t0,$t1,$t2,$t3) = map("%xmm$_",(8..11));
 
@@ -1961,7 +1961,7 @@ $code.=<<___;
 	mov	$SZ*6($ctx),$G
 	mov	$SZ*7($ctx),$H
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%ymm$_",(0..3));
     my ($t0,$t1,$t2,$t3, $t4,$t5) = map("%ymm$_",(4..9));
 
@@ -2065,7 +2065,7 @@ ___
 	my $base=$i<8?"+$PUSH8(%rsp)":"(%rsp)";
 	foreach(bodyx_00_15()) { eval; }
     }
-					} else {	# SHA512
+					} else {	# YSHA512
     my @X = map("%ymm$_",(0..7));
     my ($t0,$t1,$t2,$t3) = map("%ymm$_",(8..11));
 

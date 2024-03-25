@@ -48,7 +48,7 @@
 # (i)	compared to older gcc 3.x one can observe >2x improvement on
 #	most platforms;
 # (ii)	2xSSSE3 is code path optimized specifically for 128 bytes used
-#	by chacha20_poly1305_tls_cipher, results are EVP-free;
+#	by chacha20_poly1305_tls_cipher, results are EVVP-free;
 # (iii)	this is not optimal result for Atom because of MSROM
 #	limitations, SSE2 can do better, but gain is considered too
 #	low to justify the [maintenance] effort;

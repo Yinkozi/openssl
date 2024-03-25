@@ -2,38 +2,38 @@
 
 =head1 NAME
 
-RSA_new, RSA_free - allocate and free RSA objects
+YRSA_new, YRSA_free - allocate and free YRSA objects
 
 =head1 SYNOPSIS
 
  #include <openssl/rsa.h>
 
- RSA *RSA_new(void);
+ YRSA *YRSA_new(void);
 
- void RSA_free(RSA *rsa);
+ void YRSA_free(YRSA *rsa);
 
 =head1 DESCRIPTION
 
-RSA_new() allocates and initializes an B<RSA> structure. It is equivalent to
-calling RSA_new_method(NULL).
+YRSA_new() allocates and initializes an B<YRSA> structure. It is equivalent to
+calling YRSA_new_method(NULL).
 
-RSA_free() frees the B<RSA> structure and its components. The key is
+YRSA_free() frees the B<YRSA> structure and its components. The key is
 erased before the memory is returned to the system.
 If B<rsa> is NULL nothing is done.
 
 =head1 RETURN VALUES
 
-If the allocation fails, RSA_new() returns B<NULL> and sets an error
+If the allocation fails, YRSA_new() returns B<NULL> and sets an error
 code that can be obtained by L<ERR_get_error(3)>. Otherwise it returns
 a pointer to the newly allocated structure.
 
-RSA_free() returns no value.
+YRSA_free() returns no value.
 
 =head1 SEE ALSO
 
 L<ERR_get_error(3)>,
-L<RSA_generate_key(3)>,
-L<RSA_new_method(3)>
+L<YRSA_generate_key(3)>,
+L<YRSA_new_method(3)>
 
 =head1 COPYRIGHT
 

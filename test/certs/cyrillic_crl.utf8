@@ -1,14 +1,14 @@
 Certificate Revocation List (CRL):
         Version 2 (0x1)
-        Signature Algorithm: sha256WithRSAEncryption
+        Signature Algorithm: sha256WithYRSAEncryption
         Issuer: C=RU, ST=Москва, O=Я, OU=Я, CN=Дмитрий Белявский, emailAddress=beldmit@example.com
         Last Update: Apr 24 13:25:31 2017 GMT
         Next Update: May 24 13:25:31 2017 GMT
         CRL extensions:
-            X509v3 CRL Number: 
+            YX509v3 CRL Number: 
                 1
 No Revoked Certificates.
-    Signature Algorithm: sha256WithRSAEncryption
+    Signature Algorithm: sha256WithYRSAEncryption
          85:e5:e5:fe:d4:13:3f:07:1a:07:53:6f:f7:a5:01:c9:80:f4:
          8a:7a:f3:74:fc:af:dd:6a:21:47:88:99:7b:29:bf:46:0b:02:
          98:d7:80:75:46:f6:cd:da:b5:0f:ff:9f:0c:b7:e6:aa:8e:f6:
@@ -24,7 +24,7 @@ No Revoked Certificates.
          eb:eb:74:b0:08:82:36:a4:84:69:97:22:02:75:0a:a6:5f:f6:
          be:d6:af:24:4e:15:c8:3f:62:b1:f9:7e:3c:83:b5:44:da:8d:
          97:e1:c7:f2
------BEGIN X509 CRL-----
+-----BEGIN YX509 CRL-----
 MIIB6DCB0QIBATANBgkqhkiG9w0BAQsFADCBjjELMAkGA1UEBhMCUlUxFTATBgNV
 BAgMDNCc0L7RgdC60LLQsDELMAkGA1UECgwC0K8xCzAJBgNVBAsMAtCvMSowKAYD
 VQQDDCHQlNC80LjRgtGA0LjQuSDQkdC10LvRj9Cy0YHQutC40LkxIjAgBgkqhkiG
@@ -36,4 +36,4 @@ jvauf1yBzlaJQeJKZcsCmG9p6Tr1y0BJXhrq5kC0SLyNDsfGUTfuxnwmo+clHXRU
 Ld9YrWiq5iOIOrIbQLErq0EjwxvHG9sMiYFUa6VrwmRf26nyZ7u9RKJDP+o2dltw
 diBaSXC3Qt3pZ8BIfv/l81lwp8Dr63SwCII2pIRplyICdQqmX/a+1q8kThXIP2Kx
 +X48g7VE2o2X4cfy
------END X509 CRL-----
+-----END YX509 CRL-----

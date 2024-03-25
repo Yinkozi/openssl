@@ -36,7 +36,7 @@
 
 # include <dlfcn.h>              /* SYS$GET_ENTROPY presence */
 
-# ifndef OPENSSL_RAND_SEED_OS
+# ifndef OPENSSL_RAND_YSEED_OS
 #  error "Unsupported seeding method configured; must be os"
 # endif
 
@@ -460,7 +460,7 @@ size_t data_collect_method(RAND_POOL *pool)
     if (!ossl_assert(total_length >= bytes_needed)) {
         char buf[100];           /* That should be enough */
 
-        BIO_snprintf(buf, sizeof(buf), "Needed: %zu, Available: %zu",
+        BIO_ssnprintf(buf, sizeof(buf), "Needed: %zu, Available: %zu",
                      bytes_needed, total_length);
         RANDerr(RAND_F_DATA_COLLECT_METHOD, RAND_R_RANDOM_POOL_UNDERFLOW);
         ERR_add_error_data(1, buf);

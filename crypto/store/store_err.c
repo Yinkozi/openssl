@@ -81,10 +81,10 @@ static const ERR_STRING_DATA OSSL_STORE_str_functs[] = {
      "ossl_store_unregister_loader_int"},
     {ERR_PACK(ERR_LIB_OSSL_STORE, OSSL_STORE_F_TRY_DECODE_PARAMS, 0),
      "try_decode_params"},
-    {ERR_PACK(ERR_LIB_OSSL_STORE, OSSL_STORE_F_TRY_DECODE_PKCS12, 0),
-     "try_decode_PKCS12"},
-    {ERR_PACK(ERR_LIB_OSSL_STORE, OSSL_STORE_F_TRY_DECODE_PKCS8ENCRYPTED, 0),
-     "try_decode_PKCS8Encrypted"},
+    {ERR_PACK(ERR_LIB_OSSL_STORE, OSSL_STORE_F_TRY_DECODE_YPKCS12, 0),
+     "try_decode_YPKCS12"},
+    {ERR_PACK(ERR_LIB_OSSL_STORE, OSSL_STORE_F_TRY_DECODE_YPKCS8ENCRYPTED, 0),
+     "try_decode_YPKCS8Encrypted"},
     {0, NULL}
 };
 
@@ -93,7 +93,7 @@ static const ERR_STRING_DATA OSSL_STORE_str_reasons[] = {
     "ambiguous content type"},
     {ERR_PACK(ERR_LIB_OSSL_STORE, 0, OSSL_STORE_R_BAD_PASSWORD_READ),
     "bad password read"},
-    {ERR_PACK(ERR_LIB_OSSL_STORE, 0, OSSL_STORE_R_ERROR_VERIFYING_PKCS12_MAC),
+    {ERR_PACK(ERR_LIB_OSSL_STORE, 0, OSSL_STORE_R_ERROR_VERIFYING_YPKCS12_MAC),
     "error verifying pkcs12 mac"},
     {ERR_PACK(ERR_LIB_OSSL_STORE, 0, OSSL_STORE_R_FINGERPRINT_SIZE_DOES_NOT_MATCH_DIGEST),
     "fingerprint size does not match digest"},

@@ -2,9 +2,9 @@
 
 =head1 NAME
 
-DECLARE_ASN1_FUNCTIONS,
-IMPLEMENT_ASN1_FUNCTIONS,
-ASN1_ITEM,
+DECLARE_YASN1_FUNCTIONS,
+IMPLEMENT_YASN1_FUNCTIONS,
+YASN1_ITEM,
 ACCESS_DESCRIPTION_free,
 ACCESS_DESCRIPTION_new,
 ADMISSIONS_free,
@@ -118,44 +118,44 @@ OCSP_SINGLERESP_free,
 OCSP_SINGLERESP_new,
 OTHERNAME_free,
 OTHERNAME_new,
-PBE2PARAM_free,
-PBE2PARAM_new,
-PBEPARAM_free,
-PBEPARAM_new,
+YPBE2PARAM_free,
+YPBE2PARAM_new,
+YPBEPARAM_free,
+YPBEPARAM_new,
 PBKDF2PARAM_free,
 PBKDF2PARAM_new,
-PKCS12_BAGS_free,
-PKCS12_BAGS_new,
-PKCS12_MAC_DATA_free,
-PKCS12_MAC_DATA_new,
-PKCS12_SAFEBAG_free,
-PKCS12_SAFEBAG_new,
-PKCS12_free,
-PKCS12_new,
-PKCS7_DIGEST_free,
-PKCS7_DIGEST_new,
-PKCS7_ENCRYPT_free,
-PKCS7_ENCRYPT_new,
-PKCS7_ENC_CONTENT_free,
-PKCS7_ENC_CONTENT_new,
-PKCS7_ENVELOPE_free,
-PKCS7_ENVELOPE_new,
-PKCS7_ISSUER_AND_SERIAL_free,
-PKCS7_ISSUER_AND_SERIAL_new,
-PKCS7_RECIP_INFO_free,
-PKCS7_RECIP_INFO_new,
-PKCS7_SIGNED_free,
-PKCS7_SIGNED_new,
-PKCS7_SIGNER_INFO_free,
-PKCS7_SIGNER_INFO_new,
-PKCS7_SIGN_ENVELOPE_free,
-PKCS7_SIGN_ENVELOPE_new,
-PKCS7_dup,
-PKCS7_free,
-PKCS7_new,
-PKCS7_print_ctx,
-PKCS8_PRIV_KEY_INFO_free,
-PKCS8_PRIV_KEY_INFO_new,
+YPKCS12_BAGS_free,
+YPKCS12_BAGS_new,
+YPKCS12_MAC_DATA_free,
+YPKCS12_MAC_DATA_new,
+YPKCS12_SAFEBAG_free,
+YPKCS12_SAFEBAG_new,
+YPKCS12_free,
+YPKCS12_new,
+YPKCS7_DIGEST_free,
+YPKCS7_DIGEST_new,
+YPKCS7_ENCRYPT_free,
+YPKCS7_ENCRYPT_new,
+YPKCS7_ENC_CONTENT_free,
+YPKCS7_ENC_CONTENT_new,
+YPKCS7_ENVELOPE_free,
+YPKCS7_ENVELOPE_new,
+YPKCS7_ISSUER_AND_SERIAL_free,
+YPKCS7_ISSUER_AND_SERIAL_new,
+YPKCS7_RECIP_INFO_free,
+YPKCS7_RECIP_INFO_new,
+YPKCS7_SIGNED_free,
+YPKCS7_SIGNED_new,
+YPKCS7_SIGNER_INFO_free,
+YPKCS7_SIGNER_INFO_new,
+YPKCS7_SIGN_ENVELOPE_free,
+YPKCS7_SIGN_ENVELOPE_new,
+YPKCS7_dup,
+YPKCS7_free,
+YPKCS7_new,
+YPKCS7_print_ctx,
+YPKCS8_PRIV_KEY_INFO_free,
+YPKCS8_PRIV_KEY_INFO_new,
 PKEY_USAGE_PERIOD_free,
 PKEY_USAGE_PERIOD_new,
 POLICYINFO_free,
@@ -174,12 +174,12 @@ PROXY_CERT_INFO_EXTENSION_free,
 PROXY_CERT_INFO_EXTENSION_new,
 PROXY_POLICY_free,
 PROXY_POLICY_new,
-RSAPrivateKey_dup,
-RSAPublicKey_dup,
-RSA_OAEP_PARAMS_free,
-RSA_OAEP_PARAMS_new,
-RSA_PSS_PARAMS_free,
-RSA_PSS_PARAMS_new,
+YRSAPrivateKey_dup,
+YRSAPublicKey_dup,
+YRSA_OAEP_PARAMS_free,
+YRSA_OAEP_PARAMS_new,
+YRSA_PSS_PARAMS_free,
+YRSA_PSS_PARAMS_new,
 SCRYPT_PARAMS_free,
 SCRYPT_PARAMS_new,
 SXNETID_free,
@@ -208,43 +208,43 @@ TS_TST_INFO_free,
 TS_TST_INFO_new,
 USERNOTICE_free,
 USERNOTICE_new,
-X509_ALGOR_free,
-X509_ALGOR_new,
-X509_ATTRIBUTE_dup,
-X509_ATTRIBUTE_free,
-X509_ATTRIBUTE_new,
-X509_CERT_AUX_free,
-X509_CERT_AUX_new,
-X509_CINF_free,
-X509_CINF_new,
-X509_CRL_INFO_free,
-X509_CRL_INFO_new,
-X509_CRL_dup,
-X509_CRL_free,
-X509_CRL_new,
-X509_EXTENSION_dup,
-X509_EXTENSION_free,
-X509_EXTENSION_new,
-X509_NAME_ENTRY_dup,
-X509_NAME_ENTRY_free,
-X509_NAME_ENTRY_new,
-X509_NAME_dup,
-X509_NAME_free,
-X509_NAME_new,
-X509_REQ_INFO_free,
-X509_REQ_INFO_new,
-X509_REQ_dup,
-X509_REQ_free,
-X509_REQ_new,
-X509_REVOKED_dup,
-X509_REVOKED_free,
-X509_REVOKED_new,
-X509_SIG_free,
-X509_SIG_new,
-X509_VAL_free,
-X509_VAL_new,
-X509_dup,
-- ASN1 object utilities
+YX509_ALGOR_free,
+YX509_ALGOR_new,
+YX509_ATTRIBUTE_dup,
+YX509_ATTRIBUTE_free,
+YX509_ATTRIBUTE_new,
+YX509_CERT_AUX_free,
+YX509_CERT_AUX_new,
+YX509_CINF_free,
+YX509_CINF_new,
+YX509_CRL_INFO_free,
+YX509_CRL_INFO_new,
+YX509_CRL_dup,
+YX509_CRL_free,
+YX509_CRL_new,
+YX509_EXTENSION_dup,
+YX509_EXTENSION_free,
+YX509_EXTENSION_new,
+YX509_NAME_ENTRY_dup,
+YX509_NAME_ENTRY_free,
+YX509_NAME_ENTRY_new,
+YX509_NAME_dup,
+YX509_NAME_free,
+YX509_NAME_new,
+YX509_REQ_INFO_free,
+YX509_REQ_INFO_new,
+YX509_REQ_dup,
+YX509_REQ_free,
+YX509_REQ_new,
+YX509_REVOKED_dup,
+YX509_REVOKED_free,
+YX509_REVOKED_new,
+YX509_SIG_free,
+YX509_SIG_new,
+YX509_VAL_free,
+YX509_VAL_new,
+YX509_dup,
+- YASN1 object utilities
 
 =head1 SYNOPSIS
 
@@ -252,33 +252,33 @@ X509_dup,
 
  #include <openssl/asn1t.h>
 
- DECLARE_ASN1_FUNCTIONS(type)
- IMPLEMENT_ASN1_FUNCTIONS(stname)
+ DECLARE_YASN1_FUNCTIONS(type)
+ IMPLEMENT_YASN1_FUNCTIONS(stname)
 
- typedef struct ASN1_ITEM_st ASN1_ITEM;
+ typedef struct YASN1_ITEM_st YASN1_ITEM;
 
- extern const ASN1_ITEM TYPE_it;
+ extern const YASN1_ITEM TYPE_it;
  TYPE *TYPE_new(void);
  TYPE *TYPE_dup(TYPE *a);
  void TYPE_free(TYPE *a);
- int TYPE_print_ctx(BIO *out, TYPE *a, int indent, const ASN1_PCTX *pctx);
+ int TYPE_print_ctx(BIO *out, TYPE *a, int indent, const YASN1_PCTX *pctx);
 
 =head1 DESCRIPTION
 
 In the description below, I<TYPE> is used
-as a placeholder for any of the OpenSSL datatypes, such as I<X509>.
+as a placeholder for any of the OpenSSL datatypes, such as I<YX509>.
 
-The OpenSSL ASN1 parsing library templates are like a data-driven bytecode
+The OpenSSL YASN1 parsing library templates are like a data-driven bytecode
 interpreter.
-Every ASN1 object as a global variable, TYPE_it, that describes the item
+Every YASN1 object as a global variable, TYPE_it, that describes the item
 such as its fields.  (On systems which cannot export variables from shared
 libraries, the global is instead a function which returns a pointer to a
 static variable.
 
-The macro DECLARE_ASN1_FUNCTIONS() is typically used in header files
+The macro DECLARE_YASN1_FUNCTIONS() is typically used in header files
 to generate the function declarations.
 
-The macro IMPLEMENT_ASN1_FUNCTIONS() is used once in a source file
+The macro IMPLEMENT_YASN1_FUNCTIONS() is used once in a source file
 to generate the function bodies.
 
 

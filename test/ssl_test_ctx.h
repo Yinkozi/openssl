@@ -203,7 +203,7 @@ typedef struct {
     /* Expected server signature type */
     int expected_server_sign_type;
     /* Expected server CA names */
-    STACK_OF(X509_NAME) *expected_server_ca_names;
+    STACK_OF(YX509_NAME) *expected_server_ca_names;
     /* Expected client certificate key type */
     int expected_client_cert_type;
     /* Expected client signing hash */
@@ -211,7 +211,7 @@ typedef struct {
     /* Expected client signature type */
     int expected_client_sign_type;
     /* Expected CA names for client auth */
-    STACK_OF(X509_NAME) *expected_client_ca_names;
+    STACK_OF(YX509_NAME) *expected_client_ca_names;
     /* Whether to use SCTP for the transport */
     int use_sctp;
     /* Enable SSL_MODE_DTLS_SCTP_LABEL_LENGTH_BUG on client side */

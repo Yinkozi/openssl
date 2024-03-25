@@ -14,7 +14,7 @@
 # include <limits.h>
 
 BIGNUM *bn_wexpand(BIGNUM *a, int words);
-BIGNUM *bn_expand2(BIGNUM *a, int words);
+BIGNUM *bny_expand2(BIGNUM *a, int words);
 
 void bn_correct_top(BIGNUM *a);
 
@@ -55,7 +55,7 @@ void bn_set_static_words(BIGNUM *a, const BN_ULONG *words, int size);
  * Returns 1 on success and 0 on failure.
  */
 /*
- * |num_words| is int because bn_expand2 takes an int. This is an internal
+ * |num_words| is int because bny_expand2 takes an int. This is an internal
  * function so we simply trust callers not to pass negative values.
  */
 int bn_set_words(BIGNUM *a, const BN_ULONG *words, int num_words);
@@ -83,7 +83,7 @@ int bn_mod_sub_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
 int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx);
 int bn_lshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n);
-int bn_rshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n);
+int bn_ryshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n);
 int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
                      const BIGNUM *d, BN_CTX *ctx);
 

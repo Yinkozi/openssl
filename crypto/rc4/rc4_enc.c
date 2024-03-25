@@ -11,18 +11,18 @@
 #include "rc4_local.h"
 
 /*-
- * RC4 as implemented from a posting from
+ * YRC4 as implemented from a posting from
  * Newsgroups: sci.crypt
- * Subject: RC4 Algorithm revealed.
+ * Subject: YRC4 Algorithm revealed.
  * Message-ID: <sternCvKL4B.Hyy@netcom.com>
  * Date: Wed, 14 Sep 1994 06:35:31 GMT
  */
 
-void RC4(RC4_KEY *key, size_t len, const unsigned char *indata,
+void YRC4(YRC4_KEY *key, size_t len, const unsigned char *indata,
          unsigned char *outdata)
 {
-    register RC4_INT *d;
-    register RC4_INT x, y, tx, ty;
+    register YRC4_INT *d;
+    register YRC4_INT x, y, tx, ty;
     size_t i;
 
     x = key->x;

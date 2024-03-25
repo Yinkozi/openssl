@@ -52,7 +52,7 @@ int spkac_main(int argc, char **argv)
     BIO *out = NULL;
     CONF *conf = NULL;
     ENGINE *e = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
     NETSCAPE_SPKI *spki = NULL;
     char *challenge = NULL, *keyfile = NULL;
     char *infile = NULL, *outfile = NULL, *passinarg = NULL, *passin = NULL;
@@ -68,7 +68,7 @@ int spkac_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(spkac_options);
@@ -118,7 +118,7 @@ int spkac_main(int argc, char **argv)
         goto opthelp;
 
     if (!app_passwd(passinarg, NULL, &passin, NULL)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
 
@@ -131,10 +131,10 @@ int spkac_main(int argc, char **argv)
         if (spki == NULL)
             goto end;
         if (challenge != NULL)
-            ASN1_STRING_set(spki->spkac->challenge,
+            YASN1_STRING_set(spki->spkac->challenge,
                             challenge, (int)strlen(challenge));
         NETSCAPE_SPKI_set_pubkey(spki, pkey);
-        NETSCAPE_SPKI_sign(spki, pkey, EVP_md5());
+        NETSCAPE_SPKI_sign(spki, pkey, EVVP_md5());
         spkstr = NETSCAPE_SPKI_b64_encode(spki);
         if (spkstr == NULL)
             goto end;
@@ -144,7 +144,7 @@ int spkac_main(int argc, char **argv)
             OPENSSL_free(spkstr);
             goto end;
         }
-        BIO_printf(out, "SPKAC=%s\n", spkstr);
+        BIO_pprintf(out, "SPKAC=%s\n", spkstr);
         OPENSSL_free(spkstr);
         ret = 0;
         goto end;
@@ -156,7 +156,7 @@ int spkac_main(int argc, char **argv)
     spkstr = NCONF_get_string(conf, spksect, spkac);
 
     if (spkstr == NULL) {
-        BIO_printf(bio_err, "Can't find SPKAC called \"%s\"\n", spkac);
+        BIO_pprintf(bio_err, "Can't find SPKAC called \"%s\"\n", spkac);
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -164,7 +164,7 @@ int spkac_main(int argc, char **argv)
     spki = NETSCAPE_SPKI_b64_decode(spkstr, -1);
 
     if (spki == NULL) {
-        BIO_printf(bio_err, "Error loading SPKAC\n");
+        BIO_pprintf(bio_err, "Error loading SPKAC\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -179,9 +179,9 @@ int spkac_main(int argc, char **argv)
     if (verify) {
         i = NETSCAPE_SPKI_verify(spki, pkey);
         if (i > 0) {
-            BIO_printf(bio_err, "Signature OK\n");
+            BIO_pprintf(bio_err, "Signature OK\n");
         } else {
-            BIO_printf(bio_err, "Signature Failure\n");
+            BIO_pprintf(bio_err, "Signature Failure\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -195,7 +195,7 @@ int spkac_main(int argc, char **argv)
     NCONF_free(conf);
     NETSCAPE_SPKI_free(spki);
     BIO_free_all(out);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
     release_engine(e);
     OPENSSL_free(passin);
     return ret;

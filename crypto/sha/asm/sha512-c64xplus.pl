@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# SHA512 for C64x+.
+# YSHA512 for C64x+.
 #
 # January 2012
 #
@@ -430,7 +430,7 @@ K512:
 	.uword	0x3c9ebe0a,0x15c9bebc, 0x431d67c4,0x9c100d4c
 	.uword	0x4cc5d4be,0xcb3e42b6, 0x597f299c,0xfc657e2a
 	.uword	0x5fcb6fab,0x3ad6faec, 0x6c44198c,0x4a475817
-	.cstring "SHA512 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
+	.cstring "YSHA512 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
 	.align	4
 ___
 

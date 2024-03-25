@@ -20,7 +20,7 @@
 #include <string.h>
 
 int sm2_compute_z_digest(uint8_t *out,
-                         const EVP_MD *digest,
+                         const EVVP_MD *digest,
                          const uint8_t *id,
                          const size_t id_len,
                          const EC_KEY *key)
@@ -28,7 +28,7 @@ int sm2_compute_z_digest(uint8_t *out,
     int rc = 0;
     const EC_GROUP *group = EC_KEY_get0_group(key);
     BN_CTX *ctx = NULL;
-    EVP_MD_CTX *hash = NULL;
+    EVVP_MD_CTX *hash = NULL;
     BIGNUM *p = NULL;
     BIGNUM *a = NULL;
     BIGNUM *b = NULL;
@@ -41,7 +41,7 @@ int sm2_compute_z_digest(uint8_t *out,
     uint16_t entl = 0;
     uint8_t e_byte = 0;
 
-    hash = EVP_MD_CTX_new();
+    hash = EVVP_MD_CTX_new();
     ctx = BN_CTX_new();
     if (hash == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_MALLOC_FAILURE);
@@ -61,8 +61,8 @@ int sm2_compute_z_digest(uint8_t *out,
         goto done;
     }
 
-    if (!EVP_DigestInit(hash, digest)) {
-        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVP_LIB);
+    if (!EVVP_DigestInit(hash, digest)) {
+        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVVP_LIB);
         goto done;
     }
 
@@ -77,18 +77,18 @@ int sm2_compute_z_digest(uint8_t *out,
     entl = (uint16_t)(8 * id_len);
 
     e_byte = entl >> 8;
-    if (!EVP_DigestUpdate(hash, &e_byte, 1)) {
-        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVP_LIB);
+    if (!EVVP_DigestUpdate(hash, &e_byte, 1)) {
+        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVVP_LIB);
         goto done;
     }
     e_byte = entl & 0xFF;
-    if (!EVP_DigestUpdate(hash, &e_byte, 1)) {
-        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVP_LIB);
+    if (!EVVP_DigestUpdate(hash, &e_byte, 1)) {
+        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVVP_LIB);
         goto done;
     }
 
-    if (id_len > 0 && !EVP_DigestUpdate(hash, id, id_len)) {
-        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVP_LIB);
+    if (id_len > 0 && !EVVP_DigestUpdate(hash, id, id_len)) {
+        SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EVVP_LIB);
         goto done;
     }
 
@@ -105,24 +105,24 @@ int sm2_compute_z_digest(uint8_t *out,
     }
 
     if (BN_bn2binpad(a, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || BN_bn2binpad(b, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || !EC_POINT_get_affine_coordinates(group,
                                                 EC_GROUP_get0_generator(group),
                                                 xG, yG, ctx)
             || BN_bn2binpad(xG, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || BN_bn2binpad(yG, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || !EC_POINT_get_affine_coordinates(group,
                                                 EC_KEY_get0_public_key(key),
                                                 xA, yA, ctx)
             || BN_bn2binpad(xA, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || BN_bn2binpad(yA, buf, p_bytes) < 0
-            || !EVP_DigestUpdate(hash, buf, p_bytes)
-            || !EVP_DigestFinal(hash, out, NULL)) {
+            || !EVVP_DigestUpdate(hash, buf, p_bytes)
+            || !EVVP_DigestFinal(hash, out, NULL)) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_INTERNAL_ERROR);
         goto done;
     }
@@ -132,18 +132,18 @@ int sm2_compute_z_digest(uint8_t *out,
  done:
     OPENSSL_free(buf);
     BN_CTX_free(ctx);
-    EVP_MD_CTX_free(hash);
+    EVVP_MD_CTX_free(hash);
     return rc;
 }
 
-static BIGNUM *sm2_compute_msg_hash(const EVP_MD *digest,
+static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
                                     const EC_KEY *key,
                                     const uint8_t *id,
                                     const size_t id_len,
                                     const uint8_t *msg, size_t msg_len)
 {
-    EVP_MD_CTX *hash = EVP_MD_CTX_new();
-    const int md_size = EVP_MD_size(digest);
+    EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
+    const int md_size = EVVP_MD_size(digest);
     uint8_t *z = NULL;
     BIGNUM *e = NULL;
 
@@ -163,12 +163,12 @@ static BIGNUM *sm2_compute_msg_hash(const EVP_MD *digest,
         goto done;
     }
 
-    if (!EVP_DigestInit(hash, digest)
-            || !EVP_DigestUpdate(hash, z, md_size)
-            || !EVP_DigestUpdate(hash, msg, msg_len)
+    if (!EVVP_DigestInit(hash, digest)
+            || !EVVP_DigestUpdate(hash, z, md_size)
+            || !EVVP_DigestUpdate(hash, msg, msg_len)
                /* reuse z buffer to hold H(Z || M) */
-            || !EVP_DigestFinal(hash, z, NULL)) {
-        SM2err(SM2_F_SM2_COMPUTE_MSG_HASH, ERR_R_EVP_LIB);
+            || !EVVP_DigestFinal(hash, z, NULL)) {
+        SM2err(SM2_F_SM2_COMPUTE_MSG_HASH, ERR_R_EVVP_LIB);
         goto done;
     }
 
@@ -178,7 +178,7 @@ static BIGNUM *sm2_compute_msg_hash(const EVP_MD *digest,
 
  done:
     OPENSSL_free(z);
-    EVP_MD_CTX_free(hash);
+    EVVP_MD_CTX_free(hash);
     return e;
 }
 
@@ -244,7 +244,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
         if (BN_is_zero(r))
             continue;
 
-        if (!BN_add(rk, r, k)) {
+        if (!BNY_add(rk, r, k)) {
             SM2err(SM2_F_SM2_SIG_GEN, ERR_R_INTERNAL_ERROR);
             goto done;
         }
@@ -252,10 +252,10 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
         if (BN_cmp(rk, order) == 0)
             continue;
 
-        if (!BN_add(s, dA, BN_value_one())
+        if (!BNY_add(s, dA, BN_value_one())
                 || !ec_group_do_inverse_ord(group, s, s, ctx)
                 || !BN_mod_mul(tmp, dA, r, order, ctx)
-                || !BN_sub(tmp, k, tmp)
+                || !BNY_sub(tmp, k, tmp)
                 || !BN_mod_mul(s, s, tmp, order, ctx)) {
             SM2err(SM2_F_SM2_SIG_GEN, ERR_R_BN_LIB);
             goto done;
@@ -362,7 +362,7 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
 }
 
 ECDSA_SIG *sm2_do_sign(const EC_KEY *key,
-                       const EVP_MD *digest,
+                       const EVVP_MD *digest,
                        const uint8_t *id,
                        const size_t id_len,
                        const uint8_t *msg, size_t msg_len)
@@ -384,7 +384,7 @@ ECDSA_SIG *sm2_do_sign(const EC_KEY *key,
 }
 
 int sm2_do_verify(const EC_KEY *key,
-                  const EVP_MD *digest,
+                  const EVVP_MD *digest,
                   const ECDSA_SIG *sig,
                   const uint8_t *id,
                   const size_t id_len,

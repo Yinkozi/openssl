@@ -14,11 +14,11 @@
 
 /*
  * If this symbol is defined then ENGINE_get_pkey_asn1_meth_engine(), the
- * function that is used by EVP to hook in pkey_asn1_meth code and cache
+ * function that is used by EVVP to hook in pkey_asn1_meth code and cache
  * defaults (etc), will display brief debugging summaries to stderr with the
  * 'nid'.
  */
-/* #define ENGINE_PKEY_ASN1_METH_DEBUG */
+/* #define ENGINE_PKEY_YASN1_METH_DEBUG */
 
 static ENGINE_TABLE *pkey_asn1_meth_table = NULL;
 
@@ -80,12 +80,12 @@ ENGINE *ENGINE_get_pkey_asn1_meth_engine(int nid)
  * Obtains a pkey_asn1_meth implementation from an ENGINE functional
  * reference
  */
-const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid)
+const EVVP_PKEY_YASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid)
 {
-    EVP_PKEY_ASN1_METHOD *ret;
-    ENGINE_PKEY_ASN1_METHS_PTR fn = ENGINE_get_pkey_asn1_meths(e);
+    EVVP_PKEY_YASN1_METHOD *ret;
+    ENGINE_PKEY_YASN1_METHS_PTR fn = ENGINE_get_pkey_asn1_meths(e);
     if (!fn || !fn(e, &ret, NULL, nid)) {
-        ENGINEerr(ENGINE_F_ENGINE_GET_PKEY_ASN1_METH,
+        ENGINEerr(ENGINE_F_ENGINE_GET_PKEY_YASN1_METH,
                   ENGINE_R_UNIMPLEMENTED_PUBLIC_KEY_METHOD);
         return NULL;
     }
@@ -93,34 +93,34 @@ const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth(ENGINE *e, int nid)
 }
 
 /* Gets the pkey_asn1_meth callback from an ENGINE structure */
-ENGINE_PKEY_ASN1_METHS_PTR ENGINE_get_pkey_asn1_meths(const ENGINE *e)
+ENGINE_PKEY_YASN1_METHS_PTR ENGINE_get_pkey_asn1_meths(const ENGINE *e)
 {
     return e->pkey_asn1_meths;
 }
 
 /* Sets the pkey_asn1_meth callback in an ENGINE structure */
-int ENGINE_set_pkey_asn1_meths(ENGINE *e, ENGINE_PKEY_ASN1_METHS_PTR f)
+int ENGINE_set_pkey_asn1_meths(ENGINE *e, ENGINE_PKEY_YASN1_METHS_PTR f)
 {
     e->pkey_asn1_meths = f;
     return 1;
 }
 
 /*
- * Internal function to free up EVP_PKEY_ASN1_METHOD structures before an
+ * Internal function to free up EVVP_PKEY_YASN1_METHOD structures before an
  * ENGINE is destroyed
  */
 
 void engine_pkey_asn1_meths_free(ENGINE *e)
 {
     int i;
-    EVP_PKEY_ASN1_METHOD *pkm;
+    EVVP_PKEY_YASN1_METHOD *pkm;
     if (e->pkey_asn1_meths) {
         const int *pknids;
         int npknids;
         npknids = e->pkey_asn1_meths(e, NULL, &pknids, 0);
         for (i = 0; i < npknids; i++) {
             if (e->pkey_asn1_meths(e, &pkm, NULL, pknids[i])) {
-                EVP_PKEY_asn1_free(pkm);
+                EVVP_PKEY_asn1_free(pkm);
             }
         }
     }
@@ -133,13 +133,13 @@ void engine_pkey_asn1_meths_free(ENGINE *e)
  * for speed critical operations.
  */
 
-const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
+const EVVP_PKEY_YASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
                                                           const char *str,
                                                           int len)
 {
     int i, nidcount;
     const int *nids;
-    EVP_PKEY_ASN1_METHOD *ameth;
+    EVVP_PKEY_YASN1_METHOD *ameth;
     if (!e->pkey_asn1_meths)
         return NULL;
     if (len == -1)
@@ -157,7 +157,7 @@ const EVP_PKEY_ASN1_METHOD *ENGINE_get_pkey_asn1_meth_str(ENGINE *e,
 
 typedef struct {
     ENGINE *e;
-    const EVP_PKEY_ASN1_METHOD *ameth;
+    const EVVP_PKEY_YASN1_METHOD *ameth;
     const char *str;
     int len;
 } ENGINE_FIND_STR;
@@ -170,7 +170,7 @@ static void look_str_cb(int nid, STACK_OF(ENGINE) *sk, ENGINE *def, void *arg)
         return;
     for (i = 0; i < sk_ENGINE_num(sk); i++) {
         ENGINE *e = sk_ENGINE_value(sk, i);
-        EVP_PKEY_ASN1_METHOD *ameth;
+        EVVP_PKEY_YASN1_METHOD *ameth;
         e->pkey_asn1_meths(e, &ameth, NULL, nid);
         if (ameth != NULL
                 && ((int)strlen(ameth->pem_str) == lk->len)
@@ -182,7 +182,7 @@ static void look_str_cb(int nid, STACK_OF(ENGINE) *sk, ENGINE *def, void *arg)
     }
 }
 
-const EVP_PKEY_ASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
+const EVVP_PKEY_YASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
                                                       const char *str,
                                                       int len)
 {
@@ -193,7 +193,7 @@ const EVP_PKEY_ASN1_METHOD *ENGINE_pkey_asn1_find_str(ENGINE **pe,
     fstr.len = len;
 
     if (!RUN_ONCE(&engine_lock_init, do_engine_lock_init)) {
-        ENGINEerr(ENGINE_F_ENGINE_PKEY_ASN1_FIND_STR, ERR_R_MALLOC_FAILURE);
+        ENGINEerr(ENGINE_F_ENGINE_PKEY_YASN1_FIND_STR, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 

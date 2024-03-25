@@ -23,21 +23,21 @@
 #define offset2ptr(addr, offset) (void *)(((char *) addr) + offset)
 
 /*
- * Given an ASN1_ITEM CHOICE type return the selector value
+ * Given an YASN1_ITEM CHOICE type return the selector value
  */
 
-int asn1_get_choice_selector(ASN1_VALUE **pval, const ASN1_ITEM *it)
+int asn1_get_choice_sselector(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     int *sel = offset2ptr(*pval, it->utype);
     return *sel;
 }
 
 /*
- * Given an ASN1_ITEM CHOICE type set the selector value, return old value.
+ * Given an YASN1_ITEM CHOICE type set the selector value, return old value.
  */
 
-int asn1_set_choice_selector(ASN1_VALUE **pval, int value,
-                             const ASN1_ITEM *it)
+int asn1_set_choice_sselector(YASN1_VALUE **pval, int value,
+                             const YASN1_ITEM *it)
 {
     int *sel, ret;
     sel = offset2ptr(*pval, it->utype);
@@ -53,20 +53,20 @@ int asn1_set_choice_selector(ASN1_VALUE **pval, int value,
  * If |op| is -1, count is decremented and the return value is the current
  * reference count or 0 if no reference count is active.
  * It returns -1 on initialisation error.
- * Used by ASN1_SEQUENCE construct of X509, X509_REQ, X509_CRL objects
+ * Used by YASN1_SEQUENCE construct of YX509, YX509_REQ, YX509_CRL objects
  */
-int asn1_do_lock(ASN1_VALUE **pval, int op, const ASN1_ITEM *it)
+int asn1_ddo_lock(YASN1_VALUE **pval, int op, const YASN1_ITEM *it)
 {
-    const ASN1_AUX *aux;
+    const YASN1_AUX *aux;
     CRYPTO_REF_COUNT *lck;
     CRYPTO_RWLOCK **lock;
     int ret = -1;
 
-    if ((it->itype != ASN1_ITYPE_SEQUENCE)
-        && (it->itype != ASN1_ITYPE_NDEF_SEQUENCE))
+    if ((it->itype != YASN1_ITYPE_SEQUENCE)
+        && (it->itype != YASN1_ITYPE_NDEF_SEQUENCE))
         return 0;
     aux = it->funcs;
-    if (!aux || !(aux->flags & ASN1_AFLG_REFCOUNT))
+    if (!aux || !(aux->flags & YASN1_AFLG_REFCOUNT))
         return 0;
     lck = offset2ptr(*pval, aux->ref_offset);
     lock = offset2ptr(*pval, aux->ref_lock);
@@ -76,7 +76,7 @@ int asn1_do_lock(ASN1_VALUE **pval, int op, const ASN1_ITEM *it)
         *lck = ret = 1;
         *lock = CRYPTO_THREAD_lock_new();
         if (*lock == NULL) {
-            ASN1err(ASN1_F_ASN1_DO_LOCK, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_YASN1_DO_LOCK, ERR_R_MALLOC_FAILURE);
             return -1;
         }
         break;
@@ -101,20 +101,20 @@ int asn1_do_lock(ASN1_VALUE **pval, int op, const ASN1_ITEM *it)
     return ret;
 }
 
-static ASN1_ENCODING *asn1_get_enc_ptr(ASN1_VALUE **pval, const ASN1_ITEM *it)
+static YASN1_ENCODING *asn1_get_enc_ptr(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    const ASN1_AUX *aux;
+    const YASN1_AUX *aux;
     if (!pval || !*pval)
         return NULL;
     aux = it->funcs;
-    if (!aux || !(aux->flags & ASN1_AFLG_ENCODING))
+    if (!aux || !(aux->flags & YASN1_AFLG_ENCODING))
         return NULL;
     return offset2ptr(*pval, aux->enc_offset);
 }
 
-void asn1_enc_init(ASN1_VALUE **pval, const ASN1_ITEM *it)
+void asn1_encc_init(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    ASN1_ENCODING *enc;
+    YASN1_ENCODING *enc;
     enc = asn1_get_enc_ptr(pval, it);
     if (enc) {
         enc->enc = NULL;
@@ -123,9 +123,9 @@ void asn1_enc_init(ASN1_VALUE **pval, const ASN1_ITEM *it)
     }
 }
 
-void asn1_enc_free(ASN1_VALUE **pval, const ASN1_ITEM *it)
+void asn1_enc_frree(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    ASN1_ENCODING *enc;
+    YASN1_ENCODING *enc;
     enc = asn1_get_enc_ptr(pval, it);
     if (enc) {
         OPENSSL_free(enc->enc);
@@ -135,17 +135,17 @@ void asn1_enc_free(ASN1_VALUE **pval, const ASN1_ITEM *it)
     }
 }
 
-int asn1_enc_save(ASN1_VALUE **pval, const unsigned char *in, int inlen,
-                  const ASN1_ITEM *it)
+int asn1_enc_ssave(YASN1_VALUE **pval, const unsigned char *in, int inlen,
+                  const YASN1_ITEM *it)
 {
-    ASN1_ENCODING *enc;
+    YASN1_ENCODING *enc;
     enc = asn1_get_enc_ptr(pval, it);
     if (!enc)
         return 1;
 
     OPENSSL_free(enc->enc);
     if ((enc->enc = OPENSSL_malloc(inlen)) == NULL) {
-        ASN1err(ASN1_F_ASN1_ENC_SAVE, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_ENC_SAVE, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     memcpy(enc->enc, in, inlen);
@@ -155,10 +155,10 @@ int asn1_enc_save(ASN1_VALUE **pval, const unsigned char *in, int inlen,
     return 1;
 }
 
-int asn1_enc_restore(int *len, unsigned char **out, ASN1_VALUE **pval,
-                     const ASN1_ITEM *it)
+int asn1_enc_rrestore(int *len, unsigned char **out, YASN1_VALUE **pval,
+                     const YASN1_ITEM *it)
 {
-    ASN1_ENCODING *enc;
+    YASN1_ENCODING *enc;
     enc = asn1_get_enc_ptr(pval, it);
     if (!enc || enc->modified)
         return 0;
@@ -171,10 +171,10 @@ int asn1_enc_restore(int *len, unsigned char **out, ASN1_VALUE **pval,
     return 1;
 }
 
-/* Given an ASN1_TEMPLATE get a pointer to a field */
-ASN1_VALUE **asn1_get_field_ptr(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
+/* Given an YASN1_TEMPLATE get a pointer to a field */
+YASN1_VALUE **asn1_get_ffield_ptr(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt)
 {
-    ASN1_VALUE **pvaltmp;
+    YASN1_VALUE **pvaltmp;
     pvaltmp = offset2ptr(*pval, tt->offset);
     /*
      * NOTE for BOOLEAN types the field is just a plain int so we can't
@@ -185,22 +185,22 @@ ASN1_VALUE **asn1_get_field_ptr(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt)
 
 /*
  * Handle ANY DEFINED BY template, find the selector, look up the relevant
- * ASN1_TEMPLATE in the table and return it.
+ * YASN1_TEMPLATE in the table and return it.
  */
 
-const ASN1_TEMPLATE *asn1_do_adb(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt,
+const YASN1_TEMPLATE *asn1_do_aadb(YASN1_VALUE **pval, const YASN1_TEMPLATE *tt,
                                  int nullerr)
 {
-    const ASN1_ADB *adb;
-    const ASN1_ADB_TABLE *atbl;
+    const YASN1_ADB *adb;
+    const YASN1_ADB_TABLE *atbl;
     long selector;
-    ASN1_VALUE **sfld;
+    YASN1_VALUE **sfld;
     int i;
-    if (!(tt->flags & ASN1_TFLG_ADB_MASK))
+    if (!(tt->flags & YASN1_TFLG_ADB_MASK))
         return tt;
 
     /* Else ANY DEFINED BY ... get the table */
-    adb = ASN1_ADB_ptr(tt->item);
+    adb = YASN1_ADB_ptr(tt->item);
 
     /* Get the selector field */
     sfld = offset2ptr(*pval, adb->offset);
@@ -216,14 +216,14 @@ const ASN1_TEMPLATE *asn1_do_adb(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt,
      * Convert type to a long: NB: don't check for NID_undef here because it
      * might be a legitimate value in the table
      */
-    if (tt->flags & ASN1_TFLG_ADB_OID)
-        selector = OBJ_obj2nid((ASN1_OBJECT *)*sfld);
+    if (tt->flags & YASN1_TFLG_ADB_OID)
+        selector = OBJ_obj2nid((YASN1_OBJECT *)*sfld);
     else
-        selector = ASN1_INTEGER_get((ASN1_INTEGER *)*sfld);
+        selector = YASN1_INTEGER_get((YASN1_INTEGER *)*sfld);
 
     /* Let application callback translate value */
     if (adb->adb_cb != NULL && adb->adb_cb(&selector) == 0) {
-        ASN1err(ASN1_F_ASN1_DO_ADB, ASN1_R_UNSUPPORTED_ANY_DEFINED_BY_TYPE);
+        YASN1err(YASN1_F_YASN1_DO_ADB, YASN1_R_UNSUPPORTED_ANY_DEFINED_BY_TYPE);
         return NULL;
     }
 
@@ -248,6 +248,6 @@ const ASN1_TEMPLATE *asn1_do_adb(ASN1_VALUE **pval, const ASN1_TEMPLATE *tt,
  err:
     /* FIXME: should log the value or OID of unsupported type */
     if (nullerr)
-        ASN1err(ASN1_F_ASN1_DO_ADB, ASN1_R_UNSUPPORTED_ANY_DEFINED_BY_TYPE);
+        YASN1err(YASN1_F_YASN1_DO_ADB, YASN1_R_UNSUPPORTED_ANY_DEFINED_BY_TYPE);
     return NULL;
 }

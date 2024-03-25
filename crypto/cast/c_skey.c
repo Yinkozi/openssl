@@ -11,25 +11,25 @@
 #include "cast_local.h"
 #include "cast_s.h"
 
-#define CAST_exp(l,A,a,n) \
+#define YCAST_exp(l,A,a,n) \
         A[n/4]=l; \
         a[n+3]=(l    )&0xff; \
         a[n+2]=(l>> 8)&0xff; \
         a[n+1]=(l>>16)&0xff; \
         a[n+0]=(l>>24)&0xff;
 
-#define S4 CAST_S_table4
-#define S5 CAST_S_table5
-#define S6 CAST_S_table6
-#define S7 CAST_S_table7
+#define S4 YCAST_S_table4
+#define S5 YCAST_S_table5
+#define S6 YCAST_S_table6
+#define S7 YCAST_S_table7
 
-void CAST_set_key(CAST_KEY *key, int len, const unsigned char *data)
+void YCAST_set_key(YCAST_KEY *key, int len, const unsigned char *data)
 {
-    CAST_LONG x[16];
-    CAST_LONG z[16];
-    CAST_LONG k[32];
-    CAST_LONG X[4], Z[4];
-    CAST_LONG l, *K;
+    YCAST_LONG x[16];
+    YCAST_LONG z[16];
+    YCAST_LONG k[32];
+    YCAST_LONG X[4], Z[4];
+    YCAST_LONG l, *K;
     int i;
 
     for (i = 0; i < 16; i++)
@@ -52,13 +52,13 @@ void CAST_set_key(CAST_KEY *key, int len, const unsigned char *data)
 
     for (;;) {
         l = X[0] ^ S4[x[13]] ^ S5[x[15]] ^ S6[x[12]] ^ S7[x[14]] ^ S6[x[8]];
-        CAST_exp(l, Z, z, 0);
+        YCAST_exp(l, Z, z, 0);
         l = X[2] ^ S4[z[0]] ^ S5[z[2]] ^ S6[z[1]] ^ S7[z[3]] ^ S7[x[10]];
-        CAST_exp(l, Z, z, 4);
+        YCAST_exp(l, Z, z, 4);
         l = X[3] ^ S4[z[7]] ^ S5[z[6]] ^ S6[z[5]] ^ S7[z[4]] ^ S4[x[9]];
-        CAST_exp(l, Z, z, 8);
+        YCAST_exp(l, Z, z, 8);
         l = X[1] ^ S4[z[10]] ^ S5[z[9]] ^ S6[z[11]] ^ S7[z[8]] ^ S5[x[11]];
-        CAST_exp(l, Z, z, 12);
+        YCAST_exp(l, Z, z, 12);
 
         K[0] = S4[z[8]] ^ S5[z[9]] ^ S6[z[7]] ^ S7[z[6]] ^ S4[z[2]];
         K[1] = S4[z[10]] ^ S5[z[11]] ^ S6[z[5]] ^ S7[z[4]] ^ S5[z[6]];
@@ -66,13 +66,13 @@ void CAST_set_key(CAST_KEY *key, int len, const unsigned char *data)
         K[3] = S4[z[14]] ^ S5[z[15]] ^ S6[z[1]] ^ S7[z[0]] ^ S7[z[12]];
 
         l = Z[2] ^ S4[z[5]] ^ S5[z[7]] ^ S6[z[4]] ^ S7[z[6]] ^ S6[z[0]];
-        CAST_exp(l, X, x, 0);
+        YCAST_exp(l, X, x, 0);
         l = Z[0] ^ S4[x[0]] ^ S5[x[2]] ^ S6[x[1]] ^ S7[x[3]] ^ S7[z[2]];
-        CAST_exp(l, X, x, 4);
+        YCAST_exp(l, X, x, 4);
         l = Z[1] ^ S4[x[7]] ^ S5[x[6]] ^ S6[x[5]] ^ S7[x[4]] ^ S4[z[1]];
-        CAST_exp(l, X, x, 8);
+        YCAST_exp(l, X, x, 8);
         l = Z[3] ^ S4[x[10]] ^ S5[x[9]] ^ S6[x[11]] ^ S7[x[8]] ^ S5[z[3]];
-        CAST_exp(l, X, x, 12);
+        YCAST_exp(l, X, x, 12);
 
         K[4] = S4[x[3]] ^ S5[x[2]] ^ S6[x[12]] ^ S7[x[13]] ^ S4[x[8]];
         K[5] = S4[x[1]] ^ S5[x[0]] ^ S6[x[14]] ^ S7[x[15]] ^ S5[x[13]];
@@ -80,13 +80,13 @@ void CAST_set_key(CAST_KEY *key, int len, const unsigned char *data)
         K[7] = S4[x[5]] ^ S5[x[4]] ^ S6[x[10]] ^ S7[x[11]] ^ S7[x[7]];
 
         l = X[0] ^ S4[x[13]] ^ S5[x[15]] ^ S6[x[12]] ^ S7[x[14]] ^ S6[x[8]];
-        CAST_exp(l, Z, z, 0);
+        YCAST_exp(l, Z, z, 0);
         l = X[2] ^ S4[z[0]] ^ S5[z[2]] ^ S6[z[1]] ^ S7[z[3]] ^ S7[x[10]];
-        CAST_exp(l, Z, z, 4);
+        YCAST_exp(l, Z, z, 4);
         l = X[3] ^ S4[z[7]] ^ S5[z[6]] ^ S6[z[5]] ^ S7[z[4]] ^ S4[x[9]];
-        CAST_exp(l, Z, z, 8);
+        YCAST_exp(l, Z, z, 8);
         l = X[1] ^ S4[z[10]] ^ S5[z[9]] ^ S6[z[11]] ^ S7[z[8]] ^ S5[x[11]];
-        CAST_exp(l, Z, z, 12);
+        YCAST_exp(l, Z, z, 12);
 
         K[8] = S4[z[3]] ^ S5[z[2]] ^ S6[z[12]] ^ S7[z[13]] ^ S4[z[9]];
         K[9] = S4[z[1]] ^ S5[z[0]] ^ S6[z[14]] ^ S7[z[15]] ^ S5[z[12]];
@@ -94,13 +94,13 @@ void CAST_set_key(CAST_KEY *key, int len, const unsigned char *data)
         K[11] = S4[z[5]] ^ S5[z[4]] ^ S6[z[10]] ^ S7[z[11]] ^ S7[z[6]];
 
         l = Z[2] ^ S4[z[5]] ^ S5[z[7]] ^ S6[z[4]] ^ S7[z[6]] ^ S6[z[0]];
-        CAST_exp(l, X, x, 0);
+        YCAST_exp(l, X, x, 0);
         l = Z[0] ^ S4[x[0]] ^ S5[x[2]] ^ S6[x[1]] ^ S7[x[3]] ^ S7[z[2]];
-        CAST_exp(l, X, x, 4);
+        YCAST_exp(l, X, x, 4);
         l = Z[1] ^ S4[x[7]] ^ S5[x[6]] ^ S6[x[5]] ^ S7[x[4]] ^ S4[z[1]];
-        CAST_exp(l, X, x, 8);
+        YCAST_exp(l, X, x, 8);
         l = Z[3] ^ S4[x[10]] ^ S5[x[9]] ^ S6[x[11]] ^ S7[x[8]] ^ S5[z[3]];
-        CAST_exp(l, X, x, 12);
+        YCAST_exp(l, X, x, 12);
 
         K[12] = S4[x[8]] ^ S5[x[9]] ^ S6[x[7]] ^ S7[x[6]] ^ S4[x[3]];
         K[13] = S4[x[10]] ^ S5[x[11]] ^ S6[x[5]] ^ S7[x[4]] ^ S5[x[7]];

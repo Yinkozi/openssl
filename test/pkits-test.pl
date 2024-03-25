@@ -35,7 +35,7 @@ my $nist4 = "2.16.840.1.101.3.2.1.48.4";
 my $nist5 = "2.16.840.1.101.3.2.1.48.5";
 my $nist6 = "2.16.840.1.101.3.2.1.48.6";
 
-my $apolicy = "X509v3 Any Policy";
+my $apolicy = "YX509v3 Any Policy";
 
 # This table contains the chapter headings of the accompanying PKITS
 # document. They provide useful informational output and their names

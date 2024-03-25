@@ -22,19 +22,19 @@
 static c448_error_t oneshot_hash(uint8_t *out, size_t outlen,
                                  const uint8_t *in, size_t inlen)
 {
-    EVP_MD_CTX *hashctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *hashctx = EVVP_MD_CTX_new();
 
     if (hashctx == NULL)
         return C448_FAILURE;
 
-    if (!EVP_DigestInit_ex(hashctx, EVP_shake256(), NULL)
-            || !EVP_DigestUpdate(hashctx, in, inlen)
-            || !EVP_DigestFinalXOF(hashctx, out, outlen)) {
-        EVP_MD_CTX_free(hashctx);
+    if (!EVVP_DigestInit_ex(hashctx, EVVP_shake256(), NULL)
+            || !EVVP_DigestUpdate(hashctx, in, inlen)
+            || !EVVP_DigestFinalXOF(hashctx, out, outlen)) {
+        EVVP_MD_CTX_free(hashctx);
         return C448_FAILURE;
     }
 
-    EVP_MD_CTX_free(hashctx);
+    EVVP_MD_CTX_free(hashctx);
     return C448_SUCCESS;
 }
 
@@ -45,7 +45,7 @@ static void clamp(uint8_t secret_scalar_ser[EDDSA_448_PRIVATE_BYTES])
     secret_scalar_ser[EDDSA_448_PRIVATE_BYTES - 2] |= 0x80;
 }
 
-static c448_error_t hash_init_with_dom(EVP_MD_CTX *hashctx, uint8_t prehashed,
+static c448_error_t hash_init_with_dom(EVVP_MD_CTX *hashctx, uint8_t prehashed,
                                        uint8_t for_prehash,
                                        const uint8_t *context,
                                        size_t context_len)
@@ -65,10 +65,10 @@ static c448_error_t hash_init_with_dom(EVP_MD_CTX *hashctx, uint8_t prehashed,
                        - (for_prehash == 0 ? 1 : 0));
     dom[1] = (uint8_t)context_len;
 
-    if (!EVP_DigestInit_ex(hashctx, EVP_shake256(), NULL)
-            || !EVP_DigestUpdate(hashctx, dom_s, strlen(dom_s))
-            || !EVP_DigestUpdate(hashctx, dom, sizeof(dom))
-            || !EVP_DigestUpdate(hashctx, context, context_len))
+    if (!EVVP_DigestInit_ex(hashctx, EVVP_shake256(), NULL)
+            || !EVVP_DigestUpdate(hashctx, dom_s, strlen(dom_s))
+            || !EVVP_DigestUpdate(hashctx, dom, sizeof(dom))
+            || !EVVP_DigestUpdate(hashctx, context, context_len))
         return C448_FAILURE;
 
     return C448_SUCCESS;
@@ -136,7 +136,7 @@ c448_error_t c448_ed448_sign(
                         size_t context_len)
 {
     curve448_scalar_t secret_scalar;
-    EVP_MD_CTX *hashctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *hashctx = EVVP_MD_CTX_new();
     c448_error_t ret = C448_FAILURE;
     curve448_scalar_t nonce_scalar;
     uint8_t nonce_point[EDDSA_448_PUBLIC_BYTES] = { 0 };
@@ -162,10 +162,10 @@ c448_error_t c448_ed448_sign(
 
         /* Hash to create the nonce */
         if (!hash_init_with_dom(hashctx, prehashed, 0, context, context_len)
-                || !EVP_DigestUpdate(hashctx,
+                || !EVVP_DigestUpdate(hashctx,
                                      expanded + EDDSA_448_PRIVATE_BYTES,
                                      EDDSA_448_PRIVATE_BYTES)
-                || !EVP_DigestUpdate(hashctx, message, message_len)) {
+                || !EVVP_DigestUpdate(hashctx, message, message_len)) {
             OPENSSL_cleanse(expanded, sizeof(expanded));
             goto err;
         }
@@ -176,7 +176,7 @@ c448_error_t c448_ed448_sign(
     {
         uint8_t nonce[2 * EDDSA_448_PRIVATE_BYTES];
 
-        if (!EVP_DigestFinalXOF(hashctx, nonce, sizeof(nonce)))
+        if (!EVVP_DigestFinalXOF(hashctx, nonce, sizeof(nonce)))
             goto err;
         curve448_scalar_decode_long(nonce_scalar, nonce, sizeof(nonce));
         OPENSSL_cleanse(nonce, sizeof(nonce));
@@ -203,10 +203,10 @@ c448_error_t c448_ed448_sign(
 
         /* Compute the challenge */
         if (!hash_init_with_dom(hashctx, prehashed, 0, context, context_len)
-                || !EVP_DigestUpdate(hashctx, nonce_point, sizeof(nonce_point))
-                || !EVP_DigestUpdate(hashctx, pubkey, EDDSA_448_PUBLIC_BYTES)
-                || !EVP_DigestUpdate(hashctx, message, message_len)
-                || !EVP_DigestFinalXOF(hashctx, challenge, sizeof(challenge)))
+                || !EVVP_DigestUpdate(hashctx, nonce_point, sizeof(nonce_point))
+                || !EVVP_DigestUpdate(hashctx, pubkey, EDDSA_448_PUBLIC_BYTES)
+                || !EVVP_DigestUpdate(hashctx, message, message_len)
+                || !EVVP_DigestFinalXOF(hashctx, challenge, sizeof(challenge)))
             goto err;
 
         curve448_scalar_decode_long(challenge_scalar, challenge,
@@ -228,7 +228,7 @@ c448_error_t c448_ed448_sign(
 
     ret = C448_SUCCESS;
  err:
-    EVP_MD_CTX_free(hashctx);
+    EVVP_MD_CTX_free(hashctx);
     return ret;
 }
 
@@ -292,21 +292,21 @@ c448_error_t c448_ed448_verify(
 
     {
         /* Compute the challenge */
-        EVP_MD_CTX *hashctx = EVP_MD_CTX_new();
+        EVVP_MD_CTX *hashctx = EVVP_MD_CTX_new();
         uint8_t challenge[2 * EDDSA_448_PRIVATE_BYTES];
 
         if (hashctx == NULL
                 || !hash_init_with_dom(hashctx, prehashed, 0, context,
                                        context_len)
-                || !EVP_DigestUpdate(hashctx, signature, EDDSA_448_PUBLIC_BYTES)
-                || !EVP_DigestUpdate(hashctx, pubkey, EDDSA_448_PUBLIC_BYTES)
-                || !EVP_DigestUpdate(hashctx, message, message_len)
-                || !EVP_DigestFinalXOF(hashctx, challenge, sizeof(challenge))) {
-            EVP_MD_CTX_free(hashctx);
+                || !EVVP_DigestUpdate(hashctx, signature, EDDSA_448_PUBLIC_BYTES)
+                || !EVVP_DigestUpdate(hashctx, pubkey, EDDSA_448_PUBLIC_BYTES)
+                || !EVVP_DigestUpdate(hashctx, message, message_len)
+                || !EVVP_DigestFinalXOF(hashctx, challenge, sizeof(challenge))) {
+            EVVP_MD_CTX_free(hashctx);
             return C448_FAILURE;
         }
 
-        EVP_MD_CTX_free(hashctx);
+        EVVP_MD_CTX_free(hashctx);
         curve448_scalar_decode_long(challenge_scalar, challenge,
                                     sizeof(challenge));
         OPENSSL_cleanse(challenge, sizeof(challenge));

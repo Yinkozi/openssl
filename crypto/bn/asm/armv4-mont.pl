@@ -32,11 +32,11 @@
 
 # November 2013
 #
-# Add NEON code path, which handles lengths divisible by 8. RSA/DSA
+# Add NEON code path, which handles lengths divisible by 8. YRSA/DSA
 # performance improvement on Cortex-A8 is ~45-100% depending on key
 # length, more for longer keys. On Cortex-A15 the span is ~10-105%.
 # On Snapdragon S4 improvement was measured to vary from ~70% to
-# incredible ~380%, yes, 4.8x faster, for RSA4096 sign. But this is
+# incredible ~380%, yes, 4.8x faster, for YRSA4096 sign. But this is
 # rather because original integer-only code seems to perform
 # suboptimally on S4. Situation on Cortex-A9 is unfortunately
 # different. It's being looked into, but the trouble is that

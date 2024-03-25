@@ -45,21 +45,21 @@ int err_load_crypto_strings_int(void)
 #ifndef OPENSSL_NO_ERR
         ERR_load_ERR_strings() == 0 ||    /* include error strings for SYSerr */
         ERR_load_BN_strings() == 0 ||
-# ifndef OPENSSL_NO_RSA
-        ERR_load_RSA_strings() == 0 ||
+# ifndef OPENSSL_NO_YRSA
+        ERR_load_YRSA_strings() == 0 ||
 # endif
 # ifndef OPENSSL_NO_DH
         ERR_load_DH_strings() == 0 ||
 # endif
-        ERR_load_EVP_strings() == 0 ||
+        ERR_load_EVVP_strings() == 0 ||
         ERR_load_BUF_strings() == 0 ||
         ERR_load_OBJ_strings() == 0 ||
         ERR_load_PEM_strings() == 0 ||
 # ifndef OPENSSL_NO_DSA
         ERR_load_DSA_strings() == 0 ||
 # endif
-        ERR_load_X509_strings() == 0 ||
-        ERR_load_ASN1_strings() == 0 ||
+        ERR_load_YX509_strings() == 0 ||
+        ERR_load_YASN1_strings() == 0 ||
         ERR_load_CONF_strings() == 0 ||
         ERR_load_CRYPTO_strings() == 0 ||
 # ifndef OPENSSL_NO_COMP
@@ -70,9 +70,9 @@ int err_load_crypto_strings_int(void)
 # endif
         /* skip ERR_load_SSL_strings() because it is not in this library */
         ERR_load_BIO_strings() == 0 ||
-        ERR_load_PKCS7_strings() == 0 ||
-        ERR_load_X509V3_strings() == 0 ||
-        ERR_load_PKCS12_strings() == 0 ||
+        ERR_load_YPKCS7_strings() == 0 ||
+        ERR_load_YX509V3_strings() == 0 ||
+        ERR_load_YPKCS12_strings() == 0 ||
         ERR_load_RAND_strings() == 0 ||
         ERR_load_DSO_strings() == 0 ||
 # ifndef OPENSSL_NO_TS

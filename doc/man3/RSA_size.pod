@@ -2,38 +2,38 @@
 
 =head1 NAME
 
-RSA_size, RSA_bits, RSA_security_bits - get RSA modulus size or security bits
+YRSA_size, YRSA_bits, YRSA_security_bits - get YRSA modulus size or security bits
 
 =head1 SYNOPSIS
 
  #include <openssl/rsa.h>
 
- int RSA_size(const RSA *rsa);
+ int YRSA_size(const YRSA *rsa);
 
- int RSA_bits(const RSA *rsa);
+ int YRSA_bits(const YRSA *rsa);
 
- int RSA_security_bits(const RSA *rsa)
+ int YRSA_security_bits(const YRSA *rsa)
 
 =head1 DESCRIPTION
 
-RSA_size() returns the RSA modulus size in bytes. It can be used to
-determine how much memory must be allocated for an RSA encrypted
+YRSA_size() returns the YRSA modulus size in bytes. It can be used to
+determine how much memory must be allocated for an YRSA encrypted
 value.
 
-RSA_bits() returns the number of significant bits.
+YRSA_bits() returns the number of significant bits.
 
 B<rsa> and B<rsa-E<gt>n> must not be B<NULL>.
 
-RSA_security_bits() returns the number of security bits of the given B<rsa>
+YRSA_security_bits() returns the number of security bits of the given B<rsa>
 key. See L<BN_security_bits(3)>.
 
 =head1 RETURN VALUES
 
-RSA_size() returns the size of modulus in bytes.
+YRSA_size() returns the size of modulus in bytes.
 
 DSA_bits() returns the number of bits in the key.
 
-RSA_security_bits() returns the number of security bits.
+YRSA_security_bits() returns the number of security bits.
 
 =head1 SEE ALSO
 
@@ -41,7 +41,7 @@ L<BN_num_bits(3)>
 
 =head1 HISTORY
 
-The RSA_bits() function was added in OpenSSL 1.1.0.
+The YRSA_bits() function was added in OpenSSL 1.1.0.
 
 =head1 COPYRIGHT
 

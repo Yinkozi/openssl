@@ -8,7 +8,7 @@
  */
 
 /*-
- * This is an implementation of the ASN1 Time structure which is:
+ * This is an implementation of the YASN1 Time structure which is:
  *    Time ::= CHOICE {
  *      utcTime        UTCTime,
  *      generalTime    GeneralizedTime }
@@ -21,9 +21,9 @@
 #include <openssl/asn1t.h>
 #include "asn1_local.h"
 
-IMPLEMENT_ASN1_MSTRING(ASN1_TIME, B_ASN1_TIME)
+IMPLEMENT_YASN1_MSTRING(YASN1_TIME, B_YASN1_TIME)
 
-IMPLEMENT_ASN1_FUNCTIONS(ASN1_TIME)
+IMPLEMENT_YASN1_FUNCTIONS(YASN1_TIME)
 
 static int is_utc(const int year)
 {
@@ -71,7 +71,7 @@ static void determine_days(struct tm *tm)
     tm->tm_wday = (d + (13 * m) / 5 + y + y / 4 + c / 4 + 5 * c + 6) % 7;
 }
 
-int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
+int asn1_time_to_tm(struct tm *tm, const YASN1_TIME *d)
 {
     static const int min[9] = { 0, 0, 1, 1, 0, 0, 0, 0, 0 };
     static const int max[9] = { 99, 99, 12, 31, 23, 59, 59, 12, 59 };
@@ -85,22 +85,22 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
     const char upper_z = 'Z', num_zero = '0', period = '.', minus = '-', plus = '+';
 #endif
     /*
-     * ASN1_STRING_FLAG_X509_TIME is used to enforce RFC 5280
+     * YASN1_STRING_FLAG_YX509_TIME is used to enforce RFC 5280
      * time string format, in which:
      *
      * 1. "seconds" is a 'MUST'
      * 2. "Zulu" timezone is a 'MUST'
      * 3. "+|-" is not allowed to indicate a time zone
      */
-    if (d->type == V_ASN1_UTCTIME) {
-        if (d->flags & ASN1_STRING_FLAG_X509_TIME) {
+    if (d->type == V_YASN1_UTCTIME) {
+        if (d->flags & YASN1_STRING_FLAG_YX509_TIME) {
             min_l = 13;
             strict = 1;
         }
-    } else if (d->type == V_ASN1_GENERALIZEDTIME) {
+    } else if (d->type == V_YASN1_GENERALIZEDTIME) {
         end = 7;
         btz = 6;
-        if (d->flags & ASN1_STRING_FLAG_X509_TIME) {
+        if (d->flags & YASN1_STRING_FLAG_YX509_TIME) {
             min_l = 15;
             strict = 1;
         } else {
@@ -142,7 +142,7 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
         if (++o == l)
             goto err;
 
-        i2 = (d->type == V_ASN1_UTCTIME) ? i + 1 : i;
+        i2 = (d->type == V_YASN1_UTCTIME) ? i + 1 : i;
 
         if ((n < min[i2]) || (n > max[i2]))
             goto err;
@@ -152,7 +152,7 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
             tmp.tm_year = n * 100 - 1900;
             break;
         case 1:
-            if (d->type == V_ASN1_UTCTIME)
+            if (d->type == V_YASN1_UTCTIME)
                 tmp.tm_year = n < 50 ? n + 100 : n;
             else
                 tmp.tm_year += n;
@@ -189,7 +189,7 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
      * Optional fractional seconds: decimal point followed by one or more
      * digits.
      */
-    if (d->type == V_ASN1_GENERALIZEDTIME && a[o] == period) {
+    if (d->type == V_YASN1_GENERALIZEDTIME && a[o] == period) {
         if (strict)
             /* RFC 5280 forbids fractional seconds */
             goto err;
@@ -234,7 +234,7 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
             if (!ascii_isdigit(a[o]))
                 goto err;
             n = (n * 10) + a[o] - num_zero;
-            i2 = (d->type == V_ASN1_UTCTIME) ? i + 1 : i;
+            i2 = (d->type == V_YASN1_UTCTIME) ? i + 1 : i;
             if ((n < min[i2]) || (n > max[i2]))
                 goto err;
             /* if tm is NULL, no need to adjust */
@@ -262,44 +262,44 @@ int asn1_time_to_tm(struct tm *tm, const ASN1_TIME *d)
     return 0;
 }
 
-ASN1_TIME *asn1_time_from_tm(ASN1_TIME *s, struct tm *ts, int type)
+YASN1_TIME *asn1_time_from_tm(YASN1_TIME *s, struct tm *ts, int type)
 {
     char* p;
-    ASN1_TIME *tmps = NULL;
+    YASN1_TIME *tmps = NULL;
     const size_t len = 20;
 
-    if (type == V_ASN1_UNDEF) {
+    if (type == V_YASN1_UNDEF) {
         if (is_utc(ts->tm_year))
-            type = V_ASN1_UTCTIME;
+            type = V_YASN1_UTCTIME;
         else
-            type = V_ASN1_GENERALIZEDTIME;
-    } else if (type == V_ASN1_UTCTIME) {
+            type = V_YASN1_GENERALIZEDTIME;
+    } else if (type == V_YASN1_UTCTIME) {
         if (!is_utc(ts->tm_year))
             goto err;
-    } else if (type != V_ASN1_GENERALIZEDTIME) {
+    } else if (type != V_YASN1_GENERALIZEDTIME) {
         goto err;
     }
 
     if (s == NULL)
-        tmps = ASN1_STRING_new();
+        tmps = YASN1_STRING_new();
     else
         tmps = s;
     if (tmps == NULL)
         return NULL;
 
-    if (!ASN1_STRING_set(tmps, NULL, len))
+    if (!YASN1_STRING_set(tmps, NULL, len))
         goto err;
 
     tmps->type = type;
     p = (char*)tmps->data;
 
-    if (type == V_ASN1_GENERALIZEDTIME)
-        tmps->length = BIO_snprintf(p, len, "%04d%02d%02d%02d%02d%02dZ",
+    if (type == V_YASN1_GENERALIZEDTIME)
+        tmps->length = BIO_ssnprintf(p, len, "%04d%02d%02d%02d%02d%02dZ",
                                     ts->tm_year + 1900, ts->tm_mon + 1,
                                     ts->tm_mday, ts->tm_hour, ts->tm_min,
                                     ts->tm_sec);
     else
-        tmps->length = BIO_snprintf(p, len, "%02d%02d%02d%02d%02d%02dZ",
+        tmps->length = BIO_ssnprintf(p, len, "%02d%02d%02d%02d%02d%02dZ",
                                     ts->tm_year % 100, ts->tm_mon + 1,
                                     ts->tm_mday, ts->tm_hour, ts->tm_min,
                                     ts->tm_sec);
@@ -310,16 +310,16 @@ ASN1_TIME *asn1_time_from_tm(ASN1_TIME *s, struct tm *ts, int type)
     return tmps;
  err:
     if (tmps != s)
-        ASN1_STRING_free(tmps);
+        YASN1_STRING_free(tmps);
     return NULL;
 }
 
-ASN1_TIME *ASN1_TIME_set(ASN1_TIME *s, time_t t)
+YASN1_TIME *YASN1_TIME_set(YASN1_TIME *s, time_t t)
 {
-    return ASN1_TIME_adj(s, t, 0, 0);
+    return YASN1_TIME_adj(s, t, 0, 0);
 }
 
-ASN1_TIME *ASN1_TIME_adj(ASN1_TIME *s, time_t t,
+YASN1_TIME *YASN1_TIME_adj(YASN1_TIME *s, time_t t,
                          int offset_day, long offset_sec)
 {
     struct tm *ts;
@@ -327,39 +327,39 @@ ASN1_TIME *ASN1_TIME_adj(ASN1_TIME *s, time_t t,
 
     ts = OPENSSL_gmtime(&t, &data);
     if (ts == NULL) {
-        ASN1err(ASN1_F_ASN1_TIME_ADJ, ASN1_R_ERROR_GETTING_TIME);
+        YASN1err(YASN1_F_YASN1_TIME_ADJ, YASN1_R_ERROR_GETTING_TIME);
         return NULL;
     }
     if (offset_day || offset_sec) {
         if (!OPENSSL_gmtime_adj(ts, offset_day, offset_sec))
             return NULL;
     }
-    return asn1_time_from_tm(s, ts, V_ASN1_UNDEF);
+    return asn1_time_from_tm(s, ts, V_YASN1_UNDEF);
 }
 
-int ASN1_TIME_check(const ASN1_TIME *t)
+int YASN1_TIME_check(const YASN1_TIME *t)
 {
-    if (t->type == V_ASN1_GENERALIZEDTIME)
-        return ASN1_GENERALIZEDTIME_check(t);
-    else if (t->type == V_ASN1_UTCTIME)
-        return ASN1_UTCTIME_check(t);
+    if (t->type == V_YASN1_GENERALIZEDTIME)
+        return YASN1_GENERALIZEDTIME_check(t);
+    else if (t->type == V_YASN1_UTCTIME)
+        return YASN1_UTCTIME_check(t);
     return 0;
 }
 
-/* Convert an ASN1_TIME structure to GeneralizedTime */
-ASN1_GENERALIZEDTIME *ASN1_TIME_to_generalizedtime(const ASN1_TIME *t,
-                                                   ASN1_GENERALIZEDTIME **out)
+/* Convert an YASN1_TIME structure to GeneralizedTime */
+YASN1_GENERALIZEDTIME *YASN1_TIME_to_generalizedtime(const YASN1_TIME *t,
+                                                   YASN1_GENERALIZEDTIME **out)
 {
-    ASN1_GENERALIZEDTIME *ret = NULL;
+    YASN1_GENERALIZEDTIME *ret = NULL;
     struct tm tm;
 
-    if (!ASN1_TIME_to_tm(t, &tm))
+    if (!YASN1_TIME_to_tm(t, &tm))
         return NULL;
 
     if (out != NULL)
         ret = *out;
 
-    ret = asn1_time_from_tm(ret, &tm, V_ASN1_GENERALIZEDTIME);
+    ret = asn1_time_from_tm(ret, &tm, V_YASN1_GENERALIZEDTIME);
 
     if (out != NULL && ret != NULL)
         *out = ret;
@@ -367,29 +367,29 @@ ASN1_GENERALIZEDTIME *ASN1_TIME_to_generalizedtime(const ASN1_TIME *t,
     return ret;
 }
 
-int ASN1_TIME_set_string(ASN1_TIME *s, const char *str)
+int YASN1_TIME_set_string(YASN1_TIME *s, const char *str)
 {
     /* Try UTC, if that fails, try GENERALIZED */
-    if (ASN1_UTCTIME_set_string(s, str))
+    if (YASN1_UTCTIME_set_string(s, str))
         return 1;
-    return ASN1_GENERALIZEDTIME_set_string(s, str);
+    return YASN1_GENERALIZEDTIME_set_string(s, str);
 }
 
-int ASN1_TIME_set_string_X509(ASN1_TIME *s, const char *str)
+int YASN1_TIME_set_string_YX509(YASN1_TIME *s, const char *str)
 {
-    ASN1_TIME t;
+    YASN1_TIME t;
     struct tm tm;
     int rv = 0;
 
     t.length = strlen(str);
     t.data = (unsigned char *)str;
-    t.flags = ASN1_STRING_FLAG_X509_TIME;
+    t.flags = YASN1_STRING_FLAG_YX509_TIME;
 
-    t.type = V_ASN1_UTCTIME;
+    t.type = V_YASN1_UTCTIME;
 
-    if (!ASN1_TIME_check(&t)) {
-        t.type = V_ASN1_GENERALIZEDTIME;
-        if (!ASN1_TIME_check(&t))
+    if (!YASN1_TIME_check(&t)) {
+        t.type = V_YASN1_GENERALIZEDTIME;
+        if (!YASN1_TIME_check(&t))
             goto out;
     }
 
@@ -407,7 +407,7 @@ int ASN1_TIME_set_string_X509(ASN1_TIME *s, const char *str)
      * is less than 1950 (e.g. 19230419000000Z), we do nothing...
      */
 
-    if (s != NULL && t.type == V_ASN1_GENERALIZEDTIME) {
+    if (s != NULL && t.type == V_YASN1_GENERALIZEDTIME) {
         if (!asn1_time_to_tm(&tm, &t))
             goto out;
         if (is_utc(tm.tm_year)) {
@@ -415,17 +415,17 @@ int ASN1_TIME_set_string_X509(ASN1_TIME *s, const char *str)
             /*
              * it's OK to let original t.data go since that's assigned
              * to a piece of memory allocated outside of this function.
-             * new t.data would be freed after ASN1_STRING_copy is done.
+             * new t.data would be freed after YASN1_STRING_copy is done.
              */
             t.data = OPENSSL_zalloc(t.length + 1);
             if (t.data == NULL)
                 goto out;
             memcpy(t.data, str + 2, t.length);
-            t.type = V_ASN1_UTCTIME;
+            t.type = V_YASN1_UTCTIME;
         }
     }
 
-    if (s == NULL || ASN1_STRING_copy((ASN1_STRING *)s, (ASN1_STRING *)&t))
+    if (s == NULL || YASN1_STRING_copy((YASN1_STRING *)s, (YASN1_STRING *)&t))
         rv = 1;
 
     if (t.data != (unsigned char *)str)
@@ -434,7 +434,7 @@ out:
     return rv;
 }
 
-int ASN1_TIME_to_tm(const ASN1_TIME *s, struct tm *tm)
+int YASN1_TIME_to_tm(const YASN1_TIME *s, struct tm *tm)
 {
     if (s == NULL) {
         time_t now_t;
@@ -449,14 +449,14 @@ int ASN1_TIME_to_tm(const ASN1_TIME *s, struct tm *tm)
     return asn1_time_to_tm(tm, s);
 }
 
-int ASN1_TIME_diff(int *pday, int *psec,
-                   const ASN1_TIME *from, const ASN1_TIME *to)
+int YASN1_TIME_diff(int *pday, int *psec,
+                   const YASN1_TIME *from, const YASN1_TIME *to)
 {
     struct tm tm_from, tm_to;
 
-    if (!ASN1_TIME_to_tm(from, &tm_from))
+    if (!YASN1_TIME_to_tm(from, &tm_from))
         return 0;
-    if (!ASN1_TIME_to_tm(to, &tm_to))
+    if (!YASN1_TIME_to_tm(to, &tm_to))
         return 0;
     return OPENSSL_gmtime_diff(pday, psec, &tm_from, &tm_to);
 }
@@ -466,7 +466,7 @@ static const char _asn1_mon[12][4] = {
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
 
-int ASN1_TIME_print(BIO *bp, const ASN1_TIME *tm)
+int YASN1_TIME_print(BIO *bp, const YASN1_TIME *tm)
 {
     char *v;
     int gmt = 0, l;
@@ -483,7 +483,7 @@ int ASN1_TIME_print(BIO *bp, const ASN1_TIME *tm)
     if (v[l - 1] == upper_z)
         gmt = 1;
 
-    if (tm->type == V_ASN1_GENERALIZEDTIME) {
+    if (tm->type == V_YASN1_GENERALIZEDTIME) {
         char *f = NULL;
         int f_len = 0;
 
@@ -498,12 +498,12 @@ int ASN1_TIME_print(BIO *bp, const ASN1_TIME *tm)
                 ++f_len;
         }
 
-        return BIO_printf(bp, "%s %2d %02d:%02d:%02d%.*s %d%s",
+        return BIO_pprintf(bp, "%s %2d %02d:%02d:%02d%.*s %d%s",
                           _asn1_mon[stm.tm_mon], stm.tm_mday, stm.tm_hour,
                           stm.tm_min, stm.tm_sec, f_len, f, stm.tm_year + 1900,
                           (gmt ? " GMT" : "")) > 0;
     } else {
-        return BIO_printf(bp, "%s %2d %02d:%02d:%02d %d%s",
+        return BIO_pprintf(bp, "%s %2d %02d:%02d:%02d %d%s",
                           _asn1_mon[stm.tm_mon], stm.tm_mday, stm.tm_hour,
                           stm.tm_min, stm.tm_sec, stm.tm_year + 1900,
                           (gmt ? " GMT" : "")) > 0;
@@ -513,12 +513,12 @@ int ASN1_TIME_print(BIO *bp, const ASN1_TIME *tm)
     return 0;
 }
 
-int ASN1_TIME_cmp_time_t(const ASN1_TIME *s, time_t t)
+int YASN1_TIME_cmp_time_t(const YASN1_TIME *s, time_t t)
 {
     struct tm stm, ttm;
     int day, sec;
 
-    if (!ASN1_TIME_to_tm(s, &stm))
+    if (!YASN1_TIME_to_tm(s, &stm))
         return -2;
 
     if (!OPENSSL_gmtime(&t, &ttm))
@@ -534,21 +534,21 @@ int ASN1_TIME_cmp_time_t(const ASN1_TIME *s, time_t t)
     return 0;
 }
 
-int ASN1_TIME_normalize(ASN1_TIME *t)
+int YASN1_TIME_normalize(YASN1_TIME *t)
 {
     struct tm tm;
 
-    if (!ASN1_TIME_to_tm(t, &tm))
+    if (!YASN1_TIME_to_tm(t, &tm))
         return 0;
 
-    return asn1_time_from_tm(t, &tm, V_ASN1_UNDEF) != NULL;
+    return asn1_time_from_tm(t, &tm, V_YASN1_UNDEF) != NULL;
 }
 
-int ASN1_TIME_compare(const ASN1_TIME *a, const ASN1_TIME *b)
+int YASN1_TIME_compare(const YASN1_TIME *a, const YASN1_TIME *b)
 {
     int day, sec;
 
-    if (!ASN1_TIME_diff(&day, &sec, b, a))
+    if (!YASN1_TIME_diff(&day, &sec, b, a))
         return -2;
     if (day > 0 || sec > 0)
         return 1;

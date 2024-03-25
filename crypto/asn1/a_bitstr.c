@@ -13,12 +13,12 @@
 #include <openssl/asn1.h>
 #include "asn1_local.h"
 
-int ASN1_BIT_STRING_set(ASN1_BIT_STRING *x, unsigned char *d, int len)
+int YASN1_BIT_STRING_set(YASN1_BIT_STRING *x, unsigned char *d, int len)
 {
-    return ASN1_STRING_set(x, d, len);
+    return YASN1_STRING_set(x, d, len);
 }
 
-int i2c_ASN1_BIT_STRING(ASN1_BIT_STRING *a, unsigned char **pp)
+int i2c_YASN1_BIT_STRING(YASN1_BIT_STRING *a, unsigned char **pp)
 {
     int ret, j, bits, len;
     unsigned char *p, *d;
@@ -29,7 +29,7 @@ int i2c_ASN1_BIT_STRING(ASN1_BIT_STRING *a, unsigned char **pp)
     len = a->length;
 
     if (len > 0) {
-        if (a->flags & ASN1_STRING_FLAG_BITS_LEFT) {
+        if (a->flags & YASN1_STRING_FLAG_BITS_LEFT) {
             bits = (int)a->flags & 0x07;
         } else {
             for (; len > 0; len--) {
@@ -76,26 +76,26 @@ int i2c_ASN1_BIT_STRING(ASN1_BIT_STRING *a, unsigned char **pp)
     return ret;
 }
 
-ASN1_BIT_STRING *c2i_ASN1_BIT_STRING(ASN1_BIT_STRING **a,
+YASN1_BIT_STRING *c2i_YASN1_BIT_STRING(YASN1_BIT_STRING **a,
                                      const unsigned char **pp, long len)
 {
-    ASN1_BIT_STRING *ret = NULL;
+    YASN1_BIT_STRING *ret = NULL;
     const unsigned char *p;
     unsigned char *s;
     int i;
 
     if (len < 1) {
-        i = ASN1_R_STRING_TOO_SHORT;
+        i = YASN1_R_STRING_TOO_SHORT;
         goto err;
     }
 
     if (len > INT_MAX) {
-        i = ASN1_R_STRING_TOO_LONG;
+        i = YASN1_R_STRING_TOO_LONG;
         goto err;
     }
 
     if ((a == NULL) || ((*a) == NULL)) {
-        if ((ret = ASN1_BIT_STRING_new()) == NULL)
+        if ((ret = YASN1_BIT_STRING_new()) == NULL)
             return NULL;
     } else
         ret = (*a);
@@ -103,15 +103,15 @@ ASN1_BIT_STRING *c2i_ASN1_BIT_STRING(ASN1_BIT_STRING **a,
     p = *pp;
     i = *(p++);
     if (i > 7) {
-        i = ASN1_R_INVALID_BIT_STRING_BITS_LEFT;
+        i = YASN1_R_INVALID_BIT_STRING_BITS_LEFT;
         goto err;
     }
     /*
      * We do this to preserve the settings.  If we modify the settings, via
      * the _set_bit function, we will recalculate on output
      */
-    ret->flags &= ~(ASN1_STRING_FLAG_BITS_LEFT | 0x07); /* clear */
-    ret->flags |= (ASN1_STRING_FLAG_BITS_LEFT | i); /* set */
+    ret->flags &= ~(YASN1_STRING_FLAG_BITS_LEFT | 0x07); /* clear */
+    ret->flags |= (YASN1_STRING_FLAG_BITS_LEFT | i); /* set */
 
     if (len-- > 1) {            /* using one because of the bits left byte */
         s = OPENSSL_malloc((int)len);
@@ -128,22 +128,22 @@ ASN1_BIT_STRING *c2i_ASN1_BIT_STRING(ASN1_BIT_STRING **a,
     ret->length = (int)len;
     OPENSSL_free(ret->data);
     ret->data = s;
-    ret->type = V_ASN1_BIT_STRING;
+    ret->type = V_YASN1_BIT_STRING;
     if (a != NULL)
         (*a) = ret;
     *pp = p;
     return ret;
  err:
-    ASN1err(ASN1_F_C2I_ASN1_BIT_STRING, i);
+    YASN1err(YASN1_F_C2I_YASN1_BIT_STRING, i);
     if ((a == NULL) || (*a != ret))
-        ASN1_BIT_STRING_free(ret);
+        YASN1_BIT_STRING_free(ret);
     return NULL;
 }
 
 /*
  * These next 2 functions from Goetz Babin-Ebell.
  */
-int ASN1_BIT_STRING_set_bit(ASN1_BIT_STRING *a, int n, int value)
+int YASN1_BIT_STRING_set_bit(YASN1_BIT_STRING *a, int n, int value)
 {
     int w, v, iv;
     unsigned char *c;
@@ -160,14 +160,14 @@ int ASN1_BIT_STRING_set_bit(ASN1_BIT_STRING *a, int n, int value)
     if (a == NULL)
         return 0;
 
-    a->flags &= ~(ASN1_STRING_FLAG_BITS_LEFT | 0x07); /* clear, set on write */
+    a->flags &= ~(YASN1_STRING_FLAG_BITS_LEFT | 0x07); /* clear, set on write */
 
     if ((a->length < (w + 1)) || (a->data == NULL)) {
         if (!value)
             return 1;         /* Don't need to set */
         c = OPENSSL_clear_realloc(a->data, a->length, w + 1);
         if (c == NULL) {
-            ASN1err(ASN1_F_ASN1_BIT_STRING_SET_BIT, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_YASN1_BIT_STRING_SET_BIT, ERR_R_MALLOC_FAILURE);
             return 0;
         }
         if (w + 1 - a->length > 0)
@@ -181,7 +181,7 @@ int ASN1_BIT_STRING_set_bit(ASN1_BIT_STRING *a, int n, int value)
     return 1;
 }
 
-int ASN1_BIT_STRING_get_bit(const ASN1_BIT_STRING *a, int n)
+int YASN1_BIT_STRING_get_bit(const YASN1_BIT_STRING *a, int n)
 {
     int w, v;
 
@@ -201,7 +201,7 @@ int ASN1_BIT_STRING_get_bit(const ASN1_BIT_STRING *a, int n)
  * which is not specified in 'flags', 1 otherwise.
  * 'len' is the length of 'flags'.
  */
-int ASN1_BIT_STRING_check(const ASN1_BIT_STRING *a,
+int YASN1_BIT_STRING_check(const YASN1_BIT_STRING *a,
                           const unsigned char *flags, int flags_len)
 {
     int i, ok;

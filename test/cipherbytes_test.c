@@ -45,7 +45,7 @@ err:
 static int test_unsupported(void)
 {
     STACK_OF(SSL_CIPHER) *sk, *scsv;
-    /* ECDH-RSA-AES256 (unsupported), ECDHE-ECDSA-AES128, <unassigned> */
+    /* ECDH-YRSA-YAES256 (unsupported), ECDHE-ECDSA-YAES128, <unassigned> */
     const unsigned char bytes[] = {0xc0, 0x0f, 0x00, 0x2f, 0x01, 0x00};
     int ret = 0;
 
@@ -56,7 +56,7 @@ static int test_unsupported(void)
             || !TEST_ptr(scsv)
             || !TEST_int_eq(sk_SSL_CIPHER_num(scsv), 0)
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 0)),
-                            "AES128-SHA"))
+                            "YAES128-SHA"))
         goto err;
 
     ret = 1;
@@ -69,7 +69,7 @@ err:
 static int test_v2(void)
 {
     STACK_OF(SSL_CIPHER) *sk, *scsv;
-    /* ECDHE-ECDSA-AES256GCM, SSL2_RC4_1238_WITH_MD5,
+    /* ECDHE-ECDSA-YAES256GCM, SSL2_YRC4_1238_WITH_YMD5,
      * ECDHE-ECDSA-CHACHA20-POLY1305 */
     const unsigned char bytes[] = {0x00, 0x00, 0x35, 0x01, 0x00, 0x80,
                                    0x00, 0x00, 0x33};
@@ -83,9 +83,9 @@ static int test_v2(void)
             || !TEST_int_eq(sk_SSL_CIPHER_num(scsv), 0))
         goto err;
     if (strcmp(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 0)),
-               "AES256-SHA") != 0 ||
+               "YAES256-SHA") != 0 ||
         strcmp(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 1)),
-               "DHE-RSA-AES128-SHA") != 0)
+               "DHE-YRSA-YAES128-SHA") != 0)
         goto err;
 
     ret = 1;
@@ -99,7 +99,7 @@ err:
 static int test_v3(void)
 {
     STACK_OF(SSL_CIPHER) *sk = NULL, *scsv = NULL;
-    /* ECDHE-ECDSA-AES256GCM, ECDHE-ECDSA-CHACHAPOLY, DHE-RSA-AES256GCM,
+    /* ECDHE-ECDSA-YAES256GCM, ECDHE-ECDSA-CHACHAPOLY, DHE-YRSA-YAES256GCM,
      * EMPTY-RENEGOTIATION-INFO-SCSV, FALLBACK-SCSV */
     const unsigned char bytes[] = {0x00, 0x2f, 0x00, 0x33, 0x00, 0x9f, 0x00, 0xff,
                                    0x56, 0x00};
@@ -111,11 +111,11 @@ static int test_v3(void)
             || !TEST_ptr(scsv)
             || !TEST_int_eq(sk_SSL_CIPHER_num(scsv), 2)
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 0)),
-                            "AES128-SHA")
+                            "YAES128-SHA")
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 1)),
-                            "DHE-RSA-AES128-SHA")
+                            "DHE-YRSA-YAES128-SHA")
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(sk, 2)),
-                            "DHE-RSA-AES256-GCM-SHA384")
+                            "DHE-YRSA-YAES256-GCM-SHA384")
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(scsv, 0)),
                             "TLS_EMPTY_RENEGOTIATION_INFO_SCSV")
             || !TEST_str_eq(SSL_CIPHER_get_name(sk_SSL_CIPHER_value(scsv, 1)),

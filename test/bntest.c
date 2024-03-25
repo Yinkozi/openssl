@@ -236,7 +236,7 @@ static int test_sub(void)
             if (!(TEST_true(BN_bntest_rand(a, 512, 0, 0)))
                     && TEST_ptr(BN_copy(b, a))
                     && TEST_int_ne(BN_set_bit(a, i), 0)
-                    && TEST_true(BN_add_word(b, i)))
+                    && TEST_true(BNY_add_word(b, i)))
                 goto err;
         } else {
             if (!TEST_true(BN_bntest_rand(b, 400 + i - NUM1, 0, 0)))
@@ -244,9 +244,9 @@ static int test_sub(void)
             BN_set_negative(a, rand_neg());
             BN_set_negative(b, rand_neg());
         }
-        if (!(TEST_true(BN_sub(c, a, b))
-                && TEST_true(BN_add(c, c, b))
-                && TEST_true(BN_sub(c, c, a))
+        if (!(TEST_true(BNY_sub(c, a, b))
+                && TEST_true(BNY_add(c, c, b))
+                && TEST_true(BNY_sub(c, c, a))
                 && TEST_BN_eq_zero(c)))
             goto err;
     }
@@ -277,7 +277,7 @@ static int test_div_recip(void)
             if (!(TEST_true(BN_bntest_rand(a, 400, 0, 0))
                     && TEST_ptr(BN_copy(b, a))
                     && TEST_true(BN_lshift(a, a, i))
-                    && TEST_true(BN_add_word(a, i))))
+                    && TEST_true(BNY_add_word(a, i))))
                 goto err;
         } else {
             if (!(TEST_true(BN_bntest_rand(b, 50 + 3 * (i - NUM1), 0, 0))))
@@ -286,10 +286,10 @@ static int test_div_recip(void)
         BN_set_negative(a, rand_neg());
         BN_set_negative(b, rand_neg());
         if (!(TEST_true(BN_RECP_CTX_set(recp, b, ctx))
-                && TEST_true(BN_div_recp(d, c, a, recp, ctx))
-                && TEST_true(BN_mul(e, d, b, ctx))
-                && TEST_true(BN_add(d, e, c))
-                && TEST_true(BN_sub(d, d, a))
+                && TEST_true(BNY_div_recp(d, c, a, recp, ctx))
+                && TEST_true(BNY_mul(e, d, b, ctx))
+                && TEST_true(BNY_add(d, e, c))
+                && TEST_true(BNY_sub(d, d, a))
                 && TEST_BN_eq_zero(d)))
             goto err;
     }
@@ -338,7 +338,7 @@ static int test_signed_mod_replace_ab(int n)
             || !TEST_ptr(d = set_signed_bn(signed_mod_tests[n].remainder)))
         goto err;
 
-    if (TEST_true(BN_div(a, b, a, b, ctx))
+    if (TEST_true(BNY_div(a, b, a, b, ctx))
             && TEST_BN_eq(a, c)
             && TEST_BN_eq(b, d))
         st = 1;
@@ -361,7 +361,7 @@ static int test_signed_mod_replace_ba(int n)
             || !TEST_ptr(d = set_signed_bn(signed_mod_tests[n].remainder)))
         goto err;
 
-    if (TEST_true(BN_div(b, a, a, b, ctx))
+    if (TEST_true(BNY_div(b, a, a, b, ctx))
             && TEST_BN_eq(b, c)
             && TEST_BN_eq(a, d))
         st = 1;
@@ -393,10 +393,10 @@ static int test_mod(void)
         BN_set_negative(a, rand_neg());
         BN_set_negative(b, rand_neg());
         if (!(TEST_true(BN_mod(c, a, b, ctx))
-                && TEST_true(BN_div(d, e, a, b, ctx))
+                && TEST_true(BNY_div(d, e, a, b, ctx))
                 && TEST_BN_eq(e, c)
-                && TEST_true(BN_mul(c, d, b, ctx))
-                && TEST_true(BN_add(d, c, e))
+                && TEST_true(BNY_mul(c, d, b, ctx))
+                && TEST_true(BNY_add(d, c, e))
                 && TEST_BN_eq(d, a)))
             goto err;
     }
@@ -479,7 +479,7 @@ static int test_modexp_mont5(void)
         goto err;
     BN_zero(p);
 
-    if (!TEST_true(BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL)))
+    if (!TEST_true(BNY_mod_exp_mont_consttime(d, a, p, m, ctx, NULL)))
         goto err;
     if (!TEST_BN_eq_one(d))
         goto err;
@@ -503,8 +503,8 @@ static int test_modexp_mont5(void)
         goto err;
 
     if (!(TEST_true(BN_MONT_CTX_set(mont, n, ctx))
-            && TEST_true(BN_mod_mul_montgomery(c, a, b, mont, ctx))
-            && TEST_true(BN_mod_mul_montgomery(d, b, a, mont, ctx))
+            && TEST_true(BNY_mod_mul_montgomery(c, a, b, mont, ctx))
+            && TEST_true(BNY_mod_mul_montgomery(d, b, a, mont, ctx))
             && TEST_BN_eq(c, d)))
         goto err;
 
@@ -515,8 +515,8 @@ static int test_modexp_mont5(void)
     BN_free(b);
     if (!(TEST_ptr(b = BN_dup(a))
             && TEST_true(BN_MONT_CTX_set(mont, n, ctx))
-            && TEST_true(BN_mod_mul_montgomery(c, a, a, mont, ctx))
-            && TEST_true(BN_mod_mul_montgomery(d, a, b, mont, ctx))
+            && TEST_true(BNY_mod_mul_montgomery(c, a, a, mont, ctx))
+            && TEST_true(BNY_mod_mul_montgomery(d, a, b, mont, ctx))
             && TEST_BN_eq(c, d)))
         goto err;
 
@@ -562,8 +562,8 @@ static int test_modexp_mont5(void)
             && TEST_true(BN_MONT_CTX_set(mont, n, ctx))))
         goto err;
 
-    if (!TEST_true(BN_mod_mul_montgomery(c, a, a, mont, ctx))
-            || !TEST_true(BN_mod_mul_montgomery(d, a, b, mont, ctx))
+    if (!TEST_true(BNY_mod_mul_montgomery(c, a, a, mont, ctx))
+            || !TEST_true(BNY_mod_mul_montgomery(d, a, b, mont, ctx))
             || !TEST_BN_eq(c, d))
         goto err;
 
@@ -576,7 +576,7 @@ static int test_modexp_mont5(void)
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"))
         && TEST_true(BN_MONT_CTX_set(mont, n, ctx))
-        && TEST_false(BN_mod_mul_montgomery(d, a, a, mont, ctx))))
+        && TEST_false(BNY_mod_mul_montgomery(d, a, a, mont, ctx))))
         goto err;
 
     /* Regression test for bug in rsaz_1024_mul_avx2 */
@@ -596,14 +596,14 @@ static int test_modexp_mont5(void)
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2020202020FF"))
         && TEST_true(BN_MONT_CTX_set(mont, n, ctx))
-        && TEST_true(BN_mod_exp_mont_consttime(c, a, b, n, ctx, mont))
-        && TEST_true(BN_mod_exp_mont(d, a, b, n, ctx, mont))
+        && TEST_true(BNY_mod_exp_mont_consttime(c, a, b, n, ctx, mont))
+        && TEST_true(BNY_mod_exp_mont(d, a, b, n, ctx, mont))
         && TEST_BN_eq(c, d)))
         goto err;
 
     /*
      * rsaz_1024_mul_avx2 expects fully-reduced inputs.
-     * BN_mod_exp_mont_consttime should reduce the input first.
+     * BNY_mod_exp_mont_consttime should reduce the input first.
      */
     if (!(TEST_true(BN_hex2bn(&a,
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
@@ -621,7 +621,7 @@ static int test_modexp_mont5(void)
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
         "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF2020202020DF"))
         && TEST_true(BN_MONT_CTX_set(mont, n, ctx))
-        && TEST_true(BN_mod_exp_mont_consttime(c, a, b, n, ctx, mont))))
+        && TEST_true(BNY_mod_exp_mont_consttime(c, a, b, n, ctx, mont))))
         goto err;
     BN_zero(d);
     if (!TEST_BN_eq(c, d))
@@ -666,7 +666,7 @@ static int test_modexp_mont5(void)
         if (!TEST_true(parse_bigBN(&e, ehex))
                 || !TEST_true(parse_bigBN(&p, phex))
                 || !TEST_true(parse_bigBN(&m, mhex))
-                || !TEST_true(BN_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
+                || !TEST_true(BNY_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
                 || !TEST_true(BN_mod_exp_simple(a, e, p, m, ctx))
                 || !TEST_BN_eq(a, d))
             goto err;
@@ -676,7 +676,7 @@ static int test_modexp_mont5(void)
     if (!TEST_true(BN_bntest_rand(p, 1024, 0, 0)))
         goto err;
     BN_zero(a);
-    if (!TEST_true(BN_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
+    if (!TEST_true(BNY_mod_exp_mont_consttime(d, a, p, m, ctx, NULL))
             || !TEST_BN_eq_zero(d))
         goto err;
 
@@ -689,14 +689,14 @@ static int test_modexp_mont5(void)
             && TEST_true(BN_MONT_CTX_set(mont, m, ctx))))
         goto err;
     if (!TEST_true(BN_from_montgomery(e, a, mont, ctx))
-            || !TEST_true(BN_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
+            || !TEST_true(BNY_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
             || !TEST_true(BN_mod_exp_simple(a, e, p, m, ctx))
             || !TEST_BN_eq(a, d))
         goto err;
 
     /* Finally, some regular test vectors. */
     if (!(TEST_true(BN_bntest_rand(e, 1024, 0, 0))
-            && TEST_true(BN_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
+            && TEST_true(BNY_mod_exp_mont_consttime(d, e, p, m, ctx, NULL))
             && TEST_true(BN_mod_exp_simple(a, e, p, m, ctx))
             && TEST_BN_eq(a, d)))
         goto err;
@@ -992,7 +992,7 @@ static int test_gf2m_modexp(void)
             if (!(TEST_true(BN_GF2m_mod_exp(e, a, c, b[j], ctx))
                     && TEST_true(BN_GF2m_mod_exp(f, a, d, b[j], ctx))
                     && TEST_true(BN_GF2m_mod_mul(e, e, f, b[j], ctx))
-                    && TEST_true(BN_add(f, c, d))
+                    && TEST_true(BNY_add(f, c, d))
                     && TEST_true(BN_GF2m_mod_exp(f, a, f, b[j], ctx))
                     && TEST_true(BN_GF2m_add(f, e, f))
                     /* Test that a^(c+d)=a^c*a^d. */
@@ -1132,7 +1132,7 @@ static int test_kronecker(void)
      * is prime but whether BN_kronecker works.)
      */
 
-    if (!TEST_true(BN_generate_prime_ex(b, 512, 0, NULL, NULL, NULL)))
+    if (!TEST_true(BNY_generate_prime_ex(b, 512, 0, NULL, NULL, NULL)))
         goto err;
     BN_set_negative(b, rand_neg());
 
@@ -1145,9 +1145,9 @@ static int test_kronecker(void)
         if (!TEST_true(BN_copy(t, b)))
             goto err;
         BN_set_negative(t, 0);
-        if (!TEST_true(BN_sub_word(t, 1)))
+        if (!TEST_true(BNY_sub_word(t, 1)))
             goto err;
-        if (!TEST_true(BN_rshift1(t, t)))
+        if (!TEST_true(BN_ryshift1(t, t)))
             goto err;
         /* r := a^t mod b */
         BN_set_negative(b, 0);
@@ -1161,9 +1161,9 @@ static int test_kronecker(void)
         else if (BN_is_zero(r))
             legendre = 0;
         else {
-            if (!TEST_true(BN_add_word(r, 1)))
+            if (!TEST_true(BNY_add_word(r, 1)))
                 goto err;
-            if (!TEST_int_eq(BN_ucmp(r, b), 0)) {
+            if (!TEST_int_eq(BNY_ucmp(r, b), 0)) {
                 TEST_info("Legendre symbol computation failed");
                 goto err;
             }
@@ -1201,11 +1201,11 @@ static int file_sum(STANZA *s)
             || !TEST_ptr(ret = BN_new()))
         goto err;
 
-    if (!TEST_true(BN_add(ret, a, b))
+    if (!TEST_true(BNY_add(ret, a, b))
             || !equalBN("A + B", sum, ret)
-            || !TEST_true(BN_sub(ret, sum, a))
+            || !TEST_true(BNY_sub(ret, sum, a))
             || !equalBN("Sum - A", b, ret)
-            || !TEST_true(BN_sub(ret, sum, b))
+            || !TEST_true(BNY_sub(ret, sum, b))
             || !equalBN("Sum - B", a, ret))
         goto err;
 
@@ -1215,38 +1215,38 @@ static int file_sum(STANZA *s)
      * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
      */
     if (!TEST_true(BN_copy(ret, a))
-            || !TEST_true(BN_add(ret, ret, b))
+            || !TEST_true(BNY_add(ret, ret, b))
             || !equalBN("A + B (r is a)", sum, ret)
             || !TEST_true(BN_copy(ret, b))
-            || !TEST_true(BN_add(ret, a, ret))
+            || !TEST_true(BNY_add(ret, a, ret))
             || !equalBN("A + B (r is b)", sum, ret)
             || !TEST_true(BN_copy(ret, sum))
-            || !TEST_true(BN_sub(ret, ret, a))
+            || !TEST_true(BNY_sub(ret, ret, a))
             || !equalBN("Sum - A (r is a)", b, ret)
             || !TEST_true(BN_copy(ret, a))
-            || !TEST_true(BN_sub(ret, sum, ret))
+            || !TEST_true(BNY_sub(ret, sum, ret))
             || !equalBN("Sum - A (r is b)", b, ret)
             || !TEST_true(BN_copy(ret, sum))
-            || !TEST_true(BN_sub(ret, ret, b))
+            || !TEST_true(BNY_sub(ret, ret, b))
             || !equalBN("Sum - B (r is a)", a, ret)
             || !TEST_true(BN_copy(ret, b))
-            || !TEST_true(BN_sub(ret, sum, ret))
+            || !TEST_true(BNY_sub(ret, sum, ret))
             || !equalBN("Sum - B (r is b)", a, ret))
         goto err;
 
     /*
-     * Test BN_uadd() and BN_usub() with the prerequisites they are
+     * Test BNY_uadd() and BNY_usub() with the prerequisites they are
      * documented as having. Note that these functions are frequently used
      * when the prerequisites don't hold. In those cases, they are supposed
      * to work as if the prerequisite hold, but we don't test that yet.
      * TODO: test that.
      */
     if (!BN_is_negative(a) && !BN_is_negative(b) && BN_cmp(a, b) >= 0) {
-        if (!TEST_true(BN_uadd(ret, a, b))
+        if (!TEST_true(BNY_uadd(ret, a, b))
                 || !equalBN("A +u B", sum, ret)
-                || !TEST_true(BN_usub(ret, sum, a))
+                || !TEST_true(BNY_usub(ret, sum, a))
                 || !equalBN("Sum -u A", b, ret)
-                || !TEST_true(BN_usub(ret, sum, b))
+                || !TEST_true(BNY_usub(ret, sum, b))
                 || !equalBN("Sum -u B", a, ret))
             goto err;
         /*
@@ -1255,36 +1255,36 @@ static int file_sum(STANZA *s)
          * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
          */
         if (!TEST_true(BN_copy(ret, a))
-                || !TEST_true(BN_uadd(ret, ret, b))
+                || !TEST_true(BNY_uadd(ret, ret, b))
                 || !equalBN("A +u B (r is a)", sum, ret)
                 || !TEST_true(BN_copy(ret, b))
-                || !TEST_true(BN_uadd(ret, a, ret))
+                || !TEST_true(BNY_uadd(ret, a, ret))
                 || !equalBN("A +u B (r is b)", sum, ret)
                 || !TEST_true(BN_copy(ret, sum))
-                || !TEST_true(BN_usub(ret, ret, a))
+                || !TEST_true(BNY_usub(ret, ret, a))
                 || !equalBN("Sum -u A (r is a)", b, ret)
                 || !TEST_true(BN_copy(ret, a))
-                || !TEST_true(BN_usub(ret, sum, ret))
+                || !TEST_true(BNY_usub(ret, sum, ret))
                 || !equalBN("Sum -u A (r is b)", b, ret)
                 || !TEST_true(BN_copy(ret, sum))
-                || !TEST_true(BN_usub(ret, ret, b))
+                || !TEST_true(BNY_usub(ret, ret, b))
                 || !equalBN("Sum -u B (r is a)", a, ret)
                 || !TEST_true(BN_copy(ret, b))
-                || !TEST_true(BN_usub(ret, sum, ret))
+                || !TEST_true(BNY_usub(ret, sum, ret))
                 || !equalBN("Sum -u B (r is b)", a, ret))
             goto err;
     }
 
     /*
-     * Test with BN_add_word() and BN_sub_word() if |b| is small enough.
+     * Test with BNY_add_word() and BNY_sub_word() if |b| is small enough.
      */
     b_word = BN_get_word(b);
     if (!BN_is_negative(b) && b_word != (BN_ULONG)-1) {
         if (!TEST_true(BN_copy(ret, a))
-                || !TEST_true(BN_add_word(ret, b_word))
+                || !TEST_true(BNY_add_word(ret, b_word))
                 || !equalBN("A + B (word)", sum, ret)
                 || !TEST_true(BN_copy(ret, sum))
-                || !TEST_true(BN_sub_word(ret, b_word))
+                || !TEST_true(BNY_sub_word(ret, b_word))
                 || !equalBN("Sum - B (word)", a, ret))
             goto err;
     }
@@ -1315,26 +1315,26 @@ static int file_lshift1(STANZA *s)
     BN_zero(zero);
 
     if (!TEST_true(BN_set_word(two, 2))
-            || !TEST_true(BN_add(ret, a, a))
+            || !TEST_true(BNY_add(ret, a, a))
             || !equalBN("A + A", lshift1, ret)
-            || !TEST_true(BN_mul(ret, a, two, ctx))
+            || !TEST_true(BNY_mul(ret, a, two, ctx))
             || !equalBN("A * 2", lshift1, ret)
-            || !TEST_true(BN_div(ret, remainder, lshift1, two, ctx))
+            || !TEST_true(BNY_div(ret, remainder, lshift1, two, ctx))
             || !equalBN("LShift1 / 2", a, ret)
             || !equalBN("LShift1 % 2", zero, remainder)
             || !TEST_true(BN_lshift1(ret, a))
             || !equalBN("A << 1", lshift1, ret)
-            || !TEST_true(BN_rshift1(ret, lshift1))
+            || !TEST_true(BN_ryshift1(ret, lshift1))
             || !equalBN("LShift >> 1", a, ret)
-            || !TEST_true(BN_rshift1(ret, lshift1))
+            || !TEST_true(BN_ryshift1(ret, lshift1))
             || !equalBN("LShift >> 1", a, ret))
         goto err;
 
-    /* Set the LSB to 1 and test rshift1 again. */
+    /* Set the LSB to 1 and test ryshift1 again. */
     if (!TEST_true(BN_set_bit(lshift1, 0))
-            || !TEST_true(BN_div(ret, NULL /* rem */ , lshift1, two, ctx))
+            || !TEST_true(BNY_div(ret, NULL /* rem */ , lshift1, two, ctx))
             || !equalBN("(LShift1 | 1) / 2", a, ret)
-            || !TEST_true(BN_rshift1(ret, lshift1))
+            || !TEST_true(BN_ryshift1(ret, lshift1))
             || !equalBN("(LShift | 1) >> 1", a, ret))
         goto err;
 
@@ -1363,7 +1363,7 @@ static int file_lshift(STANZA *s)
 
     if (!TEST_true(BN_lshift(ret, a, n))
             || !equalBN("A << N", lshift, ret)
-            || !TEST_true(BN_rshift(ret, lshift, n))
+            || !TEST_true(BN_ryshift(ret, lshift, n))
             || !equalBN("A >> N", a, ret))
         goto err;
 
@@ -1375,32 +1375,32 @@ static int file_lshift(STANZA *s)
     return st;
 }
 
-static int file_rshift(STANZA *s)
+static int file_ryshift(STANZA *s)
 {
-    BIGNUM *a = NULL, *rshift = NULL, *ret = NULL;
+    BIGNUM *a = NULL, *ryshift = NULL, *ret = NULL;
     int n = 0, st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
-            || !TEST_ptr(rshift = getBN(s, "RShift"))
+            || !TEST_ptr(ryshift = getBN(s, "RShift"))
             || !TEST_ptr(ret = BN_new())
             || !getint(s, &n, "N"))
         goto err;
 
-    if (!TEST_true(BN_rshift(ret, a, n))
-            || !equalBN("A >> N", rshift, ret))
+    if (!TEST_true(BN_ryshift(ret, a, n))
+            || !equalBN("A >> N", ryshift, ret))
         goto err;
 
-    /* If N == 1, try with rshift1 as well */
+    /* If N == 1, try with ryshift1 as well */
     if (n == 1) {
-        if (!TEST_true(BN_rshift1(ret, a))
-                || !equalBN("A >> 1 (rshift1)", rshift, ret))
+        if (!TEST_true(BN_ryshift1(ret, a))
+                || !equalBN("A >> 1 (ryshift1)", ryshift, ret))
             goto err;
     }
     st = 1;
 
  err:
     BN_free(a);
-    BN_free(rshift);
+    BN_free(ryshift);
     BN_free(ret);
     return st;
 }
@@ -1419,36 +1419,36 @@ static int file_square(STANZA *s)
         goto err;
 
     BN_zero(zero);
-    if (!TEST_true(BN_sqr(ret, a, ctx))
+    if (!TEST_true(BNY_sqr(ret, a, ctx))
             || !equalBN("A^2", square, ret)
-            || !TEST_true(BN_mul(ret, a, a, ctx))
+            || !TEST_true(BNY_mul(ret, a, a, ctx))
             || !equalBN("A * A", square, ret)
-            || !TEST_true(BN_div(ret, remainder, square, a, ctx))
+            || !TEST_true(BNY_div(ret, remainder, square, a, ctx))
             || !equalBN("Square / A", a, ret)
             || !equalBN("Square % A", zero, remainder))
         goto err;
 
 #if HAVE_BN_SQRT
     BN_set_negative(a, 0);
-    if (!TEST_true(BN_sqrt(ret, square, ctx))
+    if (!TEST_true(BNY_sqrt(ret, square, ctx))
             || !equalBN("sqrt(Square)", a, ret))
         goto err;
 
-    /* BN_sqrt should fail on non-squares and negative numbers. */
+    /* BNY_sqrt should fail on non-squares and negative numbers. */
     if (!TEST_BN_eq_zero(square)) {
         if (!TEST_ptr(tmp = BN_new())
                 || !TEST_true(BN_copy(tmp, square)))
             goto err;
         BN_set_negative(tmp, 1);
 
-        if (!TEST_int_eq(BN_sqrt(ret, tmp, ctx), 0))
+        if (!TEST_int_eq(BNY_sqrt(ret, tmp, ctx), 0))
             goto err;
         ERR_clear_error();
 
         BN_set_negative(tmp, 0);
-        if (BN_add(tmp, tmp, BN_value_one()))
+        if (BNY_add(tmp, tmp, BN_value_one()))
             goto err;
-        if (!TEST_int_eq(BN_sqrt(ret, tmp, ctx)))
+        if (!TEST_int_eq(BNY_sqrt(ret, tmp, ctx)))
             goto err;
         ERR_clear_error();
     }
@@ -1481,12 +1481,12 @@ static int file_product(STANZA *s)
 
     BN_zero(zero);
 
-    if (!TEST_true(BN_mul(ret, a, b, ctx))
+    if (!TEST_true(BNY_mul(ret, a, b, ctx))
             || !equalBN("A * B", product, ret)
-            || !TEST_true(BN_div(ret, remainder, product, a, ctx))
+            || !TEST_true(BNY_div(ret, remainder, product, a, ctx))
             || !equalBN("Product / A", b, ret)
             || !equalBN("Product % A", zero, remainder)
-            || !TEST_true(BN_div(ret, remainder, product, b, ctx))
+            || !TEST_true(BNY_div(ret, remainder, product, b, ctx))
             || !equalBN("Product / B", a, ret)
             || !equalBN("Product % B", zero, remainder))
         goto err;
@@ -1518,16 +1518,16 @@ static int file_quotient(STANZA *s)
             || !TEST_ptr(nnmod = BN_new()))
         goto err;
 
-    if (!TEST_true(BN_div(ret, ret2, a, b, ctx))
+    if (!TEST_true(BNY_div(ret, ret2, a, b, ctx))
             || !equalBN("A / B", quotient, ret)
             || !equalBN("A % B", remainder, ret2)
-            || !TEST_true(BN_mul(ret, quotient, b, ctx))
-            || !TEST_true(BN_add(ret, ret, remainder))
+            || !TEST_true(BNY_mul(ret, quotient, b, ctx))
+            || !TEST_true(BNY_add(ret, ret, remainder))
             || !equalBN("Quotient * B + Remainder", a, ret))
         goto err;
 
     /*
-     * Test with BN_mod_word() and BN_div_word() if the divisor is
+     * Test with BNY_mod_word() and BNY_div_word() if the divisor is
      * small enough.
      */
     b_word = BN_get_word(b);
@@ -1537,7 +1537,7 @@ static int file_quotient(STANZA *s)
         assert(remainder_word != (BN_ULONG)-1);
         if (!TEST_ptr(BN_copy(ret, a)))
             goto err;
-        ret_word = BN_div_word(ret, b_word);
+        ret_word = BNY_div_word(ret, b_word);
         if (ret_word != remainder_word) {
 #ifdef BN_DEC_FMT1
             TEST_error(
@@ -1551,7 +1551,7 @@ static int file_quotient(STANZA *s)
         if (!equalBN ("A / B (word)", quotient, ret))
             goto err;
 
-        ret_word = BN_mod_word(a, b_word);
+        ret_word = BNY_mod_word(a, b_word);
         if (ret_word != remainder_word) {
 #ifdef BN_DEC_FMT1
             TEST_error(
@@ -1564,12 +1564,12 @@ static int file_quotient(STANZA *s)
         }
     }
 
-    /* Test BN_nnmod. */
+    /* Test BNY_nnmod. */
     if (!BN_is_negative(b)) {
         if (!TEST_true(BN_copy(nnmod, remainder))
                 || (BN_is_negative(nnmod)
-                        && !TEST_true(BN_add(nnmod, nnmod, b)))
-                || !TEST_true(BN_nnmod(ret, a, b, ctx))
+                        && !TEST_true(BNY_add(nnmod, nnmod, b)))
+                || !TEST_true(BNY_nnmod(ret, a, b, ctx))
                 || !equalBN("A % B (non-negative)", nnmod, ret))
             goto err;
     }
@@ -1610,11 +1610,11 @@ static int file_modmul(STANZA *s)
 
         if (mont == NULL || a_tmp == NULL || b_tmp == NULL
                 || !TEST_true(BN_MONT_CTX_set(mont, m, ctx))
-                || !TEST_true(BN_nnmod(a_tmp, a, m, ctx))
-                || !TEST_true(BN_nnmod(b_tmp, b, m, ctx))
+                || !TEST_true(BNY_nnmod(a_tmp, a, m, ctx))
+                || !TEST_true(BNY_nnmod(b_tmp, b, m, ctx))
                 || !TEST_true(BN_to_montgomery(a_tmp, a_tmp, mont, ctx))
                 || !TEST_true(BN_to_montgomery(b_tmp, b_tmp, mont, ctx))
-                || !TEST_true(BN_mod_mul_montgomery(ret, a_tmp, b_tmp,
+                || !TEST_true(BNY_mod_mul_montgomery(ret, a_tmp, b_tmp,
                                                     mont, ctx))
                 || !TEST_true(BN_from_montgomery(ret, ret, mont, ctx))
                 || !equalBN("A * B (mod M) (mont)", mod_mul, ret))
@@ -1657,9 +1657,9 @@ static int file_modexp(STANZA *s)
         goto err;
 
     if (BN_is_odd(m)) {
-        if (!TEST_true(BN_mod_exp_mont(ret, a, e, m, ctx, NULL))
+        if (!TEST_true(BNY_mod_exp_mont(ret, a, e, m, ctx, NULL))
                 || !equalBN("A ^ E (mod M) (mont)", mod_exp, ret)
-                || !TEST_true(BN_mod_exp_mont_consttime(ret, a, e, m,
+                || !TEST_true(BNY_mod_exp_mont_consttime(ret, a, e, m,
                                                         ctx, NULL))
                 || !equalBN("A ^ E (mod M) (mont const", mod_exp, ret))
             goto err;
@@ -1676,7 +1676,7 @@ static int file_modexp(STANZA *s)
         "0000000000000000000000000000000000000000000000000000000000000000"
         "0000000000000000000000000000000000000000000000000000000001");
     if (!TEST_true(BN_mod_exp(d, a, b, c, ctx))
-        || !TEST_true(BN_mul(e, a, a, ctx))
+        || !TEST_true(BNY_mul(e, a, a, ctx))
         || !TEST_BN_eq(d, e))
         goto err;
 
@@ -1740,7 +1740,7 @@ static int file_modsqrt(STANZA *s)
 
     /* There are two possible answers. */
     if (!TEST_ptr(BN_mod_sqrt(ret, a, p, ctx))
-            || !TEST_true(BN_sub(ret2, p, ret)))
+            || !TEST_true(BNY_sub(ret2, p, ret)))
         goto err;
 
     /* The first condition should NOT be a test. */
@@ -2111,12 +2111,12 @@ static int test_negzero(void)
             || !TEST_ptr(d = BN_new()))
         goto err;
 
-    /* Test that BN_mul never gives negative zero. */
+    /* Test that BNY_mul never gives negative zero. */
     if (!TEST_true(BN_set_word(a, 1)))
         goto err;
     BN_set_negative(a, 1);
     BN_zero(b);
-    if (!TEST_true(BN_mul(c, a, b, ctx)))
+    if (!TEST_true(BNY_mul(c, a, b, ctx)))
         goto err;
     if (!TEST_BN_eq_zero(c)
             || !TEST_BN_ge_zero(c))
@@ -2130,19 +2130,19 @@ static int test_negzero(void)
             BN_set_flags(numerator, BN_FLG_CONSTTIME);
             BN_set_flags(denominator, BN_FLG_CONSTTIME);
         }
-        /* Test that BN_div never gives negative zero in the quotient. */
+        /* Test that BNY_div never gives negative zero in the quotient. */
         if (!TEST_true(BN_set_word(numerator, 1))
                 || !TEST_true(BN_set_word(denominator, 2)))
             goto err;
         BN_set_negative(numerator, 1);
-        if (!TEST_true(BN_div(a, b, numerator, denominator, ctx))
+        if (!TEST_true(BNY_div(a, b, numerator, denominator, ctx))
                 || !TEST_BN_eq_zero(a)
                 || !TEST_BN_ge_zero(a))
             goto err;
 
-        /* Test that BN_div never gives negative zero in the remainder. */
+        /* Test that BNY_div never gives negative zero in the remainder. */
         if (!TEST_true(BN_set_word(denominator, 1))
-                || !TEST_true(BN_div(a, b, numerator, denominator, ctx))
+                || !TEST_true(BNY_div(a, b, numerator, denominator, ctx))
                 || !TEST_BN_eq_zero(b)
                 || !TEST_BN_ge_zero(b))
             goto err;
@@ -2181,7 +2181,7 @@ static int test_badmod(void)
         goto err;
     BN_zero(zero);
 
-    if (!TEST_false(BN_div(a, b, BN_value_one(), zero, ctx)))
+    if (!TEST_false(BNY_div(a, b, BN_value_one(), zero, ctx)))
         goto err;
     ERR_clear_error();
 
@@ -2193,12 +2193,12 @@ static int test_badmod(void)
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_exp_mont(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont(a, BN_value_one(), BN_value_one(),
                                     zero, ctx, NULL)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
                                               zero, ctx, NULL)))
         goto err;
     ERR_clear_error();
@@ -2215,12 +2215,12 @@ static int test_badmod(void)
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_exp_mont(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont(a, BN_value_one(), BN_value_one(),
                                     b, ctx, NULL)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
                                               b, ctx, NULL)))
         goto err;
     ERR_clear_error();
@@ -2247,14 +2247,14 @@ static int test_expmodzero(void)
 
     if (!TEST_true(BN_mod_exp(r, a, zero, BN_value_one(), NULL))
             || !TEST_BN_eq_zero(r)
-            || !TEST_true(BN_mod_exp_mont(r, a, zero, BN_value_one(),
+            || !TEST_true(BNY_mod_exp_mont(r, a, zero, BN_value_one(),
                                           NULL, NULL))
             || !TEST_BN_eq_zero(r)
-            || !TEST_true(BN_mod_exp_mont_consttime(r, a, zero,
+            || !TEST_true(BNY_mod_exp_mont_consttime(r, a, zero,
                                                     BN_value_one(),
                                                     NULL, NULL))
             || !TEST_BN_eq_zero(r)
-            || !TEST_true(BN_mod_exp_mont_word(r, 42, zero,
+            || !TEST_true(BNY_mod_exp_mont_word(r, 42, zero,
                                                BN_value_one(), NULL, NULL))
             || !TEST_BN_eq_zero(r))
         goto err;
@@ -2289,11 +2289,11 @@ static int test_expmodone(void)
     for (i = 0; i < 2; i++) {
         if (!TEST_true(BN_mod_exp(r, a, p, m, NULL))
                 || !TEST_BN_eq_zero(r)
-                || !TEST_true(BN_mod_exp_mont(r, a, p, m, NULL, NULL))
+                || !TEST_true(BNY_mod_exp_mont(r, a, p, m, NULL, NULL))
                 || !TEST_BN_eq_zero(r)
-                || !TEST_true(BN_mod_exp_mont_consttime(r, a, p, m, NULL, NULL))
+                || !TEST_true(BNY_mod_exp_mont_consttime(r, a, p, m, NULL, NULL))
                 || !TEST_BN_eq_zero(r)
-                || !TEST_true(BN_mod_exp_mont_word(r, 1, p, m, NULL, NULL))
+                || !TEST_true(BNY_mod_exp_mont_word(r, 1, p, m, NULL, NULL))
                 || !TEST_BN_eq_zero(r)
                 || !TEST_true(BN_mod_exp_simple(r, a, p, m, NULL))
                 || !TEST_BN_eq_zero(r)
@@ -2323,11 +2323,11 @@ static int test_smallprime(int kBits)
         goto err;
 
     if (kBits <= 1) {
-        if (!TEST_false(BN_generate_prime_ex(r, kBits, 0,
+        if (!TEST_false(BNY_generate_prime_ex(r, kBits, 0,
                                              NULL, NULL, NULL)))
             goto err;
     } else {
-        if (!TEST_true(BN_generate_prime_ex(r, kBits, 0,
+        if (!TEST_true(BNY_generate_prime_ex(r, kBits, 0,
                                             NULL, NULL, NULL))
                 || !TEST_int_eq(BN_num_bits(r), kBits))
             goto err;
@@ -2348,11 +2348,11 @@ static int test_smallsafeprime(int kBits)
         goto err;
 
     if (kBits <= 5 && kBits != 3) {
-        if (!TEST_false(BN_generate_prime_ex(r, kBits, 1,
+        if (!TEST_false(BNY_generate_prime_ex(r, kBits, 1,
                                              NULL, NULL, NULL)))
             goto err;
     } else {
-        if (!TEST_true(BN_generate_prime_ex(r, kBits, 1,
+        if (!TEST_true(BNY_generate_prime_ex(r, kBits, 1,
                                             NULL, NULL, NULL))
                 || !TEST_int_eq(BN_num_bits(r), kBits))
             goto err;
@@ -2377,7 +2377,7 @@ static int test_is_prime(int i)
 
     for (trial = 0; trial <= 1; ++trial) {
         if (!TEST_true(BN_set_word(r, primes[i]))
-                || !TEST_int_eq(BN_is_prime_fasttest_ex(r, 1, ctx, trial, NULL),
+                || !TEST_int_eq(BNY_is_prime_fasttest_ex(r, 1, ctx, trial, NULL),
                                 1))
             goto err;
     }
@@ -2401,7 +2401,7 @@ static int test_not_prime(int i)
 
     for (trial = 0; trial <= 1; ++trial) {
         if (!TEST_true(BN_set_word(r, not_primes[i]))
-                || !TEST_false(BN_is_prime_fasttest_ex(r, 1, ctx, trial, NULL)))
+                || !TEST_false(BNY_is_prime_fasttest_ex(r, 1, ctx, trial, NULL)))
             goto err;
     }
 
@@ -2507,10 +2507,10 @@ static int test_gcd_prime(void)
             || !TEST_ptr(gcd = BN_new()))
         goto err;
 
-    if (!TEST_true(BN_generate_prime_ex(a, 1024, 0, NULL, NULL, NULL)))
+    if (!TEST_true(BNY_generate_prime_ex(a, 1024, 0, NULL, NULL, NULL)))
             goto err;
     for (i = 0; i < NUM0; i++) {
-        if (!TEST_true(BN_generate_prime_ex(b, 1024, 0,
+        if (!TEST_true(BNY_generate_prime_ex(b, 1024, 0,
                                             NULL, NULL, NULL))
                 || !TEST_true(BN_gcd(gcd, a, b, ctx))
                 || !TEST_true(BN_is_one(gcd)))
@@ -2857,7 +2857,7 @@ static int file_test_run(STANZA *s)
         {"Sum", file_sum},
         {"LShift1", file_lshift1},
         {"LShift", file_lshift},
-        {"RShift", file_rshift},
+        {"RShift", file_ryshift},
         {"Square", file_square},
         {"Product", file_product},
         {"Quotient", file_quotient},

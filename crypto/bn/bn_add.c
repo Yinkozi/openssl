@@ -11,7 +11,7 @@
 #include "bn_local.h"
 
 /* signed add of b to a. */
-int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+int BNY_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 {
     int ret, r_neg, cmp_res;
 
@@ -20,15 +20,15 @@ int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 
     if (a->neg == b->neg) {
         r_neg = a->neg;
-        ret = BN_uadd(r, a, b);
+        ret = BNY_uadd(r, a, b);
     } else {
-        cmp_res = BN_ucmp(a, b);
+        cmp_res = BNY_ucmp(a, b);
         if (cmp_res > 0) {
             r_neg = a->neg;
-            ret = BN_usub(r, a, b);
+            ret = BNY_usub(r, a, b);
         } else if (cmp_res < 0) {
             r_neg = b->neg;
-            ret = BN_usub(r, b, a);
+            ret = BNY_usub(r, b, a);
         } else {
             r_neg = 0;
             BN_zero(r);
@@ -42,7 +42,7 @@ int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 }
 
 /* signed sub of b from a. */
-int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+int BNY_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 {
     int ret, r_neg, cmp_res;
 
@@ -51,15 +51,15 @@ int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 
     if (a->neg != b->neg) {
         r_neg = a->neg;
-        ret = BN_uadd(r, a, b);
+        ret = BNY_uadd(r, a, b);
     } else {
-        cmp_res = BN_ucmp(a, b);
+        cmp_res = BNY_ucmp(a, b);
         if (cmp_res > 0) {
             r_neg = a->neg;
-            ret = BN_usub(r, a, b);
+            ret = BNY_usub(r, a, b);
         } else if (cmp_res < 0) {
             r_neg = !b->neg;
-            ret = BN_usub(r, b, a);
+            ret = BNY_usub(r, b, a);
         } else {
             r_neg = 0;
             BN_zero(r);
@@ -73,7 +73,7 @@ int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 }
 
 /* unsigned add of b to a, r can be equal to a or b. */
-int BN_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+int BNY_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 {
     int max, min, dif;
     const BN_ULONG *ap, *bp;
@@ -122,7 +122,7 @@ int BN_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 }
 
 /* unsigned subtraction of b from a, a must be larger than b. */
-int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
+int BNY_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b)
 {
     int max, min, dif;
     BN_ULONG t1, t2, borrow, *rp;

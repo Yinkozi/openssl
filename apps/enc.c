@@ -96,9 +96,9 @@ int enc_main(int argc, char **argv)
     ENGINE *e = NULL;
     BIO *in = NULL, *out = NULL, *b64 = NULL, *benc = NULL, *rbio =
         NULL, *wbio = NULL;
-    EVP_CIPHER_CTX *ctx = NULL;
-    const EVP_CIPHER *cipher = NULL, *c;
-    const EVP_MD *dgst = NULL;
+    EVVP_CIPHER_CTX *ctx = NULL;
+    const EVVP_CIPHER *cipher = NULL, *c;
+    const EVVP_MD *dgst = NULL;
     char *hkey = NULL, *hiv = NULL, *hsalt = NULL, *p;
     char *infile = NULL, *outfile = NULL, *prog;
     char *str = NULL, *passarg = NULL, *pass = NULL, *strbuf = NULL;
@@ -108,8 +108,8 @@ int enc_main(int argc, char **argv)
     int enc = 1, printkey = 0, i, k;
     int base64 = 0, informat = FORMAT_BINARY, outformat = FORMAT_BINARY;
     int ret = 1, inl, nopad = 0;
-    unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
-    unsigned char *buff = NULL, salt[PKCS5_SALT_LEN];
+    unsigned char key[EVVP_MAX_KEY_LENGTH], iv[EVVP_MAX_IV_LENGTH];
+    unsigned char *buff = NULL, salt[YPKCS5_SALT_LEN];
     int pbkdf2 = 0;
     int iter = 0;
     long n;
@@ -128,9 +128,9 @@ int enc_main(int argc, char **argv)
         do_zlib = 1;
 #endif
     } else {
-        cipher = EVP_get_cipherbyname(prog);
+        cipher = EVVP_get_cipherbyname(prog);
         if (cipher == NULL && strcmp(prog, "enc") != 0) {
-            BIO_printf(bio_err, "%s is not a known cipher\n", prog);
+            BIO_pprintf(bio_err, "%s is not a known cipher\n", prog);
             goto end;
         }
     }
@@ -141,19 +141,19 @@ int enc_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(enc_options);
             ret = 0;
             goto end;
         case OPT_LIST:
-            BIO_printf(bio_out, "Supported ciphers:\n");
+            BIO_pprintf(bio_out, "Supported ciphers:\n");
             dec.bio = bio_out;
             dec.n = 0;
             OBJ_NAME_do_all_sorted(OBJ_NAME_TYPE_CIPHER_METH,
                                    show_ciphers, &dec);
-            BIO_printf(bio_out, "\n");
+            BIO_pprintf(bio_out, "\n");
             ret = 0;
             goto end;
         case OPT_E:
@@ -230,14 +230,14 @@ int enc_main(int argc, char **argv)
             BIO_free(in);
             in = NULL;
             if (i <= 0) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s Can't read key from %s\n", prog, opt_arg());
                 goto opthelp;
             }
             while (--i > 0 && (buf[i] == '\r' || buf[i] == '\n'))
                 buf[i] = '\0';
             if (i <= 0) {
-                BIO_printf(bio_err, "%s: zero length password\n", prog);
+                BIO_pprintf(bio_err, "%s: zero length password\n", prog);
                 goto opthelp;
             }
             str = buf;
@@ -280,22 +280,22 @@ int enc_main(int argc, char **argv)
         }
     }
     if (opt_num_rest() != 0) {
-        BIO_printf(bio_err, "Extra arguments given.\n");
+        BIO_pprintf(bio_err, "Extra arguments given.\n");
         goto opthelp;
     }
 
-    if (cipher && EVP_CIPHER_flags(cipher) & EVP_CIPH_FLAG_AEAD_CIPHER) {
-        BIO_printf(bio_err, "%s: AEAD ciphers not supported\n", prog);
+    if (cipher && EVVP_CIPHER_flags(cipher) & EVVP_CIPH_FLAG_AEAD_CIPHER) {
+        BIO_pprintf(bio_err, "%s: AEAD ciphers not supported\n", prog);
         goto end;
     }
 
-    if (cipher && (EVP_CIPHER_mode(cipher) == EVP_CIPH_XTS_MODE)) {
-        BIO_printf(bio_err, "%s XTS ciphers not supported\n", prog);
+    if (cipher && (EVVP_CIPHER_mode(cipher) == EVVP_CIPH_XTS_MODE)) {
+        BIO_pprintf(bio_err, "%s XTS ciphers not supported\n", prog);
         goto end;
     }
 
     if (dgst == NULL)
-        dgst = EVP_sha256();
+        dgst = EVVP_sha256();
 
     if (iter == 0)
         iter = 1;
@@ -304,7 +304,7 @@ int enc_main(int argc, char **argv)
     if (base64 && bsize < 80)
         bsize = 80;
     if (verbose)
-        BIO_printf(bio_err, "bufsize=%d\n", bsize);
+        BIO_pprintf(bio_err, "bufsize=%d\n", bsize);
 
 #ifdef ZLIB
     if (!do_zlib)
@@ -317,7 +317,7 @@ int enc_main(int argc, char **argv)
         }
 
     strbuf = app_malloc(SIZE, "strbuf");
-    buff = app_malloc(EVP_ENCODE_LENGTH(bsize), "evp buffer");
+    buff = app_malloc(EVVP_ENCODE_LENGTH(bsize), "evp buffer");
 
     if (infile == NULL) {
         in = dup_bio_in(informat);
@@ -329,7 +329,7 @@ int enc_main(int argc, char **argv)
 
     if (str == NULL && passarg != NULL) {
         if (!app_passwd(passarg, NULL, &pass, NULL)) {
-            BIO_printf(bio_err, "Error getting password\n");
+            BIO_pprintf(bio_err, "Error getting password\n");
             goto end;
         }
         str = pass;
@@ -341,11 +341,11 @@ int enc_main(int argc, char **argv)
             for (;;) {
                 char prompt[200];
 
-                BIO_snprintf(prompt, sizeof(prompt), "enter %s %s password:",
-                        OBJ_nid2ln(EVP_CIPHER_nid(cipher)),
+                BIO_ssnprintf(prompt, sizeof(prompt), "enter %s %s password:",
+                        OBJ_nid2ln(EVVP_CIPHER_nid(cipher)),
                         (enc) ? "encryption" : "decryption");
                 strbuf[0] = '\0';
-                i = EVP_read_pw_string((char *)strbuf, SIZE, prompt, enc);
+                i = EVVP_read_pw_string((char *)strbuf, SIZE, prompt, enc);
                 if (i == 0) {
                     if (strbuf[0] == '\0') {
                         ret = 1;
@@ -355,13 +355,13 @@ int enc_main(int argc, char **argv)
                     break;
                 }
                 if (i < 0) {
-                    BIO_printf(bio_err, "bad password read\n");
+                    BIO_pprintf(bio_err, "bad password read\n");
                     goto end;
                 }
             }
         } else {
 #endif
-            BIO_printf(bio_err, "password required\n");
+            BIO_pprintf(bio_err, "password required\n");
             goto end;
         }
     }
@@ -429,7 +429,7 @@ int enc_main(int argc, char **argv)
                 if (enc) {
                     if (hsalt) {
                         if (!set_hex(hsalt, salt, sizeof(salt))) {
-                            BIO_printf(bio_err, "invalid hex salt value\n");
+                            BIO_pprintf(bio_err, "invalid hex salt value\n");
                             goto end;
                         }
                     } else if (RAND_bytes(salt, sizeof(salt)) <= 0) {
@@ -444,17 +444,17 @@ int enc_main(int argc, char **argv)
                             || BIO_write(wbio,
                                          (char *)salt,
                                          sizeof(salt)) != sizeof(salt))) {
-                        BIO_printf(bio_err, "error writing output file\n");
+                        BIO_pprintf(bio_err, "error writing output file\n");
                         goto end;
                     }
                 } else if (BIO_read(rbio, mbuf, sizeof(mbuf)) != sizeof(mbuf)
                            || BIO_read(rbio,
                                        (unsigned char *)salt,
                                        sizeof(salt)) != sizeof(salt)) {
-                    BIO_printf(bio_err, "error reading input file\n");
+                    BIO_pprintf(bio_err, "error reading input file\n");
                     goto end;
                 } else if (memcmp(mbuf, magic, sizeof(magic) - 1)) {
-                    BIO_printf(bio_err, "bad magic number\n");
+                    BIO_pprintf(bio_err, "bad magic number\n");
                     goto end;
                 }
                 sptr = salt;
@@ -465,27 +465,27 @@ int enc_main(int argc, char **argv)
                 * derive key and default iv
                 * concatenated into a temporary buffer
                 */
-                unsigned char tmpkeyiv[EVP_MAX_KEY_LENGTH + EVP_MAX_IV_LENGTH];
-                int iklen = EVP_CIPHER_key_length(cipher);
-                int ivlen = EVP_CIPHER_iv_length(cipher);
+                unsigned char tmpkeyiv[EVVP_MAX_KEY_LENGTH + EVVP_MAX_IV_LENGTH];
+                int iklen = EVVP_CIPHER_key_length(cipher);
+                int ivlen = EVVP_CIPHER_iv_length(cipher);
                 /* not needed if HASH_UPDATE() is fixed : */
                 int islen = (sptr != NULL ? sizeof(salt) : 0);
-                if (!PKCS5_PBKDF2_HMAC(str, str_len, sptr, islen,
+                if (!YPKCS5_PBKDF2_YHMAC(str, str_len, sptr, islen,
                                        iter, dgst, iklen+ivlen, tmpkeyiv)) {
-                    BIO_printf(bio_err, "PKCS5_PBKDF2_HMAC failed\n");
+                    BIO_pprintf(bio_err, "YPKCS5_PBKDF2_YHMAC failed\n");
                     goto end;
                 }
                 /* split and move data back to global buffer */
                 memcpy(key, tmpkeyiv, iklen);
                 memcpy(iv, tmpkeyiv+iklen, ivlen);
             } else {
-                BIO_printf(bio_err, "*** WARNING : "
+                BIO_pprintf(bio_err, "*** WARNING : "
                                     "deprecated key derivation used.\n"
                                     "Using -iter or -pbkdf2 would be better.\n");
-                if (!EVP_BytesToKey(cipher, dgst, sptr,
+                if (!EVVP_BytesToKey(cipher, dgst, sptr,
                                     (unsigned char *)str, str_len,
                                     1, key, iv)) {
-                    BIO_printf(bio_err, "EVP_BytesToKey failed\n");
+                    BIO_pprintf(bio_err, "EVVP_BytesToKey failed\n");
                     goto end;
                 }
             }
@@ -499,26 +499,26 @@ int enc_main(int argc, char **argv)
                 OPENSSL_cleanse(str, str_len);
         }
         if (hiv != NULL) {
-            int siz = EVP_CIPHER_iv_length(cipher);
+            int siz = EVVP_CIPHER_iv_length(cipher);
             if (siz == 0) {
-                BIO_printf(bio_err, "warning: iv not used by this cipher\n");
+                BIO_pprintf(bio_err, "warning: iv not used by this cipher\n");
             } else if (!set_hex(hiv, iv, siz)) {
-                BIO_printf(bio_err, "invalid hex iv value\n");
+                BIO_pprintf(bio_err, "invalid hex iv value\n");
                 goto end;
             }
         }
         if ((hiv == NULL) && (str == NULL)
-            && EVP_CIPHER_iv_length(cipher) != 0) {
+            && EVVP_CIPHER_iv_length(cipher) != 0) {
             /*
              * No IV was explicitly set and no IV was generated.
              * Hence the IV is undefined, making correct decryption impossible.
              */
-            BIO_printf(bio_err, "iv undefined\n");
+            BIO_pprintf(bio_err, "iv undefined\n");
             goto end;
         }
         if (hkey != NULL) {
-            if (!set_hex(hkey, key, EVP_CIPHER_key_length(cipher))) {
-                BIO_printf(bio_err, "invalid hex key value\n");
+            if (!set_hex(hkey, key, EVVP_CIPHER_key_length(cipher))) {
+                BIO_pprintf(bio_err, "invalid hex key value\n");
                 goto end;
             }
             /* wiping secret data as we no longer need it */
@@ -535,19 +535,19 @@ int enc_main(int argc, char **argv)
 
         BIO_get_cipher_ctx(benc, &ctx);
 
-        if (!EVP_CipherInit_ex(ctx, cipher, NULL, NULL, NULL, enc)) {
-            BIO_printf(bio_err, "Error setting cipher %s\n",
-                       EVP_CIPHER_name(cipher));
+        if (!EVVP_CipherInit_ex(ctx, cipher, NULL, NULL, NULL, enc)) {
+            BIO_pprintf(bio_err, "Error setting cipher %s\n",
+                       EVVP_CIPHER_name(cipher));
             ERR_print_errors(bio_err);
             goto end;
         }
 
         if (nopad)
-            EVP_CIPHER_CTX_set_padding(ctx, 0);
+            EVVP_CIPHER_CTX_set_padding(ctx, 0);
 
-        if (!EVP_CipherInit_ex(ctx, NULL, NULL, key, iv, enc)) {
-            BIO_printf(bio_err, "Error setting cipher %s\n",
-                       EVP_CIPHER_name(cipher));
+        if (!EVVP_CipherInit_ex(ctx, NULL, NULL, key, iv, enc)) {
+            BIO_pprintf(bio_err, "Error setting cipher %s\n",
+                       EVVP_CIPHER_name(cipher));
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -564,15 +564,15 @@ int enc_main(int argc, char **argv)
                     printf("%02X", salt[i]);
                 printf("\n");
             }
-            if (EVP_CIPHER_key_length(cipher) > 0) {
+            if (EVVP_CIPHER_key_length(cipher) > 0) {
                 printf("key=");
-                for (i = 0; i < EVP_CIPHER_key_length(cipher); i++)
+                for (i = 0; i < EVVP_CIPHER_key_length(cipher); i++)
                     printf("%02X", key[i]);
                 printf("\n");
             }
-            if (EVP_CIPHER_iv_length(cipher) > 0) {
+            if (EVVP_CIPHER_iv_length(cipher) > 0) {
                 printf("iv =");
-                for (i = 0; i < EVP_CIPHER_iv_length(cipher); i++)
+                for (i = 0; i < EVVP_CIPHER_iv_length(cipher); i++)
                     printf("%02X", iv[i]);
                 printf("\n");
             }
@@ -592,19 +592,19 @@ int enc_main(int argc, char **argv)
         if (inl <= 0)
             break;
         if (BIO_write(wbio, (char *)buff, inl) != inl) {
-            BIO_printf(bio_err, "error writing output file\n");
+            BIO_pprintf(bio_err, "error writing output file\n");
             goto end;
         }
     }
     if (!BIO_flush(wbio)) {
-        BIO_printf(bio_err, "bad decrypt\n");
+        BIO_pprintf(bio_err, "bad decrypt\n");
         goto end;
     }
 
     ret = 0;
     if (verbose) {
-        BIO_printf(bio_err, "bytes read   : %8ju\n", BIO_number_read(in));
-        BIO_printf(bio_err, "bytes written: %8ju\n", BIO_number_written(out));
+        BIO_pprintf(bio_err, "bytes read   : %8ju\n", BIO_number_read(in));
+        BIO_pprintf(bio_err, "bytes written: %8ju\n", BIO_number_written(out));
     }
  end:
     ERR_print_errors(bio_err);
@@ -625,24 +625,24 @@ int enc_main(int argc, char **argv)
 static void show_ciphers(const OBJ_NAME *name, void *arg)
 {
     struct doall_enc_ciphers *dec = (struct doall_enc_ciphers *)arg;
-    const EVP_CIPHER *cipher;
+    const EVVP_CIPHER *cipher;
 
     if (!islower((unsigned char)*name->name))
         return;
 
     /* Filter out ciphers that we cannot use */
-    cipher = EVP_get_cipherbyname(name->name);
+    cipher = EVVP_get_cipherbyname(name->name);
     if (cipher == NULL ||
-            (EVP_CIPHER_flags(cipher) & EVP_CIPH_FLAG_AEAD_CIPHER) != 0 ||
-            EVP_CIPHER_mode(cipher) == EVP_CIPH_XTS_MODE)
+            (EVVP_CIPHER_flags(cipher) & EVVP_CIPH_FLAG_AEAD_CIPHER) != 0 ||
+            EVVP_CIPHER_mode(cipher) == EVVP_CIPH_XTS_MODE)
         return;
 
-    BIO_printf(dec->bio, "-%-25s", name->name);
+    BIO_pprintf(dec->bio, "-%-25s", name->name);
     if (++dec->n == 3) {
-        BIO_printf(dec->bio, "\n");
+        BIO_pprintf(dec->bio, "\n");
         dec->n = 0;
     } else
-        BIO_printf(dec->bio, " ");
+        BIO_pprintf(dec->bio, " ");
 }
 
 static int set_hex(const char *in, unsigned char *out, int size)
@@ -653,17 +653,17 @@ static int set_hex(const char *in, unsigned char *out, int size)
     i = size * 2;
     n = strlen(in);
     if (n > i) {
-        BIO_printf(bio_err, "hex string is too long, ignoring excess\n");
+        BIO_pprintf(bio_err, "hex string is too long, ignoring excess\n");
         n = i; /* ignore exceeding part */
     } else if (n < i) {
-        BIO_printf(bio_err, "hex string is too short, padding with zero bytes to length\n");
+        BIO_pprintf(bio_err, "hex string is too short, padding with zero bytes to length\n");
     }
 
     memset(out, 0, size);
     for (i = 0; i < n; i++) {
         j = (unsigned char)*in++;
         if (!isxdigit(j)) {
-            BIO_printf(bio_err, "non-hex digit\n");
+            BIO_pprintf(bio_err, "non-hex digit\n");
             return 0;
         }
         j = (unsigned char)OPENSSL_hexchar2int(j);

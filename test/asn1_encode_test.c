@@ -73,7 +73,7 @@ static unsigned char t_5bytes_1[] = {
 static unsigned char t_4bytes_1[] = {
     0x00, 0x80, 0x00, 0x00, 0x00
 };
-/* We make the last byte 0xfe to avoid a clash with ASN1_LONG_UNDEF */
+/* We make the last byte 0xfe to avoid a clash with YASN1_LONG_UNDEF */
 static unsigned char t_4bytes_2[] = {
     0x7f, 0xff, 0xff, 0xfe
 };
@@ -144,7 +144,7 @@ typedef int i2d_fn(void *a, unsigned char **pp);
 typedef void *d2i_fn(void **a, unsigned char **pp, long length);
 typedef void ifree_fn(void *a);
 typedef struct {
-    ASN1_ITEM_EXP *asn1_type;
+    YASN1_ITEM_EXP *asn1_type;
     const char *name;
     int skip;                    /* 1 if this package should be skipped */
 
@@ -177,28 +177,28 @@ typedef struct {
     ENCDEC_DATA(min,zmin),                      \
     ENCDEC_DATA(1, 1),                          \
     ENCDEC_DATA(-1, -1),                        \
-    ENCDEC_DATA(0, ASN1_LONG_UNDEF)
+    ENCDEC_DATA(0, YASN1_LONG_UNDEF)
 
 #if OPENSSL_API_COMPAT < 0x10200000L
 /***** LONG ******************************************************************/
 
 typedef struct {
     /* If decoding is expected to succeed, set this to 1, otherwise 0 */
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     long test_long;
     long test_zlong;
-} ASN1_LONG_DATA;
+} YASN1_LONG_DATA;
 
-ASN1_SEQUENCE(ASN1_LONG_DATA) = {
-    ASN1_SIMPLE(ASN1_LONG_DATA, success, ASN1_FBOOLEAN),
-    ASN1_SIMPLE(ASN1_LONG_DATA, test_long, LONG),
-    ASN1_EXP_OPT(ASN1_LONG_DATA, test_zlong, ZLONG, 0)
-} static_ASN1_SEQUENCE_END(ASN1_LONG_DATA)
+YASN1_SEQUENCE(YASN1_LONG_DATA) = {
+    YASN1_SIMPLE(YASN1_LONG_DATA, success, YASN1_FBOOLEAN),
+    YASN1_SIMPLE(YASN1_LONG_DATA, test_long, LONG),
+    YASN1_EXP_OPT(YASN1_LONG_DATA, test_zlong, ZLONG, 0)
+} static_YASN1_SEQUENCE_END(YASN1_LONG_DATA)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(ASN1_LONG_DATA)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(ASN1_LONG_DATA)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(YASN1_LONG_DATA)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(YASN1_LONG_DATA)
 
-static ASN1_LONG_DATA long_expected_32bit[] = {
+static YASN1_LONG_DATA long_expected_32bit[] = {
     /* The following should fail on the second because it's the default */
     { 0xff, 0, 1 }, { 0, 0, 0 }, /* t_zero */
     { 0, 0, 0 }, { 0xff, 1, 0x7fffffff }, /* t_longundef */
@@ -218,23 +218,23 @@ static ASN1_LONG_DATA long_expected_32bit[] = {
     CUSTOM_EXPECTED_SUCCESS(INT32_MIN, INT32_MIN), /* t_4bytes_4_neg */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_LONG_DATA long_encdec_data_32bit[] = {
+static YASN1_LONG_DATA long_encdec_data_32bit[] = {
     ENCDEC_ARRAY(LONG_MAX - 1, LONG_MAX, LONG_MIN, LONG_MIN),
     /* Check that default numbers fail */
-    { 0, ASN1_LONG_UNDEF, 1 }, { 0, 1, 0 }
+    { 0, YASN1_LONG_UNDEF, 1 }, { 0, 1, 0 }
 };
 
 static TEST_PACKAGE long_test_package_32bit = {
-    ASN1_ITEM_ref(ASN1_LONG_DATA), "LONG", sizeof(long) != 4,
+    YASN1_ITEM_ref(YASN1_LONG_DATA), "LONG", sizeof(long) != 4,
     long_expected_32bit,
     sizeof(long_expected_32bit), sizeof(long_expected_32bit[0]),
     long_encdec_data_32bit,
     sizeof(long_encdec_data_32bit), sizeof(long_encdec_data_32bit[0]),
-    (i2d_fn *)i2d_ASN1_LONG_DATA, (d2i_fn *)d2i_ASN1_LONG_DATA,
-    (ifree_fn *)ASN1_LONG_DATA_free
+    (i2d_fn *)i2d_YASN1_LONG_DATA, (d2i_fn *)d2i_YASN1_LONG_DATA,
+    (ifree_fn *)YASN1_LONG_DATA_free
 };
 
-static ASN1_LONG_DATA long_expected_64bit[] = {
+static YASN1_LONG_DATA long_expected_64bit[] = {
     /* The following should fail on the second because it's the default */
     { 0xff, 0, 1 }, { 0, 0, 0 }, /* t_zero */
     { 0, 0, 0 }, { 0xff, 1, 0x7fffffff }, /* t_longundef */
@@ -254,43 +254,43 @@ static ASN1_LONG_DATA long_expected_64bit[] = {
     CUSTOM_EXPECTED_SUCCESS(INT32_MIN, INT32_MIN), /* t_4bytes_4_neg */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_LONG_DATA long_encdec_data_64bit[] = {
+static YASN1_LONG_DATA long_encdec_data_64bit[] = {
     ENCDEC_ARRAY(LONG_MAX, LONG_MAX, LONG_MIN, LONG_MIN),
     /* Check that default numbers fail */
-    { 0, ASN1_LONG_UNDEF, 1 }, { 0, 1, 0 }
+    { 0, YASN1_LONG_UNDEF, 1 }, { 0, 1, 0 }
 };
 
 static TEST_PACKAGE long_test_package_64bit = {
-    ASN1_ITEM_ref(ASN1_LONG_DATA), "LONG", sizeof(long) != 8,
+    YASN1_ITEM_ref(YASN1_LONG_DATA), "LONG", sizeof(long) != 8,
     long_expected_64bit,
     sizeof(long_expected_64bit), sizeof(long_expected_64bit[0]),
     long_encdec_data_64bit,
     sizeof(long_encdec_data_64bit), sizeof(long_encdec_data_64bit[0]),
-    (i2d_fn *)i2d_ASN1_LONG_DATA, (d2i_fn *)d2i_ASN1_LONG_DATA,
-    (ifree_fn *)ASN1_LONG_DATA_free
+    (i2d_fn *)i2d_YASN1_LONG_DATA, (d2i_fn *)d2i_YASN1_LONG_DATA,
+    (ifree_fn *)YASN1_LONG_DATA_free
 };
 #endif
 
 /***** INT32 *****************************************************************/
 
 typedef struct {
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     int32_t test_int32;
     int32_t test_zint32;
-} ASN1_INT32_DATA;
+} YASN1_INT32_DATA;
 
-ASN1_SEQUENCE(ASN1_INT32_DATA) = {
-    ASN1_SIMPLE(ASN1_INT32_DATA, success, ASN1_FBOOLEAN),
-    ASN1_EMBED(ASN1_INT32_DATA, test_int32, INT32),
-    ASN1_EXP_OPT_EMBED(ASN1_INT32_DATA, test_zint32, ZINT32, 0)
-} static_ASN1_SEQUENCE_END(ASN1_INT32_DATA)
+YASN1_SEQUENCE(YASN1_INT32_DATA) = {
+    YASN1_SIMPLE(YASN1_INT32_DATA, success, YASN1_FBOOLEAN),
+    YASN1_EMBED(YASN1_INT32_DATA, test_int32, INT32),
+    YASN1_EXP_OPT_EMBED(YASN1_INT32_DATA, test_zint32, ZINT32, 0)
+} static_YASN1_SEQUENCE_END(YASN1_INT32_DATA)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(ASN1_INT32_DATA)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(ASN1_INT32_DATA)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(YASN1_INT32_DATA)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(YASN1_INT32_DATA)
 
-static ASN1_INT32_DATA int32_expected[] = {
+static YASN1_INT32_DATA int32_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(0, 0), /* t_zero */
-    CUSTOM_EXPECTED_SUCCESS(ASN1_LONG_UNDEF, ASN1_LONG_UNDEF), /* t_zero */
+    CUSTOM_EXPECTED_SUCCESS(YASN1_LONG_UNDEF, YASN1_LONG_UNDEF), /* t_zero */
     CUSTOM_EXPECTED_SUCCESS(1, 1), /* t_one */
     CUSTOM_EXPECTED_SUCCESS(-1, -1), /* t_one_neg */
     CUSTOM_EXPECTED_SUCCESS(-256, -256), /* t_minus_256 */
@@ -307,38 +307,38 @@ static ASN1_INT32_DATA int32_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(INT32_MIN, INT32_MIN), /* t_4bytes_4_neg */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_INT32_DATA int32_encdec_data[] = {
+static YASN1_INT32_DATA int32_encdec_data[] = {
     ENCDEC_ARRAY(INT32_MAX, INT32_MAX, INT32_MIN, INT32_MIN),
 };
 
 static TEST_PACKAGE int32_test_package = {
-    ASN1_ITEM_ref(ASN1_INT32_DATA), "INT32", 0,
+    YASN1_ITEM_ref(YASN1_INT32_DATA), "INT32", 0,
     int32_expected, sizeof(int32_expected), sizeof(int32_expected[0]),
     int32_encdec_data, sizeof(int32_encdec_data), sizeof(int32_encdec_data[0]),
-    (i2d_fn *)i2d_ASN1_INT32_DATA, (d2i_fn *)d2i_ASN1_INT32_DATA,
-    (ifree_fn *)ASN1_INT32_DATA_free
+    (i2d_fn *)i2d_YASN1_INT32_DATA, (d2i_fn *)d2i_YASN1_INT32_DATA,
+    (ifree_fn *)YASN1_INT32_DATA_free
 };
 
 /***** UINT32 ****************************************************************/
 
 typedef struct {
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     uint32_t test_uint32;
     uint32_t test_zuint32;
-} ASN1_UINT32_DATA;
+} YASN1_UINT32_DATA;
 
-ASN1_SEQUENCE(ASN1_UINT32_DATA) = {
-    ASN1_SIMPLE(ASN1_UINT32_DATA, success, ASN1_FBOOLEAN),
-    ASN1_EMBED(ASN1_UINT32_DATA, test_uint32, UINT32),
-    ASN1_EXP_OPT_EMBED(ASN1_UINT32_DATA, test_zuint32, ZUINT32, 0)
-} static_ASN1_SEQUENCE_END(ASN1_UINT32_DATA)
+YASN1_SEQUENCE(YASN1_UINT32_DATA) = {
+    YASN1_SIMPLE(YASN1_UINT32_DATA, success, YASN1_FBOOLEAN),
+    YASN1_EMBED(YASN1_UINT32_DATA, test_uint32, UINT32),
+    YASN1_EXP_OPT_EMBED(YASN1_UINT32_DATA, test_zuint32, ZUINT32, 0)
+} static_YASN1_SEQUENCE_END(YASN1_UINT32_DATA)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(ASN1_UINT32_DATA)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(ASN1_UINT32_DATA)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(YASN1_UINT32_DATA)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(YASN1_UINT32_DATA)
 
-static ASN1_UINT32_DATA uint32_expected[] = {
+static YASN1_UINT32_DATA uint32_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(0, 0), /* t_zero */
-    CUSTOM_EXPECTED_SUCCESS(ASN1_LONG_UNDEF, ASN1_LONG_UNDEF), /* t_zero */
+    CUSTOM_EXPECTED_SUCCESS(YASN1_LONG_UNDEF, YASN1_LONG_UNDEF), /* t_zero */
     CUSTOM_EXPECTED_SUCCESS(1, 1), /* t_one */
     CUSTOM_EXPECTED_FAILURE,     /* t_one_neg (illegal negative value) */
     CUSTOM_EXPECTED_FAILURE,     /* t_minus_256 (illegal negative value) */
@@ -355,38 +355,38 @@ static ASN1_UINT32_DATA uint32_expected[] = {
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_4_neg (illegal negative value) */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_UINT32_DATA uint32_encdec_data[] = {
+static YASN1_UINT32_DATA uint32_encdec_data[] = {
     ENCDEC_ARRAY(UINT32_MAX, UINT32_MAX, 0, 0),
 };
 
 static TEST_PACKAGE uint32_test_package = {
-    ASN1_ITEM_ref(ASN1_UINT32_DATA), "UINT32", 0,
+    YASN1_ITEM_ref(YASN1_UINT32_DATA), "UINT32", 0,
     uint32_expected, sizeof(uint32_expected), sizeof(uint32_expected[0]),
     uint32_encdec_data, sizeof(uint32_encdec_data), sizeof(uint32_encdec_data[0]),
-    (i2d_fn *)i2d_ASN1_UINT32_DATA, (d2i_fn *)d2i_ASN1_UINT32_DATA,
-    (ifree_fn *)ASN1_UINT32_DATA_free
+    (i2d_fn *)i2d_YASN1_UINT32_DATA, (d2i_fn *)d2i_YASN1_UINT32_DATA,
+    (ifree_fn *)YASN1_UINT32_DATA_free
 };
 
 /***** INT64 *****************************************************************/
 
 typedef struct {
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     int64_t test_int64;
     int64_t test_zint64;
-} ASN1_INT64_DATA;
+} YASN1_INT64_DATA;
 
-ASN1_SEQUENCE(ASN1_INT64_DATA) = {
-    ASN1_SIMPLE(ASN1_INT64_DATA, success, ASN1_FBOOLEAN),
-    ASN1_EMBED(ASN1_INT64_DATA, test_int64, INT64),
-    ASN1_EXP_OPT_EMBED(ASN1_INT64_DATA, test_zint64, ZINT64, 0)
-} static_ASN1_SEQUENCE_END(ASN1_INT64_DATA)
+YASN1_SEQUENCE(YASN1_INT64_DATA) = {
+    YASN1_SIMPLE(YASN1_INT64_DATA, success, YASN1_FBOOLEAN),
+    YASN1_EMBED(YASN1_INT64_DATA, test_int64, INT64),
+    YASN1_EXP_OPT_EMBED(YASN1_INT64_DATA, test_zint64, ZINT64, 0)
+} static_YASN1_SEQUENCE_END(YASN1_INT64_DATA)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(ASN1_INT64_DATA)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(ASN1_INT64_DATA)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(YASN1_INT64_DATA)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(YASN1_INT64_DATA)
 
-static ASN1_INT64_DATA int64_expected[] = {
+static YASN1_INT64_DATA int64_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(0, 0), /* t_zero */
-    CUSTOM_EXPECTED_SUCCESS(ASN1_LONG_UNDEF, ASN1_LONG_UNDEF), /* t_zero */
+    CUSTOM_EXPECTED_SUCCESS(YASN1_LONG_UNDEF, YASN1_LONG_UNDEF), /* t_zero */
     CUSTOM_EXPECTED_SUCCESS(1, 1), /* t_one */
     CUSTOM_EXPECTED_SUCCESS(-1, -1), /* t_one_neg */
     CUSTOM_EXPECTED_SUCCESS(-256, -256), /* t_minus_256 */
@@ -403,39 +403,39 @@ static ASN1_INT64_DATA int64_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(INT32_MIN, INT32_MIN), /* t_4bytes_4_neg */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_INT64_DATA int64_encdec_data[] = {
+static YASN1_INT64_DATA int64_encdec_data[] = {
     ENCDEC_ARRAY(INT64_MAX, INT64_MAX, INT64_MIN, INT64_MIN),
     ENCDEC_ARRAY(INT32_MAX, INT32_MAX, INT32_MIN, INT32_MIN),
 };
 
 static TEST_PACKAGE int64_test_package = {
-    ASN1_ITEM_ref(ASN1_INT64_DATA), "INT64", 0,
+    YASN1_ITEM_ref(YASN1_INT64_DATA), "INT64", 0,
     int64_expected, sizeof(int64_expected), sizeof(int64_expected[0]),
     int64_encdec_data, sizeof(int64_encdec_data), sizeof(int64_encdec_data[0]),
-    (i2d_fn *)i2d_ASN1_INT64_DATA, (d2i_fn *)d2i_ASN1_INT64_DATA,
-    (ifree_fn *)ASN1_INT64_DATA_free
+    (i2d_fn *)i2d_YASN1_INT64_DATA, (d2i_fn *)d2i_YASN1_INT64_DATA,
+    (ifree_fn *)YASN1_INT64_DATA_free
 };
 
 /***** UINT64 ****************************************************************/
 
 typedef struct {
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     uint64_t test_uint64;
     uint64_t test_zuint64;
-} ASN1_UINT64_DATA;
+} YASN1_UINT64_DATA;
 
-ASN1_SEQUENCE(ASN1_UINT64_DATA) = {
-    ASN1_SIMPLE(ASN1_UINT64_DATA, success, ASN1_FBOOLEAN),
-    ASN1_EMBED(ASN1_UINT64_DATA, test_uint64, UINT64),
-    ASN1_EXP_OPT_EMBED(ASN1_UINT64_DATA, test_zuint64, ZUINT64, 0)
-} static_ASN1_SEQUENCE_END(ASN1_UINT64_DATA)
+YASN1_SEQUENCE(YASN1_UINT64_DATA) = {
+    YASN1_SIMPLE(YASN1_UINT64_DATA, success, YASN1_FBOOLEAN),
+    YASN1_EMBED(YASN1_UINT64_DATA, test_uint64, UINT64),
+    YASN1_EXP_OPT_EMBED(YASN1_UINT64_DATA, test_zuint64, ZUINT64, 0)
+} static_YASN1_SEQUENCE_END(YASN1_UINT64_DATA)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(ASN1_UINT64_DATA)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(ASN1_UINT64_DATA)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(YASN1_UINT64_DATA)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(YASN1_UINT64_DATA)
 
-static ASN1_UINT64_DATA uint64_expected[] = {
+static YASN1_UINT64_DATA uint64_expected[] = {
     CUSTOM_EXPECTED_SUCCESS(0, 0), /* t_zero */
-    CUSTOM_EXPECTED_SUCCESS(ASN1_LONG_UNDEF, ASN1_LONG_UNDEF), /* t_zero */
+    CUSTOM_EXPECTED_SUCCESS(YASN1_LONG_UNDEF, YASN1_LONG_UNDEF), /* t_zero */
     CUSTOM_EXPECTED_SUCCESS(1, 1), /* t_one */
     CUSTOM_EXPECTED_FAILURE,     /* t_one_neg (illegal negative value) */
     CUSTOM_EXPECTED_FAILURE,     /* t_minus_256 (illegal negative value) */
@@ -453,16 +453,16 @@ static ASN1_UINT64_DATA uint64_expected[] = {
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_4_neg (illegal negative value) */
     CUSTOM_EXPECTED_FAILURE,     /* t_4bytes_5_negpad (illegal padding) */
 };
-static ASN1_UINT64_DATA uint64_encdec_data[] = {
+static YASN1_UINT64_DATA uint64_encdec_data[] = {
     ENCDEC_ARRAY(UINT64_MAX, UINT64_MAX, 0, 0),
 };
 
 static TEST_PACKAGE uint64_test_package = {
-    ASN1_ITEM_ref(ASN1_UINT64_DATA), "UINT64", 0,
+    YASN1_ITEM_ref(YASN1_UINT64_DATA), "UINT64", 0,
     uint64_expected, sizeof(uint64_expected), sizeof(uint64_expected[0]),
     uint64_encdec_data, sizeof(uint64_encdec_data), sizeof(uint64_encdec_data[0]),
-    (i2d_fn *)i2d_ASN1_UINT64_DATA, (d2i_fn *)d2i_ASN1_UINT64_DATA,
-    (ifree_fn *)ASN1_UINT64_DATA_free
+    (i2d_fn *)i2d_YASN1_UINT64_DATA, (d2i_fn *)d2i_YASN1_UINT64_DATA,
+    (ifree_fn *)YASN1_UINT64_DATA_free
 };
 
 /***** General testing functions *********************************************/
@@ -470,7 +470,7 @@ static TEST_PACKAGE uint64_test_package = {
 
 /* Template structure to map onto any test data structure */
 typedef struct {
-    ASN1_BOOLEAN success;
+    YASN1_BOOLEAN success;
     unsigned char bytes[1];       /* In reality, there's more */
 } EXPECTED;
 
@@ -595,7 +595,7 @@ static size_t make_custom_der(const TEST_CUSTOM_DATA *custom_data,
                               unsigned char **encoding, int explicit_default)
 {
     size_t firstbytes, secondbytes = 0, secondbytesinner = 0, seqbytes;
-    const unsigned char t_true[] = { V_ASN1_BOOLEAN, 0x01, 0xff };
+    const unsigned char t_true[] = { V_YASN1_BOOLEAN, 0x01, 0xff };
     unsigned char *p = NULL;
     size_t i;
 
@@ -639,12 +639,12 @@ static size_t make_custom_der(const TEST_CUSTOM_DATA *custom_data,
     *p++ = 0x30;
     der_encode_length(sizeof(t_true) + firstbytes + secondbytes, &p);
 
-    /* ASN1_BOOLEAN TRUE */
+    /* YASN1_BOOLEAN TRUE */
     memcpy(p, t_true, sizeof(t_true)); /* Marks decoding success */
     p += sizeof(t_true);
 
     /* First INTEGER item (non-optional) */
-    *p++ = V_ASN1_INTEGER;
+    *p++ = V_YASN1_INTEGER;
     der_encode_length(custom_data->nbytes1, &p);
     memcpy(p, custom_data->bytes1, custom_data->nbytes1);
     p += custom_data->nbytes1;
@@ -654,7 +654,7 @@ static size_t make_custom_der(const TEST_CUSTOM_DATA *custom_data,
         /* Start with the explicit optional tag */
         *p++ = 0xa0;
         der_encode_length(secondbytesinner, &p);
-        *p++ = V_ASN1_INTEGER;
+        *p++ = V_YASN1_INTEGER;
         der_encode_length(custom_data->nbytes2, &p);
         memcpy(p, custom_data->bytes2, custom_data->nbytes2);
         p += custom_data->nbytes2;
@@ -709,8 +709,8 @@ static int do_encode_custom(EXPECTED *input,
 static int do_print_item(const TEST_PACKAGE *package)
 {
 #define DATA_BUF_SIZE 256
-    const ASN1_ITEM *i = ASN1_ITEM_ptr(package->asn1_type);
-    ASN1_VALUE *o;
+    const YASN1_ITEM *i = YASN1_ITEM_ptr(package->asn1_type);
+    YASN1_VALUE *o;
     int ret;
 
     OPENSSL_assert(package->encode_expectations_elem_size <= DATA_BUF_SIZE);
@@ -719,7 +719,7 @@ static int do_print_item(const TEST_PACKAGE *package)
 
     (void)RAND_bytes((unsigned char*)o,
                      (int)package->encode_expectations_elem_size);
-    ret = ASN1_item_print(bio_err, o, 0, i, NULL);
+    ret = YASN1_item_print(bio_err, o, 0, i, NULL);
     OPENSSL_free(o);
 
     return ret;
@@ -857,19 +857,19 @@ static int test_uint64(void)
 }
 
 typedef struct {
-    ASN1_STRING *invalidDirString;
+    YASN1_STRING *invalidDirString;
 } INVALIDTEMPLATE;
 
-ASN1_SEQUENCE(INVALIDTEMPLATE) = {
+YASN1_SEQUENCE(INVALIDTEMPLATE) = {
     /*
      * DirectoryString is a CHOICE type so it must use explicit tagging -
      * but we deliberately use implicit here, which makes this template invalid.
      */
-    ASN1_IMP(INVALIDTEMPLATE, invalidDirString, DIRECTORYSTRING, 12)
-} static_ASN1_SEQUENCE_END(INVALIDTEMPLATE)
+    YASN1_IMP(INVALIDTEMPLATE, invalidDirString, DIRECTORYSTRING, 12)
+} static_YASN1_SEQUENCE_END(INVALIDTEMPLATE)
 
-IMPLEMENT_STATIC_ASN1_ENCODE_FUNCTIONS(INVALIDTEMPLATE)
-IMPLEMENT_STATIC_ASN1_ALLOC_FUNCTIONS(INVALIDTEMPLATE)
+IMPLEMENT_STATIC_YASN1_ENCODE_FUNCTIONS(INVALIDTEMPLATE)
+IMPLEMENT_STATIC_YASN1_ALLOC_FUNCTIONS(INVALIDTEMPLATE)
 
 static int test_invalid_template(void)
 {

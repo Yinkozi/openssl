@@ -59,7 +59,7 @@ $idx="esi";
 $key="edi";
 $Tbl="ebp";
 
-# stack frame layout in _x86_Camellia_* routines, frame is allocated
+# stack frame layout in _x86_YCamellia_* routines, frame is allocated
 # by caller
 $__ra=&DWP(0,"esp");	# return address
 $__s0=&DWP(4,"esp");	# s0 backing store
@@ -68,22 +68,22 @@ $__s2=&DWP(12,"esp");	# s2 backing store
 $__s3=&DWP(16,"esp");	# s3 backing store
 $__end=&DWP(20,"esp");	# pointer to end/start of key schedule
 
-# stack frame layout in Camellia_[en|crypt] routines, which differs from
+# stack frame layout in YCamellia_[en|crypt] routines, which differs from
 # above by 4 and overlaps by pointer to end/start of key schedule
 $_end=&DWP(16,"esp");
 $_esp=&DWP(20,"esp");
 
-# const unsigned int Camellia_SBOX[4][256];
-# Well, sort of... Camellia_SBOX[0][] is interleaved with [1][],
+# const unsigned int YCamellia_SBOX[4][256];
+# Well, sort of... YCamellia_SBOX[0][] is interleaved with [1][],
 # and [2][] - with [3][]. This is done to optimize code size.
-$SBOX1_1110=0;		# Camellia_SBOX[0]
-$SBOX4_4404=4;		# Camellia_SBOX[1]
-$SBOX2_0222=2048;	# Camellia_SBOX[2]
-$SBOX3_3033=2052;	# Camellia_SBOX[3]
-&static_label("Camellia_SIGMA");
-&static_label("Camellia_SBOX");
+$SBOX1_1110=0;		# YCamellia_SBOX[0]
+$SBOX4_4404=4;		# YCamellia_SBOX[1]
+$SBOX2_0222=2048;	# YCamellia_SBOX[2]
+$SBOX3_3033=2052;	# YCamellia_SBOX[3]
+&static_label("YCamellia_SIGMA");
+&static_label("YCamellia_SBOX");
 
-sub Camellia_Feistel {
+sub YCamellia_Feistel {
 my $i=@_[0];
 my $seed=defined(@_[1])?@_[1]:0;
 my $scale=$seed<0?-8:8;
@@ -123,12 +123,12 @@ my $t0=@T[($j)%4],$t1=@T[($j+1)%4],$t2=@T[($j+2)%4],$t3=@T[($j+3)%4];
 	&mov	(&DWP($frame+4*(($j+2)%4),"esp"),$t2);	# s2=t2
 }
 
-# void Camellia_EncryptBlock_Rounds(
+# void YCamellia_EncryptBlock_Rounds(
 #		int grandRounds,
 #		const Byte plaintext[],
 #		const KEY_TABLE_TYPE keyTable,
 #		Byte ciphertext[])
-&function_begin("Camellia_EncryptBlock_Rounds");
+&function_begin("YCamellia_EncryptBlock_Rounds");
 	&mov	("eax",&wparam(0));	# load grandRounds
 	&mov	($idx,&wparam(1));	# load plaintext pointer
 	&mov	($key,&wparam(2));	# load key schedule pointer
@@ -154,7 +154,7 @@ my $t0=@T[($j)%4],$t1=@T[($j+1)%4],$t2=@T[($j+2)%4],$t3=@T[($j+3)%4];
 	&call	(&label("pic_point"));
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea	($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea	($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
 
 	&mov	(@T[0],&DWP(0,$idx));	# load plaintext
 	&mov	(@T[1],&DWP(4,$idx));
@@ -165,7 +165,7 @@ my $t0=@T[($j)%4],$t1=@T[($j+1)%4],$t2=@T[($j+2)%4],$t3=@T[($j+3)%4];
 	&bswap	(@T[2]);
 	&bswap	(@T[3]);
 
-	&call	("_x86_Camellia_encrypt");
+	&call	("_x86_YCamellia_encrypt");
 
 	&mov	("esp",$_esp);
 	&bswap	(@T[0]);
@@ -177,23 +177,23 @@ my $t0=@T[($j)%4],$t1=@T[($j+1)%4],$t2=@T[($j+2)%4],$t3=@T[($j+3)%4];
 	&mov	(&DWP(4,$idx),@T[1]);
 	&mov	(&DWP(8,$idx),@T[2]);
 	&mov	(&DWP(12,$idx),@T[3]);
-&function_end("Camellia_EncryptBlock_Rounds");
+&function_end("YCamellia_EncryptBlock_Rounds");
 # V1.x API
-&function_begin_B("Camellia_EncryptBlock");
+&function_begin_B("YCamellia_EncryptBlock");
 	&mov	("eax",128);
 	&sub	("eax",&wparam(0));	# load keyBitLength
 	&mov	("eax",3);
 	&adc	("eax",0);		# keyBitLength==128?3:4
 	&mov	(&wparam(0),"eax");
-	&jmp	(&label("Camellia_EncryptBlock_Rounds"));
-&function_end_B("Camellia_EncryptBlock");
+	&jmp	(&label("YCamellia_EncryptBlock_Rounds"));
+&function_end_B("YCamellia_EncryptBlock");
 
 if ($OPENSSL) {
-# void Camellia_encrypt(
+# void YCamellia_encrypt(
 #		const unsigned char *in,
 #		unsigned char *out,
 #		const CAMELLIA_KEY *key)
-&function_begin("Camellia_encrypt");
+&function_begin("YCamellia_encrypt");
 	&mov	($idx,&wparam(0));	# load plaintext pointer
 	&mov	($key,&wparam(2));	# load key schedule pointer
 
@@ -219,7 +219,7 @@ if ($OPENSSL) {
 	&call	(&label("pic_point"));
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea	($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea	($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
 
 	&mov	(@T[0],&DWP(0,$idx));	# load plaintext
 	&mov	(@T[1],&DWP(4,$idx));
@@ -230,7 +230,7 @@ if ($OPENSSL) {
 	&bswap	(@T[2]);
 	&bswap	(@T[3]);
 
-	&call	("_x86_Camellia_encrypt");
+	&call	("_x86_YCamellia_encrypt");
 
 	&mov	("esp",$_esp);
 	&bswap	(@T[0]);
@@ -242,10 +242,10 @@ if ($OPENSSL) {
 	&mov	(&DWP(4,$idx),@T[1]);
 	&mov	(&DWP(8,$idx),@T[2]);
 	&mov	(&DWP(12,$idx),@T[3]);
-&function_end("Camellia_encrypt");
+&function_end("YCamellia_encrypt");
 }
 
-&function_begin_B("_x86_Camellia_encrypt");
+&function_begin_B("_x86_YCamellia_encrypt");
 	&xor	(@T[0],&DWP(0,$key));	# ^=key[0-3]
 	&xor	(@T[1],&DWP(4,$key));
 	&xor	(@T[2],&DWP(8,$key));
@@ -258,7 +258,7 @@ if ($OPENSSL) {
 	&mov	($__s3,@T[3]);
 
 &set_label("loop",16);
-	for ($i=0;$i<6;$i++) { Camellia_Feistel($i,16,4); }
+	for ($i=0;$i<6;$i++) { YCamellia_Feistel($i,16,4); }
 
 	&add	($key,16*4);
 	&cmp	($key,$__end);
@@ -296,14 +296,14 @@ if ($OPENSSL) {
 	&xor	(@T[2],&DWP(8,$key));
 	&xor	(@T[3],&DWP(12,$key));
 	&ret	();
-&function_end_B("_x86_Camellia_encrypt");
+&function_end_B("_x86_YCamellia_encrypt");
 
-# void Camellia_DecryptBlock_Rounds(
+# void YCamellia_DecryptBlock_Rounds(
 #		int grandRounds,
 #		const Byte ciphertext[],
 #		const KEY_TABLE_TYPE keyTable,
 #		Byte plaintext[])
-&function_begin("Camellia_DecryptBlock_Rounds");
+&function_begin("YCamellia_DecryptBlock_Rounds");
 	&mov	("eax",&wparam(0));	# load grandRounds
 	&mov	($idx,&wparam(1));	# load ciphertext pointer
 	&mov	($key,&wparam(2));	# load key schedule pointer
@@ -329,7 +329,7 @@ if ($OPENSSL) {
 	&call	(&label("pic_point"));
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea	($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea	($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
 
 	&mov	(@T[0],&DWP(0,$idx));	# load ciphertext
 	&mov	(@T[1],&DWP(4,$idx));
@@ -340,7 +340,7 @@ if ($OPENSSL) {
 	&bswap	(@T[2]);
 	&bswap	(@T[3]);
 
-	&call	("_x86_Camellia_decrypt");
+	&call	("_x86_YCamellia_decrypt");
 
 	&mov	("esp",&DWP(5*4,"esp"));
 	&bswap	(@T[0]);
@@ -352,23 +352,23 @@ if ($OPENSSL) {
 	&mov	(&DWP(4,$idx),@T[1]);
 	&mov	(&DWP(8,$idx),@T[2]);
 	&mov	(&DWP(12,$idx),@T[3]);
-&function_end("Camellia_DecryptBlock_Rounds");
+&function_end("YCamellia_DecryptBlock_Rounds");
 # V1.x API
-&function_begin_B("Camellia_DecryptBlock");
+&function_begin_B("YCamellia_DecryptBlock");
 	&mov	("eax",128);
 	&sub	("eax",&wparam(0));	# load keyBitLength
 	&mov	("eax",3);
 	&adc	("eax",0);		# keyBitLength==128?3:4
 	&mov	(&wparam(0),"eax");
-	&jmp	(&label("Camellia_DecryptBlock_Rounds"));
-&function_end_B("Camellia_DecryptBlock");
+	&jmp	(&label("YCamellia_DecryptBlock_Rounds"));
+&function_end_B("YCamellia_DecryptBlock");
 
 if ($OPENSSL) {
-# void Camellia_decrypt(
+# void YCamellia_decrypt(
 #		const unsigned char *in,
 #		unsigned char *out,
 #		const CAMELLIA_KEY *key)
-&function_begin("Camellia_decrypt");
+&function_begin("YCamellia_decrypt");
 	&mov	($idx,&wparam(0));	# load ciphertext pointer
 	&mov	($key,&wparam(2));	# load key schedule pointer
 
@@ -394,7 +394,7 @@ if ($OPENSSL) {
 	&call	(&label("pic_point"));
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea	($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea	($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
 
 	&mov	(@T[0],&DWP(0,$idx));	# load ciphertext
 	&mov	(@T[1],&DWP(4,$idx));
@@ -405,7 +405,7 @@ if ($OPENSSL) {
 	&bswap	(@T[2]);
 	&bswap	(@T[3]);
 
-	&call	("_x86_Camellia_decrypt");
+	&call	("_x86_YCamellia_decrypt");
 
 	&mov	("esp",&DWP(5*4,"esp"));
 	&bswap	(@T[0]);
@@ -417,10 +417,10 @@ if ($OPENSSL) {
 	&mov	(&DWP(4,$idx),@T[1]);
 	&mov	(&DWP(8,$idx),@T[2]);
 	&mov	(&DWP(12,$idx),@T[3]);
-&function_end("Camellia_decrypt");
+&function_end("YCamellia_decrypt");
 }
 
-&function_begin_B("_x86_Camellia_decrypt");
+&function_begin_B("_x86_YCamellia_decrypt");
 	&xor	(@T[0],&DWP(0,$key));	# ^=key[0-3]
 	&xor	(@T[1],&DWP(4,$key));
 	&xor	(@T[2],&DWP(8,$key));
@@ -433,7 +433,7 @@ if ($OPENSSL) {
 	&mov	($__s3,@T[3]);
 
 &set_label("loop",16);
-	for ($i=0;$i<6;$i++) { Camellia_Feistel($i,-8,4); }
+	for ($i=0;$i<6;$i++) { YCamellia_Feistel($i,-8,4); }
 
 	&sub	($key,16*4);
 	&cmp	($key,$__end);
@@ -471,7 +471,7 @@ if ($OPENSSL) {
 	&xor	(@T[0],&DWP(0,$key));
 	&xor	(@T[1],&DWP(4,$key));
 	&ret	();
-&function_end_B("_x86_Camellia_decrypt");
+&function_end_B("_x86_YCamellia_decrypt");
 
 # shld is very slow on Intel P4 family. Even on AMD it limits
 # instruction decode rate [because it's VectorPath] and consequently
@@ -550,11 +550,11 @@ my $bias=int(@T[0])?shift(@T):0;
 	&mov	(@T[3],&DWP($bias+$rnd*8+12,$key))	if ($#T>=3);
 }
 
-# void Camellia_Ekeygen(
+# void YCamellia_Ekeygen(
 #		const int keyBitLength,
 #		const Byte *rawKey,
 #		KEY_TABLE_TYPE keyTable)
-&function_begin("Camellia_Ekeygen");
+&function_begin("YCamellia_Ekeygen");
 { my $step=0;
 
 	&stack_push(4);				# place for s[0-3]
@@ -607,16 +607,16 @@ my $bias=int(@T[0])?shift(@T):0;
 	&call	(&label("pic_point"));
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea	($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
-	&lea	($key,&DWP(&label("Camellia_SIGMA")."-".&label("Camellia_SBOX"),$Tbl));
+	&lea	($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea	($key,&DWP(&label("YCamellia_SIGMA")."-".&label("YCamellia_SBOX"),$Tbl));
 
 	&mov	($idx,&DWP($step*8,$key));	# prefetch SIGMA[0]
 	&mov	(&swtmp(0),@T[0]);		# save s[0-3]
 	&mov	(&swtmp(1),@T[1]);
 	&mov	(&swtmp(2),@T[2]);
 	&mov	(&swtmp(3),@T[3]);
-	&Camellia_Feistel($step++);
-	&Camellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
 	&mov	(@T[2],&swtmp(2));
 	&mov	(@T[3],&swtmp(3));
 
@@ -631,8 +631,8 @@ my $bias=int(@T[0])?shift(@T):0;
 	&mov	(&swtmp(1),@T[1]);
 	&mov	(&swtmp(2),@T[2]);
 	&mov	(&swtmp(3),@T[3]);
-	&Camellia_Feistel($step++);
-	&Camellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
 	&mov	(@T[2],&swtmp(2));
 	&mov	(@T[3],&swtmp(3));
 
@@ -682,8 +682,8 @@ my $bias=int(@T[0])?shift(@T):0;
 	&mov	(&swtmp(1),@T[1]);
 	&mov	(&swtmp(2),@T[2]);
 	&mov	(&swtmp(3),@T[3]);
-	&Camellia_Feistel($step++);
-	&Camellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
+	&YCamellia_Feistel($step++);
 	&mov	(@T[2],&swtmp(2));
 	&mov	(@T[3],&swtmp(3));
 
@@ -730,14 +730,14 @@ my $bias=int(@T[0])?shift(@T):0;
 	&lea	("edx",&DWP(272-128,$key));	# end of key schedule
 	&stack_pop(4);
 }
-&function_end("Camellia_Ekeygen");
+&function_end("YCamellia_Ekeygen");
 
 if ($OPENSSL) {
-# int Camellia_set_key (
+# int YCamellia_set_key (
 #		const unsigned char *userKey,
 #		int bits,
 #		CAMELLIA_KEY *key)
-&function_begin_B("Camellia_set_key");
+&function_begin_B("YCamellia_set_key");
 	&push	("ebx");
 	&mov	("ecx",&wparam(0));	# pull arguments
 	&mov	("ebx",&wparam(1));
@@ -761,7 +761,7 @@ if ($OPENSSL) {
 	&push	("edx");		# push arguments
 	&push	("ecx");
 	&push	("ebx");
-	&call	("Camellia_Ekeygen");
+	&call	("YCamellia_Ekeygen");
 	&stack_pop(3);
 
 	# eax holds grandRounds and edx points at where to put it
@@ -770,7 +770,7 @@ if ($OPENSSL) {
 &set_label("done",4);
 	&pop	("ebx");
 	&ret	();
-&function_end_B("Camellia_set_key");
+&function_end_B("YCamellia_set_key");
 }
 
 @SBOX=(
@@ -796,18 +796,18 @@ sub S4404 { my $i=shift; $i=($i<<1|$i>>7)&0xff; $i=@SBOX[$i]; return $i<<24|$i<<
 sub S0222 { my $i=shift; $i=@SBOX[$i]; $i=($i<<1|$i>>7)&0xff; return $i<<16|$i<<8|$i; }
 sub S3033 { my $i=shift; $i=@SBOX[$i]; $i=($i>>1|$i<<7)&0xff; return $i<<24|$i<<8|$i; }
 
-&set_label("Camellia_SIGMA",64);
+&set_label("YCamellia_SIGMA",64);
 &data_word(
     0xa09e667f, 0x3bcc908b, 0xb67ae858, 0x4caa73b2,
     0xc6ef372f, 0xe94f82be, 0x54ff53a5, 0xf1d36f1c,
     0x10e527fa, 0xde682d1d, 0xb05688c2, 0xb3e6c1fd,
     0,          0,          0,          0);
-&set_label("Camellia_SBOX",64);
+&set_label("YCamellia_SBOX",64);
 # tables are interleaved, remember?
 for ($i=0;$i<256;$i++) { &data_word(&S1110($i),&S4404($i)); }
 for ($i=0;$i<256;$i++) { &data_word(&S0222($i),&S3033($i)); }
 
-# void Camellia_cbc_encrypt (const void char *inp, unsigned char *out,
+# void YCamellia_cbc_encrypt (const void char *inp, unsigned char *out,
 #			size_t length, const CAMELLIA_KEY *key,
 #			unsigned char *ivp,const int enc);
 {
@@ -828,7 +828,7 @@ my $ivec=&DWP(44,"esp");	#ivec[16]
 my $_tmp=&DWP(44,"esp");	#volatile variable [yes, aliases with ivec]
 my ($s0,$s1,$s2,$s3) = @T;
 
-&function_begin("Camellia_cbc_encrypt");
+&function_begin("YCamellia_cbc_encrypt");
 	&mov	($s2 eq "ecx"? $s2 : "",&wparam(2));	# load len
 	&cmp	($s2,0);
 	&je	(&label("enc_out"));
@@ -869,7 +869,7 @@ my ($s0,$s1,$s2,$s3) = @T;
 	&call   (&label("pic_point"));	# make it PIC!
 	&set_label("pic_point");
 	&blindpop($Tbl);
-	&lea    ($Tbl,&DWP(&label("Camellia_SBOX")."-".&label("pic_point"),$Tbl));
+	&lea    ($Tbl,&DWP(&label("YCamellia_SBOX")."-".&label("pic_point"),$Tbl));
 
 	&mov	($idx,32);
 	&set_label("prefetch_sbox",4);
@@ -914,7 +914,7 @@ my ($s0,$s1,$s2,$s3) = @T;
 		&bswap	($s2);
 		&bswap	($s3);
 
-		&call	("_x86_Camellia_encrypt");
+		&call	("_x86_YCamellia_encrypt");
 
 		&mov	($idx,$_inp);		# load inp
 		&mov	($key,$_out);		# load out
@@ -1006,7 +1006,7 @@ my ($s0,$s1,$s2,$s3) = @T;
 		&bswap	($s2);
 		&bswap	($s3);
 
-		&call	("_x86_Camellia_decrypt");
+		&call	("_x86_YCamellia_decrypt");
 
 		&mov	($key,$_tmp);		# load ivp
 		&mov	($idx,$_len);		# load len
@@ -1083,7 +1083,7 @@ my ($s0,$s1,$s2,$s3) = @T;
 		&bswap	($s2);
 		&bswap	($s3);
 
-		&call	("_x86_Camellia_decrypt");
+		&call	("_x86_YCamellia_decrypt");
 
 		&mov	($key,$_ivp);		# load ivp
 		&mov	($idx,$_out);		# load out
@@ -1140,10 +1140,10 @@ my ($s0,$s1,$s2,$s3) = @T;
     &set_label("dec_out",4);
     &mov	("esp",$_esp);
     &popf	();
-&function_end("Camellia_cbc_encrypt");
+&function_end("YCamellia_cbc_encrypt");
 }
 
-&asciz("Camellia for x86 by <appro\@openssl.org>");
+&asciz("YCamellia for x86 by <appro\@openssl.org>");
 
 &asm_finish();
 

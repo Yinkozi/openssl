@@ -36,7 +36,7 @@ static const unsigned char clienthello_nocookie[] = {
     0x00, /* Session id len */
     0x00, /* Cookie len */
     0x00, 0x04, /* Ciphersuites len */
-    0x00, 0x2f, /* AES128-SHA */
+    0x00, 0x2f, /* YAES128-SHA */
     0x00, 0xff, /* Empty reneg info SCSV */
     0x01, /* Compression methods len */
     0x00, /* Null compression */
@@ -101,7 +101,7 @@ static const unsigned char clienthello_2ndfrag[] = {
     0x00, /* Session id len */
     0x00, /* Cookie len */
     0x00, 0x04, /* Ciphersuites len */
-    0x00, 0x2f, /* AES128-SHA */
+    0x00, 0x2f, /* YAES128-SHA */
     0x00, 0xff, /* Empty reneg info SCSV */
     0x01, /* Compression methods len */
     0x00, /* Null compression */
@@ -129,7 +129,7 @@ static const unsigned char clienthello_cookie[] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 005, 0x06, 007, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
     0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, /* Cookie */
     0x00, 0x04, /* Ciphersuites len */
-    0x00, 0x2f, /* AES128-SHA */
+    0x00, 0x2f, /* YAES128-SHA */
     0x00, 0xff, /* Empty reneg info SCSV */
     0x01, /* Compression methods len */
     0x00, /* Null compression */
@@ -180,7 +180,7 @@ static const unsigned char clienthello_badcookie[] = {
     0x01, 0x01, 0x02, 0x03, 0x04, 005, 0x06, 007, 0x08, 0x09, 0x0A, 0x0B, 0x0C,
     0x0D, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13, /* Cookie */
     0x00, 0x04, /* Ciphersuites len */
-    0x00, 0x2f, /* AES128-SHA */
+    0x00, 0x2f, /* YAES128-SHA */
     0x00, 0xff, /* Empty reneg info SCSV */
     0x01, /* Compression methods len */
     0x00, /* Null compression */

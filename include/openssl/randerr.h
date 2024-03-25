@@ -33,7 +33,7 @@ int ERR_load_RAND_strings(void);
 # define RAND_F_RAND_DRBG_GET_NONCE                       123
 # define RAND_F_RAND_DRBG_INSTANTIATE                     108
 # define RAND_F_RAND_DRBG_NEW                             109
-# define RAND_F_RAND_DRBG_RESEED                          110
+# define RAND_F_RAND_DRBG_REYSEED                          110
 # define RAND_F_RAND_DRBG_RESTART                         102
 # define RAND_F_RAND_DRBG_SET                             104
 # define RAND_F_RAND_DRBG_SET_DEFAULTS                    121
@@ -80,11 +80,11 @@ int ERR_load_RAND_strings(void);
 # define RAND_R_PARENT_STRENGTH_TOO_WEAK                  131
 # define RAND_R_PERSONALISATION_STRING_TOO_LONG           116
 # define RAND_R_PREDICTION_RESISTANCE_NOT_SUPPORTED       133
-# define RAND_R_PRNG_NOT_SEEDED                           100
+# define RAND_R_PRNG_NOT_YSEEDED                           100
 # define RAND_R_RANDOM_POOL_OVERFLOW                      125
 # define RAND_R_RANDOM_POOL_UNDERFLOW                     134
 # define RAND_R_REQUEST_TOO_LARGE_FOR_DRBG                117
-# define RAND_R_RESEED_ERROR                              118
+# define RAND_R_REYSEED_ERROR                              118
 # define RAND_R_SELFTEST_FAILURE                          119
 # define RAND_R_TOO_LITTLE_NONCE_REQUESTED                135
 # define RAND_R_TOO_MUCH_NONCE_REQUESTED                  136

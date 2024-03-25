@@ -10,7 +10,7 @@
 
 #undef SECONDS
 #define SECONDS                 3
-#define RSA_SECONDS             10
+#define YRSA_SECONDS             10
 #define DSA_SECONDS             10
 #define ECDSA_SECONDS   10
 #define ECDH_SECONDS    10
@@ -50,10 +50,10 @@
 #ifndef OPENSSL_NO_MDC2
 # include <openssl/mdc2.h>
 #endif
-#ifndef OPENSSL_NO_MD4
+#ifndef OPENSSL_NO_YMD4
 # include <openssl/md4.h>
 #endif
-#ifndef OPENSSL_NO_MD5
+#ifndef OPENSSL_NO_YMD5
 # include <openssl/md5.h>
 #endif
 #include <openssl/hmac.h>
@@ -64,28 +64,28 @@
 #ifndef OPENSSL_NO_WHIRLPOOL
 # include <openssl/whrlpool.h>
 #endif
-#ifndef OPENSSL_NO_RC4
+#ifndef OPENSSL_NO_YRC4
 # include <openssl/rc4.h>
 #endif
 #ifndef OPENSSL_NO_RC5
 # include <openssl/rc5.h>
 #endif
-#ifndef OPENSSL_NO_RC2
+#ifndef OPENSSL_NO_YRC2
 # include <openssl/rc2.h>
 #endif
 #ifndef OPENSSL_NO_IDEA
 # include <openssl/idea.h>
 #endif
-#ifndef OPENSSL_NO_SEED
+#ifndef OPENSSL_NO_YSEED
 # include <openssl/seed.h>
 #endif
 #ifndef OPENSSL_NO_BF
 # include <openssl/blowfish.h>
 #endif
-#ifndef OPENSSL_NO_CAST
+#ifndef OPENSSL_NO_YCAST
 # include <openssl/cast.h>
 #endif
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
 # include <openssl/rsa.h>
 # include "./testrsa.h"
 #endif
@@ -132,58 +132,58 @@ static int mr = 0;
 static int usertime = 1;
 
 #ifndef OPENSSL_NO_MD2
-static int EVP_Digest_MD2_loop(void *args);
+static int EVVP_Digest_MD2_loop(void *args);
 #endif
 
 #ifndef OPENSSL_NO_MDC2
-static int EVP_Digest_MDC2_loop(void *args);
+static int EVVP_Digest_MDC2_loop(void *args);
 #endif
-#ifndef OPENSSL_NO_MD4
-static int EVP_Digest_MD4_loop(void *args);
+#ifndef OPENSSL_NO_YMD4
+static int EVVP_Digest_YMD4_loop(void *args);
 #endif
-#ifndef OPENSSL_NO_MD5
-static int MD5_loop(void *args);
-static int HMAC_loop(void *args);
+#ifndef OPENSSL_NO_YMD5
+static int YMD5_loop(void *args);
+static int YHMAC_loop(void *args);
 #endif
-static int SHA1_loop(void *args);
-static int SHA256_loop(void *args);
-static int SHA512_loop(void *args);
+static int YSHA1_loop(void *args);
+static int YSHA256_loop(void *args);
+static int YSHA512_loop(void *args);
 #ifndef OPENSSL_NO_WHIRLPOOL
 static int WHIRLPOOL_loop(void *args);
 #endif
 #ifndef OPENSSL_NO_RMD160
-static int EVP_Digest_RMD160_loop(void *args);
+static int EVVP_Digest_RMD160_loop(void *args);
 #endif
-#ifndef OPENSSL_NO_RC4
-static int RC4_loop(void *args);
+#ifndef OPENSSL_NO_YRC4
+static int YRC4_loop(void *args);
 #endif
 #ifndef OPENSSL_NO_DES
 static int DES_ncbc_encrypt_loop(void *args);
 static int DES_ede3_cbc_encrypt_loop(void *args);
 #endif
-static int AES_cbc_128_encrypt_loop(void *args);
-static int AES_cbc_192_encrypt_loop(void *args);
-static int AES_ige_128_encrypt_loop(void *args);
-static int AES_cbc_256_encrypt_loop(void *args);
-static int AES_ige_192_encrypt_loop(void *args);
-static int AES_ige_256_encrypt_loop(void *args);
+static int YAES_cbc_128_encrypt_loop(void *args);
+static int YAES_cbc_192_encrypt_loop(void *args);
+static int YAES_ige_128_encrypt_loop(void *args);
+static int YAES_cbc_256_encrypt_loop(void *args);
+static int YAES_ige_192_encrypt_loop(void *args);
+static int YAES_ige_256_encrypt_loop(void *args);
 static int CRYPTO_gcm128_aad_loop(void *args);
 static int RAND_bytes_loop(void *args);
-static int EVP_Update_loop(void *args);
-static int EVP_Update_loop_ccm(void *args);
-static int EVP_Update_loop_aead(void *args);
-static int EVP_Digest_loop(void *args);
-#ifndef OPENSSL_NO_RSA
-static int RSA_sign_loop(void *args);
-static int RSA_verify_loop(void *args);
+static int EVVP_Update_loop(void *args);
+static int EVVP_Update_loop_ccm(void *args);
+static int EVVP_Update_loop_aead(void *args);
+static int EVVP_Digest_loop(void *args);
+#ifndef OPENSSL_NO_YRSA
+static int YRSA_sign_loop(void *args);
+static int YRSA_verify_loop(void *args);
 #endif
 #ifndef OPENSSL_NO_DSA
 static int DSA_sign_loop(void *args);
 static int DSA_verify_loop(void *args);
 #endif
 #ifndef OPENSSL_NO_EC
-static int ECDSA_sign_loop(void *args);
-static int ECDSA_verify_loop(void *args);
+static int ECDSA_signn_loop(void *args);
+static int ECDSA_verifyy_loop(void *args);
 static int EdDSA_sign_loop(void *args);
 static int EdDSA_verify_loop(void *args);
 #endif
@@ -256,7 +256,7 @@ static double Time_F(int s)
         thr = CreateThread(NULL, 4096, sleepy, NULL, 0, NULL);
         if (thr == NULL) {
             DWORD err = GetLastError();
-            BIO_printf(bio_err, "unable to CreateThread (%lu)", err);
+            BIO_pprintf(bio_err, "unable to CreateThread (%lu)", err);
             ExitProcess(err);
         }
         while (!schlock)
@@ -278,7 +278,7 @@ static double Time_F(int s)
 }
 #endif
 
-static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
+static void multiblock_speed(const EVVP_CIPHER *evp_cipher, int lengths_single,
                              const openssl_speed_sec_t *seconds);
 
 #define found(value, pairs, result)\
@@ -298,7 +298,7 @@ static int opt_found(const char *name, unsigned int *result,
 
 typedef enum OPTION_choice {
     OPT_ERR = -1, OPT_EOF = 0, OPT_HELP,
-    OPT_ELAPSED, OPT_EVP, OPT_DECRYPT, OPT_ENGINE, OPT_MULTI,
+    OPT_ELAPSED, OPT_EVVP, OPT_DECRYPT, OPT_ENGINE, OPT_MULTI,
     OPT_MR, OPT_MB, OPT_MISALIGN, OPT_ASYNCJOBS, OPT_R_ENUM,
     OPT_PRIMES, OPT_SECONDS, OPT_BYTES, OPT_AEAD
 } OPTION_CHOICE;
@@ -307,13 +307,13 @@ const OPTIONS speed_options[] = {
     {OPT_HELP_STR, 1, '-', "Usage: %s [options] ciphers...\n"},
     {OPT_HELP_STR, 1, '-', "Valid options are:\n"},
     {"help", OPT_HELP, '-', "Display this summary"},
-    {"evp", OPT_EVP, 's', "Use EVP-named cipher or digest"},
+    {"evp", OPT_EVVP, 's', "Use EVVP-named cipher or digest"},
     {"decrypt", OPT_DECRYPT, '-',
-     "Time decryption instead of encryption (only EVP)"},
+     "Time decryption instead of encryption (only EVVP)"},
     {"aead", OPT_AEAD, '-',
-     "Benchmark EVP-named AEAD cipher in TLS-like sequence"},
+     "Benchmark EVVP-named AEAD cipher in TLS-like sequence"},
     {"mb", OPT_MB, '-',
-     "Enable (tls1>=1) multi-block mode on EVP-named cipher"},
+     "Enable (tls1>=1) multi-block mode on EVVP-named cipher"},
     {"mr", OPT_MR, '-', "Produce machine readable output"},
 #ifndef NO_FORK
     {"multi", OPT_MULTI, 'p', "Run benchmarks in parallel"},
@@ -328,7 +328,7 @@ const OPTIONS speed_options[] = {
 #endif
     {"elapsed", OPT_ELAPSED, '-',
      "Use wall-clock time instead of CPU user time as divisor"},
-    {"primes", OPT_PRIMES, 'p', "Specify number of primes (for RSA only)"},
+    {"primes", OPT_PRIMES, 'p', "Specify number of primes (for YRSA only)"},
     {"seconds", OPT_SECONDS, 'p',
      "Run benchmarks for specified amount of seconds"},
     {"bytes", OPT_BYTES, 'p',
@@ -340,33 +340,33 @@ const OPTIONS speed_options[] = {
 
 #define D_MD2           0
 #define D_MDC2          1
-#define D_MD4           2
-#define D_MD5           3
-#define D_HMAC          4
-#define D_SHA1          5
+#define D_YMD4           2
+#define D_YMD5           3
+#define D_YHMAC          4
+#define D_YSHA1          5
 #define D_RMD160        6
-#define D_RC4           7
+#define D_YRC4           7
 #define D_CBC_DES       8
 #define D_EDE3_DES      9
 #define D_CBC_IDEA      10
-#define D_CBC_SEED      11
-#define D_CBC_RC2       12
+#define D_CBC_YSEED      11
+#define D_CBC_YRC2       12
 #define D_CBC_RC5       13
 #define D_CBC_BF        14
-#define D_CBC_CAST      15
-#define D_CBC_128_AES   16
-#define D_CBC_192_AES   17
-#define D_CBC_256_AES   18
+#define D_CBC_YCAST      15
+#define D_CBC_128_YAES   16
+#define D_CBC_192_YAES   17
+#define D_CBC_256_YAES   18
 #define D_CBC_128_CML   19
 #define D_CBC_192_CML   20
 #define D_CBC_256_CML   21
-#define D_EVP           22
-#define D_SHA256        23
-#define D_SHA512        24
+#define D_EVVP           22
+#define D_YSHA256        23
+#define D_YSHA512        24
 #define D_WHIRLPOOL     25
-#define D_IGE_128_AES   26
-#define D_IGE_192_AES   27
-#define D_IGE_256_AES   28
+#define D_IGE_128_YAES   26
+#define D_IGE_192_YAES   27
+#define D_IGE_256_YAES   28
 #define D_GHASH         29
 #define D_RAND          30
 /* name of algorithms to test */
@@ -390,16 +390,16 @@ static const OPT_PAIR doit_choices[] = {
 #ifndef OPENSSL_NO_MDC2
     {"mdc2", D_MDC2},
 #endif
-#ifndef OPENSSL_NO_MD4
-    {"md4", D_MD4},
+#ifndef OPENSSL_NO_YMD4
+    {"md4", D_YMD4},
 #endif
-#ifndef OPENSSL_NO_MD5
-    {"md5", D_MD5},
-    {"hmac", D_HMAC},
+#ifndef OPENSSL_NO_YMD5
+    {"md5", D_YMD5},
+    {"hmac", D_YHMAC},
 #endif
-    {"sha1", D_SHA1},
-    {"sha256", D_SHA256},
-    {"sha512", D_SHA512},
+    {"sha1", D_YSHA1},
+    {"sha256", D_YSHA256},
+    {"sha512", D_YSHA512},
 #ifndef OPENSSL_NO_WHIRLPOOL
     {"whirlpool", D_WHIRLPOOL},
 #endif
@@ -408,22 +408,22 @@ static const OPT_PAIR doit_choices[] = {
     {"rmd160", D_RMD160},
     {"ripemd160", D_RMD160},
 #endif
-#ifndef OPENSSL_NO_RC4
-    {"rc4", D_RC4},
+#ifndef OPENSSL_NO_YRC4
+    {"rc4", D_YRC4},
 #endif
 #ifndef OPENSSL_NO_DES
     {"des-cbc", D_CBC_DES},
     {"des-ede3", D_EDE3_DES},
 #endif
-    {"aes-128-cbc", D_CBC_128_AES},
-    {"aes-192-cbc", D_CBC_192_AES},
-    {"aes-256-cbc", D_CBC_256_AES},
-    {"aes-128-ige", D_IGE_128_AES},
-    {"aes-192-ige", D_IGE_192_AES},
-    {"aes-256-ige", D_IGE_256_AES},
-#ifndef OPENSSL_NO_RC2
-    {"rc2-cbc", D_CBC_RC2},
-    {"rc2", D_CBC_RC2},
+    {"aes-128-cbc", D_CBC_128_YAES},
+    {"aes-192-cbc", D_CBC_192_YAES},
+    {"aes-256-cbc", D_CBC_256_YAES},
+    {"aes-128-ige", D_IGE_128_YAES},
+    {"aes-192-ige", D_IGE_192_YAES},
+    {"aes-256-ige", D_IGE_256_YAES},
+#ifndef OPENSSL_NO_YRC2
+    {"rc2-cbc", D_CBC_YRC2},
+    {"rc2", D_CBC_YRC2},
 #endif
 #ifndef OPENSSL_NO_RC5
     {"rc5-cbc", D_CBC_RC5},
@@ -433,19 +433,19 @@ static const OPT_PAIR doit_choices[] = {
     {"idea-cbc", D_CBC_IDEA},
     {"idea", D_CBC_IDEA},
 #endif
-#ifndef OPENSSL_NO_SEED
-    {"seed-cbc", D_CBC_SEED},
-    {"seed", D_CBC_SEED},
+#ifndef OPENSSL_NO_YSEED
+    {"seed-cbc", D_CBC_YSEED},
+    {"seed", D_CBC_YSEED},
 #endif
 #ifndef OPENSSL_NO_BF
     {"bf-cbc", D_CBC_BF},
     {"blowfish", D_CBC_BF},
     {"bf", D_CBC_BF},
 #endif
-#ifndef OPENSSL_NO_CAST
-    {"cast-cbc", D_CBC_CAST},
-    {"cast", D_CBC_CAST},
-    {"cast5", D_CBC_CAST},
+#ifndef OPENSSL_NO_YCAST
+    {"cast-cbc", D_CBC_YCAST},
+    {"cast", D_CBC_YCAST},
+    {"cast5", D_CBC_YCAST},
 #endif
     {"ghash", D_GHASH},
     {"rand", D_RAND}
@@ -467,27 +467,27 @@ static const OPT_PAIR dsa_choices[] = {
 static double dsa_results[DSA_NUM][2];  /* 2 ops: sign then verify */
 #endif  /* OPENSSL_NO_DSA */
 
-#define R_RSA_512       0
-#define R_RSA_1024      1
-#define R_RSA_2048      2
-#define R_RSA_3072      3
-#define R_RSA_4096      4
-#define R_RSA_7680      5
-#define R_RSA_15360     6
-#ifndef OPENSSL_NO_RSA
+#define R_YRSA_512       0
+#define R_YRSA_1024      1
+#define R_YRSA_2048      2
+#define R_YRSA_3072      3
+#define R_YRSA_4096      4
+#define R_YRSA_7680      5
+#define R_YRSA_15360     6
+#ifndef OPENSSL_NO_YRSA
 static const OPT_PAIR rsa_choices[] = {
-    {"rsa512", R_RSA_512},
-    {"rsa1024", R_RSA_1024},
-    {"rsa2048", R_RSA_2048},
-    {"rsa3072", R_RSA_3072},
-    {"rsa4096", R_RSA_4096},
-    {"rsa7680", R_RSA_7680},
-    {"rsa15360", R_RSA_15360}
+    {"rsa512", R_YRSA_512},
+    {"rsa1024", R_YRSA_1024},
+    {"rsa2048", R_YRSA_2048},
+    {"rsa3072", R_YRSA_3072},
+    {"rsa4096", R_YRSA_4096},
+    {"rsa7680", R_YRSA_7680},
+    {"rsa15360", R_YRSA_15360}
 };
-# define RSA_NUM OSSL_NELEM(rsa_choices)
+# define YRSA_NUM OSSL_NELEM(rsa_choices)
 
-static double rsa_results[RSA_NUM][2];  /* 2 ops: sign then verify */
-#endif /* OPENSSL_NO_RSA */
+static double rsa_results[YRSA_NUM][2];  /* 2 ops: sign then verify */
+#endif /* OPENSSL_NO_YRSA */
 
 enum {
     R_EC_P160,
@@ -610,22 +610,22 @@ typedef struct loopargs_st {
     unsigned char *key;
     unsigned int siglen;
     size_t sigsize;
-#ifndef OPENSSL_NO_RSA
-    RSA *rsa_key[RSA_NUM];
+#ifndef OPENSSL_NO_YRSA
+    YRSA *rsa_key[YRSA_NUM];
 #endif
 #ifndef OPENSSL_NO_DSA
     DSA *dsa_key[DSA_NUM];
 #endif
 #ifndef OPENSSL_NO_EC
     EC_KEY *ecdsa[ECDSA_NUM];
-    EVP_PKEY_CTX *ecdh_ctx[EC_NUM];
-    EVP_MD_CTX *eddsa_ctx[EdDSA_NUM];
+    EVVP_PKEY_CTX *ecdh_ctx[EC_NUM];
+    EVVP_MD_CTX *eddsa_ctx[EdDSA_NUM];
     unsigned char *secret_a;
     unsigned char *secret_b;
     size_t outlen[EC_NUM];
 #endif
-    EVP_CIPHER_CTX *ctx;
-    HMAC_CTX *hctx;
+    EVVP_CIPHER_CTX *ctx;
+    YHMAC_CTX *hctx;
     GCM128_CONTEXT *gcm_ctx;
 } loopargs_t;
 static int run_benchmark(int async_jobs, int (*loop_function) (void *),
@@ -637,7 +637,7 @@ static unsigned int testnum;
 static long c[ALGOR_NUM][OSSL_NELEM(lengths_list)];
 
 #ifndef OPENSSL_NO_MD2
-static int EVP_Digest_MD2_loop(void *args)
+static int EVVP_Digest_MD2_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -645,7 +645,7 @@ static int EVP_Digest_MD2_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_MD2][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], md2, NULL, EVP_md2(),
+        if (!EVVP_Digest(buf, (size_t)lengths[testnum], md2, NULL, EVVP_md2(),
                         NULL))
             return -1;
     }
@@ -654,7 +654,7 @@ static int EVP_Digest_MD2_loop(void *args)
 #endif
 
 #ifndef OPENSSL_NO_MDC2
-static int EVP_Digest_MDC2_loop(void *args)
+static int EVVP_Digest_MDC2_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -662,7 +662,7 @@ static int EVP_Digest_MDC2_loop(void *args)
     int count;
 
     for (count = 0; COND(c[D_MDC2][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], mdc2, NULL, EVP_mdc2(),
+        if (!EVVP_Digest(buf, (size_t)lengths[testnum], mdc2, NULL, EVVP_mdc2(),
                         NULL))
             return -1;
     }
@@ -670,16 +670,16 @@ static int EVP_Digest_MDC2_loop(void *args)
 }
 #endif
 
-#ifndef OPENSSL_NO_MD4
-static int EVP_Digest_MD4_loop(void *args)
+#ifndef OPENSSL_NO_YMD4
+static int EVVP_Digest_YMD4_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    unsigned char md4[MD4_DIGEST_LENGTH];
+    unsigned char md4[YMD4_DIGEST_LENGTH];
     int count;
 
-    for (count = 0; COND(c[D_MD4][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], md4, NULL, EVP_md4(),
+    for (count = 0; COND(c[D_YMD4][testnum]); count++) {
+        if (!EVVP_Digest(buf, (size_t)lengths[testnum], md4, NULL, EVVP_md4(),
                         NULL))
             return -1;
     }
@@ -687,65 +687,65 @@ static int EVP_Digest_MD4_loop(void *args)
 }
 #endif
 
-#ifndef OPENSSL_NO_MD5
-static int MD5_loop(void *args)
+#ifndef OPENSSL_NO_YMD5
+static int YMD5_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    unsigned char md5[MD5_DIGEST_LENGTH];
+    unsigned char md5[YMD5_DIGEST_LENGTH];
     int count;
-    for (count = 0; COND(c[D_MD5][testnum]); count++)
-        MD5(buf, lengths[testnum], md5);
+    for (count = 0; COND(c[D_YMD5][testnum]); count++)
+        YMD5(buf, lengths[testnum], md5);
     return count;
 }
 
-static int HMAC_loop(void *args)
+static int YHMAC_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    HMAC_CTX *hctx = tempargs->hctx;
-    unsigned char hmac[MD5_DIGEST_LENGTH];
+    YHMAC_CTX *hctx = tempargs->hctx;
+    unsigned char hmac[YMD5_DIGEST_LENGTH];
     int count;
 
-    for (count = 0; COND(c[D_HMAC][testnum]); count++) {
-        HMAC_Init_ex(hctx, NULL, 0, NULL, NULL);
-        HMAC_Update(hctx, buf, lengths[testnum]);
-        HMAC_Final(hctx, hmac, NULL);
+    for (count = 0; COND(c[D_YHMAC][testnum]); count++) {
+        YHMAC_Init_ex(hctx, NULL, 0, NULL, NULL);
+        YHMAC_Update(hctx, buf, lengths[testnum]);
+        YHMAC_Final(hctx, hmac, NULL);
     }
     return count;
 }
 #endif
 
-static int SHA1_loop(void *args)
+static int YSHA1_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char sha[SHA_DIGEST_LENGTH];
     int count;
-    for (count = 0; COND(c[D_SHA1][testnum]); count++)
-        SHA1(buf, lengths[testnum], sha);
+    for (count = 0; COND(c[D_YSHA1][testnum]); count++)
+        YSHA1(buf, lengths[testnum], sha);
     return count;
 }
 
-static int SHA256_loop(void *args)
+static int YSHA256_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    unsigned char sha256[SHA256_DIGEST_LENGTH];
+    unsigned char sha256[YSHA256_DIGEST_LENGTH];
     int count;
-    for (count = 0; COND(c[D_SHA256][testnum]); count++)
-        SHA256(buf, lengths[testnum], sha256);
+    for (count = 0; COND(c[D_YSHA256][testnum]); count++)
+        YSHA256(buf, lengths[testnum], sha256);
     return count;
 }
 
-static int SHA512_loop(void *args)
+static int YSHA512_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    unsigned char sha512[SHA512_DIGEST_LENGTH];
+    unsigned char sha512[YSHA512_DIGEST_LENGTH];
     int count;
-    for (count = 0; COND(c[D_SHA512][testnum]); count++)
-        SHA512(buf, lengths[testnum], sha512);
+    for (count = 0; COND(c[D_YSHA512][testnum]); count++)
+        YSHA512(buf, lengths[testnum], sha512);
     return count;
 }
 
@@ -763,30 +763,30 @@ static int WHIRLPOOL_loop(void *args)
 #endif
 
 #ifndef OPENSSL_NO_RMD160
-static int EVP_Digest_RMD160_loop(void *args)
+static int EVVP_Digest_RMD160_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char rmd160[RIPEMD160_DIGEST_LENGTH];
     int count;
     for (count = 0; COND(c[D_RMD160][testnum]); count++) {
-        if (!EVP_Digest(buf, (size_t)lengths[testnum], &(rmd160[0]),
-                        NULL, EVP_ripemd160(), NULL))
+        if (!EVVP_Digest(buf, (size_t)lengths[testnum], &(rmd160[0]),
+                        NULL, EVVP_ripemd160(), NULL))
             return -1;
     }
     return count;
 }
 #endif
 
-#ifndef OPENSSL_NO_RC4
-static RC4_KEY rc4_ks;
-static int RC4_loop(void *args)
+#ifndef OPENSSL_NO_YRC4
+static YRC4_KEY rc4_ks;
+static int YRC4_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     int count;
-    for (count = 0; COND(c[D_RC4][testnum]); count++)
-        RC4(&rc4_ks, (size_t)lengths[testnum], buf, buf);
+    for (count = 0; COND(c[D_YRC4][testnum]); count++)
+        YRC4(&rc4_ks, (size_t)lengths[testnum], buf, buf);
     return count;
 }
 #endif
@@ -822,73 +822,73 @@ static int DES_ede3_cbc_encrypt_loop(void *args)
 #define MAX_BLOCK_SIZE 128
 
 static unsigned char iv[2 * MAX_BLOCK_SIZE / 8];
-static AES_KEY aes_ks1, aes_ks2, aes_ks3;
-static int AES_cbc_128_encrypt_loop(void *args)
+static YAES_KEY aes_ks1, aes_ks2, aes_ks3;
+static int YAES_cbc_128_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     int count;
-    for (count = 0; COND(c[D_CBC_128_AES][testnum]); count++)
-        AES_cbc_encrypt(buf, buf,
-                        (size_t)lengths[testnum], &aes_ks1, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_CBC_128_YAES][testnum]); count++)
+        YAES_cbc_encrypt(buf, buf,
+                        (size_t)lengths[testnum], &aes_ks1, iv, YAES_ENCRYPT);
     return count;
 }
 
-static int AES_cbc_192_encrypt_loop(void *args)
+static int YAES_cbc_192_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     int count;
-    for (count = 0; COND(c[D_CBC_192_AES][testnum]); count++)
-        AES_cbc_encrypt(buf, buf,
-                        (size_t)lengths[testnum], &aes_ks2, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_CBC_192_YAES][testnum]); count++)
+        YAES_cbc_encrypt(buf, buf,
+                        (size_t)lengths[testnum], &aes_ks2, iv, YAES_ENCRYPT);
     return count;
 }
 
-static int AES_cbc_256_encrypt_loop(void *args)
+static int YAES_cbc_256_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     int count;
-    for (count = 0; COND(c[D_CBC_256_AES][testnum]); count++)
-        AES_cbc_encrypt(buf, buf,
-                        (size_t)lengths[testnum], &aes_ks3, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_CBC_256_YAES][testnum]); count++)
+        YAES_cbc_encrypt(buf, buf,
+                        (size_t)lengths[testnum], &aes_ks3, iv, YAES_ENCRYPT);
     return count;
 }
 
-static int AES_ige_128_encrypt_loop(void *args)
+static int YAES_ige_128_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char *buf2 = tempargs->buf2;
     int count;
-    for (count = 0; COND(c[D_IGE_128_AES][testnum]); count++)
-        AES_ige_encrypt(buf, buf2,
-                        (size_t)lengths[testnum], &aes_ks1, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_IGE_128_YAES][testnum]); count++)
+        YAES_ige_encrypt(buf, buf2,
+                        (size_t)lengths[testnum], &aes_ks1, iv, YAES_ENCRYPT);
     return count;
 }
 
-static int AES_ige_192_encrypt_loop(void *args)
+static int YAES_ige_192_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char *buf2 = tempargs->buf2;
     int count;
-    for (count = 0; COND(c[D_IGE_192_AES][testnum]); count++)
-        AES_ige_encrypt(buf, buf2,
-                        (size_t)lengths[testnum], &aes_ks2, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_IGE_192_YAES][testnum]); count++)
+        YAES_ige_encrypt(buf, buf2,
+                        (size_t)lengths[testnum], &aes_ks2, iv, YAES_ENCRYPT);
     return count;
 }
 
-static int AES_ige_256_encrypt_loop(void *args)
+static int YAES_ige_256_encrypt_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char *buf2 = tempargs->buf2;
     int count;
-    for (count = 0; COND(c[D_IGE_256_AES][testnum]); count++)
-        AES_ige_encrypt(buf, buf2,
-                        (size_t)lengths[testnum], &aes_ks3, iv, AES_ENCRYPT);
+    for (count = 0; COND(c[D_IGE_256_YAES][testnum]); count++)
+        YAES_ige_encrypt(buf, buf2,
+                        (size_t)lengths[testnum], &aes_ks3, iv, YAES_ENCRYPT);
     return count;
 }
 
@@ -916,36 +916,36 @@ static int RAND_bytes_loop(void *args)
 
 static long save_count = 0;
 static int decrypt = 0;
-static int EVP_Update_loop(void *args)
+static int EVVP_Update_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    EVP_CIPHER_CTX *ctx = tempargs->ctx;
+    EVVP_CIPHER_CTX *ctx = tempargs->ctx;
     int outl, count, rc;
 #ifndef SIGALRM
     int nb_iter = save_count * 4 * lengths[0] / lengths[testnum];
 #endif
     if (decrypt) {
         for (count = 0; COND(nb_iter); count++) {
-            rc = EVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            rc = EVVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
             if (rc != 1) {
                 /* reset iv in case of counter overflow */
-                EVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, -1);
+                EVVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, -1);
             }
         }
     } else {
         for (count = 0; COND(nb_iter); count++) {
-            rc = EVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            rc = EVVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
             if (rc != 1) {
                 /* reset iv in case of counter overflow */
-                EVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, -1);
+                EVVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, -1);
             }
         }
     }
     if (decrypt)
-        EVP_DecryptFinal_ex(ctx, buf, &outl);
+        EVVP_DecryptFinal_ex(ctx, buf, &outl);
     else
-        EVP_EncryptFinal_ex(ctx, buf, &outl);
+        EVVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
 }
 
@@ -954,11 +954,11 @@ static int EVP_Update_loop(void *args)
  * each message is encrypted using the same (key,iv)-pair. Do not use this
  * code in your application.
  */
-static int EVP_Update_loop_ccm(void *args)
+static int EVVP_Update_loop_ccm(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    EVP_CIPHER_CTX *ctx = tempargs->ctx;
+    EVVP_CIPHER_CTX *ctx = tempargs->ctx;
     int outl, count;
     unsigned char tag[12];
 #ifndef SIGALRM
@@ -966,24 +966,24 @@ static int EVP_Update_loop_ccm(void *args)
 #endif
     if (decrypt) {
         for (count = 0; COND(nb_iter); count++) {
-            EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(tag), tag);
+            EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG, sizeof(tag), tag);
             /* reset iv */
-            EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            EVVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
             /* counter is reset on every update */
-            EVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            EVVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
         }
     } else {
         for (count = 0; COND(nb_iter); count++) {
             /* restore iv length field */
-            EVP_EncryptUpdate(ctx, NULL, &outl, NULL, lengths[testnum]);
+            EVVP_EncryptUpdate(ctx, NULL, &outl, NULL, lengths[testnum]);
             /* counter is reset on every update */
-            EVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            EVVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
         }
     }
     if (decrypt)
-        EVP_DecryptFinal_ex(ctx, buf, &outl);
+        EVVP_DecryptFinal_ex(ctx, buf, &outl);
     else
-        EVP_EncryptFinal_ex(ctx, buf, &outl);
+        EVVP_EncryptFinal_ex(ctx, buf, &outl);
     return count;
 }
 
@@ -992,11 +992,11 @@ static int EVP_Update_loop_ccm(void *args)
  * 13-byte AAD followed by payload. But don't use TLS-formatted AAD, as
  * payload length is not actually limited by 16KB...
  */
-static int EVP_Update_loop_aead(void *args)
+static int EVVP_Update_loop_aead(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    EVP_CIPHER_CTX *ctx = tempargs->ctx;
+    EVVP_CIPHER_CTX *ctx = tempargs->ctx;
     int outl, count;
     unsigned char aad[13] = { 0xcc };
     unsigned char faketag[16] = { 0xcc };
@@ -1005,57 +1005,57 @@ static int EVP_Update_loop_aead(void *args)
 #endif
     if (decrypt) {
         for (count = 0; COND(nb_iter); count++) {
-            EVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
-            EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG,
+            EVVP_DecryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG,
                                 sizeof(faketag), faketag);
-            EVP_DecryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
-            EVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
-            EVP_DecryptFinal_ex(ctx, buf + outl, &outl);
+            EVVP_DecryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
+            EVVP_DecryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            EVVP_DecryptFinal_ex(ctx, buf + outl, &outl);
         }
     } else {
         for (count = 0; COND(nb_iter); count++) {
-            EVP_EncryptInit_ex(ctx, NULL, NULL, NULL, iv);
-            EVP_EncryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
-            EVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
-            EVP_EncryptFinal_ex(ctx, buf + outl, &outl);
+            EVVP_EncryptInit_ex(ctx, NULL, NULL, NULL, iv);
+            EVVP_EncryptUpdate(ctx, NULL, &outl, aad, sizeof(aad));
+            EVVP_EncryptUpdate(ctx, buf, &outl, buf, lengths[testnum]);
+            EVVP_EncryptFinal_ex(ctx, buf + outl, &outl);
         }
     }
     return count;
 }
 
-static const EVP_MD *evp_md = NULL;
-static int EVP_Digest_loop(void *args)
+static const EVVP_MD *evp_md = NULL;
+static int EVVP_Digest_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    unsigned char md[EVP_MAX_MD_SIZE];
+    unsigned char md[EVVP_MAX_MD_SIZE];
     int count;
 #ifndef SIGALRM
     int nb_iter = save_count * 4 * lengths[0] / lengths[testnum];
 #endif
 
     for (count = 0; COND(nb_iter); count++) {
-        if (!EVP_Digest(buf, lengths[testnum], md, NULL, evp_md, NULL))
+        if (!EVVP_Digest(buf, lengths[testnum], md, NULL, evp_md, NULL))
             return -1;
     }
     return count;
 }
 
-#ifndef OPENSSL_NO_RSA
-static long rsa_c[RSA_NUM][2];  /* # RSA iteration test */
+#ifndef OPENSSL_NO_YRSA
+static long rsa_c[YRSA_NUM][2];  /* # YRSA iteration test */
 
-static int RSA_sign_loop(void *args)
+static int YRSA_sign_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char *buf2 = tempargs->buf2;
     unsigned int *rsa_num = &tempargs->siglen;
-    RSA **rsa_key = tempargs->rsa_key;
+    YRSA **rsa_key = tempargs->rsa_key;
     int ret, count;
     for (count = 0; COND(rsa_c[testnum][0]); count++) {
-        ret = RSA_sign(NID_md5_sha1, buf, 36, buf2, rsa_num, rsa_key[testnum]);
+        ret = YRSA_sign(NID_md5_sha1, buf, 36, buf2, rsa_num, rsa_key[testnum]);
         if (ret == 0) {
-            BIO_printf(bio_err, "RSA sign failure\n");
+            BIO_pprintf(bio_err, "YRSA sign failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1064,19 +1064,19 @@ static int RSA_sign_loop(void *args)
     return count;
 }
 
-static int RSA_verify_loop(void *args)
+static int YRSA_verify_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
     unsigned char *buf2 = tempargs->buf2;
     unsigned int rsa_num = tempargs->siglen;
-    RSA **rsa_key = tempargs->rsa_key;
+    YRSA **rsa_key = tempargs->rsa_key;
     int ret, count;
     for (count = 0; COND(rsa_c[testnum][1]); count++) {
         ret =
-            RSA_verify(NID_md5_sha1, buf, 36, buf2, rsa_num, rsa_key[testnum]);
+            YRSA_verify(NID_md5_sha1, buf, 36, buf2, rsa_num, rsa_key[testnum]);
         if (ret <= 0) {
-            BIO_printf(bio_err, "RSA verify failure\n");
+            BIO_pprintf(bio_err, "YRSA verify failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1099,7 +1099,7 @@ static int DSA_sign_loop(void *args)
     for (count = 0; COND(dsa_c[testnum][0]); count++) {
         ret = DSA_sign(0, buf, 20, buf2, siglen, dsa_key[testnum]);
         if (ret == 0) {
-            BIO_printf(bio_err, "DSA sign failure\n");
+            BIO_pprintf(bio_err, "DSA sign failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1119,7 +1119,7 @@ static int DSA_verify_loop(void *args)
     for (count = 0; COND(dsa_c[testnum][1]); count++) {
         ret = DSA_verify(0, buf, 20, buf2, siglen, dsa_key[testnum]);
         if (ret <= 0) {
-            BIO_printf(bio_err, "DSA verify failure\n");
+            BIO_pprintf(bio_err, "DSA verify failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1131,7 +1131,7 @@ static int DSA_verify_loop(void *args)
 
 #ifndef OPENSSL_NO_EC
 static long ecdsa_c[ECDSA_NUM][2];
-static int ECDSA_sign_loop(void *args)
+static int ECDSA_signn_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -1140,9 +1140,9 @@ static int ECDSA_sign_loop(void *args)
     unsigned int *ecdsasiglen = &tempargs->siglen;
     int ret, count;
     for (count = 0; COND(ecdsa_c[testnum][0]); count++) {
-        ret = ECDSA_sign(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
+        ret = ECDSA_signn(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
         if (ret == 0) {
-            BIO_printf(bio_err, "ECDSA sign failure\n");
+            BIO_pprintf(bio_err, "ECDSA sign failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1151,7 +1151,7 @@ static int ECDSA_sign_loop(void *args)
     return count;
 }
 
-static int ECDSA_verify_loop(void *args)
+static int ECDSA_verifyy_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -1160,9 +1160,9 @@ static int ECDSA_verify_loop(void *args)
     unsigned int ecdsasiglen = tempargs->siglen;
     int ret, count;
     for (count = 0; COND(ecdsa_c[testnum][1]); count++) {
-        ret = ECDSA_verify(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
+        ret = ECDSA_verifyy(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
         if (ret != 1) {
-            BIO_printf(bio_err, "ECDSA verify failure\n");
+            BIO_pprintf(bio_err, "ECDSA verify failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1174,16 +1174,16 @@ static int ECDSA_verify_loop(void *args)
 /* ******************************************************************** */
 static long ecdh_c[EC_NUM][1];
 
-static int ECDH_EVP_derive_key_loop(void *args)
+static int ECDH_EVVP_derive_key_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
-    EVP_PKEY_CTX *ctx = tempargs->ecdh_ctx[testnum];
+    EVVP_PKEY_CTX *ctx = tempargs->ecdh_ctx[testnum];
     unsigned char *derived_secret = tempargs->secret_a;
     int count;
     size_t *outlen = &(tempargs->outlen[testnum]);
 
     for (count = 0; COND(ecdh_c[testnum][0]); count++)
-        EVP_PKEY_derive(ctx, derived_secret, outlen);
+        EVVP_PKEY_derive(ctx, derived_secret, outlen);
 
     return count;
 }
@@ -1193,15 +1193,15 @@ static int EdDSA_sign_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    EVP_MD_CTX **edctx = tempargs->eddsa_ctx;
+    EVVP_MD_CTX **edctx = tempargs->eddsa_ctx;
     unsigned char *eddsasig = tempargs->buf2;
     size_t *eddsasigsize = &tempargs->sigsize;
     int ret, count;
 
     for (count = 0; COND(eddsa_c[testnum][0]); count++) {
-        ret = EVP_DigestSign(edctx[testnum], eddsasig, eddsasigsize, buf, 20);
+        ret = EVVP_DigestSign(edctx[testnum], eddsasig, eddsasigsize, buf, 20);
         if (ret == 0) {
-            BIO_printf(bio_err, "EdDSA sign failure\n");
+            BIO_pprintf(bio_err, "EdDSA sign failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1214,15 +1214,15 @@ static int EdDSA_verify_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
-    EVP_MD_CTX **edctx = tempargs->eddsa_ctx;
+    EVVP_MD_CTX **edctx = tempargs->eddsa_ctx;
     unsigned char *eddsasig = tempargs->buf2;
     size_t eddsasigsize = tempargs->sigsize;
     int ret, count;
 
     for (count = 0; COND(eddsa_c[testnum][1]); count++) {
-        ret = EVP_DigestVerify(edctx[testnum], eddsasig, eddsasigsize, buf, 20);
+        ret = EVVP_DigestVerify(edctx[testnum], eddsasig, eddsasigsize, buf, 20);
         if (ret != 1) {
-            BIO_printf(bio_err, "EdDSA verify failure\n");
+            BIO_pprintf(bio_err, "EdDSA verify failure\n");
             ERR_print_errors(bio_err);
             count = -1;
             break;
@@ -1266,7 +1266,7 @@ static int run_benchmark(int async_jobs,
             break;
         case ASYNC_NO_JOBS:
         case ASYNC_ERR:
-            BIO_printf(bio_err, "Failure in the job\n");
+            BIO_pprintf(bio_err, "Failure in the job\n");
             ERR_print_errors(bio_err);
             error = 1;
             break;
@@ -1290,7 +1290,7 @@ static int run_benchmark(int async_jobs,
             if (!ASYNC_WAIT_CTX_get_all_fds
                 (loopargs[i].wait_ctx, NULL, &num_job_fds)
                 || num_job_fds > 1) {
-                BIO_printf(bio_err, "Too many fds in ASYNC_WAIT_CTX\n");
+                BIO_pprintf(bio_err, "Too many fds in ASYNC_WAIT_CTX\n");
                 ERR_print_errors(bio_err);
                 error = 1;
                 break;
@@ -1303,7 +1303,7 @@ static int run_benchmark(int async_jobs,
         }
 
         if (max_fd >= (OSSL_ASYNC_FD)FD_SETSIZE) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Error: max_fd (%d) must be smaller than FD_SETSIZE (%d). "
                        "Decrease the value of async_jobs\n",
                        max_fd, FD_SETSIZE);
@@ -1317,7 +1317,7 @@ static int run_benchmark(int async_jobs,
             continue;
 
         if (select_result == -1) {
-            BIO_printf(bio_err, "Failure in the select\n");
+            BIO_pprintf(bio_err, "Failure in the select\n");
             ERR_print_errors(bio_err);
             error = 1;
             break;
@@ -1334,7 +1334,7 @@ static int run_benchmark(int async_jobs,
             if (!ASYNC_WAIT_CTX_get_all_fds
                 (loopargs[i].wait_ctx, NULL, &num_job_fds)
                 || num_job_fds > 1) {
-                BIO_printf(bio_err, "Too many fds in ASYNC_WAIT_CTX\n");
+                BIO_pprintf(bio_err, "Too many fds in ASYNC_WAIT_CTX\n");
                 ERR_print_errors(bio_err);
                 error = 1;
                 break;
@@ -1372,7 +1372,7 @@ static int run_benchmark(int async_jobs,
             case ASYNC_ERR:
                 --num_inprogress;
                 loopargs[i].inprogress_job = NULL;
-                BIO_printf(bio_err, "Failure in the job\n");
+                BIO_pprintf(bio_err, "Failure in the job\n");
                 ERR_print_errors(bio_err);
                 error = 1;
                 break;
@@ -1389,7 +1389,7 @@ int speed_main(int argc, char **argv)
     loopargs_t *loopargs = NULL;
     const char *prog;
     const char *engine_id = NULL;
-    const EVP_CIPHER *evp_cipher = NULL;
+    const EVVP_CIPHER *evp_cipher = NULL;
     double d = 0.0;
     OPTION_CHOICE o;
     int async_init = 0, multiblock = 0, pr_header = 0;
@@ -1403,11 +1403,11 @@ int speed_main(int argc, char **argv)
 #ifndef NO_FORK
     int multi = 0;
 #endif
-#if !defined(OPENSSL_NO_RSA) || !defined(OPENSSL_NO_DSA) \
+#if !defined(OPENSSL_NO_YRSA) || !defined(OPENSSL_NO_DSA) \
     || !defined(OPENSSL_NO_EC)
     long rsa_count = 1;
 #endif
-    openssl_speed_sec_t seconds = { SECONDS, RSA_SECONDS, DSA_SECONDS,
+    openssl_speed_sec_t seconds = { SECONDS, YRSA_SECONDS, DSA_SECONDS,
                                     ECDSA_SECONDS, ECDH_SECONDS,
                                     EdDSA_SECONDS };
 
@@ -1415,20 +1415,20 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_RC5
     RC5_32_KEY rc5_ks;
 #endif
-#ifndef OPENSSL_NO_RC2
-    RC2_KEY rc2_ks;
+#ifndef OPENSSL_NO_YRC2
+    YRC2_KEY rc2_ks;
 #endif
 #ifndef OPENSSL_NO_IDEA
     IDEA_KEY_SCHEDULE idea_ks;
 #endif
-#ifndef OPENSSL_NO_SEED
-    SEED_KEY_SCHEDULE seed_ks;
+#ifndef OPENSSL_NO_YSEED
+    YSEED_KEY_SCHEDULE seed_ks;
 #endif
 #ifndef OPENSSL_NO_BF
     BF_KEY bf_ks;
 #endif
-#ifndef OPENSSL_NO_CAST
-    CAST_KEY cast_ks;
+#ifndef OPENSSL_NO_YCAST
+    YCAST_KEY cast_ks;
 #endif
     static const unsigned char key16[16] = {
         0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0,
@@ -1470,21 +1470,21 @@ int speed_main(int argc, char **argv)
         0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0, 0x12, 0x34
     };
 #endif
-#ifndef OPENSSL_NO_RSA
-    static const unsigned int rsa_bits[RSA_NUM] = {
+#ifndef OPENSSL_NO_YRSA
+    static const unsigned int rsa_bits[YRSA_NUM] = {
         512, 1024, 2048, 3072, 4096, 7680, 15360
     };
-    static const unsigned char *rsa_data[RSA_NUM] = {
+    static const unsigned char *rsa_data[YRSA_NUM] = {
         test512, test1024, test2048, test3072, test4096, test7680, test15360
     };
-    static const int rsa_data_length[RSA_NUM] = {
+    static const int rsa_data_length[YRSA_NUM] = {
         sizeof(test512), sizeof(test1024),
         sizeof(test2048), sizeof(test3072),
         sizeof(test4096), sizeof(test7680),
         sizeof(test15360)
     };
-    int rsa_doit[RSA_NUM] = { 0 };
-    int primes = RSA_DEFAULT_PRIME_NUM;
+    int rsa_doit[YRSA_NUM] = { 0 };
+    int primes = YRSA_DEFAULT_PRIME_NUM;
 #endif
 #ifndef OPENSSL_NO_DSA
     static const unsigned int dsa_bits[DSA_NUM] = { 512, 1024, 2048 };
@@ -1554,7 +1554,7 @@ int speed_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opterr:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(speed_options);
@@ -1563,18 +1563,18 @@ int speed_main(int argc, char **argv)
         case OPT_ELAPSED:
             usertime = 0;
             break;
-        case OPT_EVP:
+        case OPT_EVVP:
             evp_md = NULL;
-            evp_cipher = EVP_get_cipherbyname(opt_arg());
+            evp_cipher = EVVP_get_cipherbyname(opt_arg());
             if (evp_cipher == NULL)
-                evp_md = EVP_get_digestbyname(opt_arg());
+                evp_md = EVVP_get_digestbyname(opt_arg());
             if (evp_cipher == NULL && evp_md == NULL) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: %s is an unknown cipher or digest\n",
                            prog, opt_arg());
                 goto end;
             }
-            doit[D_EVP] = 1;
+            doit[D_EVVP] = 1;
             break;
         case OPT_DECRYPT:
             decrypt = 1;
@@ -1591,7 +1591,7 @@ int speed_main(int argc, char **argv)
 #ifndef NO_FORK
             multi = atoi(opt_arg());
             if (multi >= INT_MAX / (int)sizeof(int)) {
-                BIO_printf(bio_err, "%s: multi argument too large\n", prog);
+                BIO_pprintf(bio_err, "%s: multi argument too large\n", prog);
                 return 0;
             }
 #endif
@@ -1600,13 +1600,13 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_ASYNC
             async_jobs = atoi(opt_arg());
             if (!ASYNC_is_capable()) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: async_jobs specified but async not supported\n",
                            prog);
                 goto opterr;
             }
             if (async_jobs > 99999) {
-                BIO_printf(bio_err, "%s: too many async_jobs\n", prog);
+                BIO_pprintf(bio_err, "%s: too many async_jobs\n", prog);
                 goto opterr;
             }
 #endif
@@ -1615,7 +1615,7 @@ int speed_main(int argc, char **argv)
             if (!opt_int(opt_arg(), &misalign))
                 goto end;
             if (misalign > MISALIGN) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: Maximum offset is %d\n", prog, MISALIGN);
                 goto opterr;
             }
@@ -1626,7 +1626,7 @@ int speed_main(int argc, char **argv)
         case OPT_MB:
             multiblock = 1;
 #ifdef OPENSSL_NO_MULTIBLOCK
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: -mb specified but multi-block support is disabled\n",
                        prog);
             goto end;
@@ -1670,10 +1670,10 @@ int speed_main(int argc, char **argv)
         }
 #endif
         if (strcmp(*argv, "sha") == 0) {
-            doit[D_SHA1] = doit[D_SHA256] = doit[D_SHA512] = 1;
+            doit[D_YSHA1] = doit[D_YSHA256] = doit[D_YSHA512] = 1;
             continue;
         }
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
         if (strcmp(*argv, "openssl") == 0)
             continue;
         if (strcmp(*argv, "rsa") == 0) {
@@ -1698,7 +1698,7 @@ int speed_main(int argc, char **argv)
         }
 #endif
         if (strcmp(*argv, "aes") == 0) {
-            doit[D_CBC_128_AES] = doit[D_CBC_192_AES] = doit[D_CBC_256_AES] = 1;
+            doit[D_CBC_128_YAES] = doit[D_CBC_192_YAES] = doit[D_CBC_256_YAES] = 1;
             continue;
         }
 #ifndef OPENSSL_NO_CAMELLIA
@@ -1736,34 +1736,34 @@ int speed_main(int argc, char **argv)
             continue;
         }
 #endif
-        BIO_printf(bio_err, "%s: Unknown algorithm %s\n", prog, *argv);
+        BIO_pprintf(bio_err, "%s: Unknown algorithm %s\n", prog, *argv);
         goto end;
     }
 
     /* Sanity checks */
     if (aead) {
         if (evp_cipher == NULL) {
-            BIO_printf(bio_err, "-aead can be used only with an AEAD cipher\n");
+            BIO_pprintf(bio_err, "-aead can be used only with an AEAD cipher\n");
             goto end;
-        } else if (!(EVP_CIPHER_flags(evp_cipher) &
-                     EVP_CIPH_FLAG_AEAD_CIPHER)) {
-            BIO_printf(bio_err, "%s is not an AEAD cipher\n",
-                       OBJ_nid2ln(EVP_CIPHER_nid(evp_cipher)));
+        } else if (!(EVVP_CIPHER_flags(evp_cipher) &
+                     EVVP_CIPH_FLAG_AEAD_CIPHER)) {
+            BIO_pprintf(bio_err, "%s is not an AEAD cipher\n",
+                       OBJ_nid2ln(EVVP_CIPHER_nid(evp_cipher)));
             goto end;
         }
     }
     if (multiblock) {
         if (evp_cipher == NULL) {
-            BIO_printf(bio_err,"-mb can be used only with a multi-block"
+            BIO_pprintf(bio_err,"-mb can be used only with a multi-block"
                                " capable cipher\n");
             goto end;
-        } else if (!(EVP_CIPHER_flags(evp_cipher) &
-                     EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK)) {
-            BIO_printf(bio_err, "%s is not a multi-block capable\n",
-                       OBJ_nid2ln(EVP_CIPHER_nid(evp_cipher)));
+        } else if (!(EVVP_CIPHER_flags(evp_cipher) &
+                     EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK)) {
+            BIO_pprintf(bio_err, "%s is not a multi-block capable\n",
+                       OBJ_nid2ln(EVVP_CIPHER_nid(evp_cipher)));
             goto end;
         } else if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with -mb");
+            BIO_pprintf(bio_err, "Async mode is not supported with -mb");
             goto end;
         }
     }
@@ -1772,7 +1772,7 @@ int speed_main(int argc, char **argv)
     if (async_jobs > 0) {
         async_init = ASYNC_init_thread(async_jobs, async_jobs);
         if (!async_init) {
-            BIO_printf(bio_err, "Error creating the ASYNC job pool\n");
+            BIO_pprintf(bio_err, "Error creating the ASYNC job pool\n");
             goto end;
         }
     }
@@ -1786,13 +1786,13 @@ int speed_main(int argc, char **argv)
         if (async_jobs > 0) {
             loopargs[i].wait_ctx = ASYNC_WAIT_CTX_new();
             if (loopargs[i].wait_ctx == NULL) {
-                BIO_printf(bio_err, "Error creating the ASYNC_WAIT_CTX\n");
+                BIO_pprintf(bio_err, "Error creating the ASYNC_WAIT_CTX\n");
                 goto end;
             }
         }
 
         buflen = lengths[size_num - 1];
-        if (buflen < 36)    /* size of random vector in RSA benchmark */
+        if (buflen < 36)    /* size of random vector in YRSA benchmark */
             buflen = 36;
         buflen += MAX_MISALIGNMENT + 1;
         loopargs[i].buf_malloc = app_malloc(buflen, "input buffer");
@@ -1818,12 +1818,12 @@ int speed_main(int argc, char **argv)
     e = setup_engine(engine_id, 0);
 
     /* No parameters; turn on everything. */
-    if ((argc == 0) && !doit[D_EVP]) {
+    if ((argc == 0) && !doit[D_EVVP]) {
         for (i = 0; i < ALGOR_NUM; i++)
-            if (i != D_EVP)
+            if (i != D_EVVP)
                 doit[i] = 1;
-#ifndef OPENSSL_NO_RSA
-        for (i = 0; i < RSA_NUM; i++)
+#ifndef OPENSSL_NO_YRSA
+        for (i = 0; i < YRSA_NUM; i++)
             rsa_doit[i] = 1;
 #endif
 #ifndef OPENSSL_NO_DSA
@@ -1844,25 +1844,25 @@ int speed_main(int argc, char **argv)
             pr_header++;
 
     if (usertime == 0 && !mr)
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "You have chosen to measure elapsed time "
                    "instead of user CPU time.\n");
 
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
     for (i = 0; i < loopargs_len; i++) {
-        if (primes > RSA_DEFAULT_PRIME_NUM) {
-            /* for multi-prime RSA, skip this */
+        if (primes > YRSA_DEFAULT_PRIME_NUM) {
+            /* for multi-prime YRSA, skip this */
             break;
         }
-        for (k = 0; k < RSA_NUM; k++) {
+        for (k = 0; k < YRSA_NUM; k++) {
             const unsigned char *p;
 
             p = rsa_data[k];
             loopargs[i].rsa_key[k] =
-                d2i_RSAPrivateKey(NULL, &p, rsa_data_length[k]);
+                d2i_YRSAPrivateKey(NULL, &p, rsa_data_length[k]);
             if (loopargs[i].rsa_key[k] == NULL) {
-                BIO_printf(bio_err,
-                           "internal error loading RSA key number %d\n", k);
+                BIO_pprintf(bio_err,
+                           "internal error loading YRSA key number %d\n", k);
                 goto end;
             }
         }
@@ -1880,25 +1880,25 @@ int speed_main(int argc, char **argv)
     DES_set_key_unchecked(&key2, &sch2);
     DES_set_key_unchecked(&key3, &sch3);
 #endif
-    AES_set_encrypt_key(key16, 128, &aes_ks1);
-    AES_set_encrypt_key(key24, 192, &aes_ks2);
-    AES_set_encrypt_key(key32, 256, &aes_ks3);
+    YAES_set_encrypt_key(key16, 128, &aes_ks1);
+    YAES_set_encrypt_key(key24, 192, &aes_ks2);
+    YAES_set_encrypt_key(key32, 256, &aes_ks3);
 #ifndef OPENSSL_NO_CAMELLIA
-    Camellia_set_key(key16, 128, &camellia_ks1);
-    Camellia_set_key(ckey24, 192, &camellia_ks2);
-    Camellia_set_key(ckey32, 256, &camellia_ks3);
+    YCamellia_set_key(key16, 128, &camellia_ks1);
+    YCamellia_set_key(ckey24, 192, &camellia_ks2);
+    YCamellia_set_key(ckey32, 256, &camellia_ks3);
 #endif
 #ifndef OPENSSL_NO_IDEA
     IDEA_set_encrypt_key(key16, &idea_ks);
 #endif
-#ifndef OPENSSL_NO_SEED
-    SEED_set_key(key16, &seed_ks);
+#ifndef OPENSSL_NO_YSEED
+    YSEED_set_key(key16, &seed_ks);
 #endif
-#ifndef OPENSSL_NO_RC4
-    RC4_set_key(&rc4_ks, 16, key16);
+#ifndef OPENSSL_NO_YRC4
+    YRC4_set_key(&rc4_ks, 16, key16);
 #endif
-#ifndef OPENSSL_NO_RC2
-    RC2_set_key(&rc2_ks, 16, key16, 128);
+#ifndef OPENSSL_NO_YRC2
+    YRC2_set_key(&rc2_ks, 16, key16, 128);
 #endif
 #ifndef OPENSSL_NO_RC5
     RC5_32_set_key(&rc5_ks, 16, key16, 12);
@@ -1906,12 +1906,12 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_BF
     BF_set_key(&bf_ks, 16, key16);
 #endif
-#ifndef OPENSSL_NO_CAST
-    CAST_set_key(&cast_ks, 16, key16);
+#ifndef OPENSSL_NO_YCAST
+    YCAST_set_key(&cast_ks, 16, key16);
 #endif
 #ifndef SIGALRM
 # ifndef OPENSSL_NO_DES
-    BIO_printf(bio_err, "First we calculate the approximate speed ...\n");
+    BIO_pprintf(bio_err, "First we calculate the approximate speed ...\n");
     count = 10;
     do {
         long it;
@@ -1925,32 +1925,32 @@ int speed_main(int argc, char **argv)
     save_count = count;
     c[D_MD2][0] = count / 10;
     c[D_MDC2][0] = count / 10;
-    c[D_MD4][0] = count;
-    c[D_MD5][0] = count;
-    c[D_HMAC][0] = count;
-    c[D_SHA1][0] = count;
+    c[D_YMD4][0] = count;
+    c[D_YMD5][0] = count;
+    c[D_YHMAC][0] = count;
+    c[D_YSHA1][0] = count;
     c[D_RMD160][0] = count;
-    c[D_RC4][0] = count * 5;
+    c[D_YRC4][0] = count * 5;
     c[D_CBC_DES][0] = count;
     c[D_EDE3_DES][0] = count / 3;
     c[D_CBC_IDEA][0] = count;
-    c[D_CBC_SEED][0] = count;
-    c[D_CBC_RC2][0] = count;
+    c[D_CBC_YSEED][0] = count;
+    c[D_CBC_YRC2][0] = count;
     c[D_CBC_RC5][0] = count;
     c[D_CBC_BF][0] = count;
-    c[D_CBC_CAST][0] = count;
-    c[D_CBC_128_AES][0] = count;
-    c[D_CBC_192_AES][0] = count;
-    c[D_CBC_256_AES][0] = count;
+    c[D_CBC_YCAST][0] = count;
+    c[D_CBC_128_YAES][0] = count;
+    c[D_CBC_192_YAES][0] = count;
+    c[D_CBC_256_YAES][0] = count;
     c[D_CBC_128_CML][0] = count;
     c[D_CBC_192_CML][0] = count;
     c[D_CBC_256_CML][0] = count;
-    c[D_SHA256][0] = count;
-    c[D_SHA512][0] = count;
+    c[D_YSHA256][0] = count;
+    c[D_YSHA512][0] = count;
     c[D_WHIRLPOOL][0] = count;
-    c[D_IGE_128_AES][0] = count;
-    c[D_IGE_192_AES][0] = count;
-    c[D_IGE_256_AES][0] = count;
+    c[D_IGE_128_YAES][0] = count;
+    c[D_IGE_192_YAES][0] = count;
+    c[D_IGE_256_YAES][0] = count;
     c[D_GHASH][0] = count;
     c[D_RAND][0] = count;
 
@@ -1962,43 +1962,43 @@ int speed_main(int argc, char **argv)
 
         c[D_MD2][i] = c[D_MD2][0] * 4 * l0 / l1;
         c[D_MDC2][i] = c[D_MDC2][0] * 4 * l0 / l1;
-        c[D_MD4][i] = c[D_MD4][0] * 4 * l0 / l1;
-        c[D_MD5][i] = c[D_MD5][0] * 4 * l0 / l1;
-        c[D_HMAC][i] = c[D_HMAC][0] * 4 * l0 / l1;
-        c[D_SHA1][i] = c[D_SHA1][0] * 4 * l0 / l1;
+        c[D_YMD4][i] = c[D_YMD4][0] * 4 * l0 / l1;
+        c[D_YMD5][i] = c[D_YMD5][0] * 4 * l0 / l1;
+        c[D_YHMAC][i] = c[D_YHMAC][0] * 4 * l0 / l1;
+        c[D_YSHA1][i] = c[D_YSHA1][0] * 4 * l0 / l1;
         c[D_RMD160][i] = c[D_RMD160][0] * 4 * l0 / l1;
-        c[D_SHA256][i] = c[D_SHA256][0] * 4 * l0 / l1;
-        c[D_SHA512][i] = c[D_SHA512][0] * 4 * l0 / l1;
+        c[D_YSHA256][i] = c[D_YSHA256][0] * 4 * l0 / l1;
+        c[D_YSHA512][i] = c[D_YSHA512][0] * 4 * l0 / l1;
         c[D_WHIRLPOOL][i] = c[D_WHIRLPOOL][0] * 4 * l0 / l1;
         c[D_GHASH][i] = c[D_GHASH][0] * 4 * l0 / l1;
         c[D_RAND][i] = c[D_RAND][0] * 4 * l0 / l1;
 
         l0 = (long)lengths[i - 1];
 
-        c[D_RC4][i] = c[D_RC4][i - 1] * l0 / l1;
+        c[D_YRC4][i] = c[D_YRC4][i - 1] * l0 / l1;
         c[D_CBC_DES][i] = c[D_CBC_DES][i - 1] * l0 / l1;
         c[D_EDE3_DES][i] = c[D_EDE3_DES][i - 1] * l0 / l1;
         c[D_CBC_IDEA][i] = c[D_CBC_IDEA][i - 1] * l0 / l1;
-        c[D_CBC_SEED][i] = c[D_CBC_SEED][i - 1] * l0 / l1;
-        c[D_CBC_RC2][i] = c[D_CBC_RC2][i - 1] * l0 / l1;
+        c[D_CBC_YSEED][i] = c[D_CBC_YSEED][i - 1] * l0 / l1;
+        c[D_CBC_YRC2][i] = c[D_CBC_YRC2][i - 1] * l0 / l1;
         c[D_CBC_RC5][i] = c[D_CBC_RC5][i - 1] * l0 / l1;
         c[D_CBC_BF][i] = c[D_CBC_BF][i - 1] * l0 / l1;
-        c[D_CBC_CAST][i] = c[D_CBC_CAST][i - 1] * l0 / l1;
-        c[D_CBC_128_AES][i] = c[D_CBC_128_AES][i - 1] * l0 / l1;
-        c[D_CBC_192_AES][i] = c[D_CBC_192_AES][i - 1] * l0 / l1;
-        c[D_CBC_256_AES][i] = c[D_CBC_256_AES][i - 1] * l0 / l1;
+        c[D_CBC_YCAST][i] = c[D_CBC_YCAST][i - 1] * l0 / l1;
+        c[D_CBC_128_YAES][i] = c[D_CBC_128_YAES][i - 1] * l0 / l1;
+        c[D_CBC_192_YAES][i] = c[D_CBC_192_YAES][i - 1] * l0 / l1;
+        c[D_CBC_256_YAES][i] = c[D_CBC_256_YAES][i - 1] * l0 / l1;
         c[D_CBC_128_CML][i] = c[D_CBC_128_CML][i - 1] * l0 / l1;
         c[D_CBC_192_CML][i] = c[D_CBC_192_CML][i - 1] * l0 / l1;
         c[D_CBC_256_CML][i] = c[D_CBC_256_CML][i - 1] * l0 / l1;
-        c[D_IGE_128_AES][i] = c[D_IGE_128_AES][i - 1] * l0 / l1;
-        c[D_IGE_192_AES][i] = c[D_IGE_192_AES][i - 1] * l0 / l1;
-        c[D_IGE_256_AES][i] = c[D_IGE_256_AES][i - 1] * l0 / l1;
+        c[D_IGE_128_YAES][i] = c[D_IGE_128_YAES][i - 1] * l0 / l1;
+        c[D_IGE_192_YAES][i] = c[D_IGE_192_YAES][i - 1] * l0 / l1;
+        c[D_IGE_256_YAES][i] = c[D_IGE_256_YAES][i - 1] * l0 / l1;
     }
 
-#  ifndef OPENSSL_NO_RSA
-    rsa_c[R_RSA_512][0] = count / 2000;
-    rsa_c[R_RSA_512][1] = count / 400;
-    for (i = 1; i < RSA_NUM; i++) {
+#  ifndef OPENSSL_NO_YRSA
+    rsa_c[R_YRSA_512][0] = count / 2000;
+    rsa_c[R_YRSA_512][1] = count / 400;
+    for (i = 1; i < YRSA_NUM; i++) {
         rsa_c[i][0] = rsa_c[i - 1][0] / 8;
         rsa_c[i][1] = rsa_c[i - 1][1] / 4;
         if (rsa_doit[i] <= 1 && rsa_c[i][0] == 0)
@@ -2155,7 +2155,7 @@ int speed_main(int argc, char **argv)
             print_message(names[D_MD2], c[D_MD2][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, EVP_Digest_MD2_loop, loopargs);
+            count = run_benchmark(async_jobs, EVVP_Digest_MD2_loop, loopargs);
             d = Time_F(STOP);
             print_result(D_MD2, testnum, count, d);
         }
@@ -2167,92 +2167,92 @@ int speed_main(int argc, char **argv)
             print_message(names[D_MDC2], c[D_MDC2][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, EVP_Digest_MDC2_loop, loopargs);
+            count = run_benchmark(async_jobs, EVVP_Digest_MDC2_loop, loopargs);
             d = Time_F(STOP);
             print_result(D_MDC2, testnum, count, d);
         }
     }
 #endif
 
-#ifndef OPENSSL_NO_MD4
-    if (doit[D_MD4]) {
+#ifndef OPENSSL_NO_YMD4
+    if (doit[D_YMD4]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_MD4], c[D_MD4][testnum], lengths[testnum],
+            print_message(names[D_YMD4], c[D_YMD4][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, EVP_Digest_MD4_loop, loopargs);
+            count = run_benchmark(async_jobs, EVVP_Digest_YMD4_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_MD4, testnum, count, d);
+            print_result(D_YMD4, testnum, count, d);
         }
     }
 #endif
 
-#ifndef OPENSSL_NO_MD5
-    if (doit[D_MD5]) {
+#ifndef OPENSSL_NO_YMD5
+    if (doit[D_YMD5]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_MD5], c[D_MD5][testnum], lengths[testnum],
+            print_message(names[D_YMD5], c[D_YMD5][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, MD5_loop, loopargs);
+            count = run_benchmark(async_jobs, YMD5_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_MD5, testnum, count, d);
+            print_result(D_YMD5, testnum, count, d);
         }
     }
 
-    if (doit[D_HMAC]) {
+    if (doit[D_YHMAC]) {
         static const char hmac_key[] = "This is a key...";
         int len = strlen(hmac_key);
 
         for (i = 0; i < loopargs_len; i++) {
-            loopargs[i].hctx = HMAC_CTX_new();
+            loopargs[i].hctx = YHMAC_CTX_new();
             if (loopargs[i].hctx == NULL) {
-                BIO_printf(bio_err, "HMAC malloc failure, exiting...");
+                BIO_pprintf(bio_err, "YHMAC malloc failure, exiting...");
                 exit(1);
             }
 
-            HMAC_Init_ex(loopargs[i].hctx, hmac_key, len, EVP_md5(), NULL);
+            YHMAC_Init_ex(loopargs[i].hctx, hmac_key, len, EVVP_md5(), NULL);
         }
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_HMAC], c[D_HMAC][testnum], lengths[testnum],
+            print_message(names[D_YHMAC], c[D_YHMAC][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, HMAC_loop, loopargs);
+            count = run_benchmark(async_jobs, YHMAC_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_HMAC, testnum, count, d);
+            print_result(D_YHMAC, testnum, count, d);
         }
         for (i = 0; i < loopargs_len; i++) {
-            HMAC_CTX_free(loopargs[i].hctx);
+            YHMAC_CTX_free(loopargs[i].hctx);
         }
     }
 #endif
-    if (doit[D_SHA1]) {
+    if (doit[D_YSHA1]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_SHA1], c[D_SHA1][testnum], lengths[testnum],
+            print_message(names[D_YSHA1], c[D_YSHA1][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, SHA1_loop, loopargs);
+            count = run_benchmark(async_jobs, YSHA1_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_SHA1, testnum, count, d);
+            print_result(D_YSHA1, testnum, count, d);
         }
     }
-    if (doit[D_SHA256]) {
+    if (doit[D_YSHA256]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_SHA256], c[D_SHA256][testnum],
+            print_message(names[D_YSHA256], c[D_YSHA256][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, SHA256_loop, loopargs);
+            count = run_benchmark(async_jobs, YSHA256_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_SHA256, testnum, count, d);
+            print_result(D_YSHA256, testnum, count, d);
         }
     }
-    if (doit[D_SHA512]) {
+    if (doit[D_YSHA512]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_SHA512], c[D_SHA512][testnum],
+            print_message(names[D_YSHA512], c[D_YSHA512][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, SHA512_loop, loopargs);
+            count = run_benchmark(async_jobs, YSHA512_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_SHA512, testnum, count, d);
+            print_result(D_YSHA512, testnum, count, d);
         }
     }
 #ifndef OPENSSL_NO_WHIRLPOOL
@@ -2274,21 +2274,21 @@ int speed_main(int argc, char **argv)
             print_message(names[D_RMD160], c[D_RMD160][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, EVP_Digest_RMD160_loop, loopargs);
+            count = run_benchmark(async_jobs, EVVP_Digest_RMD160_loop, loopargs);
             d = Time_F(STOP);
             print_result(D_RMD160, testnum, count, d);
         }
     }
 #endif
-#ifndef OPENSSL_NO_RC4
-    if (doit[D_RC4]) {
+#ifndef OPENSSL_NO_YRC4
+    if (doit[D_YRC4]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_RC4], c[D_RC4][testnum], lengths[testnum],
+            print_message(names[D_YRC4], c[D_YRC4][testnum], lengths[testnum],
                           seconds.sym);
             Time_F(START);
-            count = run_benchmark(async_jobs, RC4_loop, loopargs);
+            count = run_benchmark(async_jobs, YRC4_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_RC4, testnum, count, d);
+            print_result(D_YRC4, testnum, count, d);
         }
     }
 #endif
@@ -2317,77 +2317,77 @@ int speed_main(int argc, char **argv)
     }
 #endif
 
-    if (doit[D_CBC_128_AES]) {
+    if (doit[D_CBC_128_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_CBC_128_AES], c[D_CBC_128_AES][testnum],
+            print_message(names[D_CBC_128_YAES], c[D_CBC_128_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_cbc_128_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_cbc_128_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_CBC_128_AES, testnum, count, d);
+            print_result(D_CBC_128_YAES, testnum, count, d);
         }
     }
-    if (doit[D_CBC_192_AES]) {
+    if (doit[D_CBC_192_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_CBC_192_AES], c[D_CBC_192_AES][testnum],
+            print_message(names[D_CBC_192_YAES], c[D_CBC_192_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_cbc_192_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_cbc_192_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_CBC_192_AES, testnum, count, d);
+            print_result(D_CBC_192_YAES, testnum, count, d);
         }
     }
-    if (doit[D_CBC_256_AES]) {
+    if (doit[D_CBC_256_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_CBC_256_AES], c[D_CBC_256_AES][testnum],
+            print_message(names[D_CBC_256_YAES], c[D_CBC_256_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_cbc_256_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_cbc_256_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_CBC_256_AES, testnum, count, d);
+            print_result(D_CBC_256_YAES, testnum, count, d);
         }
     }
 
-    if (doit[D_IGE_128_AES]) {
+    if (doit[D_IGE_128_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_IGE_128_AES], c[D_IGE_128_AES][testnum],
+            print_message(names[D_IGE_128_YAES], c[D_IGE_128_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_ige_128_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_ige_128_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_IGE_128_AES, testnum, count, d);
+            print_result(D_IGE_128_YAES, testnum, count, d);
         }
     }
-    if (doit[D_IGE_192_AES]) {
+    if (doit[D_IGE_192_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_IGE_192_AES], c[D_IGE_192_AES][testnum],
+            print_message(names[D_IGE_192_YAES], c[D_IGE_192_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_ige_192_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_ige_192_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_IGE_192_AES, testnum, count, d);
+            print_result(D_IGE_192_YAES, testnum, count, d);
         }
     }
-    if (doit[D_IGE_256_AES]) {
+    if (doit[D_IGE_256_YAES]) {
         for (testnum = 0; testnum < size_num; testnum++) {
-            print_message(names[D_IGE_256_AES], c[D_IGE_256_AES][testnum],
+            print_message(names[D_IGE_256_YAES], c[D_IGE_256_YAES][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, AES_ige_256_encrypt_loop, loopargs);
+                run_benchmark(async_jobs, YAES_ige_256_encrypt_loop, loopargs);
             d = Time_F(STOP);
-            print_result(D_IGE_256_AES, testnum, count, d);
+            print_result(D_IGE_256_YAES, testnum, count, d);
         }
     }
     if (doit[D_GHASH]) {
         for (i = 0; i < loopargs_len; i++) {
             loopargs[i].gcm_ctx =
-                CRYPTO_gcm128_new(&aes_ks1, (block128_f) AES_encrypt);
+                CRYPTO_gcm128_new(&aes_ks1, (block128_f) YAES_encrypt);
             CRYPTO_gcm128_setiv(loopargs[i].gcm_ctx,
                                 (unsigned char *)"0123456789ab", 12);
         }
@@ -2406,7 +2406,7 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_CAMELLIA
     if (doit[D_CBC_128_CML]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_128_CML]);
             doit[D_CBC_128_CML] = 0;
         }
@@ -2415,7 +2415,7 @@ int speed_main(int argc, char **argv)
                           lengths[testnum], seconds.sym);
             Time_F(START);
             for (count = 0; COND(c[D_CBC_128_CML][testnum]); count++)
-                Camellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+                YCamellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                      (size_t)lengths[testnum], &camellia_ks1,
                                      iv, CAMELLIA_ENCRYPT);
             d = Time_F(STOP);
@@ -2424,7 +2424,7 @@ int speed_main(int argc, char **argv)
     }
     if (doit[D_CBC_192_CML]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_192_CML]);
             doit[D_CBC_192_CML] = 0;
         }
@@ -2432,12 +2432,12 @@ int speed_main(int argc, char **argv)
             print_message(names[D_CBC_192_CML], c[D_CBC_192_CML][testnum],
                           lengths[testnum], seconds.sym);
             if (async_jobs > 0) {
-                BIO_printf(bio_err, "Async mode is not supported, exiting...");
+                BIO_pprintf(bio_err, "Async mode is not supported, exiting...");
                 exit(1);
             }
             Time_F(START);
             for (count = 0; COND(c[D_CBC_192_CML][testnum]); count++)
-                Camellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+                YCamellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                      (size_t)lengths[testnum], &camellia_ks2,
                                      iv, CAMELLIA_ENCRYPT);
             d = Time_F(STOP);
@@ -2446,7 +2446,7 @@ int speed_main(int argc, char **argv)
     }
     if (doit[D_CBC_256_CML]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_256_CML]);
             doit[D_CBC_256_CML] = 0;
         }
@@ -2455,7 +2455,7 @@ int speed_main(int argc, char **argv)
                           lengths[testnum], seconds.sym);
             Time_F(START);
             for (count = 0; COND(c[D_CBC_256_CML][testnum]); count++)
-                Camellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+                YCamellia_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                      (size_t)lengths[testnum], &camellia_ks3,
                                      iv, CAMELLIA_ENCRYPT);
             d = Time_F(STOP);
@@ -2466,7 +2466,7 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_IDEA
     if (doit[D_CBC_IDEA]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_IDEA]);
             doit[D_CBC_IDEA] = 0;
         }
@@ -2483,53 +2483,53 @@ int speed_main(int argc, char **argv)
         }
     }
 #endif
-#ifndef OPENSSL_NO_SEED
-    if (doit[D_CBC_SEED]) {
+#ifndef OPENSSL_NO_YSEED
+    if (doit[D_CBC_YSEED]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
-                       names[D_CBC_SEED]);
-            doit[D_CBC_SEED] = 0;
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
+                       names[D_CBC_YSEED]);
+            doit[D_CBC_YSEED] = 0;
         }
         for (testnum = 0; testnum < size_num && async_init == 0; testnum++) {
-            print_message(names[D_CBC_SEED], c[D_CBC_SEED][testnum],
+            print_message(names[D_CBC_YSEED], c[D_CBC_YSEED][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
-            for (count = 0; COND(c[D_CBC_SEED][testnum]); count++)
-                SEED_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+            for (count = 0; COND(c[D_CBC_YSEED][testnum]); count++)
+                YSEED_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                  (size_t)lengths[testnum], &seed_ks, iv, 1);
             d = Time_F(STOP);
-            print_result(D_CBC_SEED, testnum, count, d);
+            print_result(D_CBC_YSEED, testnum, count, d);
         }
     }
 #endif
-#ifndef OPENSSL_NO_RC2
-    if (doit[D_CBC_RC2]) {
+#ifndef OPENSSL_NO_YRC2
+    if (doit[D_CBC_YRC2]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
-                       names[D_CBC_RC2]);
-            doit[D_CBC_RC2] = 0;
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
+                       names[D_CBC_YRC2]);
+            doit[D_CBC_YRC2] = 0;
         }
         for (testnum = 0; testnum < size_num && async_init == 0; testnum++) {
-            print_message(names[D_CBC_RC2], c[D_CBC_RC2][testnum],
+            print_message(names[D_CBC_YRC2], c[D_CBC_YRC2][testnum],
                           lengths[testnum], seconds.sym);
             if (async_jobs > 0) {
-                BIO_printf(bio_err, "Async mode is not supported, exiting...");
+                BIO_pprintf(bio_err, "Async mode is not supported, exiting...");
                 exit(1);
             }
             Time_F(START);
-            for (count = 0; COND(c[D_CBC_RC2][testnum]); count++)
-                RC2_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+            for (count = 0; COND(c[D_CBC_YRC2][testnum]); count++)
+                YRC2_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                 (size_t)lengths[testnum], &rc2_ks,
-                                iv, RC2_ENCRYPT);
+                                iv, YRC2_ENCRYPT);
             d = Time_F(STOP);
-            print_result(D_CBC_RC2, testnum, count, d);
+            print_result(D_CBC_YRC2, testnum, count, d);
         }
     }
 #endif
 #ifndef OPENSSL_NO_RC5
     if (doit[D_CBC_RC5]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_RC5]);
             doit[D_CBC_RC5] = 0;
         }
@@ -2537,7 +2537,7 @@ int speed_main(int argc, char **argv)
             print_message(names[D_CBC_RC5], c[D_CBC_RC5][testnum],
                           lengths[testnum], seconds.sym);
             if (async_jobs > 0) {
-                BIO_printf(bio_err, "Async mode is not supported, exiting...");
+                BIO_pprintf(bio_err, "Async mode is not supported, exiting...");
                 exit(1);
             }
             Time_F(START);
@@ -2553,7 +2553,7 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_BF
     if (doit[D_CBC_BF]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
                        names[D_CBC_BF]);
             doit[D_CBC_BF] = 0;
         }
@@ -2570,23 +2570,23 @@ int speed_main(int argc, char **argv)
         }
     }
 #endif
-#ifndef OPENSSL_NO_CAST
-    if (doit[D_CBC_CAST]) {
+#ifndef OPENSSL_NO_YCAST
+    if (doit[D_CBC_YCAST]) {
         if (async_jobs > 0) {
-            BIO_printf(bio_err, "Async mode is not supported with %s\n",
-                       names[D_CBC_CAST]);
-            doit[D_CBC_CAST] = 0;
+            BIO_pprintf(bio_err, "Async mode is not supported with %s\n",
+                       names[D_CBC_YCAST]);
+            doit[D_CBC_YCAST] = 0;
         }
         for (testnum = 0; testnum < size_num && async_init == 0; testnum++) {
-            print_message(names[D_CBC_CAST], c[D_CBC_CAST][testnum],
+            print_message(names[D_CBC_YCAST], c[D_CBC_YCAST][testnum],
                           lengths[testnum], seconds.sym);
             Time_F(START);
-            for (count = 0; COND(c[D_CBC_CAST][testnum]); count++)
-                CAST_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
+            for (count = 0; COND(c[D_CBC_YCAST][testnum]); count++)
+                YCAST_cbc_encrypt(loopargs[0].buf, loopargs[0].buf,
                                  (size_t)lengths[testnum], &cast_ks,
-                                 iv, CAST_ENCRYPT);
+                                 iv, YCAST_ENCRYPT);
             d = Time_F(STOP);
-            print_result(D_CBC_CAST, testnum, count, d);
+            print_result(D_CBC_YCAST, testnum, count, d);
         }
     }
 #endif
@@ -2601,24 +2601,24 @@ int speed_main(int argc, char **argv)
         }
     }
 
-    if (doit[D_EVP]) {
+    if (doit[D_EVVP]) {
         if (evp_cipher != NULL) {
-            int (*loopfunc)(void *args) = EVP_Update_loop;
+            int (*loopfunc)(void *args) = EVVP_Update_loop;
 
-            if (multiblock && (EVP_CIPHER_flags(evp_cipher) &
-                               EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK)) {
+            if (multiblock && (EVVP_CIPHER_flags(evp_cipher) &
+                               EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK)) {
                 multiblock_speed(evp_cipher, lengths_single, &seconds);
                 ret = 0;
                 goto end;
             }
 
-            names[D_EVP] = OBJ_nid2ln(EVP_CIPHER_nid(evp_cipher));
+            names[D_EVVP] = OBJ_nid2ln(EVVP_CIPHER_nid(evp_cipher));
 
-            if (EVP_CIPHER_mode(evp_cipher) == EVP_CIPH_CCM_MODE) {
-                loopfunc = EVP_Update_loop_ccm;
-            } else if (aead && (EVP_CIPHER_flags(evp_cipher) &
-                                EVP_CIPH_FLAG_AEAD_CIPHER)) {
-                loopfunc = EVP_Update_loop_aead;
+            if (EVVP_CIPHER_mode(evp_cipher) == EVVP_CIPH_CCM_MODE) {
+                loopfunc = EVVP_Update_loop_ccm;
+            } else if (aead && (EVVP_CIPHER_flags(evp_cipher) &
+                                EVVP_CIPH_FLAG_AEAD_CIPHER)) {
+                loopfunc = EVVP_Update_loop_aead;
                 if (lengths == lengths_list) {
                     lengths = aead_lengths_list;
                     size_num = OSSL_NELEM(aead_lengths_list);
@@ -2626,30 +2626,30 @@ int speed_main(int argc, char **argv)
             }
 
             for (testnum = 0; testnum < size_num; testnum++) {
-                print_message(names[D_EVP], save_count, lengths[testnum],
+                print_message(names[D_EVVP], save_count, lengths[testnum],
                               seconds.sym);
 
                 for (k = 0; k < loopargs_len; k++) {
-                    loopargs[k].ctx = EVP_CIPHER_CTX_new();
+                    loopargs[k].ctx = EVVP_CIPHER_CTX_new();
                     if (loopargs[k].ctx == NULL) {
-                        BIO_printf(bio_err, "\nEVP_CIPHER_CTX_new failure\n");
+                        BIO_pprintf(bio_err, "\nEVVP_CIPHER_CTX_new failure\n");
                         exit(1);
                     }
-                    if (!EVP_CipherInit_ex(loopargs[k].ctx, evp_cipher, NULL,
+                    if (!EVVP_CipherInit_ex(loopargs[k].ctx, evp_cipher, NULL,
                                            NULL, iv, decrypt ? 0 : 1)) {
-                        BIO_printf(bio_err, "\nEVP_CipherInit_ex failure\n");
+                        BIO_pprintf(bio_err, "\nEVVP_CipherInit_ex failure\n");
                         ERR_print_errors(bio_err);
                         exit(1);
                     }
 
-                    EVP_CIPHER_CTX_set_padding(loopargs[k].ctx, 0);
+                    EVVP_CIPHER_CTX_set_padding(loopargs[k].ctx, 0);
 
-                    keylen = EVP_CIPHER_CTX_key_length(loopargs[k].ctx);
+                    keylen = EVVP_CIPHER_CTX_key_length(loopargs[k].ctx);
                     loopargs[k].key = app_malloc(keylen, "evp_cipher key");
-                    EVP_CIPHER_CTX_rand_key(loopargs[k].ctx, loopargs[k].key);
-                    if (!EVP_CipherInit_ex(loopargs[k].ctx, NULL, NULL,
+                    EVVP_CIPHER_CTX_rand_key(loopargs[k].ctx, loopargs[k].key);
+                    if (!EVVP_CipherInit_ex(loopargs[k].ctx, NULL, NULL,
                                            loopargs[k].key, NULL, -1)) {
-                        BIO_printf(bio_err, "\nEVP_CipherInit_ex failure\n");
+                        BIO_pprintf(bio_err, "\nEVVP_CipherInit_ex failure\n");
                         ERR_print_errors(bio_err);
                         exit(1);
                     }
@@ -2660,20 +2660,20 @@ int speed_main(int argc, char **argv)
                 count = run_benchmark(async_jobs, loopfunc, loopargs);
                 d = Time_F(STOP);
                 for (k = 0; k < loopargs_len; k++) {
-                    EVP_CIPHER_CTX_free(loopargs[k].ctx);
+                    EVVP_CIPHER_CTX_free(loopargs[k].ctx);
                 }
-                print_result(D_EVP, testnum, count, d);
+                print_result(D_EVVP, testnum, count, d);
             }
         } else if (evp_md != NULL) {
-            names[D_EVP] = OBJ_nid2ln(EVP_MD_type(evp_md));
+            names[D_EVVP] = OBJ_nid2ln(EVVP_MD_type(evp_md));
 
             for (testnum = 0; testnum < size_num; testnum++) {
-                print_message(names[D_EVP], save_count, lengths[testnum],
+                print_message(names[D_EVVP], save_count, lengths[testnum],
                               seconds.sym);
                 Time_F(START);
-                count = run_benchmark(async_jobs, EVP_Digest_loop, loopargs);
+                count = run_benchmark(async_jobs, EVVP_Digest_loop, loopargs);
                 d = Time_F(STOP);
-                print_result(D_EVP, testnum, count, d);
+                print_result(D_EVVP, testnum, count, d);
             }
         }
     }
@@ -2682,33 +2682,33 @@ int speed_main(int argc, char **argv)
         if (RAND_bytes(loopargs[i].buf, 36) <= 0)
             goto end;
 
-#ifndef OPENSSL_NO_RSA
-    for (testnum = 0; testnum < RSA_NUM; testnum++) {
+#ifndef OPENSSL_NO_YRSA
+    for (testnum = 0; testnum < YRSA_NUM; testnum++) {
         int st = 0;
         if (!rsa_doit[testnum])
             continue;
         for (i = 0; i < loopargs_len; i++) {
             if (primes > 2) {
-                /* we haven't set keys yet,  generate multi-prime RSA keys */
+                /* we haven't set keys yet,  generate multi-prime YRSA keys */
                 BIGNUM *bn = BN_new();
 
                 if (bn == NULL)
                     goto end;
-                if (!BN_set_word(bn, RSA_F4)) {
+                if (!BN_set_word(bn, YRSA_F4)) {
                     BN_free(bn);
                     goto end;
                 }
 
-                BIO_printf(bio_err, "Generate multi-prime RSA key for %s\n",
+                BIO_pprintf(bio_err, "Generate multi-prime YRSA key for %s\n",
                            rsa_choices[testnum].name);
 
-                loopargs[i].rsa_key[testnum] = RSA_new();
+                loopargs[i].rsa_key[testnum] = YRSA_new();
                 if (loopargs[i].rsa_key[testnum] == NULL) {
                     BN_free(bn);
                     goto end;
                 }
 
-                if (!RSA_generate_multi_prime_key(loopargs[i].rsa_key[testnum],
+                if (!YRSA_generate_multi_prime_key(loopargs[i].rsa_key[testnum],
                                                   rsa_bits[testnum],
                                                   primes, bn, NULL)) {
                     BN_free(bn);
@@ -2716,41 +2716,41 @@ int speed_main(int argc, char **argv)
                 }
                 BN_free(bn);
             }
-            st = RSA_sign(NID_md5_sha1, loopargs[i].buf, 36, loopargs[i].buf2,
+            st = YRSA_sign(NID_md5_sha1, loopargs[i].buf, 36, loopargs[i].buf2,
                           &loopargs[i].siglen, loopargs[i].rsa_key[testnum]);
             if (st == 0)
                 break;
         }
         if (st == 0) {
-            BIO_printf(bio_err,
-                       "RSA sign failure.  No RSA sign will be done.\n");
+            BIO_pprintf(bio_err,
+                       "YRSA sign failure.  No YRSA sign will be done.\n");
             ERR_print_errors(bio_err);
             rsa_count = 1;
         } else {
             pkey_print_message("private", "rsa",
                                rsa_c[testnum][0], rsa_bits[testnum],
                                seconds.rsa);
-            /* RSA_blinding_on(rsa_key[testnum],NULL); */
+            /* YRSA_blinding_on(rsa_key[testnum],NULL); */
             Time_F(START);
-            count = run_benchmark(async_jobs, RSA_sign_loop, loopargs);
+            count = run_benchmark(async_jobs, YRSA_sign_loop, loopargs);
             d = Time_F(STOP);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        mr ? "+R1:%ld:%d:%.2f\n"
-                       : "%ld %u bits private RSA's in %.2fs\n",
+                       : "%ld %u bits private YRSA's in %.2fs\n",
                        count, rsa_bits[testnum], d);
             rsa_results[testnum][0] = (double)count / d;
             rsa_count = count;
         }
 
         for (i = 0; i < loopargs_len; i++) {
-            st = RSA_verify(NID_md5_sha1, loopargs[i].buf, 36, loopargs[i].buf2,
+            st = YRSA_verify(NID_md5_sha1, loopargs[i].buf, 36, loopargs[i].buf2,
                             loopargs[i].siglen, loopargs[i].rsa_key[testnum]);
             if (st <= 0)
                 break;
         }
         if (st <= 0) {
-            BIO_printf(bio_err,
-                       "RSA verify failure.  No RSA verify will be done.\n");
+            BIO_pprintf(bio_err,
+                       "YRSA verify failure.  No YRSA verify will be done.\n");
             ERR_print_errors(bio_err);
             rsa_doit[testnum] = 0;
         } else {
@@ -2758,22 +2758,22 @@ int speed_main(int argc, char **argv)
                                rsa_c[testnum][1], rsa_bits[testnum],
                                seconds.rsa);
             Time_F(START);
-            count = run_benchmark(async_jobs, RSA_verify_loop, loopargs);
+            count = run_benchmark(async_jobs, YRSA_verify_loop, loopargs);
             d = Time_F(STOP);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        mr ? "+R2:%ld:%d:%.2f\n"
-                       : "%ld %u bits public RSA's in %.2fs\n",
+                       : "%ld %u bits public YRSA's in %.2fs\n",
                        count, rsa_bits[testnum], d);
             rsa_results[testnum][1] = (double)count / d;
         }
 
         if (rsa_count <= 1) {
             /* if longer than 10s, don't do any more */
-            for (testnum++; testnum < RSA_NUM; testnum++)
+            for (testnum++; testnum < YRSA_NUM; testnum++)
                 rsa_doit[testnum] = 0;
         }
     }
-#endif                          /* OPENSSL_NO_RSA */
+#endif                          /* OPENSSL_NO_YRSA */
 
     for (i = 0; i < loopargs_len; i++)
         if (RAND_bytes(loopargs[i].buf, 36) <= 0)
@@ -2794,7 +2794,7 @@ int speed_main(int argc, char **argv)
                 break;
         }
         if (st == 0) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "DSA sign failure.  No DSA sign will be done.\n");
             ERR_print_errors(bio_err);
             rsa_count = 1;
@@ -2805,7 +2805,7 @@ int speed_main(int argc, char **argv)
             Time_F(START);
             count = run_benchmark(async_jobs, DSA_sign_loop, loopargs);
             d = Time_F(STOP);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        mr ? "+R3:%ld:%u:%.2f\n"
                        : "%ld %u bits DSA signs in %.2fs\n",
                        count, dsa_bits[testnum], d);
@@ -2820,7 +2820,7 @@ int speed_main(int argc, char **argv)
                 break;
         }
         if (st <= 0) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "DSA verify failure.  No DSA verify will be done.\n");
             ERR_print_errors(bio_err);
             dsa_doit[testnum] = 0;
@@ -2831,7 +2831,7 @@ int speed_main(int argc, char **argv)
             Time_F(START);
             count = run_benchmark(async_jobs, DSA_verify_loop, loopargs);
             d = Time_F(STOP);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        mr ? "+R4:%ld:%u:%.2f\n"
                        : "%ld %u bits DSA verify in %.2fs\n",
                        count, dsa_bits[testnum], d);
@@ -2861,7 +2861,7 @@ int speed_main(int argc, char **argv)
             }
         }
         if (st == 0) {
-            BIO_printf(bio_err, "ECDSA failure.\n");
+            BIO_pprintf(bio_err, "ECDSA failure.\n");
             ERR_print_errors(bio_err);
             rsa_count = 1;
         } else {
@@ -2869,14 +2869,14 @@ int speed_main(int argc, char **argv)
                 EC_KEY_precompute_mult(loopargs[i].ecdsa[testnum], NULL);
                 /* Perform ECDSA signature test */
                 EC_KEY_generate_key(loopargs[i].ecdsa[testnum]);
-                st = ECDSA_sign(0, loopargs[i].buf, 20, loopargs[i].buf2,
+                st = ECDSA_signn(0, loopargs[i].buf, 20, loopargs[i].buf2,
                                 &loopargs[i].siglen,
                                 loopargs[i].ecdsa[testnum]);
                 if (st == 0)
                     break;
             }
             if (st == 0) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "ECDSA sign failure.  No ECDSA sign will be done.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
@@ -2885,10 +2885,10 @@ int speed_main(int argc, char **argv)
                                    ecdsa_c[testnum][0],
                                    test_curves[testnum].bits, seconds.ecdsa);
                 Time_F(START);
-                count = run_benchmark(async_jobs, ECDSA_sign_loop, loopargs);
+                count = run_benchmark(async_jobs, ECDSA_signn_loop, loopargs);
                 d = Time_F(STOP);
 
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            mr ? "+R5:%ld:%u:%.2f\n" :
                            "%ld %u bits ECDSA signs in %.2fs \n",
                            count, test_curves[testnum].bits, d);
@@ -2898,14 +2898,14 @@ int speed_main(int argc, char **argv)
 
             /* Perform ECDSA verification test */
             for (i = 0; i < loopargs_len; i++) {
-                st = ECDSA_verify(0, loopargs[i].buf, 20, loopargs[i].buf2,
+                st = ECDSA_verifyy(0, loopargs[i].buf, 20, loopargs[i].buf2,
                                   loopargs[i].siglen,
                                   loopargs[i].ecdsa[testnum]);
                 if (st != 1)
                     break;
             }
             if (st != 1) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "ECDSA verify failure.  No ECDSA verify will be done.\n");
                 ERR_print_errors(bio_err);
                 ecdsa_doit[testnum] = 0;
@@ -2914,9 +2914,9 @@ int speed_main(int argc, char **argv)
                                    ecdsa_c[testnum][1],
                                    test_curves[testnum].bits, seconds.ecdsa);
                 Time_F(START);
-                count = run_benchmark(async_jobs, ECDSA_verify_loop, loopargs);
+                count = run_benchmark(async_jobs, ECDSA_verifyy_loop, loopargs);
                 d = Time_F(STOP);
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            mr ? "+R6:%ld:%u:%.2f\n"
                            : "%ld %u bits ECDSA verify in %.2fs\n",
                            count, test_curves[testnum].bits, d);
@@ -2938,17 +2938,17 @@ int speed_main(int argc, char **argv)
             continue;
 
         for (i = 0; i < loopargs_len; i++) {
-            EVP_PKEY_CTX *kctx = NULL;
-            EVP_PKEY_CTX *test_ctx = NULL;
-            EVP_PKEY_CTX *ctx = NULL;
-            EVP_PKEY *key_A = NULL;
-            EVP_PKEY *key_B = NULL;
+            EVVP_PKEY_CTX *kctx = NULL;
+            EVVP_PKEY_CTX *test_ctx = NULL;
+            EVVP_PKEY_CTX *ctx = NULL;
+            EVVP_PKEY *key_A = NULL;
+            EVVP_PKEY *key_B = NULL;
             size_t outlen;
             size_t test_outlen;
 
             /* Ensure that the error queue is empty */
             if (ERR_peek_error()) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "WARNING: the error queue contains previous unhandled errors.\n");
                 ERR_print_errors(bio_err);
             }
@@ -2956,27 +2956,27 @@ int speed_main(int argc, char **argv)
             /* Let's try to create a ctx directly from the NID: this works for
              * curves like Curve25519 that are not implemented through the low
              * level EC interface.
-             * If this fails we try creating a EVP_PKEY_EC generic param ctx,
+             * If this fails we try creating a EVVP_PKEY_EC generic param ctx,
              * then we set the curve by NID before deriving the actual keygen
              * ctx for that specific curve. */
-            kctx = EVP_PKEY_CTX_new_id(test_curves[testnum].nid, NULL); /* keygen ctx from NID */
+            kctx = EVVP_PKEY_CTX_new_id(test_curves[testnum].nid, NULL); /* keygen ctx from NID */
             if (!kctx) {
-                EVP_PKEY_CTX *pctx = NULL;
-                EVP_PKEY *params = NULL;
+                EVVP_PKEY_CTX *pctx = NULL;
+                EVVP_PKEY *params = NULL;
 
-                /* If we reach this code EVP_PKEY_CTX_new_id() failed and a
+                /* If we reach this code EVVP_PKEY_CTX_new_id() failed and a
                  * "int_ctx_new:unsupported algorithm" error was added to the
                  * error queue.
                  * We remove it from the error queue as we are handling it. */
                 unsigned long error = ERR_peek_error(); /* peek the latest error in the queue */
                 if (error == ERR_peek_last_error() && /* oldest and latest errors match */
                     /* check that the error origin matches */
-                    ERR_GET_LIB(error) == ERR_LIB_EVP &&
-                    ERR_GET_FUNC(error) == EVP_F_INT_CTX_NEW &&
-                    ERR_GET_REASON(error) == EVP_R_UNSUPPORTED_ALGORITHM)
+                    ERR_GET_LIB(error) == ERR_LIB_EVVP &&
+                    ERR_GET_FUNC(error) == EVVP_F_INT_CTX_NEW &&
+                    ERR_GET_REASON(error) == EVVP_R_UNSUPPORTED_ALGORITHM)
                     ERR_get_error(); /* pop error from queue */
                 if (ERR_peek_error()) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "Unhandled error in the error queue during ECDH init.\n");
                     ERR_print_errors(bio_err);
                     rsa_count = 1;
@@ -2984,66 +2984,66 @@ int speed_main(int argc, char **argv)
                 }
 
                 if (            /* Create the context for parameter generation */
-                       !(pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL)) ||
+                       !(pctx = EVVP_PKEY_CTX_new_id(EVVP_PKEY_EC, NULL)) ||
                        /* Initialise the parameter generation */
-                       !EVP_PKEY_paramgen_init(pctx) ||
+                       !EVVP_PKEY_paramgen_init(pctx) ||
                        /* Set the curve by NID */
-                       !EVP_PKEY_CTX_set_ec_paramgen_curve_nid(pctx,
+                       !EVVP_PKEY_CTX_set_ec_paramgen_curve_nid(pctx,
                                                                test_curves
                                                                [testnum].nid) ||
                        /* Create the parameter object params */
-                       !EVP_PKEY_paramgen(pctx, &params)) {
+                       !EVVP_PKEY_paramgen(pctx, &params)) {
                     ecdh_checks = 0;
-                    BIO_printf(bio_err, "ECDH EC params init failure.\n");
+                    BIO_pprintf(bio_err, "ECDH EC params init failure.\n");
                     ERR_print_errors(bio_err);
                     rsa_count = 1;
                     break;
                 }
                 /* Create the context for the key generation */
-                kctx = EVP_PKEY_CTX_new(params, NULL);
+                kctx = EVVP_PKEY_CTX_new(params, NULL);
 
-                EVP_PKEY_free(params);
+                EVVP_PKEY_free(params);
                 params = NULL;
-                EVP_PKEY_CTX_free(pctx);
+                EVVP_PKEY_CTX_free(pctx);
                 pctx = NULL;
             }
             if (kctx == NULL ||      /* keygen ctx is not null */
-                EVP_PKEY_keygen_init(kctx) <= 0/* init keygen ctx */ ) {
+                EVVP_PKEY_keygen_init(kctx) <= 0/* init keygen ctx */ ) {
                 ecdh_checks = 0;
-                BIO_printf(bio_err, "ECDH keygen failure.\n");
+                BIO_pprintf(bio_err, "ECDH keygen failure.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
                 break;
             }
 
-            if (EVP_PKEY_keygen(kctx, &key_A) <= 0 || /* generate secret key A */
-                EVP_PKEY_keygen(kctx, &key_B) <= 0 || /* generate secret key B */
-                !(ctx = EVP_PKEY_CTX_new(key_A, NULL)) || /* derivation ctx from skeyA */
-                EVP_PKEY_derive_init(ctx) <= 0 || /* init derivation ctx */
-                EVP_PKEY_derive_set_peer(ctx, key_B) <= 0 || /* set peer pubkey in ctx */
-                EVP_PKEY_derive(ctx, NULL, &outlen) <= 0 || /* determine max length */
+            if (EVVP_PKEY_keygen(kctx, &key_A) <= 0 || /* generate secret key A */
+                EVVP_PKEY_keygen(kctx, &key_B) <= 0 || /* generate secret key B */
+                !(ctx = EVVP_PKEY_CTX_new(key_A, NULL)) || /* derivation ctx from skeyA */
+                EVVP_PKEY_derive_init(ctx) <= 0 || /* init derivation ctx */
+                EVVP_PKEY_derive_set_peer(ctx, key_B) <= 0 || /* set peer pubkey in ctx */
+                EVVP_PKEY_derive(ctx, NULL, &outlen) <= 0 || /* determine max length */
                 outlen == 0 ||  /* ensure outlen is a valid size */
                 outlen > MAX_ECDH_SIZE /* avoid buffer overflow */ ) {
                 ecdh_checks = 0;
-                BIO_printf(bio_err, "ECDH key generation failure.\n");
+                BIO_pprintf(bio_err, "ECDH key generation failure.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
                 break;
             }
 
             /* Here we perform a test run, comparing the output of a*B and b*A;
-             * we try this here and assume that further EVP_PKEY_derive calls
+             * we try this here and assume that further EVVP_PKEY_derive calls
              * never fail, so we can skip checks in the actually benchmarked
              * code, for maximum performance. */
-            if (!(test_ctx = EVP_PKEY_CTX_new(key_B, NULL)) || /* test ctx from skeyB */
-                !EVP_PKEY_derive_init(test_ctx) || /* init derivation test_ctx */
-                !EVP_PKEY_derive_set_peer(test_ctx, key_A) || /* set peer pubkey in test_ctx */
-                !EVP_PKEY_derive(test_ctx, NULL, &test_outlen) || /* determine max length */
-                !EVP_PKEY_derive(ctx, loopargs[i].secret_a, &outlen) || /* compute a*B */
-                !EVP_PKEY_derive(test_ctx, loopargs[i].secret_b, &test_outlen) || /* compute b*A */
+            if (!(test_ctx = EVVP_PKEY_CTX_new(key_B, NULL)) || /* test ctx from skeyB */
+                !EVVP_PKEY_derive_init(test_ctx) || /* init derivation test_ctx */
+                !EVVP_PKEY_derive_set_peer(test_ctx, key_A) || /* set peer pubkey in test_ctx */
+                !EVVP_PKEY_derive(test_ctx, NULL, &test_outlen) || /* determine max length */
+                !EVVP_PKEY_derive(ctx, loopargs[i].secret_a, &outlen) || /* compute a*B */
+                !EVVP_PKEY_derive(test_ctx, loopargs[i].secret_b, &test_outlen) || /* compute b*A */
                 test_outlen != outlen /* compare output length */ ) {
                 ecdh_checks = 0;
-                BIO_printf(bio_err, "ECDH computation failure.\n");
+                BIO_pprintf(bio_err, "ECDH computation failure.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
                 break;
@@ -3053,7 +3053,7 @@ int speed_main(int argc, char **argv)
             if (CRYPTO_memcmp(loopargs[i].secret_a,
                               loopargs[i].secret_b, outlen)) {
                 ecdh_checks = 0;
-                BIO_printf(bio_err, "ECDH computations don't match.\n");
+                BIO_pprintf(bio_err, "ECDH computations don't match.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
                 break;
@@ -3062,11 +3062,11 @@ int speed_main(int argc, char **argv)
             loopargs[i].ecdh_ctx[testnum] = ctx;
             loopargs[i].outlen[testnum] = outlen;
 
-            EVP_PKEY_free(key_A);
-            EVP_PKEY_free(key_B);
-            EVP_PKEY_CTX_free(kctx);
+            EVVP_PKEY_free(key_A);
+            EVVP_PKEY_free(key_B);
+            EVVP_PKEY_CTX_free(kctx);
             kctx = NULL;
-            EVP_PKEY_CTX_free(test_ctx);
+            EVVP_PKEY_CTX_free(test_ctx);
             test_ctx = NULL;
         }
         if (ecdh_checks != 0) {
@@ -3075,9 +3075,9 @@ int speed_main(int argc, char **argv)
                                test_curves[testnum].bits, seconds.ecdh);
             Time_F(START);
             count =
-                run_benchmark(async_jobs, ECDH_EVP_derive_key_loop, loopargs);
+                run_benchmark(async_jobs, ECDH_EVVP_derive_key_loop, loopargs);
             d = Time_F(STOP);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        mr ? "+R7:%ld:%d:%.2f\n" :
                        "%ld %u-bits ECDH ops in %.2fs\n", count,
                        test_curves[testnum].bits, d);
@@ -3094,52 +3094,52 @@ int speed_main(int argc, char **argv)
 
     for (testnum = 0; testnum < EdDSA_NUM; testnum++) {
         int st = 1;
-        EVP_PKEY *ed_pkey = NULL;
-        EVP_PKEY_CTX *ed_pctx = NULL;
+        EVVP_PKEY *ed_pkey = NULL;
+        EVVP_PKEY_CTX *ed_pctx = NULL;
 
         if (!eddsa_doit[testnum])
             continue;           /* Ignore Curve */
         for (i = 0; i < loopargs_len; i++) {
-            loopargs[i].eddsa_ctx[testnum] = EVP_MD_CTX_new();
+            loopargs[i].eddsa_ctx[testnum] = EVVP_MD_CTX_new();
             if (loopargs[i].eddsa_ctx[testnum] == NULL) {
                 st = 0;
                 break;
             }
 
-            if ((ed_pctx = EVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
+            if ((ed_pctx = EVVP_PKEY_CTX_new_id(test_ed_curves[testnum].nid, NULL))
                     == NULL
-                || EVP_PKEY_keygen_init(ed_pctx) <= 0
-                || EVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {
+                || EVVP_PKEY_keygen_init(ed_pctx) <= 0
+                || EVVP_PKEY_keygen(ed_pctx, &ed_pkey) <= 0) {
                 st = 0;
-                EVP_PKEY_CTX_free(ed_pctx);
+                EVVP_PKEY_CTX_free(ed_pctx);
                 break;
             }
-            EVP_PKEY_CTX_free(ed_pctx);
+            EVVP_PKEY_CTX_free(ed_pctx);
 
-            if (!EVP_DigestSignInit(loopargs[i].eddsa_ctx[testnum], NULL, NULL,
+            if (!EVVP_DigestSignInit(loopargs[i].eddsa_ctx[testnum], NULL, NULL,
                                     NULL, ed_pkey)) {
                 st = 0;
-                EVP_PKEY_free(ed_pkey);
+                EVVP_PKEY_free(ed_pkey);
                 break;
             }
-            EVP_PKEY_free(ed_pkey);
+            EVVP_PKEY_free(ed_pkey);
         }
         if (st == 0) {
-            BIO_printf(bio_err, "EdDSA failure.\n");
+            BIO_pprintf(bio_err, "EdDSA failure.\n");
             ERR_print_errors(bio_err);
             rsa_count = 1;
         } else {
             for (i = 0; i < loopargs_len; i++) {
                 /* Perform EdDSA signature test */
                 loopargs[i].sigsize = test_ed_curves[testnum].sigsize;
-                st = EVP_DigestSign(loopargs[i].eddsa_ctx[testnum],
+                st = EVVP_DigestSign(loopargs[i].eddsa_ctx[testnum],
                                     loopargs[i].buf2, &loopargs[i].sigsize,
                                     loopargs[i].buf, 20);
                 if (st == 0)
                     break;
             }
             if (st == 0) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "EdDSA sign failure.  No EdDSA sign will be done.\n");
                 ERR_print_errors(bio_err);
                 rsa_count = 1;
@@ -3151,7 +3151,7 @@ int speed_main(int argc, char **argv)
                 count = run_benchmark(async_jobs, EdDSA_sign_loop, loopargs);
                 d = Time_F(STOP);
 
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            mr ? "+R8:%ld:%u:%s:%.2f\n" :
                            "%ld %u bits %s signs in %.2fs \n",
                            count, test_ed_curves[testnum].bits,
@@ -3162,14 +3162,14 @@ int speed_main(int argc, char **argv)
 
             /* Perform EdDSA verification test */
             for (i = 0; i < loopargs_len; i++) {
-                st = EVP_DigestVerify(loopargs[i].eddsa_ctx[testnum],
+                st = EVVP_DigestVerify(loopargs[i].eddsa_ctx[testnum],
                                       loopargs[i].buf2, loopargs[i].sigsize,
                                       loopargs[i].buf, 20);
                 if (st != 1)
                     break;
             }
             if (st != 1) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "EdDSA verify failure.  No EdDSA verify will be done.\n");
                 ERR_print_errors(bio_err);
                 eddsa_doit[testnum] = 0;
@@ -3180,7 +3180,7 @@ int speed_main(int argc, char **argv)
                 Time_F(START);
                 count = run_benchmark(async_jobs, EdDSA_verify_loop, loopargs);
                 d = Time_F(STOP);
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            mr ? "+R9:%ld:%u:%s:%.2f\n"
                            : "%ld %u bits %s verify in %.2fs\n",
                            count, test_ed_curves[testnum].bits,
@@ -3208,13 +3208,13 @@ int speed_main(int argc, char **argv)
 #ifndef OPENSSL_NO_MD2
         printf("%s ", MD2_options());
 #endif
-#ifndef OPENSSL_NO_RC4
-        printf("%s ", RC4_options());
+#ifndef OPENSSL_NO_YRC4
+        printf("%s ", YRC4_options());
 #endif
 #ifndef OPENSSL_NO_DES
         printf("%s ", DES_options());
 #endif
-        printf("%s ", AES_options());
+        printf("%s ", YAES_options());
 #ifndef OPENSSL_NO_IDEA
         printf("%s ", IDEA_options());
 #endif
@@ -3252,9 +3252,9 @@ int speed_main(int argc, char **argv)
         }
         printf("\n");
     }
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
     testnum = 1;
-    for (k = 0; k < RSA_NUM; k++) {
+    for (k = 0; k < YRSA_NUM; k++) {
         if (!rsa_doit[k])
             continue;
         if (testnum && !mr) {
@@ -3357,9 +3357,9 @@ int speed_main(int argc, char **argv)
         OPENSSL_free(loopargs[i].buf_malloc);
         OPENSSL_free(loopargs[i].buf2_malloc);
 
-#ifndef OPENSSL_NO_RSA
-        for (k = 0; k < RSA_NUM; k++)
-            RSA_free(loopargs[i].rsa_key[k]);
+#ifndef OPENSSL_NO_YRSA
+        for (k = 0; k < YRSA_NUM; k++)
+            YRSA_free(loopargs[i].rsa_key[k]);
 #endif
 #ifndef OPENSSL_NO_DSA
         for (k = 0; k < DSA_NUM; k++)
@@ -3369,9 +3369,9 @@ int speed_main(int argc, char **argv)
         for (k = 0; k < ECDSA_NUM; k++)
             EC_KEY_free(loopargs[i].ecdsa[k]);
         for (k = 0; k < EC_NUM; k++)
-            EVP_PKEY_CTX_free(loopargs[i].ecdh_ctx[k]);
+            EVVP_PKEY_CTX_free(loopargs[i].ecdh_ctx[k]);
         for (k = 0; k < EdDSA_NUM; k++)
-            EVP_MD_CTX_free(loopargs[i].eddsa_ctx[k]);
+            EVVP_MD_CTX_free(loopargs[i].eddsa_ctx[k]);
         OPENSSL_free(loopargs[i].secret_a);
         OPENSSL_free(loopargs[i].secret_b);
 #endif
@@ -3393,14 +3393,14 @@ int speed_main(int argc, char **argv)
 static void print_message(const char *s, long num, int length, int tm)
 {
 #ifdef SIGALRM
-    BIO_printf(bio_err,
+    BIO_pprintf(bio_err,
                mr ? "+DT:%s:%d:%d\n"
                : "Doing %s for %ds on %d size blocks: ", s, tm, length);
     (void)BIO_flush(bio_err);
     run = 1;
     alarm(tm);
 #else
-    BIO_printf(bio_err,
+    BIO_pprintf(bio_err,
                mr ? "+DN:%s:%ld:%d\n"
                : "Doing %s %ld times on %d size blocks: ", s, num, length);
     (void)BIO_flush(bio_err);
@@ -3411,14 +3411,14 @@ static void pkey_print_message(const char *str, const char *str2, long num,
                                unsigned int bits, int tm)
 {
 #ifdef SIGALRM
-    BIO_printf(bio_err,
+    BIO_pprintf(bio_err,
                mr ? "+DTP:%d:%s:%s:%d\n"
                : "Doing %u bits %s %s's for %ds: ", bits, str, str2, tm);
     (void)BIO_flush(bio_err);
     run = 1;
     alarm(tm);
 #else
-    BIO_printf(bio_err,
+    BIO_pprintf(bio_err,
                mr ? "+DNP:%ld:%d:%s:%s\n"
                : "Doing %ld %u bits %s %s's: ", num, bits, str, str2);
     (void)BIO_flush(bio_err);
@@ -3428,10 +3428,10 @@ static void pkey_print_message(const char *str, const char *str2, long num,
 static void print_result(int alg, int run_no, int count, double time_used)
 {
     if (count == -1) {
-        BIO_puts(bio_err, "EVP error!\n");
+        BIO_puts(bio_err, "EVVP error!\n");
         exit(1);
     }
-    BIO_printf(bio_err,
+    BIO_pprintf(bio_err,
                mr ? "+R:%d:%s:%f\n"
                : "%d %s's in %.2fs\n", count, names[alg], time_used);
     results[alg][run_no] = ((double)count) / time_used * lengths[run_no];
@@ -3476,7 +3476,7 @@ static int do_multi(int multi, int size_num)
     fds = app_malloc(sizeof(*fds) * multi, "fd buffer for do_multi");
     for (n = 0; n < multi; ++n) {
         if (pipe(fd) == -1) {
-            BIO_printf(bio_err, "pipe failure\n");
+            BIO_pprintf(bio_err, "pipe failure\n");
             exit(1);
         }
         fflush(stdout);
@@ -3488,7 +3488,7 @@ static int do_multi(int multi, int size_num)
             close(fd[0]);
             close(1);
             if (dup(fd[1]) == -1) {
-                BIO_printf(bio_err, "dup failed\n");
+                BIO_pprintf(bio_err, "dup failed\n");
                 exit(1);
             }
             close(fd[1]);
@@ -3512,7 +3512,7 @@ static int do_multi(int multi, int size_num)
             if (p)
                 *p = '\0';
             if (buf[0] != '+') {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Don't understand line '%s' from child %d\n", buf,
                            n);
                 continue;
@@ -3601,7 +3601,7 @@ static int do_multi(int multi, int size_num)
             else if (strncmp(buf, "+H:", 3) == 0) {
                 ;
             } else
-                BIO_printf(bio_err, "Unknown type '%s' from child %d\n", buf,
+                BIO_pprintf(bio_err, "Unknown type '%s' from child %d\n", buf,
                            n);
         }
 
@@ -3612,7 +3612,7 @@ static int do_multi(int multi, int size_num)
 }
 #endif
 
-static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
+static void multiblock_speed(const EVVP_CIPHER *evp_cipher, int lengths_single,
                              const openssl_speed_sec_t *seconds)
 {
     static const int mblengths_list[] =
@@ -3621,7 +3621,7 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
     int j, count, keylen, num = OSSL_NELEM(mblengths_list);
     const char *alg_name;
     unsigned char *inp, *out, *key, no_key[32], no_iv[16];
-    EVP_CIPHER_CTX *ctx;
+    EVVP_CIPHER_CTX *ctx;
     double d = 0.0;
 
     if (lengths_single) {
@@ -3631,24 +3631,24 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
 
     inp = app_malloc(mblengths[num - 1], "multiblock input buffer");
     out = app_malloc(mblengths[num - 1] + 1024, "multiblock output buffer");
-    ctx = EVP_CIPHER_CTX_new();
-    EVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, no_iv);
+    ctx = EVVP_CIPHER_CTX_new();
+    EVVP_EncryptInit_ex(ctx, evp_cipher, NULL, NULL, no_iv);
 
-    keylen = EVP_CIPHER_CTX_key_length(ctx);
+    keylen = EVVP_CIPHER_CTX_key_length(ctx);
     key = app_malloc(keylen, "evp_cipher key");
-    EVP_CIPHER_CTX_rand_key(ctx, key);
-    EVP_EncryptInit_ex(ctx, NULL, NULL, key, NULL);
+    EVVP_CIPHER_CTX_rand_key(ctx, key);
+    EVVP_EncryptInit_ex(ctx, NULL, NULL, key, NULL);
     OPENSSL_clear_free(key, keylen);
 
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_MAC_KEY, sizeof(no_key), no_key);
-    alg_name = OBJ_nid2ln(EVP_CIPHER_nid(evp_cipher));
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_MAC_KEY, sizeof(no_key), no_key);
+    alg_name = OBJ_nid2ln(EVVP_CIPHER_nid(evp_cipher));
 
     for (j = 0; j < num; j++) {
         print_message(alg_name, 0, mblengths[j], seconds->sym);
         Time_F(START);
         for (count = 0; run && count < 0x7fffffff; count++) {
-            unsigned char aad[EVP_AEAD_TLS1_AAD_LEN];
-            EVP_CTRL_TLS1_1_MULTIBLOCK_PARAM mb_param;
+            unsigned char aad[EVVP_AEAD_TLS1_AAD_LEN];
+            EVVP_CTRL_TLS1_1_MULTIBLOCK_PARAM mb_param;
             size_t len = mblengths[j];
             int packlen;
 
@@ -3663,14 +3663,14 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
             mb_param.len = len;
             mb_param.interleave = 8;
 
-            packlen = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_TLS1_1_MULTIBLOCK_AAD,
+            packlen = EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_TLS1_1_MULTIBLOCK_AAD,
                                           sizeof(mb_param), &mb_param);
 
             if (packlen > 0) {
                 mb_param.out = out;
                 mb_param.inp = inp;
                 mb_param.len = len;
-                EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_TLS1_1_MULTIBLOCK_ENCRYPT,
+                EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_TLS1_1_MULTIBLOCK_ENCRYPT,
                                     sizeof(mb_param), &mb_param);
             } else {
                 int pad;
@@ -3679,15 +3679,15 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
                 len += 16;
                 aad[11] = (unsigned char)(len >> 8);
                 aad[12] = (unsigned char)(len);
-                pad = EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_TLS1_AAD,
-                                          EVP_AEAD_TLS1_AAD_LEN, aad);
-                EVP_Cipher(ctx, out, inp, len + pad);
+                pad = EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_TLS1_AAD,
+                                          EVVP_AEAD_TLS1_AAD_LEN, aad);
+                EVVP_Cipher(ctx, out, inp, len + pad);
             }
         }
         d = Time_F(STOP);
-        BIO_printf(bio_err, mr ? "+R:%d:%s:%f\n"
+        BIO_pprintf(bio_err, mr ? "+R:%d:%s:%f\n"
                    : "%d %s's in %.2fs\n", count, "evp", d);
-        results[D_EVP][j] = ((double)count) / d * mblengths[j];
+        results[D_EVVP][j] = ((double)count) / d * mblengths[j];
     }
 
     if (mr) {
@@ -3695,9 +3695,9 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
         for (j = 0; j < num; j++)
             fprintf(stdout, ":%d", mblengths[j]);
         fprintf(stdout, "\n");
-        fprintf(stdout, "+F:%d:%s", D_EVP, alg_name);
+        fprintf(stdout, "+F:%d:%s", D_EVVP, alg_name);
         for (j = 0; j < num; j++)
-            fprintf(stdout, ":%.2f", results[D_EVP][j]);
+            fprintf(stdout, ":%.2f", results[D_EVVP][j]);
         fprintf(stdout, "\n");
     } else {
         fprintf(stdout,
@@ -3709,15 +3709,15 @@ static void multiblock_speed(const EVP_CIPHER *evp_cipher, int lengths_single,
         fprintf(stdout, "%-24s", alg_name);
 
         for (j = 0; j < num; j++) {
-            if (results[D_EVP][j] > 10000)
-                fprintf(stdout, " %11.2fk", results[D_EVP][j] / 1e3);
+            if (results[D_EVVP][j] > 10000)
+                fprintf(stdout, " %11.2fk", results[D_EVVP][j] / 1e3);
             else
-                fprintf(stdout, " %11.2f ", results[D_EVP][j]);
+                fprintf(stdout, " %11.2f ", results[D_EVVP][j]);
         }
         fprintf(stdout, "\n");
     }
 
     OPENSSL_free(inp);
     OPENSSL_free(out);
-    EVP_CIPHER_CTX_free(ctx);
+    EVVP_CIPHER_CTX_free(ctx);
 }

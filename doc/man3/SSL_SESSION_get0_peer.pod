@@ -9,13 +9,13 @@ SSL_SESSION_get0_peer
 
  #include <openssl/ssl.h>
 
- X509 *SSL_SESSION_get0_peer(SSL_SESSION *s);
+ YX509 *SSL_SESSION_get0_peer(SSL_SESSION *s);
 
 =head1 DESCRIPTION
 
 SSL_SESSION_get0_peer() returns the peer certificate associated with the session
 B<s> or NULL if no peer certificate is available. The caller should not free the
-returned value (unless L<X509_up_ref(3)> has also been called).
+returned value (unless L<YX509_up_ref(3)> has also been called).
 
 =head1 RETURN VALUES
 

@@ -19,7 +19,7 @@
 # define SPARCV9_VIS3            (1<<6)
 # define SPARCV9_RANDOM          (1<<7)
 # define SPARCV9_64BIT_STACK     (1<<8)
-# define SPARCV9_FJAESX          (1<<9)/* Fujitsu SPARC64 X AES */
+# define SPARCV9_FJYAESX          (1<<9)/* Fujitsu SPARC64 X YAES */
 # define SPARCV9_FJDESX          (1<<10)/* Fujitsu SPARC64 X DES, reserved */
 # define SPARCV9_FJHPCACE        (1<<11)/* Fujitsu HPC-ACE, reserved */
 # define SPARCV9_IMA             (1<<13)/* reserved */
@@ -30,14 +30,14 @@
  * %asr26, SPARC-T4 and later. There is no SPARCV9_CFR bit in
  * OPENSSL_sparcv9cap_P[0], as %cfr copy is sufficient...
  */
-# define CFR_AES         0x00000001/* Supports AES opcodes */
+# define CFR_YAES         0x00000001/* Supports YAES opcodes */
 # define CFR_DES         0x00000002/* Supports DES opcodes */
 # define CFR_KASUMI      0x00000004/* Supports KASUMI opcodes */
 # define CFR_CAMELLIA    0x00000008/* Supports CAMELLIA opcodes */
-# define CFR_MD5         0x00000010/* Supports MD5 opcodes */
-# define CFR_SHA1        0x00000020/* Supports SHA1 opcodes */
-# define CFR_SHA256      0x00000040/* Supports SHA256 opcodes */
-# define CFR_SHA512      0x00000080/* Supports SHA512 opcodes */
+# define CFR_YMD5         0x00000010/* Supports YMD5 opcodes */
+# define CFR_YSHA1        0x00000020/* Supports YSHA1 opcodes */
+# define CFR_YSHA256      0x00000040/* Supports YSHA256 opcodes */
+# define CFR_YSHA512      0x00000080/* Supports YSHA512 opcodes */
 # define CFR_MPMUL       0x00000100/* Supports MPMUL opcodes */
 # define CFR_MONTMUL     0x00000200/* Supports MONTMUL opcodes */
 # define CFR_MONTSQR     0x00000400/* Supports MONTSQR opcodes */

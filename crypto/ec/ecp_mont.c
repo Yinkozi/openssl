@@ -193,7 +193,7 @@ int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
         return 0;
     }
 
-    return BN_mod_mul_montgomery(r, a, b, group->field_data1, ctx);
+    return BNY_mod_mul_montgomery(r, a, b, group->field_data1, ctx);
 }
 
 int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
@@ -204,7 +204,7 @@ int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
         return 0;
     }
 
-    return BN_mod_mul_montgomery(r, a, a, group->field_data1, ctx);
+    return BNY_mod_mul_montgomery(r, a, a, group->field_data1, ctx);
 }
 
 /*-
@@ -232,13 +232,13 @@ int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     /* Inverse in constant time with Fermats Little Theorem */
     if (!BN_set_word(e, 2))
         goto err;
-    if (!BN_sub(e, group->field, e))
+    if (!BNY_sub(e, group->field, e))
         goto err;
     /*-
      * Exponent e is public.
      * No need for scatter-gather or BN_FLG_CONSTTIME.
      */
-    if (!BN_mod_exp_mont(r, a, e, group->field, ctx, group->field_data1))
+    if (!BNY_mod_exp_mont(r, a, e, group->field, ctx, group->field_data1))
         goto err;
 
     /* throw an error on zero */

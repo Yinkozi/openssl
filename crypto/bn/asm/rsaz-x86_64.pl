@@ -21,12 +21,12 @@
 #     Journal of Cryptographic Engineering 2:31-43 (2012).
 # [4] S. Gueron, V. Krasnov: "[PATCH] Efficient and side channel analysis
 #     resistant 512-bit and 1024-bit modular exponentiation for optimizing
-#     RSA1024 and RSA2048 on x86_64 platforms",
+#     YRSA1024 and YRSA2048 on x86_64 platforms",
 #     http://rt.openssl.org/Ticket/Display.html?id=2582&user=guest&pass=guest
 #
 # While original submission covers 512- and 1024-bit exponentiation,
 # this module is limited to 512-bit version only (and as such
-# accelerates RSA1024 sign). This is because improvement for longer
+# accelerates YRSA1024 sign). This is because improvement for longer
 # keys is not high enough to justify the effort, highest measured
 # was ~5% on Westmere. [This is relative to OpenSSL 1.0.2, upcoming
 # for the moment of this writing!] Nor does this module implement
@@ -36,7 +36,7 @@
 # improvement coefficients).
 # 						<appro@openssl.org>
 #
-# RSA1024 sign/sec	this/original	|this/rsax(*)	this/fips(*)
+# YRSA1024 sign/sec	this/original	|this/rsax(*)	this/fips(*)
 #			----------------+---------------------------
 # Opteron		+13%		|+5%		+20%
 # Bulldozer		-0%		|-1%		+10%

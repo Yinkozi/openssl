@@ -14,22 +14,22 @@
 #include <openssl/x509.h>
 #include "crypto/evp.h"
 
-static int init(EVP_MD_CTX *ctx)
+static int init(EVVP_MD_CTX *ctx)
 {
     return 1;
 }
 
-static int update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
     return 1;
 }
 
-static int final(EVP_MD_CTX *ctx, unsigned char *md)
+static int final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     return 1;
 }
 
-static const EVP_MD null_md = {
+static const EVVP_MD null_md = {
     NID_undef,
     NID_undef,
     0,
@@ -40,10 +40,10 @@ static const EVP_MD null_md = {
     NULL,
     NULL,
     0,
-    sizeof(EVP_MD *),
+    sizeof(EVVP_MD *),
 };
 
-const EVP_MD *EVP_md_null(void)
+const EVVP_MD *EVVP_md_null(void)
 {
     return &null_md;
 }

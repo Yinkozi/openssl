@@ -10,65 +10,65 @@ evp - high-level cryptographic functions
 
 =head1 DESCRIPTION
 
-The EVP library provides a high-level interface to cryptographic
+The EVVP library provides a high-level interface to cryptographic
 functions.
 
-The L<B<EVP_Seal>I<XXX>|EVP_SealInit(3)> and L<B<EVP_Open>I<XXX>|EVP_OpenInit(3)>
+The L<B<EVVP_Seal>I<XXX>|EVVP_SealInit(3)> and L<B<EVVP_Open>I<XXX>|EVVP_OpenInit(3)>
 functions provide public key encryption and decryption to implement digital "envelopes".
 
-The L<B<EVP_DigestSign>I<XXX>|EVP_DigestSignInit(3)> and
-L<B<EVP_DigestVerify>I<XXX>|EVP_DigestVerifyInit(3)> functions implement
+The L<B<EVVP_DigestSign>I<XXX>|EVVP_DigestSignInit(3)> and
+L<B<EVVP_DigestVerify>I<XXX>|EVVP_DigestVerifyInit(3)> functions implement
 digital signatures and Message Authentication Codes (MACs). Also see the older
-L<B<EVP_Sign>I<XXX>|EVP_SignInit(3)> and L<B<EVP_Verify>I<XXX>|EVP_VerifyInit(3)>
+L<B<EVVP_Sign>I<XXX>|EVVP_SignInit(3)> and L<B<EVVP_Verify>I<XXX>|EVVP_VerifyInit(3)>
 functions.
 
-Symmetric encryption is available with the L<B<EVP_Encrypt>I<XXX>|EVP_EncryptInit(3)>
-functions.  The L<B<EVP_Digest>I<XXX>|EVP_DigestInit(3)> functions provide message digests.
+Symmetric encryption is available with the L<B<EVVP_Encrypt>I<XXX>|EVVP_EncryptInit(3)>
+functions.  The L<B<EVVP_Digest>I<XXX>|EVVP_DigestInit(3)> functions provide message digests.
 
-The B<EVP_PKEY>I<XXX> functions provide a high-level interface to
-asymmetric algorithms. To create a new EVP_PKEY see
-L<EVP_PKEY_new(3)>. EVP_PKEYs can be associated
+The B<EVVP_PKEY>I<XXX> functions provide a high-level interface to
+asymmetric algorithms. To create a new EVVP_PKEY see
+L<EVVP_PKEY_new(3)>. EVVP_PKEYs can be associated
 with a private key of a particular algorithm by using the functions
-described on the L<EVP_PKEY_set1_RSA(3)> page, or
-new keys can be generated using L<EVP_PKEY_keygen(3)>.
-EVP_PKEYs can be compared using L<EVP_PKEY_cmp(3)>, or printed using
-L<EVP_PKEY_print_private(3)>.
+described on the L<EVVP_PKEY_set1_YRSA(3)> page, or
+new keys can be generated using L<EVVP_PKEY_keygen(3)>.
+EVVP_PKEYs can be compared using L<EVVP_PKEY_cmp(3)>, or printed using
+L<EVVP_PKEY_print_private(3)>.
 
-The EVP_PKEY functions support the full range of asymmetric algorithm operations:
+The EVVP_PKEY functions support the full range of asymmetric algorithm operations:
 
 =over 4
 
-=item For key agreement see L<EVP_PKEY_derive(3)>
+=item For key agreement see L<EVVP_PKEY_derive(3)>
 
-=item For signing and verifying see L<EVP_PKEY_sign(3)>,
-L<EVP_PKEY_verify(3)> and L<EVP_PKEY_verify_recover(3)>.
+=item For signing and verifying see L<EVVP_PKEY_sign(3)>,
+L<EVVP_PKEY_verify(3)> and L<EVVP_PKEY_verify_recover(3)>.
 However, note that
 these functions do not perform a digest of the data to be signed. Therefore,
-normally you would use the L<EVP_DigestSignInit(3)>
+normally you would use the L<EVVP_DigestSignInit(3)>
 functions for this purpose.
 
-=item For encryption and decryption see L<EVP_PKEY_encrypt(3)>
-and L<EVP_PKEY_decrypt(3)> respectively. However, note that
+=item For encryption and decryption see L<EVVP_PKEY_encrypt(3)>
+and L<EVVP_PKEY_decrypt(3)> respectively. However, note that
 these functions perform encryption and decryption only. As public key
 encryption is an expensive operation, normally you would wrap
-an encrypted message in a "digital envelope" using the L<EVP_SealInit(3)> and
-L<EVP_OpenInit(3)> functions.
+an encrypted message in a "digital envelope" using the L<EVVP_SealInit(3)> and
+L<EVVP_OpenInit(3)> functions.
 
 =back
 
-The L<EVP_BytesToKey(3)> function provides some limited support for password
-based encryption. Careful selection of the parameters will provide a PKCS#5 PBKDF1 compatible
+The L<EVVP_BytesToKey(3)> function provides some limited support for password
+based encryption. Careful selection of the parameters will provide a YPKCS#5 PBKDF1 compatible
 implementation. However, new applications should not typically use this (preferring, for example,
 PBKDF2 from PCKS#5).
 
-The L<B<EVP_Encode>I<XXX>|EVP_EncodeInit(3)> and
-L<B<EVP_Decode>I<XXX>|EVP_EncodeInit(3)> functions implement base 64 encoding
+The L<B<EVVP_Encode>I<XXX>|EVVP_EncodeInit(3)> and
+L<B<EVVP_Decode>I<XXX>|EVVP_EncodeInit(3)> functions implement base 64 encoding
 and decoding.
 
 All the symmetric algorithms (ciphers), digests and asymmetric algorithms
 (public key algorithms) can be replaced by ENGINE modules providing alternative
 implementations. If ENGINE implementations of ciphers or digests are registered
-as defaults, then the various EVP functions will automatically use those
+as defaults, then the various EVVP functions will automatically use those
 implementations automatically in preference to built in software
 implementations. For more information, consult the engine(3) man page.
 
@@ -81,25 +81,25 @@ using the high-level interface.
 
 =head1 SEE ALSO
 
-L<EVP_DigestInit(3)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_OpenInit(3)>,
-L<EVP_SealInit(3)>,
-L<EVP_DigestSignInit(3)>,
-L<EVP_SignInit(3)>,
-L<EVP_VerifyInit(3)>,
-L<EVP_EncodeInit(3)>,
-L<EVP_PKEY_new(3)>,
-L<EVP_PKEY_set1_RSA(3)>,
-L<EVP_PKEY_keygen(3)>,
-L<EVP_PKEY_print_private(3)>,
-L<EVP_PKEY_decrypt(3)>,
-L<EVP_PKEY_encrypt(3)>,
-L<EVP_PKEY_sign(3)>,
-L<EVP_PKEY_verify(3)>,
-L<EVP_PKEY_verify_recover(3)>,
-L<EVP_PKEY_derive(3)>,
-L<EVP_BytesToKey(3)>,
+L<EVVP_DigestInit(3)>,
+L<EVVP_EncryptInit(3)>,
+L<EVVP_OpenInit(3)>,
+L<EVVP_SealInit(3)>,
+L<EVVP_DigestSignInit(3)>,
+L<EVVP_SignInit(3)>,
+L<EVVP_VerifyInit(3)>,
+L<EVVP_EncodeInit(3)>,
+L<EVVP_PKEY_new(3)>,
+L<EVVP_PKEY_set1_YRSA(3)>,
+L<EVVP_PKEY_keygen(3)>,
+L<EVVP_PKEY_print_private(3)>,
+L<EVVP_PKEY_decrypt(3)>,
+L<EVVP_PKEY_encrypt(3)>,
+L<EVVP_PKEY_sign(3)>,
+L<EVVP_PKEY_verify(3)>,
+L<EVVP_PKEY_verify_recover(3)>,
+L<EVVP_PKEY_derive(3)>,
+L<EVVP_BytesToKey(3)>,
 L<ENGINE_by_id(3)>
 
 =head1 COPYRIGHT

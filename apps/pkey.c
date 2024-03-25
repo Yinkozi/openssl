@@ -51,8 +51,8 @@ int pkey_main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL;
     ENGINE *e = NULL;
-    EVP_PKEY *pkey = NULL;
-    const EVP_CIPHER *cipher = NULL;
+    EVVP_PKEY *pkey = NULL;
+    const EVVP_CIPHER *cipher = NULL;
     char *infile = NULL, *outfile = NULL, *passin = NULL, *passout = NULL;
     char *passinarg = NULL, *passoutarg = NULL, *prog;
     OPTION_CHOICE o;
@@ -66,7 +66,7 @@ int pkey_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(pkey_options);
@@ -133,7 +133,7 @@ int pkey_main(int argc, char **argv)
         private = 1;
 
     if (!app_passwd(passinarg, passoutarg, &passin, &passout)) {
-        BIO_printf(bio_err, "Error getting passwords\n");
+        BIO_pprintf(bio_err, "Error getting passwords\n");
         goto end;
     }
 
@@ -150,37 +150,37 @@ int pkey_main(int argc, char **argv)
 
     if (check || pub_check) {
         int r;
-        EVP_PKEY_CTX *ctx;
+        EVVP_PKEY_CTX *ctx;
 
-        ctx = EVP_PKEY_CTX_new(pkey, e);
+        ctx = EVVP_PKEY_CTX_new(pkey, e);
         if (ctx == NULL) {
             ERR_print_errors(bio_err);
             goto end;
         }
 
         if (check)
-            r = EVP_PKEY_check(ctx);
+            r = EVVP_PKEY_check(ctx);
         else
-            r = EVP_PKEY_public_check(ctx);
+            r = EVVP_PKEY_public_check(ctx);
 
         if (r == 1) {
-            BIO_printf(out, "Key is valid\n");
+            BIO_pprintf(out, "Key is valid\n");
         } else {
             /*
-             * Note: at least for RSA keys if this function returns
+             * Note: at least for YRSA keys if this function returns
              * -1, there will be no error reasons.
              */
             unsigned long err;
 
-            BIO_printf(out, "Key is invalid\n");
+            BIO_pprintf(out, "Key is invalid\n");
 
             while ((err = ERR_peek_error()) != 0) {
-                BIO_printf(out, "Detailed error: %s\n",
+                BIO_pprintf(out, "Detailed error: %s\n",
                            ERR_reason_error_string(err));
                 ERR_get_error(); /* remove err from error stack */
             }
         }
-        EVP_PKEY_CTX_free(ctx);
+        EVVP_PKEY_CTX_free(ctx);
     }
 
     if (!noout) {
@@ -201,7 +201,7 @@ int pkey_main(int argc, char **argv)
                         goto end;
                 }
             }
-        } else if (outformat == FORMAT_ASN1) {
+        } else if (outformat == FORMAT_YASN1) {
             if (pubout) {
                 if (!i2d_PUBKEY_bio(out, pkey))
                     goto end;
@@ -211,18 +211,18 @@ int pkey_main(int argc, char **argv)
                     goto end;
             }
         } else {
-            BIO_printf(bio_err, "Bad format specified for key\n");
+            BIO_pprintf(bio_err, "Bad format specified for key\n");
             goto end;
         }
     }
 
     if (text) {
         if (pubtext) {
-            if (EVP_PKEY_print_public(out, pkey, 0, NULL) <= 0)
+            if (EVVP_PKEY_print_public(out, pkey, 0, NULL) <= 0)
                 goto end;
         } else {
             assert(private);
-            if (EVP_PKEY_print_private(out, pkey, 0, NULL) <= 0)
+            if (EVVP_PKEY_print_private(out, pkey, 0, NULL) <= 0)
                 goto end;
         }
     }
@@ -232,7 +232,7 @@ int pkey_main(int argc, char **argv)
  end:
     if (ret != 0)
         ERR_print_errors(bio_err);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
     release_engine(e);
     BIO_free_all(out);
     BIO_free(in);

@@ -23,7 +23,7 @@ by the peer to sign TLS messages. It is implemented as a macro.
 SSL_get_peer_signature_type_nid() sets B<*psigtype_nid> to the signature
 type used by the peer to sign TLS messages. Currently the signature type
 is the NID of the public key type used for signing except for PSS signing
-where it is B<EVP_PKEY_RSA_PSS>. To differentiate between
+where it is B<EVVP_PKEY_YRSA_PSS>. To differentiate between
 B<rsa_pss_rsae_*> and B<rsa_pss_pss_*> signatures, it's necessary to check
 the type of public key in the peer's certificate.
 
@@ -34,7 +34,7 @@ information for the local end of the connection.
 
 These functions return 1 for success and 0 for failure. There are several
 possible reasons for failure: the cipher suite has no signature (e.g. it
-uses RSA key exchange or is anonymous), the TLS version is below 1.2 or
+uses YRSA key exchange or is anonymous), the TLS version is below 1.2 or
 the functions were called too early, e.g. before the peer signed a message.
 
 =head1 SEE ALSO

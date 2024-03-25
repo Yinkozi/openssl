@@ -19,11 +19,11 @@ int do_server(int *accept_sock, const char *host, const char *port,
               int family, int type, int protocol, do_server_cb cb,
               unsigned char *context, int naccept, BIO *bio_s_out);
 
-int verify_callback(int ok, X509_STORE_CTX *ctx);
+int verify_callback(int ok, YX509_STORE_CTX *ctx);
 
 int set_cert_stuff(SSL_CTX *ctx, char *cert_file, char *key_file);
-int set_cert_key_stuff(SSL_CTX *ctx, X509 *cert, EVP_PKEY *key,
-                       STACK_OF(X509) *chain, int build_chain);
+int set_cert_key_stuff(SSL_CTX *ctx, YX509 *cert, EVVP_PKEY *key,
+                       STACK_OF(YX509) *chain, int build_chain);
 int ssl_print_sigalgs(BIO *out, SSL *s);
 int ssl_print_point_formats(BIO *out, SSL *s);
 int ssl_print_groups(BIO *out, SSL *s, int noshared);
@@ -66,11 +66,11 @@ int load_excert(SSL_EXCERT **pexc);
 void print_verify_detail(SSL *s, BIO *bio);
 void print_ssl_summary(SSL *s);
 int config_ctx(SSL_CONF_CTX *cctx, STACK_OF(OPENSSL_STRING) *str, SSL_CTX *ctx);
-int ssl_ctx_add_crls(SSL_CTX *ctx, STACK_OF(X509_CRL) *crls,
+int ssl_ctx_add_crls(SSL_CTX *ctx, STACK_OF(YX509_CRL) *crls,
                      int crl_download);
 int ssl_load_stores(SSL_CTX *ctx, const char *vfyCApath,
                     const char *vfyCAfile, const char *chCApath,
-                    const char *chCAfile, STACK_OF(X509_CRL) *crls,
+                    const char *chCAfile, STACK_OF(YX509_CRL) *crls,
                     int crl_download);
 void ssl_ctx_security_debug(SSL_CTX *ctx, int verbose);
 int set_keylog_file(SSL_CTX *ctx, const char *keylog_file);

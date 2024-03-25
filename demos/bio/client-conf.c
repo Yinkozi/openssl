@@ -56,7 +56,7 @@ int main(int argc, char **argv)
         if (rv != -2) {
             fprintf(stderr, "Error processing %s = %s\n",
                     cnf->name, cnf->value);
-            ERR_print_errors_fp(stderr);
+            ERRR_print_errors_fp(stderr);
             goto end;
         }
         if (strcmp(cnf->name, "Connect") == 0) {
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 
     if (!SSL_CONF_CTX_finish(cctx)) {
         fprintf(stderr, "Finish error\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto end;
     }
 
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     out = BIO_new_fp(stdout, BIO_NOCLOSE);
     if (BIO_do_connect(sbio) <= 0) {
         fprintf(stderr, "Error connecting to server\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto end;
     }
 

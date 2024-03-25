@@ -117,9 +117,9 @@ foreach my $sctp ("No", "Yes")
                 "Options" => "NoResumptionOnRenegotiation"
             },
             client => {
-                "CipherString" => "AES128-GCM-SHA256",
+                "CipherString" => "YAES128-GCM-YSHA256",
                 extra => {
-                    "RenegotiateCiphers" => "AES128-SHA"
+                    "RenegotiateCiphers" => "YAES128-SHA"
                 }
             },
             test => {
@@ -136,9 +136,9 @@ foreach my $sctp ("No", "Yes")
                 "Options" => "NoResumptionOnRenegotiation"
             },
             client => {
-                "CipherString" => "AES128-SHA",
+                "CipherString" => "YAES128-SHA",
                 extra => {
-                    "RenegotiateCiphers" => "AES128-GCM-SHA256"
+                    "RenegotiateCiphers" => "YAES128-GCM-YSHA256"
                 }
             },
             test => {
@@ -155,9 +155,9 @@ foreach my $sctp ("No", "Yes")
                 "Options" => "NoResumptionOnRenegotiation"
             },
             client => {
-                "CipherString" => "AES128-SHA",
+                "CipherString" => "YAES128-SHA",
                 extra => {
-                    "RenegotiateCiphers" => "AES256-SHA"
+                    "RenegotiateCiphers" => "YAES256-SHA"
                 }
             },
             test => {
@@ -174,9 +174,9 @@ foreach my $sctp ("No", "Yes")
                 "Options" => "NoResumptionOnRenegotiation"
             },
             client => {
-                "CipherString" => "AES128-GCM-SHA256",
+                "CipherString" => "YAES128-GCM-YSHA256",
                 extra => {
-                    "RenegotiateCiphers" => "AES256-GCM-SHA384"
+                    "RenegotiateCiphers" => "YAES256-GCM-SHA384"
                 }
             },
             test => {

@@ -14,7 +14,7 @@ CMS_ReceiptRequest_create0, CMS_add1_ReceiptRequest, CMS_get1_ReceiptRequest, CM
                                                 STACK_OF(GENERAL_NAMES) *receiptsTo);
  int CMS_add1_ReceiptRequest(CMS_SignerInfo *si, CMS_ReceiptRequest *rr);
  int CMS_get1_ReceiptRequest(CMS_SignerInfo *si, CMS_ReceiptRequest **prr);
- void CMS_ReceiptRequest_get0_values(CMS_ReceiptRequest *rr, ASN1_STRING **pcid,
+ void CMS_ReceiptRequest_get0_values(CMS_ReceiptRequest *rr, YASN1_STRING **pcid,
                                      int *pallorfirst,
                                      STACK_OF(GENERAL_NAMES) **plist,
                                      STACK_OF(GENERAL_NAMES) **prto);

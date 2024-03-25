@@ -17,7 +17,7 @@
 # of Linaro.
 # ====================================================================
 
-# Bit-sliced AES for ARM NEON
+# Bit-sliced YAES for ARM NEON
 #
 # February 2012.
 #
@@ -349,7 +349,7 @@ ___
 ### output msb > [x3,x2,x1,x0,x7,x6,x5,x4] < lsb
 }
 
-# AES linear components
+# YAES linear components
 
 sub ShiftRows {
 my @x=@_[0..7];
@@ -714,7 +714,7 @@ $code.=<<___;
 # define VFP_ABI_PUSH
 # define VFP_ABI_POP
 # define VFP_ABI_FRAME	0
-# define BSAES_ASM_EXTENDED_KEY
+# define BSYAES_ASM_EXTENDED_KEY
 # define XTS_CHAIN_TWEAK
 # define __ARM_ARCH__ __LINUX_ARM_ARCH__
 # define __ARM_MAX_ARCH__ 7
@@ -832,7 +832,7 @@ _bsaes_const:
 	.quad	0x02060a0e03070b0f, 0x0004080c0105090d
 .LREVM0SR:
 	.quad	0x090d01050c000408, 0x03070b0f060a0e02
-.asciz	"Bit-sliced AES for NEON, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"Bit-sliced YAES for NEON, CRYPTOGAMS by <appro\@openssl.org>"
 .align	6
 .size	_bsaes_const,.-_bsaes_const
 
@@ -1113,8 +1113,8 @@ my ($inp,$out,$len,$key, $ivp,$fp,$rounds)=map("r$_",(0..3,8..10));
 my ($keysched)=("sp");
 
 $code.=<<___;
-.extern AES_cbc_encrypt
-.extern AES_decrypt
+.extern YAES_cbc_encrypt
+.extern YAES_decrypt
 
 .global	bsaes_cbc_encrypt
 .type	bsaes_cbc_encrypt,%function
@@ -1123,10 +1123,10 @@ bsaes_cbc_encrypt:
 #ifndef	__KERNEL__
 	cmp	$len, #128
 #ifndef	__thumb__
-	blo	AES_cbc_encrypt
+	blo	YAES_cbc_encrypt
 #else
 	bhs	1f
-	b	AES_cbc_encrypt
+	b	YAES_cbc_encrypt
 1:
 #endif
 #endif
@@ -1142,7 +1142,7 @@ bsaes_cbc_encrypt:
 	mov	$fp, sp				@ save sp
 
 	ldr	$rounds, [$key, #240]		@ get # of rounds
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	@ allocate the key schedule on the stack
 	sub	r12, sp, $rounds, lsl#7		@ 128 bytes per inner round key
 	add	r12, #`128-32`			@ sifze of bit-slices key schedule
@@ -1187,7 +1187,7 @@ bsaes_cbc_encrypt:
 
 	vld1.8	{@XMM[0]-@XMM[1]}, [$inp]!	@ load input
 	vld1.8	{@XMM[2]-@XMM[3]}, [$inp]!
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	mov	r4, $keysched			@ pass the key
 #else
 	add	r4, $key, #248
@@ -1231,7 +1231,7 @@ bsaes_cbc_encrypt:
 	cmp	$len, #2
 	blo	.Lcbc_dec_one
 	vld1.8	{@XMM[1]}, [$inp]!
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	mov	r4, $keysched			@ pass the key
 #else
 	add	r4, $key, #248
@@ -1360,14 +1360,14 @@ bsaes_cbc_encrypt:
 	mov	r2, $key
 	vmov	@XMM[4],@XMM[15]		@ just in case ensure that IV
 	vmov	@XMM[5],@XMM[0]			@ and input are preserved
-	bl	AES_decrypt
+	bl	YAES_decrypt
 	vld1.8	{@XMM[0]}, [$fp]		@ load result
 	veor	@XMM[0], @XMM[0], @XMM[4]	@ ^= IV
 	vmov	@XMM[15], @XMM[5]		@ @XMM[5] holds input
 	vst1.8	{@XMM[0]}, [$rounds]		@ write output
 
 .Lcbc_dec_done:
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	vmov.i32	q0, #0
 	vmov.i32	q1, #0
 .Lcbc_dec_bzero:				@ wipe key schedule [if any]
@@ -1390,12 +1390,12 @@ my $const = "r6";	# shared with _bsaes_encrypt8_alt
 my $keysched = "sp";
 
 $code.=<<___;
-.extern	AES_encrypt
+.extern	YAES_encrypt
 .global	bsaes_ctr32_encrypt_blocks
 .type	bsaes_ctr32_encrypt_blocks,%function
 .align	5
 bsaes_ctr32_encrypt_blocks:
-	cmp	$len, #8			@ use plain AES for
+	cmp	$len, #8			@ use plain YAES for
 	blo	.Lctr_enc_short			@ small sizes
 
 	mov	ip, sp
@@ -1406,7 +1406,7 @@ bsaes_ctr32_encrypt_blocks:
 	mov	$fp, sp				@ save sp
 
 	ldr	$rounds, [$key, #240]		@ get # of rounds
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	@ allocate the key schedule on the stack
 	sub	r12, sp, $rounds, lsl#7		@ 128 bytes per inner round key
 	add	r12, #`128-32`			@ size of bit-sliced key schedule
@@ -1474,7 +1474,7 @@ bsaes_ctr32_encrypt_blocks:
 	@ to flip byte order in 32-bit counter
 
 	vldmia		$keysched, {@XMM[9]}		@ load round0 key
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, $keysched, #0x10		@ pass next round key
 #else
 	add		r4, $key, #`248+16`
@@ -1559,7 +1559,7 @@ bsaes_ctr32_encrypt_blocks:
 .Lctr_enc_done:
 	vmov.i32	q0, #0
 	vmov.i32	q1, #0
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 .Lctr_enc_bzero:			@ wipe key schedule [if any]
 	vstmia		$keysched!, {q0-q1}
 	cmp		$keysched, $fp
@@ -1596,7 +1596,7 @@ bsaes_ctr32_encrypt_blocks:
 	mov	r1, sp			@ output on the stack
 	mov	r2, r7			@ key
 
-	bl	AES_encrypt
+	bl	YAES_encrypt
 
 	vld1.8	{@XMM[0]}, [r4]!	@ load input
 	vld1.8	{@XMM[1]}, [sp]		@ load encrypted counter
@@ -1623,7 +1623,7 @@ ___
 {
 ######################################################################
 # void bsaes_xts_[en|de]crypt(const char *inp,char *out,size_t len,
-#	const AES_KEY *key1, const AES_KEY *key2,
+#	const YAES_KEY *key1, const YAES_KEY *key2,
 #	const unsigned char iv[16]);
 #
 my ($inp,$out,$len,$key,$rounds,$magic,$fp)=(map("r$_",(7..10,1..3)));
@@ -1657,13 +1657,13 @@ bsaes_xts_encrypt:
 	ldr	r0, [ip, #4]			@ iv[]
 	mov	r1, sp
 	ldr	r2, [ip, #0]			@ key2
-	bl	AES_encrypt
+	bl	YAES_encrypt
 	mov	r0,sp				@ pointer to initial tweak
 #endif
 
 	ldr	$rounds, [$key, #240]		@ get # of rounds
 	mov	$fp, r6
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	@ allocate the key schedule on the stack
 	sub	r12, sp, $rounds, lsl#7		@ 128 bytes per inner round key
 	@ add	r12, #`128-32`			@ size of bit-sliced key schedule
@@ -1735,7 +1735,7 @@ $code.=<<___;
 
 	vld1.8		{@XMM[6]-@XMM[7]}, [$inp]!
 	veor		@XMM[5], @XMM[5], @XMM[13]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1804,7 +1804,7 @@ $code.=<<___;
 
 	vld1.8		{@XMM[6]}, [$inp]!
 	veor		@XMM[5], @XMM[5], @XMM[13]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1836,7 +1836,7 @@ $code.=<<___;
 .align	4
 .Lxts_enc_6:
 	veor		@XMM[4], @XMM[4], @XMM[12]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1871,7 +1871,7 @@ $code.=<<___;
 .align	5
 .Lxts_enc_5:
 	veor		@XMM[3], @XMM[3], @XMM[11]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1899,7 +1899,7 @@ $code.=<<___;
 .align	4
 .Lxts_enc_4:
 	veor		@XMM[2], @XMM[2], @XMM[10]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1924,7 +1924,7 @@ $code.=<<___;
 .align	4
 .Lxts_enc_3:
 	veor		@XMM[1], @XMM[1], @XMM[9]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1948,7 +1948,7 @@ $code.=<<___;
 .align	4
 .Lxts_enc_2:
 	veor		@XMM[0], @XMM[0], @XMM[8]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -1975,7 +1975,7 @@ $code.=<<___;
 	mov		r2, $key
 	mov		r4, $fp				@ preserve fp
 
-	bl		AES_encrypt
+	bl		YAES_encrypt
 
 	vld1.8		{@XMM[0]}, [sp,:128]
 	veor		@XMM[0], @XMM[0], @XMM[8]
@@ -2007,7 +2007,7 @@ $code.=<<___;
 	mov		r2, $key
 	mov		r4, $fp			@ preserve fp
 
-	bl		AES_encrypt
+	bl		YAES_encrypt
 
 	vld1.8		{@XMM[0]}, [sp,:128]
 	veor		@XMM[0], @XMM[0], @XMM[8]
@@ -2061,13 +2061,13 @@ bsaes_xts_decrypt:
 	ldr	r0, [ip, #4]			@ iv[]
 	mov	r1, sp
 	ldr	r2, [ip, #0]			@ key2
-	bl	AES_encrypt
+	bl	YAES_encrypt
 	mov	r0, sp				@ pointer to initial tweak
 #endif
 
 	ldr	$rounds, [$key, #240]		@ get # of rounds
 	mov	$fp, r6
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	@ allocate the key schedule on the stack
 	sub	r12, sp, $rounds, lsl#7		@ 128 bytes per inner round key
 	@ add	r12, #`128-32`			@ size of bit-sliced key schedule
@@ -2150,7 +2150,7 @@ $code.=<<___;
 
 	vld1.8		{@XMM[6]-@XMM[7]}, [$inp]!
 	veor		@XMM[5], @XMM[5], @XMM[13]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2219,7 +2219,7 @@ $code.=<<___;
 
 	vld1.8		{@XMM[6]}, [$inp]!
 	veor		@XMM[5], @XMM[5], @XMM[13]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2253,7 +2253,7 @@ $code.=<<___;
 	vst1.64		{@XMM[14]}, [r0,:128]		@ next round tweak
 
 	veor		@XMM[4], @XMM[4], @XMM[12]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2282,7 +2282,7 @@ $code.=<<___;
 .align	4
 .Lxts_dec_5:
 	veor		@XMM[3], @XMM[3], @XMM[11]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2310,7 +2310,7 @@ $code.=<<___;
 .align	4
 .Lxts_dec_4:
 	veor		@XMM[2], @XMM[2], @XMM[10]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2335,7 +2335,7 @@ $code.=<<___;
 .align	4
 .Lxts_dec_3:
 	veor		@XMM[1], @XMM[1], @XMM[9]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2359,7 +2359,7 @@ $code.=<<___;
 .align	4
 .Lxts_dec_2:
 	veor		@XMM[0], @XMM[0], @XMM[8]
-#ifndef	BSAES_ASM_EXTENDED_KEY
+#ifndef	BSYAES_ASM_EXTENDED_KEY
 	add		r4, sp, #0x90			@ pass key schedule
 #else
 	add		r4, $key, #248			@ pass key schedule
@@ -2387,7 +2387,7 @@ $code.=<<___;
 	mov		r2, $key
 	mov		r4, $fp				@ preserve fp
 
-	bl		AES_decrypt
+	bl		YAES_decrypt
 
 	vld1.8		{@XMM[0]}, [sp,:128]
 	veor		@XMM[0], @XMM[0], @XMM[8]
@@ -2419,7 +2419,7 @@ $code.=<<___;
 	mov		r2, $key
 	mov		r4, $fp			@ preserve fp
 
-	bl		AES_decrypt
+	bl		YAES_decrypt
 
 	vld1.8		{@XMM[0]}, [sp,:128]
 	veor		@XMM[0], @XMM[0], @XMM[9]
@@ -2442,7 +2442,7 @@ $code.=<<___;
 	vst1.8		{@XMM[0]}, [sp,:128]
 	mov		r2, $key
 
-	bl		AES_decrypt
+	bl		YAES_decrypt
 
 	vld1.8		{@XMM[0]}, [sp,:128]
 	veor		@XMM[0], @XMM[0], @XMM[8]

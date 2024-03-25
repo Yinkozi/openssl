@@ -29,14 +29,14 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$UCMP	="cmpld";
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$STU	="stwu";
 	$POP	="lwz";
 	$PUSH	="stw";
@@ -251,7 +251,7 @@ KeccakF1600:
 	stvx	v31,r11,$sp
 	stw	r7,`$FRAME-4`($sp)	; save vrsave
 	li	r0, -1
-	$PUSH	r8,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r8,`$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r0			; preserve all AltiVec registers
 
 	li	r11,16
@@ -407,7 +407,7 @@ SHA3_absorb:
 	stvx	v31,r11,$sp
 	stw	r7,`$FRAME-4`($sp)	; save vrsave
 	li	r0, -1
-	$PUSH	r8,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r8,`$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r0			; preserve all AltiVec registers
 
 	li	r11,16

@@ -48,9 +48,9 @@ If the file "config.cnf" contains the following:
  server = server_section
 
  [server_section]
- RSA.Certificate = server-rsa.pem
+ YRSA.Certificate = server-rsa.pem
  ECDSA.Certificate = server-ecdsa.pem
- Ciphers = ALL:!RC4
+ Ciphers = ALL:!YRC4
 
 An application could call:
 

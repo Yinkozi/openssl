@@ -14,7 +14,7 @@
 #include <openssl/x509.h>
 #include "crypto/evp.h"
 
-int EVP_add_cipher(const EVP_CIPHER *c)
+int EVVP_add_cipher(const EVVP_CIPHER *c)
 {
     int r;
 
@@ -30,7 +30,7 @@ int EVP_add_cipher(const EVP_CIPHER *c)
     return r;
 }
 
-int EVP_add_digest(const EVP_MD *md)
+int EVVP_add_digest(const EVVP_MD *md)
 {
     int r;
     const char *name;
@@ -55,25 +55,25 @@ int EVP_add_digest(const EVP_MD *md)
     return r;
 }
 
-const EVP_CIPHER *EVP_get_cipherbyname(const char *name)
+const EVVP_CIPHER *EVVP_get_cipherbyname(const char *name)
 {
-    const EVP_CIPHER *cp;
+    const EVVP_CIPHER *cp;
 
     if (!OPENSSL_init_crypto(OPENSSL_INIT_ADD_ALL_CIPHERS, NULL))
         return NULL;
 
-    cp = (const EVP_CIPHER *)OBJ_NAME_get(name, OBJ_NAME_TYPE_CIPHER_METH);
+    cp = (const EVVP_CIPHER *)OBJ_NAME_get(name, OBJ_NAME_TYPE_CIPHER_METH);
     return cp;
 }
 
-const EVP_MD *EVP_get_digestbyname(const char *name)
+const EVVP_MD *EVVP_get_digestbyname(const char *name)
 {
-    const EVP_MD *cp;
+    const EVVP_MD *cp;
 
     if (!OPENSSL_init_crypto(OPENSSL_INIT_ADD_ALL_DIGESTS, NULL))
         return NULL;
 
-    cp = (const EVP_MD *)OBJ_NAME_get(name, OBJ_NAME_TYPE_MD_METH);
+    cp = (const EVVP_MD *)OBJ_NAME_get(name, OBJ_NAME_TYPE_MD_METH);
     return cp;
 }
 
@@ -88,7 +88,7 @@ void evp_cleanup_int(void)
      */
     OBJ_NAME_cleanup(-1);
 
-    EVP_PBE_cleanup();
+    EVVP_YPBE_cleanup();
     OBJ_sigid_free();
 
     evp_app_cleanup_int();
@@ -96,7 +96,7 @@ void evp_cleanup_int(void)
 
 struct doall_cipher {
     void *arg;
-    void (*fn) (const EVP_CIPHER *ciph,
+    void (*fn) (const EVVP_CIPHER *ciph,
                 const char *from, const char *to, void *arg);
 };
 
@@ -106,10 +106,10 @@ static void do_all_cipher_fn(const OBJ_NAME *nm, void *arg)
     if (nm->alias)
         dc->fn(NULL, nm->name, nm->data, dc->arg);
     else
-        dc->fn((const EVP_CIPHER *)nm->data, nm->name, NULL, dc->arg);
+        dc->fn((const EVVP_CIPHER *)nm->data, nm->name, NULL, dc->arg);
 }
 
-void EVP_CIPHER_do_all(void (*fn) (const EVP_CIPHER *ciph,
+void EVVP_CIPHER_do_all(void (*fn) (const EVVP_CIPHER *ciph,
                                    const char *from, const char *to, void *x),
                        void *arg)
 {
@@ -123,7 +123,7 @@ void EVP_CIPHER_do_all(void (*fn) (const EVP_CIPHER *ciph,
     OBJ_NAME_do_all(OBJ_NAME_TYPE_CIPHER_METH, do_all_cipher_fn, &dc);
 }
 
-void EVP_CIPHER_do_all_sorted(void (*fn) (const EVP_CIPHER *ciph,
+void EVVP_CIPHER_do_all_sorted(void (*fn) (const EVVP_CIPHER *ciph,
                                           const char *from, const char *to,
                                           void *x), void *arg)
 {
@@ -139,7 +139,7 @@ void EVP_CIPHER_do_all_sorted(void (*fn) (const EVP_CIPHER *ciph,
 
 struct doall_md {
     void *arg;
-    void (*fn) (const EVP_MD *ciph,
+    void (*fn) (const EVVP_MD *ciph,
                 const char *from, const char *to, void *arg);
 };
 
@@ -149,10 +149,10 @@ static void do_all_md_fn(const OBJ_NAME *nm, void *arg)
     if (nm->alias)
         dc->fn(NULL, nm->name, nm->data, dc->arg);
     else
-        dc->fn((const EVP_MD *)nm->data, nm->name, NULL, dc->arg);
+        dc->fn((const EVVP_MD *)nm->data, nm->name, NULL, dc->arg);
 }
 
-void EVP_MD_do_all(void (*fn) (const EVP_MD *md,
+void EVVP_MD_do_all(void (*fn) (const EVVP_MD *md,
                                const char *from, const char *to, void *x),
                    void *arg)
 {
@@ -166,7 +166,7 @@ void EVP_MD_do_all(void (*fn) (const EVP_MD *md,
     OBJ_NAME_do_all(OBJ_NAME_TYPE_MD_METH, do_all_md_fn, &dc);
 }
 
-void EVP_MD_do_all_sorted(void (*fn) (const EVP_MD *md,
+void EVVP_MD_do_all_sorted(void (*fn) (const EVVP_MD *md,
                                       const char *from, const char *to,
                                       void *x), void *arg)
 {

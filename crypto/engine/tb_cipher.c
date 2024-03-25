@@ -66,9 +66,9 @@ ENGINE *ENGINE_get_cipher_engine(int nid)
 }
 
 /* Obtains a cipher implementation from an ENGINE functional reference */
-const EVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid)
+const EVVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid)
 {
-    const EVP_CIPHER *ret;
+    const EVVP_CIPHER *ret;
     ENGINE_CIPHERS_PTR fn = ENGINE_get_ciphers(e);
     if (!fn || !fn(e, &ret, NULL, nid)) {
         ENGINEerr(ENGINE_F_ENGINE_GET_CIPHER, ENGINE_R_UNIMPLEMENTED_CIPHER);

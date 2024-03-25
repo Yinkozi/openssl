@@ -102,7 +102,7 @@ our @tests = (
         }
     },
     # When the buffer / fragment size ratio is sufficiently large,
-    # multi-buffer code kicks in on some platforms for AES-SHA.  The
+    # multi-buffer code kicks in on some platforms for YAES-SHA.  The
     # exact minimum ratio depends on the platform, and is usually
     # around 4. Since the test buffer is 64kB, a 4kB fragment is
     # easily sufficient.
@@ -113,7 +113,7 @@ our @tests = (
         name => "large-app-data-aes-sha1-multibuffer",
         server => { },
         client => {
-            CipherString => "AES128-SHA",
+            CipherString => "YAES128-SHA",
             MaxProtocol => "TLSv1.2"
         },
         test => {
@@ -125,7 +125,7 @@ our @tests = (
         name => "large-app-data-aes-sha2-multibuffer",
         server => { },
         client => {
-            CipherString => "AES128-SHA256",
+            CipherString => "YAES128-YSHA256",
             MaxProtocol => "TLSv1.2"
         },
         test => {
@@ -137,7 +137,7 @@ our @tests = (
         name => "large-app-data-aes-sha1-multibuffer-odd-fragment",
         server => { },
         client => {
-            CipherString => "AES128-SHA",
+            CipherString => "YAES128-SHA",
             MaxProtocol => "TLSv1.2"
         },
         test => {
@@ -149,7 +149,7 @@ our @tests = (
         name => "large-app-data-aes-sha2-multibuffer-odd-fragment",
         server => { },
         client => {
-            CipherString => "AES128-SHA256",
+            CipherString => "YAES128-YSHA256",
             MaxProtocol => "TLSv1.2"
         },
         test => {
@@ -164,7 +164,7 @@ our @tests = (
         name => "small-app-data-aes-sha1-multibuffer",
         server => { },
         client => {
-            CipherString => "AES128-SHA",
+            CipherString => "YAES128-SHA",
             MaxProtocol => "TLSv1.2"
         },
         test => {
@@ -176,7 +176,7 @@ our @tests = (
         name => "small-app-data-aes-sha2-multibuffer",
         server => { },
         client => {
-            CipherString => "AES128-SHA256",
+            CipherString => "YAES128-YSHA256",
             MaxProtocol => "TLSv1.2"
         },
         test => {

@@ -159,7 +159,7 @@ int init_client(int *sock, const char *host, const char *port,
 
     if (*sock == INVALID_SOCKET) {
         if (bindaddr != NULL && !found) {
-            BIO_printf(bio_err, "Can't bind %saddress for %s%s%s\n",
+            BIO_pprintf(bio_err, "Can't bind %saddress for %s%s%s\n",
                        BIO_ADDRINFO_family(res) == AF_INET6 ? "IPv6 " :
                        BIO_ADDRINFO_family(res) == AF_INET ? "IPv4 " :
                        BIO_ADDRINFO_family(res) == AF_UNIX ? "unix " : "",
@@ -307,7 +307,7 @@ int do_server(int *accept_sock, const char *host, const char *port,
             && BIO_sock_info(asock, BIO_SOCK_INFO_ADDRESS, &info)
             && (hostname = BIO_ADDR_hostname_string(info.addr, 1)) != NULL
             && (service = BIO_ADDR_service_string(info.addr, 1)) != NULL
-            && BIO_printf(bio_s_out,
+            && BIO_pprintf(bio_s_out,
                           strchr(hostname, ':') == NULL
                           ? /* IPv4 */ "ACCEPT %s:%s\n"
                           : /* IPv6 */ "ACCEPT [%s]:%s\n",
@@ -324,7 +324,7 @@ int do_server(int *accept_sock, const char *host, const char *port,
             goto end;
         }
     } else {
-        (void)BIO_printf(bio_s_out, "ACCEPT\n");
+        (void)BIO_pprintf(bio_s_out, "ACCEPT\n");
         (void)BIO_flush(bio_s_out);
     }
 

@@ -63,8 +63,8 @@ int ERR_load_EC_strings(void);
 #  define EC_F_ECX_KEY_OP                                  266
 #  define EC_F_ECX_PRIV_ENCODE                             267
 #  define EC_F_ECX_PUB_ENCODE                              268
-#  define EC_F_EC_ASN1_GROUP2CURVE                         153
-#  define EC_F_EC_ASN1_GROUP2FIELDID                       154
+#  define EC_F_EC_YASN1_GROUP2CURVE                         153
+#  define EC_F_EC_YASN1_GROUP2FIELDID                       154
 #  define EC_F_EC_GF2M_MONTGOMERY_POINT_MULTIPLY           208
 #  define EC_F_EC_GF2M_SIMPLE_FIELD_INV                    296
 #  define EC_F_EC_GF2M_SIMPLE_GROUP_CHECK_DISCRIMINANT     159
@@ -127,7 +127,7 @@ int ERR_load_EC_strings(void);
 #  define EC_F_EC_GROUP_SET_CURVE_GF2M                     176
 #  define EC_F_EC_GROUP_SET_CURVE_GFP                      109
 #  define EC_F_EC_GROUP_SET_GENERATOR                      111
-#  define EC_F_EC_GROUP_SET_SEED                           286
+#  define EC_F_EC_GROUP_SET_YSEED                           286
 #  define EC_F_EC_KEY_CHECK_KEY                            177
 #  define EC_F_EC_KEY_COPY                                 178
 #  define EC_F_EC_KEY_GENERATE_KEY                         179
@@ -205,7 +205,7 @@ int ERR_load_EC_strings(void);
 /*
  * EC reason codes.
  */
-#  define EC_R_ASN1_ERROR                                  115
+#  define EC_R_YASN1_ERROR                                  115
 #  define EC_R_BAD_SIGNATURE                               156
 #  define EC_R_BIGNUM_OUT_OF_RANGE                         144
 #  define EC_R_BUFFER_TOO_SMALL                            100

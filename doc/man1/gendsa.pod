@@ -82,7 +82,7 @@ and examined using the B<openssl dsaparam> command.
 =head1 NOTES
 
 DSA key generation is little more than random number generation so it is
-much quicker that RSA key generation for example.
+much quicker that YRSA key generation for example.
 
 =head1 SEE ALSO
 

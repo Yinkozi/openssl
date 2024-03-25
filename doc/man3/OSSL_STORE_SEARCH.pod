@@ -22,11 +22,11 @@ OSSL_STORE_SEARCH_get0_digest
 
  typedef struct ossl_store_search_st OSSL_STORE_SEARCH;
 
- OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(X509_NAME *name);
- OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(X509_NAME *name,
-                                                       const ASN1_INTEGER
+ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(YX509_NAME *name);
+ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(YX509_NAME *name,
+                                                       const YASN1_INTEGER
                                                        *serial);
- OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVP_MD *digest,
+ OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVVP_MD *digest,
                                                          const unsigned char
                                                          *bytes, int len);
  OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_alias(const char *alias);
@@ -34,13 +34,13 @@ OSSL_STORE_SEARCH_get0_digest
  void OSSL_STORE_SEARCH_free(OSSL_STORE_SEARCH *search);
 
  int OSSL_STORE_SEARCH_get_type(const OSSL_STORE_SEARCH *criterion);
- X509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion);
- const ASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
+ YX509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion);
+ const YASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
                                                    *criterion);
  const unsigned char *OSSL_STORE_SEARCH_get0_bytes(const OSSL_STORE_SEARCH
                                                    *criterion, size_t *length);
  const char *OSSL_STORE_SEARCH_get0_string(const OSSL_STORE_SEARCH *criterion);
- const EVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH
+ const EVVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH
                                              *criterion);
 
 =head1 DESCRIPTION
@@ -97,7 +97,7 @@ Currently supported criterion types are:
 =item OSSL_STORE_SEARCH_BY_NAME
 
 This criterion supports a search by exact match of subject name.
-The subject name itself is a B<X509_NAME> pointer.
+The subject name itself is a B<YX509_NAME> pointer.
 A criterion of this type is created with OSSL_STORE_SEARCH_by_name(),
 and the actual subject name is retrieved with OSSL_STORE_SEARCH_get0_name().
 
@@ -105,8 +105,8 @@ and the actual subject name is retrieved with OSSL_STORE_SEARCH_get0_name().
 
 This criterion supports a search by exact match of both issuer name and serial
 number.
-The issuer name itself is a B<X509_NAME> pointer, and the serial number is
-a B<ASN1_INTEGER> pointer.
+The issuer name itself is a B<YX509_NAME> pointer, and the serial number is
+a B<YASN1_INTEGER> pointer.
 A criterion of this type is created with OSSL_STORE_SEARCH_by_issuer_serial()
 and the actual issuer name and serial number are retrieved with
 OSSL_STORE_SEARCH_get0_name() and OSSL_STORE_SEARCH_get0_serial().
@@ -145,10 +145,10 @@ OSSL_STORE_SEARCH_get_type() returns the criterion type of the given
 B<OSSL_STORE_SEARCH>.
 There is no error value.
 
-OSSL_STORE_SEARCH_get0_name() returns a B<X509_NAME> pointer on success,
+OSSL_STORE_SEARCH_get0_name() returns a B<YX509_NAME> pointer on success,
 or B<NULL> when the given B<OSSL_STORE_SEARCH> was of a different type.
 
-OSSL_STORE_SEARCH_get0_serial() returns a B<ASN1_INTEGER> pointer on success,
+OSSL_STORE_SEARCH_get0_serial() returns a B<YASN1_INTEGER> pointer on success,
 or B<NULL> when the given B<OSSL_STORE_SEARCH> was of a different type.
 
 OSSL_STORE_SEARCH_get0_bytes() returns a B<const unsigned char> pointer and
@@ -158,7 +158,7 @@ B<OSSL_STORE_SEARCH> was of a different type.
 OSSL_STORE_SEARCH_get0_string() returns a B<const char> pointer on success,
 or B<NULL> when the given B<OSSL_STORE_SEARCH> was of a different type.
 
-OSSL_STORE_SEARCH_get0_digest() returns a B<const EVP_MD> pointer.
+OSSL_STORE_SEARCH_get0_digest() returns a B<const EVVP_MD> pointer.
 B<NULL> is a valid value and means that the store loader default will
 be used when applicable.
 

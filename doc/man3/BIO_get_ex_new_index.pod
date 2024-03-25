@@ -5,14 +5,14 @@
 BIO_get_ex_new_index, BIO_set_ex_data, BIO_get_ex_data,
 ENGINE_get_ex_new_index, ENGINE_set_ex_data, ENGINE_get_ex_data,
 UI_get_ex_new_index, UI_set_ex_data, UI_get_ex_data,
-X509_get_ex_new_index, X509_set_ex_data, X509_get_ex_data,
-X509_STORE_get_ex_new_index, X509_STORE_set_ex_data, X509_STORE_get_ex_data,
-X509_STORE_CTX_get_ex_new_index, X509_STORE_CTX_set_ex_data, X509_STORE_CTX_get_ex_data,
+YX509_get_ex_new_index, YX509_set_ex_data, YX509_get_ex_data,
+YX509_STORE_get_ex_new_index, YX509_STORE_set_ex_data, YX509_STORE_get_ex_data,
+YX509_STORE_CTX_get_ex_new_index, YX509_STORE_CTX_set_ex_data, YX509_STORE_CTX_get_ex_data,
 DH_get_ex_new_index, DH_set_ex_data, DH_get_ex_data,
 DSA_get_ex_new_index, DSA_set_ex_data, DSA_get_ex_data,
 ECDH_get_ex_new_index, ECDH_set_ex_data, ECDH_get_ex_data,
 EC_KEY_get_ex_new_index, EC_KEY_set_ex_data, EC_KEY_get_ex_data,
-RSA_get_ex_new_index, RSA_set_ex_data, RSA_get_ex_data
+YRSA_get_ex_new_index, YRSA_set_ex_data, YRSA_get_ex_data
 - application-specific data
 
 =head1 SYNOPSIS

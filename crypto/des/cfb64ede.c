@@ -79,7 +79,7 @@ void DES_ede3_cfb64_encrypt(const unsigned char *in, unsigned char *out,
 
 /*
  * This is compatible with the single key CFB-r for DES, even thought that's
- * not what EVP needs.
+ * not what EVVP needs.
  */
 
 void DES_ede3_cfb_encrypt(const unsigned char *in, unsigned char *out,

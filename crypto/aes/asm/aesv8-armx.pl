@@ -14,13 +14,13 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# This module implements support for ARMv8 AES instructions. The
+# This module implements support for ARMv8 YAES instructions. The
 # module is endian-agnostic in sense that it supports both big- and
 # little-endian cases. As does it support both 32- and 64-bit modes
 # of operation. Latter is achieved by limiting amount of utilized
 # registers to 16, which implies additional NEON load and integer
 # instructions. This has no effect on mighty Apple A7, where results
-# are literally equal to the theoretical estimates based on AES
+# are literally equal to the theoretical estimates based on YAES
 # instruction latencies and issue rates. On Cortex-A53, an in-order
 # execution core, this costs up to 10-15%, which is partially
 # compensated by implementing dedicated code path for 128-bit

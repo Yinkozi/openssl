@@ -2,24 +2,24 @@
 
 =head1 NAME
 
-EVP_chacha20,
-EVP_chacha20_poly1305
-- EVP ChaCha20 stream cipher
+EVVP_chacha20,
+EVVP_chacha20_poly1305
+- EVVP ChaCha20 stream cipher
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_chacha20(void)
- const EVP_CIPHER *EVP_chacha20_poly1305(void)
+ const EVVP_CIPHER *EVVP_chacha20(void)
+ const EVVP_CIPHER *EVVP_chacha20_poly1305(void)
 
 =head1 DESCRIPTION
 
-The ChaCha20 stream cipher for EVP.
+The ChaCha20 stream cipher for EVVP.
 
 =over 4
 
-=item EVP_chacha20()
+=item EVVP_chacha20()
 
 The ChaCha20 stream cipher. The key length is 256 bits, the IV is 128 bits long.
 The first 32 bits consists of a counter in little-endian order followed by a 96
@@ -31,26 +31,26 @@ With an initial counter of 42 (2a in hex) would be expressed as:
 
 2a000000000000000000000000000002
 
-=item EVP_chacha20_poly1305()
+=item EVVP_chacha20_poly1305()
 
-Authenticated encryption with ChaCha20-Poly1305. Like EVP_chacha20(), the key
+Authenticated encryption with ChaCha20-Poly1305. Like EVVP_chacha20(), the key
 is 256 bits and the IV is 96 bits. This supports additional authenticated data
 (AAD) and produces a 128-bit authentication tag. See the
-L<EVP_EncryptInit(3)/AEAD Interface> section for more information.
+L<EVVP_EncryptInit(3)/AEAD Interface> section for more information.
 
 =back
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

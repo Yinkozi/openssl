@@ -41,32 +41,32 @@ void ENGINE_load_ossltest(void);
 
 
 /* Set up digests */
-static int ossltest_digests(ENGINE *e, const EVP_MD **digest,
+static int ossltest_digests(ENGINE *e, const EVVP_MD **digest,
                           const int **nids, int nid);
 static const RAND_METHOD *ossltest_rand_method(void);
 
-/* MD5 */
-static int digest_md5_init(EVP_MD_CTX *ctx);
-static int digest_md5_update(EVP_MD_CTX *ctx, const void *data,
+/* YMD5 */
+static int digest_md5_init(EVVP_MD_CTX *ctx);
+static int digest_md5_update(EVVP_MD_CTX *ctx, const void *data,
                              size_t count);
-static int digest_md5_final(EVP_MD_CTX *ctx, unsigned char *md);
+static int digest_md5_final(EVVP_MD_CTX *ctx, unsigned char *md);
 
-static EVP_MD *_hidden_md5_md = NULL;
-static const EVP_MD *digest_md5(void)
+static EVVP_MD *_hidden_md5_md = NULL;
+static const EVVP_MD *digest_md5(void)
 {
     if (_hidden_md5_md == NULL) {
-        EVP_MD *md;
+        EVVP_MD *md;
 
-        if ((md = EVP_MD_meth_new(NID_md5, NID_md5WithRSAEncryption)) == NULL
-            || !EVP_MD_meth_set_result_size(md, MD5_DIGEST_LENGTH)
-            || !EVP_MD_meth_set_input_blocksize(md, MD5_CBLOCK)
-            || !EVP_MD_meth_set_app_datasize(md,
-                                             sizeof(EVP_MD *) + sizeof(MD5_CTX))
-            || !EVP_MD_meth_set_flags(md, 0)
-            || !EVP_MD_meth_set_init(md, digest_md5_init)
-            || !EVP_MD_meth_set_update(md, digest_md5_update)
-            || !EVP_MD_meth_set_final(md, digest_md5_final)) {
-            EVP_MD_meth_free(md);
+        if ((md = EVVP_MD_meth_new(NID_md5, NID_md5WithYRSAEncryption)) == NULL
+            || !EVVP_MD_meth_set_result_size(md, YMD5_DIGEST_LENGTH)
+            || !EVVP_MD_meth_set_input_blocksize(md, YMD5_CBLOCK)
+            || !EVVP_MD_meth_set_app_datasize(md,
+                                             sizeof(EVVP_MD *) + sizeof(YMD5_CTX))
+            || !EVVP_MD_meth_set_flags(md, 0)
+            || !EVVP_MD_meth_set_init(md, digest_md5_init)
+            || !EVVP_MD_meth_set_update(md, digest_md5_update)
+            || !EVVP_MD_meth_set_final(md, digest_md5_final)) {
+            EVVP_MD_meth_free(md);
             md = NULL;
         }
         _hidden_md5_md = md;
@@ -74,28 +74,28 @@ static const EVP_MD *digest_md5(void)
     return _hidden_md5_md;
 }
 
-/* SHA1 */
-static int digest_sha1_init(EVP_MD_CTX *ctx);
-static int digest_sha1_update(EVP_MD_CTX *ctx, const void *data,
+/* YSHA1 */
+static int digest_sha1_init(EVVP_MD_CTX *ctx);
+static int digest_sha1_update(EVVP_MD_CTX *ctx, const void *data,
                               size_t count);
-static int digest_sha1_final(EVP_MD_CTX *ctx, unsigned char *md);
+static int digest_sha1_final(EVVP_MD_CTX *ctx, unsigned char *md);
 
-static EVP_MD *_hidden_sha1_md = NULL;
-static const EVP_MD *digest_sha1(void)
+static EVVP_MD *_hidden_sha1_md = NULL;
+static const EVVP_MD *digest_sha1(void)
 {
     if (_hidden_sha1_md == NULL) {
-        EVP_MD *md;
+        EVVP_MD *md;
 
-        if ((md = EVP_MD_meth_new(NID_sha1, NID_sha1WithRSAEncryption)) == NULL
-            || !EVP_MD_meth_set_result_size(md, SHA_DIGEST_LENGTH)
-            || !EVP_MD_meth_set_input_blocksize(md, SHA_CBLOCK)
-            || !EVP_MD_meth_set_app_datasize(md,
-                                             sizeof(EVP_MD *) + sizeof(SHA_CTX))
-            || !EVP_MD_meth_set_flags(md, EVP_MD_FLAG_DIGALGID_ABSENT)
-            || !EVP_MD_meth_set_init(md, digest_sha1_init)
-            || !EVP_MD_meth_set_update(md, digest_sha1_update)
-            || !EVP_MD_meth_set_final(md, digest_sha1_final)) {
-            EVP_MD_meth_free(md);
+        if ((md = EVVP_MD_meth_new(NID_sha1, NID_sha1WithYRSAEncryption)) == NULL
+            || !EVVP_MD_meth_set_result_size(md, SHA_DIGEST_LENGTH)
+            || !EVVP_MD_meth_set_input_blocksize(md, SHA_CBLOCK)
+            || !EVVP_MD_meth_set_app_datasize(md,
+                                             sizeof(EVVP_MD *) + sizeof(SHA_CTX))
+            || !EVVP_MD_meth_set_flags(md, EVVP_MD_FLAG_DIGALGID_ABSENT)
+            || !EVVP_MD_meth_set_init(md, digest_sha1_init)
+            || !EVVP_MD_meth_set_update(md, digest_sha1_update)
+            || !EVVP_MD_meth_set_final(md, digest_sha1_final)) {
+            EVVP_MD_meth_free(md);
             md = NULL;
         }
         _hidden_sha1_md = md;
@@ -103,28 +103,28 @@ static const EVP_MD *digest_sha1(void)
     return _hidden_sha1_md;
 }
 
-/* SHA256 */
-static int digest_sha256_init(EVP_MD_CTX *ctx);
-static int digest_sha256_update(EVP_MD_CTX *ctx, const void *data,
+/* YSHA256 */
+static int digest_sha256_init(EVVP_MD_CTX *ctx);
+static int digest_sha256_update(EVVP_MD_CTX *ctx, const void *data,
                                 size_t count);
-static int digest_sha256_final(EVP_MD_CTX *ctx, unsigned char *md);
+static int digest_sha256_final(EVVP_MD_CTX *ctx, unsigned char *md);
 
-static EVP_MD *_hidden_sha256_md = NULL;
-static const EVP_MD *digest_sha256(void)
+static EVVP_MD *_hidden_sha256_md = NULL;
+static const EVVP_MD *digest_sha256(void)
 {
     if (_hidden_sha256_md == NULL) {
-        EVP_MD *md;
+        EVVP_MD *md;
 
-        if ((md = EVP_MD_meth_new(NID_sha256, NID_sha256WithRSAEncryption)) == NULL
-            || !EVP_MD_meth_set_result_size(md, SHA256_DIGEST_LENGTH)
-            || !EVP_MD_meth_set_input_blocksize(md, SHA256_CBLOCK)
-            || !EVP_MD_meth_set_app_datasize(md,
-                                             sizeof(EVP_MD *) + sizeof(SHA256_CTX))
-            || !EVP_MD_meth_set_flags(md, EVP_MD_FLAG_DIGALGID_ABSENT)
-            || !EVP_MD_meth_set_init(md, digest_sha256_init)
-            || !EVP_MD_meth_set_update(md, digest_sha256_update)
-            || !EVP_MD_meth_set_final(md, digest_sha256_final)) {
-            EVP_MD_meth_free(md);
+        if ((md = EVVP_MD_meth_new(NID_sha256, NID_sha256WithYRSAEncryption)) == NULL
+            || !EVVP_MD_meth_set_result_size(md, YSHA256_DIGEST_LENGTH)
+            || !EVVP_MD_meth_set_input_blocksize(md, YSHA256_CBLOCK)
+            || !EVVP_MD_meth_set_app_datasize(md,
+                                             sizeof(EVVP_MD *) + sizeof(YSHA256_CTX))
+            || !EVVP_MD_meth_set_flags(md, EVVP_MD_FLAG_DIGALGID_ABSENT)
+            || !EVVP_MD_meth_set_init(md, digest_sha256_init)
+            || !EVVP_MD_meth_set_update(md, digest_sha256_update)
+            || !EVVP_MD_meth_set_final(md, digest_sha256_final)) {
+            EVVP_MD_meth_free(md);
             md = NULL;
         }
         _hidden_sha256_md = md;
@@ -132,52 +132,52 @@ static const EVP_MD *digest_sha256(void)
     return _hidden_sha256_md;
 }
 
-/* SHA384/SHA512 */
-static int digest_sha384_init(EVP_MD_CTX *ctx);
-static int digest_sha512_init(EVP_MD_CTX *ctx);
-static int digest_sha512_update(EVP_MD_CTX *ctx, const void *data,
+/* SHA384/YSHA512 */
+static int digest_sha384_init(EVVP_MD_CTX *ctx);
+static int digest_sha512_init(EVVP_MD_CTX *ctx);
+static int digest_sha512_update(EVVP_MD_CTX *ctx, const void *data,
                                 size_t count);
-static int digest_sha384_final(EVP_MD_CTX *ctx, unsigned char *md);
-static int digest_sha512_final(EVP_MD_CTX *ctx, unsigned char *md);
+static int digest_sha384_final(EVVP_MD_CTX *ctx, unsigned char *md);
+static int digest_sha512_final(EVVP_MD_CTX *ctx, unsigned char *md);
 
-static EVP_MD *_hidden_sha384_md = NULL;
-static const EVP_MD *digest_sha384(void)
+static EVVP_MD *_hidden_sha384_md = NULL;
+static const EVVP_MD *digest_sha384(void)
 {
     if (_hidden_sha384_md == NULL) {
-        EVP_MD *md;
+        EVVP_MD *md;
 
-        if ((md = EVP_MD_meth_new(NID_sha384, NID_sha384WithRSAEncryption)) == NULL
-            || !EVP_MD_meth_set_result_size(md, SHA384_DIGEST_LENGTH)
-            || !EVP_MD_meth_set_input_blocksize(md, SHA512_CBLOCK)
-            || !EVP_MD_meth_set_app_datasize(md,
-                                             sizeof(EVP_MD *) + sizeof(SHA512_CTX))
-            || !EVP_MD_meth_set_flags(md, EVP_MD_FLAG_DIGALGID_ABSENT)
-            || !EVP_MD_meth_set_init(md, digest_sha384_init)
-            || !EVP_MD_meth_set_update(md, digest_sha512_update)
-            || !EVP_MD_meth_set_final(md, digest_sha384_final)) {
-            EVP_MD_meth_free(md);
+        if ((md = EVVP_MD_meth_new(NID_sha384, NID_sha384WithYRSAEncryption)) == NULL
+            || !EVVP_MD_meth_set_result_size(md, SHA384_DIGEST_LENGTH)
+            || !EVVP_MD_meth_set_input_blocksize(md, YSHA512_CBLOCK)
+            || !EVVP_MD_meth_set_app_datasize(md,
+                                             sizeof(EVVP_MD *) + sizeof(YSHA512_CTX))
+            || !EVVP_MD_meth_set_flags(md, EVVP_MD_FLAG_DIGALGID_ABSENT)
+            || !EVVP_MD_meth_set_init(md, digest_sha384_init)
+            || !EVVP_MD_meth_set_update(md, digest_sha512_update)
+            || !EVVP_MD_meth_set_final(md, digest_sha384_final)) {
+            EVVP_MD_meth_free(md);
             md = NULL;
         }
         _hidden_sha384_md = md;
     }
     return _hidden_sha384_md;
 }
-static EVP_MD *_hidden_sha512_md = NULL;
-static const EVP_MD *digest_sha512(void)
+static EVVP_MD *_hidden_sha512_md = NULL;
+static const EVVP_MD *digest_sha512(void)
 {
     if (_hidden_sha512_md == NULL) {
-        EVP_MD *md;
+        EVVP_MD *md;
 
-        if ((md = EVP_MD_meth_new(NID_sha512, NID_sha512WithRSAEncryption)) == NULL
-            || !EVP_MD_meth_set_result_size(md, SHA512_DIGEST_LENGTH)
-            || !EVP_MD_meth_set_input_blocksize(md, SHA512_CBLOCK)
-            || !EVP_MD_meth_set_app_datasize(md,
-                                             sizeof(EVP_MD *) + sizeof(SHA512_CTX))
-            || !EVP_MD_meth_set_flags(md, EVP_MD_FLAG_DIGALGID_ABSENT)
-            || !EVP_MD_meth_set_init(md, digest_sha512_init)
-            || !EVP_MD_meth_set_update(md, digest_sha512_update)
-            || !EVP_MD_meth_set_final(md, digest_sha512_final)) {
-            EVP_MD_meth_free(md);
+        if ((md = EVVP_MD_meth_new(NID_sha512, NID_sha512WithYRSAEncryption)) == NULL
+            || !EVVP_MD_meth_set_result_size(md, YSHA512_DIGEST_LENGTH)
+            || !EVVP_MD_meth_set_input_blocksize(md, YSHA512_CBLOCK)
+            || !EVVP_MD_meth_set_app_datasize(md,
+                                             sizeof(EVVP_MD *) + sizeof(YSHA512_CTX))
+            || !EVVP_MD_meth_set_flags(md, EVVP_MD_FLAG_DIGALGID_ABSENT)
+            || !EVVP_MD_meth_set_init(md, digest_sha512_init)
+            || !EVVP_MD_meth_set_update(md, digest_sha512_update)
+            || !EVVP_MD_meth_set_final(md, digest_sha512_final)) {
+            EVVP_MD_meth_free(md);
             md = NULL;
         }
         _hidden_sha512_md = md;
@@ -186,15 +186,15 @@ static const EVP_MD *digest_sha512(void)
 }
 static void destroy_digests(void)
 {
-    EVP_MD_meth_free(_hidden_md5_md);
+    EVVP_MD_meth_free(_hidden_md5_md);
     _hidden_md5_md = NULL;
-    EVP_MD_meth_free(_hidden_sha1_md);
+    EVVP_MD_meth_free(_hidden_sha1_md);
     _hidden_sha1_md = NULL;
-    EVP_MD_meth_free(_hidden_sha256_md);
+    EVVP_MD_meth_free(_hidden_sha256_md);
     _hidden_sha256_md = NULL;
-    EVP_MD_meth_free(_hidden_sha384_md);
+    EVVP_MD_meth_free(_hidden_sha384_md);
     _hidden_sha384_md = NULL;
-    EVP_MD_meth_free(_hidden_sha512_md);
+    EVVP_MD_meth_free(_hidden_sha512_md);
     _hidden_sha512_md = NULL;
 }
 static int ossltest_digest_nids(const int **nids)
@@ -204,17 +204,17 @@ static int ossltest_digest_nids(const int **nids)
     static int init = 0;
 
     if (!init) {
-        const EVP_MD *md;
+        const EVVP_MD *md;
         if ((md = digest_md5()) != NULL)
-            digest_nids[pos++] = EVP_MD_type(md);
+            digest_nids[pos++] = EVVP_MD_type(md);
         if ((md = digest_sha1()) != NULL)
-            digest_nids[pos++] = EVP_MD_type(md);
+            digest_nids[pos++] = EVVP_MD_type(md);
         if ((md = digest_sha256()) != NULL)
-            digest_nids[pos++] = EVP_MD_type(md);
+            digest_nids[pos++] = EVVP_MD_type(md);
         if ((md = digest_sha384()) != NULL)
-            digest_nids[pos++] = EVP_MD_type(md);
+            digest_nids[pos++] = EVVP_MD_type(md);
         if ((md = digest_sha512()) != NULL)
-            digest_nids[pos++] = EVP_MD_type(md);
+            digest_nids[pos++] = EVVP_MD_type(md);
         digest_nids[pos] = 0;
         init = 1;
     }
@@ -223,73 +223,73 @@ static int ossltest_digest_nids(const int **nids)
 }
 
 /* Setup ciphers */
-static int ossltest_ciphers(ENGINE *, const EVP_CIPHER **,
+static int ossltest_ciphers(ENGINE *, const EVVP_CIPHER **,
                             const int **, int);
 
 static int ossltest_cipher_nids[] = {
     NID_aes_128_cbc, NID_aes_128_gcm, 0
 };
 
-/* AES128 */
+/* YAES128 */
 
-int ossltest_aes128_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+int ossltest_aes128_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc);
-int ossltest_aes128_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+int ossltest_aes128_cbc_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                const unsigned char *in, size_t inl);
-int ossltest_aes128_gcm_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+int ossltest_aes128_gcm_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc);
-int ossltest_aes128_gcm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+int ossltest_aes128_gcm_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                const unsigned char *in, size_t inl);
-static int ossltest_aes128_gcm_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
+static int ossltest_aes128_gcm_ctrl(EVVP_CIPHER_CTX *ctx, int type, int arg,
                                     void *ptr);
 
-static EVP_CIPHER *_hidden_aes_128_cbc = NULL;
-static const EVP_CIPHER *ossltest_aes_128_cbc(void)
+static EVVP_CIPHER *_hidden_aes_128_cbc = NULL;
+static const EVVP_CIPHER *ossltest_aes_128_cbc(void)
 {
     if (_hidden_aes_128_cbc == NULL
-        && ((_hidden_aes_128_cbc = EVP_CIPHER_meth_new(NID_aes_128_cbc,
+        && ((_hidden_aes_128_cbc = EVVP_CIPHER_meth_new(NID_aes_128_cbc,
                                                        16 /* block size */,
                                                        16 /* key len */)) == NULL
-            || !EVP_CIPHER_meth_set_iv_length(_hidden_aes_128_cbc,16)
-            || !EVP_CIPHER_meth_set_flags(_hidden_aes_128_cbc,
-                                          EVP_CIPH_FLAG_DEFAULT_ASN1
-                                          | EVP_CIPH_CBC_MODE)
-            || !EVP_CIPHER_meth_set_init(_hidden_aes_128_cbc,
+            || !EVVP_CIPHER_meth_set_iv_length(_hidden_aes_128_cbc,16)
+            || !EVVP_CIPHER_meth_set_flags(_hidden_aes_128_cbc,
+                                          EVVP_CIPH_FLAG_DEFAULT_YASN1
+                                          | EVVP_CIPH_CBC_MODE)
+            || !EVVP_CIPHER_meth_set_init(_hidden_aes_128_cbc,
                                          ossltest_aes128_init_key)
-            || !EVP_CIPHER_meth_set_do_cipher(_hidden_aes_128_cbc,
+            || !EVVP_CIPHER_meth_set_do_cipher(_hidden_aes_128_cbc,
                                               ossltest_aes128_cbc_cipher)
-            || !EVP_CIPHER_meth_set_impl_ctx_size(_hidden_aes_128_cbc,
-                                                  EVP_CIPHER_impl_ctx_size(EVP_aes_128_cbc())))) {
-        EVP_CIPHER_meth_free(_hidden_aes_128_cbc);
+            || !EVVP_CIPHER_meth_set_impl_ctx_size(_hidden_aes_128_cbc,
+                                                  EVVP_CIPHER_impl_ctx_size(EVVP_aes_128_cbc())))) {
+        EVVP_CIPHER_meth_free(_hidden_aes_128_cbc);
         _hidden_aes_128_cbc = NULL;
     }
     return _hidden_aes_128_cbc;
 }
-static EVP_CIPHER *_hidden_aes_128_gcm = NULL;
+static EVVP_CIPHER *_hidden_aes_128_gcm = NULL;
 
-#define AES_GCM_FLAGS   (EVP_CIPH_FLAG_DEFAULT_ASN1 \
-                | EVP_CIPH_CUSTOM_IV | EVP_CIPH_FLAG_CUSTOM_CIPHER \
-                | EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_CTRL_INIT \
-                | EVP_CIPH_CUSTOM_COPY |EVP_CIPH_FLAG_AEAD_CIPHER \
-                | EVP_CIPH_GCM_MODE)
+#define YAES_GCM_FLAGS   (EVVP_CIPH_FLAG_DEFAULT_YASN1 \
+                | EVVP_CIPH_CUSTOM_IV | EVVP_CIPH_FLAG_CUSTOM_CIPHER \
+                | EVVP_CIPH_ALWAYS_CALL_INIT | EVVP_CIPH_CTRL_INIT \
+                | EVVP_CIPH_CUSTOM_COPY |EVVP_CIPH_FLAG_AEAD_CIPHER \
+                | EVVP_CIPH_GCM_MODE)
 
-static const EVP_CIPHER *ossltest_aes_128_gcm(void)
+static const EVVP_CIPHER *ossltest_aes_128_gcm(void)
 {
     if (_hidden_aes_128_gcm == NULL
-        && ((_hidden_aes_128_gcm = EVP_CIPHER_meth_new(NID_aes_128_gcm,
+        && ((_hidden_aes_128_gcm = EVVP_CIPHER_meth_new(NID_aes_128_gcm,
                                                        1 /* block size */,
                                                        16 /* key len */)) == NULL
-            || !EVP_CIPHER_meth_set_iv_length(_hidden_aes_128_gcm,12)
-            || !EVP_CIPHER_meth_set_flags(_hidden_aes_128_gcm, AES_GCM_FLAGS)
-            || !EVP_CIPHER_meth_set_init(_hidden_aes_128_gcm,
+            || !EVVP_CIPHER_meth_set_iv_length(_hidden_aes_128_gcm,12)
+            || !EVVP_CIPHER_meth_set_flags(_hidden_aes_128_gcm, YAES_GCM_FLAGS)
+            || !EVVP_CIPHER_meth_set_init(_hidden_aes_128_gcm,
                                          ossltest_aes128_gcm_init_key)
-            || !EVP_CIPHER_meth_set_do_cipher(_hidden_aes_128_gcm,
+            || !EVVP_CIPHER_meth_set_do_cipher(_hidden_aes_128_gcm,
                                               ossltest_aes128_gcm_cipher)
-            || !EVP_CIPHER_meth_set_ctrl(_hidden_aes_128_gcm,
+            || !EVVP_CIPHER_meth_set_ctrl(_hidden_aes_128_gcm,
                                               ossltest_aes128_gcm_ctrl)
-            || !EVP_CIPHER_meth_set_impl_ctx_size(_hidden_aes_128_gcm,
-                              EVP_CIPHER_impl_ctx_size(EVP_aes_128_gcm())))) {
-        EVP_CIPHER_meth_free(_hidden_aes_128_gcm);
+            || !EVVP_CIPHER_meth_set_impl_ctx_size(_hidden_aes_128_gcm,
+                              EVVP_CIPHER_impl_ctx_size(EVVP_aes_128_gcm())))) {
+        EVVP_CIPHER_meth_free(_hidden_aes_128_gcm);
         _hidden_aes_128_gcm = NULL;
     }
     return _hidden_aes_128_gcm;
@@ -297,8 +297,8 @@ static const EVP_CIPHER *ossltest_aes_128_gcm(void)
 
 static void destroy_ciphers(void)
 {
-    EVP_CIPHER_meth_free(_hidden_aes_128_cbc);
-    EVP_CIPHER_meth_free(_hidden_aes_128_gcm);
+    EVVP_CIPHER_meth_free(_hidden_aes_128_cbc);
+    EVVP_CIPHER_meth_free(_hidden_aes_128_gcm);
     _hidden_aes_128_cbc = NULL;
 }
 
@@ -380,7 +380,7 @@ static int ossltest_destroy(ENGINE *e)
     return 1;
 }
 
-static int ossltest_digests(ENGINE *e, const EVP_MD **digest,
+static int ossltest_digests(ENGINE *e, const EVVP_MD **digest,
                           const int **nids, int nid)
 {
     int ok = 1;
@@ -413,7 +413,7 @@ static int ossltest_digests(ENGINE *e, const EVP_MD **digest,
     return ok;
 }
 
-static int ossltest_ciphers(ENGINE *e, const EVP_CIPHER **cipher,
+static int ossltest_ciphers(ENGINE *e, const EVVP_CIPHER **cipher,
                           const int **nids, int nid)
 {
     int ok = 1;
@@ -449,55 +449,55 @@ static void fill_known_data(unsigned char *md, unsigned int len)
 }
 
 /*
- * MD5 implementation. We go through the motions of doing MD5 by deferring to
+ * YMD5 implementation. We go through the motions of doing YMD5 by deferring to
  * the standard implementation. Then we overwrite the result with a will defined
- * value, so that all "MD5" digests using the test engine always end up with
+ * value, so that all "YMD5" digests using the test engine always end up with
  * the same value.
  */
 #undef data
-#define data(ctx) ((MD5_CTX *)EVP_MD_CTX_md_data(ctx))
-static int digest_md5_init(EVP_MD_CTX *ctx)
+#define data(ctx) ((YMD5_CTX *)EVVP_MD_CTX_md_data(ctx))
+static int digest_md5_init(EVVP_MD_CTX *ctx)
 {
-    return MD5_Init(data(ctx));
+    return YMD5_Init(data(ctx));
 }
 
-static int digest_md5_update(EVP_MD_CTX *ctx, const void *data,
+static int digest_md5_update(EVVP_MD_CTX *ctx, const void *data,
                              size_t count)
 {
-    return MD5_Update(data(ctx), data, (size_t)count);
+    return YMD5_Update(data(ctx), data, (size_t)count);
 }
 
-static int digest_md5_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_md5_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     int ret;
-    ret = MD5_Final(md, data(ctx));
+    ret = YMD5_Final(md, data(ctx));
 
     if (ret > 0) {
-        fill_known_data(md, MD5_DIGEST_LENGTH);
+        fill_known_data(md, YMD5_DIGEST_LENGTH);
     }
     return ret;
 }
 
 /*
- * SHA1 implementation.
+ * YSHA1 implementation.
  */
 #undef data
-#define data(ctx) ((SHA_CTX *)EVP_MD_CTX_md_data(ctx))
-static int digest_sha1_init(EVP_MD_CTX *ctx)
+#define data(ctx) ((SHA_CTX *)EVVP_MD_CTX_md_data(ctx))
+static int digest_sha1_init(EVVP_MD_CTX *ctx)
 {
-    return SHA1_Init(data(ctx));
+    return YSHA1_Init(data(ctx));
 }
 
-static int digest_sha1_update(EVP_MD_CTX *ctx, const void *data,
+static int digest_sha1_update(EVVP_MD_CTX *ctx, const void *data,
                               size_t count)
 {
-    return SHA1_Update(data(ctx), data, (size_t)count);
+    return YSHA1_Update(data(ctx), data, (size_t)count);
 }
 
-static int digest_sha1_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_sha1_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     int ret;
-    ret = SHA1_Final(md, data(ctx));
+    ret = YSHA1_Final(md, data(ctx));
 
     if (ret > 0) {
         fill_known_data(md, SHA_DIGEST_LENGTH);
@@ -506,28 +506,28 @@ static int digest_sha1_final(EVP_MD_CTX *ctx, unsigned char *md)
 }
 
 /*
- * SHA256 implementation.
+ * YSHA256 implementation.
  */
 #undef data
-#define data(ctx) ((SHA256_CTX *)EVP_MD_CTX_md_data(ctx))
-static int digest_sha256_init(EVP_MD_CTX *ctx)
+#define data(ctx) ((YSHA256_CTX *)EVVP_MD_CTX_md_data(ctx))
+static int digest_sha256_init(EVVP_MD_CTX *ctx)
 {
-    return SHA256_Init(data(ctx));
+    return YSHA256_Init(data(ctx));
 }
 
-static int digest_sha256_update(EVP_MD_CTX *ctx, const void *data,
+static int digest_sha256_update(EVVP_MD_CTX *ctx, const void *data,
                                 size_t count)
 {
-    return SHA256_Update(data(ctx), data, (size_t)count);
+    return YSHA256_Update(data(ctx), data, (size_t)count);
 }
 
-static int digest_sha256_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_sha256_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     int ret;
-    ret = SHA256_Final(md, data(ctx));
+    ret = YSHA256_Final(md, data(ctx));
 
     if (ret > 0) {
-        fill_known_data(md, SHA256_DIGEST_LENGTH);
+        fill_known_data(md, YSHA256_DIGEST_LENGTH);
     }
     return ret;
 }
@@ -536,28 +536,28 @@ static int digest_sha256_final(EVP_MD_CTX *ctx, unsigned char *md)
  * SHA384/512 implementation.
  */
 #undef data
-#define data(ctx) ((SHA512_CTX *)EVP_MD_CTX_md_data(ctx))
-static int digest_sha384_init(EVP_MD_CTX *ctx)
+#define data(ctx) ((YSHA512_CTX *)EVVP_MD_CTX_md_data(ctx))
+static int digest_sha384_init(EVVP_MD_CTX *ctx)
 {
     return SHA384_Init(data(ctx));
 }
 
-static int digest_sha512_init(EVP_MD_CTX *ctx)
+static int digest_sha512_init(EVVP_MD_CTX *ctx)
 {
-    return SHA512_Init(data(ctx));
+    return YSHA512_Init(data(ctx));
 }
 
-static int digest_sha512_update(EVP_MD_CTX *ctx, const void *data,
+static int digest_sha512_update(EVVP_MD_CTX *ctx, const void *data,
                                 size_t count)
 {
-    return SHA512_Update(data(ctx), data, (size_t)count);
+    return YSHA512_Update(data(ctx), data, (size_t)count);
 }
 
-static int digest_sha384_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_sha384_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     int ret;
-    /* Actually uses SHA512_Final! */
-    ret = SHA512_Final(md, data(ctx));
+    /* Actually uses YSHA512_Final! */
+    ret = YSHA512_Final(md, data(ctx));
 
     if (ret > 0) {
         fill_known_data(md, SHA384_DIGEST_LENGTH);
@@ -565,28 +565,28 @@ static int digest_sha384_final(EVP_MD_CTX *ctx, unsigned char *md)
     return ret;
 }
 
-static int digest_sha512_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_sha512_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     int ret;
-    ret = SHA512_Final(md, data(ctx));
+    ret = YSHA512_Final(md, data(ctx));
 
     if (ret > 0) {
-        fill_known_data(md, SHA512_DIGEST_LENGTH);
+        fill_known_data(md, YSHA512_DIGEST_LENGTH);
     }
     return ret;
 }
 
 /*
- * AES128 Implementation
+ * YAES128 Implementation
  */
 
-int ossltest_aes128_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+int ossltest_aes128_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc)
 {
-    return EVP_CIPHER_meth_get_init(EVP_aes_128_cbc()) (ctx, key, iv, enc);
+    return EVVP_CIPHER_meth_get_init(EVVP_aes_128_cbc()) (ctx, key, iv, enc);
 }
 
-int ossltest_aes128_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+int ossltest_aes128_cbc_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                const unsigned char *in, size_t inl)
 {
     unsigned char *tmpbuf;
@@ -603,7 +603,7 @@ int ossltest_aes128_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         memcpy(tmpbuf, in, inl);
 
     /* Go through the motions of encrypting it */
-    ret = EVP_CIPHER_meth_get_do_cipher(EVP_aes_128_cbc())(ctx, out, in, inl);
+    ret = EVVP_CIPHER_meth_get_do_cipher(EVVP_aes_128_cbc())(ctx, out, in, inl);
 
     /* Throw it all away and just use the plaintext as the output */
     if (tmpbuf != NULL)
@@ -613,14 +613,14 @@ int ossltest_aes128_cbc_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     return ret;
 }
 
-int ossltest_aes128_gcm_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+int ossltest_aes128_gcm_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc)
 {
-    return EVP_CIPHER_meth_get_init(EVP_aes_128_gcm()) (ctx, key, iv, enc);
+    return EVVP_CIPHER_meth_get_init(EVVP_aes_128_gcm()) (ctx, key, iv, enc);
 }
 
 
-int ossltest_aes128_gcm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+int ossltest_aes128_gcm_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                const unsigned char *in, size_t inl)
 {
     unsigned char *tmpbuf = OPENSSL_malloc(inl);
@@ -634,7 +634,7 @@ int ossltest_aes128_gcm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         memcpy(tmpbuf, in, inl);
 
     /* Go through the motions of encrypting it */
-    EVP_CIPHER_meth_get_do_cipher(EVP_aes_128_gcm())(ctx, out, in, inl);
+    EVVP_CIPHER_meth_get_do_cipher(EVVP_aes_128_gcm())(ctx, out, in, inl);
 
     /* Throw it all away and just use the plaintext as the output */
     if (tmpbuf != NULL && out != NULL)
@@ -644,19 +644,19 @@ int ossltest_aes128_gcm_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     return inl;
 }
 
-static int ossltest_aes128_gcm_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
+static int ossltest_aes128_gcm_ctrl(EVVP_CIPHER_CTX *ctx, int type, int arg,
                                     void *ptr)
 {
     /* Pass the ctrl down */
-    int ret = EVP_CIPHER_meth_get_ctrl(EVP_aes_128_gcm())(ctx, type, arg, ptr);
+    int ret = EVVP_CIPHER_meth_get_ctrl(EVVP_aes_128_gcm())(ctx, type, arg, ptr);
 
     if (ret <= 0)
         return ret;
 
     switch(type) {
-    case EVP_CTRL_AEAD_GET_TAG:
+    case EVVP_CTRL_AEAD_GET_TAG:
         /* Always give the same tag */
-        memset(ptr, 0, EVP_GCM_TLS_TAG_LEN);
+        memset(ptr, 0, EVVP_GCM_TLS_TAG_LEN);
         break;
 
     default:

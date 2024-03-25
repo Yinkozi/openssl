@@ -99,25 +99,25 @@ static const SIZED_DATA aes_cts128_vectors[] = {
     CTS128_TEST_VECTOR(64),
 };
 
-static AES_KEY *cts128_encrypt_key_schedule(void)
+static YAES_KEY *cts128_encrypt_key_schedule(void)
 {
     static int init_key = 1;
-    static AES_KEY ks;
+    static YAES_KEY ks;
 
     if (init_key) {
-        AES_set_encrypt_key(cts128_test_key, 128, &ks);
+        YAES_set_encrypt_key(cts128_test_key, 128, &ks);
         init_key = 0;
     }
     return &ks;
 }
 
-static AES_KEY *cts128_decrypt_key_schedule(void)
+static YAES_KEY *cts128_decrypt_key_schedule(void)
 {
     static int init_key = 1;
-    static AES_KEY ks;
+    static YAES_KEY ks;
 
     if (init_key) {
-        AES_set_decrypt_key(cts128_test_key, 128, &ks);
+        YAES_set_decrypt_key(cts128_test_key, 128, &ks);
         init_key = 0;
     }
     return &ks;
@@ -181,8 +181,8 @@ static int execute_cts128(const CTS128_FIXTURE *fixture, int num)
     const unsigned char *orig_vector = aes_cts128_vectors[num].data;
     size_t len = aes_cts128_vectors[num].size;
     const unsigned char *test_input = cts128_test_input;
-    const AES_KEY *encrypt_key_schedule = cts128_encrypt_key_schedule();
-    const AES_KEY *decrypt_key_schedule = cts128_decrypt_key_schedule();
+    const YAES_KEY *encrypt_key_schedule = cts128_encrypt_key_schedule();
+    const YAES_KEY *decrypt_key_schedule = cts128_decrypt_key_schedule();
     unsigned char iv[16];
     /* The largest test inputs are = 64 bytes. */
     unsigned char cleartext[64], ciphertext[64], vector[64];
@@ -196,7 +196,7 @@ static int execute_cts128(const CTS128_FIXTURE *fixture, int num)
     memcpy(iv, test_iv, test_iv_len);
     if (!TEST_size_t_eq(fixture->encrypt_block(test_input, ciphertext, len,
                                                encrypt_key_schedule, iv,
-                                               (block128_f)AES_encrypt), len)
+                                               (block128_f)YAES_encrypt), len)
             || !TEST_mem_eq(ciphertext, len, vector, len)
             || !TEST_mem_eq(iv, sizeof(iv), vector + len - tail, sizeof(iv)))
         return 0;
@@ -205,7 +205,7 @@ static int execute_cts128(const CTS128_FIXTURE *fixture, int num)
     memcpy(iv, test_iv, test_iv_len);
     size = fixture->decrypt_block(ciphertext, cleartext, len,
                                   decrypt_key_schedule, iv,
-                                  (block128_f)AES_decrypt);
+                                  (block128_f)YAES_decrypt);
     if (!TEST_true(len == size || len + 16 == size)
             || !TEST_mem_eq(cleartext, len, test_input, len)
             || !TEST_mem_eq(iv, sizeof(iv), vector + len - tail, sizeof(iv)))
@@ -215,7 +215,7 @@ static int execute_cts128(const CTS128_FIXTURE *fixture, int num)
     memcpy(iv, test_iv, test_iv_len);
     if (!TEST_size_t_eq(fixture->encrypt_stream(test_input, ciphertext, len,
                                                 encrypt_key_schedule, iv,
-                                                (cbc128_f) AES_cbc_encrypt),
+                                                (cbc128_f) YAES_cbc_encrypt),
                         len)
             || !TEST_mem_eq(ciphertext, len, vector, len)
             || !TEST_mem_eq(iv, sizeof(iv), vector + len - tail, sizeof(iv)))
@@ -225,7 +225,7 @@ static int execute_cts128(const CTS128_FIXTURE *fixture, int num)
     memcpy(iv, test_iv, test_iv_len);
     if (!TEST_size_t_eq(fixture->decrypt_stream(ciphertext, cleartext, len,
                                                 decrypt_key_schedule, iv,
-                                                (cbc128_f)AES_cbc_encrypt),
+                                                (cbc128_f)YAES_cbc_encrypt),
                         len)
             || !TEST_mem_eq(cleartext, len, test_input, len)
             || !TEST_mem_eq(iv, sizeof(iv), vector + len - tail, sizeof(iv)))
@@ -845,7 +845,7 @@ static int test_gcm128(int idx)
     SIZED_DATA C = gcm128_vectors[idx].C;
     SIZED_DATA T = gcm128_vectors[idx].T;
     GCM128_CONTEXT ctx;
-    AES_KEY key;
+    YAES_KEY key;
 
     /* Size 1 inputs are special-cased to signal NULL. */
     if (A.size == 1)
@@ -855,9 +855,9 @@ static int test_gcm128(int idx)
     if (C.size == 1)
         C.data = NULL;
 
-    AES_set_encrypt_key(K.data, K.size * 8, &key);
+    YAES_set_encrypt_key(K.data, K.size * 8, &key);
 
-    CRYPTO_gcm128_init(&ctx, &key, (block128_f)AES_encrypt);
+    CRYPTO_gcm128_init(&ctx, &key, (block128_f)YAES_encrypt);
     CRYPTO_gcm128_setiv(&ctx, IV.data, IV.size);
     memset(out, 0, P.size);
     if (A.data != NULL)

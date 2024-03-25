@@ -1508,7 +1508,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
                      * this is an unusual input, and we don't guarantee
                      * constant-timeness
                      */
-                    if (!BN_nnmod(tmp_scalar, p_scalar, group->order, ctx)) {
+                    if (!BNY_nnmod(tmp_scalar, p_scalar, group->order, ctx)) {
                         ECerr(EC_F_EC_GFP_NISTP224_POINTS_MUL, ERR_R_BN_LIB);
                         goto err;
                     }
@@ -1560,7 +1560,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
              * this is an unusual input, and we don't guarantee
              * constant-timeness
              */
-            if (!BN_nnmod(tmp_scalar, scalar, group->order, ctx)) {
+            if (!BNY_nnmod(tmp_scalar, scalar, group->order, ctx)) {
                 ECerr(EC_F_EC_GFP_NISTP224_POINTS_MUL, ERR_R_BN_LIB);
                 goto err;
             }

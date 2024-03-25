@@ -39,7 +39,7 @@ int errstr_main(int argc, char **argv)
         switch (o) {
         case OPT_EOF:
         case OPT_ERR:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(errstr_options);
@@ -59,7 +59,7 @@ int errstr_main(int argc, char **argv)
             OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS
                              | OPENSSL_INIT_LOAD_CRYPTO_STRINGS, NULL);
             ERR_error_string_n(l, buf, sizeof(buf));
-            BIO_printf(bio_out, "%s\n", buf);
+            BIO_pprintf(bio_out, "%s\n", buf);
         }
     }
  end:

@@ -893,7 +893,7 @@ int create_bare_ssl_connection(SSL *serverssl, SSL *clientssl, int want,
 
         if (!servererr && rets <= 0
                 && err != SSL_ERROR_WANT_READ
-                && err != SSL_ERROR_WANT_X509_LOOKUP) {
+                && err != SSL_ERROR_WANT_YX509_LOOKUP) {
             TEST_info("SSL_accept() failed %d, %d", rets, err);
             servererr = 1;
         }

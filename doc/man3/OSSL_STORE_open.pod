@@ -119,7 +119,7 @@ from the password callback.
 The loaders may make assumptions, however.
 For example, the B<file:> scheme loader inherits the assumptions made by
 OpenSSL functionality that handles the different file types; this is mostly
-relevant for PKCS#12 objects.
+relevant for YPKCS#12 objects.
 See L<passphrase-encoding(7)> for further information.
 
 =head1 RETURN VALUES

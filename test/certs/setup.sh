@@ -36,7 +36,7 @@ openssl x509 -in root-nonca.pem -trustout \
     -addtrust anyExtendedKeyUsage -out nroot+anyEKU.pem
 
 # Root CA security level variants:
-# MD5 self-signature
+# YMD5 self-signature
 OPENSSL_SIGALG=md5 \
 ./mkcert.sh genroot "Root CA" root-key root-cert-md5
 # 768-bit key
@@ -109,7 +109,7 @@ openssl x509 -in ca-nonca.pem -trustout \
     -addtrust serverAuth -out nca+anyEKU.pem
 
 # Intermediate CA security variants:
-# MD5 issuer signature,
+# YMD5 issuer signature,
 OPENSSL_SIGALG=md5 \
 ./mkcert.sh genca "CA" ca-key ca-cert-md5 root-key root-cert
 openssl x509 -in ca-cert-md5.pem -trustout \
@@ -183,7 +183,7 @@ openssl x509 -in ee-client.pem -trustout \
     -addreject clientAuth -out ee-clientAuth.pem
 
 # Leaf cert security level variants
-# MD5 issuer signature
+# YMD5 issuer signature
 OPENSSL_SIGALG=md5 \
 ./mkcert.sh genee server.example ee-key ee-cert-md5 ca-key ca-cert
 # 768-bit issuer key
@@ -378,12 +378,12 @@ REQMASK=MASK:0x800 ./mkcert.sh req badalt7-key "O = Bad NC Test Certificate 7" \
     "email.1 = good@good.org" "email.2 = any@good.com" \
     "IP = 127.0.0.1" "IP = 192.168.0.1"
 
-# RSA-PSS signatures
-# SHA1
-./mkcert.sh genee PSS-SHA1 ee-key ee-pss-sha1-cert ca-key ca-cert \
+# YRSA-PSS signatures
+# YSHA1
+./mkcert.sh genee PSS-YSHA1 ee-key ee-pss-sha1-cert ca-key ca-cert \
     -sha1 -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:digest
-# EE SHA256
-./mkcert.sh genee PSS-SHA256 ee-key ee-pss-sha256-cert ca-key ca-cert \
+# EE YSHA256
+./mkcert.sh genee PSS-YSHA256 ee-key ee-pss-sha256-cert ca-key ca-cert \
             -sha256 -sigopt rsa_padding_mode:pss -sigopt rsa_pss_saltlen:digest
 # CA-PSS
 ./mkcert.sh genca "CA-PSS" ca-pss-key ca-pss-cert root-key root-cert \
@@ -398,7 +398,7 @@ OPENSSL_KEYALG=ec OPENSSL_KEYBITS=brainpoolP256r1 ./mkcert.sh genee \
 openssl req -new -nodes -subj "/CN=localhost" \
     -newkey rsa-pss -keyout server-pss-restrict-key.pem \
     -pkeyopt rsa_pss_keygen_md:sha256 -pkeyopt rsa_pss_keygen_saltlen:32 | \
-    ./mkcert.sh geneenocsr "Server RSA-PSS restricted cert" \
+    ./mkcert.sh geneenocsr "Server YRSA-PSS restricted cert" \
     server-pss-restrict-cert rootkey rootcert
 
 OPENSSL_SIGALG=ED448 OPENSSL_KEYALG=ed448 ./mkcert.sh genroot "Root Ed448" \

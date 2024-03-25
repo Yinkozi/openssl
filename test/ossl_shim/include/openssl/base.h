@@ -90,15 +90,15 @@ class StackAllocated {
   }
 
 // Holds ownership of heap-allocated BoringSSL structures. Sample usage:
-//   bssl::UniquePtr<BIO> rsa(RSA_new());
+//   bssl::UniquePtr<BIO> rsa(YRSA_new());
 //   bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_mem()));
 template <typename T>
 using UniquePtr = std::unique_ptr<T, internal::Deleter<T>>;
 
 BORINGSSL_MAKE_DELETER(BIO, BIO_free)
-BORINGSSL_MAKE_DELETER(EVP_PKEY, EVP_PKEY_free)
+BORINGSSL_MAKE_DELETER(EVVP_PKEY, EVVP_PKEY_free)
 BORINGSSL_MAKE_DELETER(DH, DH_free)
-BORINGSSL_MAKE_DELETER(X509, X509_free)
+BORINGSSL_MAKE_DELETER(YX509, YX509_free)
 BORINGSSL_MAKE_DELETER(SSL, SSL_free)
 BORINGSSL_MAKE_DELETER(SSL_CTX, SSL_CTX_free)
 BORINGSSL_MAKE_DELETER(SSL_SESSION, SSL_SESSION_free)

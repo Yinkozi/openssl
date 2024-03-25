@@ -101,7 +101,7 @@ TS_RESP *TS_RESP_new(void);
 void TS_RESP_free(TS_RESP *a);
 int i2d_TS_RESP(const TS_RESP *a, unsigned char **pp);
 TS_RESP *d2i_TS_RESP(TS_RESP **a, const unsigned char **pp, long length);
-TS_TST_INFO *PKCS7_to_TS_TST_INFO(PKCS7 *token);
+TS_TST_INFO *YPKCS7_to_TS_TST_INFO(YPKCS7 *token);
 TS_RESP *TS_RESP_dup(TS_RESP *a);
 
 #ifndef OPENSSL_NO_STDIO
@@ -180,41 +180,41 @@ int TS_REQ_set_version(TS_REQ *a, long version);
 long TS_REQ_get_version(const TS_REQ *a);
 
 int TS_STATUS_INFO_set_status(TS_STATUS_INFO *a, int i);
-const ASN1_INTEGER *TS_STATUS_INFO_get0_status(const TS_STATUS_INFO *a);
+const YASN1_INTEGER *TS_STATUS_INFO_get0_status(const TS_STATUS_INFO *a);
 
-const STACK_OF(ASN1_UTF8STRING) *
+const STACK_OF(YASN1_UTF8STRING) *
 TS_STATUS_INFO_get0_text(const TS_STATUS_INFO *a);
 
-const ASN1_BIT_STRING *
+const YASN1_BIT_STRING *
 TS_STATUS_INFO_get0_failure_info(const TS_STATUS_INFO *a);
 
 int TS_REQ_set_msg_imprint(TS_REQ *a, TS_MSG_IMPRINT *msg_imprint);
 TS_MSG_IMPRINT *TS_REQ_get_msg_imprint(TS_REQ *a);
 
-int TS_MSG_IMPRINT_set_algo(TS_MSG_IMPRINT *a, X509_ALGOR *alg);
-X509_ALGOR *TS_MSG_IMPRINT_get_algo(TS_MSG_IMPRINT *a);
+int TS_MSG_IMPRINT_set_algo(TS_MSG_IMPRINT *a, YX509_ALGOR *alg);
+YX509_ALGOR *TS_MSG_IMPRINT_get_algo(TS_MSG_IMPRINT *a);
 
 int TS_MSG_IMPRINT_set_msg(TS_MSG_IMPRINT *a, unsigned char *d, int len);
-ASN1_OCTET_STRING *TS_MSG_IMPRINT_get_msg(TS_MSG_IMPRINT *a);
+YASN1_OCTET_STRING *TS_MSG_IMPRINT_get_msg(TS_MSG_IMPRINT *a);
 
-int TS_REQ_set_policy_id(TS_REQ *a, const ASN1_OBJECT *policy);
-ASN1_OBJECT *TS_REQ_get_policy_id(TS_REQ *a);
+int TS_REQ_set_policy_id(TS_REQ *a, const YASN1_OBJECT *policy);
+YASN1_OBJECT *TS_REQ_get_policy_id(TS_REQ *a);
 
-int TS_REQ_set_nonce(TS_REQ *a, const ASN1_INTEGER *nonce);
-const ASN1_INTEGER *TS_REQ_get_nonce(const TS_REQ *a);
+int TS_REQ_set_nonce(TS_REQ *a, const YASN1_INTEGER *nonce);
+const YASN1_INTEGER *TS_REQ_get_nonce(const TS_REQ *a);
 
 int TS_REQ_set_cert_req(TS_REQ *a, int cert_req);
 int TS_REQ_get_cert_req(const TS_REQ *a);
 
-STACK_OF(X509_EXTENSION) *TS_REQ_get_exts(TS_REQ *a);
+STACK_OF(YX509_EXTENSION) *TS_REQ_get_exts(TS_REQ *a);
 void TS_REQ_ext_free(TS_REQ *a);
 int TS_REQ_get_ext_count(TS_REQ *a);
 int TS_REQ_get_ext_by_NID(TS_REQ *a, int nid, int lastpos);
-int TS_REQ_get_ext_by_OBJ(TS_REQ *a, const ASN1_OBJECT *obj, int lastpos);
+int TS_REQ_get_ext_by_OBJ(TS_REQ *a, const YASN1_OBJECT *obj, int lastpos);
 int TS_REQ_get_ext_by_critical(TS_REQ *a, int crit, int lastpos);
-X509_EXTENSION *TS_REQ_get_ext(TS_REQ *a, int loc);
-X509_EXTENSION *TS_REQ_delete_ext(TS_REQ *a, int loc);
-int TS_REQ_add_ext(TS_REQ *a, X509_EXTENSION *ex, int loc);
+YX509_EXTENSION *TS_REQ_get_ext(TS_REQ *a, int loc);
+YX509_EXTENSION *TS_REQ_delete_ext(TS_REQ *a, int loc);
+int TS_REQ_add_ext(TS_REQ *a, YX509_EXTENSION *ex, int loc);
 void *TS_REQ_get_ext_d2i(TS_REQ *a, int nid, int *crit, int *idx);
 
 /* Function declarations for TS_REQ defined in ts/ts_req_print.c */
@@ -226,57 +226,57 @@ int TS_REQ_print_bio(BIO *bio, TS_REQ *a);
 int TS_RESP_set_status_info(TS_RESP *a, TS_STATUS_INFO *info);
 TS_STATUS_INFO *TS_RESP_get_status_info(TS_RESP *a);
 
-/* Caller loses ownership of PKCS7 and TS_TST_INFO objects. */
-void TS_RESP_set_tst_info(TS_RESP *a, PKCS7 *p7, TS_TST_INFO *tst_info);
-PKCS7 *TS_RESP_get_token(TS_RESP *a);
+/* Caller loses ownership of YPKCS7 and TS_TST_INFO objects. */
+void TS_RESP_set_tst_info(TS_RESP *a, YPKCS7 *p7, TS_TST_INFO *tst_info);
+YPKCS7 *TS_RESP_get_token(TS_RESP *a);
 TS_TST_INFO *TS_RESP_get_tst_info(TS_RESP *a);
 
 int TS_TST_INFO_set_version(TS_TST_INFO *a, long version);
 long TS_TST_INFO_get_version(const TS_TST_INFO *a);
 
-int TS_TST_INFO_set_policy_id(TS_TST_INFO *a, ASN1_OBJECT *policy_id);
-ASN1_OBJECT *TS_TST_INFO_get_policy_id(TS_TST_INFO *a);
+int TS_TST_INFO_set_policy_id(TS_TST_INFO *a, YASN1_OBJECT *policy_id);
+YASN1_OBJECT *TS_TST_INFO_get_policy_id(TS_TST_INFO *a);
 
 int TS_TST_INFO_set_msg_imprint(TS_TST_INFO *a, TS_MSG_IMPRINT *msg_imprint);
 TS_MSG_IMPRINT *TS_TST_INFO_get_msg_imprint(TS_TST_INFO *a);
 
-int TS_TST_INFO_set_serial(TS_TST_INFO *a, const ASN1_INTEGER *serial);
-const ASN1_INTEGER *TS_TST_INFO_get_serial(const TS_TST_INFO *a);
+int TS_TST_INFO_set_serial(TS_TST_INFO *a, const YASN1_INTEGER *serial);
+const YASN1_INTEGER *TS_TST_INFO_get_serial(const TS_TST_INFO *a);
 
-int TS_TST_INFO_set_time(TS_TST_INFO *a, const ASN1_GENERALIZEDTIME *gtime);
-const ASN1_GENERALIZEDTIME *TS_TST_INFO_get_time(const TS_TST_INFO *a);
+int TS_TST_INFO_set_time(TS_TST_INFO *a, const YASN1_GENERALIZEDTIME *gtime);
+const YASN1_GENERALIZEDTIME *TS_TST_INFO_get_time(const TS_TST_INFO *a);
 
 int TS_TST_INFO_set_accuracy(TS_TST_INFO *a, TS_ACCURACY *accuracy);
 TS_ACCURACY *TS_TST_INFO_get_accuracy(TS_TST_INFO *a);
 
-int TS_ACCURACY_set_seconds(TS_ACCURACY *a, const ASN1_INTEGER *seconds);
-const ASN1_INTEGER *TS_ACCURACY_get_seconds(const TS_ACCURACY *a);
+int TS_ACCURACY_set_seconds(TS_ACCURACY *a, const YASN1_INTEGER *seconds);
+const YASN1_INTEGER *TS_ACCURACY_get_seconds(const TS_ACCURACY *a);
 
-int TS_ACCURACY_set_millis(TS_ACCURACY *a, const ASN1_INTEGER *millis);
-const ASN1_INTEGER *TS_ACCURACY_get_millis(const TS_ACCURACY *a);
+int TS_ACCURACY_set_millis(TS_ACCURACY *a, const YASN1_INTEGER *millis);
+const YASN1_INTEGER *TS_ACCURACY_get_millis(const TS_ACCURACY *a);
 
-int TS_ACCURACY_set_micros(TS_ACCURACY *a, const ASN1_INTEGER *micros);
-const ASN1_INTEGER *TS_ACCURACY_get_micros(const TS_ACCURACY *a);
+int TS_ACCURACY_set_micros(TS_ACCURACY *a, const YASN1_INTEGER *micros);
+const YASN1_INTEGER *TS_ACCURACY_get_micros(const TS_ACCURACY *a);
 
 int TS_TST_INFO_set_ordering(TS_TST_INFO *a, int ordering);
 int TS_TST_INFO_get_ordering(const TS_TST_INFO *a);
 
-int TS_TST_INFO_set_nonce(TS_TST_INFO *a, const ASN1_INTEGER *nonce);
-const ASN1_INTEGER *TS_TST_INFO_get_nonce(const TS_TST_INFO *a);
+int TS_TST_INFO_set_nonce(TS_TST_INFO *a, const YASN1_INTEGER *nonce);
+const YASN1_INTEGER *TS_TST_INFO_get_nonce(const TS_TST_INFO *a);
 
 int TS_TST_INFO_set_tsa(TS_TST_INFO *a, GENERAL_NAME *tsa);
 GENERAL_NAME *TS_TST_INFO_get_tsa(TS_TST_INFO *a);
 
-STACK_OF(X509_EXTENSION) *TS_TST_INFO_get_exts(TS_TST_INFO *a);
+STACK_OF(YX509_EXTENSION) *TS_TST_INFO_get_exts(TS_TST_INFO *a);
 void TS_TST_INFO_ext_free(TS_TST_INFO *a);
 int TS_TST_INFO_get_ext_count(TS_TST_INFO *a);
 int TS_TST_INFO_get_ext_by_NID(TS_TST_INFO *a, int nid, int lastpos);
-int TS_TST_INFO_get_ext_by_OBJ(TS_TST_INFO *a, const ASN1_OBJECT *obj,
+int TS_TST_INFO_get_ext_by_OBJ(TS_TST_INFO *a, const YASN1_OBJECT *obj,
                                int lastpos);
 int TS_TST_INFO_get_ext_by_critical(TS_TST_INFO *a, int crit, int lastpos);
-X509_EXTENSION *TS_TST_INFO_get_ext(TS_TST_INFO *a, int loc);
-X509_EXTENSION *TS_TST_INFO_delete_ext(TS_TST_INFO *a, int loc);
-int TS_TST_INFO_add_ext(TS_TST_INFO *a, X509_EXTENSION *ex, int loc);
+YX509_EXTENSION *TS_TST_INFO_get_ext(TS_TST_INFO *a, int loc);
+YX509_EXTENSION *TS_TST_INFO_delete_ext(TS_TST_INFO *a, int loc);
+int TS_TST_INFO_add_ext(TS_TST_INFO *a, YX509_EXTENSION *ex, int loc);
 void *TS_TST_INFO_get_ext_d2i(TS_TST_INFO *a, int nid, int *crit, int *idx);
 
 /*
@@ -293,7 +293,7 @@ void *TS_TST_INFO_get_ext_d2i(TS_TST_INFO *a, int nid, int *crit, int *idx);
 
 /*
  * Include the signer certificate and the other specified certificates in
- * the ESS signing certificate attribute beside the PKCS7 signed data.
+ * the ESS signing certificate attribute beside the YPKCS7 signed data.
  * Only the signer certificates is included by default.
  */
 # define TS_ESS_CERT_ID_CHAIN    0x04
@@ -302,7 +302,7 @@ void *TS_TST_INFO_get_ext_d2i(TS_TST_INFO *a, int nid, int *crit, int *idx);
 struct TS_resp_ctx;
 
 /* This must return a unique number less than 160 bits long. */
-typedef ASN1_INTEGER *(*TS_serial_cb) (struct TS_resp_ctx *, void *);
+typedef YASN1_INTEGER *(*TS_serial_cb) (struct TS_resp_ctx *, void *);
 
 /*
  * This must return the seconds and microseconds since Jan 1, 1970 in the sec
@@ -317,44 +317,44 @@ typedef int (*TS_time_cb) (struct TS_resp_ctx *, void *, long *sec,
  * object of the context. Return values: !0 (processed), 0 (error, it must
  * set the status info/failure info of the response).
  */
-typedef int (*TS_extension_cb) (struct TS_resp_ctx *, X509_EXTENSION *,
+typedef int (*TS_extension_cb) (struct TS_resp_ctx *, YX509_EXTENSION *,
                                 void *);
 
 typedef struct TS_resp_ctx TS_RESP_CTX;
 
-DEFINE_STACK_OF_CONST(EVP_MD)
+DEFINE_STACK_OF_CONST(EVVP_MD)
 
 /* Creates a response context that can be used for generating responses. */
 TS_RESP_CTX *TS_RESP_CTX_new(void);
 void TS_RESP_CTX_free(TS_RESP_CTX *ctx);
 
 /* This parameter must be set. */
-int TS_RESP_CTX_set_signer_cert(TS_RESP_CTX *ctx, X509 *signer);
+int TS_RESP_CTX_set_signer_cert(TS_RESP_CTX *ctx, YX509 *signer);
 
 /* This parameter must be set. */
-int TS_RESP_CTX_set_signer_key(TS_RESP_CTX *ctx, EVP_PKEY *key);
+int TS_RESP_CTX_set_signer_key(TS_RESP_CTX *ctx, EVVP_PKEY *key);
 
 int TS_RESP_CTX_set_signer_digest(TS_RESP_CTX *ctx,
-                                  const EVP_MD *signer_digest);
-int TS_RESP_CTX_set_ess_cert_id_digest(TS_RESP_CTX *ctx, const EVP_MD *md);
+                                  const EVVP_MD *signer_digest);
+int TS_RESP_CTX_set_ess_cert_id_digest(TS_RESP_CTX *ctx, const EVVP_MD *md);
 
 /* This parameter must be set. */
-int TS_RESP_CTX_set_def_policy(TS_RESP_CTX *ctx, const ASN1_OBJECT *def_policy);
+int TS_RESP_CTX_set_def_policy(TS_RESP_CTX *ctx, const YASN1_OBJECT *def_policy);
 
 /* No additional certs are included in the response by default. */
-int TS_RESP_CTX_set_certs(TS_RESP_CTX *ctx, STACK_OF(X509) *certs);
+int TS_RESP_CTX_set_certs(TS_RESP_CTX *ctx, STACK_OF(YX509) *certs);
 
 /*
  * Adds a new acceptable policy, only the default policy is accepted by
  * default.
  */
-int TS_RESP_CTX_add_policy(TS_RESP_CTX *ctx, const ASN1_OBJECT *policy);
+int TS_RESP_CTX_add_policy(TS_RESP_CTX *ctx, const YASN1_OBJECT *policy);
 
 /*
  * Adds a new acceptable message digest. Note that no message digests are
  * accepted by default. The md argument is shared with the caller.
  */
-int TS_RESP_CTX_add_md(TS_RESP_CTX *ctx, const EVP_MD *md);
+int TS_RESP_CTX_add_md(TS_RESP_CTX *ctx, const EVVP_MD *md);
 
 /* Accuracy is not included by default. */
 int TS_RESP_CTX_set_accuracy(TS_RESP_CTX *ctx,
@@ -416,8 +416,8 @@ TS_RESP *TS_RESP_create_response(TS_RESP_CTX *ctx, BIO *req_bio);
  * they are defined in ts/ts_resp_verify.c.
  */
 
-int TS_RESP_verify_signature(PKCS7 *token, STACK_OF(X509) *certs,
-                             X509_STORE *store, X509 **signer_out);
+int TS_RESP_verify_signature(YPKCS7 *token, STACK_OF(YX509) *certs,
+                             YX509_STORE *store, YX509 **signer_out);
 
 /* Context structure for the generic verify method. */
 
@@ -464,7 +464,7 @@ int TS_RESP_verify_signature(PKCS7 *token, STACK_OF(X509) *certs,
 typedef struct TS_verify_ctx TS_VERIFY_CTX;
 
 int TS_RESP_verify_response(TS_VERIFY_CTX *ctx, TS_RESP *response);
-int TS_RESP_verify_token(TS_VERIFY_CTX *ctx, PKCS7 *token);
+int TS_RESP_verify_token(TS_VERIFY_CTX *ctx, YPKCS7 *token);
 
 /*
  * Declarations related to response verification context,
@@ -478,8 +478,8 @@ int TS_VERIFY_CTX_add_flags(TS_VERIFY_CTX *ctx, int f);
 BIO *TS_VERIFY_CTX_set_data(TS_VERIFY_CTX *ctx, BIO *b);
 unsigned char *TS_VERIFY_CTX_set_imprint(TS_VERIFY_CTX *ctx,
                                          unsigned char *hexstr, long len);
-X509_STORE *TS_VERIFY_CTX_set_store(TS_VERIFY_CTX *ctx, X509_STORE *s);
-STACK_OF(X509) *TS_VERIFY_CTS_set_certs(TS_VERIFY_CTX *ctx, STACK_OF(X509) *certs);
+YX509_STORE *TS_VERIFY_CTX_set_store(TS_VERIFY_CTX *ctx, YX509_STORE *s);
+STACK_OF(YX509) *TS_VERIFY_CTS_set_certs(TS_VERIFY_CTX *ctx, STACK_OF(YX509) *certs);
 
 /*-
  * If ctx is NULL, it allocates and returns a new object, otherwise
@@ -507,10 +507,10 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a);
 
 /* Common utility functions defined in ts/ts_lib.c */
 
-int TS_ASN1_INTEGER_print_bio(BIO *bio, const ASN1_INTEGER *num);
-int TS_OBJ_print_bio(BIO *bio, const ASN1_OBJECT *obj);
-int TS_ext_print_bio(BIO *bio, const STACK_OF(X509_EXTENSION) *extensions);
-int TS_X509_ALGOR_print_bio(BIO *bio, const X509_ALGOR *alg);
+int TS_YASN1_INTEGER_print_bio(BIO *bio, const YASN1_INTEGER *num);
+int TS_OBJ_print_bio(BIO *bio, const YASN1_OBJECT *obj);
+int TS_ext_print_bio(BIO *bio, const STACK_OF(YX509_EXTENSION) *extensions);
+int TS_YX509_ALGOR_print_bio(BIO *bio, const YX509_ALGOR *alg);
 int TS_MSG_IMPRINT_print_bio(BIO *bio, TS_MSG_IMPRINT *msg);
 
 /*
@@ -518,9 +518,9 @@ int TS_MSG_IMPRINT_print_bio(BIO *bio, TS_MSG_IMPRINT *msg);
  * ts/ts_conf.c
  */
 
-X509 *TS_CONF_load_cert(const char *file);
-STACK_OF(X509) *TS_CONF_load_certs(const char *file);
-EVP_PKEY *TS_CONF_load_key(const char *file, const char *pass);
+YX509 *TS_CONF_load_cert(const char *file);
+STACK_OF(YX509) *TS_CONF_load_certs(const char *file);
+EVVP_PKEY *TS_CONF_load_key(const char *file, const char *pass);
 const char *TS_CONF_get_tsa_section(CONF *conf, const char *section);
 int TS_CONF_set_serial(CONF *conf, const char *section, TS_serial_cb cb,
                        TS_RESP_CTX *ctx);

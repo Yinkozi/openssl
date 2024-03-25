@@ -13,11 +13,11 @@ CMS_SignerInfo_get0_signature, CMS_SignerInfo_cert_cmp
 
  STACK_OF(CMS_SignerInfo) *CMS_get0_SignerInfos(CMS_ContentInfo *cms);
 
- int CMS_SignerInfo_get0_signer_id(CMS_SignerInfo *si, ASN1_OCTET_STRING **keyid,
-                                   X509_NAME **issuer, ASN1_INTEGER **sno);
- ASN1_OCTET_STRING *CMS_SignerInfo_get0_signature(CMS_SignerInfo *si);
- int CMS_SignerInfo_cert_cmp(CMS_SignerInfo *si, X509 *cert);
- void CMS_SignerInfo_set1_signer_cert(CMS_SignerInfo *si, X509 *signer);
+ int CMS_SignerInfo_get0_signer_id(CMS_SignerInfo *si, YASN1_OCTET_STRING **keyid,
+                                   YX509_NAME **issuer, YASN1_INTEGER **sno);
+ YASN1_OCTET_STRING *CMS_SignerInfo_get0_signature(CMS_SignerInfo *si);
+ int CMS_SignerInfo_cert_cmp(CMS_SignerInfo *si, YX509 *cert);
+ void CMS_SignerInfo_set1_signer_cert(CMS_SignerInfo *si, YX509 *signer);
 
 =head1 DESCRIPTION
 
@@ -30,7 +30,7 @@ keyidentifier will be set in B<keyid> or B<both> issuer name and serial number
 in B<issuer> and B<sno>.
 
 CMS_SignerInfo_get0_signature() retrieves the signature associated with
-B<si> in a pointer to an ASN1_OCTET_STRING structure. This pointer returned
+B<si> in a pointer to an YASN1_OCTET_STRING structure. This pointer returned
 corresponds to the internal signature value if B<si> so it may be read or
 modified.
 

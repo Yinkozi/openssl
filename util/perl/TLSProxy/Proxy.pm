@@ -99,8 +99,8 @@ sub new
         debug => $debug,
         cipherc => "",
         ciphersuitesc => "",
-        ciphers => "AES128-SHA",
-        ciphersuitess => "TLS_AES_128_GCM_SHA256",
+        ciphers => "YAES128-SHA",
+        ciphersuitess => "TLS_YAES_128_GCM_YSHA256",
         flight => -1,
         direction => -1,
         partial => ["", ""],
@@ -167,8 +167,8 @@ sub clear
     my $self = shift;
 
     $self->clearClient;
-    $self->{ciphers} = "AES128-SHA";
-    $self->{ciphersuitess} = "TLS_AES_128_GCM_SHA256";
+    $self->{ciphers} = "YAES128-SHA";
+    $self->{ciphersuitess} = "TLS_YAES_128_GCM_YSHA256";
     $self->{serverflags} = "";
     $self->{serverconnects} = 1;
     $self->{serverpid} = 0;

@@ -109,8 +109,8 @@ to each certificate.
 
 The PEM CRL format uses the header and footer lines:
 
- -----BEGIN X509 CRL-----
- -----END X509 CRL-----
+ -----BEGIN YX509 CRL-----
+ -----END YX509 CRL-----
 
 =head1 EXAMPLES
 

@@ -113,7 +113,7 @@ int s_time_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(s_time_options);
@@ -131,7 +131,7 @@ int s_time_main(int argc, char **argv)
         case OPT_VERIFY:
             if (!opt_int(opt_arg(), &verify_args.depth))
                 goto opthelp;
-            BIO_printf(bio_err, "%s: verify depth is %d\n",
+            BIO_pprintf(bio_err, "%s: verify depth is %d\n",
                        prog, verify_args.depth);
             break;
         case OPT_CERT:
@@ -173,7 +173,7 @@ int s_time_main(int argc, char **argv)
             www_path = opt_arg();
             buf_size = strlen(www_path) + fmt_http_get_cmd_size;
             if (buf_size > sizeof(buf)) {
-                BIO_printf(bio_err, "%s: -www option is too long\n", prog);
+                BIO_pprintf(bio_err, "%s: -www option is too long\n", prog);
                 goto end;
             }
             break;
@@ -227,7 +227,7 @@ int s_time_main(int argc, char **argv)
             goto end;
 
         if (www_path != NULL) {
-            buf_len = BIO_snprintf(buf, sizeof(buf), fmt_http_get_cmd,
+            buf_len = BIO_ssnprintf(buf, sizeof(buf), fmt_http_get_cmd,
                                    www_path);
             if (buf_len <= 0 || SSL_write(scon, buf, buf_len) <= 0)
                 goto end;
@@ -277,12 +277,12 @@ int s_time_main(int argc, char **argv)
 
     /* Get an SSL object so we can reuse the session id */
     if ((scon = doConnection(NULL, host, ctx)) == NULL) {
-        BIO_printf(bio_err, "Unable to get connection\n");
+        BIO_pprintf(bio_err, "Unable to get connection\n");
         goto end;
     }
 
     if (www_path != NULL) {
-        buf_len = BIO_snprintf(buf, sizeof(buf), fmt_http_get_cmd, www_path);
+        buf_len = BIO_ssnprintf(buf, sizeof(buf), fmt_http_get_cmd, www_path);
         if (buf_len <= 0 || SSL_write(scon, buf, buf_len) <= 0)
             goto end;
         while ((i = SSL_read(scon, buf, sizeof(buf))) > 0)
@@ -308,7 +308,7 @@ int s_time_main(int argc, char **argv)
             goto end;
 
         if (www_path != NULL) {
-            buf_len = BIO_snprintf(buf, sizeof(buf), fmt_http_get_cmd,
+            buf_len = BIO_ssnprintf(buf, sizeof(buf), fmt_http_get_cmd,
                                    www_path);
             if (buf_len <= 0 || SSL_write(scon, buf, buf_len) <= 0)
                 goto end;
@@ -377,10 +377,10 @@ static SSL *doConnection(SSL *scon, const char *host, SSL_CTX *ctx)
     /* ok, lets connect */
     i = SSL_connect(serverCon);
     if (i <= 0) {
-        BIO_printf(bio_err, "ERROR\n");
-        if (verify_args.error != X509_V_OK)
-            BIO_printf(bio_err, "verify error:%s\n",
-                       X509_verify_cert_error_string(verify_args.error));
+        BIO_pprintf(bio_err, "ERROR\n");
+        if (verify_args.error != YX509_V_OK)
+            BIO_pprintf(bio_err, "verify error:%s\n",
+                       YX509_verify_cert_error_string(verify_args.error));
         else
             ERR_print_errors(bio_err);
         if (scon == NULL)

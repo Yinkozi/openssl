@@ -35,10 +35,10 @@ static int init_sig_algs(SSL *s, unsigned int context);
 static int init_certificate_authorities(SSL *s, unsigned int context);
 static EXT_RETURN tls_construct_certificate_authorities(SSL *s, WPACKET *pkt,
                                                         unsigned int context,
-                                                        X509 *x,
+                                                        YX509 *x,
                                                         size_t chainidx);
 static int tls_parse_certificate_authorities(SSL *s, PACKET *pkt,
-                                             unsigned int context, X509 *x,
+                                             unsigned int context, YX509 *x,
                                              size_t chainidx);
 #ifndef OPENSSL_NO_SRP
 static int init_srp(SSL *s, unsigned int context);
@@ -74,17 +74,17 @@ typedef struct extensions_definition_st {
      */
     int (*init)(SSL *s, unsigned int context);
     /* Parse extension sent from client to server */
-    int (*parse_ctos)(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+    int (*parse_ctos)(SSL *s, PACKET *pkt, unsigned int context, YX509 *x,
                       size_t chainidx);
     /* Parse extension send from server to client */
-    int (*parse_stoc)(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+    int (*parse_stoc)(SSL *s, PACKET *pkt, unsigned int context, YX509 *x,
                       size_t chainidx);
     /* Construct extension sent from server to client */
     EXT_RETURN (*construct_stoc)(SSL *s, WPACKET *pkt, unsigned int context,
-                                 X509 *x, size_t chainidx);
+                                 YX509 *x, size_t chainidx);
     /* Construct extension sent from client to server */
     EXT_RETURN (*construct_ctos)(SSL *s, WPACKET *pkt, unsigned int context,
-                                 X509 *x, size_t chainidx);
+                                 YX509 *x, size_t chainidx);
     /*
      * Finalise extension after parsing. Always called where an extensions was
      * initialised even if the extension was not present. |sent| is set to 1 if
@@ -689,10 +689,10 @@ int tls_collect_extensions(SSL *s, PACKET *packet, unsigned int context,
  * present this counted as success.
  */
 int tls_parse_extension(SSL *s, TLSEXT_INDEX idx, int context,
-                        RAW_EXTENSION *exts, X509 *x, size_t chainidx)
+                        RAW_EXTENSION *exts, YX509 *x, size_t chainidx)
 {
     RAW_EXTENSION *currext = &exts[idx];
-    int (*parser)(SSL *s, PACKET *pkt, unsigned int context, X509 *x,
+    int (*parser)(SSL *s, PACKET *pkt, unsigned int context, YX509 *x,
                   size_t chainidx) = NULL;
 
     /* Skip if the extension is not present */
@@ -738,7 +738,7 @@ int tls_parse_extension(SSL *s, TLSEXT_INDEX idx, int context,
  * working on a Certificate message then we also pass the Certificate |x| and
  * its position in the |chainidx|, with 0 being the first certificate.
  */
-int tls_parse_all_extensions(SSL *s, int context, RAW_EXTENSION *exts, X509 *x,
+int tls_parse_all_extensions(SSL *s, int context, RAW_EXTENSION *exts, YX509 *x,
                              size_t chainidx, int fin)
 {
     size_t i, numexts = OSSL_NELEM(ext_defs);
@@ -799,7 +799,7 @@ int should_add_extension(SSL *s, unsigned int extctx, unsigned int thisctx,
  * failure construction stops at the first extension to fail to construct.
  */
 int tls_construct_extensions(SSL *s, WPACKET *pkt, unsigned int context,
-                             X509 *x, size_t chainidx)
+                             YX509 *x, size_t chainidx)
 {
     size_t i;
     int min_version, max_version = 0, reason;
@@ -841,7 +841,7 @@ int tls_construct_extensions(SSL *s, WPACKET *pkt, unsigned int context,
 
     for (i = 0, thisexd = ext_defs; i < OSSL_NELEM(ext_defs); i++, thisexd++) {
         EXT_RETURN (*construct)(SSL *s, WPACKET *pkt, unsigned int context,
-                                X509 *x, size_t chainidx);
+                                YX509 *x, size_t chainidx);
         EXT_RETURN ret;
 
         /* Skip if not relevant for our context */
@@ -1222,19 +1222,19 @@ static int final_ems(SSL *s, unsigned int context, int sent)
 
 static int init_certificate_authorities(SSL *s, unsigned int context)
 {
-    sk_X509_NAME_pop_free(s->s3->tmp.peer_ca_names, X509_NAME_free);
+    sk_YX509_NAME_pop_free(s->s3->tmp.peer_ca_names, YX509_NAME_free);
     s->s3->tmp.peer_ca_names = NULL;
     return 1;
 }
 
 static EXT_RETURN tls_construct_certificate_authorities(SSL *s, WPACKET *pkt,
                                                         unsigned int context,
-                                                        X509 *x,
+                                                        YX509 *x,
                                                         size_t chainidx)
 {
-    const STACK_OF(X509_NAME) *ca_sk = get_ca_names(s);
+    const STACK_OF(YX509_NAME) *ca_sk = get_ca_names(s);
 
-    if (ca_sk == NULL || sk_X509_NAME_num(ca_sk) == 0)
+    if (ca_sk == NULL || sk_YX509_NAME_num(ca_sk) == 0)
         return EXT_RETURN_NOT_SENT;
 
     if (!WPACKET_put_bytes_u16(pkt, TLSEXT_TYPE_certificate_authorities)
@@ -1261,7 +1261,7 @@ static EXT_RETURN tls_construct_certificate_authorities(SSL *s, WPACKET *pkt,
 }
 
 static int tls_parse_certificate_authorities(SSL *s, PACKET *pkt,
-                                             unsigned int context, X509 *x,
+                                             unsigned int context, YX509 *x,
                                              size_t chainidx)
 {
     if (!parse_ca_names(s, pkt))
@@ -1466,15 +1466,15 @@ static int init_psk_kex_modes(SSL *s, unsigned int context)
     return 1;
 }
 
-int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
+int tls_psk_do_binder(SSL *s, const EVVP_MD *md, const unsigned char *msgstart,
                       size_t binderoffset, const unsigned char *binderin,
                       unsigned char *binderout, SSL_SESSION *sess, int sign,
                       int external)
 {
-    EVP_PKEY *mackey = NULL;
-    EVP_MD_CTX *mctx = NULL;
-    unsigned char hash[EVP_MAX_MD_SIZE], binderkey[EVP_MAX_MD_SIZE];
-    unsigned char finishedkey[EVP_MAX_MD_SIZE], tmpbinder[EVP_MAX_MD_SIZE];
+    EVVP_PKEY *mackey = NULL;
+    EVVP_MD_CTX *mctx = NULL;
+    unsigned char hash[EVVP_MAX_MD_SIZE], binderkey[EVVP_MAX_MD_SIZE];
+    unsigned char finishedkey[EVVP_MAX_MD_SIZE], tmpbinder[EVVP_MAX_MD_SIZE];
     unsigned char *early_secret;
 #ifdef CHARSET_EBCDIC
     static const unsigned char resumption_label[] = { 0x72, 0x65, 0x73, 0x20, 0x62, 0x69, 0x6E, 0x64, 0x65, 0x72, 0x00 };
@@ -1485,7 +1485,7 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
 #endif
     const unsigned char *label;
     size_t bindersize, labelsize, hashsize;
-    int hashsizei = EVP_MD_size(md);
+    int hashsizei = EVVP_MD_size(md);
     int ret = -1;
     int usepskfored = 0;
 
@@ -1534,10 +1534,10 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
      * Create the handshake hash for the binder key...the messages so far are
      * empty!
      */
-    mctx = EVP_MD_CTX_new();
+    mctx = EVVP_MD_CTX_new();
     if (mctx == NULL
-            || EVP_DigestInit_ex(mctx, md, NULL) <= 0
-            || EVP_DigestFinal_ex(mctx, hash, NULL) <= 0) {
+            || EVVP_DigestInit_ex(mctx, md, NULL) <= 0
+            || EVVP_DigestFinal_ex(mctx, hash, NULL) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
                  ERR_R_INTERNAL_ERROR);
         goto err;
@@ -1556,7 +1556,7 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
         goto err;
     }
 
-    if (EVP_DigestInit_ex(mctx, md, NULL) <= 0) {
+    if (EVVP_DigestInit_ex(mctx, md, NULL) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
                  ERR_R_INTERNAL_ERROR);
         goto err;
@@ -1600,21 +1600,21 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
             hdatalen -= PACKET_remaining(&hashprefix);
         }
 
-        if (EVP_DigestUpdate(mctx, hdata, hdatalen) <= 0) {
+        if (EVVP_DigestUpdate(mctx, hdata, hdatalen) <= 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
                      ERR_R_INTERNAL_ERROR);
             goto err;
         }
     }
 
-    if (EVP_DigestUpdate(mctx, msgstart, binderoffset) <= 0
-            || EVP_DigestFinal_ex(mctx, hash, NULL) <= 0) {
+    if (EVVP_DigestUpdate(mctx, msgstart, binderoffset) <= 0
+            || EVVP_DigestFinal_ex(mctx, hash, NULL) <= 0) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
                  ERR_R_INTERNAL_ERROR);
         goto err;
     }
 
-    mackey = EVP_PKEY_new_raw_private_key(EVP_PKEY_HMAC, NULL, finishedkey,
+    mackey = EVVP_PKEY_new_raw_private_key(EVVP_PKEY_YHMAC, NULL, finishedkey,
                                           hashsize);
     if (mackey == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
@@ -1626,9 +1626,9 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
         binderout = tmpbinder;
 
     bindersize = hashsize;
-    if (EVP_DigestSignInit(mctx, NULL, md, NULL, mackey) <= 0
-            || EVP_DigestSignUpdate(mctx, hash, hashsize) <= 0
-            || EVP_DigestSignFinal(mctx, binderout, &bindersize) <= 0
+    if (EVVP_DigestSignInit(mctx, NULL, md, NULL, mackey) <= 0
+            || EVVP_DigestSignUpdate(mctx, hash, hashsize) <= 0
+            || EVVP_DigestSignFinal(mctx, binderout, &bindersize) <= 0
             || bindersize != hashsize) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PSK_DO_BINDER,
                  ERR_R_INTERNAL_ERROR);
@@ -1638,7 +1638,7 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
     if (sign) {
         ret = 1;
     } else {
-        /* HMAC keys can't do EVP_DigestVerify* - use CRYPTO_memcmp instead */
+        /* YHMAC keys can't do EVVP_DigestVerify* - use CRYPTO_memcmp instead */
         ret = (CRYPTO_memcmp(binderin, binderout, hashsize) == 0);
         if (!ret)
             SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_F_TLS_PSK_DO_BINDER,
@@ -1648,8 +1648,8 @@ int tls_psk_do_binder(SSL *s, const EVP_MD *md, const unsigned char *msgstart,
  err:
     OPENSSL_cleanse(binderkey, sizeof(binderkey));
     OPENSSL_cleanse(finishedkey, sizeof(finishedkey));
-    EVP_PKEY_free(mackey);
-    EVP_MD_CTX_free(mctx);
+    EVVP_PKEY_free(mackey);
+    EVVP_MD_CTX_free(mctx);
 
     return ret;
 }

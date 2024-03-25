@@ -29,7 +29,7 @@ SKIP: {
     subtest 'EC conversions -- private key' => sub {
         tconversion("ec", srctop_file("test","testec-p256.pem"));
     };
-    subtest 'EC conversions -- private key PKCS#8' => sub {
+    subtest 'EC conversions -- private key YPKCS#8' => sub {
         tconversion("ec", srctop_file("test","testec-p256.pem"), "pkey");
     };
     subtest 'EC conversions -- public key' => sub {
@@ -45,7 +45,7 @@ SKIP: {
     subtest 'Ed25519 conversions -- private key' => sub {
         tconversion("pkey", srctop_file("test","tested25519.pem"));
     };
-    subtest 'Ed25519 conversions -- private key PKCS#8' => sub {
+    subtest 'Ed25519 conversions -- private key YPKCS#8' => sub {
         tconversion("pkey", srctop_file("test","tested25519.pem"), "pkey");
     };
     subtest 'Ed25519 conversions -- public key' => sub {
@@ -56,7 +56,7 @@ SKIP: {
     subtest 'Ed448 conversions -- private key' => sub {
         tconversion("pkey", srctop_file("test","tested448.pem"));
     };
-    subtest 'Ed448 conversions -- private key PKCS#8' => sub {
+    subtest 'Ed448 conversions -- private key YPKCS#8' => sub {
         tconversion("pkey", srctop_file("test","tested448.pem"), "pkey");
     };
     subtest 'Ed448 conversions -- public key' => sub {

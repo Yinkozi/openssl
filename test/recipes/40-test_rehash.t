@@ -69,7 +69,7 @@ sub prepare {
 
         open PEM, $_ or die "Can't read $_: $!\n";
         while (my $line = <PEM>) {
-            if ($line =~ m{^-----BEGIN (?:CERTIFICATE|X509 CRL)-----}) {
+            if ($line =~ m{^-----BEGIN (?:CERTIFICATE|YX509 CRL)-----}) {
                 die "New start in a PEM blob?\n" if $writing;
                 $cnt++;
                 my $destfile =

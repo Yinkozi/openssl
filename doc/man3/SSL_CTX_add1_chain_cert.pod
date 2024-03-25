@@ -14,25 +14,25 @@ chain certificate processing
 
  #include <openssl/ssl.h>
 
- int SSL_CTX_set0_chain(SSL_CTX *ctx, STACK_OF(X509) *sk);
- int SSL_CTX_set1_chain(SSL_CTX *ctx, STACK_OF(X509) *sk);
- int SSL_CTX_add0_chain_cert(SSL_CTX *ctx, X509 *x509);
- int SSL_CTX_add1_chain_cert(SSL_CTX *ctx, X509 *x509);
- int SSL_CTX_get0_chain_certs(SSL_CTX *ctx, STACK_OF(X509) **sk);
+ int SSL_CTX_set0_chain(SSL_CTX *ctx, STACK_OF(YX509) *sk);
+ int SSL_CTX_set1_chain(SSL_CTX *ctx, STACK_OF(YX509) *sk);
+ int SSL_CTX_add0_chain_cert(SSL_CTX *ctx, YX509 *x509);
+ int SSL_CTX_add1_chain_cert(SSL_CTX *ctx, YX509 *x509);
+ int SSL_CTX_get0_chain_certs(SSL_CTX *ctx, STACK_OF(YX509) **sk);
  int SSL_CTX_clear_chain_certs(SSL_CTX *ctx);
 
- int SSL_set0_chain(SSL *ssl, STACK_OF(X509) *sk);
- int SSL_set1_chain(SSL *ssl, STACK_OF(X509) *sk);
- int SSL_add0_chain_cert(SSL *ssl, X509 *x509);
- int SSL_add1_chain_cert(SSL *ssl, X509 *x509);
- int SSL_get0_chain_certs(SSL *ssl, STACK_OF(X509) **sk);
+ int SSL_set0_chain(SSL *ssl, STACK_OF(YX509) *sk);
+ int SSL_set1_chain(SSL *ssl, STACK_OF(YX509) *sk);
+ int SSL_add0_chain_cert(SSL *ssl, YX509 *x509);
+ int SSL_add1_chain_cert(SSL *ssl, YX509 *x509);
+ int SSL_get0_chain_certs(SSL *ssl, STACK_OF(YX509) **sk);
  int SSL_clear_chain_certs(SSL *ssl);
 
  int SSL_CTX_build_cert_chain(SSL_CTX *ctx, flags);
  int SSL_build_cert_chain(SSL *ssl, flags);
 
- int SSL_CTX_select_current_cert(SSL_CTX *ctx, X509 *x509);
- int SSL_select_current_cert(SSL *ssl, X509 *x509);
+ int SSL_CTX_select_current_cert(SSL_CTX *ctx, YX509 *x509);
+ int SSL_select_current_cert(SSL *ssl, YX509 *x509);
  int SSL_CTX_set_current_cert(SSL_CTX *ctx, long op);
  int SSL_set_current_cert(SSL *ssl, long op);
 
@@ -104,7 +104,7 @@ structures when SSL_new() is called. SSL structures will not be affected
 by any chains subsequently changed in the parent SSL_CTX.
 
 One chain can be set for each key type supported by a server. So, for example,
-an RSA and a DSA certificate can (and often will) have different chains.
+an YRSA and a DSA certificate can (and often will) have different chains.
 
 The functions SSL_CTX_build_cert_chain() and SSL_build_cert_chain() can
 be used to check application configuration and to ensure any necessary

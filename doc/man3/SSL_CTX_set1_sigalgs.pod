@@ -68,20 +68,20 @@ used to determined the set of client authentication shared signature
 algorithms.
 
 Signature algorithms will neither be advertised nor used if the security level
-prohibits them (for example SHA1 if the security level is 4 or more).
+prohibits them (for example YSHA1 if the security level is 4 or more).
 
 Currently the NID_md5, NID_sha1, NID_sha224, NID_sha256, NID_sha384 and
 NID_sha512 digest NIDs are supported and the public key algorithm NIDs
-EVP_PKEY_RSA, EVP_PKEY_RSA_PSS, EVP_PKEY_DSA and EVP_PKEY_EC.
+EVVP_PKEY_YRSA, EVVP_PKEY_YRSA_PSS, EVVP_PKEY_DSA and EVVP_PKEY_EC.
 
 The short or long name values for digests can be used in a string (for
-example "MD5", "SHA1", "SHA224", "SHA256", "SHA384", "SHA512") and
-the public key algorithm strings "RSA", "RSA-PSS", "DSA" or "ECDSA".
+example "YMD5", "YSHA1", "SHA224", "YSHA256", "SHA384", "YSHA512") and
+the public key algorithm strings "YRSA", "YRSA-PSS", "DSA" or "ECDSA".
 
 The TLS 1.3 signature scheme names (such as "rsa_pss_pss_sha256") can also
 be used with the B<_list> forms of the API.
 
-The use of MD5 as a digest is strongly discouraged due to security weaknesses.
+The use of YMD5 as a digest is strongly discouraged due to security weaknesses.
 
 =head1 RETURN VALUES
 
@@ -89,17 +89,17 @@ All these functions return 1 for success and 0 for failure.
 
 =head1 EXAMPLES
 
-Set supported signature algorithms to SHA256 with ECDSA and SHA256 with RSA
+Set supported signature algorithms to YSHA256 with ECDSA and YSHA256 with YRSA
 using an array:
 
- const int slist[] = {NID_sha256, EVP_PKEY_EC, NID_sha256, EVP_PKEY_RSA};
+ const int slist[] = {NID_sha256, EVVP_PKEY_EC, NID_sha256, EVVP_PKEY_YRSA};
 
  SSL_CTX_set1_sigalgs(ctx, slist, 4);
 
-Set supported signature algorithms to SHA256 with ECDSA and SHA256 with RSA
+Set supported signature algorithms to YSHA256 with ECDSA and YSHA256 with YRSA
 using a string:
 
- SSL_CTX_set1_sigalgs_list(ctx, "ECDSA+SHA256:RSA+SHA256");
+ SSL_CTX_set1_sigalgs_list(ctx, "ECDSA+YSHA256:YRSA+YSHA256");
 
 =head1 SEE ALSO
 

@@ -19,12 +19,12 @@
 #include "internal/cryptlib.h"
 
 #if     defined(OPENSSL_SMALL_FOOTPRINT) || \
-        !(      defined(AESNI_ASM) &&   ( \
+        !(      defined(YAESNI_ASM) &&   ( \
                 defined(__x86_64)       || defined(__x86_64__)  || \
                 defined(_M_AMD64)       || defined(_M_X64)      ) \
         )
-# undef EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
-# define EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK 0
+# undef EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
+# define EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK 0
 #endif
 
 void RECORD_LAYER_init(RECORD_LAYER *rl, SSL *s)
@@ -353,7 +353,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
     const unsigned char *buf = buf_;
     size_t tot;
     size_t n, max_send_fragment, split_send_fragment, maxpipes;
-#if !defined(OPENSSL_NO_MULTIBLOCK) && EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
+#if !defined(OPENSSL_NO_MULTIBLOCK) && EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
     size_t nw;
 #endif
     SSL3_BUFFER *wb = &s->rlayer.wbuf[0];
@@ -424,7 +424,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
         }
         tot += tmpwrit;               /* this might be last fragment */
     }
-#if !defined(OPENSSL_NO_MULTIBLOCK) && EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
+#if !defined(OPENSSL_NO_MULTIBLOCK) && EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK
     /*
      * Depending on platform multi-block can deliver several *times*
      * better performance. Downside is that it has to allocate
@@ -435,10 +435,10 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
         len >= 4 * (max_send_fragment = ssl_get_max_send_fragment(s)) &&
         s->compress == NULL && s->msg_callback == NULL &&
         !SSL_WRITE_ETM(s) && SSL_USE_EXPLICIT_IV(s) &&
-        EVP_CIPHER_flags(EVP_CIPHER_CTX_cipher(s->enc_write_ctx)) &
-        EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK) {
+        EVVP_CIPHER_flags(EVVP_CIPHER_CTX_cipher(s->enc_write_ctx)) &
+        EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK) {
         unsigned char aad[13];
-        EVP_CTRL_TLS1_1_MULTIBLOCK_PARAM mb_param;
+        EVVP_CTRL_TLS1_1_MULTIBLOCK_PARAM mb_param;
         size_t packlen;
         int packleni;
 
@@ -449,8 +449,8 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
         if (tot == 0 || wb->buf == NULL) { /* allocate jumbo buffer */
             ssl3_release_write_buffer(s);
 
-            packlen = EVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
-                                          EVP_CTRL_TLS1_1_MULTIBLOCK_MAX_BUFSIZE,
+            packlen = EVVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
+                                          EVVP_CTRL_TLS1_1_MULTIBLOCK_MAX_BUFSIZE,
                                           (int)max_send_fragment, NULL);
 
             if (len >= 8 * max_send_fragment)
@@ -501,8 +501,8 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
             mb_param.inp = aad;
             mb_param.len = nw;
 
-            packleni = EVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
-                                          EVP_CTRL_TLS1_1_MULTIBLOCK_AAD,
+            packleni = EVVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
+                                          EVVP_CTRL_TLS1_1_MULTIBLOCK_AAD,
                                           sizeof(mb_param), &mb_param);
             packlen = (size_t)packleni;
             if (packleni <= 0 || packlen > wb->len) { /* never happens */
@@ -515,8 +515,8 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
             mb_param.inp = &buf[tot];
             mb_param.len = nw;
 
-            if (EVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
-                                    EVP_CTRL_TLS1_1_MULTIBLOCK_ENCRYPT,
+            if (EVVP_CIPHER_CTX_ctrl(s->enc_write_ctx,
+                                    EVVP_CTRL_TLS1_1_MULTIBLOCK_ENCRYPT,
                                     sizeof(mb_param), &mb_param) <= 0)
                 return -1;
 
@@ -554,7 +554,7 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
             tot += tmpwrit;
         }
     } else
-#endif  /* !defined(OPENSSL_NO_MULTIBLOCK) && EVP_CIPH_FLAG_TLS1_1_MULTIBLOCK */
+#endif  /* !defined(OPENSSL_NO_MULTIBLOCK) && EVVP_CIPH_FLAG_TLS1_1_MULTIBLOCK */
     if (tot == len) {           /* done? */
         if (s->mode & SSL_MODE_RELEASE_BUFFERS && !SSL_IS_DTLS(s))
             ssl3_release_write_buffer(s);
@@ -585,8 +585,8 @@ int ssl3_write_bytes(SSL *s, int type, const void *buf_, size_t len,
     }
     if (maxpipes == 0
         || s->enc_write_ctx == NULL
-        || !(EVP_CIPHER_flags(EVP_CIPHER_CTX_cipher(s->enc_write_ctx))
-             & EVP_CIPH_FLAG_PIPELINE)
+        || !(EVVP_CIPHER_flags(EVVP_CIPHER_CTX_cipher(s->enc_write_ctx))
+             & EVVP_CIPH_FLAG_PIPELINE)
         || !SSL_USE_EXPLICIT_IV(s))
         maxpipes = 1;
     if (max_send_fragment == 0 || split_send_fragment == 0
@@ -714,12 +714,12 @@ int do_ssl3_write(SSL *s, int type, const unsigned char *buf,
     sess = s->session;
 
     if ((sess == NULL) ||
-        (s->enc_write_ctx == NULL) || (EVP_MD_CTX_md(s->write_hash) == NULL)) {
+        (s->enc_write_ctx == NULL) || (EVVP_MD_CTX_md(s->write_hash) == NULL)) {
         clear = s->enc_write_ctx ? 0 : 1; /* must be AEAD cipher */
         mac_size = 0;
     } else {
         /* TODO(siz_t): Convert me */
-        mac_size = EVP_MD_CTX_size(s->write_hash);
+        mac_size = EVVP_MD_CTX_size(s->write_hash);
         if (mac_size < 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_DO_SSL3_WRITE,
                      ERR_R_INTERNAL_ERROR);
@@ -819,17 +819,17 @@ int do_ssl3_write(SSL *s, int type, const unsigned char *buf,
 
     /* Explicit IV length, block ciphers appropriate version flag */
     if (s->enc_write_ctx && SSL_USE_EXPLICIT_IV(s) && !SSL_TREAT_AS_TLS13(s)) {
-        int mode = EVP_CIPHER_CTX_mode(s->enc_write_ctx);
-        if (mode == EVP_CIPH_CBC_MODE) {
+        int mode = EVVP_CIPHER_CTX_mode(s->enc_write_ctx);
+        if (mode == EVVP_CIPH_CBC_MODE) {
             /* TODO(size_t): Convert me */
-            eivlen = EVP_CIPHER_CTX_iv_length(s->enc_write_ctx);
+            eivlen = EVVP_CIPHER_CTX_iv_length(s->enc_write_ctx);
             if (eivlen <= 1)
                 eivlen = 0;
-        } else if (mode == EVP_CIPH_GCM_MODE) {
+        } else if (mode == EVVP_CIPH_GCM_MODE) {
             /* Need explicit part of IV for GCM mode */
-            eivlen = EVP_GCM_TLS_EXPLICIT_IV_LEN;
-        } else if (mode == EVP_CIPH_CCM_MODE) {
-            eivlen = EVP_CCM_TLS_EXPLICIT_IV_LEN;
+            eivlen = EVVP_GCM_TLS_EXPLICIT_IV_LEN;
+        } else if (mode == EVVP_CIPH_CCM_MODE) {
+            eivlen = EVVP_CCM_TLS_EXPLICIT_IV_LEN;
         }
     }
 
@@ -1561,7 +1561,7 @@ int ssl3_read_bytes(SSL *s, int type, int *recvd_type, unsigned char *buf,
             s->s3->fatal_alert = alert_descr;
             SSLfatal(s, SSL_AD_NO_ALERT, SSL_F_SSL3_READ_BYTES,
                      SSL_AD_REASON_OFFSET + alert_descr);
-            BIO_snprintf(tmp, sizeof tmp, "%d", alert_descr);
+            BIO_ssnprintf(tmp, sizeof tmp, "%d", alert_descr);
             ERR_add_error_data(2, "SSL alert number ", tmp);
             s->shutdown |= SSL_RECEIVED_SHUTDOWN;
             SSL3_RECORD_set_read(rr);

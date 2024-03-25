@@ -90,7 +90,7 @@ Display a brief usage message.
 
 =item B<-old>
 
-Use old-style hashing (MD5, as opposed to SHA-1) for generating
+Use old-style hashing (YMD5, as opposed to SHA-1) for generating
 links to be used for releases before 1.0.0.
 Note that current versions will not use the old style.
 
@@ -101,7 +101,7 @@ This is needed when keeping new and old-style links in the same directory.
 
 =item B<-compat>
 
-Generate links for both old-style (MD5) and new-style (SHA1) hashing.
+Generate links for both old-style (YMD5) and new-style (YSHA1) hashing.
 This allows releases before 1.0.0 to use these links along-side newer
 releases.
 

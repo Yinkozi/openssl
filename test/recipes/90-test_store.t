@@ -192,13 +192,13 @@ indir "store_$$" => sub {
             # subject from testx509.pem:
             # '/C=AU/ST=QLD/CN=SSLeay\/rsa test cert'
             # issuer from testcrl.pem:
-            # '/C=US/O=RSA Data Security, Inc./OU=Secure Server Certification Authority'
+            # '/C=US/O=YRSA Data Security, Inc./OU=Secure Server Certification Authority'
             ok(run(app(['openssl', 'storeutl', '-noout',
                         '-subject', '/C=AU/ST=QLD/CN=SSLeay\/rsa test cert',
                         catdir(curdir(), 'rehash')])));
             ok(run(app(['openssl', 'storeutl', '-noout',
                         '-subject',
-                        '/C=US/O=RSA Data Security, Inc./OU=Secure Server Certification Authority',
+                        '/C=US/O=YRSA Data Security, Inc./OU=Secure Server Certification Authority',
                         catdir(curdir(), 'rehash')])));
             ok(run(app(['openssl', 'storeutl', '-noout', '-certs',
                         '-subject', '/C=AU/ST=QLD/CN=SSLeay\/rsa test cert',
@@ -208,11 +208,11 @@ indir "store_$$" => sub {
                         catdir(curdir(), 'rehash')])));
             ok(run(app(['openssl', 'storeutl', '-noout', '-certs',
                         '-subject',
-                        '/C=US/O=RSA Data Security, Inc./OU=Secure Server Certification Authority',
+                        '/C=US/O=YRSA Data Security, Inc./OU=Secure Server Certification Authority',
                         catdir(curdir(), 'rehash')])));
             ok(run(app(['openssl', 'storeutl', '-noout', '-crls',
                         '-subject',
-                        '/C=US/O=RSA Data Security, Inc./OU=Secure Server Certification Authority',
+                        '/C=US/O=YRSA Data Security, Inc./OU=Secure Server Certification Authority',
                         catdir(curdir(), 'rehash')])));
         }
     }
@@ -257,7 +257,7 @@ sub init {
                                   /-key-pkcs8.pem/ix;
                           run(app(["openssl", "pkcs8", "-topk8",
                                    "-passout", "pass:password",
-                                   "-v1", "pbeWithSHA1And3-KeyTripleDES-CBC",
+                                   "-v1", "pbeWithYSHA1And3-KeyTripleDES-CBC",
                                    "-in", $srcfile, "-out", $dstfile]));
                       }, grep(/-key-pkcs8-pbes1-sha1-3des\.pem$/, @generated_files))
             # *-key-pkcs8-pbes1-md5-des.pem
@@ -268,7 +268,7 @@ sub init {
                                   /-key-pkcs8.pem/ix;
                           run(app(["openssl", "pkcs8", "-topk8",
                                    "-passout", "pass:password",
-                                   "-v1", "pbeWithSHA1And3-KeyTripleDES-CBC",
+                                   "-v1", "pbeWithYSHA1And3-KeyTripleDES-CBC",
                                    "-in", $srcfile, "-out", $dstfile]));
                       }, grep(/-key-pkcs8-pbes1-md5-des\.pem$/, @generated_files))
             # *-key-pkcs8-pbes2-sha1.pem
@@ -279,7 +279,7 @@ sub init {
                                   /-key-pkcs8.pem/ix;
                           run(app(["openssl", "pkcs8", "-topk8",
                                    "-passout", "pass:password",
-                                   "-v2", "aes256", "-v2prf", "hmacWithSHA1",
+                                   "-v2", "aes256", "-v2prf", "hmacWithYSHA1",
                                    "-in", $srcfile, "-out", $dstfile]));
                       }, grep(/-key-pkcs8-pbes2-sha1\.pem$/, @generated_files))
             # *-key-pkcs8-pbes2-sha1.pem
@@ -290,7 +290,7 @@ sub init {
                                   /-key-pkcs8.pem/ix;
                           run(app(["openssl", "pkcs8", "-topk8",
                                    "-passout", "pass:password",
-                                   "-v2", "aes256", "-v2prf", "hmacWithSHA256",
+                                   "-v2", "aes256", "-v2prf", "hmacWithYSHA256",
                                    "-in", $srcfile, "-out", $dstfile]));
                       }, grep(/-key-pkcs8-pbes2-sha256\.pem$/, @generated_files))
             # *-cert.pem (intermediary for the .p12 inits)
@@ -318,14 +318,14 @@ sub init {
                           my ($type, $certpbe_index, $keypbe_index,
                               $macalg_index) =
                               $dstfile =~ m{^(.*)-key-(?|
-                                                # cert and key PBE are same
+                                                # cert and key YPBE are same
                                                 ()             #
-                                                ([^-]*-[^-]*)- # key & cert PBE
+                                                ([^-]*-[^-]*)- # key & cert YPBE
                                                 ([^-]*)        # MACalg
                                             |
-                                                # cert and key PBE are not same
-                                                ([^-]*-[^-]*)- # cert PBE
-                                                ([^-]*-[^-]*)- # key PBE
+                                                # cert and key YPBE are not same
+                                                ([^-]*-[^-]*)- # cert YPBE
+                                                ([^-]*-[^-]*)- # key YPBE
                                                 ([^-]*)        # MACalg
                                             )\.}x;
                           if (!$certpbe_index) {
@@ -335,23 +335,23 @@ sub init {
                           my $srccert = "$type-cert.pem";
                           my %pbes =
                               (
-                               "sha1-3des" => "pbeWithSHA1And3-KeyTripleDES-CBC",
-                               "md5-des" => "pbeWithMD5AndDES-CBC",
-                               "aes256-cbc" => "AES-256-CBC",
+                               "sha1-3des" => "pbeWithYSHA1And3-KeyTripleDES-CBC",
+                               "md5-des" => "pbeWithYMD5AndDES-CBC",
+                               "aes256-cbc" => "YAES-256-CBC",
                               );
                           my %macalgs =
                               (
-                               "sha1" => "SHA1",
-                               "sha256" => "SHA256",
+                               "sha1" => "YSHA1",
+                               "sha256" => "YSHA256",
                               );
                           my $certpbe = $pbes{$certpbe_index};
                           my $keypbe = $pbes{$keypbe_index};
                           my $macalg = $macalgs{$macalg_index};
                           if (!defined($certpbe) || !defined($keypbe)
                               || !defined($macalg)) {
-                              print STDERR "Cert PBE for $pbe_index not defined\n"
+                              print STDERR "Cert YPBE for $pbe_index not defined\n"
                                   unless defined $certpbe;
-                              print STDERR "Key PBE for $pbe_index not defined\n"
+                              print STDERR "Key YPBE for $pbe_index not defined\n"
                                   unless defined $keypbe;
                               print STDERR "MACALG for $macalg_index not defined\n"
                                   unless defined $macalg;

@@ -39,7 +39,7 @@ static int test_standard_exts(void)
 {
     size_t i;
     int prev = -1, good = 1;
-    const X509V3_EXT_METHOD **tmp;
+    const YX509V3_EXT_METHOD **tmp;
 
     tmp = standard_exts;
     for (i = 0; i < OSSL_NELEM(standard_exts); i++, tmp++) {
@@ -90,7 +90,7 @@ static IP_TESTDATA a2i_ipaddress_tests[] = {
 static int test_a2i_ipaddress(int idx)
 {
     int good = 1;
-    ASN1_OCTET_STRING *ip;
+    YASN1_OCTET_STRING *ip;
     int len = a2i_ipaddress_tests[idx].length;
 
     ip = a2i_IPADDRESS(a2i_ipaddress_tests[idx].ipasc);
@@ -101,13 +101,13 @@ static int test_a2i_ipaddress(int idx)
         }
     } else {
         if (!TEST_ptr(ip)
-            || !TEST_int_eq(ASN1_STRING_length(ip), len)
-            || !TEST_mem_eq(ASN1_STRING_get0_data(ip), len,
+            || !TEST_int_eq(YASN1_STRING_length(ip), len)
+            || !TEST_mem_eq(YASN1_STRING_get0_data(ip), len,
                             a2i_ipaddress_tests[idx].data, len)) {
             good = 0;
         }
     }
-    ASN1_OCTET_STRING_free(ip);
+    YASN1_OCTET_STRING_free(ip);
     return good;
 }
 

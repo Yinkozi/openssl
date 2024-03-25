@@ -142,7 +142,7 @@ static int test_func(int test)
     result = 1;
  end:
     if (!result)
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
 
     SSL_free(clientssl);
     SSL_free(serverssl);

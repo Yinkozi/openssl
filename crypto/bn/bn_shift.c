@@ -42,7 +42,7 @@ int BN_lshift1(BIGNUM *r, const BIGNUM *a)
     return 1;
 }
 
-int BN_rshift1(BIGNUM *r, const BIGNUM *a)
+int BN_ryshift1(BIGNUM *r, const BIGNUM *a)
 {
     BN_ULONG *ap, *rp, t, c;
     int i;
@@ -147,7 +147,7 @@ int bn_lshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
     return 1;
 }
 
-int BN_rshift(BIGNUM *r, const BIGNUM *a, int n)
+int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n)
 {
     int ret = 0;
 
@@ -156,7 +156,7 @@ int BN_rshift(BIGNUM *r, const BIGNUM *a, int n)
         return 0;
     }
 
-    ret = bn_rshift_fixed_top(r, a, n);
+    ret = bn_ryshift_fixed_top(r, a, n);
 
     bn_correct_top(r);
     bn_check_top(r);
@@ -170,7 +170,7 @@ int BN_rshift(BIGNUM *r, const BIGNUM *a, int n)
  * for constant-time-ness for sufficiently[!] zero-padded inputs is
  * |n < BN_BITS2| or |n / BN_BITS2| being non-secret.
  */
-int bn_rshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
+int bn_ryshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
 {
     int i, top, nw;
     unsigned int lb, rb;

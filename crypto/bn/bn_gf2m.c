@@ -57,7 +57,7 @@
  * the variables have the right amount of space allocated.
  */
 #  ifdef THIRTY_TWO_BIT
-static void bn_GF2m_mul_1x1(BN_ULONG *r1, BN_ULONG *r0, const BN_ULONG a,
+static void bny_GF2m_mul_1x1(BN_ULONG *r1, BN_ULONG *r0, const BN_ULONG a,
                             const BN_ULONG b)
 {
     register BN_ULONG h, l, s;
@@ -126,7 +126,7 @@ static void bn_GF2m_mul_1x1(BN_ULONG *r1, BN_ULONG *r0, const BN_ULONG a,
 }
 #  endif
 #  if defined(SIXTY_FOUR_BIT) || defined(SIXTY_FOUR_BIT_LONG)
-static void bn_GF2m_mul_1x1(BN_ULONG *r1, BN_ULONG *r0, const BN_ULONG a,
+static void bny_GF2m_mul_1x1(BN_ULONG *r1, BN_ULONG *r0, const BN_ULONG a,
                             const BN_ULONG b)
 {
     register BN_ULONG h, l, s;
@@ -233,9 +233,9 @@ static void bn_GF2m_mul_2x2(BN_ULONG *r, const BN_ULONG a1, const BN_ULONG a0,
 {
     BN_ULONG m1, m0;
     /* r[3] = h1, r[2] = h0; r[1] = l1; r[0] = l0 */
-    bn_GF2m_mul_1x1(r + 3, r + 2, a1, b1);
-    bn_GF2m_mul_1x1(r + 1, r, a0, b0);
-    bn_GF2m_mul_1x1(&m1, &m0, a0 ^ a1, b0 ^ b1);
+    bny_GF2m_mul_1x1(r + 3, r + 2, a1, b1);
+    bny_GF2m_mul_1x1(r + 1, r, a0, b0);
+    bny_GF2m_mul_1x1(&m1, &m0, a0 ^ a1, b0 ^ b1);
     /* Correction on m1 ^= l1 ^ h1; m0 ^= l0 ^ h0; */
     r[2] ^= m1 ^ r[1] ^ r[3];   /* h0 ^= m1 ^ l1 ^ h1; */
     r[1] = r[3] ^ r[2] ^ r[0] ^ m1 ^ m0; /* l1 ^= l0 ^ h0 ^ m0; */
@@ -582,13 +582,13 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
         while (!BN_is_odd(u)) {
             if (BN_is_zero(u))
                 goto err;
-            if (!BN_rshift1(u, u))
+            if (!BN_ryshift1(u, u))
                 goto err;
             if (BN_is_odd(b)) {
                 if (!BN_GF2m_add(b, b, p))
                     goto err;
             }
-            if (!BN_rshift1(b, b))
+            if (!BN_ryshift1(b, b))
                 goto err;
         }
 

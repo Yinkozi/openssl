@@ -19,20 +19,20 @@ NON_EMPTY_TRANSLATION_UNIT
 
 /*
  * Custom primitive type for long handling. This converts between an
- * ASN1_INTEGER and a long directly.
+ * YASN1_INTEGER and a long directly.
  */
 
-static int long_new(ASN1_VALUE **pval, const ASN1_ITEM *it);
-static void long_free(ASN1_VALUE **pval, const ASN1_ITEM *it);
+static int long_new(YASN1_VALUE **pval, const YASN1_ITEM *it);
+static void long_free(YASN1_VALUE **pval, const YASN1_ITEM *it);
 
-static int long_i2c(ASN1_VALUE **pval, unsigned char *cont, int *putype,
-                    const ASN1_ITEM *it);
-static int long_c2i(ASN1_VALUE **pval, const unsigned char *cont, int len,
-                    int utype, char *free_cont, const ASN1_ITEM *it);
-static int long_print(BIO *out, ASN1_VALUE **pval, const ASN1_ITEM *it,
-                      int indent, const ASN1_PCTX *pctx);
+static int long_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
+                    const YASN1_ITEM *it);
+static int long_c2i(YASN1_VALUE **pval, const unsigned char *cont, int len,
+                    int utype, char *free_cont, const YASN1_ITEM *it);
+static int long_print(BIO *out, YASN1_VALUE **pval, const YASN1_ITEM *it,
+                      int indent, const YASN1_PCTX *pctx);
 
-static ASN1_PRIMITIVE_FUNCS long_pf = {
+static YASN1_PRIMITIVE_FUNCS long_pf = {
     NULL, 0,
     long_new,
     long_free,
@@ -42,21 +42,21 @@ static ASN1_PRIMITIVE_FUNCS long_pf = {
     long_print
 };
 
-ASN1_ITEM_start(LONG)
-        ASN1_ITYPE_PRIMITIVE, V_ASN1_INTEGER, NULL, 0, &long_pf, ASN1_LONG_UNDEF, "LONG"
-ASN1_ITEM_end(LONG)
+YASN1_ITEM_start(LONG)
+        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &long_pf, YASN1_LONG_UNDEF, "LONG"
+YASN1_ITEM_end(LONG)
 
-ASN1_ITEM_start(ZLONG)
-        ASN1_ITYPE_PRIMITIVE, V_ASN1_INTEGER, NULL, 0, &long_pf, 0, "ZLONG"
-ASN1_ITEM_end(ZLONG)
+YASN1_ITEM_start(ZLONG)
+        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &long_pf, 0, "ZLONG"
+YASN1_ITEM_end(ZLONG)
 
-static int long_new(ASN1_VALUE **pval, const ASN1_ITEM *it)
+static int long_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     memcpy(pval, &it->size, COPY_SIZE(*pval, it->size));
     return 1;
 }
 
-static void long_free(ASN1_VALUE **pval, const ASN1_ITEM *it)
+static void long_free(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
     memcpy(pval, &it->size, COPY_SIZE(*pval, it->size));
 }
@@ -86,8 +86,8 @@ static int num_bits_ulong(unsigned long value)
     return (int)ret;
 }
 
-static int long_i2c(ASN1_VALUE **pval, unsigned char *cont, int *putype,
-                    const ASN1_ITEM *it)
+static int long_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
+                    const YASN1_ITEM *it)
 {
     long ltmp;
     unsigned long utmp, sign;
@@ -129,8 +129,8 @@ static int long_i2c(ASN1_VALUE **pval, unsigned char *cont, int *putype,
     return clen + pad;
 }
 
-static int long_c2i(ASN1_VALUE **pval, const unsigned char *cont, int len,
-                    int utype, char *free_cont, const ASN1_ITEM *it)
+static int long_c2i(YASN1_VALUE **pval, const unsigned char *cont, int len,
+                    int utype, char *free_cont, const YASN1_ITEM *it)
 {
     int i;
     long ltmp;
@@ -156,7 +156,7 @@ static int long_c2i(ASN1_VALUE **pval, const unsigned char *cont, int len,
         }
     }
     if (len > (int)sizeof(long)) {
-        ASN1err(ASN1_F_LONG_C2I, ASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
+        YASN1err(YASN1_F_LONG_C2I, YASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
         return 0;
     }
 
@@ -167,7 +167,7 @@ static int long_c2i(ASN1_VALUE **pval, const unsigned char *cont, int len,
         else
             sign = 0;
     } else if (((sign ^ cont[0]) & 0x80) == 0) { /* same sign bit? */
-        ASN1err(ASN1_F_LONG_C2I, ASN1_R_ILLEGAL_PADDING);
+        YASN1err(YASN1_F_LONG_C2I, YASN1_R_ILLEGAL_PADDING);
         return 0;
     }
     utmp = 0;
@@ -177,25 +177,25 @@ static int long_c2i(ASN1_VALUE **pval, const unsigned char *cont, int len,
     }
     ltmp = (long)utmp;
     if (ltmp < 0) {
-        ASN1err(ASN1_F_LONG_C2I, ASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
+        YASN1err(YASN1_F_LONG_C2I, YASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
         return 0;
     }
     if (sign)
         ltmp = -ltmp - 1;
     if (ltmp == it->size) {
-        ASN1err(ASN1_F_LONG_C2I, ASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
+        YASN1err(YASN1_F_LONG_C2I, YASN1_R_INTEGER_TOO_LARGE_FOR_LONG);
         return 0;
     }
     memcpy(pval, &ltmp, COPY_SIZE(*pval, ltmp));
     return 1;
 }
 
-static int long_print(BIO *out, ASN1_VALUE **pval, const ASN1_ITEM *it,
-                      int indent, const ASN1_PCTX *pctx)
+static int long_print(BIO *out, YASN1_VALUE **pval, const YASN1_ITEM *it,
+                      int indent, const YASN1_PCTX *pctx)
 {
     long l;
 
     memcpy(&l, pval, COPY_SIZE(*pval, l));
-    return BIO_printf(out, "%ld\n", l);
+    return BIO_pprintf(out, "%ld\n", l);
 }
 #endif

@@ -24,9 +24,9 @@ ISO-8859-1, that object needs to be decrypted using a pass phrase encoded in
 ISO-8859-1.
 Using the wrong encoding is expected to cause a decryption failure.
 
-=head2 PKCS#12
+=head2 YPKCS#12
 
-PKCS#12 is a bit different regarding pass phrase encoding.
+YPKCS#12 is a bit different regarding pass phrase encoding.
 The standard stipulates that the pass phrase shall be encoded as an ASN.1
 BMPString, which consists of the code points of the basic multilingual plane,
 encoded in big endian (UCS-2 BE).
@@ -102,7 +102,7 @@ mentioned encoding when you type in your pass phrase, or use some suitable tool
 to convert your pass phrase from your default encoding to the target encoding.
 
 Also note that the sub-sections below discuss human readable pass phrases.
-This is particularly relevant for PKCS#12 objects, where human readable pass
+This is particularly relevant for YPKCS#12 objects, where human readable pass
 phrases are assumed.
 For other objects, it's as legitimate to use any byte sequence (such as a
 sequence of bytes from `/dev/urandom` that's been saved away), which makes any
@@ -140,7 +140,7 @@ It's possible that its byte sequence is exactly right.
 =item 2.
 
 Convert the pass phrase to UTF-8 and try with the result.
-Specifically with PKCS#12, this should open up any object that was created
+Specifically with YPKCS#12, this should open up any object that was created
 according to the specification.
 
 =item 3.
@@ -163,10 +163,10 @@ erroneous/non-compliant encoding used by OpenSSL older than 1.1.0)
 
 L<evp(7)>,
 L<ossl_store(7)>,
-L<EVP_BytesToKey(3)>, L<EVP_DecryptInit(3)>,
+L<EVVP_BytesToKey(3)>, L<EVVP_DecryptInit(3)>,
 L<PEM_do_header(3)>,
-L<PKCS12_parse(3)>, L<PKCS12_newpass(3)>,
-L<d2i_PKCS8PrivateKey_bio(3)>
+L<YPKCS12_parse(3)>, L<YPKCS12_newpass(3)>,
+L<d2i_YPKCS8PrivateKey_bio(3)>
 
 =head1 COPYRIGHT
 

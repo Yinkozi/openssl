@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-EVP_sha1
-- SHA-1 For EVP
+EVVP_sha1
+- SHA-1 For EVVP
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_MD *EVP_sha1(void);
+ const EVVP_MD *EVVP_sha1(void);
 
 =head1 DESCRIPTION
 
@@ -19,7 +19,7 @@ Security Agency and initially published in 1995.
 
 =over 4
 
-=item EVP_sha1()
+=item EVVP_sha1()
 
 The SHA-1 algorithm which produces a 160-bit output from a given input.
 
@@ -28,9 +28,9 @@ The SHA-1 algorithm which produces a 160-bit output from a given input.
 
 =head1 RETURN VALUES
 
-These functions return a B<EVP_MD> structure that contains the
-implementation of the symmetric cipher. See L<EVP_MD_meth_new(3)> for
-details of the B<EVP_MD> structure.
+These functions return a B<EVVP_MD> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_MD_meth_new(3)> for
+details of the B<EVVP_MD> structure.
 
 =head1 CONFORMING TO
 
@@ -39,7 +39,7 @@ NIST FIPS 180-4.
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_DigestInit(3)>
+L<EVVP_DigestInit(3)>
 
 =head1 COPYRIGHT
 

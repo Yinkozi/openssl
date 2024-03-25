@@ -185,14 +185,14 @@ down each and finally closes both down.
  abio = BIO_new_accept("4444");
  if (BIO_do_accept(abio) <= 0) {
      fprintf(stderr, "Error setting up accept\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
 
  /* Wait for incoming connection */
  if (BIO_do_accept(abio) <= 0) {
      fprintf(stderr, "Error accepting connection\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
  fprintf(stderr, "Connection 1 established\n");
@@ -205,7 +205,7 @@ down each and finally closes both down.
  /* Wait for another connection */
  if (BIO_do_accept(abio) <= 0) {
      fprintf(stderr, "Error accepting connection\n");
-     ERR_print_errors_fp(stderr);
+     ERRR_print_errors_fp(stderr);
      exit(1);
  }
  fprintf(stderr, "Connection 2 established\n");

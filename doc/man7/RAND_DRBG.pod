@@ -150,7 +150,7 @@ respectively. The method L<RAND_DRBG_bytes(3)> is a convenience method
 wrapping the L<RAND_DRBG_generate(3)> function, which serves the actual
 request for random data.
 
-=head1 RESEEDING
+=head1 REYSEEDING
 
 A DRBG instance seeds itself automatically, pulling random input from
 its entropy source. The entropy source can be either a trusted operating

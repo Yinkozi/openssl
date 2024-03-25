@@ -19,22 +19,22 @@
 #define KEY_PUBKEY      2
 #define KEY_CERT        3
 
-static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
+static EVVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
                               const char *keyfile, int keyform, int key_type,
                               char *passinarg, int pkey_op, ENGINE *e,
                               const int impl);
 
-static int setup_peer(EVP_PKEY_CTX *ctx, int peerform, const char *file,
+static int setup_peer(EVVP_PKEY_CTX *ctx, int peerform, const char *file,
                       ENGINE *e);
 
-static int do_keyop(EVP_PKEY_CTX *ctx, int pkey_op,
+static int do_keyop(EVVP_PKEY_CTX *ctx, int pkey_op,
                     unsigned char *out, size_t *poutlen,
                     const unsigned char *in, size_t inlen);
 
 typedef enum OPTION_choice {
     OPT_ERR = -1, OPT_EOF = 0, OPT_HELP,
     OPT_ENGINE, OPT_ENGINE_IMPL, OPT_IN, OPT_OUT,
-    OPT_PUBIN, OPT_CERTIN, OPT_ASN1PARSE, OPT_HEXDUMP, OPT_SIGN,
+    OPT_PUBIN, OPT_CERTIN, OPT_YASN1PARSE, OPT_HEXDUMP, OPT_SIGN,
     OPT_VERIFY, OPT_VERIFYRECOVER, OPT_REV, OPT_ENCRYPT, OPT_DECRYPT,
     OPT_DERIVE, OPT_SIGFILE, OPT_INKEY, OPT_PEERKEY, OPT_PASSIN,
     OPT_PEERFORM, OPT_KEYFORM, OPT_PKEYOPT, OPT_KDF, OPT_KDFLEN,
@@ -47,7 +47,7 @@ const OPTIONS pkeyutl_options[] = {
     {"out", OPT_OUT, '>', "Output file - default stdout"},
     {"pubin", OPT_PUBIN, '-', "Input is a public key"},
     {"certin", OPT_CERTIN, '-', "Input is a cert with a public key"},
-    {"asn1parse", OPT_ASN1PARSE, '-', "asn1parse the output data"},
+    {"asn1parse", OPT_YASN1PARSE, '-', "asn1parse the output data"},
     {"hexdump", OPT_HEXDUMP, '-', "Hex dump output"},
     {"sign", OPT_SIGN, '-', "Sign input data with private key"},
     {"verify", OPT_VERIFY, '-', "Verify with public key"},
@@ -79,13 +79,13 @@ int pkeyutl_main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL;
     ENGINE *e = NULL;
-    EVP_PKEY_CTX *ctx = NULL;
+    EVVP_PKEY_CTX *ctx = NULL;
     char *infile = NULL, *outfile = NULL, *sigfile = NULL, *passinarg = NULL;
     char hexdump = 0, asn1parse = 0, rev = 0, *prog;
     unsigned char *buf_in = NULL, *buf_out = NULL, *sig = NULL;
     OPTION_CHOICE o;
     int buf_inlen = 0, siglen = -1, keyform = FORMAT_PEM, peerform = FORMAT_PEM;
-    int keysize = -1, pkey_op = EVP_PKEY_OP_SIGN, key_type = KEY_PRIVKEY;
+    int keysize = -1, pkey_op = EVVP_PKEY_OP_SIGN, key_type = KEY_PRIVKEY;
     int engine_impl = 0;
     int ret = 1, rv = -1;
     size_t buf_outlen;
@@ -101,7 +101,7 @@ int pkeyutl_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(pkeyutl_options);
@@ -149,32 +149,32 @@ int pkeyutl_main(int argc, char **argv)
         case OPT_CERTIN:
             key_type = KEY_CERT;
             break;
-        case OPT_ASN1PARSE:
+        case OPT_YASN1PARSE:
             asn1parse = 1;
             break;
         case OPT_HEXDUMP:
             hexdump = 1;
             break;
         case OPT_SIGN:
-            pkey_op = EVP_PKEY_OP_SIGN;
+            pkey_op = EVVP_PKEY_OP_SIGN;
             break;
         case OPT_VERIFY:
-            pkey_op = EVP_PKEY_OP_VERIFY;
+            pkey_op = EVVP_PKEY_OP_VERIFY;
             break;
         case OPT_VERIFYRECOVER:
-            pkey_op = EVP_PKEY_OP_VERIFYRECOVER;
+            pkey_op = EVVP_PKEY_OP_VERIFYRECOVER;
             break;
         case OPT_ENCRYPT:
-            pkey_op = EVP_PKEY_OP_ENCRYPT;
+            pkey_op = EVVP_PKEY_OP_ENCRYPT;
             break;
         case OPT_DECRYPT:
-            pkey_op = EVP_PKEY_OP_DECRYPT;
+            pkey_op = EVVP_PKEY_OP_DECRYPT;
             break;
         case OPT_DERIVE:
-            pkey_op = EVP_PKEY_OP_DERIVE;
+            pkey_op = EVVP_PKEY_OP_DERIVE;
             break;
         case OPT_KDF:
-            pkey_op = EVP_PKEY_OP_DERIVE;
+            pkey_op = EVVP_PKEY_OP_DERIVE;
             key_type = KEY_NONE;
             kdfalg = opt_arg();
             break;
@@ -200,28 +200,28 @@ int pkeyutl_main(int argc, char **argv)
 
     if (kdfalg != NULL) {
         if (kdflen == 0) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: no KDF length given (-kdflen parameter).\n", prog);
             goto opthelp;
         }
     } else if (inkey == NULL) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "%s: no private key given (-inkey parameter).\n", prog);
         goto opthelp;
-    } else if (peerkey != NULL && pkey_op != EVP_PKEY_OP_DERIVE) {
-        BIO_printf(bio_err,
+    } else if (peerkey != NULL && pkey_op != EVVP_PKEY_OP_DERIVE) {
+        BIO_pprintf(bio_err,
                    "%s: no peer key given (-peerkey parameter).\n", prog);
         goto opthelp;
     }
     ctx = init_ctx(kdfalg, &keysize, inkey, keyform, key_type,
                    passinarg, pkey_op, e, engine_impl);
     if (ctx == NULL) {
-        BIO_printf(bio_err, "%s: Error initializing context\n", prog);
+        BIO_pprintf(bio_err, "%s: Error initializing context\n", prog);
         ERR_print_errors(bio_err);
         goto end;
     }
     if (peerkey != NULL && !setup_peer(ctx, peerform, peerkey, e)) {
-        BIO_printf(bio_err, "%s: Error setting up peer key\n", prog);
+        BIO_pprintf(bio_err, "%s: Error setting up peer key\n", prog);
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -233,7 +233,7 @@ int pkeyutl_main(int argc, char **argv)
             const char *opt = sk_OPENSSL_STRING_value(pkeyopts, i);
 
             if (pkey_ctrl_string(ctx, opt) <= 0) {
-                BIO_printf(bio_err, "%s: Can't set parameter \"%s\":\n",
+                BIO_pprintf(bio_err, "%s: Can't set parameter \"%s\":\n",
                            prog, opt);
                 ERR_print_errors(bio_err);
                 goto end;
@@ -241,19 +241,19 @@ int pkeyutl_main(int argc, char **argv)
         }
     }
 
-    if (sigfile != NULL && (pkey_op != EVP_PKEY_OP_VERIFY)) {
-        BIO_printf(bio_err,
+    if (sigfile != NULL && (pkey_op != EVVP_PKEY_OP_VERIFY)) {
+        BIO_pprintf(bio_err,
                    "%s: Signature file specified for non verify\n", prog);
         goto end;
     }
 
-    if (sigfile == NULL && (pkey_op == EVP_PKEY_OP_VERIFY)) {
-        BIO_printf(bio_err,
+    if (sigfile == NULL && (pkey_op == EVVP_PKEY_OP_VERIFY)) {
+        BIO_pprintf(bio_err,
                    "%s: No signature file specified for verify\n", prog);
         goto end;
     }
 
-    if (pkey_op != EVP_PKEY_OP_DERIVE) {
+    if (pkey_op != EVVP_PKEY_OP_DERIVE) {
         in = bio_open_default(infile, 'r', FORMAT_BINARY);
         if (in == NULL)
             goto end;
@@ -266,13 +266,13 @@ int pkeyutl_main(int argc, char **argv)
         BIO *sigbio = BIO_new_file(sigfile, "rb");
 
         if (sigbio == NULL) {
-            BIO_printf(bio_err, "Can't open signature file %s\n", sigfile);
+            BIO_pprintf(bio_err, "Can't open signature file %s\n", sigfile);
             goto end;
         }
         siglen = bio_to_mem(&sig, keysize * 10, sigbio);
         BIO_free(sigbio);
         if (siglen < 0) {
-            BIO_printf(bio_err, "Error reading signature data\n");
+            BIO_pprintf(bio_err, "Error reading signature data\n");
             goto end;
         }
     }
@@ -281,7 +281,7 @@ int pkeyutl_main(int argc, char **argv)
         /* Read the input data */
         buf_inlen = bio_to_mem(&buf_in, keysize * 10, in);
         if (buf_inlen < 0) {
-            BIO_printf(bio_err, "Error reading input Data\n");
+            BIO_pprintf(bio_err, "Error reading input Data\n");
             goto end;
         }
         if (rev) {
@@ -297,16 +297,16 @@ int pkeyutl_main(int argc, char **argv)
     }
 
     /* Sanity check the input */
-    if (buf_inlen > EVP_MAX_MD_SIZE
-            && (pkey_op == EVP_PKEY_OP_SIGN
-                || pkey_op == EVP_PKEY_OP_VERIFY)) {
-        BIO_printf(bio_err,
+    if (buf_inlen > EVVP_MAX_MD_SIZE
+            && (pkey_op == EVVP_PKEY_OP_SIGN
+                || pkey_op == EVVP_PKEY_OP_VERIFY)) {
+        BIO_pprintf(bio_err,
                    "Error: The input data looks too long to be a hash\n");
         goto end;
     }
 
-    if (pkey_op == EVP_PKEY_OP_VERIFY) {
-        rv = EVP_PKEY_verify(ctx, sig, (size_t)siglen,
+    if (pkey_op == EVVP_PKEY_OP_VERIFY) {
+        rv = EVVP_PKEY_verify(ctx, sig, (size_t)siglen,
                              buf_in, (size_t)buf_inlen);
         if (rv == 1) {
             BIO_puts(out, "Signature Verified Successfully\n");
@@ -330,7 +330,7 @@ int pkeyutl_main(int argc, char **argv)
                       buf_in, (size_t)buf_inlen);
     }
     if (rv <= 0) {
-        if (pkey_op != EVP_PKEY_OP_DERIVE) {
+        if (pkey_op != EVVP_PKEY_OP_DERIVE) {
             BIO_puts(bio_err, "Public Key operation error\n");
         } else {
             BIO_puts(bio_err, "Key derivation failed\n");
@@ -341,7 +341,7 @@ int pkeyutl_main(int argc, char **argv)
     ret = 0;
 
     if (asn1parse) {
-        if (!ASN1_parse_dump(out, buf_out, buf_outlen, 1, -1))
+        if (!YASN1_parse_dump(out, buf_out, buf_outlen, 1, -1))
             ERR_print_errors(bio_err);
     } else if (hexdump) {
         BIO_dump(out, (char *)buf_out, buf_outlen);
@@ -350,7 +350,7 @@ int pkeyutl_main(int argc, char **argv)
     }
 
  end:
-    EVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_CTX_free(ctx);
     release_engine(e);
     BIO_free(in);
     BIO_free_all(out);
@@ -361,25 +361,25 @@ int pkeyutl_main(int argc, char **argv)
     return ret;
 }
 
-static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
+static EVVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
                               const char *keyfile, int keyform, int key_type,
                               char *passinarg, int pkey_op, ENGINE *e,
                               const int engine_impl)
 {
-    EVP_PKEY *pkey = NULL;
-    EVP_PKEY_CTX *ctx = NULL;
+    EVVP_PKEY *pkey = NULL;
+    EVVP_PKEY_CTX *ctx = NULL;
     ENGINE *impl = NULL;
     char *passin = NULL;
     int rv = -1;
-    X509 *x;
-    if (((pkey_op == EVP_PKEY_OP_SIGN) || (pkey_op == EVP_PKEY_OP_DECRYPT)
-         || (pkey_op == EVP_PKEY_OP_DERIVE))
+    YX509 *x;
+    if (((pkey_op == EVVP_PKEY_OP_SIGN) || (pkey_op == EVVP_PKEY_OP_DECRYPT)
+         || (pkey_op == EVVP_PKEY_OP_DERIVE))
         && (key_type != KEY_PRIVKEY && kdfalg == NULL)) {
-        BIO_printf(bio_err, "A private key is needed for this operation\n");
+        BIO_pprintf(bio_err, "A private key is needed for this operation\n");
         goto end;
     }
     if (!app_passwd(passinarg, NULL, &passin, NULL)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
     switch (key_type) {
@@ -394,8 +394,8 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
     case KEY_CERT:
         x = load_cert(keyfile, keyform, "Certificate");
         if (x) {
-            pkey = X509_get_pubkey(x);
-            X509_free(x);
+            pkey = YX509_get_pubkey(x);
+            YX509_free(x);
         }
         break;
 
@@ -415,51 +415,51 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
         if (kdfnid == NID_undef) {
             kdfnid = OBJ_ln2nid(kdfalg);
             if (kdfnid == NID_undef) {
-                BIO_printf(bio_err, "The given KDF \"%s\" is unknown.\n",
+                BIO_pprintf(bio_err, "The given KDF \"%s\" is unknown.\n",
                            kdfalg);
                 goto end;
             }
         }
-        ctx = EVP_PKEY_CTX_new_id(kdfnid, impl);
+        ctx = EVVP_PKEY_CTX_new_id(kdfnid, impl);
     } else {
         if (pkey == NULL)
             goto end;
-        *pkeysize = EVP_PKEY_size(pkey);
-        ctx = EVP_PKEY_CTX_new(pkey, impl);
-        EVP_PKEY_free(pkey);
+        *pkeysize = EVVP_PKEY_size(pkey);
+        ctx = EVVP_PKEY_CTX_new(pkey, impl);
+        EVVP_PKEY_free(pkey);
     }
 
     if (ctx == NULL)
         goto end;
 
     switch (pkey_op) {
-    case EVP_PKEY_OP_SIGN:
-        rv = EVP_PKEY_sign_init(ctx);
+    case EVVP_PKEY_OP_SIGN:
+        rv = EVVP_PKEY_sign_init(ctx);
         break;
 
-    case EVP_PKEY_OP_VERIFY:
-        rv = EVP_PKEY_verify_init(ctx);
+    case EVVP_PKEY_OP_VERIFY:
+        rv = EVVP_PKEY_verify_init(ctx);
         break;
 
-    case EVP_PKEY_OP_VERIFYRECOVER:
-        rv = EVP_PKEY_verify_recover_init(ctx);
+    case EVVP_PKEY_OP_VERIFYRECOVER:
+        rv = EVVP_PKEY_verify_recover_init(ctx);
         break;
 
-    case EVP_PKEY_OP_ENCRYPT:
-        rv = EVP_PKEY_encrypt_init(ctx);
+    case EVVP_PKEY_OP_ENCRYPT:
+        rv = EVVP_PKEY_encrypt_init(ctx);
         break;
 
-    case EVP_PKEY_OP_DECRYPT:
-        rv = EVP_PKEY_decrypt_init(ctx);
+    case EVVP_PKEY_OP_DECRYPT:
+        rv = EVVP_PKEY_decrypt_init(ctx);
         break;
 
-    case EVP_PKEY_OP_DERIVE:
-        rv = EVP_PKEY_derive_init(ctx);
+    case EVVP_PKEY_OP_DERIVE:
+        rv = EVVP_PKEY_derive_init(ctx);
         break;
     }
 
     if (rv <= 0) {
-        EVP_PKEY_CTX_free(ctx);
+        EVVP_PKEY_CTX_free(ctx);
         ctx = NULL;
     }
 
@@ -469,10 +469,10 @@ static EVP_PKEY_CTX *init_ctx(const char *kdfalg, int *pkeysize,
 
 }
 
-static int setup_peer(EVP_PKEY_CTX *ctx, int peerform, const char *file,
+static int setup_peer(EVVP_PKEY_CTX *ctx, int peerform, const char *file,
                       ENGINE *e)
 {
-    EVP_PKEY *peer = NULL;
+    EVVP_PKEY *peer = NULL;
     ENGINE *engine = NULL;
     int ret;
 
@@ -480,43 +480,43 @@ static int setup_peer(EVP_PKEY_CTX *ctx, int peerform, const char *file,
         engine = e;
     peer = load_pubkey(file, peerform, 0, NULL, engine, "Peer Key");
     if (peer == NULL) {
-        BIO_printf(bio_err, "Error reading peer key %s\n", file);
+        BIO_pprintf(bio_err, "Error reading peer key %s\n", file);
         ERR_print_errors(bio_err);
         return 0;
     }
 
-    ret = EVP_PKEY_derive_set_peer(ctx, peer);
+    ret = EVVP_PKEY_derive_set_peer(ctx, peer);
 
-    EVP_PKEY_free(peer);
+    EVVP_PKEY_free(peer);
     if (ret <= 0)
         ERR_print_errors(bio_err);
     return ret;
 }
 
-static int do_keyop(EVP_PKEY_CTX *ctx, int pkey_op,
+static int do_keyop(EVVP_PKEY_CTX *ctx, int pkey_op,
                     unsigned char *out, size_t *poutlen,
                     const unsigned char *in, size_t inlen)
 {
     int rv = 0;
     switch (pkey_op) {
-    case EVP_PKEY_OP_VERIFYRECOVER:
-        rv = EVP_PKEY_verify_recover(ctx, out, poutlen, in, inlen);
+    case EVVP_PKEY_OP_VERIFYRECOVER:
+        rv = EVVP_PKEY_verify_recover(ctx, out, poutlen, in, inlen);
         break;
 
-    case EVP_PKEY_OP_SIGN:
-        rv = EVP_PKEY_sign(ctx, out, poutlen, in, inlen);
+    case EVVP_PKEY_OP_SIGN:
+        rv = EVVP_PKEY_sign(ctx, out, poutlen, in, inlen);
         break;
 
-    case EVP_PKEY_OP_ENCRYPT:
-        rv = EVP_PKEY_encrypt(ctx, out, poutlen, in, inlen);
+    case EVVP_PKEY_OP_ENCRYPT:
+        rv = EVVP_PKEY_encrypt(ctx, out, poutlen, in, inlen);
         break;
 
-    case EVP_PKEY_OP_DECRYPT:
-        rv = EVP_PKEY_decrypt(ctx, out, poutlen, in, inlen);
+    case EVVP_PKEY_OP_DECRYPT:
+        rv = EVVP_PKEY_decrypt(ctx, out, poutlen, in, inlen);
         break;
 
-    case EVP_PKEY_OP_DERIVE:
-        rv = EVP_PKEY_derive(ctx, out, poutlen);
+    case EVVP_PKEY_OP_DERIVE:
+        rv = EVVP_PKEY_derive(ctx, out, poutlen);
         break;
 
     }

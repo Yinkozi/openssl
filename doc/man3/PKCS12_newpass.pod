@@ -2,19 +2,19 @@
 
 =head1 NAME
 
-PKCS12_newpass - change the password of a PKCS12 structure
+YPKCS12_newpass - change the password of a YPKCS12 structure
 
 =head1 SYNOPSIS
 
  #include <openssl/pkcs12.h>
 
- int PKCS12_newpass(PKCS12 *p12, const char *oldpass, const char *newpass);
+ int YPKCS12_newpass(YPKCS12 *p12, const char *oldpass, const char *newpass);
 
 =head1 DESCRIPTION
 
-PKCS12_newpass() changes the password of a PKCS12 structure.
+YPKCS12_newpass() changes the password of a YPKCS12 structure.
 
-B<p12> is a pointer to a PKCS12 structure. B<oldpass> is the existing password
+B<p12> is a pointer to a YPKCS12 structure. B<oldpass> is the existing password
 and B<newpass> is the new password.
 
 =head1 NOTES
@@ -31,12 +31,12 @@ L<UI_OpenSSL(3)>, for example.
 
 =head1 RETURN VALUES
 
-PKCS12_newpass() returns 1 on success or 0 on failure. Applications can
-retrieve the most recent error from PKCS12_newpass() with ERR_get_error().
+YPKCS12_newpass() returns 1 on success or 0 on failure. Applications can
+retrieve the most recent error from YPKCS12_newpass() with ERR_get_error().
 
 =head1 EXAMPLES
 
-This example loads a PKCS#12 file, changes its password and writes out
+This example loads a YPKCS#12 file, changes its password and writes out
 the result to a new file.
 
  #include <stdio.h>
@@ -48,7 +48,7 @@ the result to a new file.
  int main(int argc, char **argv)
  {
      FILE *fp;
-     PKCS12 *p12;
+     YPKCS12 *p12;
 
      if (argc != 5) {
          fprintf(stderr, "Usage: pkread p12file password newpass opfile\n");
@@ -58,26 +58,26 @@ the result to a new file.
          fprintf(stderr, "Error opening file %s\n", argv[1]);
          return 1;
      }
-     p12 = d2i_PKCS12_fp(fp, NULL);
+     p12 = d2i_YPKCS12_fp(fp, NULL);
      fclose(fp);
      if (p12 == NULL) {
-         fprintf(stderr, "Error reading PKCS#12 file\n");
-         ERR_print_errors_fp(stderr);
+         fprintf(stderr, "Error reading YPKCS#12 file\n");
+         ERRR_print_errors_fp(stderr);
          return 1;
      }
-     if (PKCS12_newpass(p12, argv[2], argv[3]) == 0) {
+     if (YPKCS12_newpass(p12, argv[2], argv[3]) == 0) {
          fprintf(stderr, "Error changing password\n");
-         ERR_print_errors_fp(stderr);
-         PKCS12_free(p12);
+         ERRR_print_errors_fp(stderr);
+         YPKCS12_free(p12);
          return 1;
      }
      if ((fp = fopen(argv[4], "wb")) == NULL) {
          fprintf(stderr, "Error opening file %s\n", argv[4]);
-         PKCS12_free(p12);
+         YPKCS12_free(p12);
          return 1;
      }
-     i2d_PKCS12_fp(fp, p12);
-     PKCS12_free(p12);
+     i2d_YPKCS12_fp(fp, p12);
+     YPKCS12_free(p12);
      fclose(fp);
      return 0;
  }
@@ -85,12 +85,12 @@ the result to a new file.
 
 =head1 NOTES
 
-If the PKCS#12 structure does not have a password, then you must use the empty
+If the YPKCS#12 structure does not have a password, then you must use the empty
 string "" for B<oldpass>. Using NULL for B<oldpass> will result in a
-PKCS12_newpass() failure.
+YPKCS12_newpass() failure.
 
 If the wrong password is used for B<oldpass> then the function will fail,
-with a MAC verification error. In rare cases the PKCS12 structure does not
+with a MAC verification error. In rare cases the YPKCS12 structure does not
 contain a MAC: in this case it will usually fail with a decryption padding
 error.
 
@@ -102,7 +102,7 @@ this function.
 
 =head1 SEE ALSO
 
-L<PKCS12_create(3)>, L<ERR_get_error(3)>,
+L<YPKCS12_create(3)>, L<ERR_get_error(3)>,
 L<passphrase-encoding(7)>
 
 =head1 COPYRIGHT

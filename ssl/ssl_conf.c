@@ -99,7 +99,7 @@ struct ssl_conf_ctx_st {
     /* Size of table */
     size_t ntbl;
     /* Client CA names */
-    STACK_OF(X509_NAME) *canames;
+    STACK_OF(YX509_NAME) *canames;
 };
 
 static void ssl_set_option(SSL_CONF_CTX *cctx, unsigned int name_flags,
@@ -468,7 +468,7 @@ static int do_store(SSL_CONF_CTX *cctx,
                     const char *CAfile, const char *CApath, int verify_store)
 {
     CERT *cert;
-    X509_STORE **st;
+    YX509_STORE **st;
     if (cctx->ctx)
         cert = cctx->ctx->cert;
     else if (cctx->ssl)
@@ -477,11 +477,11 @@ static int do_store(SSL_CONF_CTX *cctx,
         return 1;
     st = verify_store ? &cert->verify_store : &cert->chain_store;
     if (*st == NULL) {
-        *st = X509_STORE_new();
+        *st = YX509_STORE_new();
         if (*st == NULL)
             return 0;
     }
-    return X509_STORE_load_locations(*st, CAfile, CApath) > 0;
+    return YX509_STORE_load_locations(*st, CAfile, CApath) > 0;
 }
 
 static int cmd_ChainCAPath(SSL_CONF_CTX *cctx, const char *value)
@@ -507,7 +507,7 @@ static int cmd_VerifyCAFile(SSL_CONF_CTX *cctx, const char *value)
 static int cmd_RequestCAFile(SSL_CONF_CTX *cctx, const char *value)
 {
     if (cctx->canames == NULL)
-        cctx->canames = sk_X509_NAME_new_null();
+        cctx->canames = sk_YX509_NAME_new_null();
     if (cctx->canames == NULL)
         return 0;
     return SSL_add_file_cert_subjects_to_stack(cctx->canames, value);
@@ -521,7 +521,7 @@ static int cmd_ClientCAFile(SSL_CONF_CTX *cctx, const char *value)
 static int cmd_RequestCAPath(SSL_CONF_CTX *cctx, const char *value)
 {
     if (cctx->canames == NULL)
-        cctx->canames = sk_X509_NAME_new_null();
+        cctx->canames = sk_YX509_NAME_new_null();
     if (cctx->canames == NULL)
         return 0;
     return SSL_add_dir_cert_subjects_to_stack(cctx->canames, value);
@@ -539,12 +539,12 @@ static int cmd_DHParameters(SSL_CONF_CTX *cctx, const char *value)
     DH *dh = NULL;
     BIO *in = NULL;
     if (cctx->ctx || cctx->ssl) {
-        in = BIO_new(BIO_s_file());
+        in = BIO_new(BIO_s_yfile());
         if (in == NULL)
             goto end;
         if (BIO_read_filename(in, value) <= 0)
             goto end;
-        dh = PEM_read_bio_DHparams(in, NULL, NULL, NULL);
+        dh = PEM_readd_bio_DHparams(in, NULL, NULL, NULL);
         if (dh == NULL)
             goto end;
     } else
@@ -914,7 +914,7 @@ int SSL_CONF_CTX_finish(SSL_CONF_CTX *cctx)
         else if (cctx->ctx)
             SSL_CTX_set0_CA_list(cctx->ctx, cctx->canames);
         else
-            sk_X509_NAME_pop_free(cctx->canames, X509_NAME_free);
+            sk_YX509_NAME_pop_free(cctx->canames, YX509_NAME_free);
         cctx->canames = NULL;
     }
     return 1;
@@ -927,7 +927,7 @@ void SSL_CONF_CTX_free(SSL_CONF_CTX *cctx)
         for (i = 0; i < SSL_PKEY_NUM; i++)
             OPENSSL_free(cctx->cert_filename[i]);
         OPENSSL_free(cctx->prefix);
-        sk_X509_NAME_pop_free(cctx->canames, X509_NAME_free);
+        sk_YX509_NAME_pop_free(cctx->canames, YX509_NAME_free);
         OPENSSL_free(cctx);
     }
 }

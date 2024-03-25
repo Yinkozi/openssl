@@ -17,7 +17,7 @@
 /*
  * c: path of a cert in PEM format
  * k: path of a key in PEM format
- * t: API type, "cert" for X509_ and "req" for X509_REQ_ APIs.
+ * t: API type, "cert" for YX509_ and "req" for YX509_REQ_ APIs.
  * e: expected, "ok" for success, "failed" for what should fail.
  */
 static const char *c;
@@ -28,9 +28,9 @@ static const char *e;
 static int test_x509_check_cert_pkey(void)
 {
     BIO *bio = NULL;
-    X509 *x509 = NULL;
-    X509_REQ *x509_req = NULL;
-    EVP_PKEY *pkey = NULL;
+    YX509 *x509 = NULL;
+    YX509_REQ *x509_req = NULL;
+    EVVP_PKEY *pkey = NULL;
     int ret = 0, type = 0, expected = 0, result = 0;
 
     /*
@@ -59,7 +59,7 @@ static int test_x509_check_cert_pkey(void)
     if (!TEST_ptr(bio = BIO_new_file(k, "r")))
         goto failed;
 
-    if (!TEST_ptr(pkey = PEM_read_bio_PrivateKey(bio, NULL, NULL, NULL)))
+    if (!TEST_ptr(pkey = PEM_readd_bio_PrivateKey(bio, NULL, NULL, NULL)))
         goto failed;
 
     BIO_free(bio);
@@ -70,22 +70,22 @@ static int test_x509_check_cert_pkey(void)
 
     switch (type) {
     case 1:
-        x509 = PEM_read_bio_X509(bio, NULL, NULL, NULL);
+        x509 = PEM_readd_bio_YX509(bio, NULL, NULL, NULL);
         if (x509 == NULL) {
             TEST_error("read PEM x509 failed");
             goto failed;
         }
 
-        result = X509_check_private_key(x509, pkey);
+        result = YX509_check_private_key(x509, pkey);
         break;
     case 2:
-        x509_req = PEM_read_bio_X509_REQ(bio, NULL, NULL, NULL);
+        x509_req = PEM_readd_bio_YX509_REQ(bio, NULL, NULL, NULL);
         if (x509_req == NULL) {
             TEST_error("read PEM x509 req failed");
             goto failed;
         }
 
-        result = X509_REQ_check_private_key(x509_req, pkey);
+        result = YX509_REQ_check_private_key(x509_req, pkey);
         break;
     default:
         /* should never be here */
@@ -100,9 +100,9 @@ static int test_x509_check_cert_pkey(void)
     ret = 1;
 failed:
     BIO_free(bio);
-    X509_free(x509);
-    X509_REQ_free(x509_req);
-    EVP_PKEY_free(pkey);
+    YX509_free(x509);
+    YX509_REQ_free(x509_req);
+    EVVP_PKEY_free(pkey);
     return ret;
 }
 

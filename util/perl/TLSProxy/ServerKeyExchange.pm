@@ -46,9 +46,9 @@ sub parse
 
     #Minimal SKE parsing. Only supports one known DHE ciphersuite at the moment
     return if TLSProxy::Proxy->ciphersuite()
-                 != TLSProxy::Message::CIPHER_ADH_AES_128_SHA
+                 != TLSProxy::Message::CIPHER_ADH_YAES_128_SHA
               && TLSProxy::Proxy->ciphersuite()
-                 != TLSProxy::Message::CIPHER_DHE_RSA_AES_128_SHA;
+                 != TLSProxy::Message::CIPHER_DHE_YRSA_YAES_128_SHA;
 
     my $p_len = unpack('n', $self->data);
     my $ptr = 2;

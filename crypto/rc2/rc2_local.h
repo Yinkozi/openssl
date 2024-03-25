@@ -123,7 +123,7 @@
                          *((c)++)=(unsigned char)(((l)>> 8L)&0xff), \
                          *((c)++)=(unsigned char)(((l)     )&0xff))
 
-#define C_RC2(n) \
+#define C_YRC2(n) \
         t=(x0+(x1& ~x3)+(x2&x3)+ *(p0++))&0xffff; \
         x0=(t<<1)|(t>>15); \
         t=(x1+(x2& ~x0)+(x3&x0)+ *(p0++))&0xffff; \

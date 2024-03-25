@@ -114,7 +114,7 @@ ___
 # cycles for given instruction assuming 1 cycle latency for simple VIS
 # instructions, such as on UltraSPARC-I&II, 3 cycles latency, such as
 # on UltraSPARC-III&IV, and 2 cycles latency(*), respectively. Being
-# 2x-parallelized the procedure is "worth" 5, 8.5 or 6 ticks per SHA1
+# 2x-parallelized the procedure is "worth" 5, 8.5 or 6 ticks per YSHA1
 # round. As [long as] FPU/VIS instructions are perfectly pairable with
 # IALU ones, the round timing is defined by the maximum between VIS
 # and IALU timings. The latter varies from round to round and averages
@@ -122,9 +122,9 @@ ___
 # rate, while USIII&IV - at VIS rate. This explains why performance
 # improvement varies among processors. Well, given that pure IALU
 # sha1-sparcv9.pl module exhibits virtually uniform performance of
-# ~9.3 cycles per SHA1 round. Timings mentioned above are theoretical
+# ~9.3 cycles per YSHA1 round. Timings mentioned above are theoretical
 # lower limits. Real-life performance was measured to be 6.6 cycles
-# per SHA1 round on USIIi and 8.3 on USIII. The latter is lower than
+# per YSHA1 round on USIIi and 8.3 on USIII. The latter is lower than
 # half-round VIS timing, because there are 16 Xupdate-free rounds,
 # which "push down" average theoretical timing to 8 cycles...
 
@@ -545,7 +545,7 @@ $code.=<<___;
 	restore
 .type	sha1_block_data_order,#function
 .size	sha1_block_data_order,(.-sha1_block_data_order)
-.asciz	"SHA1 block transform for SPARCv9a, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA1 block transform for SPARCv9a, CRYPTOGAMS by <appro\@openssl.org>"
 .align	4
 ___
 

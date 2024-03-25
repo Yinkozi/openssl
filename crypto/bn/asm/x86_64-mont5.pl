@@ -19,7 +19,7 @@
 # Companion to x86_64-mont.pl that optimizes cache-timing attack
 # countermeasures. The subroutines are produced by replacing bp[i]
 # references in their x86_64-mont.pl counterparts with cache-neutral
-# references to powers table computed in BN_mod_exp_mont_consttime.
+# references to powers table computed in BNY_mod_exp_mont_consttime.
 # In addition subroutine that scatters elements of the powers table
 # is implemented, so that scatter-/gathering can be tuned without
 # bn_exp.c modifications.

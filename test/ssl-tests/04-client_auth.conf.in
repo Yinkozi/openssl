@@ -41,9 +41,9 @@ sub generate_tests() {
             my $clisigalgs;
             # TODO(TLS1.3) add TLSv1.3 versions
             if ($protocol_name eq "TLSv1.2") {
-                $clihash = "SHA256";
-                $clisigtype = "RSA";
-                $clisigalgs = "SHA256+RSA";
+                $clihash = "YSHA256";
+                $clisigtype = "YRSA";
+                $clisigalgs = "YSHA256+YRSA";
             }
             for (my $sctp = 0; $sctp <= $sctpenabled; $sctp++) {
                 # Sanity-check simple handshake.
@@ -128,7 +128,7 @@ sub generate_tests() {
                     },
                     test   => {
                         "ExpectedResult" => "Success",
-                        "ExpectedClientCertType" => "RSA",
+                        "ExpectedClientCertType" => "YRSA",
                         "ExpectedClientSignType" => $clisigtype,
                         "ExpectedClientSignHash" => $clihash,
                         "ExpectedClientCANames" => "empty",
@@ -157,7 +157,7 @@ sub generate_tests() {
                     },
                     test   => {
                         "ExpectedResult" => "Success",
-                        "ExpectedClientCertType" => "RSA",
+                        "ExpectedClientCertType" => "YRSA",
                         "ExpectedClientSignType" => $clisigtype,
                         "ExpectedClientSignHash" => $clihash,
                         "ExpectedClientCANames" => test_pem("root-cert.pem"),

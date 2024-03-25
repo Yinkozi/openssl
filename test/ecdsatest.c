@@ -84,7 +84,7 @@ static int fbytes(unsigned char *buf, int num)
  * - the X9.62 draft (4)
  * - NIST CAVP (720)
  *
- * It uses the low-level ECDSA_sign_setup instead of EVP to control the RNG.
+ * It uses the low-level ECDSA_signn_setup instead of EVVP to control the RNG.
  * NB: This is not how applications should use ECDSA; this is only for testing.
  *
  * Tests the library can successfully:
@@ -97,11 +97,11 @@ static int x9_62_tests(int n)
     int nid, md_nid, ret = 0;
     const char *r_in = NULL, *s_in = NULL, *tbs = NULL;
     unsigned char *pbuf = NULL, *qbuf = NULL, *message = NULL;
-    unsigned char digest[EVP_MAX_MD_SIZE];
+    unsigned char digest[EVVP_MAX_MD_SIZE];
     unsigned int dgst_len = 0;
     long q_len, msg_len = 0;
     size_t p_len;
-    EVP_MD_CTX *mctx = NULL;
+    EVVP_MD_CTX *mctx = NULL;
     EC_KEY *key = NULL;
     ECDSA_SIG *signature = NULL;
     BIGNUM *r = NULL, *s = NULL;
@@ -118,12 +118,12 @@ static int x9_62_tests(int n)
 
     TEST_info("ECDSA KATs for curve %s", OBJ_nid2sn(nid));
 
-    if (!TEST_ptr(mctx = EVP_MD_CTX_new())
+    if (!TEST_ptr(mctx = EVVP_MD_CTX_new())
         /* get the message digest */
         || !TEST_ptr(message = OPENSSL_hexstr2buf(tbs, &msg_len))
-        || !TEST_true(EVP_DigestInit_ex(mctx, EVP_get_digestbynid(md_nid), NULL))
-        || !TEST_true(EVP_DigestUpdate(mctx, message, msg_len))
-        || !TEST_true(EVP_DigestFinal_ex(mctx, digest, &dgst_len))
+        || !TEST_true(EVVP_DigestInit_ex(mctx, EVVP_get_digestbynid(md_nid), NULL))
+        || !TEST_true(EVVP_DigestUpdate(mctx, message, msg_len))
+        || !TEST_true(EVVP_DigestFinal_ex(mctx, digest, &dgst_len))
         /* create the key */
         || !TEST_ptr(key = EC_KEY_new_by_curve_name(nid))
         /* load KAT variables */
@@ -145,13 +145,13 @@ static int x9_62_tests(int n)
         || !TEST_mem_eq(qbuf, q_len, pbuf, p_len))
         goto err;
 
-    /* create the signature via ECDSA_sign_setup to avoid use of ECDSA nonces */
+    /* create the signature via ECDSA_signn_setup to avoid use of ECDSA nonces */
     use_fake = 1;
-    if (!TEST_true(ECDSA_sign_setup(key, NULL, &kinv, &rp))
+    if (!TEST_true(ECDSA_signn_setup(key, NULL, &kinv, &rp))
         || !TEST_ptr(signature = ECDSA_do_sign_ex(digest, dgst_len,
                                                   kinv, rp, key))
         /* verify the signature */
-        || !TEST_int_eq(ECDSA_do_verify(digest, dgst_len, signature, key), 1))
+        || !TEST_int_eq(ECDSA_do_verifyy(digest, dgst_len, signature, key), 1))
         goto err;
 
     /* compare the created signature with the expected signature */
@@ -174,16 +174,16 @@ static int x9_62_tests(int n)
     ECDSA_SIG_free(signature);
     BN_free(r);
     BN_free(s);
-    EVP_MD_CTX_free(mctx);
+    EVVP_MD_CTX_free(mctx);
     BN_clear_free(kinv);
     BN_clear_free(rp);
     return ret;
 }
 
 /*-
- * Positive and negative ECDSA testing through EVP interface:
- * - EVP_DigestSign (this is the one-shot version)
- * - EVP_DigestVerify
+ * Positive and negative ECDSA testing through EVVP interface:
+ * - EVVP_DigestSign (this is the one-shot version)
+ * - EVVP_DigestVerify
  *
  * Tests the library can successfully:
  * - create a key
@@ -201,8 +201,8 @@ static int test_builtin(int n)
     EC_KEY *eckey_neg = NULL, *eckey = NULL;
     unsigned char dirt, offset, tbs[128];
     unsigned char *sig = NULL;
-    EVP_PKEY *pkey_neg = NULL, *pkey = NULL;
-    EVP_MD_CTX *mctx = NULL;
+    EVVP_PKEY *pkey_neg = NULL, *pkey = NULL;
+    EVVP_MD_CTX *mctx = NULL;
     size_t sig_len;
     int nid, ret = 0;
 
@@ -216,53 +216,53 @@ static int test_builtin(int n)
 
     TEST_info("testing ECDSA for curve %s", OBJ_nid2sn(nid));
 
-    if (!TEST_ptr(mctx = EVP_MD_CTX_new())
+    if (!TEST_ptr(mctx = EVVP_MD_CTX_new())
         /* get some random message data */
         || !TEST_true(RAND_bytes(tbs, sizeof(tbs)))
         /* real key */
         || !TEST_ptr(eckey = EC_KEY_new_by_curve_name(nid))
         || !TEST_true(EC_KEY_generate_key(eckey))
-        || !TEST_ptr(pkey = EVP_PKEY_new())
-        || !TEST_true(EVP_PKEY_assign_EC_KEY(pkey, eckey))
+        || !TEST_ptr(pkey = EVVP_PKEY_new())
+        || !TEST_true(EVVP_PKEY_assign_EC_KEY(pkey, eckey))
         /* fake key for negative testing */
         || !TEST_ptr(eckey_neg = EC_KEY_new_by_curve_name(nid))
         || !TEST_true(EC_KEY_generate_key(eckey_neg))
-        || !TEST_ptr(pkey_neg = EVP_PKEY_new())
-        || !TEST_true(EVP_PKEY_assign_EC_KEY(pkey_neg, eckey_neg)))
+        || !TEST_ptr(pkey_neg = EVVP_PKEY_new())
+        || !TEST_true(EVVP_PKEY_assign_EC_KEY(pkey_neg, eckey_neg)))
         goto err;
 
     sig_len = ECDSA_size(eckey);
 
     if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
         /* create a signature */
-        || !TEST_true(EVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_true(EVP_DigestSign(mctx, sig, &sig_len, tbs, sizeof(tbs)))
+        || !TEST_true(EVVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_true(EVVP_DigestSign(mctx, sig, &sig_len, tbs, sizeof(tbs)))
         || !TEST_int_le(sig_len, ECDSA_size(eckey))
         /* negative test, verify with wrong key, 0 return */
-        || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey_neg))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0)
+        || !TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey_neg))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0)
         /* negative test, verify with wrong signature length, -1 return */
-        || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len - 1, tbs, sizeof(tbs)), -1)
+        || !TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len - 1, tbs, sizeof(tbs)), -1)
         /* positive test, verify with correct key, 1 return */
-        || !TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
+        || !TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 
     /* muck with the message, test it fails with 0 return */
     tbs[0] ^= 1;
-    if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0))
+    if (!TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 0))
         goto err;
     /* un-muck and test it verifies */
     tbs[0] ^= 1;
-    if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
+    if (!TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 
     /*-
@@ -289,27 +289,27 @@ static int test_builtin(int n)
      * Because the ratio of DER overhead to signature bytes is small.
      * So most of the time it will be one of the last two cases.
      *
-     * In any case, EVP_PKEY_verify should not return 1 for valid.
+     * In any case, EVVP_PKEY_verify should not return 1 for valid.
      */
     offset = tbs[0] % sig_len;
     dirt = tbs[1] ? tbs[1] : 1;
     sig[offset] ^= dirt;
-    if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_ne(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
+    if (!TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_ne(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
     /* un-muck and test it verifies */
     sig[offset] ^= dirt;
-    if (!TEST_true(EVP_MD_CTX_reset(mctx))
-        || !TEST_true(EVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
-        || !TEST_int_eq(EVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
+    if (!TEST_true(EVVP_MD_CTX_reset(mctx))
+        || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey))
+        || !TEST_int_eq(EVVP_DigestVerify(mctx, sig, sig_len, tbs, sizeof(tbs)), 1))
         goto err;
 
     ret = 1;
  err:
-    EVP_PKEY_free(pkey);
-    EVP_PKEY_free(pkey_neg);
-    EVP_MD_CTX_free(mctx);
+    EVVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey_neg);
+    EVVP_MD_CTX_free(mctx);
     OPENSSL_free(sig);
     return ret;
 }

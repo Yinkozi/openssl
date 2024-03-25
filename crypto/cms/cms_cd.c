@@ -38,7 +38,7 @@ CMS_ContentInfo *cms_CompressedData_create(int comp_nid)
     if (cms == NULL)
         return NULL;
 
-    cd = M_ASN1_new_of(CMS_CompressedData);
+    cd = M_YASN1_new_of(CMS_CompressedData);
 
     if (cd == NULL)
         goto err;
@@ -48,8 +48,8 @@ CMS_ContentInfo *cms_CompressedData_create(int comp_nid)
 
     cd->version = 0;
 
-    X509_ALGOR_set0(cd->compressionAlgorithm,
-                    OBJ_nid2obj(NID_zlib_compression), V_ASN1_UNDEF, NULL);
+    YX509_ALGOR_set0(cd->compressionAlgorithm,
+                    OBJ_nid2obj(NID_zlib_compression), V_YASN1_UNDEF, NULL);
 
     cd->encapContentInfo->eContentType = OBJ_nid2obj(NID_pkcs7_data);
 
@@ -63,14 +63,14 @@ CMS_ContentInfo *cms_CompressedData_create(int comp_nid)
 BIO *cms_CompressedData_init_bio(CMS_ContentInfo *cms)
 {
     CMS_CompressedData *cd;
-    const ASN1_OBJECT *compoid;
+    const YASN1_OBJECT *compoid;
     if (OBJ_obj2nid(cms->contentType) != NID_id_smime_ct_compressedData) {
         CMSerr(CMS_F_CMS_COMPRESSEDDATA_INIT_BIO,
                CMS_R_CONTENT_TYPE_NOT_COMPRESSED_DATA);
         return NULL;
     }
     cd = cms->d.compressedData;
-    X509_ALGOR_get0(&compoid, NULL, NULL, cd->compressionAlgorithm);
+    YX509_ALGOR_get0(&compoid, NULL, NULL, cd->compressionAlgorithm);
     if (OBJ_obj2nid(compoid) != NID_zlib_compression) {
         CMSerr(CMS_F_CMS_COMPRESSEDDATA_INIT_BIO,
                CMS_R_UNSUPPORTED_COMPRESSION_ALGORITHM);

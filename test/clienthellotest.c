@@ -129,9 +129,9 @@ static int test_client_hello(int currtest)
          * not need padding.
          */
         } else if (!TEST_true(SSL_CTX_set_cipher_list(ctx,
-                              "AES128-SHA"))
+                              "YAES128-SHA"))
                    || !TEST_true(SSL_CTX_set_ciphersuites(ctx,
-                                 "TLS_AES_128_GCM_SHA256"))) {
+                                 "TLS_YAES_128_GCM_YSHA256"))) {
             goto end;
         }
         break;
@@ -150,7 +150,7 @@ static int test_client_hello(int currtest)
             TEST_info("Unable to open session.pem");
             goto end;
         }
-        sess = PEM_read_bio_SSL_SESSION(sessbio, NULL, NULL, NULL);
+        sess = PEM_readd_bio_SSL_SESSION(sessbio, NULL, NULL, NULL);
         if (!TEST_ptr(sess)) {
             TEST_info("Unable to load SSL_SESSION");
             goto end;

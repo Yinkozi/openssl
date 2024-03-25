@@ -2,20 +2,20 @@
 
 =head1 NAME
 
-PKCS12_parse - parse a PKCS#12 structure
+YPKCS12_parse - parse a YPKCS#12 structure
 
 =head1 SYNOPSIS
 
  #include <openssl/pkcs12.h>
 
- int PKCS12_parse(PKCS12 *p12, const char *pass, EVP_PKEY **pkey, X509 **cert,
-                  STACK_OF(X509) **ca);
+ int YPKCS12_parse(YPKCS12 *p12, const char *pass, EVVP_PKEY **pkey, YX509 **cert,
+                  STACK_OF(YX509) **ca);
 
 =head1 DESCRIPTION
 
-PKCS12_parse() parses a PKCS12 structure.
+YPKCS12_parse() parses a YPKCS12 structure.
 
-B<p12> is the B<PKCS12> structure to parse. B<pass> is the passphrase to use.
+B<p12> is the B<YPKCS12> structure to parse. B<pass> is the passphrase to use.
 If successful the private key will be written to B<*pkey>, the corresponding
 certificate to B<*cert> and any additional certificates to B<*ca>.
 
@@ -28,7 +28,7 @@ B<*ca> is B<NULL> a new STACK will be allocated.
 
 The B<friendlyName> and B<localKeyID> attributes (if present) on each
 certificate will be stored in the B<alias> and B<keyid> attributes of the
-B<X509> structure.
+B<YX509> structure.
 
 The parameter B<pass> is interpreted as a string in the UTF-8 encoding. If it
 is not valid UTF-8, then it is assumed to be ISO8859-1 instead.
@@ -41,24 +41,24 @@ L<UI_OpenSSL(3)>, for example.
 
 =head1 RETURN VALUES
 
-PKCS12_parse() returns 1 for success and zero if an error occurred.
+YPKCS12_parse() returns 1 for success and zero if an error occurred.
 
 The error can be obtained from L<ERR_get_error(3)>
 
 =head1 BUGS
 
 Only a single private key and corresponding certificate is returned by this
-function. More complex PKCS#12 files with multiple private keys will only
+function. More complex YPKCS#12 files with multiple private keys will only
 return the first match.
 
 Only B<friendlyName> and B<localKeyID> attributes are currently stored in
 certificates. Other attributes are discarded.
 
-Attributes currently cannot be stored in the private key B<EVP_PKEY> structure.
+Attributes currently cannot be stored in the private key B<EVVP_PKEY> structure.
 
 =head1 SEE ALSO
 
-L<d2i_PKCS12(3)>,
+L<d2i_YPKCS12(3)>,
 L<passphrase-encoding(7)>
 
 =head1 COPYRIGHT

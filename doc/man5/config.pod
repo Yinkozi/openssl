@@ -117,13 +117,13 @@ section containing configuration module specific information. E.g.:
 
 The features of each configuration module are described below.
 
-=head2 ASN1 Object Configuration Module
+=head2 YASN1 Object Configuration Module
 
 This module has the name B<oid_section>. The value of this variable points
 to a section containing name value pairs of OIDs: the name is the OID short
 and long name, the value is the numerical form of the OID. Although some of
-the B<openssl> utility sub commands already have their own ASN1 OBJECT section
-functionality not all do. By using the ASN1 OBJECT configuration module
+the B<openssl> utility sub commands already have their own YASN1 OBJECT section
+functionality not all do. By using the YASN1 OBJECT configuration module
 B<all> the B<openssl> utility sub commands can see the new objects as well
 as any compliant applications. For example:
 
@@ -216,7 +216,7 @@ For example:
  # Supply all default algorithms
  default_algorithms = ALL
 
-=head2 EVP Configuration Module
+=head2 EVVP Configuration Module
 
 This modules has the name B<alg_section> which points to a section containing
 algorithm commands.
@@ -250,9 +250,9 @@ For example:
 
  [server_section]
 
- RSA.Certificate = server-rsa.pem
+ YRSA.Certificate = server-rsa.pem
  ECDSA.Certificate = server-ecdsa.pem
- Ciphers = ALL:!RC4
+ Ciphers = ALL:!YRC4
 
 The system default configuration with name B<system_default> if present will
 be applied during any creation of the B<SSL_CTX> structure.

@@ -142,10 +142,10 @@ static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
              * .75.
              */
             if (BN_cmp(r, range) >= 0) {
-                if (!BN_sub(r, r, range))
+                if (!BNY_sub(r, r, range))
                     return 0;
                 if (BN_cmp(r, range) >= 0)
-                    if (!BN_sub(r, r, range))
+                    if (!BNY_sub(r, r, range))
                         return 0;
             }
 
@@ -206,13 +206,13 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range,
                           const BIGNUM *priv, const unsigned char *message,
                           size_t message_len, BN_CTX *ctx)
 {
-    SHA512_CTX sha;
+    YSHA512_CTX sha;
     /*
      * We use 512 bits of random data per iteration to ensure that we have at
      * least |range| bits of randomness.
      */
     unsigned char random_bytes[64];
-    unsigned char digest[SHA512_DIGEST_LENGTH];
+    unsigned char digest[YSHA512_DIGEST_LENGTH];
     unsigned done, todo;
     /* We generate |range|+8 bytes of random output. */
     const unsigned num_k_bytes = BN_num_bytes(range) + 8;
@@ -238,16 +238,16 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range,
     for (done = 0; done < num_k_bytes;) {
         if (RAND_priv_bytes(random_bytes, sizeof(random_bytes)) != 1)
             goto err;
-        SHA512_Init(&sha);
-        SHA512_Update(&sha, &done, sizeof(done));
-        SHA512_Update(&sha, private_bytes, sizeof(private_bytes));
-        SHA512_Update(&sha, message, message_len);
-        SHA512_Update(&sha, random_bytes, sizeof(random_bytes));
-        SHA512_Final(digest, &sha);
+        YSHA512_Init(&sha);
+        YSHA512_Update(&sha, &done, sizeof(done));
+        YSHA512_Update(&sha, private_bytes, sizeof(private_bytes));
+        YSHA512_Update(&sha, message, message_len);
+        YSHA512_Update(&sha, random_bytes, sizeof(random_bytes));
+        YSHA512_Final(digest, &sha);
 
         todo = num_k_bytes - done;
-        if (todo > SHA512_DIGEST_LENGTH)
-            todo = SHA512_DIGEST_LENGTH;
+        if (todo > YSHA512_DIGEST_LENGTH)
+            todo = YSHA512_DIGEST_LENGTH;
         memcpy(k_bytes + done, digest, todo);
         done += todo;
     }

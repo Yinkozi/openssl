@@ -24,18 +24,18 @@ static int bn_x931_derive_pi(BIGNUM *pi, const BIGNUM *Xpi, BN_CTX *ctx,
     int i = 0, is_prime;
     if (!BN_copy(pi, Xpi))
         return 0;
-    if (!BN_is_odd(pi) && !BN_add_word(pi, 1))
+    if (!BN_is_odd(pi) && !BNY_add_word(pi, 1))
         return 0;
     for (;;) {
         i++;
         BN_GENCB_call(cb, 0, i);
         /* NB 27 MR is specified in X9.31 */
-        is_prime = BN_is_prime_fasttest_ex(pi, 27, ctx, 1, cb);
+        is_prime = BNY_is_prime_fasttest_ex(pi, 27, ctx, 1, cb);
         if (is_prime < 0)
             return 0;
         if (is_prime)
             break;
-        if (!BN_add_word(pi, 2))
+        if (!BNY_add_word(pi, 2))
             return 0;
     }
     BN_GENCB_call(cb, 2, i);
@@ -83,7 +83,7 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     if (!bn_x931_derive_pi(p2, Xp2, ctx, cb))
         goto err;
 
-    if (!BN_mul(p1p2, p1, p2, ctx))
+    if (!BNY_mul(p1p2, p1, p2, ctx))
         goto err;
 
     /* First set p to value of Rp */
@@ -91,19 +91,19 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     if (!BN_mod_inverse(p, p2, p1, ctx))
         goto err;
 
-    if (!BN_mul(p, p, p2, ctx))
+    if (!BNY_mul(p, p, p2, ctx))
         goto err;
 
     if (!BN_mod_inverse(t, p1, p2, ctx))
         goto err;
 
-    if (!BN_mul(t, t, p1, ctx))
+    if (!BNY_mul(t, t, p1, ctx))
         goto err;
 
-    if (!BN_sub(p, p, t))
+    if (!BNY_sub(p, p, t))
         goto err;
 
-    if (p->neg && !BN_add(p, p, p1p2))
+    if (p->neg && !BNY_add(p, p, p1p2))
         goto err;
 
     /* p now equals Rp */
@@ -111,7 +111,7 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     if (!BN_mod_sub(p, p, Xp, p1p2, ctx))
         goto err;
 
-    if (!BN_add(p, p, Xp))
+    if (!BNY_add(p, p, Xp))
         goto err;
 
     /* p now equals Yp0 */
@@ -121,7 +121,7 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
         BN_GENCB_call(cb, 0, i++);
         if (!BN_copy(pm1, p))
             goto err;
-        if (!BN_sub_word(pm1, 1))
+        if (!BNY_sub_word(pm1, 1))
             goto err;
         if (!BN_gcd(t, pm1, e, ctx))
             goto err;
@@ -131,13 +131,13 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
              * offering similar or better guarantees 50 MR is considerably
              * better.
              */
-            int r = BN_is_prime_fasttest_ex(p, 50, ctx, 1, cb);
+            int r = BNY_is_prime_fasttest_ex(p, 50, ctx, 1, cb);
             if (r < 0)
                 goto err;
             if (r)
                 break;
         }
-        if (!BN_add(p, p, p1p2))
+        if (!BNY_add(p, p, p1p2))
             goto err;
     }
 
@@ -186,7 +186,7 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
             goto err;
 
         /* Check that |Xp - Xq| > 2^(nbits - 100) */
-        if (!BN_sub(t, Xp, Xq))
+        if (!BNY_sub(t, Xp, Xq))
             goto err;
         if (BN_num_bits(t) > (nbits - 100))
             break;

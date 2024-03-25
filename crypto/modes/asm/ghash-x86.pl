@@ -48,7 +48,7 @@
 # (***)	see comment in non-MMX routine for further details;
 #
 # To summarize, it's >2-5 times faster than gcc-generated code. To
-# anchor it to something else SHA1 assembler processes one byte in
+# anchor it to something else YSHA1 assembler processes one byte in
 # ~7 cycles on contemporary x86 cores. As for choice of MMX/SSE
 # in particular, see comment at the end of the file...
 
@@ -75,7 +75,7 @@
 # because it does not account for Karatsuba pre- and post-processing,
 # which for a single multiplication is ~5 cycles. Unfortunately Intel
 # does not provide performance data for GHASH alone. But benchmarking
-# AES_GCM_encrypt ripped out of Fig. 15 of the white paper with aadt
+# YAES_GCM_encrypt ripped out of Fig. 15 of the white paper with aadt
 # alone resulted in 2.46 cycles per byte of out 16KB buffer. Note that
 # the result accounts even for pre-computing of degrees of the hash
 # key H, but its portion is negligible at 16KB buffer size.

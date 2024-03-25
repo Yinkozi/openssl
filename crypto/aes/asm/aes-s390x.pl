@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# AES for s390x.
+# YAES for s390x.
 
 # April 2007.
 #
@@ -35,12 +35,12 @@
 
 # May 2007.
 #
-# Implement AES_set_[en|de]crypt_key. Key schedule setup is avoided
+# Implement YAES_set_[en|de]crypt_key. Key schedule setup is avoided
 # for 128-bit keys, if hardware support is detected.
 
 # January 2009.
 #
-# Add support for hardware AES192/256 and reschedule instructions to
+# Add support for hardware YAES192/256 and reschedule instructions to
 # minimize/avoid Address Generation Interlock hazard and to favour
 # dual-issue z10 pipeline. This gave ~25% improvement on z10 and
 # almost 50% on z9. The gain is smaller on z10, because being dual-
@@ -53,15 +53,15 @@
 # This is done, because deferred key setup can't be made MT-safe, not
 # for keys longer than 128 bits.
 #
-# Add AES_cbc_encrypt, which gives incredible performance improvement,
+# Add YAES_cbc_encrypt, which gives incredible performance improvement,
 # it was measured to be ~6.6x. It's less than previously mentioned 8x,
 # because software implementation was optimized.
 
 # May 2010.
 #
-# Add AES_ctr32_encrypt. If hardware-assisted, it provides up to 4.3x
+# Add YAES_ctr32_encrypt. If hardware-assisted, it provides up to 4.3x
 # performance improvement over "generic" counter mode routine relying
-# on single-block, also hardware-assisted, AES_encrypt. "Up to" refers
+# on single-block, also hardware-assisted, YAES_encrypt. "Up to" refers
 # to the fact that exact throughput value depends on current stack
 # frame alignment within 4KB page. In worst case you get ~75% of the
 # maximum, but *on average* it would be as much as ~98%. Meaning that
@@ -85,7 +85,7 @@
 
 # February 2011.
 #
-# Add AES_xts_[en|de]crypt. This includes support for z196 km-xts-aes
+# Add YAES_xts_[en|de]crypt. This includes support for z196 km-xts-aes
 # instructions, which deliver ~70% improvement at 8KB block size over
 # vanilla km-based code, 37% - at most like 512-bytes block size.
 
@@ -133,9 +133,9 @@ $code=<<___;
 
 .text
 
-.type	AES_Te,\@object
+.type	YAES_Te,\@object
 .align	256
-AES_Te:
+YAES_Te:
 ___
 &_data_word(
 	0xc66363a5, 0xf87c7c84, 0xee777799, 0xf67b7b8d,
@@ -241,13 +241,13 @@ $code.=<<___;
 .long	0x10000000, 0x20000000, 0x40000000, 0x80000000
 .long	0x1B000000, 0x36000000, 0, 0, 0, 0, 0, 0
 .align	256
-.size	AES_Te,.-AES_Te
+.size	YAES_Te,.-YAES_Te
 
-# void AES_encrypt(const unsigned char *inp, unsigned char *out,
-# 		 const AES_KEY *key) {
-.globl	AES_encrypt
-.type	AES_encrypt,\@function
-AES_encrypt:
+# void YAES_encrypt(const unsigned char *inp, unsigned char *out,
+# 		 const YAES_KEY *key) {
+.globl	YAES_encrypt
+.type	YAES_encrypt,\@function
+YAES_encrypt:
 ___
 $code.=<<___ if (!$softonly);
 	l	%r0,240($key)
@@ -273,8 +273,8 @@ $code.=<<___;
 	llgf	$s2,8($inp)
 	llgf	$s3,12($inp)
 
-	larl	$tbl,AES_Te
-	bras	$ra,_s390x_AES_encrypt
+	larl	$tbl,YAES_Te
+	bras	$ra,_s390x_YAES_encrypt
 
 	l${g}	$out,3*$SIZE_T($sp)
 	st	$s0,0($out)
@@ -284,11 +284,11 @@ $code.=<<___;
 
 	lm${g}	%r6,$ra,6*$SIZE_T($sp)
 	br	$ra
-.size	AES_encrypt,.-AES_encrypt
+.size	YAES_encrypt,.-YAES_encrypt
 
-.type   _s390x_AES_encrypt,\@function
+.type   _s390x_YAES_encrypt,\@function
 .align	16
-_s390x_AES_encrypt:
+_s390x_YAES_encrypt:
 	st${g}	$ra,15*$SIZE_T($sp)
 	x	$s0,0($key)
 	x	$s1,4($key)
@@ -460,13 +460,13 @@ _s390x_AES_encrypt:
 	x	$s3,28($key)
 
 	br	$ra
-.size	_s390x_AES_encrypt,.-_s390x_AES_encrypt
+.size	_s390x_YAES_encrypt,.-_s390x_YAES_encrypt
 ___
 
 $code.=<<___;
-.type	AES_Td,\@object
+.type	YAES_Td,\@object
 .align	256
-AES_Td:
+YAES_Td:
 ___
 &_data_word(
 	0x51f4a750, 0x7e416553, 0x1a17a4c3, 0x3a275e96,
@@ -567,13 +567,13 @@ $code.=<<___;
 .byte	0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61
 .byte	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 .byte	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
-.size	AES_Td,.-AES_Td
+.size	YAES_Td,.-YAES_Td
 
-# void AES_decrypt(const unsigned char *inp, unsigned char *out,
-# 		 const AES_KEY *key) {
-.globl	AES_decrypt
-.type	AES_decrypt,\@function
-AES_decrypt:
+# void YAES_decrypt(const unsigned char *inp, unsigned char *out,
+# 		 const YAES_KEY *key) {
+.globl	YAES_decrypt
+.type	YAES_decrypt,\@function
+YAES_decrypt:
 ___
 $code.=<<___ if (!$softonly);
 	l	%r0,240($key)
@@ -599,8 +599,8 @@ $code.=<<___;
 	llgf	$s2,8($inp)
 	llgf	$s3,12($inp)
 
-	larl	$tbl,AES_Td
-	bras	$ra,_s390x_AES_decrypt
+	larl	$tbl,YAES_Td
+	bras	$ra,_s390x_YAES_decrypt
 
 	l${g}	$out,3*$SIZE_T($sp)
 	st	$s0,0($out)
@@ -610,11 +610,11 @@ $code.=<<___;
 
 	lm${g}	%r6,$ra,6*$SIZE_T($sp)
 	br	$ra
-.size	AES_decrypt,.-AES_decrypt
+.size	YAES_decrypt,.-YAES_decrypt
 
-.type   _s390x_AES_decrypt,\@function
+.type   _s390x_YAES_decrypt,\@function
 .align	16
-_s390x_AES_decrypt:
+_s390x_YAES_decrypt:
 	st${g}	$ra,15*$SIZE_T($sp)
 	x	$s0,0($key)
 	x	$s1,4($key)
@@ -782,17 +782,17 @@ _s390x_AES_decrypt:
 	x	$s3,28($key)
 
 	br	$ra
-.size	_s390x_AES_decrypt,.-_s390x_AES_decrypt
+.size	_s390x_YAES_decrypt,.-_s390x_YAES_decrypt
 ___
 
 $code.=<<___;
-# void AES_set_encrypt_key(const unsigned char *in, int bits,
-# 		 AES_KEY *key) {
-.globl	AES_set_encrypt_key
-.type	AES_set_encrypt_key,\@function
+# void YAES_set_encrypt_key(const unsigned char *in, int bits,
+# 		 YAES_KEY *key) {
+.globl	YAES_set_encrypt_key
+.type	YAES_set_encrypt_key,\@function
 .align	16
-AES_set_encrypt_key:
-_s390x_AES_set_encrypt_key:
+YAES_set_encrypt_key:
+_s390x_YAES_set_encrypt_key:
 	lghi	$t0,0
 	cl${g}r	$inp,$t0
 	je	.Lminus1
@@ -850,7 +850,7 @@ $code.=<<___;
 .Lekey_internal:
 	stm${g}	%r4,%r13,4*$SIZE_T($sp)	# all non-volatile regs and $key
 
-	larl	$tbl,AES_Te+2048
+	larl	$tbl,YAES_Te+2048
 
 	llgf	$s0,0($inp)
 	llgf	$s1,4($inp)
@@ -1065,17 +1065,17 @@ $code.=<<___;
 .Lminus1:
 	lghi	%r2,-1
 	br	$ra
-.size	AES_set_encrypt_key,.-AES_set_encrypt_key
+.size	YAES_set_encrypt_key,.-YAES_set_encrypt_key
 
-# void AES_set_decrypt_key(const unsigned char *in, int bits,
-# 		 AES_KEY *key) {
-.globl	AES_set_decrypt_key
-.type	AES_set_decrypt_key,\@function
+# void YAES_set_decrypt_key(const unsigned char *in, int bits,
+# 		 YAES_KEY *key) {
+.globl	YAES_set_decrypt_key
+.type	YAES_set_decrypt_key,\@function
 .align	16
-AES_set_decrypt_key:
-	#st${g}	$key,4*$SIZE_T($sp)	# I rely on AES_set_encrypt_key to
+YAES_set_decrypt_key:
+	#st${g}	$key,4*$SIZE_T($sp)	# I rely on YAES_set_encrypt_key to
 	st${g}	$ra,14*$SIZE_T($sp)	# save non-volatile registers and $key!
-	bras	$ra,_s390x_AES_set_encrypt_key
+	bras	$ra,_s390x_YAES_set_encrypt_key
 	#l${g}	$key,4*$SIZE_T($sp)
 	l${g}	$ra,14*$SIZE_T($sp)
 	ltgr	%r2,%r2
@@ -1169,15 +1169,15 @@ $code.=<<___;
 	la	$key,4($key)
 	brct	$rounds,.Lmix
 
-	lm${g}	%r6,%r13,6*$SIZE_T($sp)# as was saved by AES_set_encrypt_key!
+	lm${g}	%r6,%r13,6*$SIZE_T($sp)# as was saved by YAES_set_encrypt_key!
 	lghi	%r2,0
 	br	$ra
-.size	AES_set_decrypt_key,.-AES_set_decrypt_key
+.size	YAES_set_decrypt_key,.-YAES_set_decrypt_key
 ___
 
 ########################################################################
-# void AES_cbc_encrypt(const unsigned char *in, unsigned char *out,
-#                     size_t length, const AES_KEY *key,
+# void YAES_cbc_encrypt(const unsigned char *in, unsigned char *out,
+#                     size_t length, const YAES_KEY *key,
 #                     unsigned char *ivec, const int enc)
 {
 my $inp="%r2";
@@ -1187,10 +1187,10 @@ my $key="%r5";
 my $ivp="%r6";
 
 $code.=<<___;
-.globl	AES_cbc_encrypt
-.type	AES_cbc_encrypt,\@function
+.globl	YAES_cbc_encrypt
+.type	YAES_cbc_encrypt,\@function
 .align	16
-AES_cbc_encrypt:
+YAES_cbc_encrypt:
 	xgr	%r3,%r4		# flip %r3 and %r4, out and len
 	xgr	%r4,%r3
 	xgr	%r3,%r4
@@ -1258,7 +1258,7 @@ $code.=<<___;
 	cl	%r0,`$stdframe+$SIZE_T-4`($sp)
 	je	.Lcbc_decrypt
 
-	larl	$tbl,AES_Te
+	larl	$tbl,YAES_Te
 
 	llgf	$s0,0($ivp)
 	llgf	$s1,4($ivp)
@@ -1276,7 +1276,7 @@ $code.=<<___;
 	x	$s3,12($inp)
 	lgr	%r4,$key
 
-	bras	$ra,_s390x_AES_encrypt
+	bras	$ra,_s390x_YAES_encrypt
 
 	lm${g}	$inp,$key,2*$SIZE_T($sp)
 	st	$s0,0($out)
@@ -1318,7 +1318,7 @@ $code.=<<___;
 
 .align	16
 .Lcbc_decrypt:
-	larl	$tbl,AES_Td
+	larl	$tbl,YAES_Td
 
 	lg	$t0,0($ivp)
 	lg	$t1,8($ivp)
@@ -1332,7 +1332,7 @@ $code.=<<___;
 	llgf	$s3,12($inp)
 	lgr	%r4,$key
 
-	bras	$ra,_s390x_AES_decrypt
+	bras	$ra,_s390x_YAES_decrypt
 
 	lm${g}	$inp,$key,2*$SIZE_T($sp)
 	sllg	$s0,$s0,32
@@ -1374,12 +1374,12 @@ $code.=<<___;
 	mvc	0(1,$out),16*$SIZE_T($sp)
 4:	ex	$len,0($s1)
 	j	.Lcbc_dec_exit
-.size	AES_cbc_encrypt,.-AES_cbc_encrypt
+.size	YAES_cbc_encrypt,.-YAES_cbc_encrypt
 ___
 }
 ########################################################################
-# void AES_ctr32_encrypt(const unsigned char *in, unsigned char *out,
-#                     size_t blocks, const AES_KEY *key,
+# void YAES_ctr32_encrypt(const unsigned char *in, unsigned char *out,
+#                     size_t blocks, const YAES_KEY *key,
 #                     const unsigned char *ivec)
 {
 my $inp="%r2";
@@ -1390,10 +1390,10 @@ my $ivp="%r6";
 my $fp ="%r7";
 
 $code.=<<___;
-.globl	AES_ctr32_encrypt
-.type	AES_ctr32_encrypt,\@function
+.globl	YAES_ctr32_encrypt
+.type	YAES_ctr32_encrypt,\@function
 .align	16
-AES_ctr32_encrypt:
+YAES_ctr32_encrypt:
 	xgr	%r3,%r4		# flip %r3 and %r4, $out and $len
 	xgr	%r4,%r3
 	xgr	%r3,%r4
@@ -1590,7 +1590,7 @@ ___
 $code.=<<___;
 	stm${g}	$key,$ra,5*$SIZE_T($sp)
 	sl${g}r	$inp,$out
-	larl	$tbl,AES_Te
+	larl	$tbl,YAES_Te
 	llgf	$t1,12($ivp)
 
 .Lctr32_loop:
@@ -1602,7 +1602,7 @@ $code.=<<___;
 	st	$t1,16*$SIZE_T($sp)
 	lgr	%r4,$key
 
-	bras	$ra,_s390x_AES_encrypt
+	bras	$ra,_s390x_YAES_encrypt
 
 	lm${g}	$inp,$ivp,2*$SIZE_T($sp)
 	llgf	$t1,16*$SIZE_T($sp)
@@ -1618,13 +1618,13 @@ $code.=<<___;
 
 	lm${g}	%r6,$ra,6*$SIZE_T($sp)
 	br	$ra
-.size	AES_ctr32_encrypt,.-AES_ctr32_encrypt
+.size	YAES_ctr32_encrypt,.-YAES_ctr32_encrypt
 ___
 }
 
 ########################################################################
-# void AES_xts_encrypt(const unsigned char *inp, unsigned char *out,
-#	size_t len, const AES_KEY *key1, const AES_KEY *key2,
+# void YAES_xts_encrypt(const unsigned char *inp, unsigned char *out,
+#	size_t len, const YAES_KEY *key1, const YAES_KEY *key2,
 #	const unsigned char iv[16]);
 #
 {
@@ -1797,10 +1797,10 @@ $code.=<<___;
 	br	$ra
 .size	_s390x_xts_km,.-_s390x_xts_km
 
-.globl	AES_xts_encrypt
-.type	AES_xts_encrypt,\@function
+.globl	YAES_xts_encrypt
+.type	YAES_xts_encrypt,\@function
 .align	16
-AES_xts_encrypt:
+YAES_xts_encrypt:
 	xgr	%r3,%r4			# flip %r3 and %r4, $out and $len
 	xgr	%r4,%r3
 	xgr	%r3,%r4
@@ -1892,8 +1892,8 @@ $code.=<<___;
 	llgf	$s3,12($s3)
 	stm${g}	%r2,%r5,2*$SIZE_T($sp)
 	la	$key,0($key2)
-	larl	$tbl,AES_Te
-	bras	$ra,_s390x_AES_encrypt	# generate the tweak
+	larl	$tbl,YAES_Te
+	bras	$ra,_s390x_YAES_encrypt	# generate the tweak
 	lm${g}	%r2,%r5,2*$SIZE_T($sp)
 	stm	$s0,$s3,$tweak($sp)	# save the tweak
 	j	.Lxts_enc_enter
@@ -1924,7 +1924,7 @@ $code.=<<___;
 	x	$s3,12($inp)
 	stm${g}	%r2,%r3,2*$SIZE_T($sp)	# only two registers are changing
 	la	$key,0($key1)
-	bras	$ra,_s390x_AES_encrypt
+	bras	$ra,_s390x_YAES_encrypt
 	lm${g}	%r2,%r5,2*$SIZE_T($sp)
 	x	$s0,$tweak+0($sp)	# ^=tweak
 	x	$s1,$tweak+4($sp)
@@ -1974,7 +1974,7 @@ $code.=<<___;
 	x	$s3,12($out)
 	st${g}	$out,4*$SIZE_T($sp)
 	la	$key,0($key1)
-	bras	$ra,_s390x_AES_encrypt
+	bras	$ra,_s390x_YAES_encrypt
 	l${g}	$out,4*$SIZE_T($sp)
 	x	$s0,`$tweak+0`($sp)	# ^=tweak
 	x	$s1,`$tweak+4`($sp)
@@ -1990,17 +1990,17 @@ $code.=<<___;
 	stg	$sp,$tweak+8($sp)
 	lm${g}	%r6,$ra,6*$SIZE_T($sp)
 	br	$ra
-.size	AES_xts_encrypt,.-AES_xts_encrypt
+.size	YAES_xts_encrypt,.-YAES_xts_encrypt
 ___
-# void AES_xts_decrypt(const unsigned char *inp, unsigned char *out,
-#	size_t len, const AES_KEY *key1, const AES_KEY *key2,
+# void YAES_xts_decrypt(const unsigned char *inp, unsigned char *out,
+#	size_t len, const YAES_KEY *key1, const YAES_KEY *key2,
 #	const unsigned char iv[16]);
 #
 $code.=<<___;
-.globl	AES_xts_decrypt
-.type	AES_xts_decrypt,\@function
+.globl	YAES_xts_decrypt
+.type	YAES_xts_decrypt,\@function
 .align	16
-AES_xts_decrypt:
+YAES_xts_decrypt:
 	xgr	%r3,%r4			# flip %r3 and %r4, $out and $len
 	xgr	%r4,%r3
 	xgr	%r3,%r4
@@ -2132,10 +2132,10 @@ $code.=<<___;
 	llgf	$s3,12($s3)
 	stm${g}	%r2,%r5,2*$SIZE_T($sp)
 	la	$key,0($key2)
-	larl	$tbl,AES_Te
-	bras	$ra,_s390x_AES_encrypt	# generate the tweak
+	larl	$tbl,YAES_Te
+	bras	$ra,_s390x_YAES_encrypt	# generate the tweak
 	lm${g}	%r2,%r5,2*$SIZE_T($sp)
-	larl	$tbl,AES_Td
+	larl	$tbl,YAES_Td
 	lt${g}r	$len,$len
 	stm	$s0,$s3,$tweak($sp)	# save the tweak
 	jz	.Lxts_dec_short
@@ -2166,7 +2166,7 @@ $code.=<<___;
 	x	$s3,12($inp)
 	stm${g}	%r2,%r3,2*$SIZE_T($sp)	# only two registers are changing
 	la	$key,0($key1)
-	bras	$ra,_s390x_AES_decrypt
+	bras	$ra,_s390x_YAES_decrypt
 	lm${g}	%r2,%r5,2*$SIZE_T($sp)
 	x	$s0,$tweak+0($sp)	# ^=tweak
 	x	$s1,$tweak+4($sp)
@@ -2225,7 +2225,7 @@ $code.=<<___;
 	x	$s3,12($inp)
 	stm${g}	%r2,%r3,2*$SIZE_T($sp)
 	la	$key,0($key1)
-	bras	$ra,_s390x_AES_decrypt
+	bras	$ra,_s390x_YAES_decrypt
 	lm${g}	%r2,%r5,2*$SIZE_T($sp)
 	x	$s0,$tweak-16+0($sp)	# ^=tweak_the_2nd
 	x	$s1,$tweak-16+4($sp)
@@ -2253,7 +2253,7 @@ $code.=<<___;
 	x	$s3,12($out)
 	st${g}	$out,4*$SIZE_T($sp)
 	la	$key,0($key1)
-	bras	$ra,_s390x_AES_decrypt
+	bras	$ra,_s390x_YAES_decrypt
 	l${g}	$out,4*$SIZE_T($sp)
 	x	$s0,$tweak+0($sp)	# ^=tweak
 	x	$s1,$tweak+4($sp)
@@ -2270,11 +2270,11 @@ $code.=<<___;
 	stg	$sp,$tweak+8($sp)
 	lm${g}	%r6,$ra,6*$SIZE_T($sp)
 	br	$ra
-.size	AES_xts_decrypt,.-AES_xts_decrypt
+.size	YAES_xts_decrypt,.-YAES_xts_decrypt
 ___
 }
 $code.=<<___;
-.string	"AES for s390x, CRYPTOGAMS by <appro\@openssl.org>"
+.string	"YAES for s390x, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 $code =~ s/\`([^\`]*)\`/eval $1/gem;

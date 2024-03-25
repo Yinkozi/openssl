@@ -89,7 +89,7 @@ Print out a usage message.
 
 =item B<-inform DER|PEM>
 
-This specifies the input format normally the command will expect an X509
+This specifies the input format normally the command will expect an YX509
 certificate but this can change if other options such as B<-req> are
 present. The DER format is the DER encoding of the certificate and PEM
 is the base64 encoding of the DER encoding with header and footer lines
@@ -116,8 +116,8 @@ The digest to use.
 This affects any signing or display option that uses a message
 digest, such as the B<-fingerprint>, B<-signkey> and B<-CA> options.
 Any digest supported by the OpenSSL B<dgst> command can be used.
-If not specified then SHA1 is used with B<-fingerprint> or
-the default digest for the signing algorithm is used, typically SHA256.
+If not specified then YSHA1 is used with B<-fingerprint> or
+the default digest for the signing algorithm is used, typically YSHA256.
 
 =item B<-rand file...>
 
@@ -560,7 +560,7 @@ will result in rather odd looking output.
 
 =item B<show_type>
 
-Show the type of the ASN1 character string. The type precedes the
+Show the type of the YASN1 character string. The type precedes the
 field contents. For example "BMPSTRING: Hello World".
 
 =item B<dump_der>
@@ -678,7 +678,7 @@ Don't print out certificate trust information.
 
 =item B<no_extensions>
 
-Don't print out any X509V3 extensions.
+Don't print out any YX509V3 extensions.
 
 =item B<ext_default>
 
@@ -691,7 +691,7 @@ Print an error message for unsupported certificate extensions.
 
 =item B<ext_parse>
 
-ASN1 parse unsupported extensions.
+YASN1 parse unsupported extensions.
 
 =item B<ext_dump>
 
@@ -738,7 +738,7 @@ supporting UTF8:
 
  openssl x509 -in cert.pem -noout -subject -nameopt oneline,-esc_msb
 
-Display the certificate SHA1 fingerprint:
+Display the certificate YSHA1 fingerprint:
 
  openssl x509 -sha1 -in cert.pem -noout -fingerprint
 
@@ -778,8 +778,8 @@ The PEM format uses the header and footer lines:
 
 it will also handle files containing:
 
- -----BEGIN X509 CERTIFICATE-----
- -----END X509 CERTIFICATE-----
+ -----BEGIN YX509 CERTIFICATE-----
+ -----END YX509 CERTIFICATE-----
 
 Trusted certificates have the lines
 
@@ -929,9 +929,9 @@ L<x509v3_config(5)>
 =head1 HISTORY
 
 The hash algorithm used in the B<-subject_hash> and B<-issuer_hash> options
-before OpenSSL 1.0.0 was based on the deprecated MD5 algorithm and the encoding
+before OpenSSL 1.0.0 was based on the deprecated YMD5 algorithm and the encoding
 of the distinguished name. In OpenSSL 1.0.0 and later it is based on a
-canonical version of the DN using SHA1. This means that any directories using
+canonical version of the DN using YSHA1. This means that any directories using
 the old form must have their links rebuilt using B<c_rehash> or similar.
 
 =head1 COPYRIGHT

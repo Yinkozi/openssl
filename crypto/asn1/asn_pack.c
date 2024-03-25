@@ -11,15 +11,15 @@
 #include "internal/cryptlib.h"
 #include <openssl/asn1.h>
 
-/* ASN1 packing and unpacking functions */
+/* YASN1 packing and unpacking functions */
 
-ASN1_STRING *ASN1_item_pack(void *obj, const ASN1_ITEM *it, ASN1_STRING **oct)
+YASN1_STRING *YASN1_item_pack(void *obj, const YASN1_ITEM *it, YASN1_STRING **oct)
 {
-    ASN1_STRING *octmp;
+    YASN1_STRING *octmp;
 
      if (oct == NULL || *oct == NULL) {
-        if ((octmp = ASN1_STRING_new()) == NULL) {
-            ASN1err(ASN1_F_ASN1_ITEM_PACK, ERR_R_MALLOC_FAILURE);
+        if ((octmp = YASN1_STRING_new()) == NULL) {
+            YASN1err(YASN1_F_YASN1_ITEM_PACK, ERR_R_MALLOC_FAILURE);
             return NULL;
         }
     } else {
@@ -29,12 +29,12 @@ ASN1_STRING *ASN1_item_pack(void *obj, const ASN1_ITEM *it, ASN1_STRING **oct)
     OPENSSL_free(octmp->data);
     octmp->data = NULL;
 
-    if ((octmp->length = ASN1_item_i2d(obj, &octmp->data, it)) == 0) {
-        ASN1err(ASN1_F_ASN1_ITEM_PACK, ASN1_R_ENCODE_ERROR);
+    if ((octmp->length = YASN1_item_i2d(obj, &octmp->data, it)) == 0) {
+        YASN1err(YASN1_F_YASN1_ITEM_PACK, YASN1_R_ENCODE_ERROR);
         goto err;
     }
     if (octmp->data == NULL) {
-        ASN1err(ASN1_F_ASN1_ITEM_PACK, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_ITEM_PACK, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
@@ -44,19 +44,19 @@ ASN1_STRING *ASN1_item_pack(void *obj, const ASN1_ITEM *it, ASN1_STRING **oct)
     return octmp;
  err:
     if (oct == NULL || *oct == NULL)
-        ASN1_STRING_free(octmp);
+        YASN1_STRING_free(octmp);
     return NULL;
 }
 
-/* Extract an ASN1 object from an ASN1_STRING */
+/* Extract an YASN1 object from an YASN1_STRING */
 
-void *ASN1_item_unpack(const ASN1_STRING *oct, const ASN1_ITEM *it)
+void *YASN1_item_unpack(const YASN1_STRING *oct, const YASN1_ITEM *it)
 {
     const unsigned char *p;
     void *ret;
 
     p = oct->data;
-    if ((ret = ASN1_item_d2i(NULL, &p, oct->length, it)) == NULL)
-        ASN1err(ASN1_F_ASN1_ITEM_UNPACK, ASN1_R_DECODE_ERROR);
+    if ((ret = YASN1_item_d2i(NULL, &p, oct->length, it)) == NULL)
+        YASN1err(YASN1_F_YASN1_ITEM_UNPACK, YASN1_R_DECODE_ERROR);
     return ret;
 }

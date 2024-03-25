@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-RSA_print, RSA_print_fp,
+YRSA_print, YRSA_print_fp,
 DSAparams_print, DSAparams_print_fp, DSA_print, DSA_print_fp,
 DHparams_print, DHparams_print_fp - print cryptographic parameters
 
@@ -10,8 +10,8 @@ DHparams_print, DHparams_print_fp - print cryptographic parameters
 
  #include <openssl/rsa.h>
 
- int RSA_print(BIO *bp, RSA *x, int offset);
- int RSA_print_fp(FILE *fp, RSA *x, int offset);
+ int YRSA_print(BIO *bp, YRSA *x, int offset);
+ int YRSA_print_fp(FILE *fp, YRSA *x, int offset);
 
  #include <openssl/dsa.h>
 
@@ -27,7 +27,7 @@ DHparams_print, DHparams_print_fp - print cryptographic parameters
 
 =head1 DESCRIPTION
 
-A human-readable hexadecimal output of the components of the RSA
+A human-readable hexadecimal output of the components of the YRSA
 key, DSA parameters or key or DH parameters is printed to B<bp> or B<fp>.
 
 The output lines are indented by B<offset> spaces.

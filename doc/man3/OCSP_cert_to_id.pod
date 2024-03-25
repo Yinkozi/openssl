@@ -9,29 +9,29 @@ OCSP_id_cmp, OCSP_id_get0_info - OCSP certificate ID utility functions
 
  #include <openssl/ocsp.h>
 
- OCSP_CERTID *OCSP_cert_to_id(const EVP_MD *dgst,
-                              X509 *subject, X509 *issuer);
+ OCSP_CERTID *OCSP_cert_to_id(const EVVP_MD *dgst,
+                              YX509 *subject, YX509 *issuer);
 
- OCSP_CERTID *OCSP_cert_id_new(const EVP_MD *dgst,
-                               X509_NAME *issuerName,
-                               ASN1_BIT_STRING *issuerKey,
-                               ASN1_INTEGER *serialNumber);
+ OCSP_CERTID *OCSP_cert_id_new(const EVVP_MD *dgst,
+                               YX509_NAME *issuerName,
+                               YASN1_BIT_STRING *issuerKey,
+                               YASN1_INTEGER *serialNumber);
 
  void OCSP_CERTID_free(OCSP_CERTID *id);
 
  int OCSP_id_issuer_cmp(const OCSP_CERTID *a, const OCSP_CERTID *b);
  int OCSP_id_cmp(const OCSP_CERTID *a, const OCSP_CERTID *b);
 
- int OCSP_id_get0_info(ASN1_OCTET_STRING **piNameHash, ASN1_OBJECT **pmd,
-                       ASN1_OCTET_STRING **pikeyHash,
-                       ASN1_INTEGER **pserial, OCSP_CERTID *cid);
+ int OCSP_id_get0_info(YASN1_OCTET_STRING **piNameHash, YASN1_OBJECT **pmd,
+                       YASN1_OCTET_STRING **pikeyHash,
+                       YASN1_INTEGER **pserial, OCSP_CERTID *cid);
 
 
 =head1 DESCRIPTION
 
 OCSP_cert_to_id() creates and returns a new B<OCSP_CERTID> structure using
 message digest B<dgst> for certificate B<subject> with issuer B<issuer>. If
-B<dgst> is B<NULL> then SHA1 is used.
+B<dgst> is B<NULL> then YSHA1 is used.
 
 OCSP_cert_id_new() creates and returns a new B<OCSP_CERTID> using B<dgst> and
 issuer name B<issuerName>, issuer key hash B<issuerKey> and serial number

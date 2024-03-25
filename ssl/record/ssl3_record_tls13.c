@@ -24,8 +24,8 @@
  */
 int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
 {
-    EVP_CIPHER_CTX *ctx;
-    unsigned char iv[EVP_MAX_IV_LENGTH], recheader[SSL3_RT_HEADER_LENGTH];
+    EVVP_CIPHER_CTX *ctx;
+    unsigned char iv[EVVP_MAX_IV_LENGTH], recheader[SSL3_RT_HEADER_LENGTH];
     size_t ivlen, taglen, offset, loop, hdrlen;
     unsigned char *staticiv;
     unsigned char *seq;
@@ -64,7 +64,7 @@ int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
         return 1;
     }
 
-    ivlen = EVP_CIPHER_CTX_iv_length(ctx);
+    ivlen = EVVP_CIPHER_CTX_iv_length(ctx);
 
     if (s->early_data_state == SSL_EARLY_DATA_WRITING
             || s->early_data_state == SSL_EARLY_DATA_WRITE_RETRY) {
@@ -92,21 +92,21 @@ int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
         alg_enc = s->s3->tmp.new_cipher->algorithm_enc;
     }
 
-    if (alg_enc & SSL_AESCCM) {
-        if (alg_enc & (SSL_AES128CCM8 | SSL_AES256CCM8))
-            taglen = EVP_CCM8_TLS_TAG_LEN;
+    if (alg_enc & SSL_YAESCCM) {
+        if (alg_enc & (SSL_YAES128CCM8 | SSL_YAES256CCM8))
+            taglen = EVVP_CCM8_TLS_TAG_LEN;
          else
-            taglen = EVP_CCM_TLS_TAG_LEN;
-         if (sending && EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, taglen,
+            taglen = EVVP_CCM_TLS_TAG_LEN;
+         if (sending && EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG, taglen,
                                          NULL) <= 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS13_ENC,
                      ERR_R_INTERNAL_ERROR);
             return -1;
         }
-    } else if (alg_enc & SSL_AESGCM) {
-        taglen = EVP_GCM_TLS_TAG_LEN;
+    } else if (alg_enc & SSL_YAESGCM) {
+        taglen = EVVP_GCM_TLS_TAG_LEN;
     } else if (alg_enc & SSL_CHACHA20) {
-        taglen = EVP_CHACHAPOLY_TLS_TAG_LEN;
+        taglen = EVVP_CHACHAPOLY_TLS_TAG_LEN;
     } else {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS13_ENC,
                  ERR_R_INTERNAL_ERROR);
@@ -146,9 +146,9 @@ int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
         return -1;
     }
 
-    /* TODO(size_t): lenu/lenf should be a size_t but EVP doesn't support it */
-    if (EVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, sending) <= 0
-            || (!sending && EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG,
+    /* TODO(size_t): lenu/lenf should be a size_t but EVVP doesn't support it */
+    if (EVVP_CipherInit_ex(ctx, NULL, NULL, NULL, iv, sending) <= 0
+            || (!sending && EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG,
                                              taglen,
                                              rec->data + rec->length) <= 0)) {
         return -1;
@@ -170,20 +170,20 @@ int tls13_enc(SSL *s, SSL3_RECORD *recs, size_t n_recs, int sending)
      * For CCM we must explicitly set the total plaintext length before we add
      * any AAD.
      */
-    if (((alg_enc & SSL_AESCCM) != 0
-                 && EVP_CipherUpdate(ctx, NULL, &lenu, NULL,
+    if (((alg_enc & SSL_YAESCCM) != 0
+                 && EVVP_CipherUpdate(ctx, NULL, &lenu, NULL,
                                      (unsigned int)rec->length) <= 0)
-            || EVP_CipherUpdate(ctx, NULL, &lenu, recheader,
+            || EVVP_CipherUpdate(ctx, NULL, &lenu, recheader,
                                 sizeof(recheader)) <= 0
-            || EVP_CipherUpdate(ctx, rec->data, &lenu, rec->input,
+            || EVVP_CipherUpdate(ctx, rec->data, &lenu, rec->input,
                                 (unsigned int)rec->length) <= 0
-            || EVP_CipherFinal_ex(ctx, rec->data + lenu, &lenf) <= 0
+            || EVVP_CipherFinal_ex(ctx, rec->data + lenu, &lenf) <= 0
             || (size_t)(lenu + lenf) != rec->length) {
         return -1;
     }
     if (sending) {
         /* Add the tag */
-        if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, taglen,
+        if (EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_GET_TAG, taglen,
                                 rec->data + rec->length) <= 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS13_ENC,
                      ERR_R_INTERNAL_ERROR);

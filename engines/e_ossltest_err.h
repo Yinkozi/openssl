@@ -18,7 +18,7 @@
  * OSSLTEST function codes.
  */
 # define OSSLTEST_F_BIND_OSSLTEST                         100
-# define OSSLTEST_F_OSSLTEST_AES128_INIT_KEY              101
+# define OSSLTEST_F_OSSLTEST_YAES128_INIT_KEY              101
 
 /*
  * OSSLTEST reason codes.

@@ -16,7 +16,7 @@
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/bn.h>
-#if !defined(OPENSSL_NO_RSA) && !defined(OPENSSL_NO_DSA)
+#if !defined(OPENSSL_NO_YRSA) && !defined(OPENSSL_NO_DSA)
 # include <openssl/dsa.h>
 # include <openssl/rsa.h>
 
@@ -51,16 +51,16 @@ static int read_lebn(const unsigned char **in, unsigned int nbyte, BIGNUM **r)
     return 1;
 }
 
-/* Convert private key blob to EVP_PKEY: RSA and DSA keys supported */
+/* Convert private key blob to EVVP_PKEY: YRSA and DSA keys supported */
 
 # define MS_PUBLICKEYBLOB        0x6
 # define MS_PRIVATEKEYBLOB       0x7
-# define MS_RSA1MAGIC            0x31415352L
-# define MS_RSA2MAGIC            0x32415352L
+# define MS_YRSA1MAGIC            0x31415352L
+# define MS_YRSA2MAGIC            0x32415352L
 # define MS_DSS1MAGIC            0x31535344L
 # define MS_DSS2MAGIC            0x32535344L
 
-# define MS_KEYALG_RSA_KEYX      0xa400
+# define MS_KEYALG_YRSA_KEYX      0xa400
 # define MS_KEYALG_DSS_SIGN      0x2200
 
 # define MS_KEYTYPE_KEYX         0x1
@@ -78,9 +78,9 @@ static int read_lebn(const unsigned char **in, unsigned int nbyte, BIGNUM **r)
 /* Maximum salt length */
 # define PVK_MAX_SALTLEN         10240
 
-static EVP_PKEY *b2i_rsa(const unsigned char **in,
+static EVVP_PKEY *b2i_rsa(const unsigned char **in,
                          unsigned int bitlen, int ispub);
-static EVP_PKEY *b2i_dss(const unsigned char **in,
+static EVVP_PKEY *b2i_dss(const unsigned char **in,
                          unsigned int bitlen, int ispub);
 
 static int do_blob_header(const unsigned char **in, unsigned int length,
@@ -121,7 +121,7 @@ static int do_blob_header(const unsigned char **in, unsigned int length,
     case MS_DSS1MAGIC:
         *pisdss = 1;
         /* fall thru */
-    case MS_RSA1MAGIC:
+    case MS_YRSA1MAGIC:
         if (*pispub == 0) {
             PEMerr(PEM_F_DO_BLOB_HEADER, PEM_R_EXPECTING_PRIVATE_KEY_BLOB);
             return 0;
@@ -131,7 +131,7 @@ static int do_blob_header(const unsigned char **in, unsigned int length,
     case MS_DSS2MAGIC:
         *pisdss = 1;
         /* fall thru */
-    case MS_RSA2MAGIC:
+    case MS_YRSA2MAGIC:
         if (*pispub == 1) {
             PEMerr(PEM_F_DO_BLOB_HEADER, PEM_R_EXPECTING_PUBLIC_KEY_BLOB);
             return 0;
@@ -179,7 +179,7 @@ static unsigned int blob_length(unsigned bitlen, int isdss, int ispub)
 
 }
 
-static EVP_PKEY *do_b2i(const unsigned char **in, unsigned int length,
+static EVVP_PKEY *do_b2i(const unsigned char **in, unsigned int length,
                         int ispub)
 {
     const unsigned char *p = *in;
@@ -200,13 +200,13 @@ static EVP_PKEY *do_b2i(const unsigned char **in, unsigned int length,
         return b2i_rsa(&p, bitlen, ispub);
 }
 
-static EVP_PKEY *do_b2i_bio(BIO *in, int ispub)
+static EVVP_PKEY *do_b2i_bio(BIO *in, int ispub)
 {
     const unsigned char *p;
     unsigned char hdr_buf[16], *buf = NULL;
     unsigned int bitlen, magic, length;
     int isdss;
-    EVP_PKEY *ret = NULL;
+    EVVP_PKEY *ret = NULL;
     if (BIO_read(in, hdr_buf, 16) != 16) {
         PEMerr(PEM_F_DO_B2I_BIO, PEM_R_KEYBLOB_TOO_SHORT);
         return NULL;
@@ -241,11 +241,11 @@ static EVP_PKEY *do_b2i_bio(BIO *in, int ispub)
     return ret;
 }
 
-static EVP_PKEY *b2i_dss(const unsigned char **in,
+static EVVP_PKEY *b2i_dss(const unsigned char **in,
                          unsigned int bitlen, int ispub)
 {
     const unsigned char *p = *in;
-    EVP_PKEY *ret = NULL;
+    EVVP_PKEY *ret = NULL;
     DSA *dsa = NULL;
     BN_CTX *ctx = NULL;
     unsigned int nbyte;
@@ -255,7 +255,7 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
     nbyte = (bitlen + 7) >> 3;
 
     dsa = DSA_new();
-    ret = EVP_PKEY_new();
+    ret = EVVP_PKEY_new();
     if (dsa == NULL || ret == NULL)
         goto memerr;
     if (!read_lebn(&p, nbyte, &pbn))
@@ -297,7 +297,7 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
         goto memerr;
     pub_key = priv_key = NULL;
 
-    if (!EVP_PKEY_set1_DSA(ret, dsa))
+    if (!EVVP_PKEY_set1_DSA(ret, dsa))
         goto memerr;
     DSA_free(dsa);
     *in = p;
@@ -311,24 +311,24 @@ static EVP_PKEY *b2i_dss(const unsigned char **in,
     BN_free(gbn);
     BN_free(pub_key);
     BN_free(priv_key);
-    EVP_PKEY_free(ret);
+    EVVP_PKEY_free(ret);
     BN_CTX_free(ctx);
     return NULL;
 }
 
-static EVP_PKEY *b2i_rsa(const unsigned char **in,
+static EVVP_PKEY *b2i_rsa(const unsigned char **in,
                          unsigned int bitlen, int ispub)
 {
     const unsigned char *pin = *in;
-    EVP_PKEY *ret = NULL;
+    EVVP_PKEY *ret = NULL;
     BIGNUM *e = NULL, *n = NULL, *d = NULL;
     BIGNUM *p = NULL, *q = NULL, *dmp1 = NULL, *dmq1 = NULL, *iqmp = NULL;
-    RSA *rsa = NULL;
+    YRSA *rsa = NULL;
     unsigned int nbyte, hnbyte;
     nbyte = (bitlen + 7) >> 3;
     hnbyte = (bitlen + 15) >> 4;
-    rsa = RSA_new();
-    ret = EVP_PKEY_new();
+    rsa = YRSA_new();
+    ret = EVVP_PKEY_new();
     if (rsa == NULL || ret == NULL)
         goto memerr;
     e = BN_new();
@@ -351,24 +351,24 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
             goto memerr;
         if (!read_lebn(&pin, nbyte, &d))
             goto memerr;
-        if (!RSA_set0_factors(rsa, p, q))
+        if (!YRSA_set0_factors(rsa, p, q))
             goto memerr;
         p = q = NULL;
-        if (!RSA_set0_crt_params(rsa, dmp1, dmq1, iqmp))
+        if (!YRSA_set0_crt_params(rsa, dmp1, dmq1, iqmp))
             goto memerr;
         dmp1 = dmq1 = iqmp = NULL;
     }
-    if (!RSA_set0_key(rsa, n, e, d))
+    if (!YRSA_set0_key(rsa, n, e, d))
         goto memerr;
     n = e = d = NULL;
 
-    if (!EVP_PKEY_set1_RSA(ret, rsa))
+    if (!EVVP_PKEY_set1_YRSA(ret, rsa))
         goto memerr;
-    RSA_free(rsa);
+    YRSA_free(rsa);
     *in = pin;
     return ret;
  memerr:
-    PEMerr(PEM_F_B2I_RSA, ERR_R_MALLOC_FAILURE);
+    PEMerr(PEM_F_B2I_YRSA, ERR_R_MALLOC_FAILURE);
     BN_free(e);
     BN_free(n);
     BN_free(p);
@@ -377,27 +377,27 @@ static EVP_PKEY *b2i_rsa(const unsigned char **in,
     BN_free(dmq1);
     BN_free(iqmp);
     BN_free(d);
-    RSA_free(rsa);
-    EVP_PKEY_free(ret);
+    YRSA_free(rsa);
+    EVVP_PKEY_free(ret);
     return NULL;
 }
 
-EVP_PKEY *b2i_PrivateKey(const unsigned char **in, long length)
+EVVP_PKEY *b2i_PrivateKey(const unsigned char **in, long length)
 {
     return do_b2i(in, length, 0);
 }
 
-EVP_PKEY *b2i_PublicKey(const unsigned char **in, long length)
+EVVP_PKEY *b2i_PublicKey(const unsigned char **in, long length)
 {
     return do_b2i(in, length, 1);
 }
 
-EVP_PKEY *b2i_PrivateKey_bio(BIO *in)
+EVVP_PKEY *b2i_PrivateKey_bio(BIO *in)
 {
     return do_b2i_bio(in, 0);
 }
 
-EVP_PKEY *b2i_PublicKey_bio(BIO *in)
+EVVP_PKEY *b2i_PublicKey_bio(BIO *in)
 {
     return do_b2i_bio(in, 1);
 }
@@ -418,24 +418,24 @@ static void write_lebn(unsigned char **out, const BIGNUM *bn, int len)
     *out += len;
 }
 
-static int check_bitlen_rsa(RSA *rsa, int ispub, unsigned int *magic);
+static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *magic);
 static int check_bitlen_dsa(DSA *dsa, int ispub, unsigned int *magic);
 
-static void write_rsa(unsigned char **out, RSA *rsa, int ispub);
+static void write_rsa(unsigned char **out, YRSA *rsa, int ispub);
 static void write_dsa(unsigned char **out, DSA *dsa, int ispub);
 
-static int do_i2b(unsigned char **out, EVP_PKEY *pk, int ispub)
+static int do_i2b(unsigned char **out, EVVP_PKEY *pk, int ispub)
 {
     unsigned char *p;
     unsigned int bitlen, magic = 0, keyalg;
     int outlen, noinc = 0;
-    int pktype = EVP_PKEY_id(pk);
-    if (pktype == EVP_PKEY_DSA) {
-        bitlen = check_bitlen_dsa(EVP_PKEY_get0_DSA(pk), ispub, &magic);
+    int pktype = EVVP_PKEY_id(pk);
+    if (pktype == EVVP_PKEY_DSA) {
+        bitlen = check_bitlen_dsa(EVVP_PKEY_get0_DSA(pk), ispub, &magic);
         keyalg = MS_KEYALG_DSS_SIGN;
-    } else if (pktype == EVP_PKEY_RSA) {
-        bitlen = check_bitlen_rsa(EVP_PKEY_get0_RSA(pk), ispub, &magic);
-        keyalg = MS_KEYALG_RSA_KEYX;
+    } else if (pktype == EVVP_PKEY_YRSA) {
+        bitlen = check_bitlen_rsa(EVVP_PKEY_get0_YRSA(pk), ispub, &magic);
+        keyalg = MS_KEYALG_YRSA_KEYX;
     } else
         return -1;
     if (bitlen == 0)
@@ -465,15 +465,15 @@ static int do_i2b(unsigned char **out, EVP_PKEY *pk, int ispub)
     write_ledword(&p, magic);
     write_ledword(&p, bitlen);
     if (keyalg == MS_KEYALG_DSS_SIGN)
-        write_dsa(&p, EVP_PKEY_get0_DSA(pk), ispub);
+        write_dsa(&p, EVVP_PKEY_get0_DSA(pk), ispub);
     else
-        write_rsa(&p, EVP_PKEY_get0_RSA(pk), ispub);
+        write_rsa(&p, EVVP_PKEY_get0_YRSA(pk), ispub);
     if (!noinc)
         *out += outlen;
     return outlen;
 }
 
-static int do_i2b_bio(BIO *out, EVP_PKEY *pk, int ispub)
+static int do_i2b_bio(BIO *out, EVVP_PKEY *pk, int ispub)
 {
     unsigned char *tmp = NULL;
     int outlen, wrlen;
@@ -515,33 +515,33 @@ static int check_bitlen_dsa(DSA *dsa, int ispub, unsigned int *pmagic)
     return 0;
 }
 
-static int check_bitlen_rsa(RSA *rsa, int ispub, unsigned int *pmagic)
+static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *pmagic)
 {
     int nbyte, hnbyte, bitlen;
     const BIGNUM *e;
 
-    RSA_get0_key(rsa, NULL, &e, NULL);
+    YRSA_get0_key(rsa, NULL, &e, NULL);
     if (BN_num_bits(e) > 32)
         goto badkey;
-    bitlen = RSA_bits(rsa);
-    nbyte = RSA_size(rsa);
+    bitlen = YRSA_bits(rsa);
+    nbyte = YRSA_size(rsa);
     hnbyte = (bitlen + 15) >> 4;
     if (ispub) {
-        *pmagic = MS_RSA1MAGIC;
+        *pmagic = MS_YRSA1MAGIC;
         return bitlen;
     } else {
         const BIGNUM *d, *p, *q, *iqmp, *dmp1, *dmq1;
 
-        *pmagic = MS_RSA2MAGIC;
+        *pmagic = MS_YRSA2MAGIC;
 
         /*
          * For private key each component must fit within nbyte or hnbyte.
          */
-        RSA_get0_key(rsa, NULL, NULL, &d);
+        YRSA_get0_key(rsa, NULL, NULL, &d);
         if (BN_num_bytes(d) > nbyte)
             goto badkey;
-        RSA_get0_factors(rsa, &p, &q);
-        RSA_get0_crt_params(rsa, &dmp1, &dmq1, &iqmp);
+        YRSA_get0_factors(rsa, &p, &q);
+        YRSA_get0_crt_params(rsa, &dmp1, &dmq1, &iqmp);
         if ((BN_num_bytes(iqmp) > hnbyte)
             || (BN_num_bytes(p) > hnbyte)
             || (BN_num_bytes(q) > hnbyte)
@@ -551,24 +551,24 @@ static int check_bitlen_rsa(RSA *rsa, int ispub, unsigned int *pmagic)
     }
     return bitlen;
  badkey:
-    PEMerr(PEM_F_CHECK_BITLEN_RSA, PEM_R_UNSUPPORTED_KEY_COMPONENTS);
+    PEMerr(PEM_F_CHECK_BITLEN_YRSA, PEM_R_UNSUPPORTED_KEY_COMPONENTS);
     return 0;
 }
 
-static void write_rsa(unsigned char **out, RSA *rsa, int ispub)
+static void write_rsa(unsigned char **out, YRSA *rsa, int ispub)
 {
     int nbyte, hnbyte;
     const BIGNUM *n, *d, *e, *p, *q, *iqmp, *dmp1, *dmq1;
 
-    nbyte = RSA_size(rsa);
-    hnbyte = (RSA_bits(rsa) + 15) >> 4;
-    RSA_get0_key(rsa, &n, &e, &d);
+    nbyte = YRSA_size(rsa);
+    hnbyte = (YRSA_bits(rsa) + 15) >> 4;
+    YRSA_get0_key(rsa, &n, &e, &d);
     write_lebn(out, e, 4);
     write_lebn(out, n, nbyte);
     if (ispub)
         return;
-    RSA_get0_factors(rsa, &p, &q);
-    RSA_get0_crt_params(rsa, &dmp1, &dmq1, &iqmp);
+    YRSA_get0_factors(rsa, &p, &q);
+    YRSA_get0_crt_params(rsa, &dmp1, &dmq1, &iqmp);
     write_lebn(out, p, hnbyte);
     write_lebn(out, q, hnbyte);
     write_lebn(out, dmp1, hnbyte);
@@ -599,17 +599,17 @@ static void write_dsa(unsigned char **out, DSA *dsa, int ispub)
     return;
 }
 
-int i2b_PrivateKey_bio(BIO *out, EVP_PKEY *pk)
+int i2b_PrivateKey_bio(BIO *out, EVVP_PKEY *pk)
 {
     return do_i2b_bio(out, pk, 0);
 }
 
-int i2b_PublicKey_bio(BIO *out, EVP_PKEY *pk)
+int i2b_PublicKey_bio(BIO *out, EVVP_PKEY *pk)
 {
     return do_i2b_bio(out, pk, 1);
 }
 
-# ifndef OPENSSL_NO_RC4
+# ifndef OPENSSL_NO_YRC4
 
 static int do_PVK_header(const unsigned char **in, unsigned int length,
                          int skip_magic,
@@ -658,30 +658,30 @@ static int derive_pvk_key(unsigned char *key,
                           const unsigned char *salt, unsigned int saltlen,
                           const unsigned char *pass, int passlen)
 {
-    EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *mctx = EVVP_MD_CTX_new();
     int rv = 1;
     if (mctx == NULL
-        || !EVP_DigestInit_ex(mctx, EVP_sha1(), NULL)
-        || !EVP_DigestUpdate(mctx, salt, saltlen)
-        || !EVP_DigestUpdate(mctx, pass, passlen)
-        || !EVP_DigestFinal_ex(mctx, key, NULL))
+        || !EVVP_DigestInit_ex(mctx, EVVP_sha1(), NULL)
+        || !EVVP_DigestUpdate(mctx, salt, saltlen)
+        || !EVVP_DigestUpdate(mctx, pass, passlen)
+        || !EVVP_DigestFinal_ex(mctx, key, NULL))
         rv = 0;
 
-    EVP_MD_CTX_free(mctx);
+    EVVP_MD_CTX_free(mctx);
     return rv;
 }
 
-static EVP_PKEY *do_PVK_body(const unsigned char **in,
+static EVVP_PKEY *do_PVK_body(const unsigned char **in,
                              unsigned int saltlen, unsigned int keylen,
                              pem_password_cb *cb, void *u)
 {
-    EVP_PKEY *ret = NULL;
+    EVVP_PKEY *ret = NULL;
     const unsigned char *p = *in;
     unsigned int magic;
     unsigned char *enctmp = NULL, *q;
     unsigned char keybuf[20];
 
-    EVP_CIPHER_CTX *cctx = EVP_CIPHER_CTX_new();
+    EVVP_CIPHER_CTX *cctx = EVVP_CIPHER_CTX_new();
     if (saltlen) {
         char psbuf[PEM_BUFSIZE];
         int enctmplen, inlen;
@@ -711,24 +711,24 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
         }
         inlen = keylen - 8;
         q = enctmp + 8;
-        if (!EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+        if (!EVVP_DecryptInit_ex(cctx, EVVP_rc4(), NULL, keybuf, NULL))
             goto err;
-        if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
+        if (!EVVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
             goto err;
-        if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
+        if (!EVVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
             goto err;
         magic = read_ledword((const unsigned char **)&q);
-        if (magic != MS_RSA2MAGIC && magic != MS_DSS2MAGIC) {
+        if (magic != MS_YRSA2MAGIC && magic != MS_DSS2MAGIC) {
             q = enctmp + 8;
             memset(keybuf + 5, 0, 11);
-            if (!EVP_DecryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+            if (!EVVP_DecryptInit_ex(cctx, EVVP_rc4(), NULL, keybuf, NULL))
                 goto err;
-            if (!EVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
+            if (!EVVP_DecryptUpdate(cctx, q, &enctmplen, p, inlen))
                 goto err;
-            if (!EVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
+            if (!EVVP_DecryptFinal_ex(cctx, q + enctmplen, &enctmplen))
                 goto err;
             magic = read_ledword((const unsigned char **)&q);
-            if (magic != MS_RSA2MAGIC && magic != MS_DSS2MAGIC) {
+            if (magic != MS_YRSA2MAGIC && magic != MS_DSS2MAGIC) {
                 PEMerr(PEM_F_DO_PVK_BODY, PEM_R_BAD_DECRYPT);
                 goto err;
             }
@@ -738,7 +738,7 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
 
     ret = b2i_PrivateKey(&p, keylen);
  err:
-    EVP_CIPHER_CTX_free(cctx);
+    EVVP_CIPHER_CTX_free(cctx);
     if (enctmp != NULL) {
         OPENSSL_cleanse(keybuf, sizeof(keybuf));
         OPENSSL_free(enctmp);
@@ -746,12 +746,12 @@ static EVP_PKEY *do_PVK_body(const unsigned char **in,
     return ret;
 }
 
-EVP_PKEY *b2i_PVK_bio(BIO *in, pem_password_cb *cb, void *u)
+EVVP_PKEY *b2i_PVK_bio(BIO *in, pem_password_cb *cb, void *u)
 {
     unsigned char pvk_hdr[24], *buf = NULL;
     const unsigned char *p;
     int buflen;
-    EVP_PKEY *ret = NULL;
+    EVVP_PKEY *ret = NULL;
     unsigned int saltlen, keylen;
     if (BIO_read(in, pvk_hdr, 24) != 24) {
         PEMerr(PEM_F_B2I_PVK_BIO, PEM_R_PVK_DATA_TOO_SHORT);
@@ -779,12 +779,12 @@ EVP_PKEY *b2i_PVK_bio(BIO *in, pem_password_cb *cb, void *u)
     return ret;
 }
 
-static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
+static int i2b_PVK(unsigned char **out, EVVP_PKEY *pk, int enclevel,
                    pem_password_cb *cb, void *u)
 {
     int outlen = 24, pklen;
     unsigned char *p = NULL, *start = NULL, *salt = NULL;
-    EVP_CIPHER_CTX *cctx = NULL;
+    EVVP_CIPHER_CTX *cctx = NULL;
     if (enclevel)
         outlen += PVK_SALTLEN;
     pklen = do_i2b(NULL, pk, 0);
@@ -803,13 +803,13 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
         }
     }
 
-    cctx = EVP_CIPHER_CTX_new();
+    cctx = EVVP_CIPHER_CTX_new();
     if (cctx == NULL)
         goto error;
 
     write_ledword(&p, MS_PVKMAGIC);
     write_ledword(&p, 0);
-    if (EVP_PKEY_id(pk) == EVP_PKEY_DSA)
+    if (EVVP_PKEY_id(pk) == EVVP_PKEY_DSA)
         write_ledword(&p, MS_KEYTYPE_SIGN);
     else
         write_ledword(&p, MS_KEYTYPE_KEYX);
@@ -841,16 +841,16 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
         if (enclevel == 1)
             memset(keybuf + 5, 0, 11);
         p = salt + PVK_SALTLEN + 8;
-        if (!EVP_EncryptInit_ex(cctx, EVP_rc4(), NULL, keybuf, NULL))
+        if (!EVVP_EncryptInit_ex(cctx, EVVP_rc4(), NULL, keybuf, NULL))
             goto error;
         OPENSSL_cleanse(keybuf, 20);
-        if (!EVP_EncryptUpdate(cctx, p, &enctmplen, p, pklen - 8))
+        if (!EVVP_EncryptUpdate(cctx, p, &enctmplen, p, pklen - 8))
             goto error;
-        if (!EVP_EncryptFinal_ex(cctx, p + enctmplen, &enctmplen))
+        if (!EVVP_EncryptFinal_ex(cctx, p + enctmplen, &enctmplen))
             goto error;
     }
 
-    EVP_CIPHER_CTX_free(cctx);
+    EVVP_CIPHER_CTX_free(cctx);
 
     if (*out == NULL)
         *out = start;
@@ -858,13 +858,13 @@ static int i2b_PVK(unsigned char **out, EVP_PKEY *pk, int enclevel,
     return outlen;
 
  error:
-    EVP_CIPHER_CTX_free(cctx);
+    EVVP_CIPHER_CTX_free(cctx);
     if (*out == NULL)
         OPENSSL_free(start);
     return -1;
 }
 
-int i2b_PVK_bio(BIO *out, EVP_PKEY *pk, int enclevel,
+int i2b_PVK_bio(BIO *out, EVVP_PKEY *pk, int enclevel,
                 pem_password_cb *cb, void *u)
 {
     unsigned char *tmp = NULL;

@@ -90,9 +90,9 @@ extern struct OPENSSL_s390xcap_st OPENSSL_s390xcap_P;
 # define S390X_GHASH		65
 
 /* km/kmc/kmac/kmctr/kmo/kmf/kma */
-# define S390X_AES_128		18
-# define S390X_AES_192		19
-# define S390X_AES_256		20
+# define S390X_YAES_128		18
+# define S390X_YAES_192		19
+# define S390X_YAES_256		20
 
 /* prno */
 # define S390X_TRNG		114

@@ -7,8 +7,8 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef HEADER_AES_H
-# define HEADER_AES_H
+#ifndef HEADER_YAES_H
+# define HEADER_YAES_H
 
 # include <openssl/opensslconf.h>
 
@@ -17,70 +17,70 @@
 extern "C" {
 # endif
 
-# define AES_ENCRYPT     1
-# define AES_DECRYPT     0
+# define YAES_ENCRYPT     1
+# define YAES_DECRYPT     0
 
 /*
  * Because array size can't be a const in C, the following two are macros.
  * Both sizes are in bytes.
  */
-# define AES_MAXNR 14
-# define AES_BLOCK_SIZE 16
+# define YAES_MAXNR 14
+# define YAES_BLOCK_SIZE 16
 
-/* This should be a hidden type, but EVP requires that the size be known */
+/* This should be a hidden type, but EVVP requires that the size be known */
 struct aes_key_st {
-# ifdef AES_LONG
-    unsigned long rd_key[4 * (AES_MAXNR + 1)];
+# ifdef YAES_LONG
+    unsigned long rd_key[4 * (YAES_MAXNR + 1)];
 # else
-    unsigned int rd_key[4 * (AES_MAXNR + 1)];
+    unsigned int rd_key[4 * (YAES_MAXNR + 1)];
 # endif
     int rounds;
 };
-typedef struct aes_key_st AES_KEY;
+typedef struct aes_key_st YAES_KEY;
 
-const char *AES_options(void);
+const char *YAES_options(void);
 
-int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key);
-int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key);
+int YAES_set_encrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key);
+int YAES_set_decrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key);
 
-void AES_encrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key);
-void AES_decrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key);
+void YAES_encrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key);
+void YAES_decrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key);
 
-void AES_ecb_encrypt(const unsigned char *in, unsigned char *out,
-                     const AES_KEY *key, const int enc);
-void AES_cbc_encrypt(const unsigned char *in, unsigned char *out,
-                     size_t length, const AES_KEY *key,
+void YAES_ecb_encrypt(const unsigned char *in, unsigned char *out,
+                     const YAES_KEY *key, const int enc);
+void YAES_cbc_encrypt(const unsigned char *in, unsigned char *out,
+                     size_t length, const YAES_KEY *key,
                      unsigned char *ivec, const int enc);
-void AES_cfb128_encrypt(const unsigned char *in, unsigned char *out,
-                        size_t length, const AES_KEY *key,
+void YAES_cfb128_encrypt(const unsigned char *in, unsigned char *out,
+                        size_t length, const YAES_KEY *key,
                         unsigned char *ivec, int *num, const int enc);
-void AES_cfb1_encrypt(const unsigned char *in, unsigned char *out,
-                      size_t length, const AES_KEY *key,
+void YAES_cfb1_encrypt(const unsigned char *in, unsigned char *out,
+                      size_t length, const YAES_KEY *key,
                       unsigned char *ivec, int *num, const int enc);
-void AES_cfb8_encrypt(const unsigned char *in, unsigned char *out,
-                      size_t length, const AES_KEY *key,
+void YAES_cfb8_encrypt(const unsigned char *in, unsigned char *out,
+                      size_t length, const YAES_KEY *key,
                       unsigned char *ivec, int *num, const int enc);
-void AES_ofb128_encrypt(const unsigned char *in, unsigned char *out,
-                        size_t length, const AES_KEY *key,
+void YAES_ofb128_encrypt(const unsigned char *in, unsigned char *out,
+                        size_t length, const YAES_KEY *key,
                         unsigned char *ivec, int *num);
 /* NB: the IV is _two_ blocks long */
-void AES_ige_encrypt(const unsigned char *in, unsigned char *out,
-                     size_t length, const AES_KEY *key,
+void YAES_ige_encrypt(const unsigned char *in, unsigned char *out,
+                     size_t length, const YAES_KEY *key,
                      unsigned char *ivec, const int enc);
 /* NB: the IV is _four_ blocks long */
-void AES_bi_ige_encrypt(const unsigned char *in, unsigned char *out,
-                        size_t length, const AES_KEY *key,
-                        const AES_KEY *key2, const unsigned char *ivec,
+void YAES_bi_ige_encrypt(const unsigned char *in, unsigned char *out,
+                        size_t length, const YAES_KEY *key,
+                        const YAES_KEY *key2, const unsigned char *ivec,
                         const int enc);
 
-int AES_wrap_key(AES_KEY *key, const unsigned char *iv,
+int YAES_wrap_key(YAES_KEY *key, const unsigned char *iv,
                  unsigned char *out,
                  const unsigned char *in, unsigned int inlen);
-int AES_unwrap_key(AES_KEY *key, const unsigned char *iv,
+int YAES_unwrap_key(YAES_KEY *key, const unsigned char *iv,
                    unsigned char *out,
                    const unsigned char *in, unsigned int inlen);
 

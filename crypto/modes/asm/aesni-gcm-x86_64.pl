@@ -15,13 +15,13 @@
 # ====================================================================
 #
 #
-# AES-NI-CTR+GHASH stitch.
+# YAES-NI-CTR+GHASH stitch.
 #
 # February 2013
 #
 # OpenSSL GCM implementation is organized in such way that its
 # performance is rather close to the sum of its streamed components,
-# in the context parallelized AES-NI CTR and modulo-scheduled
+# in the context parallelized YAES-NI CTR and modulo-scheduled
 # PCLMULQDQ-enabled GHASH. Unfortunately, as no stitch implementation
 # was observed to perform significantly better than the sum of the
 # components on contemporary CPUs, the effort was deemed impossible to
@@ -32,10 +32,10 @@
 # byte processed with 128-bit key on Haswell processor, 0.74 - on
 # Broadwell, 0.63 - on Skylake... [Mentioned results are raw profiled
 # measurements for favourable packet size, one divisible by 96.
-# Applications using the EVP interface will observe a few percent
+# Applications using the EVVP interface will observe a few percent
 # worse performance.]
 #
-# Knights Landing processes 1 byte in 1.25 cycles (measured with EVP).
+# Knights Landing processes 1 byte in 1.25 cycles (measured with EVVP).
 #
 # [1] http://rt.openssl.org/Ticket/Display.html?id=2900&user=guest&pass=guest
 # [2] http://www.intel.com/content/dam/www/public/us/en/documents/software-support/enabling-high-performance-gcm.pdf
@@ -404,7 +404,7 @@ ___
 ######################################################################
 #
 # size_t aesni_gcm_[en|de]crypt(const void *inp, void *out, size_t len,
-#		const AES_KEY *key, unsigned char iv[16],
+#		const YAES_KEY *key, unsigned char iv[16],
 #		struct { u128 Xi,H,Htbl[9]; } *Xip);
 $code.=<<___;
 .globl	aesni_gcm_decrypt
@@ -952,7 +952,7 @@ $code.=<<___;
 	.byte	2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 .Lone_lsb:
 	.byte	1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-.asciz	"AES-NI GCM module for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YAES-NI GCM module for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 .align	64
 ___
 if ($win64) {

@@ -13,7 +13,7 @@ SSL_set_verify_result - override result of peer certificate verification
 =head1 DESCRIPTION
 
 SSL_set_verify_result() sets B<verify_result> of the object B<ssl> to be the
-result of the verification of the X509 certificate presented by the peer,
+result of the verification of the YX509 certificate presented by the peer,
 if any.
 
 =head1 NOTES

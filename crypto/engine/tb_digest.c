@@ -66,9 +66,9 @@ ENGINE *ENGINE_get_digest_engine(int nid)
 }
 
 /* Obtains a digest implementation from an ENGINE functional reference */
-const EVP_MD *ENGINE_get_digest(ENGINE *e, int nid)
+const EVVP_MD *ENGINE_get_digest(ENGINE *e, int nid)
 {
-    const EVP_MD *ret;
+    const EVVP_MD *ret;
     ENGINE_DIGESTS_PTR fn = ENGINE_get_digests(e);
     if (!fn || !fn(e, &ret, NULL, nid)) {
         ENGINEerr(ENGINE_F_ENGINE_GET_DIGEST, ENGINE_R_UNIMPLEMENTED_DIGEST);

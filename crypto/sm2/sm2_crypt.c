@@ -20,23 +20,23 @@
 #include <string.h>
 
 typedef struct SM2_Ciphertext_st SM2_Ciphertext;
-DECLARE_ASN1_FUNCTIONS(SM2_Ciphertext)
+DECLARE_YASN1_FUNCTIONS(SM2_Ciphertext)
 
 struct SM2_Ciphertext_st {
     BIGNUM *C1x;
     BIGNUM *C1y;
-    ASN1_OCTET_STRING *C3;
-    ASN1_OCTET_STRING *C2;
+    YASN1_OCTET_STRING *C3;
+    YASN1_OCTET_STRING *C2;
 };
 
-ASN1_SEQUENCE(SM2_Ciphertext) = {
-    ASN1_SIMPLE(SM2_Ciphertext, C1x, BIGNUM),
-    ASN1_SIMPLE(SM2_Ciphertext, C1y, BIGNUM),
-    ASN1_SIMPLE(SM2_Ciphertext, C3, ASN1_OCTET_STRING),
-    ASN1_SIMPLE(SM2_Ciphertext, C2, ASN1_OCTET_STRING),
-} ASN1_SEQUENCE_END(SM2_Ciphertext)
+YASN1_SEQUENCE(SM2_Ciphertext) = {
+    YASN1_SIMPLE(SM2_Ciphertext, C1x, BIGNUM),
+    YASN1_SIMPLE(SM2_Ciphertext, C1y, BIGNUM),
+    YASN1_SIMPLE(SM2_Ciphertext, C3, YASN1_OCTET_STRING),
+    YASN1_SIMPLE(SM2_Ciphertext, C2, YASN1_OCTET_STRING),
+} YASN1_SEQUENCE_END(SM2_Ciphertext)
 
-IMPLEMENT_ASN1_FUNCTIONS(SM2_Ciphertext)
+IMPLEMENT_YASN1_FUNCTIONS(SM2_Ciphertext)
 
 static size_t ec_field_size(const EC_GROUP *group)
 {
@@ -78,28 +78,28 @@ int sm2_plaintext_size(const unsigned char *ct, size_t ct_size, size_t *pt_size)
     return 1;
 }
 
-int sm2_ciphertext_size(const EC_KEY *key, const EVP_MD *digest, size_t msg_len,
+int sm2_ciphertext_size(const EC_KEY *key, const EVVP_MD *digest, size_t msg_len,
                         size_t *ct_size)
 {
     const size_t field_size = ec_field_size(EC_KEY_get0_group(key));
-    const int md_size = EVP_MD_size(digest);
+    const int md_size = EVVP_MD_size(digest);
     size_t sz;
 
     if (field_size == 0 || md_size < 0)
         return 0;
 
     /* Integer and string are simple type; set constructed = 0, means primitive and definite length encoding. */
-    sz = 2 * ASN1_object_size(0, field_size + 1, V_ASN1_INTEGER)
-         + ASN1_object_size(0, md_size, V_ASN1_OCTET_STRING)
-         + ASN1_object_size(0, msg_len, V_ASN1_OCTET_STRING);
+    sz = 2 * YASN1_object_size(0, field_size + 1, V_YASN1_INTEGER)
+         + YASN1_object_size(0, md_size, V_YASN1_OCTET_STRING)
+         + YASN1_object_size(0, msg_len, V_YASN1_OCTET_STRING);
     /* Sequence is structured type; set constructed = 1, means constructed and definite length encoding. */
-    *ct_size = ASN1_object_size(1, sz, V_ASN1_SEQUENCE);
+    *ct_size = YASN1_object_size(1, sz, V_YASN1_SEQUENCE);
 
     return 1;
 }
 
 int sm2_encrypt(const EC_KEY *key,
-                const EVP_MD *digest,
+                const EVVP_MD *digest,
                 const uint8_t *msg,
                 size_t msg_len, uint8_t *ciphertext_buf, size_t *ciphertext_len)
 {
@@ -111,7 +111,7 @@ int sm2_encrypt(const EC_KEY *key,
     BIGNUM *y1 = NULL;
     BIGNUM *x2 = NULL;
     BIGNUM *y2 = NULL;
-    EVP_MD_CTX *hash = EVP_MD_CTX_new();
+    EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
     struct SM2_Ciphertext_st ctext_struct;
     const EC_GROUP *group = EC_KEY_get0_group(key);
     const BIGNUM *order = EC_GROUP_get0_order(group);
@@ -122,7 +122,7 @@ int sm2_encrypt(const EC_KEY *key,
     uint8_t *x2y2 = NULL;
     uint8_t *C3 = NULL;
     size_t field_size;
-    const int C3_size = EVP_MD_size(digest);
+    const int C3_size = EVVP_MD_size(digest);
 
     /* NULL these before any "goto done" */
     ctext_struct.C2 = NULL;
@@ -197,33 +197,33 @@ int sm2_encrypt(const EC_KEY *key,
     /* X9.63 with no salt happens to match the KDF used in SM2 */
     if (!ecdh_KDF_X9_63(msg_mask, msg_len, x2y2, 2 * field_size, NULL, 0,
                         digest)) {
-        SM2err(SM2_F_SM2_ENCRYPT, ERR_R_EVP_LIB);
+        SM2err(SM2_F_SM2_ENCRYPT, ERR_R_EVVP_LIB);
         goto done;
     }
 
     for (i = 0; i != msg_len; ++i)
         msg_mask[i] ^= msg[i];
 
-    if (EVP_DigestInit(hash, digest) == 0
-            || EVP_DigestUpdate(hash, x2y2, field_size) == 0
-            || EVP_DigestUpdate(hash, msg, msg_len) == 0
-            || EVP_DigestUpdate(hash, x2y2 + field_size, field_size) == 0
-            || EVP_DigestFinal(hash, C3, NULL) == 0) {
-        SM2err(SM2_F_SM2_ENCRYPT, ERR_R_EVP_LIB);
+    if (EVVP_DigestInit(hash, digest) == 0
+            || EVVP_DigestUpdate(hash, x2y2, field_size) == 0
+            || EVVP_DigestUpdate(hash, msg, msg_len) == 0
+            || EVVP_DigestUpdate(hash, x2y2 + field_size, field_size) == 0
+            || EVVP_DigestFinal(hash, C3, NULL) == 0) {
+        SM2err(SM2_F_SM2_ENCRYPT, ERR_R_EVVP_LIB);
         goto done;
     }
 
     ctext_struct.C1x = x1;
     ctext_struct.C1y = y1;
-    ctext_struct.C3 = ASN1_OCTET_STRING_new();
-    ctext_struct.C2 = ASN1_OCTET_STRING_new();
+    ctext_struct.C3 = YASN1_OCTET_STRING_new();
+    ctext_struct.C2 = YASN1_OCTET_STRING_new();
 
     if (ctext_struct.C3 == NULL || ctext_struct.C2 == NULL) {
        SM2err(SM2_F_SM2_ENCRYPT, ERR_R_MALLOC_FAILURE);
        goto done;
     }
-    if (!ASN1_OCTET_STRING_set(ctext_struct.C3, C3, C3_size)
-            || !ASN1_OCTET_STRING_set(ctext_struct.C2, msg_mask, msg_len)) {
+    if (!YASN1_OCTET_STRING_set(ctext_struct.C3, C3, C3_size)
+            || !YASN1_OCTET_STRING_set(ctext_struct.C2, msg_mask, msg_len)) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_INTERNAL_ERROR);
         goto done;
     }
@@ -239,12 +239,12 @@ int sm2_encrypt(const EC_KEY *key,
     rc = 1;
 
  done:
-    ASN1_OCTET_STRING_free(ctext_struct.C2);
-    ASN1_OCTET_STRING_free(ctext_struct.C3);
+    YASN1_OCTET_STRING_free(ctext_struct.C2);
+    YASN1_OCTET_STRING_free(ctext_struct.C3);
     OPENSSL_free(msg_mask);
     OPENSSL_free(x2y2);
     OPENSSL_free(C3);
-    EVP_MD_CTX_free(hash);
+    EVVP_MD_CTX_free(hash);
     BN_CTX_free(ctx);
     EC_POINT_free(kG);
     EC_POINT_free(kP);
@@ -252,7 +252,7 @@ int sm2_encrypt(const EC_KEY *key,
 }
 
 int sm2_decrypt(const EC_KEY *key,
-                const EVP_MD *digest,
+                const EVVP_MD *digest,
                 const uint8_t *ciphertext,
                 size_t ciphertext_len, uint8_t *ptext_buf, size_t *ptext_len)
 {
@@ -267,12 +267,12 @@ int sm2_decrypt(const EC_KEY *key,
     uint8_t *x2y2 = NULL;
     uint8_t *computed_C3 = NULL;
     const size_t field_size = ec_field_size(group);
-    const int hash_size = EVP_MD_size(digest);
+    const int hash_size = EVVP_MD_size(digest);
     uint8_t *msg_mask = NULL;
     const uint8_t *C2 = NULL;
     const uint8_t *C3 = NULL;
     int msg_len = 0;
-    EVP_MD_CTX *hash = NULL;
+    EVVP_MD_CTX *hash = NULL;
 
     if (field_size == 0 || hash_size <= 0)
        goto done;
@@ -282,7 +282,7 @@ int sm2_decrypt(const EC_KEY *key,
     sm2_ctext = d2i_SM2_Ciphertext(NULL, &ciphertext, ciphertext_len);
 
     if (sm2_ctext == NULL) {
-        SM2err(SM2_F_SM2_DECRYPT, SM2_R_ASN1_ERROR);
+        SM2err(SM2_F_SM2_DECRYPT, SM2_R_YASN1_ERROR);
         goto done;
     }
 
@@ -349,18 +349,18 @@ int sm2_decrypt(const EC_KEY *key,
     for (i = 0; i != msg_len; ++i)
         ptext_buf[i] = C2[i] ^ msg_mask[i];
 
-    hash = EVP_MD_CTX_new();
+    hash = EVVP_MD_CTX_new();
     if (hash == NULL) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    if (!EVP_DigestInit(hash, digest)
-            || !EVP_DigestUpdate(hash, x2y2, field_size)
-            || !EVP_DigestUpdate(hash, ptext_buf, msg_len)
-            || !EVP_DigestUpdate(hash, x2y2 + field_size, field_size)
-            || !EVP_DigestFinal(hash, computed_C3, NULL)) {
-        SM2err(SM2_F_SM2_DECRYPT, ERR_R_EVP_LIB);
+    if (!EVVP_DigestInit(hash, digest)
+            || !EVVP_DigestUpdate(hash, x2y2, field_size)
+            || !EVVP_DigestUpdate(hash, ptext_buf, msg_len)
+            || !EVVP_DigestUpdate(hash, x2y2 + field_size, field_size)
+            || !EVVP_DigestFinal(hash, computed_C3, NULL)) {
+        SM2err(SM2_F_SM2_DECRYPT, ERR_R_EVVP_LIB);
         goto done;
     }
 
@@ -382,7 +382,7 @@ int sm2_decrypt(const EC_KEY *key,
     EC_POINT_free(C1);
     BN_CTX_free(ctx);
     SM2_Ciphertext_free(sm2_ctext);
-    EVP_MD_CTX_free(hash);
+    EVVP_MD_CTX_free(hash);
 
     return rc;
 }

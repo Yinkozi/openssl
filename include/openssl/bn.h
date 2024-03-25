@@ -54,8 +54,8 @@ extern "C" {
 
 /*
  * avoid leaking exponent information through timing,
- * BN_mod_exp_mont() will call BN_mod_exp_mont_consttime,
- * BN_div() will call BN_div_no_branch,
+ * BNY_mod_exp_mont() will call BNY_mod_exp_mont_consttime,
+ * BNY_div() will call BNY_div_no_branch,
  * BN_mod_inverse() will call bn_mod_inverse_no_branch.
  */
 # define BN_FLG_CONSTTIME        0x04
@@ -110,7 +110,7 @@ void *BN_GENCB_get_arg(BN_GENCB *cb);
  * BN_prime_checks_for_size() returns the number of Miller-Rabin iterations
  * that will be done for checking that a random number is probably prime. The
  * error rate for accepting a composite number as prime depends on the size of
- * the prime |b|. The error rates used are for calculating an RSA key with 2 primes,
+ * the prime |b|. The error rates used are for calculating an YRSA key with 2 primes,
  * and so the level is what you would expect for a key of double the size of the
  * prime.
  *
@@ -154,7 +154,7 @@ void *BN_GENCB_get_arg(BN_GENCB *cb);
  * k is the number of bits of the prime, securitybits is the level we want to
  * reach.
  *
- * prime length | RSA key size | # MR tests | security level
+ * prime length | YRSA key size | # MR tests | security level
  * -------------+--------------|------------+---------------
  *  (b) >= 6394 |     >= 12788 |          3 |        256 bit
  *  (b) >= 3747 |     >=  7494 |          3 |        192 bit
@@ -225,12 +225,12 @@ BIGNUM *BN_lebin2bn(const unsigned char *s, int len, BIGNUM *ret);
 int BN_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen);
 BIGNUM *BN_mpi2bn(const unsigned char *s, int len, BIGNUM *ret);
 int BN_bn2mpi(const BIGNUM *a, unsigned char *to);
-int BN_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
-int BN_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
-int BN_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
-int BN_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
-int BN_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
-int BN_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx);
+int BNY_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
+int BNY_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
+int BNY_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
+int BNY_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
+int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
+int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx);
 /** BN_set_negative sets sign of a BIGNUM
  * \param  b  pointer to the BIGNUM object
  * \param  n  0 if the BIGNUM b should be positive and a value != 0 otherwise
@@ -242,10 +242,10 @@ void BN_set_negative(BIGNUM *b, int n);
  */
 int BN_is_negative(const BIGNUM *b);
 
-int BN_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
+int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
            BN_CTX *ctx);
-# define BN_mod(rem,m,d,ctx) BN_div(NULL,(rem),(m),(d),(ctx))
-int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx);
+# define BN_mod(rem,m,d,ctx) BNY_div(NULL,(rem),(m),(d),(ctx))
+int BNY_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx);
 int BN_mod_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
                BN_CTX *ctx);
 int BN_mod_add_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
@@ -263,11 +263,11 @@ int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
                   BN_CTX *ctx);
 int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m);
 
-BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w);
-BN_ULONG BN_div_word(BIGNUM *a, BN_ULONG w);
-int BN_mul_word(BIGNUM *a, BN_ULONG w);
-int BN_add_word(BIGNUM *a, BN_ULONG w);
-int BN_sub_word(BIGNUM *a, BN_ULONG w);
+BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w);
+BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w);
+int BNY_mul_word(BIGNUM *a, BN_ULONG w);
+int BNY_add_word(BIGNUM *a, BN_ULONG w);
+int BNY_sub_word(BIGNUM *a, BN_ULONG w);
 int BN_set_word(BIGNUM *a, BN_ULONG w);
 BN_ULONG BN_get_word(const BIGNUM *a);
 
@@ -280,12 +280,12 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx);
 
 int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                const BIGNUM *m, BN_CTX *ctx);
-int BN_mod_exp_mont(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
+int BNY_mod_exp_mont(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                     const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
-int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                               const BIGNUM *m, BN_CTX *ctx,
                               BN_MONT_CTX *in_mont);
-int BN_mod_exp_mont_word(BIGNUM *r, BN_ULONG a, const BIGNUM *p,
+int BNY_mod_exp_mont_word(BIGNUM *r, BN_ULONG a, const BIGNUM *p,
                          const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
 int BN_mod_exp2_mont(BIGNUM *r, const BIGNUM *a1, const BIGNUM *p1,
                      const BIGNUM *a2, const BIGNUM *p2, const BIGNUM *m,
@@ -299,14 +299,14 @@ int BN_print_fp(FILE *fp, const BIGNUM *a);
 # endif
 int BN_print(BIO *bio, const BIGNUM *a);
 int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx);
-int BN_rshift(BIGNUM *r, const BIGNUM *a, int n);
-int BN_rshift1(BIGNUM *r, const BIGNUM *a);
+int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n);
+int BN_ryshift1(BIGNUM *r, const BIGNUM *a);
 void BN_clear(BIGNUM *a);
 BIGNUM *BN_dup(const BIGNUM *a);
-int BN_ucmp(const BIGNUM *a, const BIGNUM *b);
+int BNY_ucmp(const BIGNUM *a, const BIGNUM *b);
 int BN_set_bit(BIGNUM *a, int n);
 int BN_clear_bit(BIGNUM *a, int n);
-char *BN_bn2hex(const BIGNUM *a);
+char *BN_bn2hexx(const BIGNUM *a);
 char *BN_bn2dec(const BIGNUM *a);
 int BN_hex2bn(BIGNUM **a, const char *str);
 int BN_dec2bn(BIGNUM **a, const char *str);
@@ -340,10 +340,10 @@ DEPRECATEDIN_0_9_8(int
                                         int do_trial_division))
 
 /* Newer versions */
-int BN_generate_prime_ex(BIGNUM *ret, int bits, int safe, const BIGNUM *add,
+int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe, const BIGNUM *add,
                          const BIGNUM *rem, BN_GENCB *cb);
 int BN_is_prime_ex(const BIGNUM *p, int nchecks, BN_CTX *ctx, BN_GENCB *cb);
-int BN_is_prime_fasttest_ex(const BIGNUM *p, int nchecks, BN_CTX *ctx,
+int BNY_is_prime_fasttest_ex(const BIGNUM *p, int nchecks, BN_CTX *ctx,
                             int do_trial_division, BN_GENCB *cb);
 
 int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx);
@@ -357,7 +357,7 @@ int BN_X931_generate_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2, BIGNUM *Xp1,
                               BN_CTX *ctx, BN_GENCB *cb);
 
 BN_MONT_CTX *BN_MONT_CTX_new(void);
-int BN_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                           BN_MONT_CTX *mont, BN_CTX *ctx);
 int BN_to_montgomery(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
                      BN_CTX *ctx);
@@ -410,7 +410,7 @@ int BN_mod_mul_reciprocal(BIGNUM *r, const BIGNUM *x, const BIGNUM *y,
                           BN_RECP_CTX *recp, BN_CTX *ctx);
 int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                     const BIGNUM *m, BN_CTX *ctx);
-int BN_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
+int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
                 BN_RECP_CTX *recp, BN_CTX *ctx);
 
 # ifndef OPENSSL_NO_EC2M
@@ -450,7 +450,7 @@ int BN_GF2m_mod_sqrt(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 /* r^2 + r = a mod p */
 int BN_GF2m_mod_solve_quad(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                            BN_CTX *ctx);
-#  define BN_GF2m_cmp(a, b) BN_ucmp((a), (b))
+#  define BN_GF2m_cmp(a, b) BNY_ucmp((a), (b))
 /*-
  * Some functions allow for representation of the irreducible polynomials
  * as an unsigned int[], say p.  The irreducible f(t) is then of the form:

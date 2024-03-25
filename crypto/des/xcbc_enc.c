@@ -9,7 +9,7 @@
 
 #include "des_local.h"
 
-/* RSA's DESX */
+/* YRSA's DESX */
 
 void DES_xcbc_encrypt(const unsigned char *in, unsigned char *out,
                       long length, DES_key_schedule *schedule,

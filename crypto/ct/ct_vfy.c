@@ -24,9 +24,9 @@ typedef enum sct_signature_type_t {
 
 /*
  * Update encoding for SCT signature verification/generation to supplied
- * EVP_MD_CTX.
+ * EVVP_MD_CTX.
  */
-static int sct_ctx_update(EVP_MD_CTX *ctx, const SCT_CTX *sctx, const SCT *sct)
+static int sct_ctx_update(EVVP_MD_CTX *ctx, const SCT_CTX *sctx, const SCT *sct)
 {
     unsigned char tmpbuf[12];
     unsigned char *p, *der;
@@ -55,14 +55,14 @@ static int sct_ctx_update(EVP_MD_CTX *ctx, const SCT_CTX *sctx, const SCT *sct)
     l2n8(sct->timestamp, p);
     s2n(sct->entry_type, p);
 
-    if (!EVP_DigestUpdate(ctx, tmpbuf, p - tmpbuf))
+    if (!EVVP_DigestUpdate(ctx, tmpbuf, p - tmpbuf))
         return 0;
 
-    if (sct->entry_type == CT_LOG_ENTRY_TYPE_X509) {
+    if (sct->entry_type == CT_LOG_ENTRY_TYPE_YX509) {
         der = sctx->certder;
         derlen = sctx->certderlen;
     } else {
-        if (!EVP_DigestUpdate(ctx, sctx->ihash, sctx->ihashlen))
+        if (!EVVP_DigestUpdate(ctx, sctx->ihash, sctx->ihashlen))
             return 0;
         der = sctx->preder;
         derlen = sctx->prederlen;
@@ -76,18 +76,18 @@ static int sct_ctx_update(EVP_MD_CTX *ctx, const SCT_CTX *sctx, const SCT *sct)
     p = tmpbuf;
     l2n3(derlen, p);
 
-    if (!EVP_DigestUpdate(ctx, tmpbuf, 3))
+    if (!EVVP_DigestUpdate(ctx, tmpbuf, 3))
         return 0;
-    if (!EVP_DigestUpdate(ctx, der, derlen))
+    if (!EVVP_DigestUpdate(ctx, der, derlen))
         return 0;
 
     /* Add any extensions */
     p = tmpbuf;
     s2n(sct->ext_len, p);
-    if (!EVP_DigestUpdate(ctx, tmpbuf, 2))
+    if (!EVVP_DigestUpdate(ctx, tmpbuf, 2))
         return 0;
 
-    if (sct->ext_len && !EVP_DigestUpdate(ctx, sct->ext, sct->ext_len))
+    if (sct->ext_len && !EVVP_DigestUpdate(ctx, sct->ext, sct->ext_len))
         return 0;
 
     return 1;
@@ -95,7 +95,7 @@ static int sct_ctx_update(EVP_MD_CTX *ctx, const SCT_CTX *sctx, const SCT *sct)
 
 int SCT_CTX_verify(const SCT_CTX *sctx, const SCT *sct)
 {
-    EVP_MD_CTX *ctx = NULL;
+    EVVP_MD_CTX *ctx = NULL;
     int ret = 0;
 
     if (!SCT_is_complete(sct) || sctx->pkey == NULL ||
@@ -118,23 +118,23 @@ int SCT_CTX_verify(const SCT_CTX *sctx, const SCT *sct)
         return 0;
     }
 
-    ctx = EVP_MD_CTX_new();
+    ctx = EVVP_MD_CTX_new();
     if (ctx == NULL)
         goto end;
 
-    if (!EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, sctx->pkey))
+    if (!EVVP_DigestVerifyInit(ctx, NULL, EVVP_sha256(), NULL, sctx->pkey))
         goto end;
 
     if (!sct_ctx_update(ctx, sctx, sct))
         goto end;
 
     /* Verify signature */
-    ret = EVP_DigestVerifyFinal(ctx, sct->sig, sct->sig_len);
+    ret = EVVP_DigestVerifyFinal(ctx, sct->sig, sct->sig_len);
     /* If ret < 0 some other error: fall through without setting error */
     if (ret == 0)
         CTerr(CT_F_SCT_CTX_VERIFY, CT_R_SCT_INVALID_SIGNATURE);
 
 end:
-    EVP_MD_CTX_free(ctx);
+    EVVP_MD_CTX_free(ctx);
     return ret;
 }

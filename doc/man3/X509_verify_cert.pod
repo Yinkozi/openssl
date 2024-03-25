@@ -2,17 +2,17 @@
 
 =head1 NAME
 
-X509_verify_cert - discover and verify X509 certificate chain
+YX509_verify_cert - discover and verify YX509 certificate chain
 
 =head1 SYNOPSIS
 
  #include <openssl/x509.h>
 
- int X509_verify_cert(X509_STORE_CTX *ctx);
+ int YX509_verify_cert(YX509_STORE_CTX *ctx);
 
 =head1 DESCRIPTION
 
-The X509_verify_cert() function attempts to discover and validate a
+The YX509_verify_cert() function attempts to discover and validate a
 certificate chain based on parameters in B<ctx>. A complete description of
 the process is contained in the L<verify(1)> manual page.
 
@@ -23,7 +23,7 @@ otherwise it return zero, in exceptional circumstances it can also
 return a negative code.
 
 If the function fails additional error information can be obtained by
-examining B<ctx> using, for example X509_STORE_CTX_get_error().
+examining B<ctx> using, for example YX509_STORE_CTX_get_error().
 
 =head1 NOTES
 
@@ -31,7 +31,7 @@ Applications rarely call this function directly but it is used by
 OpenSSL internally for certificate validation, in both the S/MIME and
 SSL/TLS code.
 
-A negative return value from X509_verify_cert() can occur if it is invoked
+A negative return value from YX509_verify_cert() can occur if it is invoked
 incorrectly, such as with no certificate set in B<ctx>, or when it is called
 twice in succession without reinitialising B<ctx> for the second call.
 A negative return value can also happen due to internal resource problems or if
@@ -46,7 +46,7 @@ functions which use B<x509_vfy.h>.
 
 =head1 SEE ALSO
 
-L<X509_STORE_CTX_get_error(3)>
+L<YX509_STORE_CTX_get_error(3)>
 
 =head1 COPYRIGHT
 

@@ -40,12 +40,12 @@ extern "C" {
  * Version 0 - initial version
  * Version 1 - added the optional peer certificate
  */
-# define SSL_SESSION_ASN1_VERSION 0x0001
+# define SSL_SESSION_YASN1_VERSION 0x0001
 
 # define SSL_MAX_SSL_SESSION_ID_LENGTH           32
 # define SSL_MAX_SID_CTX_LENGTH                  32
 
-# define SSL_MIN_RSA_MODULUS_LENGTH_IN_BYTES     (512/8)
+# define SSL_MIN_YRSA_MODULUS_LENGTH_IN_BYTES     (512/8)
 # define SSL_MAX_KEY_ARG_LENGTH                  8
 # define SSL_MAX_MASTER_KEY_LENGTH               48
 
@@ -65,7 +65,7 @@ extern "C" {
 # define SSL_TXT_eNULL           "eNULL"
 # define SSL_TXT_NULL            "NULL"
 
-# define SSL_TXT_kRSA            "kRSA"
+# define SSL_TXT_kYRSA            "kYRSA"
 # define SSL_TXT_kDHr            "kDHr"/* this cipher class has been removed */
 # define SSL_TXT_kDHd            "kDHd"/* this cipher class has been removed */
 # define SSL_TXT_kDH             "kDH"/* this cipher class has been removed */
@@ -77,13 +77,13 @@ extern "C" {
 # define SSL_TXT_kEECDH          "kEECDH"/* alias for kECDHE */
 # define SSL_TXT_kECDHE          "kECDHE"
 # define SSL_TXT_kPSK            "kPSK"
-# define SSL_TXT_kRSAPSK         "kRSAPSK"
+# define SSL_TXT_kYRSAPSK         "kYRSAPSK"
 # define SSL_TXT_kECDHEPSK       "kECDHEPSK"
 # define SSL_TXT_kDHEPSK         "kDHEPSK"
 # define SSL_TXT_kGOST           "kGOST"
 # define SSL_TXT_kSRP            "kSRP"
 
-# define SSL_TXT_aRSA            "aRSA"
+# define SSL_TXT_aYRSA            "aYRSA"
 # define SSL_TXT_aDSS            "aDSS"
 # define SSL_TXT_aDH             "aDH"/* this cipher class has been removed */
 # define SSL_TXT_aECDH           "aECDH"/* this cipher class has been removed */
@@ -100,7 +100,7 @@ extern "C" {
 # define SSL_TXT_DHE             "DHE"/* same as "kDHE:-ADH" */
 # define SSL_TXT_EDH             "EDH"/* alias for DHE */
 # define SSL_TXT_ADH             "ADH"
-# define SSL_TXT_RSA             "RSA"
+# define SSL_TXT_YRSA             "YRSA"
 # define SSL_TXT_ECDH            "ECDH"
 # define SSL_TXT_EECDH           "EECDH"/* alias for ECDHE" */
 # define SSL_TXT_ECDHE           "ECDHE"/* same as "kECDHE:-AECDH" */
@@ -111,16 +111,16 @@ extern "C" {
 
 # define SSL_TXT_DES             "DES"
 # define SSL_TXT_3DES            "3DES"
-# define SSL_TXT_RC4             "RC4"
-# define SSL_TXT_RC2             "RC2"
+# define SSL_TXT_YRC4             "YRC4"
+# define SSL_TXT_YRC2             "YRC2"
 # define SSL_TXT_IDEA            "IDEA"
-# define SSL_TXT_SEED            "SEED"
-# define SSL_TXT_AES128          "AES128"
-# define SSL_TXT_AES256          "AES256"
-# define SSL_TXT_AES             "AES"
-# define SSL_TXT_AES_GCM         "AESGCM"
-# define SSL_TXT_AES_CCM         "AESCCM"
-# define SSL_TXT_AES_CCM_8       "AESCCM8"
+# define SSL_TXT_YSEED            "YSEED"
+# define SSL_TXT_YAES128          "YAES128"
+# define SSL_TXT_YAES256          "YAES256"
+# define SSL_TXT_YAES             "YAES"
+# define SSL_TXT_YAES_GCM         "YAESGCM"
+# define SSL_TXT_YAES_CCM         "YAESCCM"
+# define SSL_TXT_YAES_CCM_8       "YAESCCM8"
 # define SSL_TXT_CAMELLIA128     "CAMELLIA128"
 # define SSL_TXT_CAMELLIA256     "CAMELLIA256"
 # define SSL_TXT_CAMELLIA        "CAMELLIA"
@@ -131,14 +131,14 @@ extern "C" {
 # define SSL_TXT_ARIA128         "ARIA128"
 # define SSL_TXT_ARIA256         "ARIA256"
 
-# define SSL_TXT_MD5             "MD5"
-# define SSL_TXT_SHA1            "SHA1"
-# define SSL_TXT_SHA             "SHA"/* same as "SHA1" */
+# define SSL_TXT_YMD5             "YMD5"
+# define SSL_TXT_YSHA1            "YSHA1"
+# define SSL_TXT_SHA             "SHA"/* same as "YSHA1" */
 # define SSL_TXT_GOST94          "GOST94"
 # define SSL_TXT_GOST89MAC       "GOST89MAC"
 # define SSL_TXT_GOST12          "GOST12"
 # define SSL_TXT_GOST89MAC12     "GOST89MAC12"
-# define SSL_TXT_SHA256          "SHA256"
+# define SSL_TXT_YSHA256          "YSHA256"
 # define SSL_TXT_SHA384          "SHA384"
 
 # define SSL_TXT_SSLV3           "SSLv3"
@@ -151,9 +151,9 @@ extern "C" {
 /*-
  * COMPLEMENTOF* definitions. These identifiers are used to (de-select)
  * ciphers normally not being used.
- * Example: "RC4" will activate all ciphers using RC4 including ciphers
+ * Example: "YRC4" will activate all ciphers using YRC4 including ciphers
  * without authentication, which would normally disabled by DEFAULT (due
- * the "!ADH" being part of default). Therefore "RC4:!COMPLEMENTOFDEFAULT"
+ * the "!ADH" being part of default). Therefore "YRC4:!COMPLEMENTOFDEFAULT"
  * will make sure that it is also disabled in the specific selection.
  * COMPLEMENTOF* identifiers are portable between version, as adjustments
  * to the default cipher setup will also be included here.
@@ -173,18 +173,18 @@ extern "C" {
 # define SSL_DEFAULT_CIPHER_LIST "ALL:!COMPLEMENTOFDEFAULT:!eNULL"
 /* This is the default set of TLSv1.3 ciphersuites */
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GCM_SHA384:" \
-                                   "TLS_CHACHA20_POLY1305_SHA256:" \
-                                   "TLS_AES_128_GCM_SHA256"
+#  define TLS_DEFAULT_CIPHERSUITES "TLS_YAES_256_GCM_SHA384:" \
+                                   "TLS_CHACHA20_POLY1305_YSHA256:" \
+                                   "TLS_YAES_128_GCM_YSHA256"
 # else
-#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GCM_SHA384:" \
-                                   "TLS_AES_128_GCM_SHA256"
+#  define TLS_DEFAULT_CIPHERSUITES "TLS_YAES_256_GCM_SHA384:" \
+                                   "TLS_YAES_128_GCM_YSHA256"
 #endif
 /*
  * As of OpenSSL 1.0.0, ssl_create_cipher_list() in ssl/ssl_ciph.c always
  * starts with a reasonable order, and all we have to do for DEFAULT is
  * throwing out anonymous and unencrypted ciphersuites! (The latter are not
- * actually enabled by ALL, but "ALL:RSA" would enable some of them.)
+ * actually enabled by ALL, but "ALL:YRSA" would enable some of them.)
  */
 
 /* Used in SSL_set_shutdown()/SSL_get_shutdown(); */
@@ -199,8 +199,8 @@ extern "C" {
 extern "C" {
 #endif
 
-# define SSL_FILETYPE_ASN1       X509_FILETYPE_ASN1
-# define SSL_FILETYPE_PEM        X509_FILETYPE_PEM
+# define SSL_FILETYPE_YASN1       YX509_FILETYPE_YASN1
+# define SSL_FILETYPE_PEM        YX509_FILETYPE_PEM
 
 /*
  * This is needed to stop compilers complaining about the 'struct ssl_st *'
@@ -274,7 +274,7 @@ typedef int (*custom_ext_parse_cb)(SSL *s, unsigned int ext_type,
 typedef int (*SSL_custom_ext_add_cb_ex)(SSL *s, unsigned int ext_type,
                                         unsigned int context,
                                         const unsigned char **out,
-                                        size_t *outlen, X509 *x,
+                                        size_t *outlen, YX509 *x,
                                         size_t chainidx,
                                         int *al, void *add_arg);
 
@@ -286,12 +286,12 @@ typedef void (*SSL_custom_ext_free_cb_ex)(SSL *s, unsigned int ext_type,
 typedef int (*SSL_custom_ext_parse_cb_ex)(SSL *s, unsigned int ext_type,
                                           unsigned int context,
                                           const unsigned char *in,
-                                          size_t inlen, X509 *x,
+                                          size_t inlen, YX509 *x,
                                           size_t chainidx,
                                           int *al, void *parse_arg);
 
 /* Typedef for verification callback */
-typedef int (*SSL_verify_cb)(int preverify_ok, X509_STORE_CTX *x509_ctx);
+typedef int (*SSL_verify_cb)(int preverify_ok, YX509_STORE_CTX *x509_ctx);
 
 /*
  * Some values are reserved until OpenSSL 1.2.0 because they were previously
@@ -425,7 +425,7 @@ typedef int (*SSL_verify_cb)(int preverify_ok, X509_STORE_CTX *x509_ctx);
 /* Removed from OpenSSL 1.1.0. Was 0x00000020 */
 # define SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER               0x0
 /* Removed from OpenSSL 0.9.7h and 0.9.8b. Was 0x00000040L */
-# define SSL_OP_MSIE_SSLV2_RSA_PADDING                   0x0
+# define SSL_OP_MSIE_SSLV2_YRSA_PADDING                   0x0
 /* Removed from OpenSSL 1.1.0. Was 0x00000080 */
 /* Ancient SSLeay version. */
 # define SSL_OP_SSLEAY_080_CLIENT_DH_BUG                 0x0
@@ -438,13 +438,13 @@ typedef int (*SSL_verify_cb)(int preverify_ok, X509_STORE_CTX *x509_ctx);
 /* Removed from OpenSSL 1.1.0. Was 0x00100000L */
 # define SSL_OP_SINGLE_DH_USE                            0x0
 /* Removed from OpenSSL 1.0.1k and 1.0.2. Was 0x00200000L */
-# define SSL_OP_EPHEMERAL_RSA                            0x0
+# define SSL_OP_EPHEMERAL_YRSA                            0x0
 /* Removed from OpenSSL 1.1.0. Was 0x01000000L */
 # define SSL_OP_NO_SSLv2                                 0x0
 /* Removed from OpenSSL 1.0.1. Was 0x08000000L */
-# define SSL_OP_PKCS1_CHECK_1                            0x0
+# define SSL_OP_YPKCS1_CHECK_1                            0x0
 /* Removed from OpenSSL 1.0.1. Was 0x10000000L */
-# define SSL_OP_PKCS1_CHECK_2                            0x0
+# define SSL_OP_YPKCS1_CHECK_2                            0x0
 /* Removed from OpenSSL 1.1.0. Was 0x20000000L */
 # define SSL_OP_NETSCAPE_CA_DN_BUG                       0x0
 /* Removed from OpenSSL 1.1.0. Was 0x40000000L */
@@ -549,7 +549,7 @@ typedef int (*SSL_verify_cb)(int preverify_ok, X509_STORE_CTX *x509_ctx);
 # define CERT_PKEY_EE_PARAM      0x40
 /* CA certificate parameters OK */
 # define CERT_PKEY_CA_PARAM      0x80
-/* Signing explicitly allowed as opposed to SHA1 fallback */
+/* Signing explicitly allowed as opposed to YSHA1 fallback */
 # define CERT_PKEY_EXPLICIT_SIGN 0x100
 /* Client CA issuer names match (always set for server cert) */
 # define CERT_PKEY_ISSUER_NAME   0x200
@@ -731,10 +731,10 @@ void SSL_CTX_set_info_callback(SSL_CTX *ctx,
 void (*SSL_CTX_get_info_callback(SSL_CTX *ctx)) (const SSL *ssl, int type,
                                                  int val);
 void SSL_CTX_set_client_cert_cb(SSL_CTX *ctx,
-                                int (*client_cert_cb) (SSL *ssl, X509 **x509,
-                                                       EVP_PKEY **pkey));
-int (*SSL_CTX_get_client_cert_cb(SSL_CTX *ctx)) (SSL *ssl, X509 **x509,
-                                                 EVP_PKEY **pkey);
+                                int (*client_cert_cb) (SSL *ssl, YX509 **x509,
+                                                       EVVP_PKEY **pkey));
+int (*SSL_CTX_get_client_cert_cb(SSL_CTX *ctx)) (SSL *ssl, YX509 **x509,
+                                                 EVVP_PKEY **pkey);
 # ifndef OPENSSL_NO_ENGINE
 __owur int SSL_CTX_set_client_cert_engine(SSL_CTX *ctx, ENGINE *e);
 # endif
@@ -846,7 +846,7 @@ typedef int (*SSL_psk_find_session_cb_func)(SSL *ssl,
                                             const unsigned char *identity,
                                             size_t identity_len,
                                             SSL_SESSION **sess);
-typedef int (*SSL_psk_use_session_cb_func)(SSL *ssl, const EVP_MD *md,
+typedef int (*SSL_psk_use_session_cb_func)(SSL *ssl, const EVVP_MD *md,
                                            const unsigned char **id,
                                            size_t *idlen,
                                            SSL_SESSION **sess);
@@ -892,7 +892,7 @@ __owur int SSL_extension_supported(unsigned int ext_type);
 # define SSL_NOTHING            1
 # define SSL_WRITING            2
 # define SSL_READING            3
-# define SSL_X509_LOOKUP        4
+# define SSL_YX509_LOOKUP        4
 # define SSL_ASYNC_PAUSED       5
 # define SSL_ASYNC_NO_JOBS      6
 # define SSL_CLIENT_HELLO_CB    7
@@ -901,7 +901,7 @@ __owur int SSL_extension_supported(unsigned int ext_type);
 # define SSL_want_nothing(s)         (SSL_want(s) == SSL_NOTHING)
 # define SSL_want_read(s)            (SSL_want(s) == SSL_READING)
 # define SSL_want_write(s)           (SSL_want(s) == SSL_WRITING)
-# define SSL_want_x509_lookup(s)     (SSL_want(s) == SSL_X509_LOOKUP)
+# define SSL_want_x509_lookup(s)     (SSL_want(s) == SSL_YX509_LOOKUP)
 # define SSL_want_async(s)           (SSL_want(s) == SSL_ASYNC_PAUSED)
 # define SSL_want_async_job(s)       (SSL_want(s) == SSL_ASYNC_NO_JOBS)
 # define SSL_want_client_hello_cb(s) (SSL_want(s) == SSL_CLIENT_HELLO_CB)
@@ -1121,8 +1121,8 @@ size_t SSL_get_peer_finished(const SSL *s, void *buf, size_t count);
 # define SSL_get_timeout(a)      SSL_SESSION_get_timeout(a)
 # define SSL_set_timeout(a,b)    SSL_SESSION_set_timeout((a),(b))
 
-# define d2i_SSL_SESSION_bio(bp,s_id) ASN1_d2i_bio_of(SSL_SESSION,SSL_SESSION_new,d2i_SSL_SESSION,bp,s_id)
-# define i2d_SSL_SESSION_bio(bp,s_id) ASN1_i2d_bio_of(SSL_SESSION,i2d_SSL_SESSION,bp,s_id)
+# define d2i_SSL_SESSION_bio(bp,s_id) YASN1_d2i_bio_of(SSL_SESSION,SSL_SESSION_new,d2i_SSL_SESSION,bp,s_id)
+# define i2d_SSL_SESSION_bio(bp,s_id) YASN1_i2d_bio_of(SSL_SESSION,i2d_SSL_SESSION,bp,s_id)
 
 DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
 # define SSL_AD_REASON_OFFSET            1000/* offset to get SSL_R_... value
@@ -1181,7 +1181,7 @@ DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
 # define SSL_ERROR_SSL                   1
 # define SSL_ERROR_WANT_READ             2
 # define SSL_ERROR_WANT_WRITE            3
-# define SSL_ERROR_WANT_X509_LOOKUP      4
+# define SSL_ERROR_WANT_YX509_LOOKUP      4
 # define SSL_ERROR_SYSCALL               5/* look at error stack/return
                                            * value/errno */
 # define SSL_ERROR_ZERO_RETURN           6
@@ -1489,9 +1489,9 @@ DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
 
 # if OPENSSL_API_COMPAT < 0x10100000L
 /* Provide some compatibility macros for removed functionality. */
-#  define SSL_CTX_need_tmp_RSA(ctx)                0
+#  define SSL_CTX_need_tmp_YRSA(ctx)                0
 #  define SSL_CTX_set_tmp_rsa(ctx,rsa)             1
-#  define SSL_need_tmp_RSA(ssl)                    0
+#  define SSL_need_tmp_YRSA(ssl)                    0
 #  define SSL_set_tmp_rsa(ssl,rsa)                 1
 #  define SSL_CTX_set_ecdh_auto(dummy, onoff)      ((onoff) != 0)
 #  define SSL_set_ecdh_auto(dummy, onoff)          ((onoff) != 0)
@@ -1515,9 +1515,9 @@ int SSL_CTX_up_ref(SSL_CTX *ctx);
 void SSL_CTX_free(SSL_CTX *);
 __owur long SSL_CTX_set_timeout(SSL_CTX *ctx, long t);
 __owur long SSL_CTX_get_timeout(const SSL_CTX *ctx);
-__owur X509_STORE *SSL_CTX_get_cert_store(const SSL_CTX *);
-void SSL_CTX_set_cert_store(SSL_CTX *, X509_STORE *);
-void SSL_CTX_set1_cert_store(SSL_CTX *, X509_STORE *);
+__owur YX509_STORE *SSL_CTX_get_cert_store(const SSL_CTX *);
+void SSL_CTX_set_cert_store(SSL_CTX *, YX509_STORE *);
+void SSL_CTX_set1_cert_store(SSL_CTX *, YX509_STORE *);
 __owur int SSL_want(const SSL *s);
 __owur int SSL_clear(SSL *s);
 
@@ -1534,7 +1534,7 @@ __owur uint32_t SSL_CIPHER_get_id(const SSL_CIPHER *c);
 __owur uint16_t SSL_CIPHER_get_protocol_id(const SSL_CIPHER *c);
 __owur int SSL_CIPHER_get_kx_nid(const SSL_CIPHER *c);
 __owur int SSL_CIPHER_get_auth_nid(const SSL_CIPHER *c);
-__owur const EVP_MD *SSL_CIPHER_get_handshake_digest(const SSL_CIPHER *c);
+__owur const EVVP_MD *SSL_CIPHER_get_handshake_digest(const SSL_CIPHER *c);
 __owur int SSL_CIPHER_is_aead(const SSL_CIPHER *c);
 
 __owur int SSL_get_fd(const SSL *s);
@@ -1565,18 +1565,18 @@ __owur SSL_verify_cb SSL_get_verify_callback(const SSL *s);
 void SSL_set_verify(SSL *s, int mode, SSL_verify_cb callback);
 void SSL_set_verify_depth(SSL *s, int depth);
 void SSL_set_cert_cb(SSL *s, int (*cb) (SSL *ssl, void *arg), void *arg);
-# ifndef OPENSSL_NO_RSA
-__owur int SSL_use_RSAPrivateKey(SSL *ssl, RSA *rsa);
-__owur int SSL_use_RSAPrivateKey_ASN1(SSL *ssl, const unsigned char *d,
+# ifndef OPENSSL_NO_YRSA
+__owur int SSL_use_YRSAPrivateKey(SSL *ssl, YRSA *rsa);
+__owur int SSL_use_YRSAPrivateKey_YASN1(SSL *ssl, const unsigned char *d,
                                       long len);
 # endif
-__owur int SSL_use_PrivateKey(SSL *ssl, EVP_PKEY *pkey);
-__owur int SSL_use_PrivateKey_ASN1(int pk, SSL *ssl, const unsigned char *d,
+__owur int SSL_use_PrivateKey(SSL *ssl, EVVP_PKEY *pkey);
+__owur int SSL_use_PrivateKey_YASN1(int pk, SSL *ssl, const unsigned char *d,
                                    long len);
-__owur int SSL_use_certificate(SSL *ssl, X509 *x);
-__owur int SSL_use_certificate_ASN1(SSL *ssl, const unsigned char *d, int len);
-__owur int SSL_use_cert_and_key(SSL *ssl, X509 *x509, EVP_PKEY *privatekey,
-                                STACK_OF(X509) *chain, int override);
+__owur int SSL_use_certificate(SSL *ssl, YX509 *x);
+__owur int SSL_use_certificate_YASN1(SSL *ssl, const unsigned char *d, int len);
+__owur int SSL_use_cert_and_key(SSL *ssl, YX509 *x509, EVVP_PKEY *privatekey,
+                                STACK_OF(YX509) *chain, int override);
 
 
 /* serverinfo file format versions */
@@ -1591,15 +1591,15 @@ __owur int SSL_CTX_use_serverinfo_ex(SSL_CTX *ctx, unsigned int version,
                                      size_t serverinfo_length);
 __owur int SSL_CTX_use_serverinfo_file(SSL_CTX *ctx, const char *file);
 
-#ifndef OPENSSL_NO_RSA
-__owur int SSL_use_RSAPrivateKey_file(SSL *ssl, const char *file, int type);
+#ifndef OPENSSL_NO_YRSA
+__owur int SSL_use_YRSAPrivateKey_file(SSL *ssl, const char *file, int type);
 #endif
 
 __owur int SSL_use_PrivateKey_file(SSL *ssl, const char *file, int type);
 __owur int SSL_use_certificate_file(SSL *ssl, const char *file, int type);
 
-#ifndef OPENSSL_NO_RSA
-__owur int SSL_CTX_use_RSAPrivateKey_file(SSL_CTX *ctx, const char *file,
+#ifndef OPENSSL_NO_YRSA
+__owur int SSL_CTX_use_YRSAPrivateKey_file(SSL_CTX *ctx, const char *file,
                                           int type);
 #endif
 __owur int SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file,
@@ -1609,10 +1609,10 @@ __owur int SSL_CTX_use_certificate_file(SSL_CTX *ctx, const char *file,
 /* PEM type */
 __owur int SSL_CTX_use_certificate_chain_file(SSL_CTX *ctx, const char *file);
 __owur int SSL_use_certificate_chain_file(SSL *ssl, const char *file);
-__owur STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file);
-__owur int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stackCAs,
+__owur STACK_OF(YX509_NAME) *SSL_load_client_CA_file(const char *file);
+__owur int SSL_add_file_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stackCAs,
                                                const char *file);
-int SSL_add_dir_cert_subjects_to_stack(STACK_OF(X509_NAME) *stackCAs,
+int SSL_add_dir_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stackCAs,
                                        const char *dir);
 
 # if OPENSSL_API_COMPAT < 0x10100000L
@@ -1650,7 +1650,7 @@ __owur uint32_t SSL_SESSION_get_max_early_data(const SSL_SESSION *s);
 __owur int SSL_SESSION_set_max_early_data(SSL_SESSION *s,
                                           uint32_t max_early_data);
 __owur int SSL_copy_session_id(SSL *to, const SSL *from);
-__owur X509 *SSL_SESSION_get0_peer(SSL_SESSION *s);
+__owur YX509 *SSL_SESSION_get0_peer(SSL_SESSION *s);
 __owur int SSL_SESSION_set1_id_context(SSL_SESSION *s,
                                        const unsigned char *sid_ctx,
                                        unsigned int sid_ctx_len);
@@ -1684,11 +1684,11 @@ __owur int SSL_has_matching_session_id(const SSL *s,
 SSL_SESSION *d2i_SSL_SESSION(SSL_SESSION **a, const unsigned char **pp,
                              long length);
 
-# ifdef HEADER_X509_H
-__owur X509 *SSL_get_peer_certificate(const SSL *s);
+# ifdef HEADER_YX509_H
+__owur YX509 *SSL_get_peer_certificate(const SSL *s);
 # endif
 
-__owur STACK_OF(X509) *SSL_get_peer_cert_chain(const SSL *s);
+__owur STACK_OF(YX509) *SSL_get_peer_cert_chain(const SSL *s);
 
 __owur int SSL_CTX_get_verify_mode(const SSL_CTX *ctx);
 __owur int SSL_CTX_get_verify_depth(const SSL_CTX *ctx);
@@ -1696,23 +1696,23 @@ __owur SSL_verify_cb SSL_CTX_get_verify_callback(const SSL_CTX *ctx);
 void SSL_CTX_set_verify(SSL_CTX *ctx, int mode, SSL_verify_cb callback);
 void SSL_CTX_set_verify_depth(SSL_CTX *ctx, int depth);
 void SSL_CTX_set_cert_verify_callback(SSL_CTX *ctx,
-                                      int (*cb) (X509_STORE_CTX *, void *),
+                                      int (*cb) (YX509_STORE_CTX *, void *),
                                       void *arg);
 void SSL_CTX_set_cert_cb(SSL_CTX *c, int (*cb) (SSL *ssl, void *arg),
                          void *arg);
-# ifndef OPENSSL_NO_RSA
-__owur int SSL_CTX_use_RSAPrivateKey(SSL_CTX *ctx, RSA *rsa);
-__owur int SSL_CTX_use_RSAPrivateKey_ASN1(SSL_CTX *ctx, const unsigned char *d,
+# ifndef OPENSSL_NO_YRSA
+__owur int SSL_CTX_use_YRSAPrivateKey(SSL_CTX *ctx, YRSA *rsa);
+__owur int SSL_CTX_use_YRSAPrivateKey_YASN1(SSL_CTX *ctx, const unsigned char *d,
                                           long len);
 # endif
-__owur int SSL_CTX_use_PrivateKey(SSL_CTX *ctx, EVP_PKEY *pkey);
-__owur int SSL_CTX_use_PrivateKey_ASN1(int pk, SSL_CTX *ctx,
+__owur int SSL_CTX_use_PrivateKey(SSL_CTX *ctx, EVVP_PKEY *pkey);
+__owur int SSL_CTX_use_PrivateKey_YASN1(int pk, SSL_CTX *ctx,
                                        const unsigned char *d, long len);
-__owur int SSL_CTX_use_certificate(SSL_CTX *ctx, X509 *x);
-__owur int SSL_CTX_use_certificate_ASN1(SSL_CTX *ctx, int len,
+__owur int SSL_CTX_use_certificate(SSL_CTX *ctx, YX509 *x);
+__owur int SSL_CTX_use_certificate_YASN1(SSL_CTX *ctx, int len,
                                         const unsigned char *d);
-__owur int SSL_CTX_use_cert_and_key(SSL_CTX *ctx, X509 *x509, EVP_PKEY *privatekey,
-                                    STACK_OF(X509) *chain, int override);
+__owur int SSL_CTX_use_cert_and_key(SSL_CTX *ctx, YX509 *x509, EVVP_PKEY *privatekey,
+                                    STACK_OF(YX509) *chain, int override);
 
 void SSL_CTX_set_default_passwd_cb(SSL_CTX *ctx, pem_password_cb *cb);
 void SSL_CTX_set_default_passwd_cb_userdata(SSL_CTX *ctx, void *u);
@@ -1747,12 +1747,12 @@ __owur const char *SSL_get0_peername(SSL *s);
 void SSL_set_hostflags(SSL *s, unsigned int flags);
 
 __owur int SSL_CTX_dane_enable(SSL_CTX *ctx);
-__owur int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVP_MD *md,
+__owur int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVVP_MD *md,
                                   uint8_t mtype, uint8_t ord);
 __owur int SSL_dane_enable(SSL *s, const char *basedomain);
 __owur int SSL_dane_tlsa_add(SSL *s, uint8_t usage, uint8_t selector,
                              uint8_t mtype, unsigned const char *data, size_t dlen);
-__owur int SSL_get0_dane_authority(SSL *s, X509 **mcert, EVP_PKEY **mspki);
+__owur int SSL_get0_dane_authority(SSL *s, YX509 **mcert, EVVP_PKEY **mspki);
 __owur int SSL_get0_dane_tlsa(SSL *s, uint8_t *usage, uint8_t *selector,
                               uint8_t *mtype, unsigned const char **data,
                               size_t *dlen);
@@ -1769,11 +1769,11 @@ unsigned long SSL_CTX_dane_clear_flags(SSL_CTX *ctx, unsigned long flags);
 unsigned long SSL_dane_set_flags(SSL *ssl, unsigned long flags);
 unsigned long SSL_dane_clear_flags(SSL *ssl, unsigned long flags);
 
-__owur int SSL_CTX_set1_param(SSL_CTX *ctx, X509_VERIFY_PARAM *vpm);
-__owur int SSL_set1_param(SSL *ssl, X509_VERIFY_PARAM *vpm);
+__owur int SSL_CTX_set1_param(SSL_CTX *ctx, YX509_VERIFY_PARAM *vpm);
+__owur int SSL_set1_param(SSL *ssl, YX509_VERIFY_PARAM *vpm);
 
-__owur X509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx);
-__owur X509_VERIFY_PARAM *SSL_get0_param(SSL *ssl);
+__owur YX509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx);
+__owur YX509_VERIFY_PARAM *SSL_get0_param(SSL *ssl);
 
 # ifndef OPENSSL_NO_SRP
 int SSL_CTX_set_srp_username(SSL_CTX *ctx, char *name);
@@ -1944,20 +1944,20 @@ __owur const char *SSL_alert_type_string(int value);
 __owur const char *SSL_alert_desc_string_long(int value);
 __owur const char *SSL_alert_desc_string(int value);
 
-void SSL_set0_CA_list(SSL *s, STACK_OF(X509_NAME) *name_list);
-void SSL_CTX_set0_CA_list(SSL_CTX *ctx, STACK_OF(X509_NAME) *name_list);
-__owur const STACK_OF(X509_NAME) *SSL_get0_CA_list(const SSL *s);
-__owur const STACK_OF(X509_NAME) *SSL_CTX_get0_CA_list(const SSL_CTX *ctx);
-__owur int SSL_add1_to_CA_list(SSL *ssl, const X509 *x);
-__owur int SSL_CTX_add1_to_CA_list(SSL_CTX *ctx, const X509 *x);
-__owur const STACK_OF(X509_NAME) *SSL_get0_peer_CA_list(const SSL *s);
+void SSL_set0_CA_list(SSL *s, STACK_OF(YX509_NAME) *name_list);
+void SSL_CTX_set0_CA_list(SSL_CTX *ctx, STACK_OF(YX509_NAME) *name_list);
+__owur const STACK_OF(YX509_NAME) *SSL_get0_CA_list(const SSL *s);
+__owur const STACK_OF(YX509_NAME) *SSL_CTX_get0_CA_list(const SSL_CTX *ctx);
+__owur int SSL_add1_to_CA_list(SSL *ssl, const YX509 *x);
+__owur int SSL_CTX_add1_to_CA_list(SSL_CTX *ctx, const YX509 *x);
+__owur const STACK_OF(YX509_NAME) *SSL_get0_peer_CA_list(const SSL *s);
 
-void SSL_set_client_CA_list(SSL *s, STACK_OF(X509_NAME) *name_list);
-void SSL_CTX_set_client_CA_list(SSL_CTX *ctx, STACK_OF(X509_NAME) *name_list);
-__owur STACK_OF(X509_NAME) *SSL_get_client_CA_list(const SSL *s);
-__owur STACK_OF(X509_NAME) *SSL_CTX_get_client_CA_list(const SSL_CTX *s);
-__owur int SSL_add_client_CA(SSL *ssl, X509 *x);
-__owur int SSL_CTX_add_client_CA(SSL_CTX *ctx, X509 *x);
+void SSL_set_client_CA_list(SSL *s, STACK_OF(YX509_NAME) *name_list);
+void SSL_CTX_set_client_CA_list(SSL_CTX *ctx, STACK_OF(YX509_NAME) *name_list);
+__owur STACK_OF(YX509_NAME) *SSL_get_client_CA_list(const SSL *s);
+__owur STACK_OF(YX509_NAME) *SSL_CTX_get_client_CA_list(const SSL_CTX *s);
+__owur int SSL_add_client_CA(SSL *ssl, YX509 *x);
+__owur int SSL_CTX_add_client_CA(SSL_CTX *ctx, YX509 *x);
 
 void SSL_set_connect_state(SSL *s);
 void SSL_set_accept_state(SSL *s);
@@ -1969,18 +1969,18 @@ __owur long SSL_get_default_timeout(const SSL *s);
 # endif
 
 __owur char *SSL_CIPHER_description(const SSL_CIPHER *, char *buf, int size);
-__owur STACK_OF(X509_NAME) *SSL_dup_CA_list(const STACK_OF(X509_NAME) *sk);
+__owur STACK_OF(YX509_NAME) *SSL_dup_CA_list(const STACK_OF(YX509_NAME) *sk);
 
 __owur SSL *SSL_dup(SSL *ssl);
 
-__owur X509 *SSL_get_certificate(const SSL *ssl);
+__owur YX509 *SSL_get_certificate(const SSL *ssl);
 /*
- * EVP_PKEY
+ * EVVP_PKEY
  */
 struct evp_pkey_st *SSL_get_privatekey(const SSL *ssl);
 
-__owur X509 *SSL_CTX_get0_certificate(const SSL_CTX *ctx);
-__owur EVP_PKEY *SSL_CTX_get0_privatekey(const SSL_CTX *ctx);
+__owur YX509 *SSL_CTX_get0_certificate(const SSL_CTX *ctx);
+__owur EVVP_PKEY *SSL_CTX_get0_privatekey(const SSL_CTX *ctx);
 
 void SSL_CTX_set_quiet_shutdown(SSL_CTX *ctx, int mode);
 __owur int SSL_CTX_get_quiet_shutdown(const SSL_CTX *ctx);
@@ -2008,7 +2008,7 @@ __owur OSSL_HANDSHAKE_STATE SSL_get_state(const SSL *ssl);
 
 void SSL_set_verify_result(SSL *ssl, long v);
 __owur long SSL_get_verify_result(const SSL *ssl);
-__owur STACK_OF(X509) *SSL_get0_verified_chain(const SSL *s);
+__owur STACK_OF(YX509) *SSL_get0_verified_chain(const SSL *s);
 
 __owur size_t SSL_get_client_random(const SSL *ssl, unsigned char *out,
                                     size_t outlen);
@@ -2033,7 +2033,7 @@ void *SSL_SESSION_get_ex_data(const SSL_SESSION *ss, int idx);
 __owur int SSL_CTX_set_ex_data(SSL_CTX *ssl, int idx, void *data);
 void *SSL_CTX_get_ex_data(const SSL_CTX *ssl, int idx);
 
-__owur int SSL_get_ex_data_X509_STORE_CTX_idx(void);
+__owur int SSL_get_ex_data_YX509_STORE_CTX_idx(void);
 
 # define SSL_CTX_sess_set_cache_size(ctx,t) \
         SSL_CTX_ctrl(ctx,SSL_CTRL_SET_SESS_CACHE_SIZE,t,NULL)

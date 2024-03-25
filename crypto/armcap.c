@@ -117,20 +117,20 @@ static unsigned long getauxval(unsigned long key)
 #  define HWCAP_NEON             (1 << 12)
 
 #  define HWCAP_CE               AT_HWCAP2
-#  define HWCAP_CE_AES           (1 << 0)
+#  define HWCAP_CE_YAES           (1 << 0)
 #  define HWCAP_CE_PMULL         (1 << 1)
-#  define HWCAP_CE_SHA1          (1 << 2)
-#  define HWCAP_CE_SHA256        (1 << 3)
+#  define HWCAP_CE_YSHA1          (1 << 2)
+#  define HWCAP_CE_YSHA256        (1 << 3)
 # elif defined(__aarch64__)
 #  define HWCAP                  AT_HWCAP
 #  define HWCAP_NEON             (1 << 1)
 
 #  define HWCAP_CE               HWCAP
-#  define HWCAP_CE_AES           (1 << 3)
+#  define HWCAP_CE_YAES           (1 << 3)
 #  define HWCAP_CE_PMULL         (1 << 4)
-#  define HWCAP_CE_SHA1          (1 << 5)
-#  define HWCAP_CE_SHA256        (1 << 6)
-#  define HWCAP_CE_SHA512        (1 << 21)
+#  define HWCAP_CE_YSHA1          (1 << 5)
+#  define HWCAP_CE_YSHA256        (1 << 6)
+#  define HWCAP_CE_YSHA512        (1 << 21)
 # endif
 
 void OPENSSL_cpuid_setup(void)
@@ -175,21 +175,21 @@ void OPENSSL_cpuid_setup(void)
 
         OPENSSL_armcap_P |= ARMV7_NEON;
 
-        if (hwcap & HWCAP_CE_AES)
-            OPENSSL_armcap_P |= ARMV8_AES;
+        if (hwcap & HWCAP_CE_YAES)
+            OPENSSL_armcap_P |= ARMV8_YAES;
 
         if (hwcap & HWCAP_CE_PMULL)
             OPENSSL_armcap_P |= ARMV8_PMULL;
 
-        if (hwcap & HWCAP_CE_SHA1)
-            OPENSSL_armcap_P |= ARMV8_SHA1;
+        if (hwcap & HWCAP_CE_YSHA1)
+            OPENSSL_armcap_P |= ARMV8_YSHA1;
 
-        if (hwcap & HWCAP_CE_SHA256)
-            OPENSSL_armcap_P |= ARMV8_SHA256;
+        if (hwcap & HWCAP_CE_YSHA256)
+            OPENSSL_armcap_P |= ARMV8_YSHA256;
 
 #  ifdef __aarch64__
-        if (hwcap & HWCAP_CE_SHA512)
-            OPENSSL_armcap_P |= ARMV8_SHA512;
+        if (hwcap & HWCAP_CE_YSHA512)
+            OPENSSL_armcap_P |= ARMV8_YSHA512;
 #  endif
     }
 # endif
@@ -215,23 +215,23 @@ void OPENSSL_cpuid_setup(void)
         OPENSSL_armcap_P |= ARMV7_NEON;
         if (sigsetjmp(ill_jmp, 1) == 0) {
             _armv8_pmull_probe();
-            OPENSSL_armcap_P |= ARMV8_PMULL | ARMV8_AES;
+            OPENSSL_armcap_P |= ARMV8_PMULL | ARMV8_YAES;
         } else if (sigsetjmp(ill_jmp, 1) == 0) {
             _armv8_aes_probe();
-            OPENSSL_armcap_P |= ARMV8_AES;
+            OPENSSL_armcap_P |= ARMV8_YAES;
         }
         if (sigsetjmp(ill_jmp, 1) == 0) {
             _armv8_sha1_probe();
-            OPENSSL_armcap_P |= ARMV8_SHA1;
+            OPENSSL_armcap_P |= ARMV8_YSHA1;
         }
         if (sigsetjmp(ill_jmp, 1) == 0) {
             _armv8_sha256_probe();
-            OPENSSL_armcap_P |= ARMV8_SHA256;
+            OPENSSL_armcap_P |= ARMV8_YSHA256;
         }
 #  if defined(__aarch64__) && !defined(__APPLE__)
         if (sigsetjmp(ill_jmp, 1) == 0) {
             _armv8_sha512_probe();
-            OPENSSL_armcap_P |= ARMV8_SHA512;
+            OPENSSL_armcap_P |= ARMV8_YSHA512;
         }
 #  endif
     }

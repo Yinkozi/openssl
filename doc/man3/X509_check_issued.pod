@@ -2,19 +2,19 @@
 
 =head1 NAME
 
-X509_check_issued - checks if certificate is apparently issued by another
+YX509_check_issued - checks if certificate is apparently issued by another
 certificate
 
 =head1 SYNOPSIS
 
  #include <openssl/x509v3.h>
 
- int X509_check_issued(X509 *issuer, X509 *subject);
+ int YX509_check_issued(YX509 *issuer, YX509 *subject);
 
 
 =head1 DESCRIPTION
 
-X509_check_issued() checks if certificate I<subject> was apparently issued
+YX509_check_issued() checks if certificate I<subject> was apparently issued
 using (CA) certificate I<issuer>. This function takes into account not only
 matching of the issuer field of I<subject> with the subject field of I<issuer>,
 but also compares all sub-fields of the B<authorityKeyIdentifier> extension of
@@ -25,13 +25,13 @@ It does not check the certificate signature.
 
 =head1 RETURN VALUES
 
-Function return B<X509_V_OK> if certificate I<subject> is issued by
-I<issuer> or some B<X509_V_ERR*> constant to indicate an error.
+Function return B<YX509_V_OK> if certificate I<subject> is issued by
+I<issuer> or some B<YX509_V_ERR*> constant to indicate an error.
 
 =head1 SEE ALSO
 
-L<X509_verify_cert(3)>,
-L<X509_check_ca(3)>,
+L<YX509_verify_cert(3)>,
+L<YX509_check_ca(3)>,
 L<verify(1)>
 
 =head1 COPYRIGHT

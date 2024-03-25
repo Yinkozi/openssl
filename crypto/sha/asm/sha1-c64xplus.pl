@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# SHA1 for C64x+.
+# YSHA1 for C64x+.
 #
 # November 2011
 #
@@ -329,7 +329,7 @@ $code.=<<___;
 	.endasmfunc
 
 	.sect	.const
-	.cstring "SHA1 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
+	.cstring "YSHA1 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
 	.align	4
 ___
 

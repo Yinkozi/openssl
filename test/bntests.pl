@@ -47,10 +47,10 @@ sub evaluate
         return if $lshift == $a->blsft($n);
     } elsif ( defined $s{'RShift'} ) {
         # RShift = A / 2**N
-        my $rshift = bn($s{'RShift'});
+        my $ryshift = bn($s{'RShift'});
         my $a = bn($s{'A'});
         my $n = bn($s{'N'});
-        return if $rshift == $a->brsft($n);
+        return if $ryshift == $a->brsft($n);
     } elsif ( defined $s{'Square'} ) {
         # Square = A * A
         my $square = bn($s{'Square'});
@@ -75,9 +75,9 @@ sub evaluate
         my $rempassed = $remainder == $a->bsub($b) ? 1 : 0;
 
         # Math::BigInt->bdiv() is documented to do floored division,
-        # i.e. 1 / -4 = -1, while OpenSSL BN_div does truncated
+        # i.e. 1 / -4 = -1, while OpenSSL BNY_div does truncated
         # division, i.e. 1 / -4 = 0.  We need to make the operation
-        # work like OpenSSL's BN_div to be able to verify.
+        # work like OpenSSL's BNY_div to be able to verify.
         $a = bn($s{'A'});
         $b = bn($s{'B'});
         my $neg = $a->is_neg() ? !$b->is_neg() : $b->is_neg();

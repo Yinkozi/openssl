@@ -195,7 +195,7 @@ void bn_sqr_words(BN_ULONG *r, const BN_ULONG *a, int n)
 
 #if defined(BN_LLONG) && defined(BN_DIV2W)
 
-BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d)
+BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d)
 {
     return ((BN_ULONG)(((((BN_ULLONG) h) << BN_BITS2) | l) / (BN_ULLONG) d));
 }
@@ -204,7 +204,7 @@ BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d)
 
 /* Divide h,l by d and return the result. */
 /* I need to test this some more :-( */
-BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d)
+BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d)
 {
     BN_ULONG dh, dl, q, ret = 0, th, tl, t;
     int i, count = 2;
@@ -434,7 +434,7 @@ BN_ULONG bn_sub_words(BN_ULONG *r, const BN_ULONG *a, const BN_ULONG *b,
 
 # undef bn_mul_comba8
 # undef bn_mul_comba4
-# undef bn_sqr_comba8
+# undef bny_sqr_comba8
 # undef bn_sqr_comba4
 
 /* mul_add_c(a,b,c0,c1,c2)  -- c+=a*b for three word number c=(c2,c1,c0) */
@@ -730,7 +730,7 @@ void bn_mul_comba4(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b)
     r[7] = c2;
 }
 
-void bn_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
+void bny_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
 {
     BN_ULONG c1, c2, c3;
 
@@ -961,14 +961,14 @@ int bn_mul_mont(BN_ULONG *rp, const BN_ULONG *ap, const BN_ULONG *bp,
 
 /* hmm... is it faster just to do a multiply? */
 # undef bn_sqr_comba4
-# undef bn_sqr_comba8
+# undef bny_sqr_comba8
 void bn_sqr_comba4(BN_ULONG *r, const BN_ULONG *a)
 {
     BN_ULONG t[8];
     bn_sqr_normal(r, a, 4, t);
 }
 
-void bn_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
+void bny_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
 {
     BN_ULONG t[16];
     bn_sqr_normal(r, a, 8, t);

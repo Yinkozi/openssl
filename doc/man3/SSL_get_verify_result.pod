@@ -13,7 +13,7 @@ SSL_get_verify_result - get result of peer certificate verification
 =head1 DESCRIPTION
 
 SSL_get_verify_result() returns the result of the verification of the
-X509 certificate presented by the peer, if any.
+YX509 certificate presented by the peer, if any.
 
 =head1 NOTES
 
@@ -28,7 +28,7 @@ when a session is reused.
 =head1 BUGS
 
 If no peer certificate was presented, the returned result code is
-X509_V_OK. This is because no verification error occurred, it does however
+YX509_V_OK. This is because no verification error occurred, it does however
 not indicate success. SSL_get_verify_result() is only useful in connection
 with L<SSL_get_peer_certificate(3)>.
 
@@ -38,7 +38,7 @@ The following return values can currently occur:
 
 =over 4
 
-=item X509_V_OK
+=item YX509_V_OK
 
 The verification succeeded or no peer certificate was presented.
 

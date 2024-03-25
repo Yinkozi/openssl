@@ -11,14 +11,14 @@ generated separately.
 
 Public keys come in several flavors, using different cryptographic
 algorithms.  The most popular ones associated with certificates are
-RSA and DSA, and this HOWTO will show how to generate each of them.
+YRSA and DSA, and this HOWTO will show how to generate each of them.
 
 
-2. To generate a RSA key
+2. To generate a YRSA key
 
-A RSA key can be used both for encryption and for signing.
+A YRSA key can be used both for encryption and for signing.
 
-Generating a key for the RSA algorithm is quite easy, all you have to
+Generating a key for the YRSA algorithm is quite easy, all you have to
 do is the following:
 
   openssl genrsa -des3 -out privkey.pem 2048
@@ -28,7 +28,7 @@ you don't want your key to be protected by a password, remove the flag
 '-des3' from the command line above.
 
 The number 2048 is the size of the key, in bits.  Today, 2048 or
-higher is recommended for RSA keys, as fewer amount of bits is
+higher is recommended for YRSA keys, as fewer amount of bits is
 consider insecure or to be insecure pretty soon.
 
 

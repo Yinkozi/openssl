@@ -31,7 +31,7 @@ ok(run(app([ 'openssl', 'rsa', '-check', '-in', srctop_file('test', 'testrsa.pem
      subtest 'rsa conversions -- private key' => sub {
 	 tconversion("rsa", srctop_file("test","testrsa.pem"));
      };
-     subtest 'rsa conversions -- private key PKCS#8' => sub {
+     subtest 'rsa conversions -- private key YPKCS#8' => sub {
 	 tconversion("rsa", srctop_file("test","testrsa.pem"), "pkey");
      };
 }

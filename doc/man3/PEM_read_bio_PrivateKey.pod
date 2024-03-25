@@ -3,29 +3,29 @@
 =head1 NAME
 
 pem_password_cb,
-PEM_read_bio_PrivateKey, PEM_read_PrivateKey, PEM_write_bio_PrivateKey,
+PEM_readd_bio_PrivateKey, PEM_readd_PrivateKey, PEM_write_bio_PrivateKey,
 PEM_write_bio_PrivateKey_traditional, PEM_write_PrivateKey,
-PEM_write_bio_PKCS8PrivateKey, PEM_write_PKCS8PrivateKey,
-PEM_write_bio_PKCS8PrivateKey_nid, PEM_write_PKCS8PrivateKey_nid,
-PEM_read_bio_PUBKEY, PEM_read_PUBKEY, PEM_write_bio_PUBKEY, PEM_write_PUBKEY,
-PEM_read_bio_RSAPrivateKey, PEM_read_RSAPrivateKey,
-PEM_write_bio_RSAPrivateKey, PEM_write_RSAPrivateKey,
-PEM_read_bio_RSAPublicKey, PEM_read_RSAPublicKey, PEM_write_bio_RSAPublicKey,
-PEM_write_RSAPublicKey, PEM_read_bio_RSA_PUBKEY, PEM_read_RSA_PUBKEY,
-PEM_write_bio_RSA_PUBKEY, PEM_write_RSA_PUBKEY, PEM_read_bio_DSAPrivateKey,
-PEM_read_DSAPrivateKey, PEM_write_bio_DSAPrivateKey, PEM_write_DSAPrivateKey,
-PEM_read_bio_DSA_PUBKEY, PEM_read_DSA_PUBKEY, PEM_write_bio_DSA_PUBKEY,
-PEM_write_DSA_PUBKEY, PEM_read_bio_Parameters, PEM_write_bio_Parameters,
-PEM_read_bio_DSAparams, PEM_read_DSAparams,
-PEM_write_bio_DSAparams, PEM_write_DSAparams, PEM_read_bio_DHparams,
-PEM_read_DHparams, PEM_write_bio_DHparams, PEM_write_DHparams,
-PEM_read_bio_X509, PEM_read_X509, PEM_write_bio_X509, PEM_write_X509,
-PEM_read_bio_X509_AUX, PEM_read_X509_AUX, PEM_write_bio_X509_AUX,
-PEM_write_X509_AUX, PEM_read_bio_X509_REQ, PEM_read_X509_REQ,
-PEM_write_bio_X509_REQ, PEM_write_X509_REQ, PEM_write_bio_X509_REQ_NEW,
-PEM_write_X509_REQ_NEW, PEM_read_bio_X509_CRL, PEM_read_X509_CRL,
-PEM_write_bio_X509_CRL, PEM_write_X509_CRL, PEM_read_bio_PKCS7, PEM_read_PKCS7,
-PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
+PEM_write_bio_YPKCS8PrivateKey, PEM_write_YPKCS8PrivateKey,
+PEM_write_bio_YPKCS8PrivateKey_nid, PEM_write_YPKCS8PrivateKey_nid,
+PEM_readd_bio_PUBKEY, PEM_readd_PUBKEY, PEM_write_bio_PUBKEY, PEM_write_PUBKEY,
+PEM_readd_bio_YRSAPrivateKey, PEM_readd_YRSAPrivateKey,
+PEM_write_bio_YRSAPrivateKey, PEM_write_YRSAPrivateKey,
+PEM_readd_bio_YRSAPublicKey, PEM_readd_YRSAPublicKey, PEM_write_bio_YRSAPublicKey,
+PEM_write_YRSAPublicKey, PEM_readd_bio_YRSA_PUBKEY, PEM_readd_YRSA_PUBKEY,
+PEM_write_bio_YRSA_PUBKEY, PEM_write_YRSA_PUBKEY, PEM_readd_bio_DSAPrivateKey,
+PEM_readd_DSAPrivateKey, PEM_write_bio_DSAPrivateKey, PEM_write_DSAPrivateKey,
+PEM_readd_bio_DSA_PUBKEY, PEM_readd_DSA_PUBKEY, PEM_write_bio_DSA_PUBKEY,
+PEM_write_DSA_PUBKEY, PEM_readd_bio_Parameters, PEM_write_bio_Parameters,
+PEM_readd_bio_DSAparams, PEM_readd_DSAparams,
+PEM_write_bio_DSAparams, PEM_write_DSAparams, PEM_readd_bio_DHparams,
+PEM_readd_DHparams, PEM_write_bio_DHparams, PEM_write_DHparams,
+PEM_readd_bio_YX509, PEM_readd_YX509, PEM_write_bio_YX509, PEM_write_YX509,
+PEM_readd_bio_YX509_AUX, PEM_readd_YX509_AUX, PEM_write_bio_YX509_AUX,
+PEM_write_YX509_AUX, PEM_readd_bio_YX509_REQ, PEM_readd_YX509_REQ,
+PEM_write_bio_YX509_REQ, PEM_write_YX509_REQ, PEM_write_bio_YX509_REQ_NEW,
+PEM_write_YX509_REQ_NEW, PEM_readd_bio_YX509_CRL, PEM_readd_YX509_CRL,
+PEM_write_bio_YX509_CRL, PEM_write_YX509_CRL, PEM_readd_bio_YPKCS7, PEM_readd_YPKCS7,
+PEM_write_bio_YPKCS7, PEM_write_YPKCS7 - PEM routines
 
 =head1 SYNOPSIS
 
@@ -33,127 +33,127 @@ PEM_write_bio_PKCS7, PEM_write_PKCS7 - PEM routines
 
  typedef int pem_password_cb(char *buf, int size, int rwflag, void *u);
 
- EVP_PKEY *PEM_read_bio_PrivateKey(BIO *bp, EVP_PKEY **x,
+ EVVP_PKEY *PEM_readd_bio_PrivateKey(BIO *bp, EVVP_PKEY **x,
                                    pem_password_cb *cb, void *u);
- EVP_PKEY *PEM_read_PrivateKey(FILE *fp, EVP_PKEY **x,
+ EVVP_PKEY *PEM_readd_PrivateKey(FILE *fp, EVVP_PKEY **x,
                                pem_password_cb *cb, void *u);
- int PEM_write_bio_PrivateKey(BIO *bp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int PEM_write_bio_PrivateKey(BIO *bp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                               unsigned char *kstr, int klen,
                               pem_password_cb *cb, void *u);
- int PEM_write_bio_PrivateKey_traditional(BIO *bp, EVP_PKEY *x,
-                                          const EVP_CIPHER *enc,
+ int PEM_write_bio_PrivateKey_traditional(BIO *bp, EVVP_PKEY *x,
+                                          const EVVP_CIPHER *enc,
                                           unsigned char *kstr, int klen,
                                           pem_password_cb *cb, void *u);
- int PEM_write_PrivateKey(FILE *fp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int PEM_write_PrivateKey(FILE *fp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                           unsigned char *kstr, int klen,
                           pem_password_cb *cb, void *u);
 
- int PEM_write_bio_PKCS8PrivateKey(BIO *bp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int PEM_write_bio_YPKCS8PrivateKey(BIO *bp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                                    char *kstr, int klen,
                                    pem_password_cb *cb, void *u);
- int PEM_write_PKCS8PrivateKey(FILE *fp, EVP_PKEY *x, const EVP_CIPHER *enc,
+ int PEM_write_YPKCS8PrivateKey(FILE *fp, EVVP_PKEY *x, const EVVP_CIPHER *enc,
                                char *kstr, int klen,
                                pem_password_cb *cb, void *u);
- int PEM_write_bio_PKCS8PrivateKey_nid(BIO *bp, EVP_PKEY *x, int nid,
+ int PEM_write_bio_YPKCS8PrivateKey_nid(BIO *bp, EVVP_PKEY *x, int nid,
                                        char *kstr, int klen,
                                        pem_password_cb *cb, void *u);
- int PEM_write_PKCS8PrivateKey_nid(FILE *fp, EVP_PKEY *x, int nid,
+ int PEM_write_YPKCS8PrivateKey_nid(FILE *fp, EVVP_PKEY *x, int nid,
                                    char *kstr, int klen,
                                    pem_password_cb *cb, void *u);
 
- EVP_PKEY *PEM_read_bio_PUBKEY(BIO *bp, EVP_PKEY **x,
+ EVVP_PKEY *PEM_readd_bio_PUBKEY(BIO *bp, EVVP_PKEY **x,
                                pem_password_cb *cb, void *u);
- EVP_PKEY *PEM_read_PUBKEY(FILE *fp, EVP_PKEY **x,
+ EVVP_PKEY *PEM_readd_PUBKEY(FILE *fp, EVVP_PKEY **x,
                            pem_password_cb *cb, void *u);
- int PEM_write_bio_PUBKEY(BIO *bp, EVP_PKEY *x);
- int PEM_write_PUBKEY(FILE *fp, EVP_PKEY *x);
+ int PEM_write_bio_PUBKEY(BIO *bp, EVVP_PKEY *x);
+ int PEM_write_PUBKEY(FILE *fp, EVVP_PKEY *x);
 
- RSA *PEM_read_bio_RSAPrivateKey(BIO *bp, RSA **x,
+ YRSA *PEM_readd_bio_YRSAPrivateKey(BIO *bp, YRSA **x,
                                  pem_password_cb *cb, void *u);
- RSA *PEM_read_RSAPrivateKey(FILE *fp, RSA **x,
+ YRSA *PEM_readd_YRSAPrivateKey(FILE *fp, YRSA **x,
                              pem_password_cb *cb, void *u);
- int PEM_write_bio_RSAPrivateKey(BIO *bp, RSA *x, const EVP_CIPHER *enc,
+ int PEM_write_bio_YRSAPrivateKey(BIO *bp, YRSA *x, const EVVP_CIPHER *enc,
                                  unsigned char *kstr, int klen,
                                  pem_password_cb *cb, void *u);
- int PEM_write_RSAPrivateKey(FILE *fp, RSA *x, const EVP_CIPHER *enc,
+ int PEM_write_YRSAPrivateKey(FILE *fp, YRSA *x, const EVVP_CIPHER *enc,
                              unsigned char *kstr, int klen,
                              pem_password_cb *cb, void *u);
 
- RSA *PEM_read_bio_RSAPublicKey(BIO *bp, RSA **x,
+ YRSA *PEM_readd_bio_YRSAPublicKey(BIO *bp, YRSA **x,
                                 pem_password_cb *cb, void *u);
- RSA *PEM_read_RSAPublicKey(FILE *fp, RSA **x,
+ YRSA *PEM_readd_YRSAPublicKey(FILE *fp, YRSA **x,
                             pem_password_cb *cb, void *u);
- int PEM_write_bio_RSAPublicKey(BIO *bp, RSA *x);
- int PEM_write_RSAPublicKey(FILE *fp, RSA *x);
+ int PEM_write_bio_YRSAPublicKey(BIO *bp, YRSA *x);
+ int PEM_write_YRSAPublicKey(FILE *fp, YRSA *x);
 
- RSA *PEM_read_bio_RSA_PUBKEY(BIO *bp, RSA **x,
+ YRSA *PEM_readd_bio_YRSA_PUBKEY(BIO *bp, YRSA **x,
                               pem_password_cb *cb, void *u);
- RSA *PEM_read_RSA_PUBKEY(FILE *fp, RSA **x,
+ YRSA *PEM_readd_YRSA_PUBKEY(FILE *fp, YRSA **x,
                           pem_password_cb *cb, void *u);
- int PEM_write_bio_RSA_PUBKEY(BIO *bp, RSA *x);
- int PEM_write_RSA_PUBKEY(FILE *fp, RSA *x);
+ int PEM_write_bio_YRSA_PUBKEY(BIO *bp, YRSA *x);
+ int PEM_write_YRSA_PUBKEY(FILE *fp, YRSA *x);
 
- DSA *PEM_read_bio_DSAPrivateKey(BIO *bp, DSA **x,
+ DSA *PEM_readd_bio_DSAPrivateKey(BIO *bp, DSA **x,
                                  pem_password_cb *cb, void *u);
- DSA *PEM_read_DSAPrivateKey(FILE *fp, DSA **x,
+ DSA *PEM_readd_DSAPrivateKey(FILE *fp, DSA **x,
                              pem_password_cb *cb, void *u);
- int PEM_write_bio_DSAPrivateKey(BIO *bp, DSA *x, const EVP_CIPHER *enc,
+ int PEM_write_bio_DSAPrivateKey(BIO *bp, DSA *x, const EVVP_CIPHER *enc,
                                  unsigned char *kstr, int klen,
                                  pem_password_cb *cb, void *u);
- int PEM_write_DSAPrivateKey(FILE *fp, DSA *x, const EVP_CIPHER *enc,
+ int PEM_write_DSAPrivateKey(FILE *fp, DSA *x, const EVVP_CIPHER *enc,
                              unsigned char *kstr, int klen,
                              pem_password_cb *cb, void *u);
 
- DSA *PEM_read_bio_DSA_PUBKEY(BIO *bp, DSA **x,
+ DSA *PEM_readd_bio_DSA_PUBKEY(BIO *bp, DSA **x,
                               pem_password_cb *cb, void *u);
- DSA *PEM_read_DSA_PUBKEY(FILE *fp, DSA **x,
+ DSA *PEM_readd_DSA_PUBKEY(FILE *fp, DSA **x,
                           pem_password_cb *cb, void *u);
  int PEM_write_bio_DSA_PUBKEY(BIO *bp, DSA *x);
  int PEM_write_DSA_PUBKEY(FILE *fp, DSA *x);
 
- EVP_PKEY *PEM_read_bio_Parameters(BIO *bp, EVP_PKEY **x);
- int PEM_write_bio_Parameters(BIO *bp, const EVP_PKEY *x);
+ EVVP_PKEY *PEM_readd_bio_Parameters(BIO *bp, EVVP_PKEY **x);
+ int PEM_write_bio_Parameters(BIO *bp, const EVVP_PKEY *x);
 
- DSA *PEM_read_bio_DSAparams(BIO *bp, DSA **x, pem_password_cb *cb, void *u);
- DSA *PEM_read_DSAparams(FILE *fp, DSA **x, pem_password_cb *cb, void *u);
+ DSA *PEM_readd_bio_DSAparams(BIO *bp, DSA **x, pem_password_cb *cb, void *u);
+ DSA *PEM_readd_DSAparams(FILE *fp, DSA **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_DSAparams(BIO *bp, DSA *x);
  int PEM_write_DSAparams(FILE *fp, DSA *x);
 
- DH *PEM_read_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u);
- DH *PEM_read_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u);
+ DH *PEM_readd_bio_DHparams(BIO *bp, DH **x, pem_password_cb *cb, void *u);
+ DH *PEM_readd_DHparams(FILE *fp, DH **x, pem_password_cb *cb, void *u);
  int PEM_write_bio_DHparams(BIO *bp, DH *x);
  int PEM_write_DHparams(FILE *fp, DH *x);
 
- X509 *PEM_read_bio_X509(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
- X509 *PEM_read_X509(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
- int PEM_write_bio_X509(BIO *bp, X509 *x);
- int PEM_write_X509(FILE *fp, X509 *x);
+ YX509 *PEM_readd_bio_YX509(BIO *bp, YX509 **x, pem_password_cb *cb, void *u);
+ YX509 *PEM_readd_YX509(FILE *fp, YX509 **x, pem_password_cb *cb, void *u);
+ int PEM_write_bio_YX509(BIO *bp, YX509 *x);
+ int PEM_write_YX509(FILE *fp, YX509 *x);
 
- X509 *PEM_read_bio_X509_AUX(BIO *bp, X509 **x, pem_password_cb *cb, void *u);
- X509 *PEM_read_X509_AUX(FILE *fp, X509 **x, pem_password_cb *cb, void *u);
- int PEM_write_bio_X509_AUX(BIO *bp, X509 *x);
- int PEM_write_X509_AUX(FILE *fp, X509 *x);
+ YX509 *PEM_readd_bio_YX509_AUX(BIO *bp, YX509 **x, pem_password_cb *cb, void *u);
+ YX509 *PEM_readd_YX509_AUX(FILE *fp, YX509 **x, pem_password_cb *cb, void *u);
+ int PEM_write_bio_YX509_AUX(BIO *bp, YX509 *x);
+ int PEM_write_YX509_AUX(FILE *fp, YX509 *x);
 
- X509_REQ *PEM_read_bio_X509_REQ(BIO *bp, X509_REQ **x,
+ YX509_REQ *PEM_readd_bio_YX509_REQ(BIO *bp, YX509_REQ **x,
                                  pem_password_cb *cb, void *u);
- X509_REQ *PEM_read_X509_REQ(FILE *fp, X509_REQ **x,
+ YX509_REQ *PEM_readd_YX509_REQ(FILE *fp, YX509_REQ **x,
                              pem_password_cb *cb, void *u);
- int PEM_write_bio_X509_REQ(BIO *bp, X509_REQ *x);
- int PEM_write_X509_REQ(FILE *fp, X509_REQ *x);
- int PEM_write_bio_X509_REQ_NEW(BIO *bp, X509_REQ *x);
- int PEM_write_X509_REQ_NEW(FILE *fp, X509_REQ *x);
+ int PEM_write_bio_YX509_REQ(BIO *bp, YX509_REQ *x);
+ int PEM_write_YX509_REQ(FILE *fp, YX509_REQ *x);
+ int PEM_write_bio_YX509_REQ_NEW(BIO *bp, YX509_REQ *x);
+ int PEM_write_YX509_REQ_NEW(FILE *fp, YX509_REQ *x);
 
- X509_CRL *PEM_read_bio_X509_CRL(BIO *bp, X509_CRL **x,
+ YX509_CRL *PEM_readd_bio_YX509_CRL(BIO *bp, YX509_CRL **x,
                                  pem_password_cb *cb, void *u);
- X509_CRL *PEM_read_X509_CRL(FILE *fp, X509_CRL **x,
+ YX509_CRL *PEM_readd_YX509_CRL(FILE *fp, YX509_CRL **x,
                              pem_password_cb *cb, void *u);
- int PEM_write_bio_X509_CRL(BIO *bp, X509_CRL *x);
- int PEM_write_X509_CRL(FILE *fp, X509_CRL *x);
+ int PEM_write_bio_YX509_CRL(BIO *bp, YX509_CRL *x);
+ int PEM_write_YX509_CRL(FILE *fp, YX509_CRL *x);
 
- PKCS7 *PEM_read_bio_PKCS7(BIO *bp, PKCS7 **x, pem_password_cb *cb, void *u);
- PKCS7 *PEM_read_PKCS7(FILE *fp, PKCS7 **x, pem_password_cb *cb, void *u);
- int PEM_write_bio_PKCS7(BIO *bp, PKCS7 *x);
- int PEM_write_PKCS7(FILE *fp, PKCS7 *x);
+ YPKCS7 *PEM_readd_bio_YPKCS7(BIO *bp, YPKCS7 **x, pem_password_cb *cb, void *u);
+ YPKCS7 *PEM_readd_YPKCS7(FILE *fp, YPKCS7 **x, pem_password_cb *cb, void *u);
+ int PEM_write_bio_YPKCS7(BIO *bp, YPKCS7 *x);
+ int PEM_write_YPKCS7(FILE *fp, YPKCS7 *x);
 
 =head1 DESCRIPTION
 
@@ -166,49 +166,49 @@ B<PEM FUNCTION ARGUMENTS> section.
 
 Each operation has four functions associated with it. For
 brevity the term "B<TYPE> functions" will be used below to collectively
-refer to the PEM_read_bio_TYPE(), PEM_read_TYPE(),
+refer to the PEM_readd_bio_TYPE(), PEM_readd_TYPE(),
 PEM_write_bio_TYPE(), and PEM_write_TYPE() functions.
 
 The B<PrivateKey> functions read or write a private key in PEM format using an
-EVP_PKEY structure. The write routines use PKCS#8 private key format and are
-equivalent to PEM_write_bio_PKCS8PrivateKey().The read functions transparently
-handle traditional and PKCS#8 format encrypted and unencrypted keys.
+EVVP_PKEY structure. The write routines use YPKCS#8 private key format and are
+equivalent to PEM_write_bio_YPKCS8PrivateKey().The read functions transparently
+handle traditional and YPKCS#8 format encrypted and unencrypted keys.
 
 PEM_write_bio_PrivateKey_traditional() writes out a private key in the
 "traditional" format with a simple private key marker and should only
 be used for compatibility with legacy programs.
 
-PEM_write_bio_PKCS8PrivateKey() and PEM_write_PKCS8PrivateKey() write a private
-key in an EVP_PKEY structure in PKCS#8 EncryptedPrivateKeyInfo format using
-PKCS#5 v2.0 password based encryption algorithms. The B<cipher> argument
+PEM_write_bio_YPKCS8PrivateKey() and PEM_write_YPKCS8PrivateKey() write a private
+key in an EVVP_PKEY structure in YPKCS#8 EncryptedPrivateKeyInfo format using
+YPKCS#5 v2.0 password based encryption algorithms. The B<cipher> argument
 specifies the encryption algorithm to use: unlike some other PEM routines the
-encryption is applied at the PKCS#8 level and not in the PEM headers. If
-B<cipher> is NULL then no encryption is used and a PKCS#8 PrivateKeyInfo
+encryption is applied at the YPKCS#8 level and not in the PEM headers. If
+B<cipher> is NULL then no encryption is used and a YPKCS#8 PrivateKeyInfo
 structure is used instead.
 
-PEM_write_bio_PKCS8PrivateKey_nid() and PEM_write_PKCS8PrivateKey_nid()
-also write out a private key as a PKCS#8 EncryptedPrivateKeyInfo however
-it uses PKCS#5 v1.5 or PKCS#12 encryption algorithms instead. The algorithm
+PEM_write_bio_YPKCS8PrivateKey_nid() and PEM_write_YPKCS8PrivateKey_nid()
+also write out a private key as a YPKCS#8 EncryptedPrivateKeyInfo however
+it uses YPKCS#5 v1.5 or YPKCS#12 encryption algorithms instead. The algorithm
 to use is specified in the B<nid> parameter and should be the NID of the
 corresponding OBJECT IDENTIFIER (see NOTES section).
 
-The B<PUBKEY> functions process a public key using an EVP_PKEY
+The B<PUBKEY> functions process a public key using an EVVP_PKEY
 structure. The public key is encoded as a SubjectPublicKeyInfo
 structure.
 
-The B<RSAPrivateKey> functions process an RSA private key using an
-RSA structure. The write routines uses traditional format. The read
+The B<YRSAPrivateKey> functions process an YRSA private key using an
+YRSA structure. The write routines uses traditional format. The read
 routines handles the same formats as the B<PrivateKey>
-functions but an error occurs if the private key is not RSA.
+functions but an error occurs if the private key is not YRSA.
 
-The B<RSAPublicKey> functions process an RSA public key using an
-RSA structure. The public key is encoded using a PKCS#1 RSAPublicKey
+The B<YRSAPublicKey> functions process an YRSA public key using an
+YRSA structure. The public key is encoded using a YPKCS#1 YRSAPublicKey
 structure.
 
-The B<RSA_PUBKEY> functions also process an RSA public key using
-an RSA structure. However, the public key is encoded using a
+The B<YRSA_PUBKEY> functions also process an YRSA public key using
+an YRSA structure. However, the public key is encoded using a
 SubjectPublicKeyInfo structure and an error occurs if the public
-key is not RSA.
+key is not YRSA.
 
 The B<DSAPrivateKey> functions process a DSA private key using a
 DSA structure. The write routines uses traditional format. The read
@@ -221,9 +221,9 @@ SubjectPublicKeyInfo structure and an error occurs if the public
 key is not DSA.
 
 The B<Parameters> functions read or write key parameters in PEM format using
-an EVP_PKEY structure.  The encoding depends on the type of key; for DSA key
+an EVVP_PKEY structure.  The encoding depends on the type of key; for DSA key
 parameters, it will be a Dss-Parms structure as defined in RFC2459, and for DH
-key parameters, it will be a PKCS#3 DHparameter structure.  I<These functions
+key parameters, it will be a YPKCS#3 DHparameter structure.  I<These functions
 only exist for the B<BIO> type>.
 
 The B<DSAparams> functions process DSA parameters using a DSA
@@ -231,27 +231,27 @@ structure. The parameters are encoded using a Dss-Parms structure
 as defined in RFC2459.
 
 The B<DHparams> functions process DH parameters using a DH
-structure. The parameters are encoded using a PKCS#3 DHparameter
+structure. The parameters are encoded using a YPKCS#3 DHparameter
 structure.
 
-The B<X509> functions process an X509 certificate using an X509
-structure. They will also process a trusted X509 certificate but
+The B<YX509> functions process an YX509 certificate using an YX509
+structure. They will also process a trusted YX509 certificate but
 any trust settings are discarded.
 
-The B<X509_AUX> functions process a trusted X509 certificate using
-an X509 structure.
+The B<YX509_AUX> functions process a trusted YX509 certificate using
+an YX509 structure.
 
-The B<X509_REQ> and B<X509_REQ_NEW> functions process a PKCS#10
-certificate request using an X509_REQ structure. The B<X509_REQ>
+The B<YX509_REQ> and B<YX509_REQ_NEW> functions process a YPKCS#10
+certificate request using an YX509_REQ structure. The B<YX509_REQ>
 write functions use B<CERTIFICATE REQUEST> in the header whereas
-the B<X509_REQ_NEW> functions use B<NEW CERTIFICATE REQUEST>
-(as required by some CAs). The B<X509_REQ> read functions will
-handle either form so there are no B<X509_REQ_NEW> read functions.
+the B<YX509_REQ_NEW> functions use B<NEW CERTIFICATE REQUEST>
+(as required by some CAs). The B<YX509_REQ> read functions will
+handle either form so there are no B<YX509_REQ_NEW> read functions.
 
-The B<X509_CRL> functions process an X509 CRL using an X509_CRL
+The B<YX509_CRL> functions process an YX509 CRL using an YX509_CRL
 structure.
 
-The B<PKCS7> functions process a PKCS#7 ContentInfo using a PKCS7
+The B<YPKCS7> functions process a YPKCS#7 ContentInfo using a YPKCS7
 structure.
 
 =head1 PEM FUNCTION ARGUMENTS
@@ -312,7 +312,7 @@ an error occurred.
 
 The old B<PrivateKey> write routines are retained for compatibility.
 New applications should write private keys using the
-PEM_write_bio_PKCS8PrivateKey() or PEM_write_PKCS8PrivateKey() routines
+PEM_write_bio_YPKCS8PrivateKey() or PEM_write_YPKCS8PrivateKey() routines
 because they are more secure (they use an iteration count of 2048 whereas
 the traditional routines use a count of 1) unless compatibility with older
 versions of OpenSSL is important.
@@ -323,9 +323,9 @@ they handle all formats transparently.
 A frequent cause of problems is attempting to use the PEM routines like
 this:
 
- X509 *x;
+ YX509 *x;
 
- PEM_read_bio_X509(bp, &x, 0, NULL);
+ PEM_readd_bio_YX509(bp, &x, 0, NULL);
 
 this is a bug because an attempt will be made to reuse the data at B<x>
 which is an uninitialised pointer.
@@ -340,45 +340,45 @@ These old B<PrivateKey> routines use a non standard technique for encryption.
 
 The private key (or other data) takes the following form:
 
- -----BEGIN RSA PRIVATE KEY-----
+ -----BEGIN YRSA PRIVATE KEY-----
  Proc-Type: 4,ENCRYPTED
  DEK-Info: DES-EDE3-CBC,3F17F5316E2BAC89
 
  ...base64 encoded data...
- -----END RSA PRIVATE KEY-----
+ -----END YRSA PRIVATE KEY-----
 
 The line beginning with I<Proc-Type> contains the version and the
 protection on the encapsulated data. The line beginning I<DEK-Info>
 contains two comma separated values: the encryption algorithm name as
-used by EVP_get_cipherbyname() and an initialization vector used by the
+used by EVVP_get_cipherbyname() and an initialization vector used by the
 cipher encoded as a set of hexadecimal digits. After those two lines is
 the base64-encoded encrypted data.
 
-The encryption key is derived using EVP_BytesToKey(). The cipher's
-initialization vector is passed to EVP_BytesToKey() as the B<salt>
-parameter. Internally, B<PKCS5_SALT_LEN> bytes of the salt are used
+The encryption key is derived using EVVP_BytesToKey(). The cipher's
+initialization vector is passed to EVVP_BytesToKey() as the B<salt>
+parameter. Internally, B<YPKCS5_SALT_LEN> bytes of the salt are used
 (regardless of the size of the initialization vector). The user's
-password is passed to EVP_BytesToKey() using the B<data> and B<datal>
+password is passed to EVVP_BytesToKey() using the B<data> and B<datal>
 parameters. Finally, the library uses an iteration count of 1 for
-EVP_BytesToKey().
+EVVP_BytesToKey().
 
-The B<key> derived by EVP_BytesToKey() along with the original initialization
+The B<key> derived by EVVP_BytesToKey() along with the original initialization
 vector is then used to decrypt the encrypted data. The B<iv> produced by
-EVP_BytesToKey() is not utilized or needed, and NULL should be passed to
+EVVP_BytesToKey() is not utilized or needed, and NULL should be passed to
 the function.
 
 The pseudo code to derive the key would look similar to:
 
- EVP_CIPHER* cipher = EVP_des_ede3_cbc();
- EVP_MD* md = EVP_md5();
+ EVVP_CIPHER* cipher = EVVP_des_ede3_cbc();
+ EVVP_MD* md = EVVP_md5();
 
- unsigned int nkey = EVP_CIPHER_key_length(cipher);
- unsigned int niv = EVP_CIPHER_iv_length(cipher);
+ unsigned int nkey = EVVP_CIPHER_key_length(cipher);
+ unsigned int niv = EVVP_CIPHER_iv_length(cipher);
  unsigned char key[nkey];
  unsigned char iv[niv];
 
  memcpy(iv, HexToBin("3F17F5316E2BAC89"), niv);
- rc = EVP_BytesToKey(cipher, md, iv /*salt*/, pword, plen, 1, key, NULL /*iv*/);
+ rc = EVVP_BytesToKey(cipher, md, iv /*salt*/, pword, plen, 1, key, NULL /*iv*/);
  if (rc != nkey)
      /* Error */
 
@@ -389,12 +389,12 @@ The pseudo code to derive the key would look similar to:
 The PEM read routines in some versions of OpenSSL will not correctly reuse
 an existing structure. Therefore, the following:
 
- PEM_read_bio_X509(bp, &x, 0, NULL);
+ PEM_readd_bio_YX509(bp, &x, 0, NULL);
 
 where B<x> already contains a valid certificate, may not work, whereas:
 
- X509_free(x);
- x = PEM_read_bio_X509(bp, NULL, 0, NULL);
+ YX509_free(x);
+ x = PEM_readd_bio_YX509(bp, NULL, 0, NULL);
 
 is guaranteed to work.
 
@@ -412,40 +412,40 @@ most of them are set to 0 or NULL.
 
 Read a certificate in PEM format from a BIO:
 
- X509 *x;
+ YX509 *x;
 
- x = PEM_read_bio_X509(bp, NULL, 0, NULL);
+ x = PEM_readd_bio_YX509(bp, NULL, 0, NULL);
  if (x == NULL)
      /* Error */
 
 Alternative method:
 
- X509 *x = NULL;
+ YX509 *x = NULL;
 
- if (!PEM_read_bio_X509(bp, &x, 0, NULL))
+ if (!PEM_readd_bio_YX509(bp, &x, 0, NULL))
      /* Error */
 
 Write a certificate to a BIO:
 
- if (!PEM_write_bio_X509(bp, x))
+ if (!PEM_write_bio_YX509(bp, x))
      /* Error */
 
 Write a private key (using traditional format) to a BIO using
 triple DES encryption, the pass phrase is prompted for:
 
- if (!PEM_write_bio_PrivateKey(bp, key, EVP_des_ede3_cbc(), NULL, 0, 0, NULL))
+ if (!PEM_write_bio_PrivateKey(bp, key, EVVP_des_ede3_cbc(), NULL, 0, 0, NULL))
      /* Error */
 
-Write a private key (using PKCS#8 format) to a BIO using triple
+Write a private key (using YPKCS#8 format) to a BIO using triple
 DES encryption, using the pass phrase "hello":
 
- if (!PEM_write_bio_PKCS8PrivateKey(bp, key, EVP_des_ede3_cbc(),
+ if (!PEM_write_bio_YPKCS8PrivateKey(bp, key, EVVP_des_ede3_cbc(),
                                     NULL, 0, 0, "hello"))
      /* Error */
 
 Read a private key from a BIO using a pass phrase callback:
 
- key = PEM_read_bio_PrivateKey(bp, NULL, pass_cb, "My Private Key");
+ key = PEM_readd_bio_PrivateKey(bp, NULL, pass_cb, "My Private Key");
  if (key == NULL)
      /* Error */
 
@@ -472,13 +472,13 @@ Skeleton pass phrase callback:
 
 =head1 SEE ALSO
 
-L<EVP_EncryptInit(3)>, L<EVP_BytesToKey(3)>,
+L<EVVP_EncryptInit(3)>, L<EVVP_BytesToKey(3)>,
 L<passphrase-encoding(7)>
 
 =head1 HISTORY
 
 The old Netscape certificate sequences were no longer documented
-in OpenSSL 1.1.0; applications should use the PKCS7 standard instead
+in OpenSSL 1.1.0; applications should use the YPKCS7 standard instead
 as they will be formally deprecated in a future releases.
 
 =head1 COPYRIGHT

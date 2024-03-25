@@ -18,34 +18,34 @@
 # include "evp_local.h"
 # include <openssl/rc5.h>
 
-static int r_32_12_16_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int r_32_12_16_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                                const unsigned char *iv, int enc);
-static int rc5_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr);
+static int rc5_ctrl(EVVP_CIPHER_CTX *c, int type, int arg, void *ptr);
 
 typedef struct {
     int rounds;                 /* number of rounds */
     RC5_32_KEY ks;              /* key schedule */
-} EVP_RC5_KEY;
+} EVVP_RC5_KEY;
 
-# define data(ctx)       EVP_C_DATA(EVP_RC5_KEY,ctx)
+# define data(ctx)       EVVP_C_DATA(EVVP_RC5_KEY,ctx)
 
-IMPLEMENT_BLOCK_CIPHER(rc5_32_12_16, ks, RC5_32, EVP_RC5_KEY, NID_rc5,
+IMPLEMENT_BLOCK_CIPHER(rc5_32_12_16, ks, RC5_32, EVVP_RC5_KEY, NID_rc5,
                        8, RC5_32_KEY_LENGTH, 8, 64,
-                       EVP_CIPH_VARIABLE_LENGTH | EVP_CIPH_CTRL_INIT,
+                       EVVP_CIPH_VARIABLE_LENGTH | EVVP_CIPH_CTRL_INIT,
                        r_32_12_16_init_key, NULL, NULL, NULL, rc5_ctrl)
 
-static int rc5_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
+static int rc5_ctrl(EVVP_CIPHER_CTX *c, int type, int arg, void *ptr)
 {
     switch (type) {
-    case EVP_CTRL_INIT:
+    case EVVP_CTRL_INIT:
         data(c)->rounds = RC5_12_ROUNDS;
         return 1;
 
-    case EVP_CTRL_GET_RC5_ROUNDS:
+    case EVVP_CTRL_GET_RC5_ROUNDS:
         *(int *)ptr = data(c)->rounds;
         return 1;
 
-    case EVP_CTRL_SET_RC5_ROUNDS:
+    case EVVP_CTRL_SET_RC5_ROUNDS:
         switch (arg) {
         case RC5_8_ROUNDS:
         case RC5_12_ROUNDS:
@@ -54,7 +54,7 @@ static int rc5_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
             return 1;
 
         default:
-            EVPerr(EVP_F_RC5_CTRL, EVP_R_UNSUPPORTED_NUMBER_OF_ROUNDS);
+            EVVPerr(EVVP_F_RC5_CTRL, EVVP_R_UNSUPPORTED_NUMBER_OF_ROUNDS);
             return 0;
         }
 
@@ -63,14 +63,14 @@ static int rc5_ctrl(EVP_CIPHER_CTX *c, int type, int arg, void *ptr)
     }
 }
 
-static int r_32_12_16_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int r_32_12_16_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                                const unsigned char *iv, int enc)
 {
-    if (EVP_CIPHER_CTX_key_length(ctx) > 255) {
-        EVPerr(EVP_F_R_32_12_16_INIT_KEY, EVP_R_BAD_KEY_LENGTH);
+    if (EVVP_CIPHER_CTX_key_length(ctx) > 255) {
+        EVVPerr(EVVP_F_R_32_12_16_INIT_KEY, EVVP_R_BAD_KEY_LENGTH);
         return 0;
     }
-    RC5_32_set_key(&data(ctx)->ks, EVP_CIPHER_CTX_key_length(ctx),
+    RC5_32_set_key(&data(ctx)->ks, EVVP_CIPHER_CTX_key_length(ctx),
                    key, data(ctx)->rounds);
     return 1;
 }

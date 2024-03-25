@@ -62,7 +62,7 @@ Applications can create and use their own stacks by placing any of the macros
 described below in a header file. These macros define typesafe inline
 functions that wrap around the utility B<OPENSSL_sk_> API.
 In the description here, I<TYPE> is used
-as a placeholder for any of the OpenSSL datatypes, such as I<X509>.
+as a placeholder for any of the OpenSSL datatypes, such as I<YX509>.
 
 STACK_OF() returns the name for a stack of the specified B<TYPE>.
 DEFINE_STACK_OF() creates set of functions for a stack of B<TYPE>. This

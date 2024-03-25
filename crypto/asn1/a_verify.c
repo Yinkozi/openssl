@@ -21,104 +21,104 @@
 #include "crypto/asn1.h"
 #include "crypto/evp.h"
 
-#ifndef NO_ASN1_OLD
+#ifndef NO_YASN1_OLD
 
-int ASN1_verify(i2d_of_void *i2d, X509_ALGOR *a, ASN1_BIT_STRING *signature,
-                char *data, EVP_PKEY *pkey)
+int YASN1_verify(i2d_of_void *i2d, YX509_ALGOR *a, YASN1_BIT_STRING *signature,
+                char *data, EVVP_PKEY *pkey)
 {
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    const EVP_MD *type;
+    EVVP_MD_CTX *ctx = EVVP_MD_CTX_new();
+    const EVVP_MD *type;
     unsigned char *p, *buf_in = NULL;
     int ret = -1, i, inl;
 
     if (ctx == NULL) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_VERIFY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     i = OBJ_obj2nid(a->algorithm);
-    type = EVP_get_digestbyname(OBJ_nid2sn(i));
+    type = EVVP_get_digestbyname(OBJ_nid2sn(i));
     if (type == NULL) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
+        YASN1err(YASN1_F_YASN1_VERIFY, YASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
         goto err;
     }
 
-    if (signature->type == V_ASN1_BIT_STRING && signature->flags & 0x7) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ASN1_R_INVALID_BIT_STRING_BITS_LEFT);
+    if (signature->type == V_YASN1_BIT_STRING && signature->flags & 0x7) {
+        YASN1err(YASN1_F_YASN1_VERIFY, YASN1_R_INVALID_BIT_STRING_BITS_LEFT);
         goto err;
     }
 
     inl = i2d(data, NULL);
     if (inl <= 0) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ERR_R_INTERNAL_ERROR);
+        YASN1err(YASN1_F_YASN1_VERIFY, ERR_R_INTERNAL_ERROR);
         goto err;
     }
     buf_in = OPENSSL_malloc((unsigned int)inl);
     if (buf_in == NULL) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_VERIFY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     p = buf_in;
 
     i2d(data, &p);
-    ret = EVP_VerifyInit_ex(ctx, type, NULL)
-        && EVP_VerifyUpdate(ctx, (unsigned char *)buf_in, inl);
+    ret = EVVP_VerifyInit_ex(ctx, type, NULL)
+        && EVVP_VerifyUpdate(ctx, (unsigned char *)buf_in, inl);
 
     OPENSSL_clear_free(buf_in, (unsigned int)inl);
 
     if (!ret) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ERR_R_EVP_LIB);
+        YASN1err(YASN1_F_YASN1_VERIFY, ERR_R_EVVP_LIB);
         goto err;
     }
     ret = -1;
 
-    if (EVP_VerifyFinal(ctx, (unsigned char *)signature->data,
+    if (EVVP_VerifyFinal(ctx, (unsigned char *)signature->data,
                         (unsigned int)signature->length, pkey) <= 0) {
-        ASN1err(ASN1_F_ASN1_VERIFY, ERR_R_EVP_LIB);
+        YASN1err(YASN1_F_YASN1_VERIFY, ERR_R_EVVP_LIB);
         ret = 0;
         goto err;
     }
     ret = 1;
  err:
-    EVP_MD_CTX_free(ctx);
+    EVVP_MD_CTX_free(ctx);
     return ret;
 }
 
 #endif
 
-int ASN1_item_verify(const ASN1_ITEM *it, X509_ALGOR *a,
-                     ASN1_BIT_STRING *signature, void *asn, EVP_PKEY *pkey)
+int YASN1_item_verify(const YASN1_ITEM *it, YX509_ALGOR *a,
+                     YASN1_BIT_STRING *signature, void *asn, EVVP_PKEY *pkey)
 {
-    EVP_MD_CTX *ctx = NULL;
+    EVVP_MD_CTX *ctx = NULL;
     unsigned char *buf_in = NULL;
     int ret = -1, inl = 0;
     int mdnid, pknid;
     size_t inll = 0;
 
     if (!pkey) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_PASSED_NULL_PARAMETER);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_PASSED_NULL_PARAMETER);
         return -1;
     }
 
-    if (signature->type == V_ASN1_BIT_STRING && signature->flags & 0x7) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ASN1_R_INVALID_BIT_STRING_BITS_LEFT);
+    if (signature->type == V_YASN1_BIT_STRING && signature->flags & 0x7) {
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, YASN1_R_INVALID_BIT_STRING_BITS_LEFT);
         return -1;
     }
 
-    ctx = EVP_MD_CTX_new();
+    ctx = EVVP_MD_CTX_new();
     if (ctx == NULL) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
     /* Convert signature OID into digest and public key OIDs */
     if (!OBJ_find_sigid_algs(OBJ_obj2nid(a->algorithm), &mdnid, &pknid)) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ASN1_R_UNKNOWN_SIGNATURE_ALGORITHM);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, YASN1_R_UNKNOWN_SIGNATURE_ALGORITHM);
         goto err;
     }
     if (mdnid == NID_undef) {
         if (!pkey->ameth || !pkey->ameth->item_verify) {
-            ASN1err(ASN1_F_ASN1_ITEM_VERIFY,
-                    ASN1_R_UNKNOWN_SIGNATURE_ALGORITHM);
+            YASN1err(YASN1_F_YASN1_ITEM_VERIFY,
+                    YASN1_R_UNKNOWN_SIGNATURE_ALGORITHM);
             goto err;
         }
         ret = pkey->ameth->item_verify(ctx, it, asn, a, signature, pkey);
@@ -131,48 +131,48 @@ int ASN1_item_verify(const ASN1_ITEM *it, X509_ALGOR *a,
             goto err;
         ret = -1;
     } else {
-        const EVP_MD *type = EVP_get_digestbynid(mdnid);
+        const EVVP_MD *type = EVVP_get_digestbynid(mdnid);
 
         if (type == NULL) {
-            ASN1err(ASN1_F_ASN1_ITEM_VERIFY,
-                    ASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
+            YASN1err(YASN1_F_YASN1_ITEM_VERIFY,
+                    YASN1_R_UNKNOWN_MESSAGE_DIGEST_ALGORITHM);
             goto err;
         }
 
         /* Check public key OID matches public key type */
-        if (EVP_PKEY_type(pknid) != pkey->ameth->pkey_id) {
-            ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ASN1_R_WRONG_PUBLIC_KEY_TYPE);
+        if (EVVP_PKEY_type(pknid) != pkey->ameth->pkey_id) {
+            YASN1err(YASN1_F_YASN1_ITEM_VERIFY, YASN1_R_WRONG_PUBLIC_KEY_TYPE);
             goto err;
         }
 
-        if (!EVP_DigestVerifyInit(ctx, NULL, type, NULL, pkey)) {
-            ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_EVP_LIB);
+        if (!EVVP_DigestVerifyInit(ctx, NULL, type, NULL, pkey)) {
+            YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_EVVP_LIB);
             ret = 0;
             goto err;
         }
 
     }
 
-    inl = ASN1_item_i2d(asn, &buf_in, it);
+    inl = YASN1_item_i2d(asn, &buf_in, it);
     if (inl <= 0) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_INTERNAL_ERROR);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_INTERNAL_ERROR);
         goto err;
     }
     if (buf_in == NULL) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     inll = inl;
 
-    ret = EVP_DigestVerify(ctx, signature->data, (size_t)signature->length,
+    ret = EVVP_DigestVerify(ctx, signature->data, (size_t)signature->length,
                            buf_in, inl);
     if (ret <= 0) {
-        ASN1err(ASN1_F_ASN1_ITEM_VERIFY, ERR_R_EVP_LIB);
+        YASN1err(YASN1_F_YASN1_ITEM_VERIFY, ERR_R_EVVP_LIB);
         goto err;
     }
     ret = 1;
  err:
     OPENSSL_clear_free(buf_in, inll);
-    EVP_MD_CTX_free(ctx);
+    EVVP_MD_CTX_free(ctx);
     return ret;
 }

@@ -13,36 +13,36 @@
 #include "crypto/x509.h"
 #include "ext_dat.h"
 
-static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
-                                      X509V3_CTX *ctx, char *str);
-const X509V3_EXT_METHOD v3_skey_id = {
-    NID_subject_key_identifier, 0, ASN1_ITEM_ref(ASN1_OCTET_STRING),
+static YASN1_OCTET_STRING *s2i_skey_id(YX509V3_EXT_METHOD *method,
+                                      YX509V3_CTX *ctx, char *str);
+const YX509V3_EXT_METHOD v3_skey_id = {
+    NID_subject_key_identifier, 0, YASN1_ITEM_ref(YASN1_OCTET_STRING),
     0, 0, 0, 0,
-    (X509V3_EXT_I2S)i2s_ASN1_OCTET_STRING,
-    (X509V3_EXT_S2I)s2i_skey_id,
+    (YX509V3_EXT_I2S)i2s_YASN1_OCTET_STRING,
+    (YX509V3_EXT_S2I)s2i_skey_id,
     0, 0, 0, 0,
     NULL
 };
 
-char *i2s_ASN1_OCTET_STRING(X509V3_EXT_METHOD *method,
-                            const ASN1_OCTET_STRING *oct)
+char *i2s_YASN1_OCTET_STRING(YX509V3_EXT_METHOD *method,
+                            const YASN1_OCTET_STRING *oct)
 {
     return OPENSSL_buf2hexstr(oct->data, oct->length);
 }
 
-ASN1_OCTET_STRING *s2i_ASN1_OCTET_STRING(X509V3_EXT_METHOD *method,
-                                         X509V3_CTX *ctx, const char *str)
+YASN1_OCTET_STRING *s2i_YASN1_OCTET_STRING(YX509V3_EXT_METHOD *method,
+                                         YX509V3_CTX *ctx, const char *str)
 {
-    ASN1_OCTET_STRING *oct;
+    YASN1_OCTET_STRING *oct;
     long length;
 
-    if ((oct = ASN1_OCTET_STRING_new()) == NULL) {
-        X509V3err(X509V3_F_S2I_ASN1_OCTET_STRING, ERR_R_MALLOC_FAILURE);
+    if ((oct = YASN1_OCTET_STRING_new()) == NULL) {
+        YX509V3err(YX509V3_F_S2I_YASN1_OCTET_STRING, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
     if ((oct->data = OPENSSL_hexstr2buf(str, &length)) == NULL) {
-        ASN1_OCTET_STRING_free(oct);
+        YASN1_OCTET_STRING_free(oct);
         return NULL;
     }
 
@@ -52,21 +52,21 @@ ASN1_OCTET_STRING *s2i_ASN1_OCTET_STRING(X509V3_EXT_METHOD *method,
 
 }
 
-static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
-                                      X509V3_CTX *ctx, char *str)
+static YASN1_OCTET_STRING *s2i_skey_id(YX509V3_EXT_METHOD *method,
+                                      YX509V3_CTX *ctx, char *str)
 {
-    ASN1_OCTET_STRING *oct;
-    X509_PUBKEY *pubkey;
+    YASN1_OCTET_STRING *oct;
+    YX509_PUBKEY *pubkey;
     const unsigned char *pk;
     int pklen;
-    unsigned char pkey_dig[EVP_MAX_MD_SIZE];
+    unsigned char pkey_dig[EVVP_MAX_MD_SIZE];
     unsigned int diglen;
 
     if (strcmp(str, "hash"))
-        return s2i_ASN1_OCTET_STRING(method, ctx, str);
+        return s2i_YASN1_OCTET_STRING(method, ctx, str);
 
-    if ((oct = ASN1_OCTET_STRING_new()) == NULL) {
-        X509V3err(X509V3_F_S2I_SKEY_ID, ERR_R_MALLOC_FAILURE);
+    if ((oct = YASN1_OCTET_STRING_new()) == NULL) {
+        YX509V3err(YX509V3_F_S2I_SKEY_ID, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -74,7 +74,7 @@ static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
         return oct;
 
     if (!ctx || (!ctx->subject_req && !ctx->subject_cert)) {
-        X509V3err(X509V3_F_S2I_SKEY_ID, X509V3_R_NO_PUBLIC_KEY);
+        YX509V3err(YX509V3_F_S2I_SKEY_ID, YX509V3_R_NO_PUBLIC_KEY);
         goto err;
     }
 
@@ -84,23 +84,23 @@ static ASN1_OCTET_STRING *s2i_skey_id(X509V3_EXT_METHOD *method,
         pubkey = ctx->subject_cert->cert_info.key;
 
     if (pubkey == NULL) {
-        X509V3err(X509V3_F_S2I_SKEY_ID, X509V3_R_NO_PUBLIC_KEY);
+        YX509V3err(YX509V3_F_S2I_SKEY_ID, YX509V3_R_NO_PUBLIC_KEY);
         goto err;
     }
 
-    X509_PUBKEY_get0_param(NULL, &pk, &pklen, NULL, pubkey);
+    YX509_PUBKEY_get0_param(NULL, &pk, &pklen, NULL, pubkey);
 
-    if (!EVP_Digest(pk, pklen, pkey_dig, &diglen, EVP_sha1(), NULL))
+    if (!EVVP_Digest(pk, pklen, pkey_dig, &diglen, EVVP_sha1(), NULL))
         goto err;
 
-    if (!ASN1_OCTET_STRING_set(oct, pkey_dig, diglen)) {
-        X509V3err(X509V3_F_S2I_SKEY_ID, ERR_R_MALLOC_FAILURE);
+    if (!YASN1_OCTET_STRING_set(oct, pkey_dig, diglen)) {
+        YX509V3err(YX509V3_F_S2I_SKEY_ID, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
     return oct;
 
  err:
-    ASN1_OCTET_STRING_free(oct);
+    YASN1_OCTET_STRING_free(oct);
     return NULL;
 }

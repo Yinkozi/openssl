@@ -15,15 +15,15 @@
 
 /* Policy Node routines */
 
-void policy_data_free(X509_POLICY_DATA *data)
+void policy_data_free(YX509_POLICY_DATA *data)
 {
     if (data == NULL)
         return;
-    ASN1_OBJECT_free(data->valid_policy);
+    YASN1_OBJECT_free(data->valid_policy);
     /* Don't free qualifiers if shared */
     if (!(data->flags & POLICY_DATA_FLAG_SHARED_QUALIFIERS))
         sk_POLICYQUALINFO_pop_free(data->qualifier_set, POLICYQUALINFO_free);
-    sk_ASN1_OBJECT_pop_free(data->expected_policy_set, ASN1_OBJECT_free);
+    sk_YASN1_OBJECT_pop_free(data->expected_policy_set, YASN1_OBJECT_free);
     OPENSSL_free(data);
 }
 
@@ -35,11 +35,11 @@ void policy_data_free(X509_POLICY_DATA *data)
  * source.
  */
 
-X509_POLICY_DATA *policy_data_new(POLICYINFO *policy,
-                                  const ASN1_OBJECT *cid, int crit)
+YX509_POLICY_DATA *policy_data_new(POLICYINFO *policy,
+                                  const YASN1_OBJECT *cid, int crit)
 {
-    X509_POLICY_DATA *ret;
-    ASN1_OBJECT *id;
+    YX509_POLICY_DATA *ret;
+    YASN1_OBJECT *id;
 
     if (policy == NULL && cid == NULL)
         return NULL;
@@ -51,15 +51,15 @@ X509_POLICY_DATA *policy_data_new(POLICYINFO *policy,
         id = NULL;
     ret = OPENSSL_zalloc(sizeof(*ret));
     if (ret == NULL) {
-        X509V3err(X509V3_F_POLICY_DATA_NEW, ERR_R_MALLOC_FAILURE);
-        ASN1_OBJECT_free(id);
+        YX509V3err(YX509V3_F_POLICY_DATA_NEW, ERR_R_MALLOC_FAILURE);
+        YASN1_OBJECT_free(id);
         return NULL;
     }
-    ret->expected_policy_set = sk_ASN1_OBJECT_new_null();
+    ret->expected_policy_set = sk_YASN1_OBJECT_new_null();
     if (ret->expected_policy_set == NULL) {
         OPENSSL_free(ret);
-        ASN1_OBJECT_free(id);
-        X509V3err(X509V3_F_POLICY_DATA_NEW, ERR_R_MALLOC_FAILURE);
+        YASN1_OBJECT_free(id);
+        YX509V3err(YX509V3_F_POLICY_DATA_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 

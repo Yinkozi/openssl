@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# This module implements support for Intel AES-NI extension. In
+# This module implements support for Intel YAES-NI extension. In
 # OpenSSL context it's used with Intel engine, but can also be used as
 # drop-in replacement for crypto/aes/asm/aes-586.pl [see below for
 # details].
@@ -67,7 +67,7 @@
 # Goldmont	3.84/1.39	1.39	1.63	1.31	1.70
 # Bulldozer	5.80/0.98	1.05	1.24	0.93	1.23
 
-$PREFIX="aesni";	# if $PREFIX is set to "AES", the script
+$PREFIX="aesni";	# if $PREFIX is set to "YAES", the script
 			# generates drop-in replacement for
 			# crypto/aes/asm/aes-586.pl:-)
 $inline=1;		# inline _aesni_[en|de]crypt
@@ -105,7 +105,7 @@ $inout3="xmm5";	$in1="xmm5";
 $inout4="xmm6";	$in0="xmm6";
 $inout5="xmm7";	$ivec="xmm7";
 
-# AESNI extension
+# YAESNI extension
 sub aeskeygenassist
 { my($dst,$src,$imm)=@_;
     if ("$dst:$src" =~ /xmm([0-7]):xmm([0-7])/)
@@ -189,7 +189,7 @@ sub aesni_generate1	# fully unrolled loop
     &function_end_B("_aesni_${p}rypt1");
 }
 
-# void $PREFIX_encrypt (const void *inp,void *out,const AES_KEY *key);
+# void $PREFIX_encrypt (const void *inp,void *out,const YAES_KEY *key);
 &aesni_generate1("enc") if (!$inline);
 &function_begin_B("${PREFIX}_encrypt");
 	&mov	("eax",&wparam(0));
@@ -208,7 +208,7 @@ sub aesni_generate1	# fully unrolled loop
 	&ret	();
 &function_end_B("${PREFIX}_encrypt");
 
-# void $PREFIX_decrypt (const void *inp,void *out,const AES_KEY *key);
+# void $PREFIX_decrypt (const void *inp,void *out,const YAES_KEY *key);
 &aesni_generate1("dec") if(!$inline);
 &function_begin_B("${PREFIX}_decrypt");
 	&mov	("eax",&wparam(0));
@@ -426,7 +426,7 @@ sub aesni_generate6
 if ($PREFIX eq "aesni") {
 ######################################################################
 # void aesni_ecb_encrypt (const void *in, void *out,
-#                         size_t length, const AES_KEY *key,
+#                         size_t length, const YAES_KEY *key,
 #                         int enc);
 &function_begin("aesni_ecb_encrypt");
 	&mov	($inp,&wparam(0));
@@ -651,7 +651,7 @@ if ($PREFIX eq "aesni") {
 
 ######################################################################
 # void aesni_ccm64_[en|de]crypt_blocks (const void *in, void *out,
-#                         size_t blocks, const AES_KEY *key,
+#                         size_t blocks, const YAES_KEY *key,
 #                         const char *ivec,char *cmac);
 #
 # Handles only complete blocks, operates on 64-bit counter and
@@ -859,7 +859,7 @@ if ($PREFIX eq "aesni") {
 
 ######################################################################
 # void aesni_ctr32_encrypt_blocks (const void *in, void *out,
-#                         size_t blocks, const AES_KEY *key,
+#                         size_t blocks, const YAES_KEY *key,
 #                         const char *ivec);
 #
 # Handles only complete blocks, operates on 32-bit counter and
@@ -1119,7 +1119,7 @@ if ($PREFIX eq "aesni") {
 
 ######################################################################
 # void aesni_xts_[en|de]crypt(const char *inp,char *out,size_t len,
-#	const AES_KEY *key1, const AES_KEY *key2
+#	const YAES_KEY *key1, const YAES_KEY *key2
 #	const unsigned char iv[16]);
 #
 { my ($tweak,$twtmp,$twres,$twmask)=($rndkey1,$rndkey0,$inout0,$inout1);
@@ -1851,7 +1851,7 @@ if ($PREFIX eq "aesni") {
 
 ######################################################################
 # void aesni_ocb_[en|de]crypt(const char *inp, char *out, size_t blocks,
-#	const AES_KEY *key, unsigned int start_block_num,
+#	const YAES_KEY *key, unsigned int start_block_num,
 #	unsigned char offset_i[16], const unsigned char L_[][16],
 #	unsigned char checksum[16]);
 #
@@ -2723,7 +2723,7 @@ my ($l_,$block,$i1,$i3,$i5) = ($rounds_,$key_,$rounds,$len,$out);
 
 ######################################################################
 # void $PREFIX_cbc_encrypt (const void *inp, void *out,
-#                           size_t length, const AES_KEY *key,
+#                           size_t length, const YAES_KEY *key,
 #                           unsigned char *ivp,const int enc);
 &function_begin("${PREFIX}_cbc_encrypt");
 	&mov	($inp,&wparam(0));
@@ -2977,7 +2977,7 @@ my ($l_,$block,$i1,$i3,$i5) = ($rounds_,$key_,$rounds,$len,$out);
 # input:
 #	"eax"	const unsigned char *userKey
 #	$rounds	int bits
-#	$key	AES_KEY *key
+#	$key	YAES_KEY *key
 # output:
 #	"eax"	return code
 #	$round	rounds
@@ -3351,7 +3351,7 @@ my ($l_,$block,$i1,$i3,$i5) = ($rounds_,$key_,$rounds,$len,$out);
 &function_end_B("_aesni_set_encrypt_key");
 
 # int $PREFIX_set_encrypt_key (const unsigned char *userKey, int bits,
-#                              AES_KEY *key)
+#                              YAES_KEY *key)
 &function_begin_B("${PREFIX}_set_encrypt_key");
 	&mov	("eax",&wparam(0));
 	&mov	($rounds,&wparam(1));
@@ -3361,7 +3361,7 @@ my ($l_,$block,$i1,$i3,$i5) = ($rounds_,$key_,$rounds,$len,$out);
 &function_end_B("${PREFIX}_set_encrypt_key");
 
 # int $PREFIX_set_decrypt_key (const unsigned char *userKey, int bits,
-#                              AES_KEY *key)
+#                              YAES_KEY *key)
 &function_begin_B("${PREFIX}_set_decrypt_key");
 	&mov	("eax",&wparam(0));
 	&mov	($rounds,&wparam(1));
@@ -3408,7 +3408,7 @@ my ($l_,$block,$i1,$i3,$i5) = ($rounds_,$key_,$rounds,$len,$out);
 &data_word(0x04070605,0x04070605,0x04070605,0x04070605);
 &data_word(1,1,1,1);
 &data_word(0x1b,0x1b,0x1b,0x1b);
-&asciz("AES for Intel AES-NI, CRYPTOGAMS by <appro\@openssl.org>");
+&asciz("YAES for Intel YAES-NI, CRYPTOGAMS by <appro\@openssl.org>");
 
 &asm_finish();
 

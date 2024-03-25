@@ -18,8 +18,8 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL, *dcont = NULL;
-    X509 *rcert = NULL;
-    EVP_PKEY *rkey = NULL;
+    YX509 *rcert = NULL;
+    EVVP_PKEY *rkey = NULL;
     CMS_ContentInfo *cms = NULL;
     int ret = 1;
 
@@ -32,11 +32,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    rcert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    rcert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    rkey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    rkey = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!rcert || !rkey)
         goto err;
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
         goto err;
 
     /* Parse PEM content */
-    cms = PEM_read_bio_CMS(in, NULL, 0, NULL);
+    cms = PEM_readd_bio_CMS(in, NULL, 0, NULL);
 
     if (!cms)
         goto err;
@@ -74,12 +74,12 @@ int main(int argc, char **argv)
 
     if (ret) {
         fprintf(stderr, "Error Decrypting Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
 
     CMS_ContentInfo_free(cms);
-    X509_free(rcert);
-    EVP_PKEY_free(rkey);
+    YX509_free(rcert);
+    EVVP_PKEY_free(rkey);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

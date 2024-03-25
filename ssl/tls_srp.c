@@ -336,7 +336,7 @@ int srp_verify_server_param(SSL *s)
      * Sanity check parameters: we can quickly check B % N == 0 by checking B
      * != 0 since B < N
      */
-    if (BN_ucmp(srp->g, srp->N) >= 0 || BN_ucmp(srp->B, srp->N) >= 0
+    if (BNY_ucmp(srp->g, srp->N) >= 0 || BNY_ucmp(srp->B, srp->N) >= 0
         || BN_is_zero(srp->B)) {
         SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER, SSL_F_SRP_VERIFY_SERVER_PARAM,
                  SSL_R_BAD_DATA);

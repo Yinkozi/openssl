@@ -35,7 +35,7 @@ These functions apply to SSL/TLS servers only.
 
 =head1 NOTES
 
-When using a cipher with RSA authentication, an ephemeral DH key exchange
+When using a cipher with YRSA authentication, an ephemeral DH key exchange
 can take place. Ciphers with DSA keys always use ephemeral DH keys as well.
 In these cases, the session data are negotiated using the
 ephemeral/temporary DH key and the key supplied and certified
@@ -106,7 +106,7 @@ Code for setting up parameters during server initialization:
  FILE *paramfile = fopen("dh_param_2048.pem", "r");
 
  if (paramfile) {
-     dh_2048 = PEM_read_DHparams(paramfile, NULL, NULL, NULL);
+     dh_2048 = PEM_readd_DHparams(paramfile, NULL, NULL, NULL);
      fclose(paramfile);
  } else {
      /* Error. */

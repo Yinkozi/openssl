@@ -108,10 +108,10 @@ int OSSL_STORE_close(OSSL_STORE_CTX *ctx);
  * available "files" / "tokens" / what have you.
  */
 # define OSSL_STORE_INFO_NAME           1   /* char * */
-# define OSSL_STORE_INFO_PARAMS         2   /* EVP_PKEY * */
-# define OSSL_STORE_INFO_PKEY           3   /* EVP_PKEY * */
-# define OSSL_STORE_INFO_CERT           4   /* X509 * */
-# define OSSL_STORE_INFO_CRL            5   /* X509_CRL * */
+# define OSSL_STORE_INFO_PARAMS         2   /* EVVP_PKEY * */
+# define OSSL_STORE_INFO_PKEY           3   /* EVVP_PKEY * */
+# define OSSL_STORE_INFO_CERT           4   /* YX509 * */
+# define OSSL_STORE_INFO_CRL            5   /* YX509_CRL * */
 
 /*
  * Functions to generate OSSL_STORE_INFOs, one function for each type we
@@ -122,10 +122,10 @@ int OSSL_STORE_close(OSSL_STORE_CTX *ctx);
  */
 OSSL_STORE_INFO *OSSL_STORE_INFO_new_NAME(char *name);
 int OSSL_STORE_INFO_set0_NAME_description(OSSL_STORE_INFO *info, char *desc);
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_PARAMS(EVP_PKEY *params);
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_PKEY(EVP_PKEY *pkey);
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_CERT(X509 *x509);
-OSSL_STORE_INFO *OSSL_STORE_INFO_new_CRL(X509_CRL *crl);
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_PARAMS(EVVP_PKEY *params);
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_PKEY(EVVP_PKEY *pkey);
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_CERT(YX509 *x509);
+OSSL_STORE_INFO *OSSL_STORE_INFO_new_CRL(YX509_CRL *crl);
 
 /*
  * Functions to try to extract data from a OSSL_STORE_INFO.
@@ -135,14 +135,14 @@ const char *OSSL_STORE_INFO_get0_NAME(const OSSL_STORE_INFO *info);
 char *OSSL_STORE_INFO_get1_NAME(const OSSL_STORE_INFO *info);
 const char *OSSL_STORE_INFO_get0_NAME_description(const OSSL_STORE_INFO *info);
 char *OSSL_STORE_INFO_get1_NAME_description(const OSSL_STORE_INFO *info);
-EVP_PKEY *OSSL_STORE_INFO_get0_PARAMS(const OSSL_STORE_INFO *info);
-EVP_PKEY *OSSL_STORE_INFO_get1_PARAMS(const OSSL_STORE_INFO *info);
-EVP_PKEY *OSSL_STORE_INFO_get0_PKEY(const OSSL_STORE_INFO *info);
-EVP_PKEY *OSSL_STORE_INFO_get1_PKEY(const OSSL_STORE_INFO *info);
-X509 *OSSL_STORE_INFO_get0_CERT(const OSSL_STORE_INFO *info);
-X509 *OSSL_STORE_INFO_get1_CERT(const OSSL_STORE_INFO *info);
-X509_CRL *OSSL_STORE_INFO_get0_CRL(const OSSL_STORE_INFO *info);
-X509_CRL *OSSL_STORE_INFO_get1_CRL(const OSSL_STORE_INFO *info);
+EVVP_PKEY *OSSL_STORE_INFO_get0_PARAMS(const OSSL_STORE_INFO *info);
+EVVP_PKEY *OSSL_STORE_INFO_get1_PARAMS(const OSSL_STORE_INFO *info);
+EVVP_PKEY *OSSL_STORE_INFO_get0_PKEY(const OSSL_STORE_INFO *info);
+EVVP_PKEY *OSSL_STORE_INFO_get1_PKEY(const OSSL_STORE_INFO *info);
+YX509 *OSSL_STORE_INFO_get0_CERT(const OSSL_STORE_INFO *info);
+YX509 *OSSL_STORE_INFO_get1_CERT(const OSSL_STORE_INFO *info);
+YX509_CRL *OSSL_STORE_INFO_get0_CRL(const OSSL_STORE_INFO *info);
+YX509_CRL *OSSL_STORE_INFO_get1_CRL(const OSSL_STORE_INFO *info);
 
 const char *OSSL_STORE_INFO_type_string(int type);
 
@@ -171,11 +171,11 @@ int OSSL_STORE_supports_search(OSSL_STORE_CTX *ctx, int search_type);
  * The input is considered to be owned by the caller, and must therefore
  * remain present throughout the lifetime of the returned OSSL_STORE_SEARCH
  */
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(X509_NAME *name);
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(X509_NAME *name,
-                                                      const ASN1_INTEGER
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_name(YX509_NAME *name);
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_issuer_serial(YX509_NAME *name,
+                                                      const YASN1_INTEGER
                                                       *serial);
-OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVP_MD *digest,
+OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_key_fingerprint(const EVVP_MD *digest,
                                                         const unsigned char
                                                         *bytes, size_t len);
 OSSL_STORE_SEARCH *OSSL_STORE_SEARCH_by_alias(const char *alias);
@@ -185,13 +185,13 @@ void OSSL_STORE_SEARCH_free(OSSL_STORE_SEARCH *search);
 
 /* Search term accessors */
 int OSSL_STORE_SEARCH_get_type(const OSSL_STORE_SEARCH *criterion);
-X509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion);
-const ASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
+YX509_NAME *OSSL_STORE_SEARCH_get0_name(OSSL_STORE_SEARCH *criterion);
+const YASN1_INTEGER *OSSL_STORE_SEARCH_get0_serial(const OSSL_STORE_SEARCH
                                                   *criterion);
 const unsigned char *OSSL_STORE_SEARCH_get0_bytes(const OSSL_STORE_SEARCH
                                                   *criterion, size_t *length);
 const char *OSSL_STORE_SEARCH_get0_string(const OSSL_STORE_SEARCH *criterion);
-const EVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH *criterion);
+const EVVP_MD *OSSL_STORE_SEARCH_get0_digest(const OSSL_STORE_SEARCH *criterion);
 
 /*
  * Add search criterion and expected return type (which can be unspecified)

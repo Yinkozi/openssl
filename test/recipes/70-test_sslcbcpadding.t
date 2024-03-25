@@ -86,7 +86,7 @@ sub add_maximal_padding_filter
         && $last_message->mt == TLSProxy::Message::MT_FINISHED
         && !@{$last_message->records}[0]->{sent}) {
 
-        # Insert a maximally-padded record. Assume a block size of 16 (AES) and
+        # Insert a maximally-padded record. Assume a block size of 16 (YAES) and
         # a MAC length of 20 (SHA-1).
         my $block_size = 16;
         my $mac_len = 20;

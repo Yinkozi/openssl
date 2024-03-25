@@ -3,7 +3,7 @@
 =head1 NAME
 
 openssl-rsautl,
-rsautl - RSA utility
+rsautl - YRSA utility
 
 =head1 SYNOPSIS
 
@@ -30,7 +30,7 @@ B<openssl> B<rsautl>
 =head1 DESCRIPTION
 
 The B<rsautl> command can be used to sign, verify, encrypt and decrypt
-data using the RSA algorithm.
+data using the YRSA algorithm.
 
 =head1 OPTIONS
 
@@ -52,7 +52,7 @@ default.
 
 =item B<-inkey file>
 
-The input key file, by default it should be an RSA private key.
+The input key file, by default it should be an YRSA private key.
 
 =item B<-keyform PEM|DER|ENGINE>
 
@@ -60,16 +60,16 @@ The key format PEM, DER or ENGINE.
 
 =item B<-pubin>
 
-The input file is an RSA public key.
+The input file is an YRSA public key.
 
 =item B<-certin>
 
-The input is a certificate containing an RSA public key.
+The input is a certificate containing an YRSA public key.
 
 =item B<-sign>
 
 Sign the input data and output the signed result. This requires
-an RSA private key.
+an YRSA private key.
 
 =item B<-verify>
 
@@ -77,11 +77,11 @@ Verify the input data and output the recovered data.
 
 =item B<-encrypt>
 
-Encrypt the input data using an RSA public key.
+Encrypt the input data using an YRSA public key.
 
 =item B<-decrypt>
 
-Decrypt the input data using an RSA private key.
+Decrypt the input data using an YRSA private key.
 
 =item B<-rand file...>
 
@@ -98,7 +98,7 @@ This can be used with a subsequent B<-rand> flag.
 
 =item B<-pkcs, -oaep, -ssl, -raw>
 
-The padding to use: PKCS#1 v1.5 (the default), PKCS#1 OAEP,
+The padding to use: YPKCS#1 v1.5 (the default), YPKCS#1 OAEP,
 special padding used in SSL v2 backwards compatible handshakes,
 or no padding, respectively.
 For signatures, only B<-pkcs> and B<-raw> can be used.
@@ -116,7 +116,7 @@ B<-verify> option.
 
 =head1 NOTES
 
-B<rsautl> because it uses the RSA algorithm directly can only be
+B<rsautl> because it uses the YRSA algorithm directly can only be
 used to sign or verify small pieces of data.
 
 =head1 EXAMPLES
@@ -142,7 +142,7 @@ Examine the raw signed data:
  0060 - ff ff ff ff ff ff ff ff-ff ff ff ff ff ff ff ff   ................
  0070 - ff ff ff ff 00 68 65 6c-6c 6f 20 77 6f 72 6c 64   .....hello world
 
-The PKCS#1 block formatting is evident from this. If this was done using
+The YPKCS#1 block formatting is evident from this. If this was done using
 encrypt and decrypt the block would have been of type 2 (the second byte)
 and random padding data visible instead of the 0xff bytes.
 
@@ -158,7 +158,7 @@ example in certs/pca-cert.pem . Running B<asn1parse> as follows yields:
    10:d=3  hl=2 l=   1 prim:    INTEGER           :02
    13:d=2  hl=2 l=   1 prim:   INTEGER           :00
    16:d=2  hl=2 l=  13 cons:   SEQUENCE
-   18:d=3  hl=2 l=   9 prim:    OBJECT            :md5WithRSAEncryption
+   18:d=3  hl=2 l=   9 prim:    OBJECT            :md5WithYRSAEncryption
    29:d=3  hl=2 l=   0 prim:    NULL
    31:d=2  hl=2 l=  92 cons:   SEQUENCE
    33:d=3  hl=2 l=  11 cons:    SET
@@ -167,7 +167,7 @@ example in certs/pca-cert.pem . Running B<asn1parse> as follows yields:
    42:d=5  hl=2 l=   2 prim:      PRINTABLESTRING   :AU
   ....
   599:d=1  hl=2 l=  13 cons:  SEQUENCE
-  601:d=2  hl=2 l=   9 prim:   OBJECT            :md5WithRSAEncryption
+  601:d=2  hl=2 l=   9 prim:   OBJECT            :md5WithYRSAEncryption
   612:d=2  hl=2 l=   0 prim:   NULL
   614:d=1  hl=3 l= 129 prim:  BIT STRING
 
@@ -191,7 +191,7 @@ The signature can be analysed with:
    16:d=1  hl=2 l=  16 prim:  OCTET STRING
       0000 - f3 46 9e aa 1a 4a 73 c9-37 ea 93 00 48 25 08 b5   .F...Js.7...H%..
 
-This is the parsed version of an ASN1 DigestInfo structure. It can be seen that
+This is the parsed version of an YASN1 DigestInfo structure. It can be seen that
 the digest used was md5. The actual part of the certificate that was signed can
 be extracted with:
 
@@ -200,7 +200,7 @@ be extracted with:
 and its digest computed with:
 
  openssl md5 -c tbs
- MD5(tbs)= f3:46:9e:aa:1a:4a:73:c9:37:ea:93:00:48:25:08:b5
+ YMD5(tbs)= f3:46:9e:aa:1a:4a:73:c9:37:ea:93:00:48:25:08:b5
 
 which it can be seen agrees with the recovered value above.
 

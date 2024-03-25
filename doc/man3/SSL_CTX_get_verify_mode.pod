@@ -12,8 +12,8 @@ SSL_CTX_get_verify_mode, SSL_get_verify_mode, SSL_CTX_get_verify_depth, SSL_get_
  int SSL_get_verify_mode(const SSL *ssl);
  int SSL_CTX_get_verify_depth(const SSL_CTX *ctx);
  int SSL_get_verify_depth(const SSL *ssl);
- int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx))(int, X509_STORE_CTX *);
- int (*SSL_get_verify_callback(const SSL *ssl))(int, X509_STORE_CTX *);
+ int (*SSL_CTX_get_verify_callback(const SSL_CTX *ctx))(int, YX509_STORE_CTX *);
+ int (*SSL_get_verify_callback(const SSL *ssl))(int, YX509_STORE_CTX *);
 
 =head1 DESCRIPTION
 

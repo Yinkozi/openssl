@@ -16,17 +16,17 @@
 
 static int ocsp_certid_print(BIO *bp, OCSP_CERTID *a, int indent)
 {
-    BIO_printf(bp, "%*sCertificate ID:\n", indent, "");
+    BIO_pprintf(bp, "%*sCertificate ID:\n", indent, "");
     indent += 2;
-    BIO_printf(bp, "%*sHash Algorithm: ", indent, "");
-    i2a_ASN1_OBJECT(bp, a->hashAlgorithm.algorithm);
-    BIO_printf(bp, "\n%*sIssuer Name Hash: ", indent, "");
-    i2a_ASN1_STRING(bp, &a->issuerNameHash, 0);
-    BIO_printf(bp, "\n%*sIssuer Key Hash: ", indent, "");
-    i2a_ASN1_STRING(bp, &a->issuerKeyHash, 0);
-    BIO_printf(bp, "\n%*sSerial Number: ", indent, "");
-    i2a_ASN1_INTEGER(bp, &a->serialNumber);
-    BIO_printf(bp, "\n");
+    BIO_pprintf(bp, "%*sHash Algorithm: ", indent, "");
+    i2a_YASN1_OBJECT(bp, a->hashAlgorithm.algorithm);
+    BIO_pprintf(bp, "\n%*sIssuer Name Hash: ", indent, "");
+    i2a_YASN1_STRING(bp, &a->issuerNameHash, 0);
+    BIO_pprintf(bp, "\n%*sIssuer Key Hash: ", indent, "");
+    i2a_YASN1_STRING(bp, &a->issuerKeyHash, 0);
+    BIO_pprintf(bp, "\n%*sSerial Number: ", indent, "");
+    i2a_YASN1_INTEGER(bp, &a->serialNumber);
+    BIO_pprintf(bp, "\n");
     return 1;
 }
 
@@ -95,8 +95,8 @@ int OCSP_REQUEST_print(BIO *bp, OCSP_REQUEST *o, unsigned long flags)
 
     if (BIO_write(bp, "OCSP Request Data:\n", 19) <= 0)
         goto err;
-    l = ASN1_INTEGER_get(inf->version);
-    if (BIO_printf(bp, "    Version: %lu (0x%lx)", l + 1, l) <= 0)
+    l = YASN1_INTEGER_get(inf->version);
+    if (BIO_pprintf(bp, "    Version: %lu (0x%lx)", l + 1, l) <= 0)
         goto err;
     if (inf->requestorName != NULL) {
         if (BIO_write(bp, "\n    Requestor Name: ", 21) <= 0)
@@ -109,19 +109,19 @@ int OCSP_REQUEST_print(BIO *bp, OCSP_REQUEST *o, unsigned long flags)
         one = sk_OCSP_ONEREQ_value(inf->requestList, i);
         cid = one->reqCert;
         ocsp_certid_print(bp, cid, 8);
-        if (!X509V3_extensions_print(bp,
+        if (!YX509V3_extensions_print(bp,
                                      "Request Single Extensions",
                                      one->singleRequestExtensions, flags, 8))
             goto err;
     }
-    if (!X509V3_extensions_print(bp, "Request Extensions",
+    if (!YX509V3_extensions_print(bp, "Request Extensions",
                                  inf->requestExtensions, flags, 4))
         goto err;
     if (sig) {
-        X509_signature_print(bp, &sig->signatureAlgorithm, sig->signature);
-        for (i = 0; i < sk_X509_num(sig->certs); i++) {
-            X509_print(bp, sk_X509_value(sig->certs, i));
-            PEM_write_bio_X509(bp, sk_X509_value(sig->certs, i));
+        YX509_signature_print(bp, &sig->signatureAlgorithm, sig->signature);
+        for (i = 0; i < sk_YX509_num(sig->certs); i++) {
+            YX509_print(bp, sk_YX509_value(sig->certs, i));
+            PEM_write_bio_YX509(bp, sk_YX509_value(sig->certs, i));
         }
     }
     return 1;
@@ -144,15 +144,15 @@ int OCSP_RESPONSE_print(BIO *bp, OCSP_RESPONSE *o, unsigned long flags)
 
     if (BIO_puts(bp, "OCSP Response Data:\n") <= 0)
         goto err;
-    l = ASN1_ENUMERATED_get(o->responseStatus);
-    if (BIO_printf(bp, "    OCSP Response Status: %s (0x%lx)\n",
+    l = YASN1_ENUMERATED_get(o->responseStatus);
+    if (BIO_pprintf(bp, "    OCSP Response Status: %s (0x%lx)\n",
                    OCSP_response_status_str(l), l) <= 0)
         goto err;
     if (rb == NULL)
         return 1;
     if (BIO_puts(bp, "    Response Type: ") <= 0)
         goto err;
-    if (i2a_ASN1_OBJECT(bp, rb->responseType) <= 0)
+    if (i2a_YASN1_OBJECT(bp, rb->responseType) <= 0)
         goto err;
     if (OBJ_obj2nid(rb->responseType) != NID_id_pkix_OCSP_basic) {
         BIO_puts(bp, " (unknown response type)\n");
@@ -162,8 +162,8 @@ int OCSP_RESPONSE_print(BIO *bp, OCSP_RESPONSE *o, unsigned long flags)
     if ((br = OCSP_response_get1_basic(o)) == NULL)
         goto err;
     rd = &br->tbsResponseData;
-    l = ASN1_INTEGER_get(rd->version);
-    if (BIO_printf(bp, "\n    Version: %lu (0x%lx)\n", l + 1, l) <= 0)
+    l = YASN1_INTEGER_get(rd->version);
+    if (BIO_pprintf(bp, "\n    Version: %lu (0x%lx)\n", l + 1, l) <= 0)
         goto err;
     if (BIO_puts(bp, "    Responder Id: ") <= 0)
         goto err;
@@ -171,18 +171,18 @@ int OCSP_RESPONSE_print(BIO *bp, OCSP_RESPONSE *o, unsigned long flags)
     rid = &rd->responderId;
     switch (rid->type) {
     case V_OCSP_RESPID_NAME:
-        X509_NAME_print_ex(bp, rid->value.byName, 0, XN_FLAG_ONELINE);
+        YX509_NAME_print_ex(bp, rid->value.byName, 0, XN_FLAG_ONELINE);
         break;
     case V_OCSP_RESPID_KEY:
-        i2a_ASN1_STRING(bp, rid->value.byKey, 0);
+        i2a_YASN1_STRING(bp, rid->value.byKey, 0);
         break;
     }
 
-    if (BIO_printf(bp, "\n    Produced At: ") <= 0)
+    if (BIO_pprintf(bp, "\n    Produced At: ") <= 0)
         goto err;
-    if (!ASN1_GENERALIZEDTIME_print(bp, rd->producedAt))
+    if (!YASN1_GENERALIZEDTIME_print(bp, rd->producedAt))
         goto err;
-    if (BIO_printf(bp, "\n    Responses:\n") <= 0)
+    if (BIO_pprintf(bp, "\n    Responses:\n") <= 0)
         goto err;
     for (i = 0; i < sk_OCSP_SINGLERESP_num(rd->responses); i++) {
         if (!sk_OCSP_SINGLERESP_value(rd->responses, i))
@@ -192,51 +192,51 @@ int OCSP_RESPONSE_print(BIO *bp, OCSP_RESPONSE *o, unsigned long flags)
         if (ocsp_certid_print(bp, cid, 4) <= 0)
             goto err;
         cst = single->certStatus;
-        if (BIO_printf(bp, "    Cert Status: %s",
+        if (BIO_pprintf(bp, "    Cert Status: %s",
                        OCSP_cert_status_str(cst->type)) <= 0)
             goto err;
         if (cst->type == V_OCSP_CERTSTATUS_REVOKED) {
             rev = cst->value.revoked;
-            if (BIO_printf(bp, "\n    Revocation Time: ") <= 0)
+            if (BIO_pprintf(bp, "\n    Revocation Time: ") <= 0)
                 goto err;
-            if (!ASN1_GENERALIZEDTIME_print(bp, rev->revocationTime))
+            if (!YASN1_GENERALIZEDTIME_print(bp, rev->revocationTime))
                 goto err;
             if (rev->revocationReason) {
-                l = ASN1_ENUMERATED_get(rev->revocationReason);
-                if (BIO_printf(bp,
+                l = YASN1_ENUMERATED_get(rev->revocationReason);
+                if (BIO_pprintf(bp,
                                "\n    Revocation Reason: %s (0x%lx)",
                                OCSP_crl_reason_str(l), l) <= 0)
                     goto err;
             }
         }
-        if (BIO_printf(bp, "\n    This Update: ") <= 0)
+        if (BIO_pprintf(bp, "\n    This Update: ") <= 0)
             goto err;
-        if (!ASN1_GENERALIZEDTIME_print(bp, single->thisUpdate))
+        if (!YASN1_GENERALIZEDTIME_print(bp, single->thisUpdate))
             goto err;
         if (single->nextUpdate) {
-            if (BIO_printf(bp, "\n    Next Update: ") <= 0)
+            if (BIO_pprintf(bp, "\n    Next Update: ") <= 0)
                 goto err;
-            if (!ASN1_GENERALIZEDTIME_print(bp, single->nextUpdate))
+            if (!YASN1_GENERALIZEDTIME_print(bp, single->nextUpdate))
                 goto err;
         }
         if (BIO_write(bp, "\n", 1) <= 0)
             goto err;
-        if (!X509V3_extensions_print(bp,
+        if (!YX509V3_extensions_print(bp,
                                      "Response Single Extensions",
                                      single->singleExtensions, flags, 8))
             goto err;
         if (BIO_write(bp, "\n", 1) <= 0)
             goto err;
     }
-    if (!X509V3_extensions_print(bp, "Response Extensions",
+    if (!YX509V3_extensions_print(bp, "Response Extensions",
                                  rd->responseExtensions, flags, 4))
         goto err;
-    if (X509_signature_print(bp, &br->signatureAlgorithm, br->signature) <= 0)
+    if (YX509_signature_print(bp, &br->signatureAlgorithm, br->signature) <= 0)
         goto err;
 
-    for (i = 0; i < sk_X509_num(br->certs); i++) {
-        X509_print(bp, sk_X509_value(br->certs, i));
-        PEM_write_bio_X509(bp, sk_X509_value(br->certs, i));
+    for (i = 0; i < sk_YX509_num(br->certs); i++) {
+        YX509_print(bp, sk_YX509_value(br->certs, i));
+        PEM_write_bio_YX509(bp, sk_YX509_value(br->certs, i));
     }
 
     ret = 1;

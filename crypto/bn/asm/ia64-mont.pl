@@ -39,7 +39,7 @@
 # The reason for padding is that inputs shorter than 512 bits won't
 # be processed faster anyway, because minimal critical path of the
 # core loop happens to match 512-bit timing. Either way, it resulted
-# in >100% improvement of 512-bit RSA sign benchmark and 50% - of
+# in >100% improvement of 512-bit YRSA sign benchmark and 50% - of
 # 1024-bit one [in comparison to original version of *this* module].
 #
 # So far 'openssl speed rsa dsa' output on 900MHz Itanium 2 *with*
@@ -63,7 +63,7 @@
 # dsa 1024 bits 0.000823s 0.000867s   1215.6   1153.2
 # dsa 2048 bits 0.001894s 0.002179s    528.1    458.9
 #
-# As it can be seen, RSA sign performance improves by 130-30%,
+# As it can be seen, YRSA sign performance improves by 130-30%,
 # hereafter less for longer keys, while verify - by 74-13%.
 # DSA performance improves by 115-30%.
 

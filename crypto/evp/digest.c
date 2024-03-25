@@ -16,14 +16,14 @@
 #include "evp_local.h"
 
 
-static void cleanup_old_md_data(EVP_MD_CTX *ctx, int force)
+static void cleanup_old_md_data(EVVP_MD_CTX *ctx, int force)
 {
     if (ctx->digest != NULL) {
         if (ctx->digest->cleanup != NULL
-                && !EVP_MD_CTX_test_flags(ctx, EVP_MD_CTX_FLAG_CLEANED))
+                && !EVVP_MD_CTX_test_flags(ctx, EVVP_MD_CTX_FLAG_CLEANED))
             ctx->digest->cleanup(ctx);
         if (ctx->md_data != NULL && ctx->digest->ctx_size > 0
-                && (!EVP_MD_CTX_test_flags(ctx, EVP_MD_CTX_FLAG_REUSE)
+                && (!EVVP_MD_CTX_test_flags(ctx, EVVP_MD_CTX_FLAG_REUSE)
                     || force)) {
             OPENSSL_clear_free(ctx->md_data, ctx->digest->ctx_size);
             ctx->md_data = NULL;
@@ -32,23 +32,23 @@ static void cleanup_old_md_data(EVP_MD_CTX *ctx, int force)
 }
 
 /* This call frees resources associated with the context */
-int EVP_MD_CTX_reset(EVP_MD_CTX *ctx)
+int EVVP_MD_CTX_reset(EVVP_MD_CTX *ctx)
 {
     if (ctx == NULL)
         return 1;
 
     /*
-     * Don't assume ctx->md_data was cleaned in EVP_Digest_Final, because
+     * Don't assume ctx->md_data was cleaned in EVVP_Digest_Final, because
      * sometimes only copies of the context are ever finalised.
      */
     cleanup_old_md_data(ctx, 0);
 
     /*
-     * pctx should be freed by the user of EVP_MD_CTX
-     * if EVP_MD_CTX_FLAG_KEEP_PKEY_CTX is set
+     * pctx should be freed by the user of EVVP_MD_CTX
+     * if EVVP_MD_CTX_FLAG_KEEP_PKEY_CTX is set
      */
-    if (!EVP_MD_CTX_test_flags(ctx, EVP_MD_CTX_FLAG_KEEP_PKEY_CTX))
-        EVP_PKEY_CTX_free(ctx->pctx);
+    if (!EVVP_MD_CTX_test_flags(ctx, EVVP_MD_CTX_FLAG_KEEP_PKEY_CTX))
+        EVVP_PKEY_CTX_free(ctx->pctx);
 #ifndef OPENSSL_NO_ENGINE
     ENGINE_finish(ctx->engine);
 #endif
@@ -57,26 +57,26 @@ int EVP_MD_CTX_reset(EVP_MD_CTX *ctx)
     return 1;
 }
 
-EVP_MD_CTX *EVP_MD_CTX_new(void)
+EVVP_MD_CTX *EVVP_MD_CTX_new(void)
 {
-    return OPENSSL_zalloc(sizeof(EVP_MD_CTX));
+    return OPENSSL_zalloc(sizeof(EVVP_MD_CTX));
 }
 
-void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
+void EVVP_MD_CTX_free(EVVP_MD_CTX *ctx)
 {
-    EVP_MD_CTX_reset(ctx);
+    EVVP_MD_CTX_reset(ctx);
     OPENSSL_free(ctx);
 }
 
-int EVP_DigestInit(EVP_MD_CTX *ctx, const EVP_MD *type)
+int EVVP_DigestInit(EVVP_MD_CTX *ctx, const EVVP_MD *type)
 {
-    EVP_MD_CTX_reset(ctx);
-    return EVP_DigestInit_ex(ctx, type, NULL);
+    EVVP_MD_CTX_reset(ctx);
+    return EVVP_DigestInit_ex(ctx, type, NULL);
 }
 
-int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
+int EVVP_DigestInit_ex(EVVP_MD_CTX *ctx, const EVVP_MD *type, ENGINE *impl)
 {
-    EVP_MD_CTX_clear_flags(ctx, EVP_MD_CTX_FLAG_CLEANED);
+    EVVP_MD_CTX_clear_flags(ctx, EVVP_MD_CTX_FLAG_CLEANED);
 #ifndef OPENSSL_NO_ENGINE
     /*
      * Whether it's nice or not, "Inits" can be used on "Final"'d contexts so
@@ -92,12 +92,12 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
         /*
          * Ensure an ENGINE left lying around from last time is cleared (the
          * previous check attempted to avoid this if the same ENGINE and
-         * EVP_MD could be used).
+         * EVVP_MD could be used).
          */
         ENGINE_finish(ctx->engine);
         if (impl != NULL) {
             if (!ENGINE_init(impl)) {
-                EVPerr(EVP_F_EVP_DIGESTINIT_EX, EVP_R_INITIALIZATION_ERROR);
+                EVVPerr(EVVP_F_EVVP_DIGESTINIT_EX, EVVP_R_INITIALIZATION_ERROR);
                 return 0;
             }
         } else {
@@ -106,10 +106,10 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
         }
         if (impl != NULL) {
             /* There's an ENGINE for this job ... (apparently) */
-            const EVP_MD *d = ENGINE_get_digest(impl, type->type);
+            const EVVP_MD *d = ENGINE_get_digest(impl, type->type);
 
             if (d == NULL) {
-                EVPerr(EVP_F_EVP_DIGESTINIT_EX, EVP_R_INITIALIZATION_ERROR);
+                EVVPerr(EVVP_F_EVVP_DIGESTINIT_EX, EVVP_R_INITIALIZATION_ERROR);
                 ENGINE_finish(impl);
                 return 0;
             }
@@ -124,7 +124,7 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
             ctx->engine = NULL;
     } else {
         if (!ctx->digest) {
-            EVPerr(EVP_F_EVP_DIGESTINIT_EX, EVP_R_NO_DIGEST_SET);
+            EVVPerr(EVVP_F_EVVP_DIGESTINIT_EX, EVVP_R_NO_DIGEST_SET);
             return 0;
         }
         type = ctx->digest;
@@ -134,11 +134,11 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
         cleanup_old_md_data(ctx, 1);
 
         ctx->digest = type;
-        if (!(ctx->flags & EVP_MD_CTX_FLAG_NO_INIT) && type->ctx_size) {
+        if (!(ctx->flags & EVVP_MD_CTX_FLAG_NO_INIT) && type->ctx_size) {
             ctx->update = type->update;
             ctx->md_data = OPENSSL_zalloc(type->ctx_size);
             if (ctx->md_data == NULL) {
-                EVPerr(EVP_F_EVP_DIGESTINIT_EX, ERR_R_MALLOC_FAILURE);
+                EVVPerr(EVVP_F_EVVP_DIGESTINIT_EX, ERR_R_MALLOC_FAILURE);
                 return 0;
             }
         }
@@ -148,17 +148,17 @@ int EVP_DigestInit_ex(EVP_MD_CTX *ctx, const EVP_MD *type, ENGINE *impl)
 #endif
     if (ctx->pctx) {
         int r;
-        r = EVP_PKEY_CTX_ctrl(ctx->pctx, -1, EVP_PKEY_OP_TYPE_SIG,
-                              EVP_PKEY_CTRL_DIGESTINIT, 0, ctx);
+        r = EVVP_PKEY_CTX_ctrl(ctx->pctx, -1, EVVP_PKEY_OP_TYPE_SIG,
+                              EVVP_PKEY_CTRL_DIGESTINIT, 0, ctx);
         if (r <= 0 && (r != -2))
             return 0;
     }
-    if (ctx->flags & EVP_MD_CTX_FLAG_NO_INIT)
+    if (ctx->flags & EVVP_MD_CTX_FLAG_NO_INIT)
         return 1;
     return ctx->digest->init(ctx);
 }
 
-int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t count)
+int EVVP_DigestUpdate(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
     if (count == 0)
         return 1;
@@ -167,83 +167,83 @@ int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t count)
 }
 
 /* The caller can assume that this removes any secret data from the context */
-int EVP_DigestFinal(EVP_MD_CTX *ctx, unsigned char *md, unsigned int *size)
+int EVVP_DigestFinal(EVVP_MD_CTX *ctx, unsigned char *md, unsigned int *size)
 {
     int ret;
-    ret = EVP_DigestFinal_ex(ctx, md, size);
-    EVP_MD_CTX_reset(ctx);
+    ret = EVVP_DigestFinal_ex(ctx, md, size);
+    EVVP_MD_CTX_reset(ctx);
     return ret;
 }
 
 /* The caller can assume that this removes any secret data from the context */
-int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, unsigned char *md, unsigned int *size)
+int EVVP_DigestFinal_ex(EVVP_MD_CTX *ctx, unsigned char *md, unsigned int *size)
 {
     int ret;
 
-    OPENSSL_assert(ctx->digest->md_size <= EVP_MAX_MD_SIZE);
+    OPENSSL_assert(ctx->digest->md_size <= EVVP_MAX_MD_SIZE);
     ret = ctx->digest->final(ctx, md);
     if (size != NULL)
         *size = ctx->digest->md_size;
     if (ctx->digest->cleanup) {
         ctx->digest->cleanup(ctx);
-        EVP_MD_CTX_set_flags(ctx, EVP_MD_CTX_FLAG_CLEANED);
+        EVVP_MD_CTX_set_flags(ctx, EVVP_MD_CTX_FLAG_CLEANED);
     }
     OPENSSL_cleanse(ctx->md_data, ctx->digest->ctx_size);
     return ret;
 }
 
-int EVP_DigestFinalXOF(EVP_MD_CTX *ctx, unsigned char *md, size_t size)
+int EVVP_DigestFinalXOF(EVVP_MD_CTX *ctx, unsigned char *md, size_t size)
 {
     int ret = 0;
 
-    if (ctx->digest->flags & EVP_MD_FLAG_XOF
+    if (ctx->digest->flags & EVVP_MD_FLAG_XOF
         && size <= INT_MAX
-        && ctx->digest->md_ctrl(ctx, EVP_MD_CTRL_XOF_LEN, (int)size, NULL)) {
+        && ctx->digest->md_ctrl(ctx, EVVP_MD_CTRL_XOF_LEN, (int)size, NULL)) {
         ret = ctx->digest->final(ctx, md);
 
         if (ctx->digest->cleanup != NULL) {
             ctx->digest->cleanup(ctx);
-            EVP_MD_CTX_set_flags(ctx, EVP_MD_CTX_FLAG_CLEANED);
+            EVVP_MD_CTX_set_flags(ctx, EVVP_MD_CTX_FLAG_CLEANED);
         }
         OPENSSL_cleanse(ctx->md_data, ctx->digest->ctx_size);
     } else {
-        EVPerr(EVP_F_EVP_DIGESTFINALXOF, EVP_R_NOT_XOF_OR_INVALID_LENGTH);
+        EVVPerr(EVVP_F_EVVP_DIGESTFINALXOF, EVVP_R_NOT_XOF_OR_INVALID_LENGTH);
     }
 
     return ret;
 }
 
-int EVP_MD_CTX_copy(EVP_MD_CTX *out, const EVP_MD_CTX *in)
+int EVVP_MD_CTX_copy(EVVP_MD_CTX *out, const EVVP_MD_CTX *in)
 {
-    EVP_MD_CTX_reset(out);
-    return EVP_MD_CTX_copy_ex(out, in);
+    EVVP_MD_CTX_reset(out);
+    return EVVP_MD_CTX_copy_ex(out, in);
 }
 
-int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
+int EVVP_MD_CTX_copy_ex(EVVP_MD_CTX *out, const EVVP_MD_CTX *in)
 {
     unsigned char *tmp_buf;
     if ((in == NULL) || (in->digest == NULL)) {
-        EVPerr(EVP_F_EVP_MD_CTX_COPY_EX, EVP_R_INPUT_NOT_INITIALIZED);
+        EVVPerr(EVVP_F_EVVP_MD_CTX_COPY_EX, EVVP_R_INPUT_NOT_INITIALIZED);
         return 0;
     }
 #ifndef OPENSSL_NO_ENGINE
     /* Make sure it's safe to copy a digest context using an ENGINE */
     if (in->engine && !ENGINE_init(in->engine)) {
-        EVPerr(EVP_F_EVP_MD_CTX_COPY_EX, ERR_R_ENGINE_LIB);
+        EVVPerr(EVVP_F_EVVP_MD_CTX_COPY_EX, ERR_R_ENGINE_LIB);
         return 0;
     }
 #endif
 
     if (out->digest == in->digest) {
         tmp_buf = out->md_data;
-        EVP_MD_CTX_set_flags(out, EVP_MD_CTX_FLAG_REUSE);
+        EVVP_MD_CTX_set_flags(out, EVVP_MD_CTX_FLAG_REUSE);
     } else
         tmp_buf = NULL;
-    EVP_MD_CTX_reset(out);
+    EVVP_MD_CTX_reset(out);
     memcpy(out, in, sizeof(*out));
 
-    /* copied EVP_MD_CTX should free the copied EVP_PKEY_CTX */
-    EVP_MD_CTX_clear_flags(out, EVP_MD_CTX_FLAG_KEEP_PKEY_CTX);
+    /* copied EVVP_MD_CTX should free the copied EVVP_PKEY_CTX */
+    EVVP_MD_CTX_clear_flags(out, EVVP_MD_CTX_FLAG_KEEP_PKEY_CTX);
 
     /* Null these variables, since they are getting fixed up
      * properly below.  Anything else may cause a memleak and/or
@@ -258,7 +258,7 @@ int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
         else {
             out->md_data = OPENSSL_malloc(out->digest->ctx_size);
             if (out->md_data == NULL) {
-                EVPerr(EVP_F_EVP_MD_CTX_COPY_EX, ERR_R_MALLOC_FAILURE);
+                EVVPerr(EVVP_F_EVVP_MD_CTX_COPY_EX, ERR_R_MALLOC_FAILURE);
                 return 0;
             }
         }
@@ -268,9 +268,9 @@ int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
     out->update = in->update;
 
     if (in->pctx) {
-        out->pctx = EVP_PKEY_CTX_dup(in->pctx);
+        out->pctx = EVVP_PKEY_CTX_dup(in->pctx);
         if (!out->pctx) {
-            EVP_MD_CTX_reset(out);
+            EVVP_MD_CTX_reset(out);
             return 0;
         }
     }
@@ -281,25 +281,25 @@ int EVP_MD_CTX_copy_ex(EVP_MD_CTX *out, const EVP_MD_CTX *in)
     return 1;
 }
 
-int EVP_Digest(const void *data, size_t count,
-               unsigned char *md, unsigned int *size, const EVP_MD *type,
+int EVVP_Digest(const void *data, size_t count,
+               unsigned char *md, unsigned int *size, const EVVP_MD *type,
                ENGINE *impl)
 {
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *ctx = EVVP_MD_CTX_new();
     int ret;
 
     if (ctx == NULL)
         return 0;
-    EVP_MD_CTX_set_flags(ctx, EVP_MD_CTX_FLAG_ONESHOT);
-    ret = EVP_DigestInit_ex(ctx, type, impl)
-        && EVP_DigestUpdate(ctx, data, count)
-        && EVP_DigestFinal_ex(ctx, md, size);
-    EVP_MD_CTX_free(ctx);
+    EVVP_MD_CTX_set_flags(ctx, EVVP_MD_CTX_FLAG_ONESHOT);
+    ret = EVVP_DigestInit_ex(ctx, type, impl)
+        && EVVP_DigestUpdate(ctx, data, count)
+        && EVVP_DigestFinal_ex(ctx, md, size);
+    EVVP_MD_CTX_free(ctx);
 
     return ret;
 }
 
-int EVP_MD_CTX_ctrl(EVP_MD_CTX *ctx, int cmd, int p1, void *p2)
+int EVVP_MD_CTX_ctrl(EVVP_MD_CTX *ctx, int cmd, int p1, void *p2)
 {
     if (ctx->digest && ctx->digest->md_ctrl) {
         int ret = ctx->digest->md_ctrl(ctx, cmd, p1, p2);

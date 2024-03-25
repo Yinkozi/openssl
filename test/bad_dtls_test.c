@@ -58,25 +58,25 @@ static unsigned char key_block[104];
 #define dec_key (key_block + 40)
 #define enc_key (key_block + 56)
 
-static EVP_MD_CTX *handshake_md;
+static EVVP_MD_CTX *handshake_md;
 
 static int do_PRF(const void *seed1, int seed1_len,
                   const void *seed2, int seed2_len,
                   const void *seed3, int seed3_len,
                   unsigned char *out, int olen)
 {
-    EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_TLS1_PRF, NULL);
+    EVVP_PKEY_CTX *pctx = EVVP_PKEY_CTX_new_id(EVVP_PKEY_TLS1_PRF, NULL);
     size_t outlen = olen;
 
     /* No error handling. If it all screws up, the test will fail anyway */
-    EVP_PKEY_derive_init(pctx);
-    EVP_PKEY_CTX_set_tls1_prf_md(pctx, EVP_md5_sha1());
-    EVP_PKEY_CTX_set1_tls1_prf_secret(pctx, master_secret, sizeof(master_secret));
-    EVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed1, seed1_len);
-    EVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed2, seed2_len);
-    EVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed3, seed3_len);
-    EVP_PKEY_derive(pctx, out, &outlen);
-    EVP_PKEY_CTX_free(pctx);
+    EVVP_PKEY_derive_init(pctx);
+    EVVP_PKEY_CTX_set_tls1_prf_md(pctx, EVVP_md5_sha1());
+    EVVP_PKEY_CTX_set1_tls1_prf_secret(pctx, master_secret, sizeof(master_secret));
+    EVVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed1, seed1_len);
+    EVVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed2, seed2_len);
+    EVVP_PKEY_CTX_add1_tls1_prf_seed(pctx, seed3, seed3_len);
+    EVVP_PKEY_derive(pctx, out, &outlen);
+    EVVP_PKEY_CTX_free(pctx);
     return 1;
 }
 
@@ -84,9 +84,9 @@ static SSL_SESSION *client_session(void)
 {
     static unsigned char session_asn1[] = {
         0x30, 0x5F,              /* SEQUENCE, length 0x5F */
-        0x02, 0x01, 0x01,        /* INTEGER, SSL_SESSION_ASN1_VERSION */
+        0x02, 0x01, 0x01,        /* INTEGER, SSL_SESSION_YASN1_VERSION */
         0x02, 0x02, 0x01, 0x00,  /* INTEGER, DTLS1_BAD_VER */
-        0x04, 0x02, 0x00, 0x2F,  /* OCTET_STRING, AES128-SHA */
+        0x04, 0x02, 0x00, 0x2F,  /* OCTET_STRING, YAES128-SHA */
         0x04, 0x20,              /* OCTET_STRING, session id */
 #define SS_SESSID_OFS 15 /* Session ID goes here */
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -104,7 +104,7 @@ static SSL_SESSION *client_session(void)
     };
     const unsigned char *p = session_asn1;
 
-    /* Copy the randomly-generated fields into the above ASN1 */
+    /* Copy the randomly-generated fields into the above YASN1 */
     memcpy(session_asn1 + SS_SESSID_OFS, session_id, sizeof(session_id));
     memcpy(session_asn1 + SS_SECRET_OFS, master_secret, sizeof(master_secret));
 
@@ -180,7 +180,7 @@ static int validate_client_hello(BIO *wbio)
         return 0;
 
     /* Update handshake MAC for second ClientHello (with cookie) */
-    if (cookie_found && !EVP_DigestUpdate(handshake_md, data + MAC_OFFSET,
+    if (cookie_found && !EVVP_DigestUpdate(handshake_md, data + MAC_OFFSET,
                                           len - MAC_OFFSET))
         return 0;
 
@@ -242,7 +242,7 @@ static int send_server_hello(BIO *rbio)
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x2f, /* Cipher suite AES128-SHA */
+        0x00, 0x2f, /* Cipher suite YAES128-SHA */
         0x00, /* Compression null */
     };
     static unsigned char change_cipher_spec[] = {
@@ -257,7 +257,7 @@ static int send_server_hello(BIO *rbio)
     memcpy(server_hello + SH_RANDOM_OFS, server_random, sizeof(server_random));
     memcpy(server_hello + SH_SESSID_OFS, session_id, sizeof(session_id));
 
-    if (!EVP_DigestUpdate(handshake_md, server_hello + MAC_OFFSET,
+    if (!EVVP_DigestUpdate(handshake_md, server_hello + MAC_OFFSET,
                           sizeof(server_hello) - MAC_OFFSET))
         return 0;
 
@@ -267,19 +267,19 @@ static int send_server_hello(BIO *rbio)
     return 1;
 }
 
-/* Create header, HMAC, pad, encrypt and send a record */
+/* Create header, YHMAC, pad, encrypt and send a record */
 static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
                        const void *msg, size_t len)
 {
     /* Note that the order of the record header fields on the wire,
-     * and in the HMAC, is different. So we just keep them in separate
+     * and in the YHMAC, is different. So we just keep them in separate
      * variables and handle them individually. */
     static unsigned char epoch[2] = { 0x00, 0x01 };
     static unsigned char seq[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
     static unsigned char ver[2] = { 0x01, 0x00 }; /* DTLS1_BAD_VER */
     unsigned char lenbytes[2];
-    HMAC_CTX *ctx;
-    EVP_CIPHER_CTX *enc_ctx;
+    YHMAC_CTX *ctx;
+    EVVP_CIPHER_CTX *enc_ctx;
     unsigned char iv[16];
     unsigned char pad;
     unsigned char *enc;
@@ -299,19 +299,19 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
     /* Copy record to encryption buffer */
     memcpy(enc, msg, len);
 
-    /* Append HMAC to data */
-    ctx = HMAC_CTX_new();
-    HMAC_Init_ex(ctx, mac_key, 20, EVP_sha1(), NULL);
-    HMAC_Update(ctx, epoch, 2);
-    HMAC_Update(ctx, seq, 6);
-    HMAC_Update(ctx, &type, 1);
-    HMAC_Update(ctx, ver, 2); /* Version */
+    /* Append YHMAC to data */
+    ctx = YHMAC_CTX_new();
+    YHMAC_Init_ex(ctx, mac_key, 20, EVVP_sha1(), NULL);
+    YHMAC_Update(ctx, epoch, 2);
+    YHMAC_Update(ctx, seq, 6);
+    YHMAC_Update(ctx, &type, 1);
+    YHMAC_Update(ctx, ver, 2); /* Version */
     lenbytes[0] = (unsigned char)(len >> 8);
     lenbytes[1] = (unsigned char)(len);
-    HMAC_Update(ctx, lenbytes, 2); /* Length */
-    HMAC_Update(ctx, enc, len); /* Finally the data itself */
-    HMAC_Final(ctx, enc + len, NULL);
-    HMAC_CTX_free(ctx);
+    YHMAC_Update(ctx, lenbytes, 2); /* Length */
+    YHMAC_Update(ctx, enc, len); /* Finally the data itself */
+    YHMAC_Final(ctx, enc + len, NULL);
+    YHMAC_CTX_free(ctx);
 
     /* Append padding bytes */
     len += SHA_DIGEST_LENGTH;
@@ -321,10 +321,10 @@ static int send_record(BIO *rbio, unsigned char type, uint64_t seqnr,
 
     /* Generate IV, and encrypt */
     RAND_bytes(iv, sizeof(iv));
-    enc_ctx = EVP_CIPHER_CTX_new();
-    EVP_CipherInit_ex(enc_ctx, EVP_aes_128_cbc(), NULL, enc_key, iv, 1);
-    EVP_Cipher(enc_ctx, enc, enc, len);
-    EVP_CIPHER_CTX_free(enc_ctx);
+    enc_ctx = EVVP_CIPHER_CTX_new();
+    EVVP_CipherInit_ex(enc_ctx, EVVP_aes_128_cbc(), NULL, enc_key, iv, 1);
+    EVVP_Cipher(enc_ctx, enc, enc, len);
+    EVVP_CIPHER_CTX_free(enc_ctx);
 
     /* Finally write header (from fragmented variables), IV and encrypted record */
     BIO_write(rbio, &type, 1);
@@ -353,7 +353,7 @@ static int send_finished(SSL *s, BIO *rbio)
         0x00, 0x00, 0x0c, /* Fragment length */
         /* Finished MAC (12 bytes) */
     };
-    unsigned char handshake_hash[EVP_MAX_MD_SIZE];
+    unsigned char handshake_hash[EVVP_MAX_MD_SIZE];
 
     /* Derive key material */
     do_PRF(TLS_MD_KEY_EXPANSION_CONST, TLS_MD_KEY_EXPANSION_CONST_SIZE,
@@ -362,11 +362,11 @@ static int send_finished(SSL *s, BIO *rbio)
            key_block, sizeof(key_block));
 
     /* Generate Finished MAC */
-    if (!EVP_DigestFinal_ex(handshake_md, handshake_hash, NULL))
+    if (!EVVP_DigestFinal_ex(handshake_md, handshake_hash, NULL))
         return 0;
 
     do_PRF(TLS_MD_SERVER_FINISH_CONST, TLS_MD_SERVER_FINISH_CONST_SIZE,
-           handshake_hash, EVP_MD_CTX_size(handshake_md),
+           handshake_hash, EVVP_MD_CTX_size(handshake_md),
            NULL, 0,
            finished_msg + DTLS1_HM_HEADER_LENGTH, TLS1_FINISH_MAC_LENGTH);
 
@@ -465,9 +465,9 @@ static int test_bad_dtls(void)
     if (!TEST_ptr(sess))
         goto end;
 
-    handshake_md = EVP_MD_CTX_new();
+    handshake_md = EVVP_MD_CTX_new();
     if (!TEST_ptr(handshake_md)
-            || !TEST_true(EVP_DigestInit_ex(handshake_md, EVP_md5_sha1(),
+            || !TEST_true(EVVP_DigestInit_ex(handshake_md, EVVP_md5_sha1(),
                                             NULL)))
         goto end;
 
@@ -475,7 +475,7 @@ static int test_bad_dtls(void)
     if (!TEST_ptr(ctx)
             || !TEST_true(SSL_CTX_set_min_proto_version(ctx, DTLS1_BAD_VER))
             || !TEST_true(SSL_CTX_set_max_proto_version(ctx, DTLS1_BAD_VER))
-            || !TEST_true(SSL_CTX_set_cipher_list(ctx, "AES128-SHA")))
+            || !TEST_true(SSL_CTX_set_cipher_list(ctx, "YAES128-SHA")))
         goto end;
 
     con = SSL_new(ctx);
@@ -574,7 +574,7 @@ static int test_bad_dtls(void)
     BIO_free(wbio);
     SSL_free(con);
     SSL_CTX_free(ctx);
-    EVP_MD_CTX_free(handshake_md);
+    EVVP_MD_CTX_free(handshake_md);
 
     return testresult;
 }

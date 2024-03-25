@@ -11,19 +11,19 @@
 #include "internal/cryptlib.h"
 #include <openssl/asn1.h>
 
-ASN1_OCTET_STRING *ASN1_OCTET_STRING_dup(const ASN1_OCTET_STRING *x)
+YASN1_OCTET_STRING *YASN1_OCTET_STRING_dup(const YASN1_OCTET_STRING *x)
 {
-    return ASN1_STRING_dup(x);
+    return YASN1_STRING_dup(x);
 }
 
-int ASN1_OCTET_STRING_cmp(const ASN1_OCTET_STRING *a,
-                          const ASN1_OCTET_STRING *b)
+int YASN1_OCTET_STRING_cmp(const YASN1_OCTET_STRING *a,
+                          const YASN1_OCTET_STRING *b)
 {
-    return ASN1_STRING_cmp(a, b);
+    return YASN1_STRING_cmp(a, b);
 }
 
-int ASN1_OCTET_STRING_set(ASN1_OCTET_STRING *x, const unsigned char *d,
+int YASN1_OCTET_STRING_set(YASN1_OCTET_STRING *x, const unsigned char *d,
                           int len)
 {
-    return ASN1_STRING_set(x, d, len);
+    return YASN1_STRING_set(x, d, len);
 }

@@ -58,7 +58,7 @@ void engine_load_afalg_int(void)
 #  endif
 # endif
 
-# define ALG_AES_IV_LEN 16
+# define ALG_YAES_IV_LEN 16
 # define ALG_IV_LEN(len) (sizeof(struct af_alg_iv) + (len))
 # define ALG_OP_TYPE     unsigned int
 # define ALG_OP_LEN      (sizeof(ALG_OP_TYPE))
@@ -76,15 +76,15 @@ static int afalg_create_sk(afalg_ctx *actx, const char *ciphertype,
 static int afalg_destroy(ENGINE *e);
 static int afalg_init(ENGINE *e);
 static int afalg_finish(ENGINE *e);
-static const EVP_CIPHER *afalg_aes_cbc(int nid);
+static const EVVP_CIPHER *afalg_aes_cbc(int nid);
 static cbc_handles *get_cipher_handle(int nid);
-static int afalg_ciphers(ENGINE *e, const EVP_CIPHER **cipher,
+static int afalg_ciphers(ENGINE *e, const EVVP_CIPHER **cipher,
                          const int **nids, int nid);
-static int afalg_cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int afalg_cipher_init(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc);
-static int afalg_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int afalg_do_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                            const unsigned char *in, size_t inl);
-static int afalg_cipher_cleanup(EVP_CIPHER_CTX *ctx);
+static int afalg_cipher_cleanup(EVVP_CIPHER_CTX *ctx);
 static int afalg_chk_platform(void);
 
 /* Engine Id and Name */
@@ -97,9 +97,9 @@ static int afalg_cipher_nids[] = {
     NID_aes_256_cbc,
 };
 
-static cbc_handles cbc_handle[] = {{AES_KEY_SIZE_128, NULL},
-                                    {AES_KEY_SIZE_192, NULL},
-                                    {AES_KEY_SIZE_256, NULL}};
+static cbc_handles cbc_handle[] = {{YAES_KEY_SIZE_128, NULL},
+                                    {YAES_KEY_SIZE_192, NULL},
+                                    {YAES_KEY_SIZE_256, NULL}};
 
 static ossl_inline int io_setup(unsigned n, aio_context_t *ctx)
 {
@@ -414,7 +414,7 @@ static int afalg_start_cipher_sk(afalg_ctx *actx, const unsigned char *in,
 # ifdef ALG_ZERO_COPY
     int ret;
 # endif
-    char cbuf[CMSG_SPACE(ALG_IV_LEN(ALG_AES_IV_LEN)) + CMSG_SPACE(ALG_OP_LEN)];
+    char cbuf[CMSG_SPACE(ALG_IV_LEN(ALG_YAES_IV_LEN)) + CMSG_SPACE(ALG_OP_LEN)];
 
     memset(cbuf, 0, sizeof(cbuf));
     msg.msg_control = cbuf;
@@ -427,7 +427,7 @@ static int afalg_start_cipher_sk(afalg_ctx *actx, const unsigned char *in,
     cmsg = CMSG_FIRSTHDR(&msg);
     afalg_set_op_sk(cmsg, enc);
     cmsg = CMSG_NXTHDR(&msg, cmsg);
-    afalg_set_iv_sk(cmsg, iv, ALG_AES_IV_LEN);
+    afalg_set_iv_sk(cmsg, iv, ALG_YAES_IV_LEN);
 
     /* iov that describes input data */
     iov.iov_base = (unsigned char *)in;
@@ -491,7 +491,7 @@ static int afalg_start_cipher_sk(afalg_ctx *actx, const unsigned char *in,
     return 1;
 }
 
-static int afalg_cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int afalg_cipher_init(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                              const unsigned char *iv, int enc)
 {
     int ciphertype;
@@ -504,18 +504,18 @@ static int afalg_cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
         return 0;
     }
 
-    if (EVP_CIPHER_CTX_cipher(ctx) == NULL) {
+    if (EVVP_CIPHER_CTX_cipher(ctx) == NULL) {
         ALG_WARN("%s(%d): Cipher object NULL\n", __FILE__, __LINE__);
         return 0;
     }
 
-    actx = EVP_CIPHER_CTX_get_cipher_data(ctx);
+    actx = EVVP_CIPHER_CTX_get_cipher_data(ctx);
     if (actx == NULL) {
         ALG_WARN("%s(%d): Cipher data NULL\n", __FILE__, __LINE__);
         return 0;
     }
 
-    ciphertype = EVP_CIPHER_CTX_nid(ctx);
+    ciphertype = EVVP_CIPHER_CTX_nid(ctx);
     switch (ciphertype) {
     case NID_aes_128_cbc:
     case NID_aes_192_cbc:
@@ -528,9 +528,9 @@ static int afalg_cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
         return 0;
     }
 
-    if (ALG_AES_IV_LEN != EVP_CIPHER_CTX_iv_length(ctx)) {
+    if (ALG_YAES_IV_LEN != EVVP_CIPHER_CTX_iv_length(ctx)) {
         ALG_WARN("%s(%d): Unsupported IV length :%d\n", __FILE__, __LINE__,
-                 EVP_CIPHER_CTX_iv_length(ctx));
+                 EVVP_CIPHER_CTX_iv_length(ctx));
         return 0;
     }
 
@@ -540,7 +540,7 @@ static int afalg_cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
         return 0;
 
 
-    ret = afalg_set_key(actx, key, EVP_CIPHER_CTX_key_length(ctx));
+    ret = afalg_set_key(actx, key, EVVP_CIPHER_CTX_key_length(ctx));
     if (ret < 1)
         goto err;
 
@@ -562,12 +562,12 @@ err:
     return 0;
 }
 
-static int afalg_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int afalg_do_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                            const unsigned char *in, size_t inl)
 {
     afalg_ctx *actx;
     int ret;
-    char nxtiv[ALG_AES_IV_LEN] = { 0 };
+    char nxtiv[ALG_YAES_IV_LEN] = { 0 };
 
     if (ctx == NULL || out == NULL || in == NULL) {
         ALG_WARN("NULL parameter passed to function %s(%d)\n", __FILE__,
@@ -575,7 +575,7 @@ static int afalg_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         return 0;
     }
 
-    actx = (afalg_ctx *) EVP_CIPHER_CTX_get_cipher_data(ctx);
+    actx = (afalg_ctx *) EVVP_CIPHER_CTX_get_cipher_data(ctx);
     if (actx == NULL || actx->init_done != MAGIC_INIT_NUM) {
         ALG_WARN("%s afalg ctx passed\n",
                  ctx == NULL ? "NULL" : "Uninitialised");
@@ -586,14 +586,14 @@ static int afalg_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
      * set iv now for decrypt operation as the input buffer can be
      * overwritten for inplace operation where in = out.
      */
-    if (EVP_CIPHER_CTX_encrypting(ctx) == 0) {
-        memcpy(nxtiv, in + (inl - ALG_AES_IV_LEN), ALG_AES_IV_LEN);
+    if (EVVP_CIPHER_CTX_encrypting(ctx) == 0) {
+        memcpy(nxtiv, in + (inl - ALG_YAES_IV_LEN), ALG_YAES_IV_LEN);
     }
 
     /* Send input data to kernel space */
     ret = afalg_start_cipher_sk(actx, (unsigned char *)in, inl,
-                                EVP_CIPHER_CTX_iv(ctx),
-                                EVP_CIPHER_CTX_encrypting(ctx));
+                                EVVP_CIPHER_CTX_iv(ctx),
+                                EVVP_CIPHER_CTX_encrypting(ctx));
     if (ret < 1) {
         return 0;
     }
@@ -603,17 +603,17 @@ static int afalg_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     if (ret < 1)
         return 0;
 
-    if (EVP_CIPHER_CTX_encrypting(ctx)) {
-        memcpy(EVP_CIPHER_CTX_iv_noconst(ctx), out + (inl - ALG_AES_IV_LEN),
-               ALG_AES_IV_LEN);
+    if (EVVP_CIPHER_CTX_encrypting(ctx)) {
+        memcpy(EVVP_CIPHER_CTX_iv_noconst(ctx), out + (inl - ALG_YAES_IV_LEN),
+               ALG_YAES_IV_LEN);
     } else {
-        memcpy(EVP_CIPHER_CTX_iv_noconst(ctx), nxtiv, ALG_AES_IV_LEN);
+        memcpy(EVVP_CIPHER_CTX_iv_noconst(ctx), nxtiv, ALG_YAES_IV_LEN);
     }
 
     return 1;
 }
 
-static int afalg_cipher_cleanup(EVP_CIPHER_CTX *ctx)
+static int afalg_cipher_cleanup(EVVP_CIPHER_CTX *ctx)
 {
     afalg_ctx *actx;
 
@@ -623,7 +623,7 @@ static int afalg_cipher_cleanup(EVP_CIPHER_CTX *ctx)
         return 0;
     }
 
-    actx = (afalg_ctx *) EVP_CIPHER_CTX_get_cipher_data(ctx);
+    actx = (afalg_ctx *) EVVP_CIPHER_CTX_get_cipher_data(ctx);
     if (actx == NULL || actx->init_done != MAGIC_INIT_NUM)
         return 1;
 
@@ -645,44 +645,44 @@ static cbc_handles *get_cipher_handle(int nid)
 {
     switch (nid) {
     case NID_aes_128_cbc:
-        return &cbc_handle[AES_CBC_128];
+        return &cbc_handle[YAES_CBC_128];
     case NID_aes_192_cbc:
-        return &cbc_handle[AES_CBC_192];
+        return &cbc_handle[YAES_CBC_192];
     case NID_aes_256_cbc:
-        return &cbc_handle[AES_CBC_256];
+        return &cbc_handle[YAES_CBC_256];
     default:
         return NULL;
     }
 }
 
-static const EVP_CIPHER *afalg_aes_cbc(int nid)
+static const EVVP_CIPHER *afalg_aes_cbc(int nid)
 {
     cbc_handles *cipher_handle = get_cipher_handle(nid);
     if (cipher_handle->_hidden == NULL
         && ((cipher_handle->_hidden =
-         EVP_CIPHER_meth_new(nid,
-                             AES_BLOCK_SIZE,
+         EVVP_CIPHER_meth_new(nid,
+                             YAES_BLOCK_SIZE,
                              cipher_handle->key_size)) == NULL
-        || !EVP_CIPHER_meth_set_iv_length(cipher_handle->_hidden,
-                                          AES_IV_LEN)
-        || !EVP_CIPHER_meth_set_flags(cipher_handle->_hidden,
-                                      EVP_CIPH_CBC_MODE |
-                                      EVP_CIPH_FLAG_DEFAULT_ASN1)
-        || !EVP_CIPHER_meth_set_init(cipher_handle->_hidden,
+        || !EVVP_CIPHER_meth_set_iv_length(cipher_handle->_hidden,
+                                          YAES_IV_LEN)
+        || !EVVP_CIPHER_meth_set_flags(cipher_handle->_hidden,
+                                      EVVP_CIPH_CBC_MODE |
+                                      EVVP_CIPH_FLAG_DEFAULT_YASN1)
+        || !EVVP_CIPHER_meth_set_init(cipher_handle->_hidden,
                                      afalg_cipher_init)
-        || !EVP_CIPHER_meth_set_do_cipher(cipher_handle->_hidden,
+        || !EVVP_CIPHER_meth_set_do_cipher(cipher_handle->_hidden,
                                           afalg_do_cipher)
-        || !EVP_CIPHER_meth_set_cleanup(cipher_handle->_hidden,
+        || !EVVP_CIPHER_meth_set_cleanup(cipher_handle->_hidden,
                                         afalg_cipher_cleanup)
-        || !EVP_CIPHER_meth_set_impl_ctx_size(cipher_handle->_hidden,
+        || !EVVP_CIPHER_meth_set_impl_ctx_size(cipher_handle->_hidden,
                                               sizeof(afalg_ctx)))) {
-        EVP_CIPHER_meth_free(cipher_handle->_hidden);
+        EVVP_CIPHER_meth_free(cipher_handle->_hidden);
         cipher_handle->_hidden= NULL;
     }
     return cipher_handle->_hidden;
 }
 
-static int afalg_ciphers(ENGINE *e, const EVP_CIPHER **cipher,
+static int afalg_ciphers(ENGINE *e, const EVVP_CIPHER **cipher,
                          const int **nids, int nid)
 {
     int r = 1;
@@ -845,7 +845,7 @@ static int free_cbc(void)
 {
     short unsigned int i;
     for(i = 0; i < OSSL_NELEM(afalg_cipher_nids); i++) {
-        EVP_CIPHER_meth_free(cbc_handle[i]._hidden);
+        EVVP_CIPHER_meth_free(cbc_handle[i]._hidden);
         cbc_handle[i]._hidden = NULL;
     }
     return 1;

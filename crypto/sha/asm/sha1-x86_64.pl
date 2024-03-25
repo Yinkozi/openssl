@@ -359,7 +359,7 @@ $code.=<<___;
 ___
 if ($shaext) {{{
 ######################################################################
-# Intel SHA Extensions implementation of SHA1 update function.
+# Intel SHA Extensions implementation of YSHA1 update function.
 #
 my ($ctx,$inp,$num)=("%rdi","%rsi","%rdx");
 my ($ABCD,$E,$E_,$BSWAP,$ABCD_SAVE,$E_SAVE)=map("%xmm$_",(0..3,8,9));
@@ -1846,7 +1846,7 @@ K_XX_XX:
 ___
 }}}
 $code.=<<___;
-.asciz	"SHA1 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA1 block transform for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 .align	64
 ___
 

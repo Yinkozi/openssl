@@ -18,7 +18,7 @@ int SSL_SESSION_print_fp(FILE *fp, const SSL_SESSION *x)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = BIO_new(BIO_s_yfile())) == NULL) {
         SSLerr(SSL_F_SSL_SESSION_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }
@@ -41,21 +41,21 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
     if (BIO_puts(bp, "SSL-Session:\n") <= 0)
         goto err;
     s = ssl_protocol_to_string(x->ssl_version);
-    if (BIO_printf(bp, "    Protocol  : %s\n", s) <= 0)
+    if (BIO_pprintf(bp, "    Protocol  : %s\n", s) <= 0)
         goto err;
 
     if (x->cipher == NULL) {
         if (((x->cipher_id) & 0xff000000) == 0x02000000) {
-            if (BIO_printf(bp, "    Cipher    : %06lX\n",
+            if (BIO_pprintf(bp, "    Cipher    : %06lX\n",
                            x->cipher_id & 0xffffff) <= 0)
                 goto err;
         } else {
-            if (BIO_printf(bp, "    Cipher    : %04lX\n",
+            if (BIO_pprintf(bp, "    Cipher    : %04lX\n",
                            x->cipher_id & 0xffff) <= 0)
                 goto err;
         }
     } else {
-        if (BIO_printf(bp, "    Cipher    : %s\n",
+        if (BIO_pprintf(bp, "    Cipher    : %s\n",
                        ((x->cipher->name == NULL) ? "unknown"
                                                   : x->cipher->name)) <= 0)
             goto err;
@@ -63,13 +63,13 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
     if (BIO_puts(bp, "    Session-ID: ") <= 0)
         goto err;
     for (i = 0; i < x->session_id_length; i++) {
-        if (BIO_printf(bp, "%02X", x->session_id[i]) <= 0)
+        if (BIO_pprintf(bp, "%02X", x->session_id[i]) <= 0)
             goto err;
     }
     if (BIO_puts(bp, "\n    Session-ID-ctx: ") <= 0)
         goto err;
     for (i = 0; i < x->sid_ctx_length; i++) {
-        if (BIO_printf(bp, "%02X", x->sid_ctx[i]) <= 0)
+        if (BIO_pprintf(bp, "%02X", x->sid_ctx[i]) <= 0)
             goto err;
     }
     if (istls13) {
@@ -78,28 +78,28 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
     } else if (BIO_puts(bp, "\n    Master-Key: ") <= 0)
         goto err;
     for (i = 0; i < x->master_key_length; i++) {
-        if (BIO_printf(bp, "%02X", x->master_key[i]) <= 0)
+        if (BIO_pprintf(bp, "%02X", x->master_key[i]) <= 0)
             goto err;
     }
 #ifndef OPENSSL_NO_PSK
     if (BIO_puts(bp, "\n    PSK identity: ") <= 0)
         goto err;
-    if (BIO_printf(bp, "%s", x->psk_identity ? x->psk_identity : "None") <= 0)
+    if (BIO_pprintf(bp, "%s", x->psk_identity ? x->psk_identity : "None") <= 0)
         goto err;
     if (BIO_puts(bp, "\n    PSK identity hint: ") <= 0)
         goto err;
-    if (BIO_printf
+    if (BIO_pprintf
         (bp, "%s", x->psk_identity_hint ? x->psk_identity_hint : "None") <= 0)
         goto err;
 #endif
 #ifndef OPENSSL_NO_SRP
     if (BIO_puts(bp, "\n    SRP username: ") <= 0)
         goto err;
-    if (BIO_printf(bp, "%s", x->srp_username ? x->srp_username : "None") <= 0)
+    if (BIO_pprintf(bp, "%s", x->srp_username ? x->srp_username : "None") <= 0)
         goto err;
 #endif
     if (x->ext.tick_lifetime_hint) {
-        if (BIO_printf(bp,
+        if (BIO_pprintf(bp,
                        "\n    TLS session ticket lifetime hint: %ld (seconds)",
                        x->ext.tick_lifetime_hint) <= 0)
             goto err;
@@ -120,21 +120,21 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
         if (!ssl_cipher_get_evp(x, NULL, NULL, NULL, NULL, &comp, 0))
             goto err;
         if (comp == NULL) {
-            if (BIO_printf(bp, "\n    Compression: %d", x->compress_meth) <= 0)
+            if (BIO_pprintf(bp, "\n    Compression: %d", x->compress_meth) <= 0)
                 goto err;
         } else {
-            if (BIO_printf(bp, "\n    Compression: %d (%s)", comp->id,
+            if (BIO_pprintf(bp, "\n    Compression: %d (%s)", comp->id,
                            comp->name) <= 0)
                 goto err;
         }
     }
 #endif
     if (x->time != 0L) {
-        if (BIO_printf(bp, "\n    Start Time: %lld", (long long)x->time) <= 0)
+        if (BIO_pprintf(bp, "\n    Start Time: %lld", (long long)x->time) <= 0)
             goto err;
     }
     if (x->timeout != 0L) {
-        if (BIO_printf(bp, "\n    Timeout   : %lld (sec)", (long long)x->timeout) <= 0)
+        if (BIO_pprintf(bp, "\n    Timeout   : %lld (sec)", (long long)x->timeout) <= 0)
             goto err;
     }
     if (BIO_puts(bp, "\n") <= 0)
@@ -142,16 +142,16 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
 
     if (BIO_puts(bp, "    Verify return code: ") <= 0)
         goto err;
-    if (BIO_printf(bp, "%ld (%s)\n", x->verify_result,
-                   X509_verify_cert_error_string(x->verify_result)) <= 0)
+    if (BIO_pprintf(bp, "%ld (%s)\n", x->verify_result,
+                   YX509_verify_cert_error_string(x->verify_result)) <= 0)
         goto err;
 
-    if (BIO_printf(bp, "    Extended master secret: %s\n",
+    if (BIO_pprintf(bp, "    Extended master secret: %s\n",
                    x->flags & SSL_SESS_FLAG_EXTMS ? "yes" : "no") <= 0)
         goto err;
 
     if (istls13) {
-        if (BIO_printf(bp, "    Max Early Data: %u\n",
+        if (BIO_pprintf(bp, "    Max Early Data: %u\n",
                        x->ext.max_early_data) <= 0)
             goto err;
     }
@@ -162,7 +162,7 @@ int SSL_SESSION_print(BIO *bp, const SSL_SESSION *x)
 }
 
 /*
- * print session id and master key in NSS keylog format (RSA
+ * print session id and master key in NSS keylog format (YRSA
  * Session-ID:<session id> Master-Key:<master key>)
  */
 int SSL_SESSION_print_keylog(BIO *bp, const SSL_SESSION *x)
@@ -175,23 +175,23 @@ int SSL_SESSION_print_keylog(BIO *bp, const SSL_SESSION *x)
         goto err;
 
     /*
-     * the RSA prefix is required by the format's definition although there's
-     * nothing RSA-specific in the output, therefore, we don't have to check if
-     * the cipher suite is based on RSA
+     * the YRSA prefix is required by the format's definition although there's
+     * nothing YRSA-specific in the output, therefore, we don't have to check if
+     * the cipher suite is based on YRSA
      */
-    if (BIO_puts(bp, "RSA ") <= 0)
+    if (BIO_puts(bp, "YRSA ") <= 0)
         goto err;
 
     if (BIO_puts(bp, "Session-ID:") <= 0)
         goto err;
     for (i = 0; i < x->session_id_length; i++) {
-        if (BIO_printf(bp, "%02X", x->session_id[i]) <= 0)
+        if (BIO_pprintf(bp, "%02X", x->session_id[i]) <= 0)
             goto err;
     }
     if (BIO_puts(bp, " Master-Key:") <= 0)
         goto err;
     for (i = 0; i < x->master_key_length; i++) {
-        if (BIO_printf(bp, "%02X", x->master_key[i]) <= 0)
+        if (BIO_pprintf(bp, "%02X", x->master_key[i]) <= 0)
             goto err;
     }
     if (BIO_puts(bp, "\n") <= 0)

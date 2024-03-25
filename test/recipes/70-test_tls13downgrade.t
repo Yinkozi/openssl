@@ -104,7 +104,7 @@ sub downgrade_filter
     my $ext;
     if ($testtype == FALLBACK_FROM_TLS_1_3) {
         #The default ciphersuite we use for TLSv1.2 without any SCSV
-        my @ciphersuites = (TLSProxy::Message::CIPHER_RSA_WITH_AES_128_CBC_SHA);
+        my @ciphersuites = (TLSProxy::Message::CIPHER_YRSA_WITH_YAES_128_CBC_SHA);
         $message->ciphersuite_len(2 * scalar @ciphersuites);
         $message->ciphersuites(\@ciphersuites);
     } else {

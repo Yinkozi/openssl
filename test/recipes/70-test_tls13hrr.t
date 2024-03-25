@@ -54,7 +54,7 @@ ok(TLSProxy::Message->fail(), "Server ciphersuite changes");
 #        we end up selecting a different ciphersuite between HRR and the SH
 $proxy->clear();
 $proxy->serverflags("-curves P-256");
-$proxy->ciphersuitess("TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384");
+$proxy->ciphersuitess("TLS_YAES_128_GCM_YSHA256:TLS_YAES_256_GCM_SHA384");
 $testtype = CHANGE_CH1_CIPHERSUITE;
 $proxy->start();
 ok(TLSProxy::Message->fail(), "Client ciphersuite changes");
@@ -84,10 +84,10 @@ sub hrr_filter
 
         my $hrr = ${$proxy->message_list}[1];
 
-        # We will normally only ever select CIPHER_TLS13_AES_128_GCM_SHA256
+        # We will normally only ever select CIPHER_TLS13_YAES_128_GCM_YSHA256
         # because that's what Proxy tells s_server to do. Setting as below means
         # the ciphersuite will change will we get the ServerHello
-        $hrr->ciphersuite(TLSProxy::Message::CIPHER_TLS13_AES_256_GCM_SHA384);
+        $hrr->ciphersuite(TLSProxy::Message::CIPHER_TLS13_YAES_256_GCM_SHA384);
         $hrr->repack();
         return;
     }
@@ -132,8 +132,8 @@ sub hrr_filter
 
     my $ch1 = ${$proxy->message_list}[0];
 
-    # The server will always pick TLS_AES_256_GCM_SHA384
-    my @ciphersuites = (TLSProxy::Message::CIPHER_TLS13_AES_128_GCM_SHA256);
+    # The server will always pick TLS_YAES_256_GCM_SHA384
+    my @ciphersuites = (TLSProxy::Message::CIPHER_TLS13_YAES_128_GCM_YSHA256);
     $ch1->ciphersuite_len(2 * scalar @ciphersuites);
     $ch1->ciphersuites(\@ciphersuites);
     $ch1->repack();

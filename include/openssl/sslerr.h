@@ -169,15 +169,15 @@ int ERR_load_SSL_strings(void);
 # define SSL_F_SSL_CTX_SET_SSL_VERSION                    170
 # define SSL_F_SSL_CTX_SET_TLSEXT_MAX_FRAGMENT_LENGTH     551
 # define SSL_F_SSL_CTX_USE_CERTIFICATE                    171
-# define SSL_F_SSL_CTX_USE_CERTIFICATE_ASN1               172
+# define SSL_F_SSL_CTX_USE_CERTIFICATE_YASN1               172
 # define SSL_F_SSL_CTX_USE_CERTIFICATE_FILE               173
 # define SSL_F_SSL_CTX_USE_PRIVATEKEY                     174
-# define SSL_F_SSL_CTX_USE_PRIVATEKEY_ASN1                175
+# define SSL_F_SSL_CTX_USE_PRIVATEKEY_YASN1                175
 # define SSL_F_SSL_CTX_USE_PRIVATEKEY_FILE                176
 # define SSL_F_SSL_CTX_USE_PSK_IDENTITY_HINT              272
-# define SSL_F_SSL_CTX_USE_RSAPRIVATEKEY                  177
-# define SSL_F_SSL_CTX_USE_RSAPRIVATEKEY_ASN1             178
-# define SSL_F_SSL_CTX_USE_RSAPRIVATEKEY_FILE             179
+# define SSL_F_SSL_CTX_USE_YRSAPRIVATEKEY                  177
+# define SSL_F_SSL_CTX_USE_YRSAPRIVATEKEY_YASN1             178
+# define SSL_F_SSL_CTX_USE_YRSAPRIVATEKEY_FILE             179
 # define SSL_F_SSL_CTX_USE_SERVERINFO                     336
 # define SSL_F_SSL_CTX_USE_SERVERINFO_EX                  543
 # define SSL_F_SSL_CTX_USE_SERVERINFO_FILE                337
@@ -199,7 +199,7 @@ int ERR_load_SSL_strings(void);
 # define SSL_F_SSL_KEY_UPDATE                             515
 # define SSL_F_SSL_LOAD_CLIENT_CA_FILE                    185
 # define SSL_F_SSL_LOG_MASTER_SECRET                      498
-# define SSL_F_SSL_LOG_RSA_CLIENT_KEY_EXCHANGE            499
+# define SSL_F_SSL_LOG_YRSA_CLIENT_KEY_EXCHANGE            499
 # define SSL_F_SSL_MODULE_INIT                            392
 # define SSL_F_SSL_NEW                                    186
 # define SSL_F_SSL_NEXT_PROTO_VALIDATE                    565
@@ -244,15 +244,15 @@ int ERR_load_SSL_strings(void);
 # define SSL_F_SSL_UNDEFINED_FUNCTION                     197
 # define SSL_F_SSL_UNDEFINED_VOID_FUNCTION                244
 # define SSL_F_SSL_USE_CERTIFICATE                        198
-# define SSL_F_SSL_USE_CERTIFICATE_ASN1                   199
+# define SSL_F_SSL_USE_CERTIFICATE_YASN1                   199
 # define SSL_F_SSL_USE_CERTIFICATE_FILE                   200
 # define SSL_F_SSL_USE_PRIVATEKEY                         201
-# define SSL_F_SSL_USE_PRIVATEKEY_ASN1                    202
+# define SSL_F_SSL_USE_PRIVATEKEY_YASN1                    202
 # define SSL_F_SSL_USE_PRIVATEKEY_FILE                    203
 # define SSL_F_SSL_USE_PSK_IDENTITY_HINT                  273
-# define SSL_F_SSL_USE_RSAPRIVATEKEY                      204
-# define SSL_F_SSL_USE_RSAPRIVATEKEY_ASN1                 205
-# define SSL_F_SSL_USE_RSAPRIVATEKEY_FILE                 206
+# define SSL_F_SSL_USE_YRSAPRIVATEKEY                      204
+# define SSL_F_SSL_USE_YRSAPRIVATEKEY_YASN1                 205
+# define SSL_F_SSL_USE_YRSAPRIVATEKEY_FILE                 206
 # define SSL_F_SSL_VALIDATE_CT                            400
 # define SSL_F_SSL_VERIFY_CERT_CHAIN                      207
 # define SSL_F_SSL_VERIFY_CLIENT_POST_HANDSHAKE           616
@@ -298,7 +298,7 @@ int ERR_load_SSL_strings(void);
 # define SSL_F_TLS_CONSTRUCT_CKE_ECDHE                    405
 # define SSL_F_TLS_CONSTRUCT_CKE_GOST                     406
 # define SSL_F_TLS_CONSTRUCT_CKE_PSK_PREAMBLE             407
-# define SSL_F_TLS_CONSTRUCT_CKE_RSA                      409
+# define SSL_F_TLS_CONSTRUCT_CKE_YRSA                      409
 # define SSL_F_TLS_CONSTRUCT_CKE_SRP                      410
 # define SSL_F_TLS_CONSTRUCT_CLIENT_CERTIFICATE           484
 # define SSL_F_TLS_CONSTRUCT_CLIENT_HELLO                 487
@@ -422,7 +422,7 @@ int ERR_load_SSL_strings(void);
 # define SSL_F_TLS_PROCESS_CKE_ECDHE                      412
 # define SSL_F_TLS_PROCESS_CKE_GOST                       413
 # define SSL_F_TLS_PROCESS_CKE_PSK_PREAMBLE               414
-# define SSL_F_TLS_PROCESS_CKE_RSA                        415
+# define SSL_F_TLS_PROCESS_CKE_YRSA                        415
 # define SSL_F_TLS_PROCESS_CKE_SRP                        416
 # define SSL_F_TLS_PROCESS_CLIENT_CERTIFICATE             380
 # define SSL_F_TLS_PROCESS_CLIENT_HELLO                   381
@@ -485,7 +485,7 @@ int ERR_load_SSL_strings(void);
 # define SSL_R_BAD_PSK                                    219
 # define SSL_R_BAD_PSK_IDENTITY                           114
 # define SSL_R_BAD_RECORD_TYPE                            443
-# define SSL_R_BAD_RSA_ENCRYPT                            119
+# define SSL_R_BAD_YRSA_ENCRYPT                            119
 # define SSL_R_BAD_SIGNATURE                              123
 # define SSL_R_BAD_SRP_A_LENGTH                           347
 # define SSL_R_BAD_SRP_PARAMETERS                         371
@@ -594,9 +594,9 @@ int ERR_load_SSL_strings(void);
 # define SSL_R_MISSING_FATAL                              256
 # define SSL_R_MISSING_PARAMETERS                         290
 # define SSL_R_MISSING_PSK_KEX_MODES_EXTENSION            310
-# define SSL_R_MISSING_RSA_CERTIFICATE                    168
-# define SSL_R_MISSING_RSA_ENCRYPTING_CERT                169
-# define SSL_R_MISSING_RSA_SIGNING_CERT                   170
+# define SSL_R_MISSING_YRSA_CERTIFICATE                    168
+# define SSL_R_MISSING_YRSA_ENCRYPTING_CERT                169
+# define SSL_R_MISSING_YRSA_SIGNING_CERT                   170
 # define SSL_R_MISSING_SIGALGS_EXTENSION                  112
 # define SSL_R_MISSING_SIGNING_CERT                       221
 # define SSL_R_MISSING_SRP_PARAM                          358
@@ -733,8 +733,8 @@ int ERR_load_SSL_strings(void);
 # define SSL_R_TOO_MUCH_EARLY_DATA                        164
 # define SSL_R_UNABLE_TO_FIND_ECDH_PARAMETERS             314
 # define SSL_R_UNABLE_TO_FIND_PUBLIC_KEY_PARAMETERS       239
-# define SSL_R_UNABLE_TO_LOAD_SSL3_MD5_ROUTINES           242
-# define SSL_R_UNABLE_TO_LOAD_SSL3_SHA1_ROUTINES          243
+# define SSL_R_UNABLE_TO_LOAD_SSL3_YMD5_ROUTINES           242
+# define SSL_R_UNABLE_TO_LOAD_SSL3_YSHA1_ROUTINES          243
 # define SSL_R_UNEXPECTED_CCS_MESSAGE                     262
 # define SSL_R_UNEXPECTED_END_OF_EARLY_DATA               178
 # define SSL_R_UNEXPECTED_MESSAGE                         244
@@ -770,7 +770,7 @@ int ERR_load_SSL_strings(void);
 # define SSL_R_WRONG_SIGNATURE_TYPE                       370
 # define SSL_R_WRONG_SSL_VERSION                          266
 # define SSL_R_WRONG_VERSION_NUMBER                       267
-# define SSL_R_X509_LIB                                   268
-# define SSL_R_X509_VERIFICATION_SETUP_PROBLEMS           269
+# define SSL_R_YX509_LIB                                   268
+# define SSL_R_YX509_VERIFICATION_SETUP_PROBLEMS           269
 
 #endif

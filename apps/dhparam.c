@@ -81,7 +81,7 @@ int dhparam_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(dhparam_options);
@@ -144,7 +144,7 @@ int dhparam_main(int argc, char **argv)
 
 #ifndef OPENSSL_NO_DSA
     if (dsaparam && g) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "generator may not be chosen for DSA parameters\n");
         goto end;
     }
@@ -173,7 +173,7 @@ int dhparam_main(int argc, char **argv)
         if (dsaparam) {
             DSA *dsa = DSA_new();
 
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Generating DSA parameters, %d bit long prime\n", num);
             if (dsa == NULL
                 || !DSA_generate_parameters_ex(dsa, num, NULL, 0, NULL, NULL,
@@ -195,10 +195,10 @@ int dhparam_main(int argc, char **argv)
 #endif
         {
             dh = DH_new();
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Generating DH parameters, %d bit long safe prime, generator %d\n",
                        num, g);
-            BIO_printf(bio_err, "This is going to take a long time\n");
+            BIO_pprintf(bio_err, "This is going to take a long time\n");
             if (dh == NULL || !DH_generate_parameters_ex(dh, num, g, cb)) {
                 BN_GENCB_free(cb);
                 ERR_print_errors(bio_err);
@@ -217,13 +217,13 @@ int dhparam_main(int argc, char **argv)
         if (dsaparam) {
             DSA *dsa;
 
-            if (informat == FORMAT_ASN1)
+            if (informat == FORMAT_YASN1)
                 dsa = d2i_DSAparams_bio(in, NULL);
             else                /* informat == FORMAT_PEM */
-                dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
+                dsa = PEM_readd_bio_DSAparams(in, NULL, NULL, NULL);
 
             if (dsa == NULL) {
-                BIO_printf(bio_err, "unable to load DSA parameters\n");
+                BIO_pprintf(bio_err, "unable to load DSA parameters\n");
                 ERR_print_errors(bio_err);
                 goto end;
             }
@@ -237,7 +237,7 @@ int dhparam_main(int argc, char **argv)
         } else
 #endif
         {
-            if (informat == FORMAT_ASN1) {
+            if (informat == FORMAT_YASN1) {
                 /*
                  * We have no PEM header to determine what type of DH params it
                  * is. We'll just try both.
@@ -248,11 +248,11 @@ int dhparam_main(int argc, char **argv)
                     dh = d2i_DHxparams_bio(in, NULL);
             } else {
                 /* informat == FORMAT_PEM */
-                dh = PEM_read_bio_DHparams(in, NULL, NULL, NULL);
+                dh = PEM_readd_bio_DHparams(in, NULL, NULL, NULL);
             }
 
             if (dh == NULL) {
-                BIO_printf(bio_err, "unable to load DH parameters\n");
+                BIO_pprintf(bio_err, "unable to load DH parameters\n");
                 ERR_print_errors(bio_err);
                 goto end;
             }
@@ -271,28 +271,28 @@ int dhparam_main(int argc, char **argv)
             goto end;
         }
         if (i & DH_CHECK_P_NOT_PRIME)
-            BIO_printf(bio_err, "WARNING: p value is not prime\n");
+            BIO_pprintf(bio_err, "WARNING: p value is not prime\n");
         if (i & DH_CHECK_P_NOT_SAFE_PRIME)
-            BIO_printf(bio_err, "WARNING: p value is not a safe prime\n");
+            BIO_pprintf(bio_err, "WARNING: p value is not a safe prime\n");
         if (i & DH_CHECK_Q_NOT_PRIME)
-            BIO_printf(bio_err, "WARNING: q value is not a prime\n");
+            BIO_pprintf(bio_err, "WARNING: q value is not a prime\n");
         if (i & DH_CHECK_INVALID_Q_VALUE)
-            BIO_printf(bio_err, "WARNING: q value is invalid\n");
+            BIO_pprintf(bio_err, "WARNING: q value is invalid\n");
         if (i & DH_CHECK_INVALID_J_VALUE)
-            BIO_printf(bio_err, "WARNING: j value is invalid\n");
+            BIO_pprintf(bio_err, "WARNING: j value is invalid\n");
         if (i & DH_UNABLE_TO_CHECK_GENERATOR)
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "WARNING: unable to check the generator value\n");
         if (i & DH_NOT_SUITABLE_GENERATOR)
-            BIO_printf(bio_err, "WARNING: the g value is not a generator\n");
+            BIO_pprintf(bio_err, "WARNING: the g value is not a generator\n");
         if (i == 0)
-            BIO_printf(bio_err, "DH parameters appear to be ok.\n");
+            BIO_pprintf(bio_err, "DH parameters appear to be ok.\n");
         if (num != 0 && i != 0) {
             /*
              * We have generated parameters but DH_check() indicates they are
              * invalid! This should never happen!
              */
-            BIO_printf(bio_err, "ERROR: Invalid parameters generated\n");
+            BIO_pprintf(bio_err, "ERROR: Invalid parameters generated\n");
             goto end;
         }
     }
@@ -306,19 +306,19 @@ int dhparam_main(int argc, char **argv)
         DH_get0_pqg(dh, &pbn, NULL, &gbn);
         data = app_malloc(len, "print a BN");
 
-        BIO_printf(out, "static DH *get_dh%d(void)\n{\n", bits);
+        BIO_pprintf(out, "static DH *get_dh%d(void)\n{\n", bits);
         print_bignum_var(out, pbn, "dhp", bits, data);
         print_bignum_var(out, gbn, "dhg", bits, data);
-        BIO_printf(out, "    DH *dh = DH_new();\n"
+        BIO_pprintf(out, "    DH *dh = DH_new();\n"
                         "    BIGNUM *p, *g;\n"
                         "\n"
                         "    if (dh == NULL)\n"
                         "        return NULL;\n");
-        BIO_printf(out, "    p = BN_bin2bn(dhp_%d, sizeof(dhp_%d), NULL);\n",
+        BIO_pprintf(out, "    p = BN_bin2bn(dhp_%d, sizeof(dhp_%d), NULL);\n",
                    bits, bits);
-        BIO_printf(out, "    g = BN_bin2bn(dhg_%d, sizeof(dhg_%d), NULL);\n",
+        BIO_pprintf(out, "    g = BN_bin2bn(dhg_%d, sizeof(dhg_%d), NULL);\n",
                    bits, bits);
-        BIO_printf(out, "    if (p == NULL || g == NULL\n"
+        BIO_pprintf(out, "    if (p == NULL || g == NULL\n"
                         "            || !DH_set0_pqg(dh, p, NULL, g)) {\n"
                         "        DH_free(dh);\n"
                         "        BN_free(p);\n"
@@ -326,19 +326,19 @@ int dhparam_main(int argc, char **argv)
                         "        return NULL;\n"
                         "    }\n");
         if (DH_get_length(dh) > 0)
-            BIO_printf(out,
+            BIO_pprintf(out,
                         "    if (!DH_set_length(dh, %ld)) {\n"
                         "        DH_free(dh);\n"
                         "        return NULL;\n"
                         "    }\n", DH_get_length(dh));
-        BIO_printf(out, "    return dh;\n}\n");
+        BIO_pprintf(out, "    return dh;\n}\n");
         OPENSSL_free(data);
     }
 
     if (!noout) {
         const BIGNUM *q;
         DH_get0_pqg(dh, NULL, &q, NULL);
-        if (outformat == FORMAT_ASN1) {
+        if (outformat == FORMAT_YASN1) {
             if (q != NULL)
                 i = i2d_DHxparams_bio(out, dh);
             else
@@ -349,7 +349,7 @@ int dhparam_main(int argc, char **argv)
             i = PEM_write_bio_DHparams(out, dh);
         }
         if (!i) {
-            BIO_printf(bio_err, "unable to write DH parameters\n");
+            BIO_pprintf(bio_err, "unable to write DH parameters\n");
             ERR_print_errors(bio_err);
             goto end;
         }

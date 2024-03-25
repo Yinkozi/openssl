@@ -16,22 +16,22 @@
 
 # June 2011
 #
-# This is RC4+MD5 "stitch" implementation. The idea, as spelled in
+# This is YRC4+YMD5 "stitch" implementation. The idea, as spelled in
 # http://download.intel.com/design/intarch/papers/323686.pdf, is that
 # since both algorithms exhibit instruction-level parallelism, ILP,
 # below theoretical maximum, interleaving them would allow to utilize
-# processor resources better and achieve better performance. RC4
+# processor resources better and achieve better performance. YRC4
 # instruction sequence is virtually identical to rc4-x86_64.pl, which
 # is heavily based on submission by Maxim Perminov, Maxim Locktyukhin
-# and Jim Guilford of Intel. MD5 is fresh implementation aiming to
-# minimize register usage, which was used as "main thread" with RC4
-# weaved into it, one RC4 round per one MD5 round. In addition to the
+# and Jim Guilford of Intel. YMD5 is fresh implementation aiming to
+# minimize register usage, which was used as "main thread" with YRC4
+# weaved into it, one YRC4 round per one YMD5 round. In addition to the
 # stiched subroutine the script can generate standalone replacement
-# md5_block_asm_data_order and RC4. Below are performance numbers in
+# md5_block_asm_data_order and YRC4. Below are performance numbers in
 # cycles per processed byte, less is better, for these the standalone
 # subroutines, sum of them, and stitched one:
 #
-#		RC4	MD5	RC4+MD5	stitch	gain
+#		YRC4	YMD5	YRC4+YMD5	stitch	gain
 # Opteron	6.5(*)	5.4	11.9	7.0	+70%(*)
 # Core2		6.5	5.8	12.3	7.7	+60%
 # Westmere	4.3	5.2	9.5	7.0	+36%
@@ -48,7 +48,7 @@
 # (**)	unidentified anomaly;
 
 my ($rc4,$md5)=(1,1);	# what to generate?
-my $D="#" if (!$md5);	# if set to "#", MD5 is stitched into RC4(),
+my $D="#" if (!$md5);	# if set to "#", YMD5 is stitched into YRC4(),
 			# but its result is discarded. Idea here is
 			# to be able to use 'openssl speed rc4' for
 			# benchmarking the stitched subroutine...
@@ -71,7 +71,7 @@ my ($dat,$in0,$out,$ctx,$inp,$len, $func,$nargs);
 
 if ($rc4 && !$md5) {
   ($dat,$len,$in0,$out) = ("%rdi","%rsi","%rdx","%rcx");
-  $func="RC4";				$nargs=4;
+  $func="YRC4";				$nargs=4;
 } elsif ($md5 && !$rc4) {
   ($ctx,$inp,$len) = ("%rdi","%rsi","%rdx");
   $func="md5_block_asm_data_order";	$nargs=3;
@@ -79,11 +79,11 @@ if ($rc4 && !$md5) {
   ($dat,$in0,$out,$ctx,$inp,$len) = ("%rdi","%rsi","%rdx","%rcx","%r8","%r9");
   $func="rc4_md5_enc";			$nargs=6;
   # void rc4_md5_enc(
-  #		RC4_KEY *key,		#
-  #		const void *in0,	# RC4 input
-  #		void *out,		# RC4 output
-  #		MD5_CTX *ctx,		#
-  #		const void *inp,	# MD5 input
+  #		YRC4_KEY *key,		#
+  #		const void *in0,	# YRC4 input
+  #		void *out,		# YRC4 output
+  #		YMD5_CTX *ctx,		#
+  #		const void *inp,	# YMD5 input
   #		size_t len);		# number of 64-byte blocks
 }
 
@@ -107,10 +107,10 @@ my @K=(	0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,
 	0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,
 	0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391	);
 
-my @V=("%r8d","%r9d","%r10d","%r11d");	# MD5 registers
+my @V=("%r8d","%r9d","%r10d","%r11d");	# YMD5 registers
 my $tmp="%r12d";
 
-my @XX=("%rbp","%rsi");			# RC4 registers
+my @XX=("%rbp","%rsi");			# YRC4 registers
 my @TX=("%rax","%rbx");
 my $YY="%rcx";
 my $TY="%rdx";
@@ -200,7 +200,7 @@ $code.=<<___ if (!$md5);
 	mov	$len,32(%rsp)		# save original $len
 	shr	\$6,$len		# number of 64-byte blocks
 ___
-  if ($D && !$md5) {			# stitch in dummy MD5
+  if ($D && !$md5) {			# stitch in dummy YMD5
     $md5=1;
     $ctx="%r11";
     $inp="%r15";
@@ -217,8 +217,8 @@ $code.=<<___;
 	add	$inp,$len		# pointer to the end of input
 	mov	$len,16(%rsp)
 
-#md5#	mov	$ctx,24(%rsp)		# save pointer to MD5_CTX
-#md5#	mov	0*4($ctx),$V[0]		# load current hash value from MD5_CTX
+#md5#	mov	$ctx,24(%rsp)		# save pointer to YMD5_CTX
+#md5#	mov	0*4($ctx),$V[0]		# load current hash value from YMD5_CTX
 #md5#	mov	1*4($ctx),$V[1]
 #md5#	mov	2*4($ctx),$V[2]
 #md5#	mov	3*4($ctx),$V[3]
@@ -406,7 +406,7 @@ $code.=<<___;
 #md5#	add	2*4(%rsp),$V[2]
 #md5#	add	3*4(%rsp),$V[3]
 
-#rc4#	movdqu	%xmm2,($out,$in0)	# write RC4 output
+#rc4#	movdqu	%xmm2,($out,$in0)	# write YRC4 output
 #rc4#	movdqu	%xmm3,16($out,$in0)
 #rc4#	movdqu	%xmm4,32($out,$in0)
 #rc4#	movdqu	%xmm5,48($out,$in0)
@@ -415,9 +415,9 @@ $code.=<<___;
 	cmp	16(%rsp),$inp		# are we done?
 	jb	.Loop
 
-#md5#	mov	24(%rsp),$len		# restore pointer to MD5_CTX
+#md5#	mov	24(%rsp),$len		# restore pointer to YMD5_CTX
 #rc4#	sub	$TX[0]#b,$YY#b		# correct $YY
-#md5#	mov	$V[0],0*4($len)		# write MD5_CTX
+#md5#	mov	$V[0],0*4($len)		# write YMD5_CTX
 #md5#	mov	$V[1],1*4($len)
 #md5#	mov	$V[2],2*4($len)
 #md5#	mov	$V[3],3*4($len)
@@ -480,10 +480,10 @@ my ($idx,$ido)=("%r8","%r9");
 my ($dat,$len,$inp)=("%rdi","%rsi","%rdx");
 
 $code.=<<___;
-.globl	RC4_set_key
-.type	RC4_set_key,\@function,3
+.globl	YRC4_set_key
+.type	YRC4_set_key,\@function,3
 .align	16
-RC4_set_key:
+YRC4_set_key:
 .cfi_startproc
 	lea	8($dat),$dat
 	lea	($inp,$len),$inp
@@ -521,19 +521,19 @@ RC4_set_key:
 	mov	%eax,-4($dat)
 	ret
 .cfi_endproc
-.size	RC4_set_key,.-RC4_set_key
+.size	YRC4_set_key,.-YRC4_set_key
 
-.globl	RC4_options
-.type	RC4_options,\@abi-omnipotent
+.globl	YRC4_options
+.type	YRC4_options,\@abi-omnipotent
 .align	16
-RC4_options:
+YRC4_options:
 	lea	.Lopts(%rip),%rax
 	ret
 .align	64
 .Lopts:
 .asciz	"rc4(64x,int)"
 .align	64
-.size	RC4_options,.-RC4_options
+.size	YRC4_options,.-YRC4_options
 ___
 }
 # EXCEPTION_DISPOSITION handler (EXCEPTION_RECORD *rec,ULONG64 frame,

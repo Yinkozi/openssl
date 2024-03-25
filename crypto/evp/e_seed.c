@@ -8,7 +8,7 @@
  */
 
 #include <openssl/opensslconf.h>
-#ifdef OPENSSL_NO_SEED
+#ifdef OPENSSL_NO_YSEED
 NON_EMPTY_TRANSLATION_UNIT
 #else
 # include <openssl/evp.h>
@@ -18,21 +18,21 @@ NON_EMPTY_TRANSLATION_UNIT
 # include <openssl/seed.h>
 # include "crypto/evp.h"
 
-static int seed_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int seed_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                          const unsigned char *iv, int enc);
 
 typedef struct {
-    SEED_KEY_SCHEDULE ks;
-} EVP_SEED_KEY;
+    YSEED_KEY_SCHEDULE ks;
+} EVVP_YSEED_KEY;
 
-IMPLEMENT_BLOCK_CIPHER(seed, ks, SEED, EVP_SEED_KEY, NID_seed,
-                       16, 16, 16, 128, EVP_CIPH_FLAG_DEFAULT_ASN1,
+IMPLEMENT_BLOCK_CIPHER(seed, ks, YSEED, EVVP_YSEED_KEY, NID_seed,
+                       16, 16, 16, 128, EVVP_CIPH_FLAG_DEFAULT_YASN1,
                        seed_init_key, 0, 0, 0, 0)
 
-static int seed_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int seed_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                          const unsigned char *iv, int enc)
 {
-    SEED_set_key(key, &EVP_C_DATA(EVP_SEED_KEY,ctx)->ks);
+    YSEED_set_key(key, &EVVP_C_DATA(EVVP_YSEED_KEY,ctx)->ks);
     return 1;
 }
 

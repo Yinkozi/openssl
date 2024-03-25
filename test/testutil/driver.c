@@ -110,7 +110,7 @@ void setup_test_framework(void)
         seed = atoi(test_seed);
         if (seed <= 0)
             seed = (int)time(NULL);
-        test_printf_stdout("%*s# RAND SEED %d\n", subtest_level(), "", seed);
+        test_printf_stdout("%*s# RAND YSEED %d\n", subtest_level(), "", seed);
         test_flush_stdout();
         test_random_seed(seed);
     }

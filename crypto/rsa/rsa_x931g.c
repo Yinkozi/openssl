@@ -14,9 +14,9 @@
 #include <openssl/bn.h>
 #include "rsa_local.h"
 
-/* X9.31 RSA key derivation and generation */
+/* X9.31 YRSA key derivation and generation */
 
-int RSA_X931_derive_ex(RSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
+int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
                        BIGNUM *q2, const BIGNUM *Xp1, const BIGNUM *Xp2,
                        const BIGNUM *Xp, const BIGNUM *Xq1, const BIGNUM *Xq2,
                        const BIGNUM *Xq, const BIGNUM *e, BN_GENCB *cb)
@@ -87,21 +87,21 @@ int RSA_X931_derive_ex(RSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
     rsa->n = BN_new();
     if (rsa->n == NULL)
         goto err;
-    if (!BN_mul(rsa->n, rsa->p, rsa->q, ctx))
+    if (!BNY_mul(rsa->n, rsa->p, rsa->q, ctx))
         goto err;
 
     /* calculate d */
-    if (!BN_sub(r1, rsa->p, BN_value_one()))
+    if (!BNY_sub(r1, rsa->p, BN_value_one()))
         goto err;               /* p-1 */
-    if (!BN_sub(r2, rsa->q, BN_value_one()))
+    if (!BNY_sub(r2, rsa->q, BN_value_one()))
         goto err;               /* q-1 */
-    if (!BN_mul(r0, r1, r2, ctx))
+    if (!BNY_mul(r0, r1, r2, ctx))
         goto err;               /* (p-1)(q-1) */
 
     if (!BN_gcd(r3, r1, r2, ctx))
         goto err;
 
-    if (!BN_div(r0, NULL, r0, r3, ctx))
+    if (!BNY_div(r0, NULL, r0, r3, ctx))
         goto err;               /* LCM((p-1)(q-1)) */
 
     ctx2 = BN_CTX_new();
@@ -141,7 +141,7 @@ int RSA_X931_derive_ex(RSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
 
 }
 
-int RSA_X931_generate_key_ex(RSA *rsa, int bits, const BIGNUM *e,
+int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
                              BN_GENCB *cb)
 {
     int ok = 0;
@@ -177,10 +177,10 @@ int RSA_X931_generate_key_ex(RSA *rsa, int bits, const BIGNUM *e,
 
     /*
      * Since rsa->p and rsa->q are valid this call will just derive remaining
-     * RSA components.
+     * YRSA components.
      */
 
-    if (!RSA_X931_derive_ex(rsa, NULL, NULL, NULL, NULL,
+    if (!YRSA_X931_derive_ex(rsa, NULL, NULL, NULL, NULL,
                             NULL, NULL, NULL, NULL, NULL, NULL, e, cb))
         goto error;
 

@@ -118,7 +118,7 @@ void OPENSSL_cpuid_setup(void)
                  * User disables FXSR bit, mask even other capabilities
                  * that operate exclusively on XMM, so we don't have to
                  * double-check all the time. We mask PCLMULQDQ, AMD XOP,
-                 * AES-NI and AVX. Formally speaking we don't have to
+                 * YAES-NI and AVX. Formally speaking we don't have to
                  * do it in x86_64 case, but we can safely assume that
                  * x86_64 users won't actually flip this flag.
                  */

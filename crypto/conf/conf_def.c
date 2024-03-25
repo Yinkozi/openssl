@@ -472,7 +472,7 @@ static int def_load_bio(CONF *conf, BIO *in, long *line)
 #endif
     if (line != NULL)
         *line = eline;
-    BIO_snprintf(btmp, sizeof(btmp), "%ld", eline);
+    BIO_ssnprintf(btmp, sizeof(btmp), "%ld", eline);
     ERR_add_error_data(2, "line ", btmp);
     if (h != conf->data) {
         CONF_free(conf->data);
@@ -869,9 +869,9 @@ static char *scan_dquote(CONF *conf, char *p)
 static void dump_value_doall_arg(const CONF_VALUE *a, BIO *out)
 {
     if (a->name)
-        BIO_printf(out, "[%s] %s=%s\n", a->section, a->name, a->value);
+        BIO_pprintf(out, "[%s] %s=%s\n", a->section, a->name, a->value);
     else
-        BIO_printf(out, "[[%s]]\n", a->section);
+        BIO_pprintf(out, "[[%s]]\n", a->section);
 }
 
 IMPLEMENT_LHASH_DOALL_ARG_CONST(CONF_VALUE, BIO);

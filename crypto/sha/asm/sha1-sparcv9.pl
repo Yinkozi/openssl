@@ -27,7 +27,7 @@
 # ensure scalability on UltraSPARC T1, or rather to avoid decay when
 # amount of active threads exceeds the number of physical cores.
 
-# SPARC T4 SHA1 hardware achieves 3.72 cycles per byte, which is 3.1x
+# SPARC T4 YSHA1 hardware achieves 3.72 cycles per byte, which is 3.1x
 # faster than software. Multi-process benchmark saturates at 11x
 # single-process result on 8-core processor, or ~9GBps per 2.85GHz
 # socket.
@@ -207,7 +207,7 @@ sha1_block_data_order:
 	SPARC_LOAD_ADDRESS_LEAF(OPENSSL_sparcv9cap_P,%g1,%g5)
 	ld	[%g1+4],%g1		! OPENSSL_sparcv9cap_P[1]
 
-	andcc	%g1, CFR_SHA1, %g0
+	andcc	%g1, CFR_YSHA1, %g0
 	be	.Lsoftware
 	nop
 
@@ -232,7 +232,7 @@ sha1_block_data_order:
 	add	%o1, 0x40, %o1
 	prefetch [%o1 + 63], 20
 
-	.word	0x81b02820		! SHA1
+	.word	0x81b02820		! YSHA1
 
 	bne,pt	SIZE_T_CC, .Lhw_loop
 	nop
@@ -272,7 +272,7 @@ sha1_block_data_order:
 	faligndata %f22, %f24, %f20
 	faligndata %f24, %f26, %f22
 
-	.word	0x81b02820		! SHA1
+	.word	0x81b02820		! YSHA1
 
 	bne,pt	SIZE_T_CC, .Lhwunaligned_loop
 	for	%f26, %f26, %f10	! %f10=%f26
@@ -369,7 +369,7 @@ $code.=<<___;
 	restore
 .type	sha1_block_data_order,#function
 .size	sha1_block_data_order,(.-sha1_block_data_order)
-.asciz	"SHA1 block transform for SPARCv9, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA1 block transform for SPARCv9, CRYPTOGAMS by <appro\@openssl.org>"
 .align	4
 ___
 

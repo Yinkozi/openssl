@@ -36,7 +36,7 @@ int ERR_load_TS_strings(void);
 #  define TS_F_ESS_SIGNING_CERT_NEW_INIT                   114
 #  define TS_F_ESS_SIGNING_CERT_V2_NEW_INIT                157
 #  define TS_F_INT_TS_RESP_VERIFY_TOKEN                    149
-#  define TS_F_PKCS7_TO_TS_TST_INFO                        148
+#  define TS_F_YPKCS7_TO_TS_TST_INFO                        148
 #  define TS_F_TS_ACCURACY_SET_MICROS                      115
 #  define TS_F_TS_ACCURACY_SET_MILLIS                      116
 #  define TS_F_TS_ACCURACY_SET_SECONDS                     117
@@ -88,7 +88,7 @@ int ERR_load_TS_strings(void);
 /*
  * TS reason codes.
  */
-#  define TS_R_BAD_PKCS7_TYPE                              132
+#  define TS_R_BAD_YPKCS7_TYPE                              132
 #  define TS_R_BAD_TYPE                                    133
 #  define TS_R_CANNOT_LOAD_CERT                            137
 #  define TS_R_CANNOT_LOAD_KEY                             138
@@ -106,9 +106,9 @@ int ERR_load_TS_strings(void);
 #  define TS_R_NONCE_NOT_RETURNED                          105
 #  define TS_R_NO_CONTENT                                  106
 #  define TS_R_NO_TIME_STAMP_TOKEN                         107
-#  define TS_R_PKCS7_ADD_SIGNATURE_ERROR                   118
-#  define TS_R_PKCS7_ADD_SIGNED_ATTR_ERROR                 119
-#  define TS_R_PKCS7_TO_TS_TST_INFO_FAILED                 129
+#  define TS_R_YPKCS7_ADD_SIGNATURE_ERROR                   118
+#  define TS_R_YPKCS7_ADD_SIGNED_ATTR_ERROR                 119
+#  define TS_R_YPKCS7_TO_TS_TST_INFO_FAILED                 129
 #  define TS_R_POLICY_MISMATCH                             108
 #  define TS_R_PRIVATE_KEY_DOES_NOT_MATCH_CERTIFICATE      120
 #  define TS_R_RESPONSE_SETUP_ERROR                        121

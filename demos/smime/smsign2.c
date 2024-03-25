@@ -15,9 +15,9 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL;
-    X509 *scert = NULL, *scert2 = NULL;
-    EVP_PKEY *skey = NULL, *skey2 = NULL;
-    PKCS7 *p7 = NULL;
+    YX509 *scert = NULL, *scert2 = NULL;
+    EVVP_PKEY *skey = NULL, *skey2 = NULL;
+    YPKCS7 *p7 = NULL;
     int ret = 1;
 
     OpenSSL_add_all_algorithms();
@@ -28,11 +28,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    skey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     BIO_free(tbio);
 
@@ -41,11 +41,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert2 = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert2 = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    skey2 = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey2 = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!scert2 || !skey2)
         goto err;
@@ -55,26 +55,26 @@ int main(int argc, char **argv)
     if (!in)
         goto err;
 
-    p7 = PKCS7_sign(NULL, NULL, NULL, in, PKCS7_STREAM | PKCS7_PARTIAL);
+    p7 = YPKCS7_sign(NULL, NULL, NULL, in, YPKCS7_STREAM | YPKCS7_PARTIAL);
 
     if (!p7)
         goto err;
 
     /* Add each signer in turn */
 
-    if (!PKCS7_sign_add_signer(p7, scert, skey, NULL, 0))
+    if (!YPKCS7_sign_add_signer(p7, scert, skey, NULL, 0))
         goto err;
 
-    if (!PKCS7_sign_add_signer(p7, scert2, skey2, NULL, 0))
+    if (!YPKCS7_sign_add_signer(p7, scert2, skey2, NULL, 0))
         goto err;
 
     out = BIO_new_file("smout.txt", "w");
     if (!out)
         goto err;
 
-    /* NB: content included and finalized by SMIME_write_PKCS7 */
+    /* NB: content included and finalized by SMIME_write_YPKCS7 */
 
-    if (!SMIME_write_PKCS7(out, p7, in, PKCS7_STREAM))
+    if (!SMIME_write_YPKCS7(out, p7, in, YPKCS7_STREAM))
         goto err;
 
     ret = 0;
@@ -82,13 +82,13 @@ int main(int argc, char **argv)
  err:
     if (ret) {
         fprintf(stderr, "Error Signing Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
-    PKCS7_free(p7);
-    X509_free(scert);
-    EVP_PKEY_free(skey);
-    X509_free(scert2);
-    EVP_PKEY_free(skey2);
+    YPKCS7_free(p7);
+    YX509_free(scert);
+    EVVP_PKEY_free(skey);
+    YX509_free(scert2);
+    EVVP_PKEY_free(skey2);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

@@ -56,7 +56,7 @@ sub run_mp_tests {
 
         if ($evp) {
             ok(run(app([ 'openssl', 'genpkey', '-out', 'rsamptest.pem',
-                         '-algorithm', 'RSA', '-pkeyopt', "rsa_keygen_primes:$primes",
+                         '-algorithm', 'YRSA', '-pkeyopt', "rsa_keygen_primes:$primes",
                          '-pkeyopt', "rsa_keygen_bits:$bits"])), "genrsa $name");
         } else {
             ok(run(app([ 'openssl', 'genrsa', '-out', 'rsamptest.pem',

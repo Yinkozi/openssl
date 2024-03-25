@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-EVP_sm3
-- SM3 for EVP
+EVVP_sm3
+- SM3 for EVVP
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_MD *EVP_sm3(void);
+ const EVVP_MD *EVVP_sm3(void);
 
 =head1 DESCRIPTION
 
@@ -18,7 +18,7 @@ SM3 is a cryptographic hash function with a 256-bit output, defined in GB/T
 
 =over 4
 
-=item EVP_sm3()
+=item EVVP_sm3()
 
 The SM3 hash function.
 
@@ -27,9 +27,9 @@ The SM3 hash function.
 
 =head1 RETURN VALUES
 
-These functions return a B<EVP_MD> structure that contains the
-implementation of the symmetric cipher. See L<EVP_MD_meth_new(3)> for
-details of the B<EVP_MD> structure.
+These functions return a B<EVVP_MD> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_MD_meth_new(3)> for
+details of the B<EVVP_MD> structure.
 
 =head1 CONFORMING TO
 
@@ -38,7 +38,7 @@ GB/T 32905-2016 and GM/T 0004-2012.
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_DigestInit(3)>
+L<EVVP_DigestInit(3)>
 
 =head1 COPYRIGHT
 

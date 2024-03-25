@@ -30,7 +30,7 @@ ok(run(test(["dsa_no_digest_size_test"])), "running dsa_no_digest_size_test");
      subtest 'dsa conversions -- private key' => sub {
 	 tconversion("dsa", srctop_file("test","testdsa.pem"));
      };
-     subtest 'dsa conversions -- private key PKCS#8' => sub {
+     subtest 'dsa conversions -- private key YPKCS#8' => sub {
 	 tconversion("dsa", srctop_file("test","testdsa.pem"), "pkey");
      };
      subtest 'dsa conversions -- public key' => sub {

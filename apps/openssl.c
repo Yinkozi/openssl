@@ -104,7 +104,7 @@ static char *make_config_name(void)
     if ((t = getenv("OPENSSL_CONF")) != NULL)
         return OPENSSL_strdup(t);
 
-    t = X509_get_default_cert_area();
+    t = YX509_get_default_cert_area();
     len = strlen(t) + 1 + strlen(OPENSSL_CONF) + 1;
     p = app_malloc(len, "config filename buffer");
     strcpy(p, t);
@@ -150,12 +150,12 @@ int main(int argc, char *argv[])
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
 
     if (getenv("OPENSSL_FIPS")) {
-        BIO_printf(bio_err, "FIPS mode not supported.\n");
+        BIO_pprintf(bio_err, "FIPS mode not supported.\n");
         return 1;
     }
 
     if (!apps_startup()) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "FATAL: Startup failure (dev note: apps_startup() failed)\n");
         ERR_print_errors(bio_err);
         ret = 1;
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
 
     prog = prog_init();
     if (prog == NULL) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "FATAL: Startup failure (dev note: prog_init() failed)\n");
         ERR_print_errors(bio_err);
         ret = 1;
@@ -241,7 +241,7 @@ int main(int argc, char *argv[])
         }
 
         if (!chopup_args(&arg, buf)) {
-            BIO_printf(bio_err, "Can't parse (no memory?)\n");
+            BIO_pprintf(bio_err, "Can't parse (no memory?)\n");
             break;
         }
 
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
             goto end;
         }
         if (ret != 0)
-            BIO_printf(bio_err, "error in %s\n", arg.argv[0]);
+            BIO_pprintf(bio_err, "error in %s\n", arg.argv[0]);
         (void)BIO_flush(bio_out);
         (void)BIO_flush(bio_err);
     }
@@ -273,31 +273,31 @@ int main(int argc, char *argv[])
     EXIT(ret);
 }
 
-static void list_cipher_fn(const EVP_CIPHER *c,
+static void list_cipher_fn(const EVVP_CIPHER *c,
                            const char *from, const char *to, void *arg)
 {
     if (c != NULL) {
-        BIO_printf(arg, "%s\n", EVP_CIPHER_name(c));
+        BIO_pprintf(arg, "%s\n", EVVP_CIPHER_name(c));
     } else {
         if (from == NULL)
             from = "<undefined>";
         if (to == NULL)
             to = "<undefined>";
-        BIO_printf(arg, "%s => %s\n", from, to);
+        BIO_pprintf(arg, "%s => %s\n", from, to);
     }
 }
 
-static void list_md_fn(const EVP_MD *m,
+static void list_md_fn(const EVVP_MD *m,
                        const char *from, const char *to, void *arg)
 {
     if (m != NULL) {
-        BIO_printf(arg, "%s\n", EVP_MD_name(m));
+        BIO_pprintf(arg, "%s\n", EVVP_MD_name(m));
     } else {
         if (from == NULL)
             from = "<undefined>";
         if (to == NULL)
             to = "<undefined>";
-        BIO_printf((BIO *)arg, "%s => %s\n", from, to);
+        BIO_pprintf((BIO *)arg, "%s => %s\n", from, to);
     }
 }
 
@@ -311,11 +311,11 @@ static void list_missing_help(void)
             /* If there is help, list what flags are not documented. */
             for ( ; o->name != NULL; o++) {
                 if (o->helpstr == NULL)
-                    BIO_printf(bio_out, "%s %s\n", fp->name, o->name);
+                    BIO_pprintf(bio_out, "%s %s\n", fp->name, o->name);
             }
         } else if (fp->func != dgst_main) {
             /* If not aliased to the dgst command, */
-            BIO_printf(bio_out, "%s *\n", fp->name);
+            BIO_pprintf(bio_out, "%s *\n", fp->name);
         }
     }
 }
@@ -329,7 +329,7 @@ static void list_options_for_command(const char *command)
         if (strcmp(fp->name, command) == 0)
             break;
     if (fp->name == NULL) {
-        BIO_printf(bio_err, "Invalid command '%s'; type \"help\" for a list.\n",
+        BIO_pprintf(bio_err, "Invalid command '%s'; type \"help\" for a list.\n",
                 command);
         return;
     }
@@ -342,7 +342,7 @@ static void list_options_for_command(const char *command)
                 || o->name == OPT_MORE_STR
                 || o->name[0] == '\0')
             continue;
-        BIO_printf(bio_out, "%s %c\n", o->name, o->valtype);
+        BIO_pprintf(bio_out, "%s %c\n", o->name, o->valtype);
     }
 }
 
@@ -391,7 +391,7 @@ int list_main(int argc, char **argv)
         case OPT_EOF:  /* Never hit, but suppresses warning */
         case OPT_ERR:
 opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             return 1;
         case OPT_HELP:
             opt_help(list_options);
@@ -406,13 +406,13 @@ opthelp:
             list_type(FT_md, one);
             break;
         case OPT_DIGEST_ALGORITHMS:
-            EVP_MD_do_all_sorted(list_md_fn, bio_out);
+            EVVP_MD_do_all_sorted(list_md_fn, bio_out);
             break;
         case OPT_CIPHER_COMMANDS:
             list_type(FT_cipher, one);
             break;
         case OPT_CIPHER_ALGORITHMS:
-            EVP_CIPHER_do_all_sorted(list_cipher_fn, bio_out);
+            EVVP_CIPHER_do_all_sorted(list_cipher_fn, bio_out);
             break;
         case OPT_PK_ALGORITHMS:
             list_pkey();
@@ -433,7 +433,7 @@ opthelp:
         done = 1;
     }
     if (opt_num_rest() != 0) {
-        BIO_printf(bio_err, "Extra arguments given.\n");
+        BIO_pprintf(bio_err, "Extra arguments given.\n");
         goto opthelp;
     }
 
@@ -469,7 +469,7 @@ int help_main(int argc, char **argv)
         switch (o) {
         case OPT_hERR:
         case OPT_hEOF:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             return 1;
         case OPT_hHELP:
             opt_help(help_options);
@@ -486,37 +486,37 @@ int help_main(int argc, char **argv)
         return do_cmd(prog_init(), 2, new_argv);
     }
     if (opt_num_rest() != 0) {
-        BIO_printf(bio_err, "Usage: %s\n", prog);
+        BIO_pprintf(bio_err, "Usage: %s\n", prog);
         return 1;
     }
 
     calculate_columns(&dc);
-    BIO_printf(bio_err, "Standard commands");
+    BIO_pprintf(bio_err, "Standard commands");
     i = 0;
     tp = FT_none;
     for (fp = functions; fp->name != NULL; fp++) {
         nl = 0;
         if (i++ % dc.columns == 0) {
-            BIO_printf(bio_err, "\n");
+            BIO_pprintf(bio_err, "\n");
             nl = 1;
         }
         if (fp->type != tp) {
             tp = fp->type;
             if (!nl)
-                BIO_printf(bio_err, "\n");
+                BIO_pprintf(bio_err, "\n");
             if (tp == FT_md) {
                 i = 1;
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "\nMessage Digest commands (see the `dgst' command for more details)\n");
             } else if (tp == FT_cipher) {
                 i = 1;
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "\nCipher commands (see the `enc' command for more details)\n");
             }
         }
-        BIO_printf(bio_err, "%-*s", dc.width, fp->name);
+        BIO_pprintf(bio_err, "%-*s", dc.width, fp->name);
     }
-    BIO_printf(bio_err, "\n\n");
+    BIO_pprintf(bio_err, "\n\n");
     return 0;
 }
 
@@ -533,16 +533,16 @@ static void list_type(FUNC_TYPE ft, int one)
         if (fp->type != ft)
             continue;
         if (one) {
-            BIO_printf(bio_out, "%s\n", fp->name);
+            BIO_pprintf(bio_out, "%s\n", fp->name);
         } else {
             if (i % dc.columns == 0 && i > 0)
-                BIO_printf(bio_out, "\n");
-            BIO_printf(bio_out, "%-*s", dc.width, fp->name);
+                BIO_pprintf(bio_out, "\n");
+            BIO_pprintf(bio_out, "%-*s", dc.width, fp->name);
             i++;
         }
     }
     if (!one)
-        BIO_printf(bio_out, "\n\n");
+        BIO_pprintf(bio_out, "\n\n");
 }
 
 static int do_cmd(LHASH_OF(FUNCTION) *prog, int argc, char *argv[])
@@ -554,11 +554,11 @@ static int do_cmd(LHASH_OF(FUNCTION) *prog, int argc, char *argv[])
     f.name = argv[0];
     fp = lh_FUNCTION_retrieve(prog, &f);
     if (fp == NULL) {
-        if (EVP_get_digestbyname(argv[0])) {
+        if (EVVP_get_digestbyname(argv[0])) {
             f.type = FT_md;
             f.func = dgst_main;
             fp = &f;
-        } else if (EVP_get_cipherbyname(argv[0])) {
+        } else if (EVVP_get_cipherbyname(argv[0])) {
             f.type = FT_cipher;
             f.func = enc_main;
             fp = &f;
@@ -574,10 +574,10 @@ static int do_cmd(LHASH_OF(FUNCTION) *prog, int argc, char *argv[])
          */
         f.name = argv[0] + 3;
         if (lh_FUNCTION_retrieve(prog, &f) == NULL) {
-            BIO_printf(bio_out, "%s\n", argv[0]);
+            BIO_pprintf(bio_out, "%s\n", argv[0]);
             return 0;
         }
-        BIO_printf(bio_out, "%s\n", argv[0] + 3);
+        BIO_pprintf(bio_out, "%s\n", argv[0] + 3);
         return 1;
     }
     if (strcmp(argv[0], "quit") == 0 || strcmp(argv[0], "q") == 0 ||
@@ -585,7 +585,7 @@ static int do_cmd(LHASH_OF(FUNCTION) *prog, int argc, char *argv[])
         /* Special value to mean "exit the program. */
         return EXIT_THE_PROGRAM;
 
-    BIO_printf(bio_err, "Invalid command '%s'; type \"help\" for a list.\n",
+    BIO_pprintf(bio_err, "Invalid command '%s'; type \"help\" for a list.\n",
                argv[0]);
     return 1;
 }
@@ -594,26 +594,26 @@ static void list_pkey(void)
 {
     int i;
 
-    for (i = 0; i < EVP_PKEY_asn1_get_count(); i++) {
-        const EVP_PKEY_ASN1_METHOD *ameth;
+    for (i = 0; i < EVVP_PKEY_asn1_get_count(); i++) {
+        const EVVP_PKEY_YASN1_METHOD *ameth;
         int pkey_id, pkey_base_id, pkey_flags;
         const char *pinfo, *pem_str;
-        ameth = EVP_PKEY_asn1_get0(i);
-        EVP_PKEY_asn1_get0_info(&pkey_id, &pkey_base_id, &pkey_flags,
+        ameth = EVVP_PKEY_asn1_get0(i);
+        EVVP_PKEY_asn1_get0_info(&pkey_id, &pkey_base_id, &pkey_flags,
                                 &pinfo, &pem_str, ameth);
-        if (pkey_flags & ASN1_PKEY_ALIAS) {
-            BIO_printf(bio_out, "Name: %s\n", OBJ_nid2ln(pkey_id));
-            BIO_printf(bio_out, "\tAlias for: %s\n",
+        if (pkey_flags & YASN1_PKEY_ALIAS) {
+            BIO_pprintf(bio_out, "Name: %s\n", OBJ_nid2ln(pkey_id));
+            BIO_pprintf(bio_out, "\tAlias for: %s\n",
                        OBJ_nid2ln(pkey_base_id));
         } else {
-            BIO_printf(bio_out, "Name: %s\n", pinfo);
-            BIO_printf(bio_out, "\tType: %s Algorithm\n",
-                       pkey_flags & ASN1_PKEY_DYNAMIC ?
+            BIO_pprintf(bio_out, "Name: %s\n", pinfo);
+            BIO_pprintf(bio_out, "\tType: %s Algorithm\n",
+                       pkey_flags & YASN1_PKEY_DYNAMIC ?
                        "External" : "Builtin");
-            BIO_printf(bio_out, "\tOID: %s\n", OBJ_nid2ln(pkey_id));
+            BIO_pprintf(bio_out, "\tOID: %s\n", OBJ_nid2ln(pkey_id));
             if (pem_str == NULL)
                 pem_str = "(none)";
-            BIO_printf(bio_out, "\tPEM string: %s\n", pem_str);
+            BIO_pprintf(bio_out, "\tPEM string: %s\n", pem_str);
         }
 
     }
@@ -622,16 +622,16 @@ static void list_pkey(void)
 static void list_pkey_meth(void)
 {
     size_t i;
-    size_t meth_count = EVP_PKEY_meth_get_count();
+    size_t meth_count = EVVP_PKEY_meth_get_count();
 
     for (i = 0; i < meth_count; i++) {
-        const EVP_PKEY_METHOD *pmeth = EVP_PKEY_meth_get0(i);
+        const EVVP_PKEY_METHOD *pmeth = EVVP_PKEY_meth_get0(i);
         int pkey_id, pkey_flags;
 
-        EVP_PKEY_meth_get0_info(&pkey_id, &pkey_flags, pmeth);
-        BIO_printf(bio_out, "%s\n", OBJ_nid2ln(pkey_id));
-        BIO_printf(bio_out, "\tType: %s Algorithm\n",
-                   pkey_flags & ASN1_PKEY_DYNAMIC ?  "External" : "Builtin");
+        EVVP_PKEY_meth_get0_info(&pkey_id, &pkey_flags, pmeth);
+        BIO_pprintf(bio_out, "%s\n", OBJ_nid2ln(pkey_id));
+        BIO_pprintf(bio_out, "\tType: %s Algorithm\n",
+                   pkey_flags & YASN1_PKEY_DYNAMIC ?  "External" : "Builtin");
     }
 }
 
@@ -670,8 +670,8 @@ static void list_disabled(void)
 #ifdef OPENSSL_NO_CAMELLIA
     BIO_puts(bio_out, "CAMELLIA\n");
 #endif
-#ifdef OPENSSL_NO_CAST
-    BIO_puts(bio_out, "CAST\n");
+#ifdef OPENSSL_NO_YCAST
+    BIO_puts(bio_out, "YCAST\n");
 #endif
 #ifdef OPENSSL_NO_CMAC
     BIO_puts(bio_out, "CMAC\n");
@@ -724,11 +724,11 @@ static void list_disabled(void)
 #ifdef OPENSSL_NO_MD2
     BIO_puts(bio_out, "MD2\n");
 #endif
-#ifdef OPENSSL_NO_MD4
-    BIO_puts(bio_out, "MD4\n");
+#ifdef OPENSSL_NO_YMD4
+    BIO_puts(bio_out, "YMD4\n");
 #endif
-#ifdef OPENSSL_NO_MD5
-    BIO_puts(bio_out, "MD5\n");
+#ifdef OPENSSL_NO_YMD5
+    BIO_puts(bio_out, "YMD5\n");
 #endif
 #ifdef OPENSSL_NO_MDC2
     BIO_puts(bio_out, "MDC2\n");
@@ -742,11 +742,11 @@ static void list_disabled(void)
 #ifdef OPENSSL_NO_PSK
     BIO_puts(bio_out, "PSK\n");
 #endif
-#ifdef OPENSSL_NO_RC2
-    BIO_puts(bio_out, "RC2\n");
+#ifdef OPENSSL_NO_YRC2
+    BIO_puts(bio_out, "YRC2\n");
 #endif
-#ifdef OPENSSL_NO_RC4
-    BIO_puts(bio_out, "RC4\n");
+#ifdef OPENSSL_NO_YRC4
+    BIO_puts(bio_out, "YRC4\n");
 #endif
 #ifdef OPENSSL_NO_RC5
     BIO_puts(bio_out, "RC5\n");
@@ -754,8 +754,8 @@ static void list_disabled(void)
 #ifdef OPENSSL_NO_RMD160
     BIO_puts(bio_out, "RMD160\n");
 #endif
-#ifdef OPENSSL_NO_RSA
-    BIO_puts(bio_out, "RSA\n");
+#ifdef OPENSSL_NO_YRSA
+    BIO_puts(bio_out, "YRSA\n");
 #endif
 #ifdef OPENSSL_NO_SCRYPT
     BIO_puts(bio_out, "SCRYPT\n");
@@ -763,8 +763,8 @@ static void list_disabled(void)
 #ifdef OPENSSL_NO_SCTP
     BIO_puts(bio_out, "SCTP\n");
 #endif
-#ifdef OPENSSL_NO_SEED
-    BIO_puts(bio_out, "SEED\n");
+#ifdef OPENSSL_NO_YSEED
+    BIO_puts(bio_out, "YSEED\n");
 #endif
 #ifdef OPENSSL_NO_SM2
     BIO_puts(bio_out, "SM2\n");

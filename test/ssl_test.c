@@ -228,39 +228,39 @@ static int check_nid(const char *name, int expected_nid, int nid)
     return 0;
 }
 
-static void print_ca_names(STACK_OF(X509_NAME) *names)
+static void print_ca_names(STACK_OF(YX509_NAME) *names)
 {
     int i;
 
-    if (names == NULL || sk_X509_NAME_num(names) == 0) {
+    if (names == NULL || sk_YX509_NAME_num(names) == 0) {
         TEST_note("    <empty>");
         return;
     }
-    for (i = 0; i < sk_X509_NAME_num(names); i++) {
-        X509_NAME_print_ex(bio_err, sk_X509_NAME_value(names, i), 4,
+    for (i = 0; i < sk_YX509_NAME_num(names); i++) {
+        YX509_NAME_print_ex(bio_err, sk_YX509_NAME_value(names, i), 4,
                            XN_FLAG_ONELINE);
         BIO_puts(bio_err, "\n");
     }
 }
 
 static int check_ca_names(const char *name,
-                          STACK_OF(X509_NAME) *expected_names,
-                          STACK_OF(X509_NAME) *names)
+                          STACK_OF(YX509_NAME) *expected_names,
+                          STACK_OF(YX509_NAME) *names)
 {
     int i;
 
     if (expected_names == NULL)
         return 1;
-    if (names == NULL || sk_X509_NAME_num(names) == 0) {
-        if (TEST_int_eq(sk_X509_NAME_num(expected_names), 0))
+    if (names == NULL || sk_YX509_NAME_num(names) == 0) {
+        if (TEST_int_eq(sk_YX509_NAME_num(expected_names), 0))
             return 1;
         goto err;
     }
-    if (sk_X509_NAME_num(names) != sk_X509_NAME_num(expected_names))
+    if (sk_YX509_NAME_num(names) != sk_YX509_NAME_num(expected_names))
         goto err;
-    for (i = 0; i < sk_X509_NAME_num(names); i++) {
-        if (!TEST_int_eq(X509_NAME_cmp(sk_X509_NAME_value(names, i),
-                                       sk_X509_NAME_value(expected_names, i)),
+    for (i = 0; i < sk_YX509_NAME_num(names); i++) {
+        if (!TEST_int_eq(YX509_NAME_cmp(sk_YX509_NAME_value(names, i),
+                                       sk_YX509_NAME_value(expected_names, i)),
                          0)) {
             goto err;
         }
@@ -397,7 +397,7 @@ static int test_handshake(int idx)
     HANDSHAKE_RESULT *result = NULL;
     char test_app[MAX_TESTCASE_NAME_LENGTH];
 
-    BIO_snprintf(test_app, sizeof(test_app), "test-%d", idx);
+    BIO_ssnprintf(test_app, sizeof(test_app), "test-%d", idx);
 
     test_ctx = SSL_TEST_CTX_create(conf, test_app);
     if (!TEST_ptr(test_ctx))

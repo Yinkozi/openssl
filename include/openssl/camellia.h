@@ -26,7 +26,7 @@ extern "C" {
  * Both sizes are in bytes.
  */
 
-/* This should be a hidden type, but EVP requires that the size be known */
+/* This should be a hidden type, but EVVP requires that the size be known */
 
 # define CAMELLIA_BLOCK_SIZE 16
 # define CAMELLIA_TABLE_BYTE_LEN 272
@@ -44,32 +44,32 @@ struct camellia_key_st {
 };
 typedef struct camellia_key_st CAMELLIA_KEY;
 
-int Camellia_set_key(const unsigned char *userKey, const int bits,
+int YCamellia_set_key(const unsigned char *userKey, const int bits,
                      CAMELLIA_KEY *key);
 
-void Camellia_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_encrypt(const unsigned char *in, unsigned char *out,
                       const CAMELLIA_KEY *key);
-void Camellia_decrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_decrypt(const unsigned char *in, unsigned char *out,
                       const CAMELLIA_KEY *key);
 
-void Camellia_ecb_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_ecb_encrypt(const unsigned char *in, unsigned char *out,
                           const CAMELLIA_KEY *key, const int enc);
-void Camellia_cbc_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_cbc_encrypt(const unsigned char *in, unsigned char *out,
                           size_t length, const CAMELLIA_KEY *key,
                           unsigned char *ivec, const int enc);
-void Camellia_cfb128_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_cfb128_encrypt(const unsigned char *in, unsigned char *out,
                              size_t length, const CAMELLIA_KEY *key,
                              unsigned char *ivec, int *num, const int enc);
-void Camellia_cfb1_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_cfb1_encrypt(const unsigned char *in, unsigned char *out,
                            size_t length, const CAMELLIA_KEY *key,
                            unsigned char *ivec, int *num, const int enc);
-void Camellia_cfb8_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_cfb8_encrypt(const unsigned char *in, unsigned char *out,
                            size_t length, const CAMELLIA_KEY *key,
                            unsigned char *ivec, int *num, const int enc);
-void Camellia_ofb128_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_ofb128_encrypt(const unsigned char *in, unsigned char *out,
                              size_t length, const CAMELLIA_KEY *key,
                              unsigned char *ivec, int *num);
-void Camellia_ctr128_encrypt(const unsigned char *in, unsigned char *out,
+void YCamellia_ctr128_encrypt(const unsigned char *in, unsigned char *out,
                              size_t length, const CAMELLIA_KEY *key,
                              unsigned char ivec[CAMELLIA_BLOCK_SIZE],
                              unsigned char ecount_buf[CAMELLIA_BLOCK_SIZE],

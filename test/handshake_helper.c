@@ -43,8 +43,8 @@ void HANDSHAKE_RESULT_free(HANDSHAKE_RESULT *result)
     OPENSSL_free(result->client_alpn_negotiated);
     OPENSSL_free(result->server_alpn_negotiated);
     OPENSSL_free(result->result_session_ticket_app_data);
-    sk_X509_NAME_pop_free(result->server_ca_names, X509_NAME_free);
-    sk_X509_NAME_pop_free(result->client_ca_names, X509_NAME_free);
+    sk_YX509_NAME_pop_free(result->server_ca_names, YX509_NAME_free);
+    sk_YX509_NAME_pop_free(result->client_ca_names, YX509_NAME_free);
     OPENSSL_free(result->cipher);
     OPENSSL_free(result);
 }
@@ -308,25 +308,25 @@ static int client_ocsp_cb(SSL *s, void *arg)
     return 1;
 }
 
-static int verify_reject_cb(X509_STORE_CTX *ctx, void *arg) {
-    X509_STORE_CTX_set_error(ctx, X509_V_ERR_APPLICATION_VERIFICATION);
+static int verify_reject_cb(YX509_STORE_CTX *ctx, void *arg) {
+    YX509_STORE_CTX_set_error(ctx, YX509_V_ERR_APPLICATION_VERIFICATION);
     return 0;
 }
 
-static int verify_accept_cb(X509_STORE_CTX *ctx, void *arg) {
+static int verify_accept_cb(YX509_STORE_CTX *ctx, void *arg) {
     return 1;
 }
 
 static int broken_session_ticket_cb(SSL *s, unsigned char *key_name, unsigned char *iv,
-                                    EVP_CIPHER_CTX *ctx, HMAC_CTX *hctx, int enc)
+                                    EVVP_CIPHER_CTX *ctx, YHMAC_CTX *hctx, int enc)
 {
     return 0;
 }
 
 static int do_not_call_session_ticket_cb(SSL *s, unsigned char *key_name,
                                          unsigned char *iv,
-                                         EVP_CIPHER_CTX *ctx,
-                                         HMAC_CTX *hctx, int enc)
+                                         EVVP_CIPHER_CTX *ctx,
+                                         YHMAC_CTX *hctx, int enc)
 {
     HANDSHAKE_EX_DATA *ex_data =
         (HANDSHAKE_EX_DATA*)(SSL_get_ex_data(s, ex_data_idx));
@@ -1258,13 +1258,13 @@ static char *dup_str(const unsigned char *in, size_t len)
     return ret;
 }
 
-static int pkey_type(EVP_PKEY *pkey)
+static int pkey_type(EVVP_PKEY *pkey)
 {
-    int nid = EVP_PKEY_id(pkey);
+    int nid = EVVP_PKEY_id(pkey);
 
 #ifndef OPENSSL_NO_EC
-    if (nid == EVP_PKEY_EC) {
-        const EC_KEY *ec = EVP_PKEY_get0_EC_KEY(pkey);
+    if (nid == EVVP_PKEY_EC) {
+        const EC_KEY *ec = EVVP_PKEY_get0_EC_KEY(pkey);
         return EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
     }
 #endif
@@ -1273,12 +1273,12 @@ static int pkey_type(EVP_PKEY *pkey)
 
 static int peer_pkey_type(SSL *s)
 {
-    X509 *x = SSL_get_peer_certificate(s);
+    YX509 *x = SSL_get_peer_certificate(s);
 
     if (x != NULL) {
-        int nid = pkey_type(X509_get0_pubkey(x));
+        int nid = pkey_type(YX509_get0_pubkey(x));
 
-        X509_free(x);
+        YX509_free(x);
         return nid;
     }
     return NID_undef;
@@ -1440,8 +1440,8 @@ static HANDSHAKE_RESULT *do_handshake_internal(
     const unsigned char *proto = NULL;
     /* API dictates unsigned int rather than size_t. */
     unsigned int proto_len = 0;
-    EVP_PKEY *tmp_key;
-    const STACK_OF(X509_NAME) *names;
+    EVVP_PKEY *tmp_key;
+    const STACK_OF(YX509_NAME) *names;
     time_t start;
     const char* cipher;
 
@@ -1707,7 +1707,7 @@ static HANDSHAKE_RESULT *do_handshake_internal(
 
     if (SSL_get_peer_tmp_key(client.ssl, &tmp_key)) {
         ret->tmp_key_type = pkey_type(tmp_key);
-        EVP_PKEY_free(tmp_key);
+        EVVP_PKEY_free(tmp_key);
     }
 
     SSL_get_peer_signature_nid(client.ssl, &ret->server_sign_hash);

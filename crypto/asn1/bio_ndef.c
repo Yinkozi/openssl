@@ -14,10 +14,10 @@
 
 #include <stdio.h>
 
-/* Experimental NDEF ASN1 BIO support routines */
+/* Experimental NDEF YASN1 BIO support routines */
 
 /*
- * The usage is quite simple, initialize an ASN1 structure, get a BIO from it
+ * The usage is quite simple, initialize an YASN1 structure, get a BIO from it
  * then any data written through the BIO will end up translated to
  * appropriate format on the fly. The data is streamed out and does *not*
  * need to be all held in memory at once. When the BIO is flushed the output
@@ -26,12 +26,12 @@
  * implementation is *not*...
  */
 
-/* BIO support data stored in the ASN1 BIO ex_arg */
+/* BIO support data stored in the YASN1 BIO ex_arg */
 
 typedef struct ndef_aux_st {
-    /* ASN1 structure this BIO refers to */
-    ASN1_VALUE *val;
-    const ASN1_ITEM *it;
+    /* YASN1 structure this BIO refers to */
+    YASN1_VALUE *val;
+    const YASN1_ITEM *it;
     /* Top of the BIO chain */
     BIO *ndef_bio;
     /* Output BIO */
@@ -53,18 +53,18 @@ static int ndef_suffix_free(BIO *b, unsigned char **pbuf, int *plen,
  * On success, the returned BIO owns the input BIO as part of its BIO chain.
  * On failure, NULL is returned and the input BIO is owned by the caller.
  *
- * Unfortunately cannot constify this due to CMS_stream() and PKCS7_stream()
+ * Unfortunately cannot constify this due to CMS_stream() and YPKCS7_stream()
  */
-BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
+BIO *BIO_new_NDEF(BIO *out, YASN1_VALUE *val, const YASN1_ITEM *it)
 {
     NDEF_SUPPORT *ndef_aux = NULL;
     BIO *asn_bio = NULL;
-    const ASN1_AUX *aux = it->funcs;
-    ASN1_STREAM_ARG sarg;
+    const YASN1_AUX *aux = it->funcs;
+    YASN1_STREAM_ARG sarg;
     BIO *pop_bio = NULL;
 
     if (!aux || !aux->asn1_cb) {
-        ASN1err(ASN1_F_BIO_NEW_NDEF, ASN1_R_STREAMING_NOT_SUPPORTED);
+        YASN1err(YASN1_F_BIO_NEW_NDEF, YASN1_R_STREAMING_NOT_SUPPORTED);
         return NULL;
     }
     ndef_aux = OPENSSL_zalloc(sizeof(*ndef_aux));
@@ -72,7 +72,7 @@ BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
     if (ndef_aux == NULL || asn_bio == NULL)
         goto err;
 
-    /* ASN1 bio needs to be next to output BIO */
+    /* YASN1 bio needs to be next to output BIO */
     out = BIO_push(asn_bio, out);
     if (out == NULL)
         goto err;
@@ -85,7 +85,7 @@ BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
 
     /*
      * Now let the callback prepend any digest, cipher, etc., that the BIO's
-     * ASN1 structure needs.
+     * YASN1 structure needs.
      */
 
     sarg.out = out;
@@ -96,7 +96,7 @@ BIO *BIO_new_NDEF(BIO *out, ASN1_VALUE *val, const ASN1_ITEM *it)
      * The asn1_cb(), must not have mutated asn_bio on error, leaving it in the
      * middle of some partially built, but not returned BIO chain.
      */
-    if (aux->asn1_cb(ASN1_OP_STREAM_PRE, &val, it, &sarg) <= 0) {
+    if (aux->asn1_cb(YASN1_OP_STREAM_PRE, &val, it, &sarg) <= 0) {
         /*
          * ndef_aux is now owned by asn_bio so we must not free it in the err
          * clean up block
@@ -137,17 +137,17 @@ static int ndef_prefix(BIO *b, unsigned char **pbuf, int *plen, void *parg)
 
     ndef_aux = *(NDEF_SUPPORT **)parg;
 
-    derlen = ASN1_item_ndef_i2d(ndef_aux->val, NULL, ndef_aux->it);
+    derlen = YASN1_item_ndef_i2d(ndef_aux->val, NULL, ndef_aux->it);
     if (derlen < 0)
         return 0;
     if ((p = OPENSSL_malloc(derlen)) == NULL) {
-        ASN1err(ASN1_F_NDEF_PREFIX, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_NDEF_PREFIX, ERR_R_MALLOC_FAILURE);
         return 0;
     }
 
     ndef_aux->derbuf = p;
     *pbuf = p;
-    derlen = ASN1_item_ndef_i2d(ndef_aux->val, &p, ndef_aux->it);
+    derlen = YASN1_item_ndef_i2d(ndef_aux->val, &p, ndef_aux->it);
 
     if (!*ndef_aux->boundary)
         return 0;
@@ -194,8 +194,8 @@ static int ndef_suffix(BIO *b, unsigned char **pbuf, int *plen, void *parg)
     NDEF_SUPPORT *ndef_aux;
     unsigned char *p;
     int derlen;
-    const ASN1_AUX *aux;
-    ASN1_STREAM_ARG sarg;
+    const YASN1_AUX *aux;
+    YASN1_STREAM_ARG sarg;
 
     if (!parg)
         return 0;
@@ -208,19 +208,19 @@ static int ndef_suffix(BIO *b, unsigned char **pbuf, int *plen, void *parg)
     sarg.ndef_bio = ndef_aux->ndef_bio;
     sarg.out = ndef_aux->out;
     sarg.boundary = ndef_aux->boundary;
-    if (aux->asn1_cb(ASN1_OP_STREAM_POST,
+    if (aux->asn1_cb(YASN1_OP_STREAM_POST,
                      &ndef_aux->val, ndef_aux->it, &sarg) <= 0)
         return 0;
 
-    derlen = ASN1_item_ndef_i2d(ndef_aux->val, NULL, ndef_aux->it);
+    derlen = YASN1_item_ndef_i2d(ndef_aux->val, NULL, ndef_aux->it);
     if ((p = OPENSSL_malloc(derlen)) == NULL) {
-        ASN1err(ASN1_F_NDEF_SUFFIX, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_NDEF_SUFFIX, ERR_R_MALLOC_FAILURE);
         return 0;
     }
 
     ndef_aux->derbuf = p;
     *pbuf = p;
-    derlen = ASN1_item_ndef_i2d(ndef_aux->val, &p, ndef_aux->it);
+    derlen = YASN1_item_ndef_i2d(ndef_aux->val, &p, ndef_aux->it);
 
     if (!*ndef_aux->boundary)
         return 0;

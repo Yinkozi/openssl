@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-scrypt - EVP_PKEY scrypt KDF support
+scrypt - EVVP_PKEY scrypt KDF support
 
 =head1 DESCRIPTION
 
-The EVP_PKEY_SCRYPT algorithm implements the scrypt password based key
+The EVVP_PKEY_SCRYPT algorithm implements the scrypt password based key
 derivation function, as described in RFC 7914.  It is memory-hard in the sense
 that it deliberately requires a significant amount of RAM for efficient
 computation. The intention of this is to render brute forcing of passwords on
@@ -33,42 +33,42 @@ may be used by scrypt defaults to 1025 MiB.
 
 A context for scrypt can be obtained by calling:
 
- EVP_PKEY_CTX *pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_SCRYPT, NULL);
+ EVVP_PKEY_CTX *pctx = EVVP_PKEY_CTX_new_id(EVVP_PKEY_SCRYPT, NULL);
 
 The output length of an scrypt key derivation is specified via the
-length parameter to the L<EVP_PKEY_derive(3)> function.
+length parameter to the L<EVVP_PKEY_derive(3)> function.
 
 =head1 EXAMPLES
 
 This example derives a 64-byte long test vector using scrypt using the password
 "password", salt "NaCl" and N = 1024, r = 8, p = 16.
 
- EVP_PKEY_CTX *pctx;
+ EVVP_PKEY_CTX *pctx;
  unsigned char out[64];
 
  size_t outlen = sizeof(out);
- pctx = EVP_PKEY_CTX_new_id(EVP_PKEY_SCRYPT, NULL);
+ pctx = EVVP_PKEY_CTX_new_id(EVVP_PKEY_SCRYPT, NULL);
 
- if (EVP_PKEY_derive_init(pctx) <= 0) {
-     error("EVP_PKEY_derive_init");
+ if (EVVP_PKEY_derive_init(pctx) <= 0) {
+     error("EVVP_PKEY_derive_init");
  }
- if (EVP_PKEY_CTX_set1_pbe_pass(pctx, "password", 8) <= 0) {
-     error("EVP_PKEY_CTX_set1_pbe_pass");
+ if (EVVP_PKEY_CTX_set1_pbe_pass(pctx, "password", 8) <= 0) {
+     error("EVVP_PKEY_CTX_set1_pbe_pass");
  }
- if (EVP_PKEY_CTX_set1_scrypt_salt(pctx, "NaCl", 4) <= 0) {
-     error("EVP_PKEY_CTX_set1_scrypt_salt");
+ if (EVVP_PKEY_CTX_set1_scrypt_salt(pctx, "NaCl", 4) <= 0) {
+     error("EVVP_PKEY_CTX_set1_scrypt_salt");
  }
- if (EVP_PKEY_CTX_set_scrypt_N(pctx, 1024) <= 0) {
-     error("EVP_PKEY_CTX_set_scrypt_N");
+ if (EVVP_PKEY_CTX_set_scrypt_N(pctx, 1024) <= 0) {
+     error("EVVP_PKEY_CTX_set_scrypt_N");
  }
- if (EVP_PKEY_CTX_set_scrypt_r(pctx, 8) <= 0) {
-     error("EVP_PKEY_CTX_set_scrypt_r");
+ if (EVVP_PKEY_CTX_set_scrypt_r(pctx, 8) <= 0) {
+     error("EVVP_PKEY_CTX_set_scrypt_r");
  }
- if (EVP_PKEY_CTX_set_scrypt_p(pctx, 16) <= 0) {
-     error("EVP_PKEY_CTX_set_scrypt_p");
+ if (EVVP_PKEY_CTX_set_scrypt_p(pctx, 16) <= 0) {
+     error("EVVP_PKEY_CTX_set_scrypt_p");
  }
- if (EVP_PKEY_derive(pctx, out, &outlen) <= 0) {
-     error("EVP_PKEY_derive");
+ if (EVVP_PKEY_derive(pctx, out, &outlen) <= 0) {
+     error("EVVP_PKEY_derive");
  }
 
  {
@@ -86,7 +86,7 @@ This example derives a 64-byte long test vector using scrypt using the password
      assert(!memcmp(out, expected, sizeof(out)));
  }
 
- EVP_PKEY_CTX_free(pctx);
+ EVVP_PKEY_CTX_free(pctx);
 
 =head1 CONFORMING TO
 
@@ -94,14 +94,14 @@ RFC 7914
 
 =head1 SEE ALSO
 
-L<EVP_PKEY_CTX_set1_scrypt_salt(3)>,
-L<EVP_PKEY_CTX_set_scrypt_N(3)>,
-L<EVP_PKEY_CTX_set_scrypt_r(3)>,
-L<EVP_PKEY_CTX_set_scrypt_p(3)>,
-L<EVP_PKEY_CTX_set_scrypt_maxmem_bytes(3)>,
-L<EVP_PKEY_CTX_new(3)>,
-L<EVP_PKEY_CTX_ctrl_str(3)>,
-L<EVP_PKEY_derive(3)>
+L<EVVP_PKEY_CTX_set1_scrypt_salt(3)>,
+L<EVVP_PKEY_CTX_set_scrypt_N(3)>,
+L<EVVP_PKEY_CTX_set_scrypt_r(3)>,
+L<EVVP_PKEY_CTX_set_scrypt_p(3)>,
+L<EVVP_PKEY_CTX_set_scrypt_maxmem_bytes(3)>,
+L<EVVP_PKEY_CTX_new(3)>,
+L<EVVP_PKEY_CTX_ctrl_str(3)>,
+L<EVVP_PKEY_derive(3)>
 
 =head1 COPYRIGHT
 

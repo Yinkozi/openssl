@@ -88,8 +88,8 @@ typedef enum {
 
 static char *lookup_conf(const CONF *conf, const char *group, const char *tag);
 
-static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
-                   const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
+                   const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                    BIGNUM *serial, const char *subj, unsigned long chtype,
                    int multirdn, int email_dn, const char *startdate,
@@ -97,16 +97,16 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
                    long days, int batch, const char *ext_sect, CONF *conf,
                    int verbose, unsigned long certopt, unsigned long nameopt,
                    int default_op, int ext_copy, int selfsign);
-static int certify_cert(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
-                        const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int certify_cert(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
+                        const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                         STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                         BIGNUM *serial, const char *subj, unsigned long chtype,
                         int multirdn, int email_dn, const char *startdate,
                         const char *enddate, long days, int batch, const char *ext_sect,
                         CONF *conf, int verbose, unsigned long certopt,
                         unsigned long nameopt, int default_op, int ext_copy);
-static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
-                         X509 *x509, const EVP_MD *dgst,
+static int certify_spkac(YX509 **xret, const char *infile, EVVP_PKEY *pkey,
+                         YX509 *x509, const EVVP_MD *dgst,
                          STACK_OF(OPENSSL_STRING) *sigopts,
                          STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                          BIGNUM *serial, const char *subj, unsigned long chtype,
@@ -114,23 +114,23 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
                          const char *enddate, long days, const char *ext_sect, CONF *conf,
                          int verbose, unsigned long certopt,
                          unsigned long nameopt, int default_op, int ext_copy);
-static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
-                   const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int do_body(YX509 **xret, EVVP_PKEY *pkey, YX509 *x509,
+                   const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUM *serial,
                    const char *subj, unsigned long chtype, int multirdn,
                    int email_dn, const char *startdate, const char *enddate, long days,
-                   int batch, int verbose, X509_REQ *req, const char *ext_sect,
+                   int batch, int verbose, YX509_REQ *req, const char *ext_sect,
                    CONF *conf, unsigned long certopt, unsigned long nameopt,
                    int default_op, int ext_copy, int selfsign);
 static int get_certificate_status(const char *ser_status, CA_DB *db);
 static int do_updatedb(CA_DB *db);
 static int check_time_format(const char *str);
-static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
+static int do_revoke(YX509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
                      const char *extval);
 static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg);
-static int make_revoked(X509_REVOKED *rev, const char *str);
-static int old_entry_print(const ASN1_OBJECT *obj, const ASN1_STRING *str);
-static void write_new_certificate(BIO *bp, X509 *x, int output_der, int notext);
+static int make_revoked(YX509_REVOKED *rev, const char *str);
+static int old_entry_print(const YASN1_OBJECT *obj, const YASN1_STRING *str);
+static void write_new_certificate(BIO *bp, YX509 *x, int output_der, int notext);
 
 static CONF *extconf = NULL;
 static int preserve = 0;
@@ -202,7 +202,7 @@ const OPTIONS ca_options[] = {
     {"extensions", OPT_EXTENSIONS, 's',
      "Extension section (override value in config file)"},
     {"extfile", OPT_EXTFILE, '<',
-     "Configuration file with X509v3 extensions to add"},
+     "Configuration file with YX509v3 extensions to add"},
     {"status", OPT_STATUS, 's', "Shows cert status given the serial number"},
     {"updatedb", OPT_UPDATEDB, '-', "Updates db for expired cert"},
     {"crlexts", OPT_CRLEXTS, 's',
@@ -226,17 +226,17 @@ int ca_main(int argc, char **argv)
     CONF *conf = NULL;
     ENGINE *e = NULL;
     BIGNUM *crlnumber = NULL, *serial = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
     BIO *in = NULL, *out = NULL, *Sout = NULL;
-    ASN1_INTEGER *tmpser;
-    ASN1_TIME *tmptm;
+    YASN1_INTEGER *tmpser;
+    YASN1_TIME *tmptm;
     CA_DB *db = NULL;
     DB_ATTR db_attr;
     STACK_OF(CONF_VALUE) *attribs = NULL;
     STACK_OF(OPENSSL_STRING) *sigopts = NULL;
-    STACK_OF(X509) *cert_sk = NULL;
-    X509_CRL *crl = NULL;
-    const EVP_MD *dgst = NULL;
+    STACK_OF(YX509) *cert_sk = NULL;
+    YX509_CRL *crl = NULL;
+    const EVVP_MD *dgst = NULL;
     char *configfile = default_config_file, *section = NULL;
     char *md = NULL, *policy = NULL, *keyfile = NULL;
     char *certfile = NULL, *crl_ext = NULL, *crlnumberfile = NULL, *key = NULL;
@@ -258,9 +258,9 @@ int ca_main(int argc, char **argv)
     int rand_ser = 0, i, j, selfsign = 0, def_nid, def_ret;
     long crldays = 0, crlhours = 0, crlsec = 0, days = 0;
     unsigned long chtype = MBSTRING_ASC, certopt = 0;
-    X509 *x509 = NULL, *x509p = NULL, *x = NULL;
+    YX509 *x509 = NULL, *x509p = NULL, *x = NULL;
     REVINFO_TYPE rev_type = REV_NONE;
-    X509_REVOKED *r = NULL;
+    YX509_REVOKED *r = NULL;
     OPTION_CHOICE o;
 
     prog = opt_init(argc, argv, ca_options);
@@ -269,7 +269,7 @@ int ca_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
 opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(ca_options);
@@ -431,7 +431,7 @@ end_of_options:
     argc = opt_num_rest();
     argv = opt_rest();
 
-    BIO_printf(bio_err, "Using configuration from %s\n", configfile);
+    BIO_pprintf(bio_err, "Using configuration from %s\n", configfile);
 
     if ((conf = app_load_config(configfile)) == NULL)
         goto end;
@@ -467,8 +467,8 @@ end_of_options:
     if (f == NULL)
         ERR_clear_error();
 
-    if (f != NULL && !ASN1_STRING_set_default_mask_asc(f)) {
-        BIO_printf(bio_err, "Invalid global string mask setting %s\n", f);
+    if (f != NULL && !YASN1_STRING_set_default_mask_asc(f)) {
+        BIO_pprintf(bio_err, "Invalid global string mask setting %s\n", f);
         goto end;
     }
 
@@ -502,7 +502,7 @@ end_of_options:
             goto end;
 
         if (get_certificate_status(ser_status, db) != 1)
-            BIO_printf(bio_err, "Error verifying serial %s!\n", ser_status);
+            BIO_pprintf(bio_err, "Error verifying serial %s!\n", ser_status);
         goto end;
     }
 
@@ -516,7 +516,7 @@ end_of_options:
     if (key == NULL) {
         free_key = 1;
         if (!app_passwd(passinarg, NULL, &key, NULL)) {
-            BIO_printf(bio_err, "Error getting password\n");
+            BIO_pprintf(bio_err, "Error getting password\n");
             goto end;
         }
     }
@@ -538,8 +538,8 @@ end_of_options:
         if (x509 == NULL)
             goto end;
 
-        if (!X509_check_private_key(x509, pkey)) {
-            BIO_printf(bio_err,
+        if (!YX509_check_private_key(x509, pkey)) {
+            BIO_pprintf(bio_err,
                        "CA certificate and CA private key do not match\n");
             goto end;
         }
@@ -562,7 +562,7 @@ end_of_options:
 
     if (f != NULL) {
         if (!set_nameopt(f)) {
-            BIO_printf(bio_err, "Invalid name options: \"%s\"\n", f);
+            BIO_pprintf(bio_err, "Invalid name options: \"%s\"\n", f);
             goto end;
         }
         default_op = 0;
@@ -572,7 +572,7 @@ end_of_options:
 
     if (f != NULL) {
         if (!set_cert_ex(&certopt, f)) {
-            BIO_printf(bio_err, "Invalid certificate options: \"%s\"\n", f);
+            BIO_pprintf(bio_err, "Invalid certificate options: \"%s\"\n", f);
             goto end;
         }
         default_op = 0;
@@ -584,7 +584,7 @@ end_of_options:
 
     if (f != NULL) {
         if (!set_ext_copy(&ext_copy, f)) {
-            BIO_printf(bio_err, "Invalid extension copy option: \"%s\"\n", f);
+            BIO_pprintf(bio_err, "Invalid extension copy option: \"%s\"\n", f);
             goto end;
         }
     } else {
@@ -597,7 +597,7 @@ end_of_options:
 
         outdir = NCONF_get_string(conf, section, ENV_NEW_CERTS_DIR);
         if (outdir == NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "there needs to be defined a directory for new certificate to be placed in\n");
             goto end;
         }
@@ -610,7 +610,7 @@ end_of_options:
          * directory
          */
         if (app_isdir(outdir) <= 0) {
-            BIO_printf(bio_err, "%s: %s is not a directory\n", prog, outdir);
+            BIO_pprintf(bio_err, "%s: %s is not a directory\n", prog, outdir);
             perror(outdir);
             goto end;
         }
@@ -631,18 +631,18 @@ end_of_options:
     for (i = 0; i < sk_OPENSSL_PSTRING_num(db->db->data); i++) {
         pp = sk_OPENSSL_PSTRING_value(db->db->data, i);
         if ((pp[DB_type][0] != DB_TYPE_REV) && (pp[DB_rev_date][0] != '\0')) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "entry %d: not revoked yet, but has a revocation date\n",
                        i + 1);
             goto end;
         }
         if ((pp[DB_type][0] == DB_TYPE_REV) &&
             !make_revoked(NULL, pp[DB_rev_date])) {
-            BIO_printf(bio_err, " in entry %d\n", i + 1);
+            BIO_pprintf(bio_err, " in entry %d\n", i + 1);
             goto end;
         }
         if (!check_time_format((char *)pp[DB_exp_date])) {
-            BIO_printf(bio_err, "entry %d: invalid expiry date\n", i + 1);
+            BIO_pprintf(bio_err, "entry %d: invalid expiry date\n", i + 1);
             goto end;
         }
         p = pp[DB_serial];
@@ -652,13 +652,13 @@ end_of_options:
             j--;
         }
         if ((j & 1) || (j < 2)) {
-            BIO_printf(bio_err, "entry %d: bad serial number length (%d)\n",
+            BIO_pprintf(bio_err, "entry %d: bad serial number length (%d)\n",
                        i + 1, j);
             goto end;
         }
         for ( ; *p; p++) {
             if (!isxdigit(_UC(*p))) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "entry %d: bad char 0%o '%c' in serial number\n",
                            i + 1, *p, *p);
                 goto end;
@@ -667,9 +667,9 @@ end_of_options:
     }
     if (verbose) {
         TXT_DB_write(bio_out, db->db);
-        BIO_printf(bio_err, "%d entries loaded from the database\n",
+        BIO_pprintf(bio_err, "%d entries loaded from the database\n",
                    sk_OPENSSL_PSTRING_num(db->db->data));
-        BIO_printf(bio_err, "generating index\n");
+        BIO_pprintf(bio_err, "generating index\n");
     }
 
     if (index_index(db) <= 0)
@@ -679,15 +679,15 @@ end_of_options:
     /* Update the db file for expired certificates */
     if (doupdatedb) {
         if (verbose)
-            BIO_printf(bio_err, "Updating %s ...\n", dbfile);
+            BIO_pprintf(bio_err, "Updating %s ...\n", dbfile);
 
         i = do_updatedb(db);
         if (i == -1) {
-            BIO_printf(bio_err, "Malloc failure\n");
+            BIO_pprintf(bio_err, "Malloc failure\n");
             goto end;
         } else if (i == 0) {
             if (verbose)
-                BIO_printf(bio_err, "No entries found to mark expired\n");
+                BIO_pprintf(bio_err, "No entries found to mark expired\n");
         } else {
             if (!save_index(dbfile, "new", db))
                 goto end;
@@ -696,7 +696,7 @@ end_of_options:
                 goto end;
 
             if (verbose)
-                BIO_printf(bio_err, "Done. %d entries marked as expired\n", i);
+                BIO_pprintf(bio_err, "Done. %d entries marked as expired\n", i);
         }
     }
 
@@ -709,7 +709,7 @@ end_of_options:
         }
 
         if (verbose)
-            BIO_printf(bio_err, "Successfully loaded extensions file %s\n",
+            BIO_pprintf(bio_err, "Successfully loaded extensions file %s\n",
                        extfile);
 
         /* We can have sections in the ext file */
@@ -728,14 +728,14 @@ end_of_options:
         }
     }
 
-    def_ret = EVP_PKEY_get_default_digest_nid(pkey, &def_nid);
+    def_ret = EVVP_PKEY_get_default_digest_nid(pkey, &def_nid);
     /*
-     * EVP_PKEY_get_default_digest_nid() returns 2 if the digest is
+     * EVVP_PKEY_get_default_digest_nid() returns 2 if the digest is
      * mandatory for this algorithm.
      */
     if (def_ret == 2 && def_nid == NID_undef) {
         /* The signing algorithm requires there to be no digest */
-        dgst = EVP_md_null();
+        dgst = EVVP_md_null();
     } else if (md == NULL
                && (md = lookup_conf(conf, section, ENV_DEFAULT_MD)) == NULL) {
         goto end;
@@ -761,14 +761,14 @@ end_of_options:
                 email_dn = 0;
         }
         if (verbose)
-            BIO_printf(bio_err, "message digest is %s\n",
-                       OBJ_nid2ln(EVP_MD_type(dgst)));
+            BIO_pprintf(bio_err, "message digest is %s\n",
+                       OBJ_nid2ln(EVVP_MD_type(dgst)));
         if (policy == NULL
             && (policy = lookup_conf(conf, section, ENV_POLICY)) == NULL)
             goto end;
 
         if (verbose)
-            BIO_printf(bio_err, "policy is %s\n", policy);
+            BIO_pprintf(bio_err, "policy is %s\n", policy);
 
         if (NCONF_get_string(conf, section, ENV_RAND_SERIAL) != NULL) {
             rand_ser = 1;
@@ -790,11 +790,11 @@ end_of_options:
             }
             if (extensions != NULL) {
                 /* Check syntax of file */
-                X509V3_CTX ctx;
-                X509V3_set_ctx_test(&ctx);
-                X509V3_set_nconf(&ctx, conf);
-                if (!X509V3_EXT_add_nconf(conf, &ctx, extensions, NULL)) {
-                    BIO_printf(bio_err,
+                YX509V3_CTX ctx;
+                YX509V3_set_ctx_test(&ctx);
+                YX509V3_set_nconf(&ctx, conf);
+                if (!YX509V3_EXT_add_nconf(conf, &ctx, extensions, NULL)) {
+                    BIO_pprintf(bio_err,
                                "Error Loading extension section %s\n",
                                extensions);
                     ret = 1;
@@ -808,8 +808,8 @@ end_of_options:
             if (startdate == NULL)
                 ERR_clear_error();
         }
-        if (startdate != NULL && !ASN1_TIME_set_string_X509(NULL, startdate)) {
-            BIO_printf(bio_err,
+        if (startdate != NULL && !YASN1_TIME_set_string_YX509(NULL, startdate)) {
+            BIO_pprintf(bio_err,
                        "start date is invalid, it should be YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ\n");
             goto end;
         }
@@ -821,8 +821,8 @@ end_of_options:
             if (enddate == NULL)
                 ERR_clear_error();
         }
-        if (enddate != NULL && !ASN1_TIME_set_string_X509(NULL, enddate)) {
-            BIO_printf(bio_err,
+        if (enddate != NULL && !YASN1_TIME_set_string_YX509(NULL, enddate)) {
+            BIO_pprintf(bio_err,
                        "end date is invalid, it should be YYMMDDHHMMSSZ or YYYYMMDDHHMMSSZ\n");
             goto end;
         }
@@ -832,40 +832,40 @@ end_of_options:
                 days = 0;
         }
         if (enddate == NULL && days == 0) {
-            BIO_printf(bio_err, "cannot lookup how many days to certify for\n");
+            BIO_pprintf(bio_err, "cannot lookup how many days to certify for\n");
             goto end;
         }
 
         if (rand_ser) {
             if ((serial = BN_new()) == NULL || !rand_serial(serial, NULL)) {
-                BIO_printf(bio_err, "error generating serial number\n");
+                BIO_pprintf(bio_err, "error generating serial number\n");
                 goto end;
             }
         } else {
             serial = load_serial(serialfile, NULL, create_ser, NULL);
             if (serial == NULL) {
-                BIO_printf(bio_err, "error while loading serial number\n");
+                BIO_pprintf(bio_err, "error while loading serial number\n");
                 goto end;
             }
             if (verbose) {
                 if (BN_is_zero(serial)) {
-                    BIO_printf(bio_err, "next serial number is 00\n");
+                    BIO_pprintf(bio_err, "next serial number is 00\n");
                 } else {
-                    if ((f = BN_bn2hex(serial)) == NULL)
+                    if ((f = BN_bn2hexx(serial)) == NULL)
                         goto end;
-                    BIO_printf(bio_err, "next serial number is %s\n", f);
+                    BIO_pprintf(bio_err, "next serial number is %s\n", f);
                     OPENSSL_free(f);
                 }
             }
         }
 
         if ((attribs = NCONF_get_section(conf, policy)) == NULL) {
-            BIO_printf(bio_err, "unable to find 'section' for %s\n", policy);
+            BIO_pprintf(bio_err, "unable to find 'section' for %s\n", policy);
             goto end;
         }
 
-        if ((cert_sk = sk_X509_new_null()) == NULL) {
-            BIO_printf(bio_err, "Memory allocation failure\n");
+        if ((cert_sk = sk_YX509_new_null()) == NULL) {
+            BIO_pprintf(bio_err, "Memory allocation failure\n");
             goto end;
         }
         if (spkac_file != NULL) {
@@ -879,11 +879,11 @@ end_of_options:
                 goto end;
             if (j > 0) {
                 total_done++;
-                BIO_printf(bio_err, "\n");
-                if (!BN_add_word(serial, 1))
+                BIO_pprintf(bio_err, "\n");
+                if (!BNY_add_word(serial, 1))
                     goto end;
-                if (!sk_X509_push(cert_sk, x)) {
-                    BIO_printf(bio_err, "Memory allocation failure\n");
+                if (!sk_YX509_push(cert_sk, x)) {
+                    BIO_pprintf(bio_err, "Memory allocation failure\n");
                     goto end;
                 }
             }
@@ -900,11 +900,11 @@ end_of_options:
                 goto end;
             if (j > 0) {
                 total_done++;
-                BIO_printf(bio_err, "\n");
-                if (!BN_add_word(serial, 1))
+                BIO_pprintf(bio_err, "\n");
+                if (!BNY_add_word(serial, 1))
                     goto end;
-                if (!sk_X509_push(cert_sk, x)) {
-                    BIO_printf(bio_err, "Memory allocation failure\n");
+                if (!sk_YX509_push(cert_sk, x)) {
+                    BIO_pprintf(bio_err, "Memory allocation failure\n");
                     goto end;
                 }
             }
@@ -919,11 +919,11 @@ end_of_options:
                 goto end;
             if (j > 0) {
                 total_done++;
-                BIO_printf(bio_err, "\n");
-                if (!BN_add_word(serial, 1))
+                BIO_pprintf(bio_err, "\n");
+                if (!BNY_add_word(serial, 1))
                     goto end;
-                if (!sk_X509_push(cert_sk, x)) {
-                    BIO_printf(bio_err, "Memory allocation failure\n");
+                if (!sk_YX509_push(cert_sk, x)) {
+                    BIO_pprintf(bio_err, "Memory allocation failure\n");
                     goto end;
                 }
             }
@@ -938,14 +938,14 @@ end_of_options:
                 goto end;
             if (j > 0) {
                 total_done++;
-                BIO_printf(bio_err, "\n");
-                if (!BN_add_word(serial, 1)) {
-                    X509_free(x);
+                BIO_pprintf(bio_err, "\n");
+                if (!BNY_add_word(serial, 1)) {
+                    YX509_free(x);
                     goto end;
                 }
-                if (!sk_X509_push(cert_sk, x)) {
-                    BIO_printf(bio_err, "Memory allocation failure\n");
-                    X509_free(x);
+                if (!sk_YX509_push(cert_sk, x)) {
+                    BIO_pprintf(bio_err, "Memory allocation failure\n");
+                    YX509_free(x);
                     goto end;
                 }
             }
@@ -955,27 +955,27 @@ end_of_options:
          * and serial number that need updating
          */
 
-        if (sk_X509_num(cert_sk) > 0) {
+        if (sk_YX509_num(cert_sk) > 0) {
             if (!batch) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "\n%d out of %d certificate requests certified, commit? [y/n]",
                            total_done, total);
                 (void)BIO_flush(bio_err);
                 tmp[0] = '\0';
                 if (fgets(tmp, sizeof(tmp), stdin) == NULL) {
-                    BIO_printf(bio_err, "CERTIFICATION CANCELED: I/O error\n");
+                    BIO_pprintf(bio_err, "CERTIFICATION CANCELED: I/O error\n");
                     ret = 0;
                     goto end;
                 }
                 if (tmp[0] != 'y' && tmp[0] != 'Y') {
-                    BIO_printf(bio_err, "CERTIFICATION CANCELED\n");
+                    BIO_pprintf(bio_err, "CERTIFICATION CANCELED\n");
                     ret = 0;
                     goto end;
                 }
             }
 
-            BIO_printf(bio_err, "Write out database with %d new entries\n",
-                       sk_X509_num(cert_sk));
+            BIO_pprintf(bio_err, "Write out database with %d new entries\n",
+                       sk_YX509_num(cert_sk));
 
             if (serialfile != NULL
                     && !save_serial(serialfile, "new", serial, NULL))
@@ -991,19 +991,19 @@ end_of_options:
 #endif
 
         if (verbose)
-            BIO_printf(bio_err, "writing new certificates\n");
+            BIO_pprintf(bio_err, "writing new certificates\n");
 
-        for (i = 0; i < sk_X509_num(cert_sk); i++) {
+        for (i = 0; i < sk_YX509_num(cert_sk); i++) {
             BIO *Cout = NULL;
-            X509 *xi = sk_X509_value(cert_sk, i);
-            ASN1_INTEGER *serialNumber = X509_get_serialNumber(xi);
-            const unsigned char *psn = ASN1_STRING_get0_data(serialNumber);
-            const int snl = ASN1_STRING_length(serialNumber);
+            YX509 *xi = sk_YX509_value(cert_sk, i);
+            YASN1_INTEGER *serialNumber = YX509_get_serialNumber(xi);
+            const unsigned char *psn = YASN1_STRING_get0_data(serialNumber);
+            const int snl = YASN1_STRING_length(serialNumber);
             const int filen_len = 2 * (snl > 0 ? snl : 1) + sizeof(".pem");
             char *n = new_cert + outdirlen;
 
             if (outdirlen + filen_len > PATH_MAX) {
-                BIO_printf(bio_err, "certificate file name too long\n");
+                BIO_pprintf(bio_err, "certificate file name too long\n");
                 goto end;
             }
 
@@ -1024,10 +1024,10 @@ end_of_options:
             *(n++) = 'm';
             *n = '\0';          /* closing new_cert */
             if (verbose)
-                BIO_printf(bio_err, "writing %s\n", new_cert);
+                BIO_pprintf(bio_err, "writing %s\n", new_cert);
 
             Sout = bio_open_default(outfile, 'w',
-                                    output_der ? FORMAT_ASN1 : FORMAT_TEXT);
+                                    output_der ? FORMAT_YASN1 : FORMAT_TEXT);
             if (Sout == NULL)
                 goto end;
 
@@ -1043,7 +1043,7 @@ end_of_options:
             Sout = NULL;
         }
 
-        if (sk_X509_num(cert_sk)) {
+        if (sk_YX509_num(cert_sk)) {
             /* Rename the database and the serial file */
             if (serialfile != NULL
                     && !rotate_serial(serialfile, "new", "old"))
@@ -1052,7 +1052,7 @@ end_of_options:
             if (!rotate_index(dbfile, "new", "old"))
                 goto end;
 
-            BIO_printf(bio_err, "Data Base Updated\n");
+            BIO_pprintf(bio_err, "Data Base Updated\n");
         }
     }
 
@@ -1066,11 +1066,11 @@ end_of_options:
         }
         if (crl_ext != NULL) {
             /* Check syntax of file */
-            X509V3_CTX ctx;
-            X509V3_set_ctx_test(&ctx);
-            X509V3_set_nconf(&ctx, conf);
-            if (!X509V3_EXT_add_nconf(conf, &ctx, crl_ext, NULL)) {
-                BIO_printf(bio_err,
+            YX509V3_CTX ctx;
+            YX509V3_set_ctx_test(&ctx);
+            YX509V3_set_nconf(&ctx, conf);
+            if (!YX509V3_EXT_add_nconf(conf, &ctx, crl_ext, NULL)) {
+                BIO_pprintf(bio_err,
                            "Error Loading CRL extension section %s\n", crl_ext);
                 ret = 1;
                 goto end;
@@ -1081,7 +1081,7 @@ end_of_options:
             != NULL)
             if ((crlnumber = load_serial(crlnumberfile, NULL, 0, NULL))
                 == NULL) {
-                BIO_printf(bio_err, "error while loading CRL number\n");
+                BIO_pprintf(bio_err, "error while loading CRL number\n");
                 goto end;
             }
 
@@ -1095,36 +1095,36 @@ end_of_options:
             ERR_clear_error();
         }
         if ((crldays == 0) && (crlhours == 0) && (crlsec == 0)) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "cannot lookup how long until the next CRL is issued\n");
             goto end;
         }
 
         if (verbose)
-            BIO_printf(bio_err, "making CRL\n");
-        if ((crl = X509_CRL_new()) == NULL)
+            BIO_pprintf(bio_err, "making CRL\n");
+        if ((crl = YX509_CRL_new()) == NULL)
             goto end;
-        if (!X509_CRL_set_issuer_name(crl, X509_get_subject_name(x509)))
+        if (!YX509_CRL_set_issuer_name(crl, YX509_get_subject_name(x509)))
             goto end;
 
-        tmptm = ASN1_TIME_new();
+        tmptm = YASN1_TIME_new();
         if (tmptm == NULL
-                || X509_gmtime_adj(tmptm, 0) == NULL
-                || !X509_CRL_set1_lastUpdate(crl, tmptm)
-                || X509_time_adj_ex(tmptm, crldays, crlhours * 60 * 60 + crlsec,
+                || YX509_gmtime_adj(tmptm, 0) == NULL
+                || !YX509_CRL_set1_lastUpdate(crl, tmptm)
+                || YX509_time_adj_ex(tmptm, crldays, crlhours * 60 * 60 + crlsec,
                                     NULL) == NULL) {
             BIO_puts(bio_err, "error setting CRL nextUpdate\n");
-            ASN1_TIME_free(tmptm);
+            YASN1_TIME_free(tmptm);
             goto end;
         }
-        X509_CRL_set1_nextUpdate(crl, tmptm);
+        YX509_CRL_set1_nextUpdate(crl, tmptm);
 
-        ASN1_TIME_free(tmptm);
+        YASN1_TIME_free(tmptm);
 
         for (i = 0; i < sk_OPENSSL_PSTRING_num(db->db->data); i++) {
             pp = sk_OPENSSL_PSTRING_value(db->db->data, i);
             if (pp[DB_type][0] == DB_TYPE_REV) {
-                if ((r = X509_REVOKED_new()) == NULL)
+                if ((r = YX509_REVOKED_new()) == NULL)
                     goto end;
                 j = make_revoked(r, pp[DB_rev_date]);
                 if (!j)
@@ -1133,49 +1133,49 @@ end_of_options:
                     crl_v2 = 1;
                 if (!BN_hex2bn(&serial, pp[DB_serial]))
                     goto end;
-                tmpser = BN_to_ASN1_INTEGER(serial, NULL);
+                tmpser = BN_to_YASN1_INTEGER(serial, NULL);
                 BN_free(serial);
                 serial = NULL;
                 if (!tmpser)
                     goto end;
-                X509_REVOKED_set_serialNumber(r, tmpser);
-                ASN1_INTEGER_free(tmpser);
-                X509_CRL_add0_revoked(crl, r);
+                YX509_REVOKED_set_serialNumber(r, tmpser);
+                YASN1_INTEGER_free(tmpser);
+                YX509_CRL_add0_revoked(crl, r);
             }
         }
 
         /*
          * sort the data so it will be written in serial number order
          */
-        X509_CRL_sort(crl);
+        YX509_CRL_sort(crl);
 
         /* we now have a CRL */
         if (verbose)
-            BIO_printf(bio_err, "signing CRL\n");
+            BIO_pprintf(bio_err, "signing CRL\n");
 
         /* Add any extensions asked for */
 
         if (crl_ext != NULL || crlnumberfile != NULL) {
-            X509V3_CTX crlctx;
-            X509V3_set_ctx(&crlctx, x509, NULL, NULL, crl, 0);
-            X509V3_set_nconf(&crlctx, conf);
+            YX509V3_CTX crlctx;
+            YX509V3_set_ctx(&crlctx, x509, NULL, NULL, crl, 0);
+            YX509V3_set_nconf(&crlctx, conf);
 
             if (crl_ext != NULL)
-                if (!X509V3_EXT_CRL_add_nconf(conf, &crlctx, crl_ext, crl))
+                if (!YX509V3_EXT_CRL_add_nconf(conf, &crlctx, crl_ext, crl))
                     goto end;
             if (crlnumberfile != NULL) {
-                tmpser = BN_to_ASN1_INTEGER(crlnumber, NULL);
+                tmpser = BN_to_YASN1_INTEGER(crlnumber, NULL);
                 if (!tmpser)
                     goto end;
-                X509_CRL_add1_ext_i2d(crl, NID_crl_number, tmpser, 0, 0);
-                ASN1_INTEGER_free(tmpser);
+                YX509_CRL_add1_ext_i2d(crl, NID_crl_number, tmpser, 0, 0);
+                YASN1_INTEGER_free(tmpser);
                 crl_v2 = 1;
-                if (!BN_add_word(crlnumber, 1))
+                if (!BNY_add_word(crlnumber, 1))
                     goto end;
             }
         }
         if (crl_ext != NULL || crl_v2) {
-            if (!X509_CRL_set_version(crl, 1))
+            if (!YX509_CRL_set_version(crl, 1))
                 goto end;       /* version 2 CRL */
         }
 
@@ -1187,15 +1187,15 @@ end_of_options:
         BN_free(crlnumber);
         crlnumber = NULL;
 
-        if (!do_X509_CRL_sign(crl, pkey, dgst, sigopts))
+        if (!do_YX509_CRL_sign(crl, pkey, dgst, sigopts))
             goto end;
 
         Sout = bio_open_default(outfile, 'w',
-                                output_der ? FORMAT_ASN1 : FORMAT_TEXT);
+                                output_der ? FORMAT_YASN1 : FORMAT_TEXT);
         if (Sout == NULL)
             goto end;
 
-        PEM_write_bio_X509_CRL(Sout, crl);
+        PEM_write_bio_YX509_CRL(Sout, crl);
 
         /* Rename the crlnumber file */
         if (crlnumberfile != NULL
@@ -1206,10 +1206,10 @@ end_of_options:
     /*****************************************************************/
     if (dorevoke) {
         if (infile == NULL) {
-            BIO_printf(bio_err, "no input files\n");
+            BIO_pprintf(bio_err, "no input files\n");
             goto end;
         } else {
-            X509 *revcert;
+            YX509 *revcert;
             revcert = load_cert(infile, FORMAT_PEM, infile);
             if (revcert == NULL)
                 goto end;
@@ -1218,7 +1218,7 @@ end_of_options:
             j = do_revoke(revcert, db, rev_type, rev_arg);
             if (j <= 0)
                 goto end;
-            X509_free(revcert);
+            YX509_free(revcert);
 
             if (!save_index(dbfile, "new", db))
                 goto end;
@@ -1226,7 +1226,7 @@ end_of_options:
             if (!rotate_index(dbfile, "new", "old"))
                 goto end;
 
-            BIO_printf(bio_err, "Data Base Updated\n");
+            BIO_pprintf(bio_err, "Data Base Updated\n");
         }
     }
     ret = 0;
@@ -1237,7 +1237,7 @@ end_of_options:
     BIO_free_all(Sout);
     BIO_free_all(out);
     BIO_free_all(in);
-    sk_X509_pop_free(cert_sk, X509_free);
+    sk_YX509_pop_free(cert_sk, YX509_free);
 
     if (free_key)
         OPENSSL_free(key);
@@ -1245,9 +1245,9 @@ end_of_options:
     BN_free(crlnumber);
     free_index(db);
     sk_OPENSSL_STRING_free(sigopts);
-    EVP_PKEY_free(pkey);
-    X509_free(x509);
-    X509_CRL_free(crl);
+    EVVP_PKEY_free(pkey);
+    YX509_free(x509);
+    YX509_CRL_free(crl);
     NCONF_free(conf);
     NCONF_free(extconf);
     release_engine(e);
@@ -1258,12 +1258,12 @@ static char *lookup_conf(const CONF *conf, const char *section, const char *tag)
 {
     char *entry = NCONF_get_string(conf, section, tag);
     if (entry == NULL)
-        BIO_printf(bio_err, "variable lookup failed for %s::%s\n", section, tag);
+        BIO_pprintf(bio_err, "variable lookup failed for %s::%s\n", section, tag);
     return entry;
 }
 
-static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
-                   const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
+                   const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                    BIGNUM *serial, const char *subj, unsigned long chtype,
                    int multirdn, int email_dn, const char *startdate,
@@ -1272,9 +1272,9 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
                    int verbose, unsigned long certopt, unsigned long nameopt,
                    int default_op, int ext_copy, int selfsign)
 {
-    X509_REQ *req = NULL;
+    YX509_REQ *req = NULL;
     BIO *in = NULL;
-    EVP_PKEY *pktmp = NULL;
+    EVVP_PKEY *pktmp = NULL;
     int ok = -1, i;
 
     in = BIO_new_file(infile, "r");
@@ -1282,42 +1282,42 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
         ERR_print_errors(bio_err);
         goto end;
     }
-    if ((req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL)) == NULL) {
-        BIO_printf(bio_err, "Error reading certificate request in %s\n",
+    if ((req = PEM_readd_bio_YX509_REQ(in, NULL, NULL, NULL)) == NULL) {
+        BIO_pprintf(bio_err, "Error reading certificate request in %s\n",
                    infile);
         goto end;
     }
     if (verbose)
-        X509_REQ_print_ex(bio_err, req, nameopt, X509_FLAG_COMPAT);
+        YX509_REQ_print_ex(bio_err, req, nameopt, YX509_FLAG_COMPAT);
 
-    BIO_printf(bio_err, "Check that the request matches the signature\n");
+    BIO_pprintf(bio_err, "Check that the request matches the signature\n");
 
-    if (selfsign && !X509_REQ_check_private_key(req, pkey)) {
-        BIO_printf(bio_err,
+    if (selfsign && !YX509_REQ_check_private_key(req, pkey)) {
+        BIO_pprintf(bio_err,
                    "Certificate request and CA private key do not match\n");
         ok = 0;
         goto end;
     }
-    if ((pktmp = X509_REQ_get0_pubkey(req)) == NULL) {
-        BIO_printf(bio_err, "error unpacking public key\n");
+    if ((pktmp = YX509_REQ_get0_pubkey(req)) == NULL) {
+        BIO_pprintf(bio_err, "error unpacking public key\n");
         goto end;
     }
-    i = X509_REQ_verify(req, pktmp);
+    i = YX509_REQ_verify(req, pktmp);
     pktmp = NULL;
     if (i < 0) {
         ok = 0;
-        BIO_printf(bio_err, "Signature verification problems....\n");
+        BIO_pprintf(bio_err, "Signature verification problems....\n");
         ERR_print_errors(bio_err);
         goto end;
     }
     if (i == 0) {
         ok = 0;
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "Signature did not match the certificate request\n");
         ERR_print_errors(bio_err);
         goto end;
     } else {
-        BIO_printf(bio_err, "Signature ok\n");
+        BIO_pprintf(bio_err, "Signature ok\n");
     }
 
     ok = do_body(xret, pkey, x509, dgst, sigopts, policy, db, serial, subj,
@@ -1326,13 +1326,13 @@ static int certify(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
                  ext_copy, selfsign);
 
  end:
-    X509_REQ_free(req);
+    YX509_REQ_free(req);
     BIO_free(in);
     return ok;
 }
 
-static int certify_cert(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x509,
-                        const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int certify_cert(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
+                        const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                         STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                         BIGNUM *serial, const char *subj, unsigned long chtype,
                         int multirdn, int email_dn, const char *startdate,
@@ -1340,37 +1340,37 @@ static int certify_cert(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x
                         CONF *lconf, int verbose, unsigned long certopt,
                         unsigned long nameopt, int default_op, int ext_copy)
 {
-    X509 *req = NULL;
-    X509_REQ *rreq = NULL;
-    EVP_PKEY *pktmp = NULL;
+    YX509 *req = NULL;
+    YX509_REQ *rreq = NULL;
+    EVVP_PKEY *pktmp = NULL;
     int ok = -1, i;
 
     if ((req = load_cert(infile, FORMAT_PEM, infile)) == NULL)
         goto end;
     if (verbose)
-        X509_print(bio_err, req);
+        YX509_print(bio_err, req);
 
-    BIO_printf(bio_err, "Check that the request matches the signature\n");
+    BIO_pprintf(bio_err, "Check that the request matches the signature\n");
 
-    if ((pktmp = X509_get0_pubkey(req)) == NULL) {
-        BIO_printf(bio_err, "error unpacking public key\n");
+    if ((pktmp = YX509_get0_pubkey(req)) == NULL) {
+        BIO_pprintf(bio_err, "error unpacking public key\n");
         goto end;
     }
-    i = X509_verify(req, pktmp);
+    i = YX509_verify(req, pktmp);
     if (i < 0) {
         ok = 0;
-        BIO_printf(bio_err, "Signature verification problems....\n");
+        BIO_pprintf(bio_err, "Signature verification problems....\n");
         goto end;
     }
     if (i == 0) {
         ok = 0;
-        BIO_printf(bio_err, "Signature did not match the certificate\n");
+        BIO_pprintf(bio_err, "Signature did not match the certificate\n");
         goto end;
     } else {
-        BIO_printf(bio_err, "Signature ok\n");
+        BIO_pprintf(bio_err, "Signature ok\n");
     }
 
-    if ((rreq = X509_to_X509_REQ(req, NULL, NULL)) == NULL)
+    if ((rreq = YX509_to_YX509_REQ(req, NULL, NULL)) == NULL)
         goto end;
 
     ok = do_body(xret, pkey, x509, dgst, sigopts, policy, db, serial, subj,
@@ -1379,27 +1379,27 @@ static int certify_cert(X509 **xret, const char *infile, EVP_PKEY *pkey, X509 *x
                  ext_copy, 0);
 
  end:
-    X509_REQ_free(rreq);
-    X509_free(req);
+    YX509_REQ_free(rreq);
+    YX509_free(req);
     return ok;
 }
 
-static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
-                   const EVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
+static int do_body(YX509 **xret, EVVP_PKEY *pkey, YX509 *x509,
+                   const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUM *serial,
                    const char *subj, unsigned long chtype, int multirdn,
                    int email_dn, const char *startdate, const char *enddate, long days,
-                   int batch, int verbose, X509_REQ *req, const char *ext_sect,
+                   int batch, int verbose, YX509_REQ *req, const char *ext_sect,
                    CONF *lconf, unsigned long certopt, unsigned long nameopt,
                    int default_op, int ext_copy, int selfsign)
 {
-    X509_NAME *name = NULL, *CAname = NULL, *subject = NULL;
-    const ASN1_TIME *tm;
-    ASN1_STRING *str, *str2;
-    ASN1_OBJECT *obj;
-    X509 *ret = NULL;
-    X509_NAME_ENTRY *ne, *tne;
-    EVP_PKEY *pktmp;
+    YX509_NAME *name = NULL, *CAname = NULL, *subject = NULL;
+    const YASN1_TIME *tm;
+    YASN1_STRING *str, *str2;
+    YASN1_OBJECT *obj;
+    YX509 *ret = NULL;
+    YX509_NAME_ENTRY *ne, *tne;
+    EVVP_PKEY *pktmp;
     int ok = -1, i, j, last, nid;
     const char *p;
     CONF_VALUE *cv;
@@ -1412,38 +1412,38 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
         row[i] = NULL;
 
     if (subj) {
-        X509_NAME *n = parse_name(subj, chtype, multirdn);
+        YX509_NAME *n = parse_name(subj, chtype, multirdn);
 
         if (!n) {
             ERR_print_errors(bio_err);
             goto end;
         }
-        X509_REQ_set_subject_name(req, n);
-        X509_NAME_free(n);
+        YX509_REQ_set_subject_name(req, n);
+        YX509_NAME_free(n);
     }
 
     if (default_op)
-        BIO_printf(bio_err, "The Subject's Distinguished Name is as follows\n");
+        BIO_pprintf(bio_err, "The Subject's Distinguished Name is as follows\n");
 
-    name = X509_REQ_get_subject_name(req);
-    for (i = 0; i < X509_NAME_entry_count(name); i++) {
-        ne = X509_NAME_get_entry(name, i);
-        str = X509_NAME_ENTRY_get_data(ne);
-        obj = X509_NAME_ENTRY_get_object(ne);
+    name = YX509_REQ_get_subject_name(req);
+    for (i = 0; i < YX509_NAME_entry_count(name); i++) {
+        ne = YX509_NAME_get_entry(name, i);
+        str = YX509_NAME_ENTRY_get_data(ne);
+        obj = YX509_NAME_ENTRY_get_object(ne);
         nid = OBJ_obj2nid(obj);
 
         if (msie_hack) {
             /* assume all type should be strings */
 
-            if (str->type == V_ASN1_UNIVERSALSTRING)
-                ASN1_UNIVERSALSTRING_to_string(str);
+            if (str->type == V_YASN1_UNIVEYRSALSTRING)
+                YASN1_UNIVEYRSALSTRING_to_string(str);
 
-            if (str->type == V_ASN1_IA5STRING && nid != NID_pkcs9_emailAddress)
-                str->type = V_ASN1_T61STRING;
+            if (str->type == V_YASN1_IA5STRING && nid != NID_pkcs9_emailAddress)
+                str->type = V_YASN1_T61STRING;
 
             if (nid == NID_pkcs9_emailAddress
-                && str->type == V_ASN1_PRINTABLESTRING)
-                str->type = V_ASN1_IA5STRING;
+                && str->type == V_YASN1_PRINTABLESTRING)
+                str->type = V_YASN1_IA5STRING;
         }
 
         /* If no EMAIL is wanted in the subject */
@@ -1451,17 +1451,17 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
             continue;
 
         /* check some things */
-        if (nid == NID_pkcs9_emailAddress && str->type != V_ASN1_IA5STRING) {
-            BIO_printf(bio_err,
+        if (nid == NID_pkcs9_emailAddress && str->type != V_YASN1_IA5STRING) {
+            BIO_pprintf(bio_err,
                        "\nemailAddress type needs to be of type IA5STRING\n");
             goto end;
         }
-        if (str->type != V_ASN1_BMPSTRING && str->type != V_ASN1_UTF8STRING) {
-            j = ASN1_PRINTABLE_type(str->data, str->length);
-            if ((j == V_ASN1_T61STRING && str->type != V_ASN1_T61STRING) ||
-                (j == V_ASN1_IA5STRING && str->type == V_ASN1_PRINTABLESTRING))
+        if (str->type != V_YASN1_BMPSTRING && str->type != V_YASN1_UTF8STRING) {
+            j = YASN1_PRINTABLE_type(str->data, str->length);
+            if ((j == V_YASN1_T61STRING && str->type != V_YASN1_T61STRING) ||
+                (j == V_YASN1_IA5STRING && str->type == V_YASN1_PRINTABLESTRING))
             {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "\nThe string contains characters that are illegal for the ASN.1 type\n");
                 goto end;
             }
@@ -1472,16 +1472,16 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     }
 
     /* Ok, now we check the 'policy' stuff. */
-    if ((subject = X509_NAME_new()) == NULL) {
-        BIO_printf(bio_err, "Memory allocation failure\n");
+    if ((subject = YX509_NAME_new()) == NULL) {
+        BIO_pprintf(bio_err, "Memory allocation failure\n");
         goto end;
     }
 
     /* take a copy of the issuer name before we mess with it. */
     if (selfsign)
-        CAname = X509_NAME_dup(name);
+        CAname = YX509_NAME_dup(name);
     else
-        CAname = X509_NAME_dup(X509_get_subject_name(x509));
+        CAname = YX509_NAME_dup(YX509_get_subject_name(x509));
     if (CAname == NULL)
         goto end;
     str = str2 = NULL;
@@ -1489,7 +1489,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     for (i = 0; i < sk_CONF_VALUE_num(policy); i++) {
         cv = sk_CONF_VALUE_value(policy, i); /* get the object id */
         if ((j = OBJ_txt2nid(cv->name)) == NID_undef) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s:unknown object type in 'policy' configuration\n",
                        cv->name);
             goto end;
@@ -1498,16 +1498,16 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
 
         last = -1;
         for (;;) {
-            X509_NAME_ENTRY *push = NULL;
+            YX509_NAME_ENTRY *push = NULL;
 
             /* lookup the object in the supplied name list */
-            j = X509_NAME_get_index_by_OBJ(name, obj, last);
+            j = YX509_NAME_get_index_by_OBJ(name, obj, last);
             if (j < 0) {
                 if (last != -1)
                     break;
                 tne = NULL;
             } else {
-                tne = X509_NAME_get_entry(name, j);
+                tne = YX509_NAME_get_entry(name, j);
             }
             last = j;
 
@@ -1517,7 +1517,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
                     push = tne;
             } else if (strcmp(cv->value, "supplied") == 0) {
                 if (tne == NULL) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "The %s field needed to be supplied and was missing\n",
                                cv->name);
                     goto end;
@@ -1528,7 +1528,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
                 int last2;
 
                 if (tne == NULL) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "The mandatory %s field was missing\n",
                                cv->name);
                     goto end;
@@ -1537,23 +1537,23 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
                 last2 = -1;
 
  again2:
-                j = X509_NAME_get_index_by_OBJ(CAname, obj, last2);
+                j = YX509_NAME_get_index_by_OBJ(CAname, obj, last2);
                 if ((j < 0) && (last2 == -1)) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "The %s field does not exist in the CA certificate,\n"
                                "the 'policy' is misconfigured\n", cv->name);
                     goto end;
                 }
                 if (j >= 0) {
-                    push = X509_NAME_get_entry(CAname, j);
-                    str = X509_NAME_ENTRY_get_data(tne);
-                    str2 = X509_NAME_ENTRY_get_data(push);
+                    push = YX509_NAME_get_entry(CAname, j);
+                    str = YX509_NAME_ENTRY_get_data(tne);
+                    str2 = YX509_NAME_ENTRY_get_data(push);
                     last2 = j;
-                    if (ASN1_STRING_cmp(str, str2) != 0)
+                    if (YASN1_STRING_cmp(str, str2) != 0)
                         goto again2;
                 }
                 if (j < 0) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "The %s field is different between\n"
                                "CA certificate (%s) and the request (%s)\n",
                                cv->name,
@@ -1562,15 +1562,15 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
                     goto end;
                 }
             } else {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s:invalid type in 'policy' configuration\n",
                            cv->value);
                 goto end;
             }
 
             if (push != NULL) {
-                if (!X509_NAME_add_entry(subject, push, -1, 0)) {
-                    BIO_printf(bio_err, "Memory allocation failure\n");
+                if (!YX509_NAME_add_entry(subject, push, -1, 0)) {
+                    BIO_pprintf(bio_err, "Memory allocation failure\n");
                     goto end;
                 }
             }
@@ -1580,34 +1580,34 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     }
 
     if (preserve) {
-        X509_NAME_free(subject);
-        /* subject=X509_NAME_dup(X509_REQ_get_subject_name(req)); */
-        subject = X509_NAME_dup(name);
+        YX509_NAME_free(subject);
+        /* subject=YX509_NAME_dup(YX509_REQ_get_subject_name(req)); */
+        subject = YX509_NAME_dup(name);
         if (subject == NULL)
             goto end;
     }
 
     /* We are now totally happy, lets make and sign the certificate */
     if (verbose)
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "Everything appears to be ok, creating and signing the certificate\n");
 
-    if ((ret = X509_new()) == NULL)
+    if ((ret = YX509_new()) == NULL)
         goto end;
 
-#ifdef X509_V3
-    /* Make it an X509 v3 certificate. */
-    if (!X509_set_version(ret, 2))
+#ifdef YX509_V3
+    /* Make it an YX509 v3 certificate. */
+    if (!YX509_set_version(ret, 2))
         goto end;
 #endif
 
-    if (BN_to_ASN1_INTEGER(serial, X509_get_serialNumber(ret)) == NULL)
+    if (BN_to_YASN1_INTEGER(serial, YX509_get_serialNumber(ret)) == NULL)
         goto end;
     if (selfsign) {
-        if (!X509_set_issuer_name(ret, subject))
+        if (!YX509_set_issuer_name(ret, subject))
             goto end;
     } else {
-        if (!X509_set_issuer_name(ret, X509_get_subject_name(x509)))
+        if (!YX509_set_issuer_name(ret, YX509_get_subject_name(x509)))
             goto end;
     }
 
@@ -1617,56 +1617,56 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     if (enddate != NULL) {
         int tdays;
 
-        if (!ASN1_TIME_diff(&tdays, NULL, NULL, X509_get0_notAfter(ret)))
+        if (!YASN1_TIME_diff(&tdays, NULL, NULL, YX509_get0_notAfter(ret)))
             goto end;
         days = tdays;
     }
 
-    if (!X509_set_subject_name(ret, subject))
+    if (!YX509_set_subject_name(ret, subject))
         goto end;
 
-    pktmp = X509_REQ_get0_pubkey(req);
-    i = X509_set_pubkey(ret, pktmp);
+    pktmp = YX509_REQ_get0_pubkey(req);
+    i = YX509_set_pubkey(ret, pktmp);
     if (!i)
         goto end;
 
     /* Lets add the extensions, if there are any */
     if (ext_sect) {
-        X509V3_CTX ctx;
+        YX509V3_CTX ctx;
 
         /* Initialize the context structure */
         if (selfsign)
-            X509V3_set_ctx(&ctx, ret, ret, req, NULL, 0);
+            YX509V3_set_ctx(&ctx, ret, ret, req, NULL, 0);
         else
-            X509V3_set_ctx(&ctx, x509, ret, req, NULL, 0);
+            YX509V3_set_ctx(&ctx, x509, ret, req, NULL, 0);
 
         if (extconf != NULL) {
             if (verbose)
-                BIO_printf(bio_err, "Extra configuration file found\n");
+                BIO_pprintf(bio_err, "Extra configuration file found\n");
 
             /* Use the extconf configuration db LHASH */
-            X509V3_set_nconf(&ctx, extconf);
+            YX509V3_set_nconf(&ctx, extconf);
 
             /* Test the structure (needed?) */
-            /* X509V3_set_ctx_test(&ctx); */
+            /* YX509V3_set_ctx_test(&ctx); */
 
             /* Adds exts contained in the configuration file */
-            if (!X509V3_EXT_add_nconf(extconf, &ctx, ext_sect, ret)) {
-                BIO_printf(bio_err,
+            if (!YX509V3_EXT_add_nconf(extconf, &ctx, ext_sect, ret)) {
+                BIO_pprintf(bio_err,
                            "ERROR: adding extensions in section %s\n",
                            ext_sect);
                 ERR_print_errors(bio_err);
                 goto end;
             }
             if (verbose)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Successfully added extensions from file.\n");
         } else if (ext_sect) {
             /* We found extensions to be set from config file */
-            X509V3_set_nconf(&ctx, lconf);
+            YX509V3_set_nconf(&ctx, lconf);
 
-            if (!X509V3_EXT_add_nconf(lconf, &ctx, ext_sect, ret)) {
-                BIO_printf(bio_err,
+            if (!YX509V3_EXT_add_nconf(lconf, &ctx, ext_sect, ret)) {
+                BIO_pprintf(bio_err,
                            "ERROR: adding extensions in section %s\n",
                            ext_sect);
                 ERR_print_errors(bio_err);
@@ -1674,7 +1674,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
             }
 
             if (verbose)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Successfully added extensions from config\n");
         }
     }
@@ -1682,64 +1682,64 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     /* Copy extensions from request (if any) */
 
     if (!copy_extensions(ret, req, ext_copy)) {
-        BIO_printf(bio_err, "ERROR: adding extensions from request\n");
+        BIO_pprintf(bio_err, "ERROR: adding extensions from request\n");
         ERR_print_errors(bio_err);
         goto end;
     }
 
     {
-        const STACK_OF(X509_EXTENSION) *exts = X509_get0_extensions(ret);
+        const STACK_OF(YX509_EXTENSION) *exts = YX509_get0_extensions(ret);
 
-        if (exts != NULL && sk_X509_EXTENSION_num(exts) > 0)
-            /* Make it an X509 v3 certificate. */
-            if (!X509_set_version(ret, 2))
+        if (exts != NULL && sk_YX509_EXTENSION_num(exts) > 0)
+            /* Make it an YX509 v3 certificate. */
+            if (!YX509_set_version(ret, 2))
                 goto end;
     }
 
     if (verbose)
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "The subject name appears to be ok, checking data base for clashes\n");
 
     /* Build the correct Subject if no e-mail is wanted in the subject. */
     if (!email_dn) {
-        X509_NAME_ENTRY *tmpne;
-        X509_NAME *dn_subject;
+        YX509_NAME_ENTRY *tmpne;
+        YX509_NAME *dn_subject;
 
         /*
          * Its best to dup the subject DN and then delete any email addresses
          * because this retains its structure.
          */
-        if ((dn_subject = X509_NAME_dup(subject)) == NULL) {
-            BIO_printf(bio_err, "Memory allocation failure\n");
+        if ((dn_subject = YX509_NAME_dup(subject)) == NULL) {
+            BIO_pprintf(bio_err, "Memory allocation failure\n");
             goto end;
         }
         i = -1;
-        while ((i = X509_NAME_get_index_by_NID(dn_subject,
+        while ((i = YX509_NAME_get_index_by_NID(dn_subject,
                                                NID_pkcs9_emailAddress,
                                                i)) >= 0) {
-            tmpne = X509_NAME_delete_entry(dn_subject, i--);
-            X509_NAME_ENTRY_free(tmpne);
+            tmpne = YX509_NAME_delete_entry(dn_subject, i--);
+            YX509_NAME_ENTRY_free(tmpne);
         }
 
-        if (!X509_set_subject_name(ret, dn_subject)) {
-            X509_NAME_free(dn_subject);
+        if (!YX509_set_subject_name(ret, dn_subject)) {
+            YX509_NAME_free(dn_subject);
             goto end;
         }
-        X509_NAME_free(dn_subject);
+        YX509_NAME_free(dn_subject);
     }
 
-    row[DB_name] = X509_NAME_oneline(X509_get_subject_name(ret), NULL, 0);
+    row[DB_name] = YX509_NAME_oneline(YX509_get_subject_name(ret), NULL, 0);
     if (row[DB_name] == NULL) {
-        BIO_printf(bio_err, "Memory allocation failure\n");
+        BIO_pprintf(bio_err, "Memory allocation failure\n");
         goto end;
     }
 
     if (BN_is_zero(serial))
         row[DB_serial] = OPENSSL_strdup("00");
     else
-        row[DB_serial] = BN_bn2hex(serial);
+        row[DB_serial] = BN_bn2hexx(serial);
     if (row[DB_serial] == NULL) {
-        BIO_printf(bio_err, "Memory allocation failure\n");
+        BIO_pprintf(bio_err, "Memory allocation failure\n");
         goto end;
     }
 
@@ -1752,7 +1752,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
         OPENSSL_free(row[DB_name]);
         row[DB_name] = OPENSSL_strdup(row[DB_serial]);
         if (row[DB_name] == NULL) {
-            BIO_printf(bio_err, "Memory allocation failure\n");
+            BIO_pprintf(bio_err, "Memory allocation failure\n");
             goto end;
         }
     }
@@ -1762,7 +1762,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
 
         rrow = TXT_DB_get_by_index(db->db, DB_name, crow);
         if (rrow != NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "ERROR:There is already a certificate for %s\n",
                        row[DB_name]);
         }
@@ -1770,16 +1770,16 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     if (rrow == NULL) {
         rrow = TXT_DB_get_by_index(db->db, DB_serial, row);
         if (rrow != NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "ERROR:Serial number %s has already been issued,\n",
                        row[DB_serial]);
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "      check the database/serial_file for corruption\n");
         }
     }
 
     if (rrow != NULL) {
-        BIO_printf(bio_err, "The matching entry has the following details\n");
+        BIO_pprintf(bio_err, "The matching entry has the following details\n");
         if (rrow[DB_type][0] == DB_TYPE_EXP)
             p = "Expired";
         else if (rrow[DB_type][0] == DB_TYPE_REV)
@@ -1788,77 +1788,77 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
             p = "Valid";
         else
             p = "\ninvalid type, Data base error\n";
-        BIO_printf(bio_err, "Type          :%s\n", p);;
+        BIO_pprintf(bio_err, "Type          :%s\n", p);;
         if (rrow[DB_type][0] == DB_TYPE_REV) {
             p = rrow[DB_exp_date];
             if (p == NULL)
                 p = "undef";
-            BIO_printf(bio_err, "Was revoked on:%s\n", p);
+            BIO_pprintf(bio_err, "Was revoked on:%s\n", p);
         }
         p = rrow[DB_exp_date];
         if (p == NULL)
             p = "undef";
-        BIO_printf(bio_err, "Expires on    :%s\n", p);
+        BIO_pprintf(bio_err, "Expires on    :%s\n", p);
         p = rrow[DB_serial];
         if (p == NULL)
             p = "undef";
-        BIO_printf(bio_err, "Serial Number :%s\n", p);
+        BIO_pprintf(bio_err, "Serial Number :%s\n", p);
         p = rrow[DB_file];
         if (p == NULL)
             p = "undef";
-        BIO_printf(bio_err, "File name     :%s\n", p);
+        BIO_pprintf(bio_err, "File name     :%s\n", p);
         p = rrow[DB_name];
         if (p == NULL)
             p = "undef";
-        BIO_printf(bio_err, "Subject Name  :%s\n", p);
+        BIO_pprintf(bio_err, "Subject Name  :%s\n", p);
         ok = -1;                /* This is now a 'bad' error. */
         goto end;
     }
 
     if (!default_op) {
-        BIO_printf(bio_err, "Certificate Details:\n");
+        BIO_pprintf(bio_err, "Certificate Details:\n");
         /*
          * Never print signature details because signature not present
          */
-        certopt |= X509_FLAG_NO_SIGDUMP | X509_FLAG_NO_SIGNAME;
-        X509_print_ex(bio_err, ret, nameopt, certopt);
+        certopt |= YX509_FLAG_NO_SIGDUMP | YX509_FLAG_NO_SIGNAME;
+        YX509_print_ex(bio_err, ret, nameopt, certopt);
     }
 
-    BIO_printf(bio_err, "Certificate is to be certified until ");
-    ASN1_TIME_print(bio_err, X509_get0_notAfter(ret));
+    BIO_pprintf(bio_err, "Certificate is to be certified until ");
+    YASN1_TIME_print(bio_err, YX509_get0_notAfter(ret));
     if (days)
-        BIO_printf(bio_err, " (%ld days)", days);
-    BIO_printf(bio_err, "\n");
+        BIO_pprintf(bio_err, " (%ld days)", days);
+    BIO_pprintf(bio_err, "\n");
 
     if (!batch) {
 
-        BIO_printf(bio_err, "Sign the certificate? [y/n]:");
+        BIO_pprintf(bio_err, "Sign the certificate? [y/n]:");
         (void)BIO_flush(bio_err);
         buf[0] = '\0';
         if (fgets(buf, sizeof(buf), stdin) == NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "CERTIFICATE WILL NOT BE CERTIFIED: I/O error\n");
             ok = 0;
             goto end;
         }
         if (!(buf[0] == 'y' || buf[0] == 'Y')) {
-            BIO_printf(bio_err, "CERTIFICATE WILL NOT BE CERTIFIED\n");
+            BIO_pprintf(bio_err, "CERTIFICATE WILL NOT BE CERTIFIED\n");
             ok = 0;
             goto end;
         }
     }
 
-    pktmp = X509_get0_pubkey(ret);
-    if (EVP_PKEY_missing_parameters(pktmp) &&
-        !EVP_PKEY_missing_parameters(pkey))
-        EVP_PKEY_copy_parameters(pktmp, pkey);
+    pktmp = YX509_get0_pubkey(ret);
+    if (EVVP_PKEY_missing_parameters(pktmp) &&
+        !EVVP_PKEY_missing_parameters(pkey))
+        EVVP_PKEY_copy_parameters(pktmp, pkey);
 
-    if (!do_X509_sign(ret, pkey, dgst, sigopts))
+    if (!do_YX509_sign(ret, pkey, dgst, sigopts))
         goto end;
 
     /* We now just add it to the database as DB_TYPE_VAL('V') */
     row[DB_type] = OPENSSL_strdup("V");
-    tm = X509_get0_notAfter(ret);
+    tm = YX509_get0_notAfter(ret);
     row[DB_exp_date] = app_malloc(tm->length + 1, "row expdate");
     memcpy(row[DB_exp_date], tm->data, tm->length);
     row[DB_exp_date][tm->length] = '\0';
@@ -1866,7 +1866,7 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     row[DB_file] = OPENSSL_strdup("unknown");
     if ((row[DB_type] == NULL) || (row[DB_file] == NULL)
         || (row[DB_name] == NULL)) {
-        BIO_printf(bio_err, "Memory allocation failure\n");
+        BIO_pprintf(bio_err, "Memory allocation failure\n");
         goto end;
     }
 
@@ -1876,8 +1876,8 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     irow[DB_NUMBER] = NULL;
 
     if (!TXT_DB_insert(db->db, irow)) {
-        BIO_printf(bio_err, "failed to update database\n");
-        BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
+        BIO_pprintf(bio_err, "failed to update database\n");
+        BIO_pprintf(bio_err, "TXT_DB error number %ld\n", db->db->error);
         goto end;
     }
     irow = NULL;
@@ -1889,29 +1889,29 @@ static int do_body(X509 **xret, EVP_PKEY *pkey, X509 *x509,
     }
     OPENSSL_free(irow);
 
-    X509_NAME_free(CAname);
-    X509_NAME_free(subject);
+    YX509_NAME_free(CAname);
+    YX509_NAME_free(subject);
     if (ok <= 0)
-        X509_free(ret);
+        YX509_free(ret);
     else
         *xret = ret;
     return ok;
 }
 
-static void write_new_certificate(BIO *bp, X509 *x, int output_der, int notext)
+static void write_new_certificate(BIO *bp, YX509 *x, int output_der, int notext)
 {
 
     if (output_der) {
-        (void)i2d_X509_bio(bp, x);
+        (void)i2d_YX509_bio(bp, x);
         return;
     }
     if (!notext)
-        X509_print(bp, x);
-    PEM_write_bio_X509(bp, x);
+        YX509_print(bp, x);
+    PEM_write_bio_YX509(bp, x);
 }
 
-static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
-                         X509 *x509, const EVP_MD *dgst,
+static int certify_spkac(YX509 **xret, const char *infile, EVVP_PKEY *pkey,
+                         YX509 *x509, const EVVP_MD *dgst,
                          STACK_OF(OPENSSL_STRING) *sigopts,
                          STACK_OF(CONF_VALUE) *policy, CA_DB *db,
                          BIGNUM *serial, const char *subj, unsigned long chtype,
@@ -1922,13 +1922,13 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
 {
     STACK_OF(CONF_VALUE) *sk = NULL;
     LHASH_OF(CONF_VALUE) *parms = NULL;
-    X509_REQ *req = NULL;
+    YX509_REQ *req = NULL;
     CONF_VALUE *cv = NULL;
     NETSCAPE_SPKI *spki = NULL;
     char *type, *buf;
-    EVP_PKEY *pktmp = NULL;
-    X509_NAME *n = NULL;
-    X509_NAME_ENTRY *ne = NULL;
+    EVVP_PKEY *pktmp = NULL;
+    YX509_NAME *n = NULL;
+    YX509_NAME_ENTRY *ne = NULL;
     int ok = -1, i, j;
     long errline;
     int nid;
@@ -1940,25 +1940,25 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
      */
     parms = CONF_load(NULL, infile, &errline);
     if (parms == NULL) {
-        BIO_printf(bio_err, "error on line %ld of %s\n", errline, infile);
+        BIO_pprintf(bio_err, "error on line %ld of %s\n", errline, infile);
         ERR_print_errors(bio_err);
         goto end;
     }
 
     sk = CONF_get_section(parms, "default");
     if (sk_CONF_VALUE_num(sk) == 0) {
-        BIO_printf(bio_err, "no name/value pairs found in %s\n", infile);
+        BIO_pprintf(bio_err, "no name/value pairs found in %s\n", infile);
         goto end;
     }
 
     /*
-     * Now create a dummy X509 request structure.  We don't actually
-     * have an X509 request, but we have many of the components
+     * Now create a dummy YX509 request structure.  We don't actually
+     * have an YX509 request, but we have many of the components
      * (a public key, various DN components).  The idea is that we
-     * put these components into the right X509 request structure
-     * and we can use the same code as if you had a real X509 request.
+     * put these components into the right YX509 request structure
+     * and we can use the same code as if you had a real YX509 request.
      */
-    req = X509_REQ_new();
+    req = YX509_REQ_new();
     if (req == NULL) {
         ERR_print_errors(bio_err);
         goto end;
@@ -1967,7 +1967,7 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
     /*
      * Build up the subject name set.
      */
-    n = X509_REQ_get_subject_name(req);
+    n = YX509_REQ_get_subject_name(req);
 
     for (i = 0;; i++) {
         if (sk_CONF_VALUE_num(sk) <= i)
@@ -1991,7 +1991,7 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
             if (strcmp(type, "SPKAC") == 0) {
                 spki = NETSCAPE_SPKI_b64_decode(cv->value, -1);
                 if (spki == NULL) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "unable to load Netscape SPKAC structure\n");
                     ERR_print_errors(bio_err);
                     goto end;
@@ -2000,12 +2000,12 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
             continue;
         }
 
-        if (!X509_NAME_add_entry_by_NID(n, nid, chtype,
+        if (!YX509_NAME_add_entry_by_NID(n, nid, chtype,
                                         (unsigned char *)buf, -1, -1, 0))
             goto end;
     }
     if (spki == NULL) {
-        BIO_printf(bio_err, "Netscape SPKAC structure not found in %s\n",
+        BIO_pprintf(bio_err, "Netscape SPKAC structure not found in %s\n",
                    infile);
         goto end;
     }
@@ -2014,46 +2014,46 @@ static int certify_spkac(X509 **xret, const char *infile, EVP_PKEY *pkey,
      * Now extract the key from the SPKI structure.
      */
 
-    BIO_printf(bio_err, "Check that the SPKAC request matches the signature\n");
+    BIO_pprintf(bio_err, "Check that the SPKAC request matches the signature\n");
 
     if ((pktmp = NETSCAPE_SPKI_get_pubkey(spki)) == NULL) {
-        BIO_printf(bio_err, "error unpacking SPKAC public key\n");
+        BIO_pprintf(bio_err, "error unpacking SPKAC public key\n");
         goto end;
     }
 
     j = NETSCAPE_SPKI_verify(spki, pktmp);
     if (j <= 0) {
-        EVP_PKEY_free(pktmp);
-        BIO_printf(bio_err,
+        EVVP_PKEY_free(pktmp);
+        BIO_pprintf(bio_err,
                    "signature verification failed on SPKAC public key\n");
         goto end;
     }
-    BIO_printf(bio_err, "Signature ok\n");
+    BIO_pprintf(bio_err, "Signature ok\n");
 
-    X509_REQ_set_pubkey(req, pktmp);
-    EVP_PKEY_free(pktmp);
+    YX509_REQ_set_pubkey(req, pktmp);
+    EVVP_PKEY_free(pktmp);
     ok = do_body(xret, pkey, x509, dgst, sigopts, policy, db, serial, subj,
                  chtype, multirdn, email_dn, startdate, enddate, days, 1,
                  verbose, req, ext_sect, lconf, certopt, nameopt, default_op,
                  ext_copy, 0);
  end:
-    X509_REQ_free(req);
+    YX509_REQ_free(req);
     CONF_free(parms);
     NETSCAPE_SPKI_free(spki);
-    X509_NAME_ENTRY_free(ne);
+    YX509_NAME_ENTRY_free(ne);
 
     return ok;
 }
 
 static int check_time_format(const char *str)
 {
-    return ASN1_TIME_set_string(NULL, str);
+    return YASN1_TIME_set_string(NULL, str);
 }
 
-static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
+static int do_revoke(YX509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
                      const char *value)
 {
-    const ASN1_TIME *tm = NULL;
+    const YASN1_TIME *tm = NULL;
     char *row[DB_NUMBER], **rrow, **irow;
     char *rev_str = NULL;
     BIGNUM *bn = NULL;
@@ -2061,14 +2061,14 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
 
     for (i = 0; i < DB_NUMBER; i++)
         row[i] = NULL;
-    row[DB_name] = X509_NAME_oneline(X509_get_subject_name(x509), NULL, 0);
-    bn = ASN1_INTEGER_to_BN(X509_get_serialNumber(x509), NULL);
+    row[DB_name] = YX509_NAME_oneline(YX509_get_subject_name(x509), NULL, 0);
+    bn = YASN1_INTEGER_to_BN(YX509_get_serialNumber(x509), NULL);
     if (!bn)
         goto end;
     if (BN_is_zero(bn))
         row[DB_serial] = OPENSSL_strdup("00");
     else
-        row[DB_serial] = BN_bn2hex(bn);
+        row[DB_serial] = BN_bn2hexx(bn);
     BN_free(bn);
     if (row[DB_name] != NULL && row[DB_name][0] == '\0') {
         /* Entries with empty Subjects actually use the serial number instead */
@@ -2076,7 +2076,7 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
         row[DB_name] = OPENSSL_strdup(row[DB_serial]);
     }
     if ((row[DB_name] == NULL) || (row[DB_serial] == NULL)) {
-        BIO_printf(bio_err, "Memory allocation failure\n");
+        BIO_pprintf(bio_err, "Memory allocation failure\n");
         goto end;
     }
     /*
@@ -2085,13 +2085,13 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
      */
     rrow = TXT_DB_get_by_index(db->db, DB_serial, row);
     if (rrow == NULL) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "Adding Entry with serial number %s to DB for %s\n",
                    row[DB_serial], row[DB_name]);
 
         /* We now just add it to the database as DB_TYPE_REV('V') */
         row[DB_type] = OPENSSL_strdup("V");
-        tm = X509_get0_notAfter(x509);
+        tm = YX509_get0_notAfter(x509);
         row[DB_exp_date] = app_malloc(tm->length + 1, "row exp_data");
         memcpy(row[DB_exp_date], tm->data, tm->length);
         row[DB_exp_date][tm->length] = '\0';
@@ -2099,7 +2099,7 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
         row[DB_file] = OPENSSL_strdup("unknown");
 
         if (row[DB_type] == NULL || row[DB_file] == NULL) {
-            BIO_printf(bio_err, "Memory allocation failure\n");
+            BIO_pprintf(bio_err, "Memory allocation failure\n");
             goto end;
         }
 
@@ -2109,8 +2109,8 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
         irow[DB_NUMBER] = NULL;
 
         if (!TXT_DB_insert(db->db, irow)) {
-            BIO_printf(bio_err, "failed to update database\n");
-            BIO_printf(bio_err, "TXT_DB error number %ld\n", db->db->error);
+            BIO_pprintf(bio_err, "failed to update database\n");
+            BIO_pprintf(bio_err, "TXT_DB error number %ld\n", db->db->error);
             OPENSSL_free(irow);
             goto end;
         }
@@ -2128,21 +2128,21 @@ static int do_revoke(X509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
         goto end;
 
     } else if (index_name_cmp_noconst(row, rrow)) {
-        BIO_printf(bio_err, "ERROR:name does not match %s\n", row[DB_name]);
+        BIO_pprintf(bio_err, "ERROR:name does not match %s\n", row[DB_name]);
         goto end;
     } else if (rev_type == REV_VALID) {
-        BIO_printf(bio_err, "ERROR:Already present, serial number %s\n",
+        BIO_pprintf(bio_err, "ERROR:Already present, serial number %s\n",
                    row[DB_serial]);
         goto end;
     } else if (rrow[DB_type][0] == DB_TYPE_REV) {
-        BIO_printf(bio_err, "ERROR:Already revoked, serial number %s\n",
+        BIO_pprintf(bio_err, "ERROR:Already revoked, serial number %s\n",
                    row[DB_serial]);
         goto end;
     } else {
-        BIO_printf(bio_err, "Revoking Certificate %s.\n", rrow[DB_serial]);
+        BIO_pprintf(bio_err, "Revoking Certificate %s.\n", rrow[DB_serial]);
         rev_str = make_revocation_str(rev_type, value);
         if (!rev_str) {
-            BIO_printf(bio_err, "Error in revocation arguments\n");
+            BIO_pprintf(bio_err, "Error in revocation arguments\n");
             goto end;
         }
         rrow[DB_type][0] = DB_TYPE_REV;
@@ -2192,27 +2192,27 @@ static int get_certificate_status(const char *serial, CA_DB *db)
     /* Search for the certificate */
     rrow = TXT_DB_get_by_index(db->db, DB_serial, row);
     if (rrow == NULL) {
-        BIO_printf(bio_err, "Serial %s not present in db.\n", row[DB_serial]);
+        BIO_pprintf(bio_err, "Serial %s not present in db.\n", row[DB_serial]);
         ok = -1;
         goto end;
     } else if (rrow[DB_type][0] == DB_TYPE_VAL) {
-        BIO_printf(bio_err, "%s=Valid (%c)\n",
+        BIO_pprintf(bio_err, "%s=Valid (%c)\n",
                    row[DB_serial], rrow[DB_type][0]);
         goto end;
     } else if (rrow[DB_type][0] == DB_TYPE_REV) {
-        BIO_printf(bio_err, "%s=Revoked (%c)\n",
+        BIO_pprintf(bio_err, "%s=Revoked (%c)\n",
                    row[DB_serial], rrow[DB_type][0]);
         goto end;
     } else if (rrow[DB_type][0] == DB_TYPE_EXP) {
-        BIO_printf(bio_err, "%s=Expired (%c)\n",
+        BIO_pprintf(bio_err, "%s=Expired (%c)\n",
                    row[DB_serial], rrow[DB_type][0]);
         goto end;
     } else if (rrow[DB_type][0] == DB_TYPE_SUSP) {
-        BIO_printf(bio_err, "%s=Suspended (%c)\n",
+        BIO_pprintf(bio_err, "%s=Suspended (%c)\n",
                    row[DB_serial], rrow[DB_type][0]);
         goto end;
     } else {
-        BIO_printf(bio_err, "%s=Unknown (%c).\n",
+        BIO_pprintf(bio_err, "%s=Unknown (%c).\n",
                    row[DB_serial], rrow[DB_type][0]);
         ok = -1;
     }
@@ -2225,17 +2225,17 @@ static int get_certificate_status(const char *serial, CA_DB *db)
 
 static int do_updatedb(CA_DB *db)
 {
-    ASN1_TIME *a_tm = NULL;
+    YASN1_TIME *a_tm = NULL;
     int i, cnt = 0;
     char **rrow;
 
-    a_tm = ASN1_TIME_new();
+    a_tm = YASN1_TIME_new();
     if (a_tm == NULL)
         return -1;
 
     /* get actual time */
-    if (X509_gmtime_adj(a_tm, 0) == NULL) {
-        ASN1_TIME_free(a_tm);
+    if (YX509_gmtime_adj(a_tm, 0) == NULL) {
+        YASN1_TIME_free(a_tm);
         return -1;
     }
 
@@ -2244,32 +2244,32 @@ static int do_updatedb(CA_DB *db)
 
         if (rrow[DB_type][0] == DB_TYPE_VAL) {
             /* ignore entries that are not valid */
-            ASN1_TIME *exp_date = NULL;
+            YASN1_TIME *exp_date = NULL;
 
-            exp_date = ASN1_TIME_new();
+            exp_date = YASN1_TIME_new();
             if (exp_date == NULL) {
-                ASN1_TIME_free(a_tm);
+                YASN1_TIME_free(a_tm);
                 return -1;
             }
 
-            if (!ASN1_TIME_set_string(exp_date, rrow[DB_exp_date])) {
-                ASN1_TIME_free(a_tm);
-                ASN1_TIME_free(exp_date);
+            if (!YASN1_TIME_set_string(exp_date, rrow[DB_exp_date])) {
+                YASN1_TIME_free(a_tm);
+                YASN1_TIME_free(exp_date);
                 return -1;
             }
 
-            if (ASN1_TIME_compare(exp_date, a_tm) <= 0) {
+            if (YASN1_TIME_compare(exp_date, a_tm) <= 0) {
                 rrow[DB_type][0] = DB_TYPE_EXP;
                 rrow[DB_type][1] = '\0';
                 cnt++;
 
-                BIO_printf(bio_err, "%s=Expired\n", rrow[DB_serial]);
+                BIO_pprintf(bio_err, "%s=Expired\n", rrow[DB_serial]);
             }
-            ASN1_TIME_free(exp_date);
+            YASN1_TIME_free(exp_date);
         }
     }
 
-    ASN1_TIME_free(a_tm);
+    YASN1_TIME_free(a_tm);
     return cnt;
 }
 
@@ -2302,8 +2302,8 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
 {
     char *str;
     const char *reason = NULL, *other = NULL;
-    ASN1_OBJECT *otmp;
-    ASN1_UTCTIME *revtm = NULL;
+    YASN1_OBJECT *otmp;
+    YASN1_UTCTIME *revtm = NULL;
     int i;
 
     switch (rev_type) {
@@ -2319,7 +2319,7 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
             }
         }
         if (reason == NULL) {
-            BIO_printf(bio_err, "Unknown CRL reason %s\n", rev_arg);
+            BIO_pprintf(bio_err, "Unknown CRL reason %s\n", rev_arg);
             return NULL;
         }
         break;
@@ -2327,10 +2327,10 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
     case REV_HOLD:
         /* Argument is an OID */
         otmp = OBJ_txt2obj(rev_arg, 0);
-        ASN1_OBJECT_free(otmp);
+        YASN1_OBJECT_free(otmp);
 
         if (otmp == NULL) {
-            BIO_printf(bio_err, "Invalid object identifier %s\n", rev_arg);
+            BIO_pprintf(bio_err, "Invalid object identifier %s\n", rev_arg);
             return NULL;
         }
 
@@ -2341,8 +2341,8 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
     case REV_KEY_COMPROMISE:
     case REV_CA_COMPROMISE:
         /* Argument is the key compromise time  */
-        if (!ASN1_GENERALIZEDTIME_set_string(NULL, rev_arg)) {
-            BIO_printf(bio_err,
+        if (!YASN1_GENERALIZEDTIME_set_string(NULL, rev_arg)) {
+            BIO_pprintf(bio_err,
                        "Invalid time format %s. Need YYYYMMDDHHMMSSZ\n",
                        rev_arg);
             return NULL;
@@ -2356,7 +2356,7 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
         break;
     }
 
-    revtm = X509_gmtime_adj(NULL, 0);
+    revtm = YX509_gmtime_adj(NULL, 0);
 
     if (!revtm)
         return NULL;
@@ -2378,52 +2378,52 @@ static char *make_revocation_str(REVINFO_TYPE rev_type, const char *rev_arg)
         OPENSSL_strlcat(str, ",", i);
         OPENSSL_strlcat(str, other, i);
     }
-    ASN1_UTCTIME_free(revtm);
+    YASN1_UTCTIME_free(revtm);
     return str;
 }
 
 /*-
- * Convert revocation field to X509_REVOKED entry
+ * Convert revocation field to YX509_REVOKED entry
  * return code:
  * 0 error
  * 1 OK
  * 2 OK and some extensions added (i.e. V2 CRL)
  */
 
-static int make_revoked(X509_REVOKED *rev, const char *str)
+static int make_revoked(YX509_REVOKED *rev, const char *str)
 {
     char *tmp = NULL;
     int reason_code = -1;
     int i, ret = 0;
-    ASN1_OBJECT *hold = NULL;
-    ASN1_GENERALIZEDTIME *comp_time = NULL;
-    ASN1_ENUMERATED *rtmp = NULL;
+    YASN1_OBJECT *hold = NULL;
+    YASN1_GENERALIZEDTIME *comp_time = NULL;
+    YASN1_ENUMERATED *rtmp = NULL;
 
-    ASN1_TIME *revDate = NULL;
+    YASN1_TIME *revDate = NULL;
 
     i = unpack_revinfo(&revDate, &reason_code, &hold, &comp_time, str);
 
     if (i == 0)
         goto end;
 
-    if (rev && !X509_REVOKED_set_revocationDate(rev, revDate))
+    if (rev && !YX509_REVOKED_set_revocationDate(rev, revDate))
         goto end;
 
     if (rev && (reason_code != OCSP_REVOKED_STATUS_NOSTATUS)) {
-        rtmp = ASN1_ENUMERATED_new();
-        if (rtmp == NULL || !ASN1_ENUMERATED_set(rtmp, reason_code))
+        rtmp = YASN1_ENUMERATED_new();
+        if (rtmp == NULL || !YASN1_ENUMERATED_set(rtmp, reason_code))
             goto end;
-        if (!X509_REVOKED_add1_ext_i2d(rev, NID_crl_reason, rtmp, 0, 0))
+        if (!YX509_REVOKED_add1_ext_i2d(rev, NID_crl_reason, rtmp, 0, 0))
             goto end;
     }
 
     if (rev && comp_time) {
-        if (!X509_REVOKED_add1_ext_i2d
+        if (!YX509_REVOKED_add1_ext_i2d
             (rev, NID_invalidity_date, comp_time, 0, 0))
             goto end;
     }
     if (rev && hold) {
-        if (!X509_REVOKED_add1_ext_i2d
+        if (!YX509_REVOKED_add1_ext_i2d
             (rev, NID_hold_instruction_code, hold, 0, 0))
             goto end;
     }
@@ -2436,21 +2436,21 @@ static int make_revoked(X509_REVOKED *rev, const char *str)
  end:
 
     OPENSSL_free(tmp);
-    ASN1_OBJECT_free(hold);
-    ASN1_GENERALIZEDTIME_free(comp_time);
-    ASN1_ENUMERATED_free(rtmp);
-    ASN1_TIME_free(revDate);
+    YASN1_OBJECT_free(hold);
+    YASN1_GENERALIZEDTIME_free(comp_time);
+    YASN1_ENUMERATED_free(rtmp);
+    YASN1_TIME_free(revDate);
 
     return ret;
 }
 
-static int old_entry_print(const ASN1_OBJECT *obj, const ASN1_STRING *str)
+static int old_entry_print(const YASN1_OBJECT *obj, const YASN1_STRING *str)
 {
     char buf[25], *pbuf;
     const char *p;
     int j;
 
-    j = i2a_ASN1_OBJECT(bio_err, obj);
+    j = i2a_YASN1_OBJECT(bio_err, obj);
     pbuf = buf;
     for (j = 22 - j; j > 0; j--)
         *(pbuf++) = ' ';
@@ -2458,47 +2458,47 @@ static int old_entry_print(const ASN1_OBJECT *obj, const ASN1_STRING *str)
     *(pbuf++) = '\0';
     BIO_puts(bio_err, buf);
 
-    if (str->type == V_ASN1_PRINTABLESTRING)
-        BIO_printf(bio_err, "PRINTABLE:'");
-    else if (str->type == V_ASN1_T61STRING)
-        BIO_printf(bio_err, "T61STRING:'");
-    else if (str->type == V_ASN1_IA5STRING)
-        BIO_printf(bio_err, "IA5STRING:'");
-    else if (str->type == V_ASN1_UNIVERSALSTRING)
-        BIO_printf(bio_err, "UNIVERSALSTRING:'");
+    if (str->type == V_YASN1_PRINTABLESTRING)
+        BIO_pprintf(bio_err, "PRINTABLE:'");
+    else if (str->type == V_YASN1_T61STRING)
+        BIO_pprintf(bio_err, "T61STRING:'");
+    else if (str->type == V_YASN1_IA5STRING)
+        BIO_pprintf(bio_err, "IA5STRING:'");
+    else if (str->type == V_YASN1_UNIVEYRSALSTRING)
+        BIO_pprintf(bio_err, "UNIVEYRSALSTRING:'");
     else
-        BIO_printf(bio_err, "ASN.1 %2d:'", str->type);
+        BIO_pprintf(bio_err, "ASN.1 %2d:'", str->type);
 
     p = (const char *)str->data;
     for (j = str->length; j > 0; j--) {
         if ((*p >= ' ') && (*p <= '~'))
-            BIO_printf(bio_err, "%c", *p);
+            BIO_pprintf(bio_err, "%c", *p);
         else if (*p & 0x80)
-            BIO_printf(bio_err, "\\0x%02X", *p);
+            BIO_pprintf(bio_err, "\\0x%02X", *p);
         else if ((unsigned char)*p == 0xf7)
-            BIO_printf(bio_err, "^?");
+            BIO_pprintf(bio_err, "^?");
         else
-            BIO_printf(bio_err, "^%c", *p + '@');
+            BIO_pprintf(bio_err, "^%c", *p + '@');
         p++;
     }
-    BIO_printf(bio_err, "'\n");
+    BIO_pprintf(bio_err, "'\n");
     return 1;
 }
 
-int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
-                   ASN1_GENERALIZEDTIME **pinvtm, const char *str)
+int unpack_revinfo(YASN1_TIME **prevtm, int *preason, YASN1_OBJECT **phold,
+                   YASN1_GENERALIZEDTIME **pinvtm, const char *str)
 {
     char *tmp;
     char *rtime_str, *reason_str = NULL, *arg_str = NULL, *p;
     int reason_code = -1;
     int ret = 0;
     unsigned int i;
-    ASN1_OBJECT *hold = NULL;
-    ASN1_GENERALIZEDTIME *comp_time = NULL;
+    YASN1_OBJECT *hold = NULL;
+    YASN1_GENERALIZEDTIME *comp_time = NULL;
 
     tmp = OPENSSL_strdup(str);
     if (!tmp) {
-        BIO_printf(bio_err, "memory allocation failure\n");
+        BIO_pprintf(bio_err, "memory allocation failure\n");
         goto end;
     }
 
@@ -2518,13 +2518,13 @@ int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
     }
 
     if (prevtm) {
-        *prevtm = ASN1_UTCTIME_new();
+        *prevtm = YASN1_UTCTIME_new();
         if (*prevtm == NULL) {
-            BIO_printf(bio_err, "memory allocation failure\n");
+            BIO_pprintf(bio_err, "memory allocation failure\n");
             goto end;
         }
-        if (!ASN1_UTCTIME_set_string(*prevtm, rtime_str)) {
-            BIO_printf(bio_err, "invalid revocation date %s\n", rtime_str);
+        if (!YASN1_UTCTIME_set_string(*prevtm, rtime_str)) {
+            BIO_pprintf(bio_err, "invalid revocation date %s\n", rtime_str);
             goto end;
         }
     }
@@ -2536,7 +2536,7 @@ int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
             }
         }
         if (reason_code == OCSP_REVOKED_STATUS_NOSTATUS) {
-            BIO_printf(bio_err, "invalid reason code %s\n", reason_str);
+            BIO_pprintf(bio_err, "invalid reason code %s\n", reason_str);
             goto end;
         }
 
@@ -2544,32 +2544,32 @@ int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
             reason_code = OCSP_REVOKED_STATUS_REMOVEFROMCRL;
         } else if (reason_code == 8) { /* Hold instruction */
             if (!arg_str) {
-                BIO_printf(bio_err, "missing hold instruction\n");
+                BIO_pprintf(bio_err, "missing hold instruction\n");
                 goto end;
             }
             reason_code = OCSP_REVOKED_STATUS_CERTIFICATEHOLD;
             hold = OBJ_txt2obj(arg_str, 0);
 
             if (!hold) {
-                BIO_printf(bio_err, "invalid object identifier %s\n", arg_str);
+                BIO_pprintf(bio_err, "invalid object identifier %s\n", arg_str);
                 goto end;
             }
             if (phold)
                 *phold = hold;
             else
-                ASN1_OBJECT_free(hold);
+                YASN1_OBJECT_free(hold);
         } else if ((reason_code == 9) || (reason_code == 10)) {
             if (!arg_str) {
-                BIO_printf(bio_err, "missing compromised time\n");
+                BIO_pprintf(bio_err, "missing compromised time\n");
                 goto end;
             }
-            comp_time = ASN1_GENERALIZEDTIME_new();
+            comp_time = YASN1_GENERALIZEDTIME_new();
             if (comp_time == NULL) {
-                BIO_printf(bio_err, "memory allocation failure\n");
+                BIO_pprintf(bio_err, "memory allocation failure\n");
                 goto end;
             }
-            if (!ASN1_GENERALIZEDTIME_set_string(comp_time, arg_str)) {
-                BIO_printf(bio_err, "invalid compromised time %s\n", arg_str);
+            if (!YASN1_GENERALIZEDTIME_set_string(comp_time, arg_str)) {
+                BIO_pprintf(bio_err, "invalid compromised time %s\n", arg_str);
                 goto end;
             }
             if (reason_code == 9)
@@ -2591,7 +2591,7 @@ int unpack_revinfo(ASN1_TIME **prevtm, int *preason, ASN1_OBJECT **phold,
  end:
 
     OPENSSL_free(tmp);
-    ASN1_GENERALIZEDTIME_free(comp_time);
+    YASN1_GENERALIZEDTIME_free(comp_time);
 
     return ret;
 }

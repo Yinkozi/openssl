@@ -21,7 +21,7 @@ typedef struct {
     /* Key and paramgen group */
     EC_GROUP *gen_group;
     /* message digest */
-    const EVP_MD *md;
+    const EVVP_MD *md;
     /* Distinguishing Identifier, ISO/IEC 15946-3 */
     uint8_t *id;
     size_t id_len;
@@ -29,7 +29,7 @@ typedef struct {
     int id_set;
 } SM2_PKEY_CTX;
 
-static int pkey_sm2_init(EVP_PKEY_CTX *ctx)
+static int pkey_sm2_init(EVVP_PKEY_CTX *ctx)
 {
     SM2_PKEY_CTX *smctx;
 
@@ -42,7 +42,7 @@ static int pkey_sm2_init(EVP_PKEY_CTX *ctx)
     return 1;
 }
 
-static void pkey_sm2_cleanup(EVP_PKEY_CTX *ctx)
+static void pkey_sm2_cleanup(EVVP_PKEY_CTX *ctx)
 {
     SM2_PKEY_CTX *smctx = ctx->data;
 
@@ -54,7 +54,7 @@ static void pkey_sm2_cleanup(EVP_PKEY_CTX *ctx)
     }
 }
 
-static int pkey_sm2_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
+static int pkey_sm2_copy(EVVP_PKEY_CTX *dst, EVVP_PKEY_CTX *src)
 {
     SM2_PKEY_CTX *dctx, *sctx;
 
@@ -85,7 +85,7 @@ static int pkey_sm2_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
     return 1;
 }
 
-static int pkey_sm2_sign(EVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
+static int pkey_sm2_sign(EVVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
                          const unsigned char *tbs, size_t tbslen)
 {
     int ret;
@@ -115,7 +115,7 @@ static int pkey_sm2_sign(EVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
     return 1;
 }
 
-static int pkey_sm2_verify(EVP_PKEY_CTX *ctx,
+static int pkey_sm2_verify(EVVP_PKEY_CTX *ctx,
                            const unsigned char *sig, size_t siglen,
                            const unsigned char *tbs, size_t tbslen)
 {
@@ -124,13 +124,13 @@ static int pkey_sm2_verify(EVP_PKEY_CTX *ctx,
     return sm2_verify(tbs, tbslen, sig, siglen, ec);
 }
 
-static int pkey_sm2_encrypt(EVP_PKEY_CTX *ctx,
+static int pkey_sm2_encrypt(EVVP_PKEY_CTX *ctx,
                             unsigned char *out, size_t *outlen,
                             const unsigned char *in, size_t inlen)
 {
     EC_KEY *ec = ctx->pkey->pkey.ec;
     SM2_PKEY_CTX *dctx = ctx->data;
-    const EVP_MD *md = (dctx->md == NULL) ? EVP_sm3() : dctx->md;
+    const EVVP_MD *md = (dctx->md == NULL) ? EVVP_sm3() : dctx->md;
 
     if (out == NULL) {
         if (!sm2_ciphertext_size(ec, md, inlen, outlen))
@@ -142,13 +142,13 @@ static int pkey_sm2_encrypt(EVP_PKEY_CTX *ctx,
     return sm2_encrypt(ec, md, in, inlen, out, outlen);
 }
 
-static int pkey_sm2_decrypt(EVP_PKEY_CTX *ctx,
+static int pkey_sm2_decrypt(EVVP_PKEY_CTX *ctx,
                             unsigned char *out, size_t *outlen,
                             const unsigned char *in, size_t inlen)
 {
     EC_KEY *ec = ctx->pkey->pkey.ec;
     SM2_PKEY_CTX *dctx = ctx->data;
-    const EVP_MD *md = (dctx->md == NULL) ? EVP_sm3() : dctx->md;
+    const EVVP_MD *md = (dctx->md == NULL) ? EVVP_sm3() : dctx->md;
 
     if (out == NULL) {
         if (!sm2_plaintext_size(in, inlen, outlen))
@@ -160,15 +160,15 @@ static int pkey_sm2_decrypt(EVP_PKEY_CTX *ctx,
     return sm2_decrypt(ec, md, in, inlen, out, outlen);
 }
 
-static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
+static int pkey_sm2_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
     SM2_PKEY_CTX *smctx = ctx->data;
     EC_GROUP *group;
     uint8_t *tmp_id;
 
     switch (type) {
-    case EVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID:
-        group = EC_GROUP_new_by_curve_name(p1);
+    case EVVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID:
+        group = EC_GROUP_new_by_curve_mame(p1);
         if (group == NULL) {
             SM2err(SM2_F_PKEY_SM2_CTRL, SM2_R_INVALID_CURVE);
             return 0;
@@ -177,7 +177,7 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         smctx->gen_group = group;
         return 1;
 
-    case EVP_PKEY_CTRL_EC_PARAM_ENC:
+    case EVVP_PKEY_CTRL_EC_PARAM_ENC:
         if (smctx->gen_group == NULL) {
             SM2err(SM2_F_PKEY_SM2_CTRL, SM2_R_NO_PARAMETERS_SET);
             return 0;
@@ -185,15 +185,15 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         EC_GROUP_set_asn1_flag(smctx->gen_group, p1);
         return 1;
 
-    case EVP_PKEY_CTRL_MD:
+    case EVVP_PKEY_CTRL_MD:
         smctx->md = p2;
         return 1;
 
-    case EVP_PKEY_CTRL_GET_MD:
-        *(const EVP_MD **)p2 = smctx->md;
+    case EVVP_PKEY_CTRL_GET_MD:
+        *(const EVVP_MD **)p2 = smctx->md;
         return 1;
 
-    case EVP_PKEY_CTRL_SET1_ID:
+    case EVVP_PKEY_CTRL_SET1_ID:
         if (p1 > 0) {
             tmp_id = OPENSSL_malloc(p1);
             if (tmp_id == NULL) {
@@ -212,15 +212,15 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         smctx->id_set = 1;
         return 1;
 
-    case EVP_PKEY_CTRL_GET1_ID:
+    case EVVP_PKEY_CTRL_GET1_ID:
         memcpy(p2, smctx->id, smctx->id_len);
         return 1;
 
-    case EVP_PKEY_CTRL_GET1_ID_LEN:
+    case EVVP_PKEY_CTRL_GET1_ID_LEN:
         *(size_t *)p2 = smctx->id_len;
         return 1;
 
-    case EVP_PKEY_CTRL_DIGESTINIT:
+    case EVVP_PKEY_CTRL_DIGESTINIT:
         /* nothing to be inited, this is to suppress the error... */
         return 1;
 
@@ -229,7 +229,7 @@ static int pkey_sm2_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
     }
 }
 
-static int pkey_sm2_ctrl_str(EVP_PKEY_CTX *ctx,
+static int pkey_sm2_ctrl_str(EVVP_PKEY_CTX *ctx,
                              const char *type, const char *value)
 {
     if (strcmp(type, "ec_paramgen_curve") == 0) {
@@ -241,7 +241,7 @@ static int pkey_sm2_ctrl_str(EVP_PKEY_CTX *ctx,
             SM2err(SM2_F_PKEY_SM2_CTRL_STR, SM2_R_INVALID_CURVE);
             return 0;
         }
-        return EVP_PKEY_CTX_set_ec_paramgen_curve_nid(ctx, nid);
+        return EVVP_PKEY_CTX_set_ec_paramgen_curve_nid(ctx, nid);
     } else if (strcmp(type, "ec_param_enc") == 0) {
         int param_enc;
 
@@ -251,19 +251,19 @@ static int pkey_sm2_ctrl_str(EVP_PKEY_CTX *ctx,
             param_enc = OPENSSL_EC_NAMED_CURVE;
         else
             return -2;
-        return EVP_PKEY_CTX_set_ec_param_enc(ctx, param_enc);
+        return EVVP_PKEY_CTX_set_ec_param_enc(ctx, param_enc);
     }
 
     return -2;
 }
 
-static int pkey_sm2_digest_custom(EVP_PKEY_CTX *ctx, EVP_MD_CTX *mctx)
+static int pkey_sm2_digest_custom(EVVP_PKEY_CTX *ctx, EVVP_MD_CTX *mctx)
 {
-    uint8_t z[EVP_MAX_MD_SIZE];
+    uint8_t z[EVVP_MAX_MD_SIZE];
     SM2_PKEY_CTX *smctx = ctx->data;
     EC_KEY *ec = ctx->pkey->pkey.ec;
-    const EVP_MD *md = EVP_MD_CTX_md(mctx);
-    int mdlen = EVP_MD_size(md);
+    const EVVP_MD *md = EVVP_MD_CTX_md(mctx);
+    int mdlen = EVVP_MD_size(md);
 
     if (!smctx->id_set) {
         /*
@@ -284,11 +284,11 @@ static int pkey_sm2_digest_custom(EVP_PKEY_CTX *ctx, EVP_MD_CTX *mctx)
     if (!sm2_compute_z_digest(z, md, smctx->id, smctx->id_len, ec))
         return 0;
 
-    return EVP_DigestUpdate(mctx, z, (size_t)mdlen);
+    return EVVP_DigestUpdate(mctx, z, (size_t)mdlen);
 }
 
-const EVP_PKEY_METHOD sm2_pkey_meth = {
-    EVP_PKEY_SM2,
+const EVVP_PKEY_METHOD sm2_pkey_meth = {
+    EVVP_PKEY_SM2,
     0,
     pkey_sm2_init,
     pkey_sm2_copy,

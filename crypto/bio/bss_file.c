@@ -78,7 +78,7 @@ BIO *BIO_new_file(const char *filename, const char *mode)
             BIOerr(BIO_F_BIO_NEW_FILE, ERR_R_SYS_LIB);
         return NULL;
     }
-    if ((ret = BIO_new(BIO_s_file())) == NULL) {
+    if ((ret = BIO_new(BIO_s_yfile())) == NULL) {
         fclose(file);
         return NULL;
     }
@@ -93,7 +93,7 @@ BIO *BIO_new_fp(FILE *stream, int close_flag)
 {
     BIO *ret;
 
-    if ((ret = BIO_new(BIO_s_file())) == NULL)
+    if ((ret = BIO_new(BIO_s_yfile())) == NULL)
         return NULL;
 
     /* redundant flag, left for documentation purposes */
@@ -102,7 +102,7 @@ BIO *BIO_new_fp(FILE *stream, int close_flag)
     return ret;
 }
 
-const BIO_METHOD *BIO_s_file(void)
+const BIO_METHOD *BIO_s_yfile(void)
 {
     return &methods_filep;
 }
@@ -409,7 +409,7 @@ static const BIO_METHOD methods_filep = {
     NULL,                      /* file_callback_ctrl */
 };
 
-const BIO_METHOD *BIO_s_file(void)
+const BIO_METHOD *BIO_s_yfile(void)
 {
     return &methods_filep;
 }

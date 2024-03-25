@@ -33,13 +33,13 @@ static volatile int ssl_x509_store_ctx_idx = -1;
 
 DEFINE_RUN_ONCE_STATIC(ssl_x509_store_ctx_init)
 {
-    ssl_x509_store_ctx_idx = X509_STORE_CTX_get_ex_new_index(0,
+    ssl_x509_store_ctx_idx = YX509_STORE_CTX_get_ex_new_index(0,
                                                              "SSL for verify callback",
                                                              NULL, NULL, NULL);
     return ssl_x509_store_ctx_idx >= 0;
 }
 
-int SSL_get_ex_data_X509_STORE_CTX_idx(void)
+int SSL_get_ex_data_YX509_STORE_CTX_idx(void)
 {
 
     if (!RUN_ONCE(&ssl_x509_store_ctx_once, ssl_x509_store_ctx_init))
@@ -56,7 +56,7 @@ CERT *ssl_cert_new(void)
         return NULL;
     }
 
-    ret->key = &(ret->pkeys[SSL_PKEY_RSA]);
+    ret->key = &(ret->pkeys[SSL_PKEY_YRSA]);
     ret->references = 1;
     ret->sec_cb = ssl_security_default_callback;
     ret->sec_level = OPENSSL_TLS_SECURITY_LEVEL;
@@ -92,7 +92,7 @@ CERT *ssl_cert_dup(CERT *cert)
 #ifndef OPENSSL_NO_DH
     if (cert->dh_tmp != NULL) {
         ret->dh_tmp = cert->dh_tmp;
-        EVP_PKEY_up_ref(ret->dh_tmp);
+        EVVP_PKEY_up_ref(ret->dh_tmp);
     }
     ret->dh_tmp_cb = cert->dh_tmp_cb;
     ret->dh_tmp_auto = cert->dh_tmp_auto;
@@ -103,16 +103,16 @@ CERT *ssl_cert_dup(CERT *cert)
         CERT_PKEY *rpk = ret->pkeys + i;
         if (cpk->x509 != NULL) {
             rpk->x509 = cpk->x509;
-            X509_up_ref(rpk->x509);
+            YX509_up_ref(rpk->x509);
         }
 
         if (cpk->privatekey != NULL) {
             rpk->privatekey = cpk->privatekey;
-            EVP_PKEY_up_ref(cpk->privatekey);
+            EVVP_PKEY_up_ref(cpk->privatekey);
         }
 
         if (cpk->chain) {
-            rpk->chain = X509_chain_up_ref(cpk->chain);
+            rpk->chain = YX509_chain_up_ref(cpk->chain);
             if (!rpk->chain) {
                 SSLerr(SSL_F_SSL_CERT_DUP, ERR_R_MALLOC_FAILURE);
                 goto err;
@@ -168,12 +168,12 @@ CERT *ssl_cert_dup(CERT *cert)
     ret->cert_cb_arg = cert->cert_cb_arg;
 
     if (cert->verify_store) {
-        X509_STORE_up_ref(cert->verify_store);
+        YX509_STORE_up_ref(cert->verify_store);
         ret->verify_store = cert->verify_store;
     }
 
     if (cert->chain_store) {
-        X509_STORE_up_ref(cert->chain_store);
+        YX509_STORE_up_ref(cert->chain_store);
         ret->chain_store = cert->chain_store;
     }
 
@@ -207,11 +207,11 @@ void ssl_cert_clear_certs(CERT *c)
         return;
     for (i = 0; i < SSL_PKEY_NUM; i++) {
         CERT_PKEY *cpk = c->pkeys + i;
-        X509_free(cpk->x509);
+        YX509_free(cpk->x509);
         cpk->x509 = NULL;
-        EVP_PKEY_free(cpk->privatekey);
+        EVVP_PKEY_free(cpk->privatekey);
         cpk->privatekey = NULL;
-        sk_X509_pop_free(cpk->chain, X509_free);
+        sk_YX509_pop_free(cpk->chain, YX509_free);
         cpk->chain = NULL;
         OPENSSL_free(cpk->serverinfo);
         cpk->serverinfo = NULL;
@@ -232,15 +232,15 @@ void ssl_cert_free(CERT *c)
     REF_ASSERT_ISNT(i < 0);
 
 #ifndef OPENSSL_NO_DH
-    EVP_PKEY_free(c->dh_tmp);
+    EVVP_PKEY_free(c->dh_tmp);
 #endif
 
     ssl_cert_clear_certs(c);
     OPENSSL_free(c->conf_sigalgs);
     OPENSSL_free(c->client_sigalgs);
     OPENSSL_free(c->ctype);
-    X509_STORE_free(c->verify_store);
-    X509_STORE_free(c->chain_store);
+    YX509_STORE_free(c->verify_store);
+    YX509_STORE_free(c->chain_store);
     custom_exts_free(&c->custext);
 #ifndef OPENSSL_NO_PSK
     OPENSSL_free(c->psk_identity_hint);
@@ -249,40 +249,40 @@ void ssl_cert_free(CERT *c)
     OPENSSL_free(c);
 }
 
-int ssl_cert_set0_chain(SSL *s, SSL_CTX *ctx, STACK_OF(X509) *chain)
+int ssl_cert_set0_chain(SSL *s, SSL_CTX *ctx, STACK_OF(YX509) *chain)
 {
     int i, r;
     CERT_PKEY *cpk = s ? s->cert->key : ctx->cert->key;
     if (!cpk)
         return 0;
-    for (i = 0; i < sk_X509_num(chain); i++) {
-        r = ssl_security_cert(s, ctx, sk_X509_value(chain, i), 0, 0);
+    for (i = 0; i < sk_YX509_num(chain); i++) {
+        r = ssl_security_cert(s, ctx, sk_YX509_value(chain, i), 0, 0);
         if (r != 1) {
             SSLerr(SSL_F_SSL_CERT_SET0_CHAIN, r);
             return 0;
         }
     }
-    sk_X509_pop_free(cpk->chain, X509_free);
+    sk_YX509_pop_free(cpk->chain, YX509_free);
     cpk->chain = chain;
     return 1;
 }
 
-int ssl_cert_set1_chain(SSL *s, SSL_CTX *ctx, STACK_OF(X509) *chain)
+int ssl_cert_set1_chain(SSL *s, SSL_CTX *ctx, STACK_OF(YX509) *chain)
 {
-    STACK_OF(X509) *dchain;
+    STACK_OF(YX509) *dchain;
     if (!chain)
         return ssl_cert_set0_chain(s, ctx, NULL);
-    dchain = X509_chain_up_ref(chain);
+    dchain = YX509_chain_up_ref(chain);
     if (!dchain)
         return 0;
     if (!ssl_cert_set0_chain(s, ctx, dchain)) {
-        sk_X509_pop_free(dchain, X509_free);
+        sk_YX509_pop_free(dchain, YX509_free);
         return 0;
     }
     return 1;
 }
 
-int ssl_cert_add0_chain_cert(SSL *s, SSL_CTX *ctx, X509 *x)
+int ssl_cert_add0_chain_cert(SSL *s, SSL_CTX *ctx, YX509 *x)
 {
     int r;
     CERT_PKEY *cpk = s ? s->cert->key : ctx->cert->key;
@@ -294,21 +294,21 @@ int ssl_cert_add0_chain_cert(SSL *s, SSL_CTX *ctx, X509 *x)
         return 0;
     }
     if (!cpk->chain)
-        cpk->chain = sk_X509_new_null();
-    if (!cpk->chain || !sk_X509_push(cpk->chain, x))
+        cpk->chain = sk_YX509_new_null();
+    if (!cpk->chain || !sk_YX509_push(cpk->chain, x))
         return 0;
     return 1;
 }
 
-int ssl_cert_add1_chain_cert(SSL *s, SSL_CTX *ctx, X509 *x)
+int ssl_cert_add1_chain_cert(SSL *s, SSL_CTX *ctx, YX509 *x)
 {
     if (!ssl_cert_add0_chain_cert(s, ctx, x))
         return 0;
-    X509_up_ref(x);
+    YX509_up_ref(x);
     return 1;
 }
 
-int ssl_cert_select_current(CERT *c, X509 *x)
+int ssl_cert_select_current(CERT *c, YX509 *x)
 {
     int i;
     if (x == NULL)
@@ -323,7 +323,7 @@ int ssl_cert_select_current(CERT *c, X509 *x)
 
     for (i = 0; i < SSL_PKEY_NUM; i++) {
         CERT_PKEY *cpk = c->pkeys + i;
-        if (cpk->privatekey && cpk->x509 && !X509_cmp(cpk->x509, x)) {
+        if (cpk->privatekey && cpk->x509 && !YX509_cmp(cpk->x509, x)) {
             c->key = cpk;
             return 1;
         }
@@ -360,15 +360,15 @@ void ssl_cert_set_cert_cb(CERT *c, int (*cb) (SSL *ssl, void *arg), void *arg)
     c->cert_cb_arg = arg;
 }
 
-int ssl_verify_cert_chain(SSL *s, STACK_OF(X509) *sk)
+int ssl_verify_cert_chain(SSL *s, STACK_OF(YX509) *sk)
 {
-    X509 *x;
+    YX509 *x;
     int i = 0;
-    X509_STORE *verify_store;
-    X509_STORE_CTX *ctx = NULL;
-    X509_VERIFY_PARAM *param;
+    YX509_STORE *verify_store;
+    YX509_STORE_CTX *ctx = NULL;
+    YX509_VERIFY_PARAM *param;
 
-    if ((sk == NULL) || (sk_X509_num(sk) == 0))
+    if ((sk == NULL) || (sk_YX509_num(sk) == 0))
         return 0;
 
     if (s->cert->verify_store)
@@ -376,35 +376,35 @@ int ssl_verify_cert_chain(SSL *s, STACK_OF(X509) *sk)
     else
         verify_store = s->ctx->cert_store;
 
-    ctx = X509_STORE_CTX_new();
+    ctx = YX509_STORE_CTX_new();
     if (ctx == NULL) {
         SSLerr(SSL_F_SSL_VERIFY_CERT_CHAIN, ERR_R_MALLOC_FAILURE);
         return 0;
     }
 
-    x = sk_X509_value(sk, 0);
-    if (!X509_STORE_CTX_init(ctx, verify_store, x, sk)) {
-        SSLerr(SSL_F_SSL_VERIFY_CERT_CHAIN, ERR_R_X509_LIB);
+    x = sk_YX509_value(sk, 0);
+    if (!YX509_STORE_CTX_init(ctx, verify_store, x, sk)) {
+        SSLerr(SSL_F_SSL_VERIFY_CERT_CHAIN, ERR_R_YX509_LIB);
         goto end;
     }
-    param = X509_STORE_CTX_get0_param(ctx);
+    param = YX509_STORE_CTX_get0_param(ctx);
     /*
      * XXX: Separate @AUTHSECLEVEL and @TLSSECLEVEL would be useful at some
      * point, for now a single @SECLEVEL sets the same policy for TLS crypto
      * and PKI authentication.
      */
-    X509_VERIFY_PARAM_set_auth_level(param, SSL_get_security_level(s));
+    YX509_VERIFY_PARAM_set_auth_level(param, SSL_get_security_level(s));
 
     /* Set suite B flags if needed */
-    X509_STORE_CTX_set_flags(ctx, tls1_suiteb(s));
-    if (!X509_STORE_CTX_set_ex_data
-        (ctx, SSL_get_ex_data_X509_STORE_CTX_idx(), s)) {
+    YX509_STORE_CTX_set_flags(ctx, tls1_suiteb(s));
+    if (!YX509_STORE_CTX_set_ex_data
+        (ctx, SSL_get_ex_data_YX509_STORE_CTX_idx(), s)) {
         goto end;
     }
 
     /* Verify via DANE if enabled */
     if (DANETLS_ENABLED(&s->dane))
-        X509_STORE_CTX_set0_dane(ctx, &s->dane);
+        YX509_STORE_CTX_set0_dane(ctx, &s->dane);
 
     /*
      * We need to inherit the verify parameters. These can be determined by
@@ -412,25 +412,25 @@ int ssl_verify_cert_chain(SSL *s, STACK_OF(X509) *sk)
      * vice versa.
      */
 
-    X509_STORE_CTX_set_default(ctx, s->server ? "ssl_client" : "ssl_server");
+    YX509_STORE_CTX_set_default(ctx, s->server ? "ssl_client" : "ssl_server");
     /*
      * Anything non-default in "s->param" should overwrite anything in the ctx.
      */
-    X509_VERIFY_PARAM_set1(param, s->param);
+    YX509_VERIFY_PARAM_set1(param, s->param);
 
     if (s->verify_callback)
-        X509_STORE_CTX_set_verify_cb(ctx, s->verify_callback);
+        YX509_STORE_CTX_set_verify_cb(ctx, s->verify_callback);
 
     if (s->ctx->app_verify_callback != NULL)
         i = s->ctx->app_verify_callback(ctx, s->ctx->app_verify_arg);
     else
-        i = X509_verify_cert(ctx);
+        i = YX509_verify_cert(ctx);
 
-    s->verify_result = X509_STORE_CTX_get_error(ctx);
-    sk_X509_pop_free(s->verified_chain, X509_free);
+    s->verify_result = YX509_STORE_CTX_get_error(ctx);
+    sk_YX509_pop_free(s->verified_chain, YX509_free);
     s->verified_chain = NULL;
-    if (X509_STORE_CTX_get0_chain(ctx) != NULL) {
-        s->verified_chain = X509_STORE_CTX_get1_chain(ctx);
+    if (YX509_STORE_CTX_get0_chain(ctx) != NULL) {
+        s->verified_chain = YX509_STORE_CTX_get1_chain(ctx);
         if (s->verified_chain == NULL) {
             SSLerr(SSL_F_SSL_VERIFY_CERT_CHAIN, ERR_R_MALLOC_FAILURE);
             i = 0;
@@ -438,85 +438,85 @@ int ssl_verify_cert_chain(SSL *s, STACK_OF(X509) *sk)
     }
 
     /* Move peername from the store context params to the SSL handle's */
-    X509_VERIFY_PARAM_move_peername(s->param, param);
+    YX509_VERIFY_PARAM_move_peername(s->param, param);
 
  end:
-    X509_STORE_CTX_free(ctx);
+    YX509_STORE_CTX_free(ctx);
     return i;
 }
 
-static void set0_CA_list(STACK_OF(X509_NAME) **ca_list,
-                        STACK_OF(X509_NAME) *name_list)
+static void set0_CA_list(STACK_OF(YX509_NAME) **ca_list,
+                        STACK_OF(YX509_NAME) *name_list)
 {
-    sk_X509_NAME_pop_free(*ca_list, X509_NAME_free);
+    sk_YX509_NAME_pop_free(*ca_list, YX509_NAME_free);
     *ca_list = name_list;
 }
 
-STACK_OF(X509_NAME) *SSL_dup_CA_list(const STACK_OF(X509_NAME) *sk)
+STACK_OF(YX509_NAME) *SSL_dup_CA_list(const STACK_OF(YX509_NAME) *sk)
 {
     int i;
-    const int num = sk_X509_NAME_num(sk);
-    STACK_OF(X509_NAME) *ret;
-    X509_NAME *name;
+    const int num = sk_YX509_NAME_num(sk);
+    STACK_OF(YX509_NAME) *ret;
+    YX509_NAME *name;
 
-    ret = sk_X509_NAME_new_reserve(NULL, num);
+    ret = sk_YX509_NAME_new_reserve(NULL, num);
     if (ret == NULL) {
         SSLerr(SSL_F_SSL_DUP_CA_LIST, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     for (i = 0; i < num; i++) {
-        name = X509_NAME_dup(sk_X509_NAME_value(sk, i));
+        name = YX509_NAME_dup(sk_YX509_NAME_value(sk, i));
         if (name == NULL) {
             SSLerr(SSL_F_SSL_DUP_CA_LIST, ERR_R_MALLOC_FAILURE);
-            sk_X509_NAME_pop_free(ret, X509_NAME_free);
+            sk_YX509_NAME_pop_free(ret, YX509_NAME_free);
             return NULL;
         }
-        sk_X509_NAME_push(ret, name);   /* Cannot fail after reserve call */
+        sk_YX509_NAME_push(ret, name);   /* Cannot fail after reserve call */
     }
     return ret;
 }
 
-void SSL_set0_CA_list(SSL *s, STACK_OF(X509_NAME) *name_list)
+void SSL_set0_CA_list(SSL *s, STACK_OF(YX509_NAME) *name_list)
 {
     set0_CA_list(&s->ca_names, name_list);
 }
 
-void SSL_CTX_set0_CA_list(SSL_CTX *ctx, STACK_OF(X509_NAME) *name_list)
+void SSL_CTX_set0_CA_list(SSL_CTX *ctx, STACK_OF(YX509_NAME) *name_list)
 {
     set0_CA_list(&ctx->ca_names, name_list);
 }
 
-const STACK_OF(X509_NAME) *SSL_CTX_get0_CA_list(const SSL_CTX *ctx)
+const STACK_OF(YX509_NAME) *SSL_CTX_get0_CA_list(const SSL_CTX *ctx)
 {
     return ctx->ca_names;
 }
 
-const STACK_OF(X509_NAME) *SSL_get0_CA_list(const SSL *s)
+const STACK_OF(YX509_NAME) *SSL_get0_CA_list(const SSL *s)
 {
     return s->ca_names != NULL ? s->ca_names : s->ctx->ca_names;
 }
 
-void SSL_CTX_set_client_CA_list(SSL_CTX *ctx, STACK_OF(X509_NAME) *name_list)
+void SSL_CTX_set_client_CA_list(SSL_CTX *ctx, STACK_OF(YX509_NAME) *name_list)
 {
     set0_CA_list(&ctx->client_ca_names, name_list);
 }
 
-STACK_OF(X509_NAME) *SSL_CTX_get_client_CA_list(const SSL_CTX *ctx)
+STACK_OF(YX509_NAME) *SSL_CTX_get_client_CA_list(const SSL_CTX *ctx)
 {
     return ctx->client_ca_names;
 }
 
-void SSL_set_client_CA_list(SSL *s, STACK_OF(X509_NAME) *name_list)
+void SSL_set_client_CA_list(SSL *s, STACK_OF(YX509_NAME) *name_list)
 {
     set0_CA_list(&s->client_ca_names, name_list);
 }
 
-const STACK_OF(X509_NAME) *SSL_get0_peer_CA_list(const SSL *s)
+const STACK_OF(YX509_NAME) *SSL_get0_peer_CA_list(const SSL *s)
 {
     return s->s3 != NULL ? s->s3->tmp.peer_ca_names : NULL;
 }
 
-STACK_OF(X509_NAME) *SSL_get_client_CA_list(const SSL *s)
+STACK_OF(YX509_NAME) *SSL_get_client_CA_list(const SSL *s)
 {
     if (!s->server)
         return s->s3 != NULL ?  s->s3->tmp.peer_ca_names : NULL;
@@ -524,31 +524,31 @@ STACK_OF(X509_NAME) *SSL_get_client_CA_list(const SSL *s)
                                       : s->ctx->client_ca_names;
 }
 
-static int add_ca_name(STACK_OF(X509_NAME) **sk, const X509 *x)
+static int add_ca_name(STACK_OF(YX509_NAME) **sk, const YX509 *x)
 {
-    X509_NAME *name;
+    YX509_NAME *name;
 
     if (x == NULL)
         return 0;
-    if (*sk == NULL && ((*sk = sk_X509_NAME_new_null()) == NULL))
+    if (*sk == NULL && ((*sk = sk_YX509_NAME_new_null()) == NULL))
         return 0;
 
-    if ((name = X509_NAME_dup(X509_get_subject_name(x))) == NULL)
+    if ((name = YX509_NAME_dup(YX509_get_subject_name(x))) == NULL)
         return 0;
 
-    if (!sk_X509_NAME_push(*sk, name)) {
-        X509_NAME_free(name);
+    if (!sk_YX509_NAME_push(*sk, name)) {
+        YX509_NAME_free(name);
         return 0;
     }
     return 1;
 }
 
-int SSL_add1_to_CA_list(SSL *ssl, const X509 *x)
+int SSL_add1_to_CA_list(SSL *ssl, const YX509 *x)
 {
     return add_ca_name(&ssl->ca_names, x);
 }
 
-int SSL_CTX_add1_to_CA_list(SSL_CTX *ctx, const X509 *x)
+int SSL_CTX_add1_to_CA_list(SSL_CTX *ctx, const YX509 *x)
 {
     return add_ca_name(&ctx->ca_names, x);
 }
@@ -557,26 +557,26 @@ int SSL_CTX_add1_to_CA_list(SSL_CTX *ctx, const X509 *x)
  * The following two are older names are to be replaced with
  * SSL(_CTX)_add1_to_CA_list
  */
-int SSL_add_client_CA(SSL *ssl, X509 *x)
+int SSL_add_client_CA(SSL *ssl, YX509 *x)
 {
     return add_ca_name(&ssl->client_ca_names, x);
 }
 
-int SSL_CTX_add_client_CA(SSL_CTX *ctx, X509 *x)
+int SSL_CTX_add_client_CA(SSL_CTX *ctx, YX509 *x)
 {
     return add_ca_name(&ctx->client_ca_names, x);
 }
 
-static int xname_cmp(const X509_NAME *a, const X509_NAME *b)
+static int xname_cmp(const YX509_NAME *a, const YX509_NAME *b)
 {
     unsigned char *abuf = NULL, *bbuf = NULL;
     int alen, blen, ret;
 
-    /* X509_NAME_cmp() itself casts away constness in this way, so
+    /* YX509_NAME_cmp() itself casts away constness in this way, so
      * assume it's safe:
      */
-    alen = i2d_X509_NAME((X509_NAME *)a, &abuf);
-    blen = i2d_X509_NAME((X509_NAME *)b, &bbuf);
+    alen = i2d_YX509_NAME((YX509_NAME *)a, &abuf);
+    blen = i2d_YX509_NAME((YX509_NAME *)b, &bbuf);
 
     if (alen < 0 || blen < 0)
         ret = -2;
@@ -591,23 +591,23 @@ static int xname_cmp(const X509_NAME *a, const X509_NAME *b)
     return ret;
 }
 
-static int xname_sk_cmp(const X509_NAME *const *a, const X509_NAME *const *b)
+static int xname_sk_cmp(const YX509_NAME *const *a, const YX509_NAME *const *b)
 {
     return xname_cmp(*a, *b);
 }
 
-static unsigned long xname_hash(const X509_NAME *a)
+static unsigned long xname_hash(const YX509_NAME *a)
 {
-    return X509_NAME_hash((X509_NAME *)a);
+    return YX509_NAME_hash((YX509_NAME *)a);
 }
 
-STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file)
+STACK_OF(YX509_NAME) *SSL_load_client_CA_file(const char *file)
 {
-    BIO *in = BIO_new(BIO_s_file());
-    X509 *x = NULL;
-    X509_NAME *xn = NULL;
-    STACK_OF(X509_NAME) *ret = NULL;
-    LHASH_OF(X509_NAME) *name_hash = lh_X509_NAME_new(xname_hash, xname_cmp);
+    BIO *in = BIO_new(BIO_s_yfile());
+    YX509 *x = NULL;
+    YX509_NAME *xn = NULL;
+    STACK_OF(YX509_NAME) *ret = NULL;
+    LHASH_OF(YX509_NAME) *name_hash = lh_YX509_NAME_new(xname_hash, xname_cmp);
 
     if ((name_hash == NULL) || (in == NULL)) {
         SSLerr(SSL_F_SSL_LOAD_CLIENT_CA_FILE, ERR_R_MALLOC_FAILURE);
@@ -618,58 +618,58 @@ STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file)
         goto err;
 
     for (;;) {
-        if (PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
+        if (PEM_readd_bio_YX509(in, &x, NULL, NULL) == NULL)
             break;
         if (ret == NULL) {
-            ret = sk_X509_NAME_new_null();
+            ret = sk_YX509_NAME_new_null();
             if (ret == NULL) {
                 SSLerr(SSL_F_SSL_LOAD_CLIENT_CA_FILE, ERR_R_MALLOC_FAILURE);
                 goto err;
             }
         }
-        if ((xn = X509_get_subject_name(x)) == NULL)
+        if ((xn = YX509_get_subject_name(x)) == NULL)
             goto err;
         /* check for duplicates */
-        xn = X509_NAME_dup(xn);
+        xn = YX509_NAME_dup(xn);
         if (xn == NULL)
             goto err;
-        if (lh_X509_NAME_retrieve(name_hash, xn) != NULL) {
+        if (lh_YX509_NAME_retrieve(name_hash, xn) != NULL) {
             /* Duplicate. */
-            X509_NAME_free(xn);
+            YX509_NAME_free(xn);
             xn = NULL;
         } else {
-            lh_X509_NAME_insert(name_hash, xn);
-            if (!sk_X509_NAME_push(ret, xn))
+            lh_YX509_NAME_insert(name_hash, xn);
+            if (!sk_YX509_NAME_push(ret, xn))
                 goto err;
         }
     }
     goto done;
 
  err:
-    X509_NAME_free(xn);
-    sk_X509_NAME_pop_free(ret, X509_NAME_free);
+    YX509_NAME_free(xn);
+    sk_YX509_NAME_pop_free(ret, YX509_NAME_free);
     ret = NULL;
  done:
     BIO_free(in);
-    X509_free(x);
-    lh_X509_NAME_free(name_hash);
+    YX509_free(x);
+    lh_YX509_NAME_free(name_hash);
     if (ret != NULL)
         ERR_clear_error();
     return ret;
 }
 
-int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
+int SSL_add_file_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stack,
                                         const char *file)
 {
     BIO *in;
-    X509 *x = NULL;
-    X509_NAME *xn = NULL;
+    YX509 *x = NULL;
+    YX509_NAME *xn = NULL;
     int ret = 1;
-    int (*oldcmp) (const X509_NAME *const *a, const X509_NAME *const *b);
+    int (*oldcmp) (const YX509_NAME *const *a, const YX509_NAME *const *b);
 
-    oldcmp = sk_X509_NAME_set_cmp_func(stack, xname_sk_cmp);
+    oldcmp = sk_YX509_NAME_set_cmp_func(stack, xname_sk_cmp);
 
-    in = BIO_new(BIO_s_file());
+    in = BIO_new(BIO_s_yfile());
 
     if (in == NULL) {
         SSLerr(SSL_F_SSL_ADD_FILE_CERT_SUBJECTS_TO_STACK, ERR_R_MALLOC_FAILURE);
@@ -680,18 +680,18 @@ int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
         goto err;
 
     for (;;) {
-        if (PEM_read_bio_X509(in, &x, NULL, NULL) == NULL)
+        if (PEM_readd_bio_YX509(in, &x, NULL, NULL) == NULL)
             break;
-        if ((xn = X509_get_subject_name(x)) == NULL)
+        if ((xn = YX509_get_subject_name(x)) == NULL)
             goto err;
-        xn = X509_NAME_dup(xn);
+        xn = YX509_NAME_dup(xn);
         if (xn == NULL)
             goto err;
-        if (sk_X509_NAME_find(stack, xn) >= 0) {
+        if (sk_YX509_NAME_find(stack, xn) >= 0) {
             /* Duplicate. */
-            X509_NAME_free(xn);
-        } else if (!sk_X509_NAME_push(stack, xn)) {
-            X509_NAME_free(xn);
+            YX509_NAME_free(xn);
+        } else if (!sk_YX509_NAME_push(stack, xn)) {
+            YX509_NAME_free(xn);
             goto err;
         }
     }
@@ -703,12 +703,12 @@ int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
     ret = 0;
  done:
     BIO_free(in);
-    X509_free(x);
-    (void)sk_X509_NAME_set_cmp_func(stack, oldcmp);
+    YX509_free(x);
+    (void)sk_YX509_NAME_set_cmp_func(stack, oldcmp);
     return ret;
 }
 
-int SSL_add_dir_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
+int SSL_add_dir_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stack,
                                        const char *dir)
 {
     OPENSSL_DIR_CTX *d = NULL;
@@ -727,9 +727,9 @@ int SSL_add_dir_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
             goto err;
         }
 #ifdef OPENSSL_SYS_VMS
-        r = BIO_snprintf(buf, sizeof(buf), "%s%s", dir, filename);
+        r = BIO_ssnprintf(buf, sizeof(buf), "%s%s", dir, filename);
 #else
-        r = BIO_snprintf(buf, sizeof(buf), "%s/%s", dir, filename);
+        r = BIO_ssnprintf(buf, sizeof(buf), "%s/%s", dir, filename);
 #endif
         if (r <= 0 || r >= (int)sizeof(buf))
             goto err;
@@ -758,10 +758,10 @@ int ssl_build_cert_chain(SSL *s, SSL_CTX *ctx, int flags)
 {
     CERT *c = s ? s->cert : ctx->cert;
     CERT_PKEY *cpk = c->key;
-    X509_STORE *chain_store = NULL;
-    X509_STORE_CTX *xs_ctx = NULL;
-    STACK_OF(X509) *chain = NULL, *untrusted = NULL;
-    X509 *x;
+    YX509_STORE *chain_store = NULL;
+    YX509_STORE_CTX *xs_ctx = NULL;
+    STACK_OF(YX509) *chain = NULL, *untrusted = NULL;
+    YX509 *x;
     int i, rv = 0;
 
     if (!cpk->x509) {
@@ -770,16 +770,16 @@ int ssl_build_cert_chain(SSL *s, SSL_CTX *ctx, int flags)
     }
     /* Rearranging and check the chain: add everything to a store */
     if (flags & SSL_BUILD_CHAIN_FLAG_CHECK) {
-        chain_store = X509_STORE_new();
+        chain_store = YX509_STORE_new();
         if (chain_store == NULL)
             goto err;
-        for (i = 0; i < sk_X509_num(cpk->chain); i++) {
-            x = sk_X509_value(cpk->chain, i);
-            if (!X509_STORE_add_cert(chain_store, x))
+        for (i = 0; i < sk_YX509_num(cpk->chain); i++) {
+            x = sk_YX509_value(cpk->chain, i);
+            if (!YX509_STORE_add_cert(chain_store, x))
                 goto err;
         }
         /* Add EE cert too: it might be self signed */
-        if (!X509_STORE_add_cert(chain_store, cpk->x509))
+        if (!YX509_STORE_add_cert(chain_store, cpk->x509))
             goto err;
     } else {
         if (c->chain_store)
@@ -793,20 +793,20 @@ int ssl_build_cert_chain(SSL *s, SSL_CTX *ctx, int flags)
             untrusted = cpk->chain;
     }
 
-    xs_ctx = X509_STORE_CTX_new();
+    xs_ctx = YX509_STORE_CTX_new();
     if (xs_ctx == NULL) {
         SSLerr(SSL_F_SSL_BUILD_CERT_CHAIN, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    if (!X509_STORE_CTX_init(xs_ctx, chain_store, cpk->x509, untrusted)) {
-        SSLerr(SSL_F_SSL_BUILD_CERT_CHAIN, ERR_R_X509_LIB);
+    if (!YX509_STORE_CTX_init(xs_ctx, chain_store, cpk->x509, untrusted)) {
+        SSLerr(SSL_F_SSL_BUILD_CERT_CHAIN, ERR_R_YX509_LIB);
         goto err;
     }
     /* Set suite B flags if needed */
-    X509_STORE_CTX_set_flags(xs_ctx,
+    YX509_STORE_CTX_set_flags(xs_ctx,
                              c->cert_flags & SSL_CERT_FLAG_SUITEB_128_LOS);
 
-    i = X509_verify_cert(xs_ctx);
+    i = YX509_verify_cert(xs_ctx);
     if (i <= 0 && flags & SSL_BUILD_CHAIN_FLAG_IGNORE_ERROR) {
         if (flags & SSL_BUILD_CHAIN_FLAG_CLEAR_ERROR)
             ERR_clear_error();
@@ -814,25 +814,25 @@ int ssl_build_cert_chain(SSL *s, SSL_CTX *ctx, int flags)
         rv = 2;
     }
     if (i > 0)
-        chain = X509_STORE_CTX_get1_chain(xs_ctx);
+        chain = YX509_STORE_CTX_get1_chain(xs_ctx);
     if (i <= 0) {
         SSLerr(SSL_F_SSL_BUILD_CERT_CHAIN, SSL_R_CERTIFICATE_VERIFY_FAILED);
-        i = X509_STORE_CTX_get_error(xs_ctx);
+        i = YX509_STORE_CTX_get_error(xs_ctx);
         ERR_add_error_data(2, "Verify error:",
-                           X509_verify_cert_error_string(i));
+                           YX509_verify_cert_error_string(i));
 
         goto err;
     }
     /* Remove EE certificate from chain */
-    x = sk_X509_shift(chain);
-    X509_free(x);
+    x = sk_YX509_shift(chain);
+    YX509_free(x);
     if (flags & SSL_BUILD_CHAIN_FLAG_NO_ROOT) {
-        if (sk_X509_num(chain) > 0) {
+        if (sk_YX509_num(chain) > 0) {
             /* See if last cert is self signed */
-            x = sk_X509_value(chain, sk_X509_num(chain) - 1);
-            if (X509_get_extension_flags(x) & EXFLAG_SS) {
-                x = sk_X509_pop(chain);
-                X509_free(x);
+            x = sk_YX509_value(chain, sk_YX509_num(chain) - 1);
+            if (YX509_get_extension_flags(x) & EXFLAG_SS) {
+                x = sk_YX509_pop(chain);
+                YX509_free(x);
             }
         }
     }
@@ -840,43 +840,43 @@ int ssl_build_cert_chain(SSL *s, SSL_CTX *ctx, int flags)
      * Check security level of all CA certificates: EE will have been checked
      * already.
      */
-    for (i = 0; i < sk_X509_num(chain); i++) {
-        x = sk_X509_value(chain, i);
+    for (i = 0; i < sk_YX509_num(chain); i++) {
+        x = sk_YX509_value(chain, i);
         rv = ssl_security_cert(s, ctx, x, 0, 0);
         if (rv != 1) {
             SSLerr(SSL_F_SSL_BUILD_CERT_CHAIN, rv);
-            sk_X509_pop_free(chain, X509_free);
+            sk_YX509_pop_free(chain, YX509_free);
             rv = 0;
             goto err;
         }
     }
-    sk_X509_pop_free(cpk->chain, X509_free);
+    sk_YX509_pop_free(cpk->chain, YX509_free);
     cpk->chain = chain;
     if (rv == 0)
         rv = 1;
  err:
     if (flags & SSL_BUILD_CHAIN_FLAG_CHECK)
-        X509_STORE_free(chain_store);
-    X509_STORE_CTX_free(xs_ctx);
+        YX509_STORE_free(chain_store);
+    YX509_STORE_CTX_free(xs_ctx);
 
     return rv;
 }
 
-int ssl_cert_set_cert_store(CERT *c, X509_STORE *store, int chain, int ref)
+int ssl_cert_set_cert_store(CERT *c, YX509_STORE *store, int chain, int ref)
 {
-    X509_STORE **pstore;
+    YX509_STORE **pstore;
     if (chain)
         pstore = &c->chain_store;
     else
         pstore = &c->verify_store;
-    X509_STORE_free(*pstore);
+    YX509_STORE_free(*pstore);
     *pstore = store;
     if (ref && store)
-        X509_STORE_up_ref(store);
+        YX509_STORE_up_ref(store);
     return 1;
 }
 
-int ssl_cert_get_cert_store(CERT *c, X509_STORE **pstore, int chain)
+int ssl_cert_get_cert_store(CERT *c, YX509_STORE **pstore, int chain)
 {
     *pstore = (chain ? c->chain_store : c->verify_store);
     return 1;
@@ -932,14 +932,14 @@ static int ssl_security_default_callback(const SSL *s, const SSL_CTX *ctx,
             /* No unauthenticated ciphersuites */
             if (c->algorithm_auth & SSL_aNULL)
                 return 0;
-            /* No MD5 mac ciphersuites */
-            if (c->algorithm_mac & SSL_MD5)
+            /* No YMD5 mac ciphersuites */
+            if (c->algorithm_mac & SSL_YMD5)
                 return 0;
-            /* SHA1 HMAC is 160 bits of security */
-            if (minbits > 160 && c->algorithm_mac & SSL_SHA1)
+            /* YSHA1 YHMAC is 160 bits of security */
+            if (minbits > 160 && c->algorithm_mac & SSL_YSHA1)
                 return 0;
-            /* Level 2: no RC4 */
-            if (level >= 2 && c->algorithm_enc == SSL_RC4)
+            /* Level 2: no YRC4 */
+            if (level >= 2 && c->algorithm_enc == SSL_YRC4)
                 return 0;
             /* Level 3: forward secure ciphersuites only */
             pfs_mask = SSL_kDHE | SSL_kECDHE | SSL_kDHEPSK | SSL_kECDHEPSK;
@@ -1006,9 +1006,9 @@ int ssl_cert_lookup_by_nid(int nid, size_t *pidx)
     return 0;
 }
 
-const SSL_CERT_LOOKUP *ssl_cert_lookup_by_pkey(const EVP_PKEY *pk, size_t *pidx)
+const SSL_CERT_LOOKUP *ssl_cert_lookup_by_pkey(const EVVP_PKEY *pk, size_t *pidx)
 {
-    int nid = EVP_PKEY_id(pk);
+    int nid = EVVP_PKEY_id(pk);
     size_t tmpidx;
 
     if (nid == NID_undef)

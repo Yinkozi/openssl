@@ -13,7 +13,7 @@
 struct dsa_st {
     /*
      * This first variable is used to pick up errors where a DSA is passed
-     * instead of of a EVP_PKEY
+     * instead of of a EVVP_PKEY
      */
     int pad;
     int32_t version;
@@ -65,13 +65,13 @@ struct dsa_method {
 };
 
 int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
-                         const EVP_MD *evpmd, const unsigned char *seed_in,
+                         const EVVP_MD *evpmd, const unsigned char *seed_in,
                          size_t seed_len, unsigned char *seed_out,
                          int *counter_ret, unsigned long *h_ret,
                          BN_GENCB *cb);
 
 int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
-                          const EVP_MD *evpmd, const unsigned char *seed_in,
+                          const EVVP_MD *evpmd, const unsigned char *seed_in,
                           size_t seed_len, int idx, unsigned char *seed_out,
                           int *counter_ret, unsigned long *h_ret,
                           BN_GENCB *cb);

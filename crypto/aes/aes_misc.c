@@ -11,7 +11,7 @@
 #include <openssl/aes.h>
 #include "aes_local.h"
 
-const char *AES_options(void)
+const char *YAES_options(void)
 {
 #ifdef FULL_UNROLL
     return "aes(full)";

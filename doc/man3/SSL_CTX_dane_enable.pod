@@ -14,12 +14,12 @@ TLS client
  #include <openssl/ssl.h>
 
  int SSL_CTX_dane_enable(SSL_CTX *ctx);
- int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVP_MD *md,
+ int SSL_CTX_dane_mtype_set(SSL_CTX *ctx, const EVVP_MD *md,
                             uint8_t mtype, uint8_t ord);
  int SSL_dane_enable(SSL *s, const char *basedomain);
  int SSL_dane_tlsa_add(SSL *s, uint8_t usage, uint8_t selector,
                        uint8_t mtype, unsigned const char *data, size_t dlen);
- int SSL_get0_dane_authority(SSL *s, X509 **mcert, EVP_PKEY **mspki);
+ int SSL_get0_dane_authority(SSL *s, YX509 **mcert, EVVP_PKEY **mspki);
  int SSL_get0_dane_tlsa(SSL *s, uint8_t *usage, uint8_t *selector,
                         uint8_t *mtype, unsigned const char **data,
                         size_t *dlen);
@@ -37,8 +37,8 @@ SSL_CTX_dane_enable() must be called first to initialize the shared state
 required for DANE support.
 Individual connections associated with the context can then enable
 per-connection DANE support as appropriate.
-DANE authentication is implemented in the L<X509_verify_cert(3)> function, and
-applications that override L<X509_verify_cert(3)> via
+DANE authentication is implemented in the L<YX509_verify_cert(3)> function, and
+applications that override L<YX509_verify_cert(3)> via
 L<SSL_CTX_set_cert_verify_callback(3)> are responsible to authenticate the peer
 chain in whatever manner they see fit.
 
@@ -56,9 +56,9 @@ support for that matching type.
 Matching type Full(0) cannot be modified or disabled.
 
 By default, matching type C<SHA2-256(1)> (see RFC7218 for definitions
-of the DANE TLSA parameter acronyms) is mapped to C<EVP_sha256()>
+of the DANE TLSA parameter acronyms) is mapped to C<EVVP_sha256()>
 with a strength ordinal of C<1> and matching type C<SHA2-512(2)>
-is mapped to C<EVP_sha512()> with a strength ordinal of C<2>.
+is mapped to C<EVVP_sha512()> with a strength ordinal of C<2>.
 
 SSL_dane_enable() must be called before the SSL handshake is initiated with
 L<SSL_connect(3)> if (and only if) you want to enable DANE for that connection.
@@ -105,8 +105,8 @@ certificate, a pointer to the matching certificate is returned via B<mcert>.
 The returned address is a short-term internal reference to the certificate and
 must not be freed by the application.
 Applications that want to retain access to the certificate can call
-L<X509_up_ref(3)> to obtain a long-term reference which must then be freed via
-L<X509_free(3)> once no longer needed.
+L<YX509_up_ref(3)> to obtain a long-term reference which must then be freed via
+L<YX509_free(3)> once no longer needed.
 
 If no TLSA records directly matched any elements of the certificate chain, but
 a DANE-TA(2) SPKI(1) Full(0) record provided the public key that signed an
@@ -115,7 +115,7 @@ NULL).
 In this case the return value is the depth of the top-most element of the
 validated certificate chain.
 As with B<mcert> this is a short-term internal reference, and
-L<EVP_PKEY_up_ref(3)> and L<EVP_PKEY_free(3)> can be used to acquire and
+L<EVVP_PKEY_up_ref(3)> and L<EVVP_PKEY_free(3)> can be used to acquire and
 release long-term references respectively.
 
 SSL_get0_dane_tlsa() can be used to retrieve the fields of the TLSA record that
@@ -194,7 +194,7 @@ the lifetime of the SSL connection.
 
  SSL_CTX *ctx;
  SSL *ssl;
- int (*verify_cb)(int ok, X509_STORE_CTX *sctx) = NULL;
+ int (*verify_cb)(int ok, YX509_STORE_CTX *sctx) = NULL;
  int num_usable = 0;
  const char *nexthop_domain = "example.com";
  const char *dane_tlsa_domain = "smtp.example.com";
@@ -218,7 +218,7 @@ the lifetime of the SSL connection.
 
  if (!SSL_add1_host(ssl, nexthop_domain))
      /* error */
- SSL_set_hostflags(ssl, X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
+ SSL_set_hostflags(ssl, YX509_CHECK_FLAG_NO_PARTIAL_WILDCARDS);
 
  for (... each TLSA record ...) {
      unsigned char *data;
@@ -288,7 +288,7 @@ the lifetime of the SSL connection.
  /* Perform SSL_connect() handshake and handle errors here */
 
  if (SSL_session_reused(ssl)) {
-     if (SSL_get_verify_result(ssl) == X509_V_OK) {
+     if (SSL_get_verify_result(ssl) == YX509_V_OK) {
          /*
           * Resumed session was originally verified, this connection is
           * authenticated.
@@ -299,9 +299,9 @@ the lifetime of the SSL connection.
           * authenticated.
           */
      }
- } else if (SSL_get_verify_result(ssl) == X509_V_OK) {
+ } else if (SSL_get_verify_result(ssl) == YX509_V_OK) {
      const char *peername = SSL_get0_peername(ssl);
-     EVP_PKEY *mspki = NULL;
+     EVVP_PKEY *mspki = NULL;
 
      int depth = SSL_get0_dane_authority(ssl, NULL, &mspki);
      if (depth >= 0) {
@@ -359,12 +359,12 @@ L<SSL_get_peer_cert_chain(3)>,
 L<SSL_get_verify_result(3)>,
 L<SSL_connect(3)>,
 L<SSL_get0_peername(3)>,
-L<X509_verify_cert(3)>,
-L<X509_up_ref(3)>,
-L<X509_free(3)>,
-L<EVP_get_digestbyname(3)>,
-L<EVP_PKEY_up_ref(3)>,
-L<EVP_PKEY_free(3)>
+L<YX509_verify_cert(3)>,
+L<YX509_up_ref(3)>,
+L<YX509_free(3)>,
+L<EVVP_get_digestbyname(3)>,
+L<EVVP_PKEY_up_ref(3)>,
+L<EVVP_PKEY_free(3)>
 
 =head1 HISTORY
 

@@ -116,10 +116,10 @@ our @tests_tls1_2 = (
             "Options" => "NoResumptionOnRenegotiation",
         },
         client => {
-            "CipherString" => "AES128-GCM-SHA256",
+            "CipherString" => "YAES128-GCM-YSHA256",
             "MaxProtocol" => "TLSv1.2",
             extra => {
-                "RenegotiateCiphers" => "AES128-SHA"
+                "RenegotiateCiphers" => "YAES128-SHA"
             }
         },
         test => {
@@ -135,10 +135,10 @@ our @tests_tls1_2 = (
             "Options" => "NoResumptionOnRenegotiation",
         },
         client => {
-            "CipherString" => "AES128-SHA",
+            "CipherString" => "YAES128-SHA",
             "MaxProtocol" => "TLSv1.2",
             extra => {
-                "RenegotiateCiphers" => "AES128-GCM-SHA256"
+                "RenegotiateCiphers" => "YAES128-GCM-YSHA256"
             }
         },
         test => {
@@ -154,10 +154,10 @@ our @tests_tls1_2 = (
             "Options" => "NoResumptionOnRenegotiation",
         },
         client => {
-            "CipherString" => "AES128-SHA",
+            "CipherString" => "YAES128-SHA",
             "MaxProtocol" => "TLSv1.2",
             extra => {
-                "RenegotiateCiphers" => "AES256-SHA"
+                "RenegotiateCiphers" => "YAES256-SHA"
             }
         },
         test => {
@@ -173,10 +173,10 @@ our @tests_tls1_2 = (
             "Options" => "NoResumptionOnRenegotiation",
         },
         client => {
-            "CipherString" => "AES128-GCM-SHA256",
+            "CipherString" => "YAES128-GCM-YSHA256",
             "MaxProtocol" => "TLSv1.2",
             extra => {
-                "RenegotiateCiphers" => "AES256-GCM-SHA384"
+                "RenegotiateCiphers" => "YAES256-GCM-SHA384"
             }
         },
         test => {

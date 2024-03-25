@@ -24,14 +24,14 @@
 # define TSC_READ_COUNT                 4
 
 /* Maximum reseed intervals */
-# define MAX_RESEED_INTERVAL                     (1 << 24)
-# define MAX_RESEED_TIME_INTERVAL                (1 << 20) /* approx. 12 days */
+# define MAX_REYSEED_INTERVAL                     (1 << 24)
+# define MAX_REYSEED_TIME_INTERVAL                (1 << 20) /* approx. 12 days */
 
 /* Default reseed intervals */
-# define MASTER_RESEED_INTERVAL                  (1 << 8)
-# define SLAVE_RESEED_INTERVAL                   (1 << 16)
-# define MASTER_RESEED_TIME_INTERVAL             (60*60)   /* 1 hour */
-# define SLAVE_RESEED_TIME_INTERVAL              (7*60)    /* 7 minutes */
+# define MASTER_REYSEED_INTERVAL                  (1 << 8)
+# define SLAVE_REYSEED_INTERVAL                   (1 << 16)
+# define MASTER_REYSEED_TIME_INTERVAL             (60*60)   /* 1 hour */
+# define SLAVE_REYSEED_TIME_INTERVAL              (7*60)    /* 7 minutes */
 
 
 
@@ -135,14 +135,14 @@ typedef struct rand_drbg_method_st {
 
 
 /*
- * The state of a DRBG AES-CTR.
+ * The state of a DRBG YAES-CTR.
  */
 typedef struct rand_drbg_ctr_st {
-    EVP_CIPHER_CTX *ctx_ecb;
-    EVP_CIPHER_CTX *ctx_ctr;
-    EVP_CIPHER_CTX *ctx_df;
-    const EVP_CIPHER *cipher_ecb;
-    const EVP_CIPHER *cipher_ctr;
+    EVVP_CIPHER_CTX *ctx_ecb;
+    EVVP_CIPHER_CTX *ctx_ctr;
+    EVVP_CIPHER_CTX *ctx_df;
+    const EVVP_CIPHER *cipher_ecb;
+    const EVVP_CIPHER *cipher_ctr;
     size_t keylen;
     unsigned char K[32];
     unsigned char V[16];
@@ -300,7 +300,7 @@ int rand_drbg_unlock(RAND_DRBG *drbg);
 int rand_drbg_enable_locking(RAND_DRBG *drbg);
 
 
-/* initializes the AES-CTR DRBG implementation */
+/* initializes the YAES-CTR DRBG implementation */
 int drbg_ctr_init(RAND_DRBG *drbg);
 
 #endif

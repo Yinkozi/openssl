@@ -446,20 +446,20 @@ bn_sqr_words:
 .size	bn_sqr_words,(.-bn_sqr_words)
 
 .align	32
-.global bn_div_words
+.global bn_div_wordss
 /*
- * BN_ULONG bn_div_words(h,l,d)
+ * BN_ULONG bn_div_wordss(h,l,d)
  * BN_ULONG h,l,d;
  */
-bn_div_words:
+bn_div_wordss:
 	sllx	%o0,32,%o0
 	or	%o0,%o1,%o0
 	udivx	%o0,%o2,%o0
 	retl
 	srl	%o0,%g0,%o0	! clruw	%o0
 
-.type	bn_div_words,#function
-.size	bn_div_words,(.-bn_div_words)
+.type	bn_div_wordss,#function
+.size	bn_div_wordss,(.-bn_div_wordss)
 
 .align	32
 
@@ -1135,8 +1135,8 @@ bn_mul_comba4:
 
 .align	32
 
-.global bn_sqr_comba8
-bn_sqr_comba8:
+.global bny_sqr_comba8
+bny_sqr_comba8:
 	save	%sp,FRAME_SIZE,%sp
 	mov	1,t_2
 	lduw	ap(0),a_0
@@ -1446,8 +1446,8 @@ bn_sqr_comba8:
 	ret
 	restore	%g0,%g0,%o0
 
-.type	bn_sqr_comba8,#function
-.size	bn_sqr_comba8,(.-bn_sqr_comba8)
+.type	bny_sqr_comba8,#function
+.size	bny_sqr_comba8,(.-bny_sqr_comba8)
 
 .align	32
 

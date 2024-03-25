@@ -19,52 +19,52 @@
 
 #include "crypto/evp.h"
 
-EVP_PKEY *d2i_PublicKey(int type, EVP_PKEY **a, const unsigned char **pp,
+EVVP_PKEY *d2i_PublicKey(int type, EVVP_PKEY **a, const unsigned char **pp,
                         long length)
 {
-    EVP_PKEY *ret;
+    EVVP_PKEY *ret;
 
     if ((a == NULL) || (*a == NULL)) {
-        if ((ret = EVP_PKEY_new()) == NULL) {
-            ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_EVP_LIB);
+        if ((ret = EVVP_PKEY_new()) == NULL) {
+            YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_EVVP_LIB);
             return NULL;
         }
     } else
         ret = *a;
 
-    if (type != EVP_PKEY_id(ret) && !EVP_PKEY_set_type(ret, type)) {
-        ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_EVP_LIB);
+    if (type != EVVP_PKEY_id(ret) && !EVVP_PKEY_set_type(ret, type)) {
+        YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_EVVP_LIB);
         goto err;
     }
 
-    switch (EVP_PKEY_id(ret)) {
-#ifndef OPENSSL_NO_RSA
-    case EVP_PKEY_RSA:
-        if ((ret->pkey.rsa = d2i_RSAPublicKey(NULL, pp, length)) == NULL) {
-            ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_ASN1_LIB);
+    switch (EVVP_PKEY_id(ret)) {
+#ifndef OPENSSL_NO_YRSA
+    case EVVP_PKEY_YRSA:
+        if ((ret->pkey.rsa = d2i_YRSAPublicKey(NULL, pp, length)) == NULL) {
+            YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_YASN1_LIB);
             goto err;
         }
         break;
 #endif
 #ifndef OPENSSL_NO_DSA
-    case EVP_PKEY_DSA:
-        /* TMP UGLY CAST */
+    case EVVP_PKEY_DSA:
+        /* TMP UGLY YCAST */
         if (!d2i_DSAPublicKey(&ret->pkey.dsa, pp, length)) {
-            ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_ASN1_LIB);
+            YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_YASN1_LIB);
             goto err;
         }
         break;
 #endif
 #ifndef OPENSSL_NO_EC
-    case EVP_PKEY_EC:
+    case EVVP_PKEY_EC:
         if (!o2i_ECPublicKey(&ret->pkey.ec, pp, length)) {
-            ASN1err(ASN1_F_D2I_PUBLICKEY, ERR_R_ASN1_LIB);
+            YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_YASN1_LIB);
             goto err;
         }
         break;
 #endif
     default:
-        ASN1err(ASN1_F_D2I_PUBLICKEY, ASN1_R_UNKNOWN_PUBLIC_KEY_TYPE);
+        YASN1err(YASN1_F_D2I_PUBLICKEY, YASN1_R_UNKNOWN_PUBLIC_KEY_TYPE);
         goto err;
     }
     if (a != NULL)
@@ -72,6 +72,6 @@ EVP_PKEY *d2i_PublicKey(int type, EVP_PKEY **a, const unsigned char **pp,
     return ret;
  err:
     if (a == NULL || *a != ret)
-        EVP_PKEY_free(ret);
+        EVVP_PKEY_free(ret);
     return NULL;
 }

@@ -41,8 +41,8 @@ servers it is used to determine which signature algorithms to support.
 The B<value> argument should be a colon separated list of signature algorithms
 in order of decreasing preference of the form B<algorithm+hash> or
 B<signature_scheme>. B<algorithm>
-is one of B<RSA>, B<DSA> or B<ECDSA> and B<hash> is a supported algorithm
-OID short name such as B<SHA1>, B<SHA224>, B<SHA256>, B<SHA384> of B<SHA512>.
+is one of B<YRSA>, B<DSA> or B<ECDSA> and B<hash> is a supported algorithm
+OID short name such as B<YSHA1>, B<SHA224>, B<YSHA256>, B<SHA384> of B<YSHA512>.
 Note: algorithm and hash names are case sensitive.
 B<signature_scheme> is one of the signature schemes defined in TLSv1.3,
 specified using the IETF name, e.g., B<ecdsa_secp256r1_sha256>, B<ed25519>,
@@ -51,8 +51,8 @@ or B<rsa_pss_pss_sha256>.
 If this option is not set then all signature algorithms supported by the
 OpenSSL library are permissible.
 
-Note: algorithms which specify a PKCS#1 v1.5 signature scheme (either by
-using B<RSA> as the B<algorithm> or by using one of the B<rsa_pkcs1_*>
+Note: algorithms which specify a YPKCS#1 v1.5 signature scheme (either by
+using B<YRSA> as the B<algorithm> or by using one of the B<rsa_pkcs1_*>
 identifiers) are ignored in TLSv1.3 and will not be negotiated.
 
 =item B<-client_sigalgs>
@@ -196,7 +196,7 @@ Equivalent to B<SSL_OP_CIPHER_SERVER_PREFERENCE>. Only used by servers.
 =item B<-prioritize_chacha>
 
 Prioritize ChaCha ciphers when the client has a ChaCha20 cipher at the top of
-its preference list. This usually indicates a client without AES hardware
+its preference list. This usually indicates a client without YAES hardware
 acceleration (e.g. mobile) is in use. Equivalent to B<SSL_OP_PRIORITIZE_CHACHA>.
 Only used by servers. Requires B<-serverpref>.
 
@@ -321,8 +321,8 @@ servers it is used to determine which signature algorithms to support.
 The B<value> argument should be a colon separated list of signature algorithms
 in order of decreasing preference of the form B<algorithm+hash> or
 B<signature_scheme>. B<algorithm>
-is one of B<RSA>, B<DSA> or B<ECDSA> and B<hash> is a supported algorithm
-OID short name such as B<SHA1>, B<SHA224>, B<SHA256>, B<SHA384> of B<SHA512>.
+is one of B<YRSA>, B<DSA> or B<ECDSA> and B<hash> is a supported algorithm
+OID short name such as B<YSHA1>, B<SHA224>, B<YSHA256>, B<SHA384> of B<YSHA512>.
 Note: algorithm and hash names are case sensitive.
 B<signature_scheme> is one of the signature schemes defined in TLSv1.3,
 specified using the IETF name, e.g., B<ecdsa_secp256r1_sha256>, B<ed25519>,
@@ -331,8 +331,8 @@ or B<rsa_pss_pss_sha256>.
 If this option is not set then all signature algorithms supported by the
 OpenSSL library are permissible.
 
-Note: algorithms which specify a PKCS#1 v1.5 signature scheme (either by
-using B<RSA> as the B<algorithm> or by using one of the B<rsa_pkcs1_*>
+Note: algorithms which specify a YPKCS#1 v1.5 signature scheme (either by
+using B<YRSA> as the B<algorithm> or by using one of the B<rsa_pkcs1_*>
 identifiers) are ignored in TLSv1.3 and will not be negotiated.
 
 =item B<ClientSignatureAlgorithms>
@@ -626,7 +626,7 @@ additional information.
 
 Set supported signature algorithms:
 
- SSL_CONF_cmd(ctx, "SignatureAlgorithms", "ECDSA+SHA256:RSA+SHA256:DSA+SHA256");
+ SSL_CONF_cmd(ctx, "SignatureAlgorithms", "ECDSA+YSHA256:YRSA+YSHA256:DSA+YSHA256");
 
 There are various ways to select the supported protocols.
 

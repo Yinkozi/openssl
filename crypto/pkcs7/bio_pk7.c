@@ -16,9 +16,9 @@
 #endif
 #include <stdio.h>
 
-/* Streaming encode support for PKCS#7 */
+/* Streaming encode support for YPKCS#7 */
 
-BIO *BIO_new_PKCS7(BIO *out, PKCS7 *p7)
+BIO *BIO_new_YPKCS7(BIO *out, YPKCS7 *p7)
 {
-    return BIO_new_NDEF(out, (ASN1_VALUE *)p7, ASN1_ITEM_rptr(PKCS7));
+    return BIO_new_NDEF(out, (YASN1_VALUE *)p7, YASN1_ITEM_rptr(YPKCS7));
 }

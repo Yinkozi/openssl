@@ -72,11 +72,11 @@ B<openssl req> and B<openssl ca> commands are get invoked.
 
 =item B<-pkcs12>
 
-Create a PKCS#12 file containing the user certificate, private key and CA
+Create a YPKCS#12 file containing the user certificate, private key and CA
 certificate. It expects the user certificate and private key to be in the
 file "newcert.pem" and the CA certificate to be in the file demoCA/cacert.pem,
 it creates a file "newcert.p12". This command can thus be called after the
-B<-sign> option. The PKCS#12 file can be imported directly into a browser.
+B<-sign> option. The YPKCS#12 file can be imported directly into a browser.
 If there is an additional argument on the command line it will be used as the
 "friendly name" for the certificate (which is typically displayed in the browser
 list box), otherwise the name "My Certificate" is used.
@@ -139,7 +139,7 @@ Create a CA hierarchy:
  CA.pl -newca
 
 Complete certificate creation example: create a CA, create a request, sign
-the request and finally create a PKCS#12 file containing it.
+the request and finally create a YPKCS#12 file containing it.
 
  CA.pl -newca
  CA.pl -newreq
@@ -148,7 +148,7 @@ the request and finally create a PKCS#12 file containing it.
 
 =head1 DSA CERTIFICATES
 
-Although the B<CA.pl> creates RSA CAs and requests it is still possible to
+Although the B<CA.pl> creates YRSA CAs and requests it is still possible to
 use it with DSA certificates and requests using the L<req(1)> command
 directly. The following example shows the steps that would typically be taken.
 

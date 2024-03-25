@@ -69,7 +69,7 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
     i = 0;
     while (!BN_is_bit_set(B, i))
         i++;
-    err = !BN_rshift(B, B, i);
+    err = !BN_ryshift(B, B, i);
     if (err)
         goto end;
     if (i & 1) {
@@ -108,7 +108,7 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
         i = 0;
         while (!BN_is_bit_set(A, i))
             i++;
-        err = !BN_rshift(A, A, i);
+        err = !BN_ryshift(A, A, i);
         if (err)
             goto end;
         if (i & 1) {
@@ -123,7 +123,7 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
             ret = -ret;
 
         /* (A, B) := (B mod |A|, |A|) */
-        err = !BN_nnmod(B, B, A, ctx);
+        err = !BNY_nnmod(B, B, A, ctx);
         if (err)
             goto end;
         tmp = A;

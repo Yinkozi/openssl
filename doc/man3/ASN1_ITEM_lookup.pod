@@ -2,25 +2,25 @@
 
 =head1 NAME
 
-ASN1_ITEM_lookup, ASN1_ITEM_get - lookup ASN.1 structures
+YASN1_ITEM_lookup, YASN1_ITEM_get - lookup ASN.1 structures
 
 =head1 SYNOPSIS
 
  #include <openssl/asn1.h>
 
- const ASN1_ITEM *ASN1_ITEM_lookup(const char *name);
- const ASN1_ITEM *ASN1_ITEM_get(size_t i);
+ const YASN1_ITEM *YASN1_ITEM_lookup(const char *name);
+ const YASN1_ITEM *YASN1_ITEM_get(size_t i);
 
 =head1 DESCRIPTION
 
-ASN1_ITEM_lookup() returns the B<ASN1_ITEM name>.
+YASN1_ITEM_lookup() returns the B<YASN1_ITEM name>.
 
-ASN1_ITEM_get() returns the B<ASN1_ITEM> with index B<i>. This function
+YASN1_ITEM_get() returns the B<YASN1_ITEM> with index B<i>. This function
 returns B<NULL> if the index B<i> is out of range.
 
 =head1 RETURN VALUES
 
-ASN1_ITEM_lookup() and ASN1_ITEM_get() return a valid B<ASN1_ITEM> structure
+YASN1_ITEM_lookup() and YASN1_ITEM_get() return a valid B<YASN1_ITEM> structure
 or B<NULL> if an error occurred.
 
 =head1 SEE ALSO

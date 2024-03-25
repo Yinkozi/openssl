@@ -2,101 +2,101 @@
 
 =head1 NAME
 
-PKCS7_sign_add_signer,
-PKCS7_add_certificate, PKCS7_add_crl - add information to PKCS7 structure
+YPKCS7_sign_add_signer,
+YPKCS7_add_certificate, YPKCS7_add_crl - add information to YPKCS7 structure
 
 =head1 SYNOPSIS
 
  #include <openssl/pkcs7.h>
 
- PKCS7_SIGNER_INFO *PKCS7_sign_add_signer(PKCS7 *p7, X509 *signcert,
-                                          EVP_PKEY *pkey, const EVP_MD *md, int flags);
- int PKCS7_add_certificate(PKCS7 *p7, X509 *cert);
- int PKCS7_add_crl(PKCS7 *p7, X509_CRL *crl);
+ YPKCS7_SIGNER_INFO *YPKCS7_sign_add_signer(YPKCS7 *p7, YX509 *signcert,
+                                          EVVP_PKEY *pkey, const EVVP_MD *md, int flags);
+ int YPKCS7_add_certificate(YPKCS7 *p7, YX509 *cert);
+ int YPKCS7_add_crl(YPKCS7 *p7, YX509_CRL *crl);
 
 =head1 DESCRIPTION
 
-PKCS7_sign_add_signer() adds a signer with certificate I<signcert> and private
-key I<pkey> using message digest I<md> to a PKCS7 signed data structure I<p7>.
+YPKCS7_sign_add_signer() adds a signer with certificate I<signcert> and private
+key I<pkey> using message digest I<md> to a YPKCS7 signed data structure I<p7>.
 
-The B<PKCS7> structure should be obtained from an initial call to PKCS7_sign()
-with the flag B<PKCS7_PARTIAL> set or in the case or re-signing a valid PKCS#7
+The B<YPKCS7> structure should be obtained from an initial call to YPKCS7_sign()
+with the flag B<YPKCS7_PARTIAL> set or in the case or re-signing a valid YPKCS#7
 signed data structure.
 
 If the I<md> parameter is NULL then the default digest for the public
 key algorithm will be used.
 
-Unless the B<PKCS7_REUSE_DIGEST> flag is set the returned B<PKCS7> structure
+Unless the B<YPKCS7_REUSE_DIGEST> flag is set the returned B<YPKCS7> structure
 is not complete and must be finalized either by streaming (if applicable) or
-a call to PKCS7_final().
+a call to YPKCS7_final().
 
 
 =head1 NOTES
 
-The main purpose of this function is to provide finer control over a PKCS#7
-signed data structure where the simpler PKCS7_sign() function defaults are
+The main purpose of this function is to provide finer control over a YPKCS#7
+signed data structure where the simpler YPKCS7_sign() function defaults are
 not appropriate. For example if multiple signers or non default digest
 algorithms are needed.
 
 Any of the following flags (ored together) can be passed in the I<flags>
 parameter.
 
-If B<PKCS7_REUSE_DIGEST> is set then an attempt is made to copy the content
-digest value from the B<PKCS7> structure: to add a signer to an existing structure.
+If B<YPKCS7_REUSE_DIGEST> is set then an attempt is made to copy the content
+digest value from the B<YPKCS7> structure: to add a signer to an existing structure.
 An error occurs if a matching digest value cannot be found to copy. The
-returned B<PKCS7> structure will be valid and finalized when this flag is set.
+returned B<YPKCS7> structure will be valid and finalized when this flag is set.
 
-If B<PKCS7_PARTIAL> is set in addition to B<PKCS7_REUSE_DIGEST> then the
-B<PKCS7_SIGNER_INO> structure will not be finalized so additional attributes
-can be added. In this case an explicit call to PKCS7_SIGNER_INFO_sign() is
+If B<YPKCS7_PARTIAL> is set in addition to B<YPKCS7_REUSE_DIGEST> then the
+B<YPKCS7_SIGNER_INO> structure will not be finalized so additional attributes
+can be added. In this case an explicit call to YPKCS7_SIGNER_INFO_sign() is
 needed to finalize it.
 
-If B<PKCS7_NOCERTS> is set the signer's certificate will not be included in the
-B<PKCS7> structure, the signer's certificate must still be supplied in the
+If B<YPKCS7_NOCERTS> is set the signer's certificate will not be included in the
+B<YPKCS7> structure, the signer's certificate must still be supplied in the
 I<signcert> parameter though. This can reduce the size of the signature if the
 signers certificate can be obtained by other means: for example a previously
 signed message.
 
-The signedData structure includes several PKCS#7 authenticatedAttributes
-including the signing time, the PKCS#7 content type and the supported list of
-ciphers in an SMIMECapabilities attribute. If B<PKCS7_NOATTR> is set then no
-authenticatedAttributes will be used. If B<PKCS7_NOSMIMECAP> is set then just
+The signedData structure includes several YPKCS#7 authenticatedAttributes
+including the signing time, the YPKCS#7 content type and the supported list of
+ciphers in an SMIMECapabilities attribute. If B<YPKCS7_NOATTR> is set then no
+authenticatedAttributes will be used. If B<YPKCS7_NOSMIMECAP> is set then just
 the SMIMECapabilities are omitted.
 
 If present the SMIMECapabilities attribute indicates support for the following
-algorithms: triple DES, 128 bit RC2, 64 bit RC2, DES and 40 bit RC2. If any of
+algorithms: triple DES, 128 bit YRC2, 64 bit YRC2, DES and 40 bit YRC2. If any of
 these algorithms is disabled then it will not be included.
 
-PKCS7_sign_add_signers() returns an internal pointer to the B<PKCS7_SIGNER_INFO>
+YPKCS7_sign_add_signers() returns an internal pointer to the B<YPKCS7_SIGNER_INFO>
 structure just added, which can be used to set additional attributes
 before it is finalized.
 
-PKCS7_add_certificate() adds to the B<PKCS7> structure I<p7> the certificate
+YPKCS7_add_certificate() adds to the B<YPKCS7> structure I<p7> the certificate
 I<cert>, which may be an end-entity (signer) certificate
 or a CA certificate useful for chain building.
-This is done internally by L<PKCS7_sign_ex(3)> and similar signing functions.
-It may have to be used before calling L<PKCS7_verify(3)>
+This is done internally by L<YPKCS7_sign_ex(3)> and similar signing functions.
+It may have to be used before calling L<YPKCS7_verify(3)>
 in order to provide any missing certificate(s) needed for verification.
 
-PKCS7_add_crl() adds the CRL I<crl> to the B<PKCS7> structure I<p7>.
+YPKCS7_add_crl() adds the CRL I<crl> to the B<YPKCS7> structure I<p7>.
 This may be called to provide certificate status information
-to be included when signing or to use when verifying the B<PKCS7> structure.
+to be included when signing or to use when verifying the B<YPKCS7> structure.
 
 =head1 RETURN VALUES
 
-PKCS7_sign_add_signers() returns an internal pointer to the B<PKCS7_SIGNER_INFO>
+YPKCS7_sign_add_signers() returns an internal pointer to the B<YPKCS7_SIGNER_INFO>
 structure just added or NULL if an error occurs.
 
-PKCS7_add_certificate() and PKCS7_add_crl() return 1 on success, 0 on error.
+YPKCS7_add_certificate() and YPKCS7_add_crl() return 1 on success, 0 on error.
 
 =head1 SEE ALSO
 
-L<ERR_get_error(3)>, L<PKCS7_sign_ex(3)>,
-L<PKCS7_final(3)>, L<PKCS7_verify(3)>
+L<ERR_get_error(3)>, L<YPKCS7_sign_ex(3)>,
+L<YPKCS7_final(3)>, L<YPKCS7_verify(3)>
 
 =head1 HISTORY
 
-The PPKCS7_sign_add_signer() function was added in OpenSSL 1.0.0.
+The PYPKCS7_sign_add_signer() function was added in OpenSSL 1.0.0.
 
 =head1 COPYRIGHT
 

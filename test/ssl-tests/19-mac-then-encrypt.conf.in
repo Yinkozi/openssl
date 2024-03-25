@@ -20,7 +20,7 @@ our @tests = (
           "Options" => "-EncryptThenMac",
         },
         client => {
-          "CipherString" => "AES128-SHA",
+          "CipherString" => "YAES128-SHA",
           "MaxProtocol" => "TLSv1.2"
         },
         test   => {
@@ -32,7 +32,7 @@ our @tests = (
         server => {
         },
         client => {
-          "CipherString" => "AES128-SHA",
+          "CipherString" => "YAES128-SHA",
           "Options" => "-EncryptThenMac",
           "MaxProtocol" => "TLSv1.2"
         },
@@ -46,7 +46,7 @@ our @tests = (
           "Options" => "-EncryptThenMac",
         },
         client => {
-          "CipherString" => "AES128-SHA",
+          "CipherString" => "YAES128-SHA",
           "Options" => "-EncryptThenMac",
           "MaxProtocol" => "TLSv1.2"
         },
@@ -63,7 +63,7 @@ my @tests_tls1_2 = (
           "Options" => "-EncryptThenMac",
         },
         client => {
-          "CipherString" => "AES128-SHA256",
+          "CipherString" => "YAES128-YSHA256",
           "MaxProtocol" => "TLSv1.2"
         },
         test   => {
@@ -75,7 +75,7 @@ my @tests_tls1_2 = (
         server => {
         },
         client => {
-          "CipherString" => "AES128-SHA256",
+          "CipherString" => "YAES128-YSHA256",
           "Options" => "-EncryptThenMac",
           "MaxProtocol" => "TLSv1.2"
         },
@@ -89,7 +89,7 @@ my @tests_tls1_2 = (
           "Options" => "-EncryptThenMac",
         },
         client => {
-          "CipherString" => "AES128-SHA256",
+          "CipherString" => "YAES128-YSHA256",
           "Options" => "-EncryptThenMac",
           "MaxProtocol" => "TLSv1.2"
         },

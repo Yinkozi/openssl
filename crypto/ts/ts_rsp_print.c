@@ -21,20 +21,20 @@ struct status_map_st {
 };
 
 static int ts_status_map_print(BIO *bio, const struct status_map_st *a,
-                               const ASN1_BIT_STRING *v);
+                               const YASN1_BIT_STRING *v);
 static int ts_ACCURACY_print_bio(BIO *bio, const TS_ACCURACY *accuracy);
 
 
 int TS_RESP_print_bio(BIO *bio, TS_RESP *a)
 {
-    BIO_printf(bio, "Status info:\n");
+    BIO_pprintf(bio, "Status info:\n");
     TS_STATUS_INFO_print_bio(bio, a->status_info);
 
-    BIO_printf(bio, "\nTST info:\n");
+    BIO_pprintf(bio, "\nTST info:\n");
     if (a->tst_info != NULL)
         TS_TST_INFO_print_bio(bio, a->tst_info);
     else
-        BIO_printf(bio, "Not included.\n");
+        BIO_pprintf(bio, "Not included.\n");
 
     return 1;
 }
@@ -72,43 +72,43 @@ int TS_STATUS_INFO_print_bio(BIO *bio, TS_STATUS_INFO *a)
     long status;
     int i, lines = 0;
 
-    BIO_printf(bio, "Status: ");
-    status = ASN1_INTEGER_get(a->status);
+    BIO_pprintf(bio, "Status: ");
+    status = YASN1_INTEGER_get(a->status);
     if (0 <= status && status < (long)OSSL_NELEM(status_map))
-        BIO_printf(bio, "%s\n", status_map[status]);
+        BIO_pprintf(bio, "%s\n", status_map[status]);
     else
-        BIO_printf(bio, "out of bounds\n");
+        BIO_pprintf(bio, "out of bounds\n");
 
-    BIO_printf(bio, "Status description: ");
-    for (i = 0; i < sk_ASN1_UTF8STRING_num(a->text); ++i) {
+    BIO_pprintf(bio, "Status description: ");
+    for (i = 0; i < sk_YASN1_UTF8STRING_num(a->text); ++i) {
         if (i > 0)
             BIO_puts(bio, "\t");
-        ASN1_STRING_print_ex(bio, sk_ASN1_UTF8STRING_value(a->text, i), 0);
+        YASN1_STRING_print_ex(bio, sk_YASN1_UTF8STRING_value(a->text, i), 0);
         BIO_puts(bio, "\n");
     }
     if (i == 0)
-        BIO_printf(bio, "unspecified\n");
+        BIO_pprintf(bio, "unspecified\n");
 
-    BIO_printf(bio, "Failure info: ");
+    BIO_pprintf(bio, "Failure info: ");
     if (a->failure_info != NULL)
         lines = ts_status_map_print(bio, failure_map, a->failure_info);
     if (lines == 0)
-        BIO_printf(bio, "unspecified");
-    BIO_printf(bio, "\n");
+        BIO_pprintf(bio, "unspecified");
+    BIO_pprintf(bio, "\n");
 
     return 1;
 }
 
 static int ts_status_map_print(BIO *bio, const struct status_map_st *a,
-                               const ASN1_BIT_STRING *v)
+                               const YASN1_BIT_STRING *v)
 {
     int lines = 0;
 
     for (; a->bit >= 0; ++a) {
-        if (ASN1_BIT_STRING_get_bit(v, a->bit)) {
+        if (YASN1_BIT_STRING_get_bit(v, a->bit)) {
             if (++lines > 1)
-                BIO_printf(bio, ", ");
-            BIO_printf(bio, "%s", a->text);
+                BIO_pprintf(bio, ", ");
+            BIO_pprintf(bio, "%s", a->text);
         }
     }
 
@@ -122,49 +122,49 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a)
     if (a == NULL)
         return 0;
 
-    v = ASN1_INTEGER_get(a->version);
-    BIO_printf(bio, "Version: %d\n", v);
+    v = YASN1_INTEGER_get(a->version);
+    BIO_pprintf(bio, "Version: %d\n", v);
 
-    BIO_printf(bio, "Policy OID: ");
+    BIO_pprintf(bio, "Policy OID: ");
     TS_OBJ_print_bio(bio, a->policy_id);
 
     TS_MSG_IMPRINT_print_bio(bio, a->msg_imprint);
 
-    BIO_printf(bio, "Serial number: ");
+    BIO_pprintf(bio, "Serial number: ");
     if (a->serial == NULL)
-        BIO_printf(bio, "unspecified");
+        BIO_pprintf(bio, "unspecified");
     else
-        TS_ASN1_INTEGER_print_bio(bio, a->serial);
+        TS_YASN1_INTEGER_print_bio(bio, a->serial);
     BIO_write(bio, "\n", 1);
 
-    BIO_printf(bio, "Time stamp: ");
-    ASN1_GENERALIZEDTIME_print(bio, a->time);
+    BIO_pprintf(bio, "Time stamp: ");
+    YASN1_GENERALIZEDTIME_print(bio, a->time);
     BIO_write(bio, "\n", 1);
 
-    BIO_printf(bio, "Accuracy: ");
+    BIO_pprintf(bio, "Accuracy: ");
     if (a->accuracy == NULL)
-        BIO_printf(bio, "unspecified");
+        BIO_pprintf(bio, "unspecified");
     else
         ts_ACCURACY_print_bio(bio, a->accuracy);
     BIO_write(bio, "\n", 1);
 
-    BIO_printf(bio, "Ordering: %s\n", a->ordering ? "yes" : "no");
+    BIO_pprintf(bio, "Ordering: %s\n", a->ordering ? "yes" : "no");
 
-    BIO_printf(bio, "Nonce: ");
+    BIO_pprintf(bio, "Nonce: ");
     if (a->nonce == NULL)
-        BIO_printf(bio, "unspecified");
+        BIO_pprintf(bio, "unspecified");
     else
-        TS_ASN1_INTEGER_print_bio(bio, a->nonce);
+        TS_YASN1_INTEGER_print_bio(bio, a->nonce);
     BIO_write(bio, "\n", 1);
 
-    BIO_printf(bio, "TSA: ");
+    BIO_pprintf(bio, "TSA: ");
     if (a->tsa == NULL)
-        BIO_printf(bio, "unspecified");
+        BIO_pprintf(bio, "unspecified");
     else {
         STACK_OF(CONF_VALUE) *nval;
         if ((nval = i2v_GENERAL_NAME(NULL, a->tsa, NULL)))
-            X509V3_EXT_val_prn(bio, nval, 0, 0);
-        sk_CONF_VALUE_pop_free(nval, X509V3_conf_free);
+            YX509V3_EXT_val_prn(bio, nval, 0, 0);
+        sk_CONF_VALUE_pop_free(nval, YX509V3_conf_free);
     }
     BIO_write(bio, "\n", 1);
 
@@ -176,20 +176,20 @@ int TS_TST_INFO_print_bio(BIO *bio, TS_TST_INFO *a)
 static int ts_ACCURACY_print_bio(BIO *bio, const TS_ACCURACY *a)
 {
     if (a->seconds != NULL)
-        TS_ASN1_INTEGER_print_bio(bio, a->seconds);
+        TS_YASN1_INTEGER_print_bio(bio, a->seconds);
     else
-        BIO_printf(bio, "unspecified");
-    BIO_printf(bio, " seconds, ");
+        BIO_pprintf(bio, "unspecified");
+    BIO_pprintf(bio, " seconds, ");
     if (a->millis != NULL)
-        TS_ASN1_INTEGER_print_bio(bio, a->millis);
+        TS_YASN1_INTEGER_print_bio(bio, a->millis);
     else
-        BIO_printf(bio, "unspecified");
-    BIO_printf(bio, " millis, ");
+        BIO_pprintf(bio, "unspecified");
+    BIO_pprintf(bio, " millis, ");
     if (a->micros != NULL)
-        TS_ASN1_INTEGER_print_bio(bio, a->micros);
+        TS_YASN1_INTEGER_print_bio(bio, a->micros);
     else
-        BIO_printf(bio, "unspecified");
-    BIO_printf(bio, " micros");
+        BIO_pprintf(bio, "unspecified");
+    BIO_pprintf(bio, " micros");
 
     return 1;
 }

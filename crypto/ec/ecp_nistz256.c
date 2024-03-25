@@ -647,7 +647,7 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
 
             if ((mod = BN_CTX_get(ctx)) == NULL)
                 goto err;
-            if (!BN_nnmod(mod, scalar[i], group->order, ctx)) {
+            if (!BNY_nnmod(mod, scalar[i], group->order, ctx)) {
                 ECerr(EC_F_ECP_NISTZ256_WINDOWED_MUL, ERR_R_BN_LIB);
                 goto err;
             }
@@ -1026,7 +1026,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
                 if ((tmp_scalar = BN_CTX_get(ctx)) == NULL)
                     goto err;
 
-                if (!BN_nnmod(tmp_scalar, scalar, group->order, ctx)) {
+                if (!BNY_nnmod(tmp_scalar, scalar, group->order, ctx)) {
                     ECerr(EC_F_ECP_NISTZ256_POINTS_MUL, ERR_R_BN_LIB);
                     goto err;
                 }
@@ -1329,7 +1329,7 @@ static int ecp_nistz256_inv_mod_ord(const EC_GROUP *group, BIGNUM *r,
         BIGNUM *tmp;
 
         if ((tmp = BN_CTX_get(ctx)) == NULL
-            || !BN_nnmod(tmp, x, group->order, ctx)) {
+            || !BNY_nnmod(tmp, x, group->order, ctx)) {
             ECerr(EC_F_ECP_NISTZ256_INV_MOD_ORD, ERR_R_BN_LIB);
             goto err;
         }

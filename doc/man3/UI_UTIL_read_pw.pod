@@ -45,7 +45,7 @@ UI_UTIL_wrap_read_pem_callback() will generate password strings in the
 encoding that the given password callback generates.
 The default password prompting functions (apart from
 UI_UTIL_read_pw_string() and UI_UTIL_read_pw(), there is
-PEM_def_callback(), EVP_read_pw_string() and EVP_read_pw_string_min())
+PEM_def_callback(), EVVP_read_pw_string() and EVVP_read_pw_string_min())
 all use the default B<UI_METHOD>.
 
 =head1 RETURN VALUES

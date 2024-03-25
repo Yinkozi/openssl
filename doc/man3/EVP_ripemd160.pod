@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-EVP_ripemd160
-- RIPEMD160 For EVP
+EVVP_ripemd160
+- RIPEMD160 For EVVP
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_MD *EVP_ripemd160(void);
+ const EVVP_MD *EVVP_ripemd160(void);
 
 =head1 DESCRIPTION
 
@@ -18,7 +18,7 @@ to the RIPEMD family (RACE Integrity Primitives Evaluation Message Digest).
 
 =over 4
 
-=item EVP_ripemd160()
+=item EVVP_ripemd160()
 
 The RIPEMD-160 algorithm which produces a 160-bit output from a given input.
 
@@ -26,9 +26,9 @@ The RIPEMD-160 algorithm which produces a 160-bit output from a given input.
 
 =head1 RETURN VALUES
 
-These functions return a B<EVP_MD> structure that contains the
-implementation of the symmetric cipher. See L<EVP_MD_meth_new(3)> for
-details of the B<EVP_MD> structure.
+These functions return a B<EVVP_MD> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_MD_meth_new(3)> for
+details of the B<EVVP_MD> structure.
 
 =head1 CONFORMING TO
 
@@ -37,7 +37,7 @@ ISO/IEC 10118-3:2016 Dedicated Hash-Function 1 (RIPEMD-160).
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_DigestInit(3)>
+L<EVVP_DigestInit(3)>
 
 =head1 COPYRIGHT
 

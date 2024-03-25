@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-d2i_DHparams, i2d_DHparams - PKCS#3 DH parameter functions
+d2i_DHparams, i2d_DHparams - YPKCS#3 DH parameter functions
 
 =head1 SYNOPSIS
 
@@ -13,11 +13,11 @@ d2i_DHparams, i2d_DHparams - PKCS#3 DH parameter functions
 
 =head1 DESCRIPTION
 
-These functions decode and encode PKCS#3 DH parameters using the
-DHparameter structure described in PKCS#3.
+These functions decode and encode YPKCS#3 DH parameters using the
+DHparameter structure described in YPKCS#3.
 
-Otherwise these behave in a similar way to d2i_X509() and i2d_X509()
-described in the L<d2i_X509(3)> manual page.
+Otherwise these behave in a similar way to d2i_YX509() and i2d_YX509()
+described in the L<d2i_YX509(3)> manual page.
 
 =head1 RETURN VALUES
 
@@ -28,7 +28,7 @@ is less than or equal to 0 on error.
 
 =head1 SEE ALSO
 
-L<d2i_X509(3)>
+L<d2i_YX509(3)>
 
 =head1 COPYRIGHT
 

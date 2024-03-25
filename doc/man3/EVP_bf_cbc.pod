@@ -2,36 +2,36 @@
 
 =head1 NAME
 
-EVP_bf_cbc,
-EVP_bf_cfb,
-EVP_bf_cfb64,
-EVP_bf_ecb,
-EVP_bf_ofb
-- EVP Blowfish cipher
+EVVP_bf_cbc,
+EVVP_bf_cfb,
+EVVP_bf_cfb64,
+EVVP_bf_ecb,
+EVVP_bf_ofb
+- EVVP Blowfish cipher
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_bf_cbc(void)
- const EVP_CIPHER *EVP_bf_cfb(void)
- const EVP_CIPHER *EVP_bf_cfb64(void)
- const EVP_CIPHER *EVP_bf_ecb(void)
- const EVP_CIPHER *EVP_bf_ofb(void)
+ const EVVP_CIPHER *EVVP_bf_cbc(void)
+ const EVVP_CIPHER *EVVP_bf_cfb(void)
+ const EVVP_CIPHER *EVVP_bf_cfb64(void)
+ const EVVP_CIPHER *EVVP_bf_ecb(void)
+ const EVVP_CIPHER *EVVP_bf_ofb(void)
 
 =head1 DESCRIPTION
 
-The Blowfish encryption algorithm for EVP.
+The Blowfish encryption algorithm for EVVP.
 
 This is a variable key length cipher.
 
 =over 4
 
-=item EVP_bf_cbc(),
-EVP_bf_cfb(),
-EVP_bf_cfb64(),
-EVP_bf_ecb(),
-EVP_bf_ofb()
+=item EVVP_bf_cbc(),
+EVVP_bf_cfb(),
+EVVP_bf_cfb64(),
+EVVP_bf_ecb(),
+EVVP_bf_ofb()
 
 Blowfish encryption algorithm in CBC, CFB, ECB and OFB modes respectively.
 
@@ -39,15 +39,15 @@ Blowfish encryption algorithm in CBC, CFB, ECB and OFB modes respectively.
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

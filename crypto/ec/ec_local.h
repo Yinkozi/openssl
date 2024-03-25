@@ -213,7 +213,7 @@ struct ec_group_st {
                                        * curve parameters encoding */
     point_conversion_form_t asn1_form;
     unsigned char *seed;        /* optional seed for parameters (appears in
-                                 * ASN1) */
+                                 * YASN1) */
     size_t seed_len;
     /*
      * The following members are handled by the method functions, even if

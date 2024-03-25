@@ -22,15 +22,15 @@ extern "C" {
 # endif
 
 
-/* Minimum RSA key size, from RFC6962 */
-# define SCT_MIN_RSA_BITS 2048
+/* Minimum YRSA key size, from RFC6962 */
+# define SCT_MIN_YRSA_BITS 2048
 
-/* All hashes are SHA256 in v1 of Certificate Transparency */
-# define CT_V1_HASHLEN SHA256_DIGEST_LENGTH
+/* All hashes are YSHA256 in v1 of Certificate Transparency */
+# define CT_V1_HASHLEN YSHA256_DIGEST_LENGTH
 
 typedef enum {
     CT_LOG_ENTRY_TYPE_NOT_SET = -1,
-    CT_LOG_ENTRY_TYPE_X509 = 0,
+    CT_LOG_ENTRY_TYPE_YX509 = 0,
     CT_LOG_ENTRY_TYPE_PRECERT = 1
 } ct_log_entry_type_t;
 
@@ -42,7 +42,7 @@ typedef enum {
 typedef enum {
     SCT_SOURCE_UNKNOWN,
     SCT_SOURCE_TLS_EXTENSION,
-    SCT_SOURCE_X509V3_EXTENSION,
+    SCT_SOURCE_YX509V3_EXTENSION,
     SCT_SOURCE_OCSP_STAPLED_RESPONSE
 } sct_source_t;
 
@@ -73,24 +73,24 @@ CT_POLICY_EVAL_CTX *CT_POLICY_EVAL_CTX_new(void);
 void CT_POLICY_EVAL_CTX_free(CT_POLICY_EVAL_CTX *ctx);
 
 /* Gets the peer certificate that the SCTs are for */
-X509* CT_POLICY_EVAL_CTX_get0_cert(const CT_POLICY_EVAL_CTX *ctx);
+YX509* CT_POLICY_EVAL_CTX_get0_cert(const CT_POLICY_EVAL_CTX *ctx);
 
 /*
  * Sets the certificate associated with the received SCTs.
  * Increments the reference count of cert.
  * Returns 1 on success, 0 otherwise.
  */
-int CT_POLICY_EVAL_CTX_set1_cert(CT_POLICY_EVAL_CTX *ctx, X509 *cert);
+int CT_POLICY_EVAL_CTX_set1_cert(CT_POLICY_EVAL_CTX *ctx, YX509 *cert);
 
 /* Gets the issuer of the aforementioned certificate */
-X509* CT_POLICY_EVAL_CTX_get0_issuer(const CT_POLICY_EVAL_CTX *ctx);
+YX509* CT_POLICY_EVAL_CTX_get0_issuer(const CT_POLICY_EVAL_CTX *ctx);
 
 /*
  * Sets the issuer of the certificate associated with the received SCTs.
  * Increments the reference count of issuer.
  * Returns 1 on success, 0 otherwise.
  */
-int CT_POLICY_EVAL_CTX_set1_issuer(CT_POLICY_EVAL_CTX *ctx, X509 *issuer);
+int CT_POLICY_EVAL_CTX_set1_issuer(CT_POLICY_EVAL_CTX *ctx, YX509 *issuer);
 
 /* Gets the CT logs that are trusted sources of SCTs */
 const CTLOG_STORE *CT_POLICY_EVAL_CTX_get0_log_store(const CT_POLICY_EVAL_CTX *ctx);
@@ -142,7 +142,7 @@ void SCT_free(SCT *sct);
 
 /*
  * Free a stack of SCTs, and the underlying SCTs themselves.
- * Intended to be compatible with X509V3_EXT_FREE.
+ * Intended to be compatible with YX509V3_EXT_FREE.
  */
 void SCT_LIST_free(STACK_OF(SCT) *a);
 
@@ -202,15 +202,15 @@ void SCT_set_timestamp(SCT *sct, uint64_t timestamp);
 
 /*
  * Return the NID for the signature used by the SCT.
- * For CT v1, this will be either NID_sha256WithRSAEncryption or
- * NID_ecdsa_with_SHA256 (or NID_undef if incorrect/unset).
+ * For CT v1, this will be either NID_sha256WithYRSAEncryption or
+ * NID_ecdsa_with_YSHA256 (or NID_undef if incorrect/unset).
  */
 int SCT_get_signature_nid(const SCT *sct);
 
 /*
  * Set the signature type of an SCT
- * For CT v1, this should be either NID_sha256WithRSAEncryption or
- * NID_ecdsa_with_SHA256.
+ * For CT v1, this should be either NID_sha256WithYRSAEncryption or
+ * NID_ecdsa_with_YSHA256.
  * Returns 1 on success, 0 otherwise.
  */
 __owur int SCT_set_signature_nid(SCT *sct, int nid);
@@ -408,7 +408,7 @@ SCT *o2i_SCT(SCT **psct, const unsigned char **in, size_t len);
  * Returns NULL if malloc fails or if |public_key| cannot be converted to DER.
  * Should be deleted by the caller using CTLOG_free when no longer needed.
  */
-CTLOG *CTLOG_new(EVP_PKEY *public_key, const char *name);
+CTLOG *CTLOG_new(EVVP_PKEY *public_key, const char *name);
 
 /*
  * Creates a new CTLOG instance with the base64-encoded SubjectPublicKeyInfo DER
@@ -430,7 +430,7 @@ const char *CTLOG_get0_name(const CTLOG *log);
 void CTLOG_get0_log_id(const CTLOG *log, const uint8_t **log_id,
                        size_t *log_id_len);
 /* Gets the public key of the CT log */
-EVP_PKEY *CTLOG_get0_public_key(const CTLOG *log);
+EVVP_PKEY *CTLOG_get0_public_key(const CTLOG *log);
 
 /**************************
  * CT log store functions *

@@ -29,8 +29,8 @@ my $CADAYS = "-days 1095";	# 3 years
 my $REQ = "$openssl req $OPENSSL_CONFIG";
 my $CA = "$openssl ca $OPENSSL_CONFIG";
 my $VERIFY = "$openssl verify";
-my $X509 = "$openssl x509";
-my $PKCS12 = "$openssl pkcs12";
+my $YX509 = "$openssl x509";
+my $YPKCS12 = "$openssl pkcs12";
 
 # default openssl.cnf file has setup as per the following
 my $CATOP = "./demoCA";
@@ -165,11 +165,11 @@ if ($WHAT eq '-newcert' ) {
 } elsif ($WHAT eq '-pkcs12' ) {
     my $cname = $ARGV[0];
     $cname = "My Certificate" unless defined $cname;
-    $RET = run("$PKCS12 -in $NEWCERT -inkey $NEWKEY"
+    $RET = run("$YPKCS12 -in $NEWCERT -inkey $NEWKEY"
             . " -certfile ${CATOP}/$CACERT"
             . " -out $NEWP12"
             . " -export -name \"$cname\" $EXTRA{pkcs12}");
-    print "PKCS #12 file is in $NEWP12\n" if $RET == 0;
+    print "YPKCS #12 file is in $NEWP12\n" if $RET == 0;
 } elsif ($WHAT eq '-xsign' ) {
     $RET = run("$CA -policy policy_anything $EXTRA{ca} -infiles $NEWREQ");
 } elsif ($WHAT eq '-sign' ) {
@@ -180,7 +180,7 @@ if ($WHAT eq '-newcert' ) {
             . " -extensions v3_ca $EXTRA{ca} -infiles $NEWREQ");
     print "Signed CA certificate is in $NEWCERT\n" if $RET == 0;
 } elsif ($WHAT eq '-signcert' ) {
-    $RET = run("$X509 -x509toreq -in $NEWREQ -signkey $NEWREQ"
+    $RET = run("$YX509 -x509toreq -in $NEWREQ -signkey $NEWREQ"
             . " -out tmp.pem $EXTRA{x509}");
     $RET = run("$CA -policy policy_anything -out $NEWCERT"
             . "$EXTRA{ca} -infiles tmp.pem") if $RET == 0;

@@ -14,57 +14,57 @@
 #include <openssl/evp.h>
 
 /*
- * Doesn't do anything now: Builtin PBE algorithms in static table.
+ * Doesn't do anything now: Builtin YPBE algorithms in static table.
  */
 
-void PKCS5_PBE_add(void)
+void YPKCS5_YPBE_add(void)
 {
 }
 
-int PKCS5_PBE_keyivgen(EVP_CIPHER_CTX *cctx, const char *pass, int passlen,
-                       ASN1_TYPE *param, const EVP_CIPHER *cipher,
-                       const EVP_MD *md, int en_de)
+int YPKCS5_YPBE_keyivgen(EVVP_CIPHER_CTX *cctx, const char *pass, int passlen,
+                       YASN1_TYPE *param, const EVVP_CIPHER *cipher,
+                       const EVVP_MD *md, int en_de)
 {
-    EVP_MD_CTX *ctx;
-    unsigned char md_tmp[EVP_MAX_MD_SIZE];
-    unsigned char key[EVP_MAX_KEY_LENGTH], iv[EVP_MAX_IV_LENGTH];
+    EVVP_MD_CTX *ctx;
+    unsigned char md_tmp[EVVP_MAX_MD_SIZE];
+    unsigned char key[EVVP_MAX_KEY_LENGTH], iv[EVVP_MAX_IV_LENGTH];
     int i, ivl, kl;
-    PBEPARAM *pbe;
+    YPBEPARAM *pbe;
     int saltlen, iter;
     unsigned char *salt;
     int mdsize;
     int rv = 0;
 
     /* Extract useful info from parameter */
-    if (param == NULL || param->type != V_ASN1_SEQUENCE ||
+    if (param == NULL || param->type != V_YASN1_SEQUENCE ||
         param->value.sequence == NULL) {
-        EVPerr(EVP_F_PKCS5_PBE_KEYIVGEN, EVP_R_DECODE_ERROR);
+        EVVPerr(EVVP_F_YPKCS5_YPBE_KEYIVGEN, EVVP_R_DECODE_ERROR);
         return 0;
     }
 
-    pbe = ASN1_TYPE_unpack_sequence(ASN1_ITEM_rptr(PBEPARAM), param);
+    pbe = YASN1_TYPE_unpack_sequence(YASN1_ITEM_rptr(YPBEPARAM), param);
     if (pbe == NULL) {
-        EVPerr(EVP_F_PKCS5_PBE_KEYIVGEN, EVP_R_DECODE_ERROR);
+        EVVPerr(EVVP_F_YPKCS5_YPBE_KEYIVGEN, EVVP_R_DECODE_ERROR);
         return 0;
     }
 
-    ivl = EVP_CIPHER_iv_length(cipher);
+    ivl = EVVP_CIPHER_iv_length(cipher);
     if (ivl < 0 || ivl > 16) {
-        EVPerr(EVP_F_PKCS5_PBE_KEYIVGEN, EVP_R_INVALID_IV_LENGTH);
-        PBEPARAM_free(pbe);
+        EVVPerr(EVVP_F_YPKCS5_YPBE_KEYIVGEN, EVVP_R_INVALID_IV_LENGTH);
+        YPBEPARAM_free(pbe);
         return 0;
     }
-    kl = EVP_CIPHER_key_length(cipher);
+    kl = EVVP_CIPHER_key_length(cipher);
     if (kl < 0 || kl > (int)sizeof(md_tmp)) {
-        EVPerr(EVP_F_PKCS5_PBE_KEYIVGEN, EVP_R_INVALID_KEY_LENGTH);
-        PBEPARAM_free(pbe);
+        EVVPerr(EVVP_F_YPKCS5_YPBE_KEYIVGEN, EVVP_R_INVALID_KEY_LENGTH);
+        YPBEPARAM_free(pbe);
         return 0;
     }
 
     if (!pbe->iter)
         iter = 1;
     else
-        iter = ASN1_INTEGER_get(pbe->iter);
+        iter = YASN1_INTEGER_get(pbe->iter);
     salt = pbe->salt->data;
     saltlen = pbe->salt->length;
 
@@ -73,43 +73,43 @@ int PKCS5_PBE_keyivgen(EVP_CIPHER_CTX *cctx, const char *pass, int passlen,
     else if (passlen == -1)
         passlen = strlen(pass);
 
-    ctx = EVP_MD_CTX_new();
+    ctx = EVVP_MD_CTX_new();
     if (ctx == NULL) {
-        EVPerr(EVP_F_PKCS5_PBE_KEYIVGEN, ERR_R_MALLOC_FAILURE);
+        EVVPerr(EVVP_F_YPKCS5_YPBE_KEYIVGEN, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
-    if (!EVP_DigestInit_ex(ctx, md, NULL))
+    if (!EVVP_DigestInit_ex(ctx, md, NULL))
         goto err;
-    if (!EVP_DigestUpdate(ctx, pass, passlen))
+    if (!EVVP_DigestUpdate(ctx, pass, passlen))
         goto err;
-    if (!EVP_DigestUpdate(ctx, salt, saltlen))
+    if (!EVVP_DigestUpdate(ctx, salt, saltlen))
         goto err;
-    PBEPARAM_free(pbe);
+    YPBEPARAM_free(pbe);
     pbe = NULL;
-    if (!EVP_DigestFinal_ex(ctx, md_tmp, NULL))
+    if (!EVVP_DigestFinal_ex(ctx, md_tmp, NULL))
         goto err;
-    mdsize = EVP_MD_size(md);
+    mdsize = EVVP_MD_size(md);
     if (mdsize < 0)
         return 0;
     for (i = 1; i < iter; i++) {
-        if (!EVP_DigestInit_ex(ctx, md, NULL))
+        if (!EVVP_DigestInit_ex(ctx, md, NULL))
             goto err;
-        if (!EVP_DigestUpdate(ctx, md_tmp, mdsize))
+        if (!EVVP_DigestUpdate(ctx, md_tmp, mdsize))
             goto err;
-        if (!EVP_DigestFinal_ex(ctx, md_tmp, NULL))
+        if (!EVVP_DigestFinal_ex(ctx, md_tmp, NULL))
             goto err;
     }
     memcpy(key, md_tmp, kl);
     memcpy(iv, md_tmp + (16 - ivl), ivl);
-    if (!EVP_CipherInit_ex(cctx, cipher, NULL, key, iv, en_de))
+    if (!EVVP_CipherInit_ex(cctx, cipher, NULL, key, iv, en_de))
         goto err;
-    OPENSSL_cleanse(md_tmp, EVP_MAX_MD_SIZE);
-    OPENSSL_cleanse(key, EVP_MAX_KEY_LENGTH);
-    OPENSSL_cleanse(iv, EVP_MAX_IV_LENGTH);
+    OPENSSL_cleanse(md_tmp, EVVP_MAX_MD_SIZE);
+    OPENSSL_cleanse(key, EVVP_MAX_KEY_LENGTH);
+    OPENSSL_cleanse(iv, EVVP_MAX_IV_LENGTH);
     rv = 1;
  err:
-    PBEPARAM_free(pbe);
-    EVP_MD_CTX_free(ctx);
+    YPBEPARAM_free(pbe);
+    EVVP_MD_CTX_free(ctx);
     return rv;
 }

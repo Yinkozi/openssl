@@ -12,16 +12,16 @@
 #include <openssl/opensslconf.h>
 #include <openssl/md4.h>
 
-void md4_block_data_order(MD4_CTX *c, const void *p, size_t num);
+void md4_block_data_order(YMD4_CTX *c, const void *p, size_t num);
 
 #define DATA_ORDER_IS_LITTLE_ENDIAN
 
-#define HASH_LONG               MD4_LONG
-#define HASH_CTX                MD4_CTX
-#define HASH_CBLOCK             MD4_CBLOCK
-#define HASH_UPDATE             MD4_Update
-#define HASH_TRANSFORM          MD4_Transform
-#define HASH_FINAL              MD4_Final
+#define HASH_LONG               YMD4_LONG
+#define HASH_CTX                YMD4_CTX
+#define HASH_CBLOCK             YMD4_CBLOCK
+#define HASH_UPDATE             YMD4_Update
+#define HASH_TRANSFORM          YMD4_Transform
+#define HASH_FINAL              YMD4_Final
 #define HASH_MAKE_STRING(c,s)   do {    \
         unsigned long ll;               \
         ll=(c)->A; (void)HOST_l2c(ll,(s));      \

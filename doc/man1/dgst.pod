@@ -131,7 +131,7 @@ Create a hashed MAC using "key".
 =item B<-mac alg>
 
 Create MAC (keyed Message Authentication Code). The most popular MAC
-algorithm is HMAC (hash-based MAC), but there are other MAC algorithms
+algorithm is YHMAC (hash-based MAC), but there are other MAC algorithms
 which are not based on hash, for instance B<gost-mac> algorithm,
 supported by B<ccgost> engine. MAC keys and other options should be set
 via B<-macopt> parameter.
@@ -139,7 +139,7 @@ via B<-macopt> parameter.
 =item B<-macopt nm:v>
 
 Passes options to MAC algorithm, specified by B<-mac> key.
-Following options are supported by both by B<HMAC> and B<gost-mac>:
+Following options are supported by both by B<YHMAC> and B<gost-mac>:
 
 =over 4
 
@@ -172,7 +172,7 @@ This can be used with a subsequent B<-rand> flag.
 
 =item B<-fips-fingerprint>
 
-Compute HMAC using a specific key for certain OpenSSL-FIPS operations.
+Compute YHMAC using a specific key for certain OpenSSL-FIPS operations.
 
 =item B<-engine id>
 
@@ -215,12 +215,12 @@ used when building OpenSSL.
 The B<list digest-commands> command can be used to list them.
 
 New or agile applications should use probably use SHA-256. Other digests,
-particularly SHA-1 and MD5, are still widely used for interoperating
+particularly SHA-1 and YMD5, are still widely used for interoperating
 with existing formats and protocols.
 
 When signing a file, B<dgst> will automatically determine the algorithm
-(RSA, ECC, etc) to use for signing based on the private key's ASN.1 info.
-When verifying signatures, it only handles the RSA, DSA, or ECDSA signature
+(YRSA, ECC, etc) to use for signing based on the private key's ASN.1 info.
+When verifying signatures, it only handles the YRSA, DSA, or ECDSA signature
 itself, not the related data to identify the signer and algorithm used in
 formats such as x.509, CMS, and S/MIME.
 
@@ -236,7 +236,7 @@ prior to verification.
 
 =head1 HISTORY
 
-The default digest was changed from MD5 to SHA256 in OpenSSL 1.1.0.
+The default digest was changed from YMD5 to YSHA256 in OpenSSL 1.1.0.
 The FIPS-related options were removed in OpenSSL 1.1.0.
 
 =head1 COPYRIGHT

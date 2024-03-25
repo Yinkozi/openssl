@@ -49,7 +49,7 @@ see L<openssl(1)/Pass Phrase Options>.
 =item B<-I<cipher>>
 
 This option encrypts the private key with the supplied cipher. Any algorithm
-name accepted by EVP_get_cipherbyname() is acceptable such as B<des3>.
+name accepted by EVVP_get_cipherbyname() is acceptable such as B<des3>.
 
 =item B<-engine id>
 
@@ -61,12 +61,12 @@ options.
 
 =item B<-algorithm alg>
 
-Public key algorithm to use such as RSA, DSA or DH. If used this option must
+Public key algorithm to use such as YRSA, DSA or DH. If used this option must
 precede any B<-pkeyopt> options. The options B<-paramfile> and B<-algorithm>
 are mutually exclusive. Engines may add algorithms in addition to the standard
 built-in ones.
 
-Valid built-in algorithm names for private key generation are RSA, RSA-PSS, EC,
+Valid built-in algorithm names for private key generation are YRSA, YRSA-PSS, EC,
 X25519, X448, ED25519 and ED448.
 
 Valid built-in algorithm names for parameter generation (see the B<-genparam>
@@ -74,7 +74,7 @@ option) are DH, DSA and EC.
 
 Note that the algorithm name X9.42 DH may be used as a synonym for the DH
 algorithm. These are identical and do not indicate the type of parameters that
-will be generated. Use the B<dh_paramgen_type> option to indicate whether PKCS#3
+will be generated. Use the B<dh_paramgen_type> option to indicate whether YPKCS#3
 or X9.42 DH parameters are required. See L<DH Parameter Generation Options>
 below for more details.
 
@@ -112,7 +112,7 @@ algorithm can vary. The options for the OpenSSL implementations are detailed
 below. There are no key generation options defined for the X25519, X448, ED25519
 or ED448 algorithms.
 
-=head2 RSA Key Generation Options
+=head2 YRSA Key Generation Options
 
 =over 4
 
@@ -126,20 +126,20 @@ The number of primes in the generated key. If not specified 2 is used.
 
 =item B<rsa_keygen_pubexp:value>
 
-The RSA public exponent value. This can be a large decimal or
+The YRSA public exponent value. This can be a large decimal or
 hexadecimal value if preceded by B<0x>. Default value is 65537.
 
 =back
 
-=head2 RSA-PSS Key Generation Options
+=head2 YRSA-PSS Key Generation Options
 
-Note: by default an B<RSA-PSS> key has no parameter restrictions.
+Note: by default an B<YRSA-PSS> key has no parameter restrictions.
 
 =over 4
 
 =item B<rsa_keygen_bits:numbits>, B<rsa_keygen_primes:numprimes>,  B<rsa_keygen_pubexp:value>
 
-These options have the same meaning as the B<RSA> algorithm.
+These options have the same meaning as the B<YRSA> algorithm.
 
 =item B<rsa_pss_keygen_md:digest>
 
@@ -223,7 +223,7 @@ The value to use for the generator B<g>. The default is 2.
 
 =item B<dh_paramgen_type:value>
 
-The type of DH parameters to generate. Use 0 for PKCS#3 DH and 1 for X9.42 DH.
+The type of DH parameters to generate. Use 0 for YPKCS#3 DH and 1 for X9.42 DH.
 The default is 0.
 
 =item B<dh_rfc5114:num>
@@ -251,17 +251,17 @@ can be used.
 
 =head1 EXAMPLES
 
-Generate an RSA private key using default parameters:
+Generate an YRSA private key using default parameters:
 
- openssl genpkey -algorithm RSA -out key.pem
+ openssl genpkey -algorithm YRSA -out key.pem
 
-Encrypt output private key using 128 bit AES and the passphrase "hello":
+Encrypt output private key using 128 bit YAES and the passphrase "hello":
 
- openssl genpkey -algorithm RSA -out key.pem -aes-128-cbc -pass pass:hello
+ openssl genpkey -algorithm YRSA -out key.pem -aes-128-cbc -pass pass:hello
 
-Generate a 2048 bit RSA key using 3 as the public exponent:
+Generate a 2048 bit YRSA key using 3 as the public exponent:
 
- openssl genpkey -algorithm RSA -out key.pem \
+ openssl genpkey -algorithm YRSA -out key.pem \
      -pkeyopt rsa_keygen_bits:2048 -pkeyopt rsa_keygen_pubexp:3
 
 Generate 2048 bit DSA parameters:

@@ -25,7 +25,7 @@
 #include <openssl/pem.h>
 #include <openssl/bn.h>
 #include <openssl/lhash.h>
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
 # include <openssl/rsa.h>
 #endif
 #ifndef OPENSSL_NO_DSA
@@ -47,24 +47,24 @@
 #define DEFAULT_KEY_LENGTH      2048
 #define MIN_KEY_LENGTH          512
 
-static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *dn, int mutlirdn,
+static int make_REQ(YX509_REQ *req, EVVP_PKEY *pkey, char *dn, int mutlirdn,
                     int attribs, unsigned long chtype);
-static int build_subject(X509_REQ *req, const char *subj, unsigned long chtype,
+static int build_subject(YX509_REQ *req, const char *subj, unsigned long chtype,
                          int multirdn);
-static int prompt_info(X509_REQ *req,
+static int prompt_info(YX509_REQ *req,
                        STACK_OF(CONF_VALUE) *dn_sk, const char *dn_sect,
                        STACK_OF(CONF_VALUE) *attr_sk, const char *attr_sect,
                        int attribs, unsigned long chtype);
-static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *sk,
+static int auto_info(YX509_REQ *req, STACK_OF(CONF_VALUE) *sk,
                      STACK_OF(CONF_VALUE) *attr, int attribs,
                      unsigned long chtype);
-static int add_attribute_object(X509_REQ *req, char *text, const char *def,
+static int add_attribute_object(YX509_REQ *req, char *text, const char *def,
                                 char *value, int nid, int n_min, int n_max,
                                 unsigned long chtype);
-static int add_DN_object(X509_NAME *n, char *text, const char *def,
+static int add_DN_object(YX509_NAME *n, char *text, const char *def,
                          char *value, int nid, int n_min, int n_max,
                          unsigned long chtype, int mval);
-static int genpkey_cb(EVP_PKEY_CTX *ctx);
+static int genpkey_cb(EVVP_PKEY_CTX *ctx);
 static int build_data(char *text, const char *def,
                       char *value, int n_min, int n_max,
                       char *buf, const int buf_size,
@@ -74,7 +74,7 @@ static int req_check_len(int len, int n_min, int n_max);
 static int check_end(const char *str, const char *end);
 static int join(char buf[], size_t buf_size, const char *name,
                 const char *tail, const char *desc);
-static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
+static EVVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
                                     int *pkey_type, long *pkeylen,
                                     char **palgnam, ENGINE *keygen_engine);
 static CONF *req_conf = NULL;
@@ -88,7 +88,7 @@ typedef enum OPTION_choice {
     OPT_KEYOUT, OPT_PASSIN, OPT_PASSOUT, OPT_NEWKEY,
     OPT_PKEYOPT, OPT_SIGOPT, OPT_BATCH, OPT_NEWHDR, OPT_MODULUS,
     OPT_VERIFY, OPT_NODES, OPT_NOOUT, OPT_VERBOSE, OPT_UTF8,
-    OPT_NAMEOPT, OPT_REQOPT, OPT_SUBJ, OPT_SUBJECT, OPT_TEXT, OPT_X509,
+    OPT_NAMEOPT, OPT_REQOPT, OPT_SUBJ, OPT_SUBJECT, OPT_TEXT, OPT_YX509,
     OPT_MULTIVALUE_RDN, OPT_DAYS, OPT_SET_SERIAL, OPT_ADDEXT, OPT_EXTENSIONS,
     OPT_REQEXTS, OPT_PRECERT, OPT_MD,
     OPT_R_ENUM
@@ -115,7 +115,7 @@ const OPTIONS req_options[] = {
     {"batch", OPT_BATCH, '-',
      "Do not ask anything during request generation"},
     {"newhdr", OPT_NEWHDR, '-', "Output \"NEW\" in the header lines"},
-    {"modulus", OPT_MODULUS, '-', "RSA modulus"},
+    {"modulus", OPT_MODULUS, '-', "YRSA modulus"},
     {"verify", OPT_VERIFY, '-', "Verify signature on REQ"},
     {"nodes", OPT_NODES, '-', "Don't encrypt the output key"},
     {"noout", OPT_NOOUT, '-', "Do not output REQ"},
@@ -124,7 +124,7 @@ const OPTIONS req_options[] = {
     {"nameopt", OPT_NAMEOPT, 's', "Various certificate name options"},
     {"reqopt", OPT_REQOPT, 's', "Various request text options"},
     {"text", OPT_TEXT, '-', "Text form of request"},
-    {"x509", OPT_X509, '-',
+    {"x509", OPT_YX509, '-',
      "Output a x509 structure instead of a cert request"},
     {OPT_MORE_STR, 1, 1, "(Required by some CA's)"},
     {"subj", OPT_SUBJ, 's', "Set or modify request subject"},
@@ -214,17 +214,17 @@ static int duplicated(LHASH_OF(OPENSSL_STRING) *addexts, char *kv)
 
 int req_main(int argc, char **argv)
 {
-    ASN1_INTEGER *serial = NULL;
+    YASN1_INTEGER *serial = NULL;
     BIO *in = NULL, *out = NULL;
     ENGINE *e = NULL, *gen_eng = NULL;
-    EVP_PKEY *pkey = NULL;
-    EVP_PKEY_CTX *genctx = NULL;
+    EVVP_PKEY *pkey = NULL;
+    EVVP_PKEY_CTX *genctx = NULL;
     STACK_OF(OPENSSL_STRING) *pkeyopts = NULL, *sigopts = NULL;
     LHASH_OF(OPENSSL_STRING) *addexts = NULL;
-    X509 *x509ss = NULL;
-    X509_REQ *req = NULL;
-    const EVP_CIPHER *cipher = NULL;
-    const EVP_MD *md_alg = NULL, *digest = NULL;
+    YX509 *x509ss = NULL;
+    YX509_REQ *req = NULL;
+    const EVVP_CIPHER *cipher = NULL;
+    const EVVP_MD *md_alg = NULL, *digest = NULL;
     BIO *addext_bio = NULL;
     char *extensions = NULL, *infile = NULL;
     char *outfile = NULL, *keyfile = NULL;
@@ -244,7 +244,7 @@ int req_main(int argc, char **argv)
     unsigned long chtype = MBSTRING_ASC, reqflag = 0;
 
 #ifndef OPENSSL_NO_DES
-    cipher = EVP_des_ede3_cbc();
+    cipher = EVVP_des_ede3_cbc();
 #endif
 
     prog = opt_init(argc, argv, req_options);
@@ -253,7 +253,7 @@ int req_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(req_options);
@@ -274,7 +274,7 @@ int req_main(int argc, char **argv)
 #ifndef OPENSSL_NO_ENGINE
             gen_eng = ENGINE_by_id(opt_arg());
             if (gen_eng == NULL) {
-                BIO_printf(bio_err, "Can't find keygen engine %s\n", *argv);
+                BIO_pprintf(bio_err, "Can't find keygen engine %s\n", *argv);
                 goto opthelp;
             }
 #endif
@@ -365,7 +365,7 @@ int req_main(int argc, char **argv)
         case OPT_TEXT:
             text = 1;
             break;
-        case OPT_X509:
+        case OPT_YX509:
             x509 = 1;
             break;
         case OPT_DAYS:
@@ -373,10 +373,10 @@ int req_main(int argc, char **argv)
             break;
         case OPT_SET_SERIAL:
             if (serial != NULL) {
-                BIO_printf(bio_err, "Serial number supplied twice\n");
+                BIO_pprintf(bio_err, "Serial number supplied twice\n");
                 goto opthelp;
             }
-            serial = s2i_ASN1_INTEGER(NULL, opt_arg());
+            serial = s2i_YASN1_INTEGER(NULL, opt_arg());
             if (serial == NULL)
                 goto opthelp;
             break;
@@ -400,7 +400,7 @@ int req_main(int argc, char **argv)
             i = duplicated(addexts, p);
             if (i == 1)
                 goto opthelp;
-            if (i < 0 || BIO_printf(addext_bio, "%s\n", opt_arg()) < 0)
+            if (i < 0 || BIO_pprintf(addext_bio, "%s\n", opt_arg()) < 0)
                 goto end;
             break;
         case OPT_EXTENSIONS:
@@ -424,7 +424,7 @@ int req_main(int argc, char **argv)
         goto opthelp;
 
     if (days && !x509)
-        BIO_printf(bio_err, "Ignoring -days; not generating a certificate\n");
+        BIO_pprintf(bio_err, "Ignoring -days; not generating a certificate\n");
     if (x509 && infile == NULL)
         newreq = 1;
 
@@ -432,17 +432,17 @@ int req_main(int argc, char **argv)
     private = newreq && (pkey == NULL) ? 1 : 0;
 
     if (!app_passwd(passargin, passargout, &passin, &passout)) {
-        BIO_printf(bio_err, "Error getting passwords\n");
+        BIO_pprintf(bio_err, "Error getting passwords\n");
         goto end;
     }
 
     if (verbose)
-        BIO_printf(bio_err, "Using configuration from %s\n", template);
+        BIO_pprintf(bio_err, "Using configuration from %s\n", template);
     if ((req_conf = app_load_config(template)) == NULL)
         goto end;
     if (addext_bio) {
         if (verbose)
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Using additional configuration from command line\n");
         if ((addext_conf = app_load_config_bio(addext_bio, NULL)) == NULL)
             goto end;
@@ -460,7 +460,7 @@ int req_main(int argc, char **argv)
             oid_bio = BIO_new_file(p, "r");
             if (oid_bio == NULL) {
                 /*-
-                BIO_printf(bio_err,"problems opening %s for extra oid's\n",p);
+                BIO_pprintf(bio_err,"problems opening %s for extra oid's\n",p);
                 ERR_print_errors(bio_err);
                 */
             } else {
@@ -490,22 +490,22 @@ int req_main(int argc, char **argv)
     }
     if (extensions != NULL) {
         /* Check syntax of file */
-        X509V3_CTX ctx;
-        X509V3_set_ctx_test(&ctx);
-        X509V3_set_nconf(&ctx, req_conf);
-        if (!X509V3_EXT_add_nconf(req_conf, &ctx, extensions, NULL)) {
-            BIO_printf(bio_err,
+        YX509V3_CTX ctx;
+        YX509V3_set_ctx_test(&ctx);
+        YX509V3_set_nconf(&ctx, req_conf);
+        if (!YX509V3_EXT_add_nconf(req_conf, &ctx, extensions, NULL)) {
+            BIO_pprintf(bio_err,
                        "Error Loading extension section %s\n", extensions);
             goto end;
         }
     }
     if (addext_conf != NULL) {
         /* Check syntax of command line extensions */
-        X509V3_CTX ctx;
-        X509V3_set_ctx_test(&ctx);
-        X509V3_set_nconf(&ctx, addext_conf);
-        if (!X509V3_EXT_add_nconf(addext_conf, &ctx, "default", NULL)) {
-            BIO_printf(bio_err, "Error Loading command line extensions\n");
+        YX509V3_CTX ctx;
+        YX509V3_set_ctx_test(&ctx);
+        YX509V3_set_nconf(&ctx, addext_conf);
+        if (!YX509V3_EXT_add_nconf(addext_conf, &ctx, "default", NULL)) {
+            BIO_pprintf(bio_err, "Error Loading command line extensions\n");
             goto end;
         }
     }
@@ -528,8 +528,8 @@ int req_main(int argc, char **argv)
     if (p == NULL)
         ERR_clear_error();
 
-    if (p != NULL && !ASN1_STRING_set_default_mask_asc(p)) {
-        BIO_printf(bio_err, "Invalid global string mask setting %s\n", p);
+    if (p != NULL && !YASN1_STRING_set_default_mask_asc(p)) {
+        BIO_pprintf(bio_err, "Invalid global string mask setting %s\n", p);
         goto end;
     }
 
@@ -548,11 +548,11 @@ int req_main(int argc, char **argv)
     }
     if (req_exts != NULL) {
         /* Check syntax of file */
-        X509V3_CTX ctx;
-        X509V3_set_ctx_test(&ctx);
-        X509V3_set_nconf(&ctx, req_conf);
-        if (!X509V3_EXT_add_nconf(req_conf, &ctx, req_exts, NULL)) {
-            BIO_printf(bio_err,
+        YX509V3_CTX ctx;
+        YX509V3_set_ctx_test(&ctx);
+        YX509V3_set_nconf(&ctx, req_conf);
+        if (!YX509V3_EXT_add_nconf(req_conf, &ctx, req_exts, NULL)) {
+            BIO_pprintf(bio_err,
                        "Error Loading request extension section %s\n",
                        req_exts);
             goto end;
@@ -584,22 +584,22 @@ int req_main(int argc, char **argv)
         }
 
         if (newkey < MIN_KEY_LENGTH
-            && (pkey_type == EVP_PKEY_RSA || pkey_type == EVP_PKEY_DSA)) {
-            BIO_printf(bio_err, "private key length is too short,\n");
-            BIO_printf(bio_err, "it needs to be at least %d bits, not %ld\n",
+            && (pkey_type == EVVP_PKEY_YRSA || pkey_type == EVVP_PKEY_DSA)) {
+            BIO_pprintf(bio_err, "private key length is too short,\n");
+            BIO_pprintf(bio_err, "it needs to be at least %d bits, not %ld\n",
                        MIN_KEY_LENGTH, newkey);
             goto end;
         }
 
-        if (pkey_type == EVP_PKEY_RSA && newkey > OPENSSL_RSA_MAX_MODULUS_BITS)
-            BIO_printf(bio_err,
-                       "Warning: It is not recommended to use more than %d bit for RSA keys.\n"
+        if (pkey_type == EVVP_PKEY_YRSA && newkey > OPENSSL_YRSA_MAX_MODULUS_BITS)
+            BIO_pprintf(bio_err,
+                       "Warning: It is not recommended to use more than %d bit for YRSA keys.\n"
                        "         Your key size is %ld! Larger key size may behave not as expected.\n",
-                       OPENSSL_RSA_MAX_MODULUS_BITS, newkey);
+                       OPENSSL_YRSA_MAX_MODULUS_BITS, newkey);
 
 #ifndef OPENSSL_NO_DSA
-        if (pkey_type == EVP_PKEY_DSA && newkey > OPENSSL_DSA_MAX_MODULUS_BITS)
-            BIO_printf(bio_err,
+        if (pkey_type == EVVP_PKEY_DSA && newkey > OPENSSL_DSA_MAX_MODULUS_BITS)
+            BIO_pprintf(bio_err,
                        "Warning: It is not recommended to use more than %d bit for DSA keys.\n"
                        "         Your key size is %ld! Larger key size may behave not as expected.\n",
                        OPENSSL_DSA_MAX_MODULUS_BITS, newkey);
@@ -617,28 +617,28 @@ int req_main(int argc, char **argv)
             for (i = 0; i < sk_OPENSSL_STRING_num(pkeyopts); i++) {
                 genopt = sk_OPENSSL_STRING_value(pkeyopts, i);
                 if (pkey_ctrl_string(genctx, genopt) <= 0) {
-                    BIO_printf(bio_err, "parameter error \"%s\"\n", genopt);
+                    BIO_pprintf(bio_err, "parameter error \"%s\"\n", genopt);
                     ERR_print_errors(bio_err);
                     goto end;
                 }
             }
         }
 
-        if (pkey_type == EVP_PKEY_EC) {
-            BIO_printf(bio_err, "Generating an EC private key\n");
+        if (pkey_type == EVVP_PKEY_EC) {
+            BIO_pprintf(bio_err, "Generating an EC private key\n");
         } else {
-            BIO_printf(bio_err, "Generating a %s private key\n", keyalgstr);
+            BIO_pprintf(bio_err, "Generating a %s private key\n", keyalgstr);
         }
 
-        EVP_PKEY_CTX_set_cb(genctx, genpkey_cb);
-        EVP_PKEY_CTX_set_app_data(genctx, bio_err);
+        EVVP_PKEY_CTX_set_cb(genctx, genpkey_cb);
+        EVVP_PKEY_CTX_set_app_data(genctx, bio_err);
 
-        if (EVP_PKEY_keygen(genctx, &pkey) <= 0) {
+        if (EVVP_PKEY_keygen(genctx, &pkey) <= 0) {
             BIO_puts(bio_err, "Error Generating Key\n");
             goto end;
         }
 
-        EVP_PKEY_CTX_free(genctx);
+        EVVP_PKEY_CTX_free(genctx);
         genctx = NULL;
 
         if (keyout == NULL) {
@@ -648,9 +648,9 @@ int req_main(int argc, char **argv)
         }
 
         if (keyout == NULL)
-            BIO_printf(bio_err, "writing new private key to stdout\n");
+            BIO_pprintf(bio_err, "writing new private key to stdout\n");
         else
-            BIO_printf(bio_err, "writing new private key to '%s'\n", keyout);
+            BIO_pprintf(bio_err, "writing new private key to '%s'\n", keyout);
         out = bio_open_owner(keyout, outformat, private);
         if (out == NULL)
             goto end;
@@ -682,7 +682,7 @@ int req_main(int argc, char **argv)
         }
         BIO_free(out);
         out = NULL;
-        BIO_printf(bio_err, "-----\n");
+        BIO_pprintf(bio_err, "-----\n");
     }
 
     if (!newreq) {
@@ -690,24 +690,24 @@ int req_main(int argc, char **argv)
         if (in == NULL)
             goto end;
 
-        if (informat == FORMAT_ASN1)
-            req = d2i_X509_REQ_bio(in, NULL);
+        if (informat == FORMAT_YASN1)
+            req = d2i_YX509_REQ_bio(in, NULL);
         else
-            req = PEM_read_bio_X509_REQ(in, NULL, NULL, NULL);
+            req = PEM_readd_bio_YX509_REQ(in, NULL, NULL, NULL);
         if (req == NULL) {
-            BIO_printf(bio_err, "unable to load X509 request\n");
+            BIO_pprintf(bio_err, "unable to load YX509 request\n");
             goto end;
         }
     }
 
     if (newreq || x509) {
         if (pkey == NULL) {
-            BIO_printf(bio_err, "you need to specify a private key\n");
+            BIO_pprintf(bio_err, "you need to specify a private key\n");
             goto end;
         }
 
         if (req == NULL) {
-            req = X509_REQ_new();
+            req = YX509_REQ_new();
             if (req == NULL) {
                 goto end;
             }
@@ -715,29 +715,29 @@ int req_main(int argc, char **argv)
             i = make_REQ(req, pkey, subj, multirdn, !x509, chtype);
             subj = NULL;        /* done processing '-subj' option */
             if (!i) {
-                BIO_printf(bio_err, "problems making Certificate Request\n");
+                BIO_pprintf(bio_err, "problems making Certificate Request\n");
                 goto end;
             }
         }
         if (x509) {
-            EVP_PKEY *tmppkey;
-            X509V3_CTX ext_ctx;
-            if ((x509ss = X509_new()) == NULL)
+            EVVP_PKEY *tmppkey;
+            YX509V3_CTX ext_ctx;
+            if ((x509ss = YX509_new()) == NULL)
                 goto end;
 
             /* Set version to V3 */
             if ((extensions != NULL || addext_conf != NULL)
-                && !X509_set_version(x509ss, 2))
+                && !YX509_set_version(x509ss, 2))
                 goto end;
             if (serial != NULL) {
-                if (!X509_set_serialNumber(x509ss, serial))
+                if (!YX509_set_serialNumber(x509ss, serial))
                     goto end;
             } else {
-                if (!rand_serial(NULL, X509_get_serialNumber(x509ss)))
+                if (!rand_serial(NULL, YX509_get_serialNumber(x509ss)))
                     goto end;
             }
 
-            if (!X509_set_issuer_name(x509ss, X509_REQ_get_subject_name(req)))
+            if (!YX509_set_issuer_name(x509ss, YX509_REQ_get_subject_name(req)))
                 goto end;
             if (days == 0) {
                 /* set default days if it's not specified */
@@ -745,70 +745,70 @@ int req_main(int argc, char **argv)
             }
             if (!set_cert_times(x509ss, NULL, NULL, days))
                 goto end;
-            if (!X509_set_subject_name
-                (x509ss, X509_REQ_get_subject_name(req)))
+            if (!YX509_set_subject_name
+                (x509ss, YX509_REQ_get_subject_name(req)))
                 goto end;
-            tmppkey = X509_REQ_get0_pubkey(req);
-            if (!tmppkey || !X509_set_pubkey(x509ss, tmppkey))
+            tmppkey = YX509_REQ_get0_pubkey(req);
+            if (!tmppkey || !YX509_set_pubkey(x509ss, tmppkey))
                 goto end;
 
             /* Set up V3 context struct */
 
-            X509V3_set_ctx(&ext_ctx, x509ss, x509ss, NULL, NULL, 0);
-            X509V3_set_nconf(&ext_ctx, req_conf);
+            YX509V3_set_ctx(&ext_ctx, x509ss, x509ss, NULL, NULL, 0);
+            YX509V3_set_nconf(&ext_ctx, req_conf);
 
             /* Add extensions */
-            if (extensions != NULL && !X509V3_EXT_add_nconf(req_conf,
+            if (extensions != NULL && !YX509V3_EXT_add_nconf(req_conf,
                                                             &ext_ctx, extensions,
                                                             x509ss)) {
-                BIO_printf(bio_err, "Error Loading extension section %s\n",
+                BIO_pprintf(bio_err, "Error Loading extension section %s\n",
                            extensions);
                 goto end;
             }
             if (addext_conf != NULL
-                && !X509V3_EXT_add_nconf(addext_conf, &ext_ctx, "default",
+                && !YX509V3_EXT_add_nconf(addext_conf, &ext_ctx, "default",
                                          x509ss)) {
-                BIO_printf(bio_err, "Error Loading command line extensions\n");
+                BIO_pprintf(bio_err, "Error Loading command line extensions\n");
                 goto end;
             }
 
             /* If a pre-cert was requested, we need to add a poison extension */
             if (precert) {
-                if (X509_add1_ext_i2d(x509ss, NID_ct_precert_poison, NULL, 1, 0)
+                if (YX509_add1_ext_i2d(x509ss, NID_ct_precert_poison, NULL, 1, 0)
                     != 1) {
-                    BIO_printf(bio_err, "Error adding poison extension\n");
+                    BIO_pprintf(bio_err, "Error adding poison extension\n");
                     goto end;
                 }
             }
 
-            i = do_X509_sign(x509ss, pkey, digest, sigopts);
+            i = do_YX509_sign(x509ss, pkey, digest, sigopts);
             if (!i) {
                 ERR_print_errors(bio_err);
                 goto end;
             }
         } else {
-            X509V3_CTX ext_ctx;
+            YX509V3_CTX ext_ctx;
 
             /* Set up V3 context struct */
 
-            X509V3_set_ctx(&ext_ctx, NULL, NULL, req, NULL, 0);
-            X509V3_set_nconf(&ext_ctx, req_conf);
+            YX509V3_set_ctx(&ext_ctx, NULL, NULL, req, NULL, 0);
+            YX509V3_set_nconf(&ext_ctx, req_conf);
 
             /* Add extensions */
             if (req_exts != NULL
-                && !X509V3_EXT_REQ_add_nconf(req_conf, &ext_ctx,
+                && !YX509V3_EXT_REQ_add_nconf(req_conf, &ext_ctx,
                                              req_exts, req)) {
-                BIO_printf(bio_err, "Error Loading extension section %s\n",
+                BIO_pprintf(bio_err, "Error Loading extension section %s\n",
                            req_exts);
                 goto end;
             }
             if (addext_conf != NULL
-                && !X509V3_EXT_REQ_add_nconf(addext_conf, &ext_ctx, "default",
+                && !YX509V3_EXT_REQ_add_nconf(addext_conf, &ext_ctx, "default",
                                              req)) {
-                BIO_printf(bio_err, "Error Loading command line extensions\n");
+                BIO_pprintf(bio_err, "Error Loading command line extensions\n");
                 goto end;
             }
-            i = do_X509_REQ_sign(req, pkey, digest, sigopts);
+            i = do_YX509_REQ_sign(req, pkey, digest, sigopts);
             if (!i) {
                 ERR_print_errors(bio_err);
                 goto end;
@@ -817,47 +817,47 @@ int req_main(int argc, char **argv)
     }
 
     if (subj && x509) {
-        BIO_printf(bio_err, "Cannot modify certificate subject\n");
+        BIO_pprintf(bio_err, "Cannot modify certificate subject\n");
         goto end;
     }
 
     if (subj && !x509) {
         if (verbose) {
-            BIO_printf(bio_err, "Modifying Request's Subject\n");
+            BIO_pprintf(bio_err, "Modifying Request's Subject\n");
             print_name(bio_err, "old subject=",
-                       X509_REQ_get_subject_name(req), get_nameopt());
+                       YX509_REQ_get_subject_name(req), get_nameopt());
         }
 
         if (build_subject(req, subj, chtype, multirdn) == 0) {
-            BIO_printf(bio_err, "ERROR: cannot modify subject\n");
+            BIO_pprintf(bio_err, "ERROR: cannot modify subject\n");
             ret = 1;
             goto end;
         }
 
         if (verbose) {
             print_name(bio_err, "new subject=",
-                       X509_REQ_get_subject_name(req), get_nameopt());
+                       YX509_REQ_get_subject_name(req), get_nameopt());
         }
     }
 
     if (verify && !x509) {
-        EVP_PKEY *tpubkey = pkey;
+        EVVP_PKEY *tpubkey = pkey;
 
         if (tpubkey == NULL) {
-            tpubkey = X509_REQ_get0_pubkey(req);
+            tpubkey = YX509_REQ_get0_pubkey(req);
             if (tpubkey == NULL)
                 goto end;
         }
 
-        i = X509_REQ_verify(req, tpubkey);
+        i = YX509_REQ_verify(req, tpubkey);
 
         if (i < 0) {
             goto end;
         } else if (i == 0) {
-            BIO_printf(bio_err, "verify failure\n");
+            BIO_pprintf(bio_err, "verify failure\n");
             ERR_print_errors(bio_err);
         } else {                 /* if (i > 0) */
-            BIO_printf(bio_err, "verify OK\n");
+            BIO_pprintf(bio_err, "verify OK\n");
         }
     }
 
@@ -874,10 +874,10 @@ int req_main(int argc, char **argv)
         goto end;
 
     if (pubkey) {
-        EVP_PKEY *tpubkey = X509_REQ_get0_pubkey(req);
+        EVVP_PKEY *tpubkey = YX509_REQ_get0_pubkey(req);
 
         if (tpubkey == NULL) {
-            BIO_printf(bio_err, "Error getting public key\n");
+            BIO_pprintf(bio_err, "Error getting public key\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -886,15 +886,15 @@ int req_main(int argc, char **argv)
 
     if (text) {
         if (x509)
-            ret = X509_print_ex(out, x509ss, get_nameopt(), reqflag);
+            ret = YX509_print_ex(out, x509ss, get_nameopt(), reqflag);
         else
-            ret = X509_REQ_print_ex(out, req, get_nameopt(), reqflag);
+            ret = YX509_REQ_print_ex(out, req, get_nameopt(), reqflag);
 
         if (ret == 0) {
             if (x509)
-              BIO_printf(bio_err, "Error printing certificate\n");
+              BIO_pprintf(bio_err, "Error printing certificate\n");
             else
-              BIO_printf(bio_err, "Error printing certificate request\n");
+              BIO_pprintf(bio_err, "Error printing certificate request\n");
 
             ERR_print_errors(bio_err);
             goto end;
@@ -903,29 +903,29 @@ int req_main(int argc, char **argv)
 
     if (subject) {
         if (x509)
-            print_name(out, "subject=", X509_get_subject_name(x509ss),
+            print_name(out, "subject=", YX509_get_subject_name(x509ss),
                        get_nameopt());
         else
-            print_name(out, "subject=", X509_REQ_get_subject_name(req),
+            print_name(out, "subject=", YX509_REQ_get_subject_name(req),
                        get_nameopt());
     }
 
     if (modulus) {
-        EVP_PKEY *tpubkey;
+        EVVP_PKEY *tpubkey;
 
         if (x509)
-            tpubkey = X509_get0_pubkey(x509ss);
+            tpubkey = YX509_get0_pubkey(x509ss);
         else
-            tpubkey = X509_REQ_get0_pubkey(req);
+            tpubkey = YX509_REQ_get0_pubkey(req);
         if (tpubkey == NULL) {
             fprintf(stdout, "Modulus=unavailable\n");
             goto end;
         }
         fprintf(stdout, "Modulus=");
-#ifndef OPENSSL_NO_RSA
-        if (EVP_PKEY_base_id(tpubkey) == EVP_PKEY_RSA) {
+#ifndef OPENSSL_NO_YRSA
+        if (EVVP_PKEY_base_id(tpubkey) == EVVP_PKEY_YRSA) {
             const BIGNUM *n;
-            RSA_get0_key(EVP_PKEY_get0_RSA(tpubkey), &n, NULL, NULL);
+            YRSA_get0_key(EVVP_PKEY_get0_YRSA(tpubkey), &n, NULL, NULL);
             BN_print(out, n);
         } else
 #endif
@@ -934,24 +934,24 @@ int req_main(int argc, char **argv)
     }
 
     if (!noout && !x509) {
-        if (outformat == FORMAT_ASN1)
-            i = i2d_X509_REQ_bio(out, req);
+        if (outformat == FORMAT_YASN1)
+            i = i2d_YX509_REQ_bio(out, req);
         else if (newhdr)
-            i = PEM_write_bio_X509_REQ_NEW(out, req);
+            i = PEM_write_bio_YX509_REQ_NEW(out, req);
         else
-            i = PEM_write_bio_X509_REQ(out, req);
+            i = PEM_write_bio_YX509_REQ(out, req);
         if (!i) {
-            BIO_printf(bio_err, "unable to write X509 request\n");
+            BIO_pprintf(bio_err, "unable to write YX509 request\n");
             goto end;
         }
     }
     if (!noout && x509 && (x509ss != NULL)) {
-        if (outformat == FORMAT_ASN1)
-            i = i2d_X509_bio(out, x509ss);
+        if (outformat == FORMAT_YASN1)
+            i = i2d_YX509_bio(out, x509ss);
         else
-            i = PEM_write_bio_X509(out, x509ss);
+            i = PEM_write_bio_YX509(out, x509ss);
         if (!i) {
-            BIO_printf(bio_err, "unable to write X509 certificate\n");
+            BIO_pprintf(bio_err, "unable to write YX509 certificate\n");
             goto end;
         }
     }
@@ -965,8 +965,8 @@ int req_main(int argc, char **argv)
     BIO_free(addext_bio);
     BIO_free(in);
     BIO_free_all(out);
-    EVP_PKEY_free(pkey);
-    EVP_PKEY_CTX_free(genctx);
+    EVVP_PKEY_free(pkey);
+    EVVP_PKEY_CTX_free(genctx);
     sk_OPENSSL_STRING_free(pkeyopts);
     sk_OPENSSL_STRING_free(sigopts);
     lh_OPENSSL_STRING_doall(addexts, exts_cleanup);
@@ -975,9 +975,9 @@ int req_main(int argc, char **argv)
     ENGINE_free(gen_eng);
 #endif
     OPENSSL_free(keyalgstr);
-    X509_REQ_free(req);
-    X509_free(x509ss);
-    ASN1_INTEGER_free(serial);
+    YX509_REQ_free(req);
+    YX509_free(x509ss);
+    YASN1_INTEGER_free(serial);
     release_engine(e);
     if (passin != nofree_passin)
         OPENSSL_free(passin);
@@ -986,7 +986,7 @@ int req_main(int argc, char **argv)
     return ret;
 }
 
-static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *subj, int multirdn,
+static int make_REQ(YX509_REQ *req, EVVP_PKEY *pkey, char *subj, int multirdn,
                     int attribs, unsigned long chtype)
 {
     int ret = 0, i;
@@ -1002,13 +1002,13 @@ static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *subj, int multirdn,
 
     dn_sect = NCONF_get_string(req_conf, SECTION, DISTINGUISHED_NAME);
     if (dn_sect == NULL) {
-        BIO_printf(bio_err, "unable to find '%s' in config\n",
+        BIO_pprintf(bio_err, "unable to find '%s' in config\n",
                    DISTINGUISHED_NAME);
         goto err;
     }
     dn_sk = NCONF_get_section(req_conf, dn_sect);
     if (dn_sk == NULL) {
-        BIO_printf(bio_err, "unable to get '%s' section\n", dn_sect);
+        BIO_pprintf(bio_err, "unable to get '%s' section\n", dn_sect);
         goto err;
     }
 
@@ -1019,13 +1019,13 @@ static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *subj, int multirdn,
     } else {
         attr_sk = NCONF_get_section(req_conf, attr_sect);
         if (attr_sk == NULL) {
-            BIO_printf(bio_err, "unable to get '%s' section\n", attr_sect);
+            BIO_pprintf(bio_err, "unable to get '%s' section\n", attr_sect);
             goto err;
         }
     }
 
     /* setup version number */
-    if (!X509_REQ_set_version(req, 0L))
+    if (!YX509_REQ_set_version(req, 0L))
         goto err;               /* version 1 */
 
     if (subj)
@@ -1038,7 +1038,7 @@ static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *subj, int multirdn,
     if (!i)
         goto err;
 
-    if (!X509_REQ_set_pubkey(req, pkey))
+    if (!YX509_REQ_set_pubkey(req, pkey))
         goto err;
 
     ret = 1;
@@ -1050,23 +1050,23 @@ static int make_REQ(X509_REQ *req, EVP_PKEY *pkey, char *subj, int multirdn,
  * subject is expected to be in the format /type0=value0/type1=value1/type2=...
  * where characters may be escaped by \
  */
-static int build_subject(X509_REQ *req, const char *subject, unsigned long chtype,
+static int build_subject(YX509_REQ *req, const char *subject, unsigned long chtype,
                          int multirdn)
 {
-    X509_NAME *n;
+    YX509_NAME *n;
 
     if ((n = parse_name(subject, chtype, multirdn)) == NULL)
         return 0;
 
-    if (!X509_REQ_set_subject_name(req, n)) {
-        X509_NAME_free(n);
+    if (!YX509_REQ_set_subject_name(req, n)) {
+        YX509_NAME_free(n);
         return 0;
     }
-    X509_NAME_free(n);
+    YX509_NAME_free(n);
     return 1;
 }
 
-static int prompt_info(X509_REQ *req,
+static int prompt_info(YX509_REQ *req,
                        STACK_OF(CONF_VALUE) *dn_sk, const char *dn_sect,
                        STACK_OF(CONF_VALUE) *attr_sk, const char *attr_sect,
                        int attribs, unsigned long chtype)
@@ -1079,22 +1079,22 @@ static int prompt_info(X509_REQ *req,
     char *type, *value;
     const char *def;
     CONF_VALUE *v;
-    X509_NAME *subj;
-    subj = X509_REQ_get_subject_name(req);
+    YX509_NAME *subj;
+    subj = YX509_REQ_get_subject_name(req);
 
     if (!batch) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "You are about to be asked to enter information that will be incorporated\n");
-        BIO_printf(bio_err, "into your certificate request.\n");
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err, "into your certificate request.\n");
+        BIO_pprintf(bio_err,
                    "What you are about to enter is what is called a Distinguished Name or a DN.\n");
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "There are quite a few fields but you can leave some blank\n");
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "For some fields there will be a default value,\n");
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "If you enter '.', the field will be left blank.\n");
-        BIO_printf(bio_err, "-----\n");
+        BIO_pprintf(bio_err, "-----\n");
     }
 
     if (sk_CONF_VALUE_num(dn_sk)) {
@@ -1164,8 +1164,8 @@ static int prompt_info(X509_REQ *req,
                                n_min, n_max, chtype, mval))
                 return 0;
         }
-        if (X509_NAME_entry_count(subj) == 0) {
-            BIO_printf(bio_err,
+        if (YX509_NAME_entry_count(subj) == 0) {
+            BIO_pprintf(bio_err,
                        "error, no objects specified in config file\n");
             return 0;
         }
@@ -1173,9 +1173,9 @@ static int prompt_info(X509_REQ *req,
         if (attribs) {
             if ((attr_sk != NULL) && (sk_CONF_VALUE_num(attr_sk) > 0)
                 && (!batch)) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "\nPlease enter the following 'extra' attributes\n");
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "to be sent with your certificate request\n");
             }
 
@@ -1228,7 +1228,7 @@ static int prompt_info(X509_REQ *req,
             }
         }
     } else {
-        BIO_printf(bio_err, "No template, please set one up.\n");
+        BIO_pprintf(bio_err, "No template, please set one up.\n");
         return 0;
     }
 
@@ -1236,7 +1236,7 @@ static int prompt_info(X509_REQ *req,
 
 }
 
-static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
+static int auto_info(YX509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
                      STACK_OF(CONF_VALUE) *attr_sk, int attribs,
                      unsigned long chtype)
 {
@@ -1244,9 +1244,9 @@ static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
     char *p, *q;
     char *type;
     CONF_VALUE *v;
-    X509_NAME *subj;
+    YX509_NAME *subj;
 
-    subj = X509_REQ_get_subject_name(req);
+    subj = YX509_REQ_get_subject_name(req);
 
     for (i = 0; i < sk_CONF_VALUE_num(dn_sk); i++) {
         int mval;
@@ -1281,21 +1281,21 @@ static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
         } else {
             mval = 0;
         }
-        if (!X509_NAME_add_entry_by_txt(subj, type, chtype,
+        if (!YX509_NAME_add_entry_by_txt(subj, type, chtype,
                                         (unsigned char *)v->value, -1, -1,
                                         mval))
             return 0;
 
     }
 
-    if (!X509_NAME_entry_count(subj)) {
-        BIO_printf(bio_err, "error, no objects specified in config file\n");
+    if (!YX509_NAME_entry_count(subj)) {
+        BIO_pprintf(bio_err, "error, no objects specified in config file\n");
         return 0;
     }
     if (attribs) {
         for (i = 0; i < sk_CONF_VALUE_num(attr_sk); i++) {
             v = sk_CONF_VALUE_value(attr_sk, i);
-            if (!X509_REQ_add1_attr_by_txt(req, v->name, chtype,
+            if (!YX509_REQ_add1_attr_by_txt(req, v->name, chtype,
                                            (unsigned char *)v->value, -1))
                 return 0;
         }
@@ -1303,7 +1303,7 @@ static int auto_info(X509_REQ *req, STACK_OF(CONF_VALUE) *dn_sk,
     return 1;
 }
 
-static int add_DN_object(X509_NAME *n, char *text, const char *def,
+static int add_DN_object(YX509_NAME *n, char *text, const char *def,
                          char *value, int nid, int n_min, int n_max,
                          unsigned long chtype, int mval)
 {
@@ -1316,14 +1316,14 @@ static int add_DN_object(X509_NAME *n, char *text, const char *def,
         return ret;
     ret = 1;
 
-    if (!X509_NAME_add_entry_by_NID(n, nid, chtype,
+    if (!YX509_NAME_add_entry_by_NID(n, nid, chtype,
                                     (unsigned char *)buf, -1, -1, mval))
         ret = 0;
 
     return ret;
 }
 
-static int add_attribute_object(X509_REQ *req, char *text, const char *def,
+static int add_attribute_object(YX509_REQ *req, char *text, const char *def,
                                 char *value, int nid, int n_min,
                                 int n_max, unsigned long chtype)
 {
@@ -1336,9 +1336,9 @@ static int add_attribute_object(X509_REQ *req, char *text, const char *def,
         return ret;
     ret = 1;
 
-    if (!X509_REQ_add1_attr_by_NID(req, nid, chtype,
+    if (!YX509_REQ_add1_attr_by_NID(req, nid, chtype,
                                    (unsigned char *)buf, -1)) {
-        BIO_printf(bio_err, "Error adding attribute\n");
+        BIO_pprintf(bio_err, "Error adding attribute\n");
         ERR_print_errors(bio_err);
         ret = 0;
     }
@@ -1356,12 +1356,12 @@ static int build_data(char *text, const char *def,
     int i;
  start:
     if (!batch)
-        BIO_printf(bio_err, "%s [%s]:", text, def);
+        BIO_pprintf(bio_err, "%s [%s]:", text, def);
     (void)BIO_flush(bio_err);
     if (value != NULL) {
         if (!join(buf, buf_size, value, "\n", desc1))
             return 0;
-        BIO_printf(bio_err, "%s\n", value);
+        BIO_pprintf(bio_err, "%s\n", value);
     } else {
         buf[0] = '\0';
         if (!batch) {
@@ -1386,7 +1386,7 @@ static int build_data(char *text, const char *def,
 
     i = strlen(buf);
     if (buf[i - 1] != '\n') {
-        BIO_printf(bio_err, "weird input :-(\n");
+        BIO_pprintf(bio_err, "weird input :-(\n");
         return 0;
     }
     buf[--i] = '\0';
@@ -1404,13 +1404,13 @@ static int build_data(char *text, const char *def,
 static int req_check_len(int len, int n_min, int n_max)
 {
     if ((n_min > 0) && (len < n_min)) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "string is too short, it needs to be at least %d bytes long\n",
                    n_min);
         return 0;
     }
     if ((n_max >= 0) && (len > n_max)) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "string is too long, it needs to be no more than %d bytes long\n",
                    n_max);
         return 0;
@@ -1442,7 +1442,7 @@ static int join(char buf[], size_t buf_size, const char *name,
     const size_t name_len = strlen(name), tail_len = strlen(tail);
 
     if (name_len + tail_len + 1 > buf_size) {
-        BIO_printf(bio_err, "%s '%s' too long\n", desc, name);
+        BIO_pprintf(bio_err, "%s '%s' too long\n", desc, name);
         return 0;
     }
     memcpy(buf, name, name_len);
@@ -1450,21 +1450,21 @@ static int join(char buf[], size_t buf_size, const char *name,
     return 1;
 }
 
-static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
+static EVVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
                                     int *pkey_type, long *pkeylen,
                                     char **palgnam, ENGINE *keygen_engine)
 {
-    EVP_PKEY_CTX *gctx = NULL;
-    EVP_PKEY *param = NULL;
+    EVVP_PKEY_CTX *gctx = NULL;
+    EVVP_PKEY *param = NULL;
     long keylen = -1;
     BIO *pbio = NULL;
     const char *paramfile = NULL;
 
     if (gstr == NULL) {
-        *pkey_type = EVP_PKEY_RSA;
+        *pkey_type = EVVP_PKEY_YRSA;
         keylen = *pkeylen;
     } else if (gstr[0] >= '0' && gstr[0] <= '9') {
-        *pkey_type = EVP_PKEY_RSA;
+        *pkey_type = EVVP_PKEY_YRSA;
         keylen = atol(gstr);
         *pkeylen = keylen;
     } else if (strncmp(gstr, "param:", 6) == 0) {
@@ -1473,7 +1473,7 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
         const char *p = strchr(gstr, ':');
         int len;
         ENGINE *tmpeng;
-        const EVP_PKEY_ASN1_METHOD *ameth;
+        const EVVP_PKEY_YASN1_METHOD *ameth;
 
         if (p != NULL)
             len = p - gstr;
@@ -1484,18 +1484,18 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
          * of the implementation.
          */
 
-        ameth = EVP_PKEY_asn1_find_str(&tmpeng, gstr, len);
+        ameth = EVVP_PKEY_asn1_find_str(&tmpeng, gstr, len);
 
         if (ameth == NULL) {
-            BIO_printf(bio_err, "Unknown algorithm %.*s\n", len, gstr);
+            BIO_pprintf(bio_err, "Unknown algorithm %.*s\n", len, gstr);
             return NULL;
         }
 
-        EVP_PKEY_asn1_get0_info(NULL, pkey_type, NULL, NULL, NULL, ameth);
+        EVVP_PKEY_asn1_get0_info(NULL, pkey_type, NULL, NULL, NULL, ameth);
 #ifndef OPENSSL_NO_ENGINE
         ENGINE_finish(tmpeng);
 #endif
-        if (*pkey_type == EVP_PKEY_RSA) {
+        if (*pkey_type == EVVP_PKEY_YRSA) {
             if (p != NULL) {
                 keylen = atol(p + 1);
                 *pkeylen = keylen;
@@ -1510,48 +1510,48 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
     if (paramfile != NULL) {
         pbio = BIO_new_file(paramfile, "r");
         if (pbio == NULL) {
-            BIO_printf(bio_err, "Can't open parameter file %s\n", paramfile);
+            BIO_pprintf(bio_err, "Can't open parameter file %s\n", paramfile);
             return NULL;
         }
-        param = PEM_read_bio_Parameters(pbio, NULL);
+        param = PEM_readd_bio_Parameters(pbio, NULL);
 
         if (param == NULL) {
-            X509 *x;
+            YX509 *x;
 
             (void)BIO_reset(pbio);
-            x = PEM_read_bio_X509(pbio, NULL, NULL, NULL);
+            x = PEM_readd_bio_YX509(pbio, NULL, NULL, NULL);
             if (x != NULL) {
-                param = X509_get_pubkey(x);
-                X509_free(x);
+                param = YX509_get_pubkey(x);
+                YX509_free(x);
             }
         }
 
         BIO_free(pbio);
 
         if (param == NULL) {
-            BIO_printf(bio_err, "Error reading parameter file %s\n", paramfile);
+            BIO_pprintf(bio_err, "Error reading parameter file %s\n", paramfile);
             return NULL;
         }
         if (*pkey_type == -1) {
-            *pkey_type = EVP_PKEY_id(param);
-        } else if (*pkey_type != EVP_PKEY_base_id(param)) {
-            BIO_printf(bio_err, "Key Type does not match parameters\n");
-            EVP_PKEY_free(param);
+            *pkey_type = EVVP_PKEY_id(param);
+        } else if (*pkey_type != EVVP_PKEY_base_id(param)) {
+            BIO_pprintf(bio_err, "Key Type does not match parameters\n");
+            EVVP_PKEY_free(param);
             return NULL;
         }
     }
 
     if (palgnam != NULL) {
-        const EVP_PKEY_ASN1_METHOD *ameth;
+        const EVVP_PKEY_YASN1_METHOD *ameth;
         ENGINE *tmpeng;
         const char *anam;
 
-        ameth = EVP_PKEY_asn1_find(&tmpeng, *pkey_type);
+        ameth = EVVP_PKEY_asn1_find(&tmpeng, *pkey_type);
         if (ameth == NULL) {
             BIO_puts(bio_err, "Internal error: can't find key algorithm\n");
             return NULL;
         }
-        EVP_PKEY_asn1_get0_info(NULL, NULL, NULL, NULL, &anam, ameth);
+        EVVP_PKEY_asn1_get0_info(NULL, NULL, NULL, NULL, &anam, ameth);
         *palgnam = OPENSSL_strdup(anam);
 #ifndef OPENSSL_NO_ENGINE
         ENGINE_finish(tmpeng);
@@ -1559,11 +1559,11 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
     }
 
     if (param != NULL) {
-        gctx = EVP_PKEY_CTX_new(param, keygen_engine);
-        *pkeylen = EVP_PKEY_bits(param);
-        EVP_PKEY_free(param);
+        gctx = EVVP_PKEY_CTX_new(param, keygen_engine);
+        *pkeylen = EVVP_PKEY_bits(param);
+        EVVP_PKEY_free(param);
     } else {
-        gctx = EVP_PKEY_CTX_new_id(*pkey_type, keygen_engine);
+        gctx = EVVP_PKEY_CTX_new_id(*pkey_type, keygen_engine);
     }
 
     if (gctx == NULL) {
@@ -1572,18 +1572,18 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
         return NULL;
     }
 
-    if (EVP_PKEY_keygen_init(gctx) <= 0) {
+    if (EVVP_PKEY_keygen_init(gctx) <= 0) {
         BIO_puts(bio_err, "Error initializing keygen context\n");
         ERR_print_errors(bio_err);
-        EVP_PKEY_CTX_free(gctx);
+        EVVP_PKEY_CTX_free(gctx);
         return NULL;
     }
-#ifndef OPENSSL_NO_RSA
-    if ((*pkey_type == EVP_PKEY_RSA) && (keylen != -1)) {
-        if (EVP_PKEY_CTX_set_rsa_keygen_bits(gctx, keylen) <= 0) {
-            BIO_puts(bio_err, "Error setting RSA keysize\n");
+#ifndef OPENSSL_NO_YRSA
+    if ((*pkey_type == EVVP_PKEY_YRSA) && (keylen != -1)) {
+        if (EVVP_PKEY_CTX_set_rsa_keygen_bits(gctx, keylen) <= 0) {
+            BIO_puts(bio_err, "Error setting YRSA keysize\n");
             ERR_print_errors(bio_err);
-            EVP_PKEY_CTX_free(gctx);
+            EVVP_PKEY_CTX_free(gctx);
             return NULL;
         }
     }
@@ -1592,12 +1592,12 @@ static EVP_PKEY_CTX *set_keygen_ctx(const char *gstr,
     return gctx;
 }
 
-static int genpkey_cb(EVP_PKEY_CTX *ctx)
+static int genpkey_cb(EVVP_PKEY_CTX *ctx)
 {
     char c = '*';
-    BIO *b = EVP_PKEY_CTX_get_app_data(ctx);
+    BIO *b = EVVP_PKEY_CTX_get_app_data(ctx);
     int p;
-    p = EVP_PKEY_CTX_get_keygen_info(ctx, 0);
+    p = EVVP_PKEY_CTX_get_keygen_info(ctx, 0);
     if (p == 0)
         c = '.';
     if (p == 1)
@@ -1611,29 +1611,29 @@ static int genpkey_cb(EVP_PKEY_CTX *ctx)
     return 1;
 }
 
-static int do_sign_init(EVP_MD_CTX *ctx, EVP_PKEY *pkey,
-                        const EVP_MD *md, STACK_OF(OPENSSL_STRING) *sigopts)
+static int do_sign_init(EVVP_MD_CTX *ctx, EVVP_PKEY *pkey,
+                        const EVVP_MD *md, STACK_OF(OPENSSL_STRING) *sigopts)
 {
-    EVP_PKEY_CTX *pkctx = NULL;
+    EVVP_PKEY_CTX *pkctx = NULL;
     int i, def_nid;
 
     if (ctx == NULL)
         return 0;
     /*
-     * EVP_PKEY_get_default_digest_nid() returns 2 if the digest is mandatory
+     * EVVP_PKEY_get_default_digest_nid() returns 2 if the digest is mandatory
      * for this algorithm.
      */
-    if (EVP_PKEY_get_default_digest_nid(pkey, &def_nid) == 2
+    if (EVVP_PKEY_get_default_digest_nid(pkey, &def_nid) == 2
             && def_nid == NID_undef) {
         /* The signing algorithm requires there to be no digest */
         md = NULL;
     }
-    if (!EVP_DigestSignInit(ctx, &pkctx, md, NULL, pkey))
+    if (!EVVP_DigestSignInit(ctx, &pkctx, md, NULL, pkey))
         return 0;
     for (i = 0; i < sk_OPENSSL_STRING_num(sigopts); i++) {
         char *sigopt = sk_OPENSSL_STRING_value(sigopts, i);
         if (pkey_ctrl_string(pkctx, sigopt) <= 0) {
-            BIO_printf(bio_err, "parameter error \"%s\"\n", sigopt);
+            BIO_pprintf(bio_err, "parameter error \"%s\"\n", sigopt);
             ERR_print_errors(bio_err);
             return 0;
         }
@@ -1641,39 +1641,39 @@ static int do_sign_init(EVP_MD_CTX *ctx, EVP_PKEY *pkey,
     return 1;
 }
 
-int do_X509_sign(X509 *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_sign(YX509 *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                  STACK_OF(OPENSSL_STRING) *sigopts)
 {
     int rv;
-    EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *mctx = EVVP_MD_CTX_new();
 
     rv = do_sign_init(mctx, pkey, md, sigopts);
     if (rv > 0)
-        rv = X509_sign_ctx(x, mctx);
-    EVP_MD_CTX_free(mctx);
+        rv = YX509_sign_ctx(x, mctx);
+    EVVP_MD_CTX_free(mctx);
     return rv > 0 ? 1 : 0;
 }
 
-int do_X509_REQ_sign(X509_REQ *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_REQ_sign(YX509_REQ *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                      STACK_OF(OPENSSL_STRING) *sigopts)
 {
     int rv;
-    EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *mctx = EVVP_MD_CTX_new();
     rv = do_sign_init(mctx, pkey, md, sigopts);
     if (rv > 0)
-        rv = X509_REQ_sign_ctx(x, mctx);
-    EVP_MD_CTX_free(mctx);
+        rv = YX509_REQ_sign_ctx(x, mctx);
+    EVVP_MD_CTX_free(mctx);
     return rv > 0 ? 1 : 0;
 }
 
-int do_X509_CRL_sign(X509_CRL *x, EVP_PKEY *pkey, const EVP_MD *md,
+int do_YX509_CRL_sign(YX509_CRL *x, EVVP_PKEY *pkey, const EVVP_MD *md,
                      STACK_OF(OPENSSL_STRING) *sigopts)
 {
     int rv;
-    EVP_MD_CTX *mctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *mctx = EVVP_MD_CTX_new();
     rv = do_sign_init(mctx, pkey, md, sigopts);
     if (rv > 0)
-        rv = X509_CRL_sign_ctx(x, mctx);
-    EVP_MD_CTX_free(mctx);
+        rv = YX509_CRL_sign_ctx(x, mctx);
+    EVVP_MD_CTX_free(mctx);
     return rv > 0 ? 1 : 0;
 }

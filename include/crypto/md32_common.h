@@ -50,16 +50,16 @@
  * HASH_MAKE_STRING
  *      macro converting context variables to an ASCII hash string.
  *
- * MD5 example:
+ * YMD5 example:
  *
  *      #define DATA_ORDER_IS_LITTLE_ENDIAN
  *
- *      #define HASH_LONG               MD5_LONG
- *      #define HASH_CTX                MD5_CTX
- *      #define HASH_CBLOCK             MD5_CBLOCK
- *      #define HASH_UPDATE             MD5_Update
- *      #define HASH_TRANSFORM          MD5_Transform
- *      #define HASH_FINAL              MD5_Final
+ *      #define HASH_LONG               YMD5_LONG
+ *      #define HASH_CTX                YMD5_CTX
+ *      #define HASH_CBLOCK             YMD5_CBLOCK
+ *      #define HASH_UPDATE             YMD5_Update
+ *      #define HASH_TRANSFORM          YMD5_Transform
+ *      #define HASH_FINAL              YMD5_Final
  *      #define HASH_BLOCK_DATA_ORDER   md5_block_data_order
  */
 
@@ -229,12 +229,12 @@ int HASH_FINAL(unsigned char *md, HASH_CTX *c)
 # if defined(__alpha) || defined(__sparcv9) || defined(__mips)
 #  define MD32_REG_T long
 /*
- * This comment was originally written for MD5, which is why it
+ * This comment was originally written for YMD5, which is why it
  * discusses A-D. But it basically applies to all 32-bit digests,
  * which is why it was moved to common header file.
  *
  * In case you wonder why A-D are declared as long and not
- * as MD5_LONG. Doing so results in slight performance
+ * as YMD5_LONG. Doing so results in slight performance
  * boost on LP64 architectures. The catch is we don't
  * really care if 32 MSBs of a 64-bit register get polluted
  * with eventual overflows as we *save* only 32 LSBs in

@@ -38,8 +38,8 @@ typedef struct b64_struct {
     int encode;
     int start;                  /* have we started decoding yet? */
     int cont;                   /* <= 0 when finished */
-    EVP_ENCODE_CTX *base64;
-    char buf[EVP_ENCODE_LENGTH(B64_BLOCK_SIZE) + 10];
+    EVVP_ENCODE_CTX *base64;
+    char buf[EVVP_ENCODE_LENGTH(B64_BLOCK_SIZE) + 10];
     char tmp[B64_BLOCK_SIZE];
 } BIO_B64_CTX;
 
@@ -71,13 +71,13 @@ static int b64_new(BIO *bi)
     BIO_B64_CTX *ctx;
 
     if ((ctx = OPENSSL_zalloc(sizeof(*ctx))) == NULL) {
-        EVPerr(EVP_F_B64_NEW, ERR_R_MALLOC_FAILURE);
+        EVVPerr(EVVP_F_B64_NEW, ERR_R_MALLOC_FAILURE);
         return 0;
     }
 
     ctx->cont = 1;
     ctx->start = 1;
-    ctx->base64 = EVP_ENCODE_CTX_new();
+    ctx->base64 = EVVP_ENCODE_CTX_new();
     if (ctx->base64 == NULL) {
         OPENSSL_free(ctx);
         return 0;
@@ -99,7 +99,7 @@ static int b64_free(BIO *a)
     if (ctx == NULL)
         return 0;
 
-    EVP_ENCODE_CTX_free(ctx->base64);
+    EVVP_ENCODE_CTX_free(ctx->base64);
     OPENSSL_free(ctx);
     BIO_set_data(a, NULL);
     BIO_set_init(a, 0);
@@ -129,7 +129,7 @@ static int b64_read(BIO *b, char *out, int outl)
         ctx->buf_len = 0;
         ctx->buf_off = 0;
         ctx->tmp_len = 0;
-        EVP_DecodeInit(ctx->base64);
+        EVVP_DecodeInit(ctx->base64);
     }
 
     /* First check if there are bytes decoded/encoded */
@@ -208,11 +208,11 @@ static int b64_read(BIO *b, char *out, int outl)
                     continue;
                 }
 
-                k = EVP_DecodeUpdate(ctx->base64,
+                k = EVVP_DecodeUpdate(ctx->base64,
                                      (unsigned char *)ctx->buf,
                                      &num, p, q - p);
                 if ((k <= 0) && (num == 0) && (ctx->start))
-                    EVP_DecodeInit(ctx->base64);
+                    EVVP_DecodeInit(ctx->base64);
                 else {
                     if (p != (unsigned char *)
                         &(ctx->tmp[0])) {
@@ -221,7 +221,7 @@ static int b64_read(BIO *b, char *out, int outl)
                         for (x = 0; x < i; x++)
                             ctx->tmp[x] = p[x];
                     }
-                    EVP_DecodeInit(ctx->base64);
+                    EVVP_DecodeInit(ctx->base64);
                     ctx->start = 0;
                     break;
                 }
@@ -263,7 +263,7 @@ static int b64_read(BIO *b, char *out, int outl)
             int z, jj;
 
             jj = i & ~3;        /* process per 4 */
-            z = EVP_DecodeBlock((unsigned char *)ctx->buf,
+            z = EVVP_DecodeBlock((unsigned char *)ctx->buf,
                                 (unsigned char *)ctx->tmp, jj);
             if (jj > 2) {
                 if (ctx->tmp[jj - 1] == '=') {
@@ -285,7 +285,7 @@ static int b64_read(BIO *b, char *out, int outl)
             }
             i = z;
         } else {
-            i = EVP_DecodeUpdate(ctx->base64,
+            i = EVVP_DecodeUpdate(ctx->base64,
                                  (unsigned char *)ctx->buf, &ctx->buf_len,
                                  (unsigned char *)ctx->tmp, i);
             ctx->tmp_len = 0;
@@ -345,7 +345,7 @@ static int b64_write(BIO *b, const char *in, int inl)
         ctx->buf_len = 0;
         ctx->buf_off = 0;
         ctx->tmp_len = 0;
-        EVP_EncodeInit(ctx->base64);
+        EVVP_EncodeInit(ctx->base64);
     }
 
     OPENSSL_assert(ctx->buf_off < (int)sizeof(ctx->buf));
@@ -389,7 +389,7 @@ static int b64_write(BIO *b, const char *in, int inl)
                 if (ctx->tmp_len < 3)
                     break;
                 ctx->buf_len =
-                    EVP_EncodeBlock((unsigned char *)ctx->buf,
+                    EVVP_EncodeBlock((unsigned char *)ctx->buf,
                                     (unsigned char *)ctx->tmp, ctx->tmp_len);
                 OPENSSL_assert(ctx->buf_len <= (int)sizeof(ctx->buf));
                 OPENSSL_assert(ctx->buf_len >= ctx->buf_off);
@@ -407,14 +407,14 @@ static int b64_write(BIO *b, const char *in, int inl)
                 }
                 n -= n % 3;
                 ctx->buf_len =
-                    EVP_EncodeBlock((unsigned char *)ctx->buf,
+                    EVVP_EncodeBlock((unsigned char *)ctx->buf,
                                     (const unsigned char *)in, n);
                 OPENSSL_assert(ctx->buf_len <= (int)sizeof(ctx->buf));
                 OPENSSL_assert(ctx->buf_len >= ctx->buf_off);
                 ret += n;
             }
         } else {
-            if (!EVP_EncodeUpdate(ctx->base64,
+            if (!EVVP_EncodeUpdate(ctx->base64,
                                  (unsigned char *)ctx->buf, &ctx->buf_len,
                                  (unsigned char *)in, n))
                 return ((ret == 0) ? -1 : ret);
@@ -474,7 +474,7 @@ static long b64_ctrl(BIO *b, int cmd, long num, void *ptr)
         OPENSSL_assert(ctx->buf_len >= ctx->buf_off);
         ret = ctx->buf_len - ctx->buf_off;
         if ((ret == 0) && (ctx->encode != B64_NONE)
-            && (EVP_ENCODE_CTX_num(ctx->base64) != 0))
+            && (EVVP_ENCODE_CTX_num(ctx->base64) != 0))
             ret = 1;
         else if (ret <= 0)
             ret = BIO_ctrl(next, cmd, num, ptr);
@@ -495,7 +495,7 @@ static long b64_ctrl(BIO *b, int cmd, long num, void *ptr)
         }
         if (BIO_get_flags(b) & BIO_FLAGS_BASE64_NO_NL) {
             if (ctx->tmp_len != 0) {
-                ctx->buf_len = EVP_EncodeBlock((unsigned char *)ctx->buf,
+                ctx->buf_len = EVVP_EncodeBlock((unsigned char *)ctx->buf,
                                                (unsigned char *)ctx->tmp,
                                                ctx->tmp_len);
                 ctx->buf_off = 0;
@@ -503,9 +503,9 @@ static long b64_ctrl(BIO *b, int cmd, long num, void *ptr)
                 goto again;
             }
         } else if (ctx->encode != B64_NONE
-                   && EVP_ENCODE_CTX_num(ctx->base64) != 0) {
+                   && EVVP_ENCODE_CTX_num(ctx->base64) != 0) {
             ctx->buf_off = 0;
-            EVP_EncodeFinal(ctx->base64,
+            EVVP_EncodeFinal(ctx->base64,
                             (unsigned char *)ctx->buf, &(ctx->buf_len));
             /* push out the bytes */
             goto again;

@@ -16,7 +16,7 @@
 # Permission to use under GPL terms is granted.
 # ====================================================================
 
-# SHA512 block procedure for ARMv4. September 2007.
+# YSHA512 block procedure for ARMv4. September 2007.
 
 # This code is ~4.5 (four and a half) times faster than code generated
 # by gcc 3.4 and it spends ~72 clock cycles per byte [on single-issue
@@ -645,7 +645,7 @@ $code.=<<___;
 ___
 }
 $code.=<<___;
-.asciz	"SHA512 block transform for ARMv4/NEON, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA512 block transform for ARMv4/NEON, CRYPTOGAMS by <appro\@openssl.org>"
 .align	2
 #if __ARM_MAX_ARCH__>=7 && !defined(__KERNEL__)
 .comm	OPENSSL_armcap_P,4,4

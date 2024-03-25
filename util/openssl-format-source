@@ -126,10 +126,10 @@ do
 	      -e 's/^\/\* ((Copyright|=|----).*)$/\/*-$1/;' \
 	      -e 's/^((DECLARE|IMPLEMENT)_.*)$/\/**INDENT-OFF**\/\n$1\n\/**INDENT-ON**\//;' \
 	      -e 's/^([ \t]*(make_dh|make_dh_bn|make_rfc5114_td)\(.*\)[ \t,]*)$/\/**INDENT-OFF**\/\n$1\n\/**INDENT-ON**\//;' \
-	      -e 's/^(ASN1_ADB_TEMPLATE\(.*)$/\/**INDENT-OFF**\/\n$1\n\/**INDENT-ON**\//;' \
-	      -e 's/^((ASN1|ADB)_.*_(end|END)\(.*[\){=,;]+[ \t]*)$/$1\n\/**INDENT-ON**\//;' \
-	      -e '/ASN1_(ITEM_ref|ITEM_ptr|ITEM_rptr|PCTX)/ || s/^((ASN1|ADB)_[^\*]*[){=,]+[ \t]*)$/\/**INDENT-OFF**\/\n$1/;' \
-	      -e 's/^(} (ASN1|ADB)_[^\*]*[\){=,;]+)$/$1\n\/**INDENT-ON**\//;' \
+	      -e 's/^(YASN1_ADB_TEMPLATE\(.*)$/\/**INDENT-OFF**\/\n$1\n\/**INDENT-ON**\//;' \
+	      -e 's/^((YASN1|ADB)_.*_(end|END)\(.*[\){=,;]+[ \t]*)$/$1\n\/**INDENT-ON**\//;' \
+	      -e '/YASN1_(ITEM_ref|ITEM_ptr|ITEM_rptr|PCTX)/ || s/^((YASN1|ADB)_[^\*]*[){=,]+[ \t]*)$/\/**INDENT-OFF**\/\n$1/;' \
+	      -e 's/^(} (YASN1|ADB)_[^\*]*[\){=,;]+)$/$1\n\/**INDENT-ON**\//;' \
 	      | \
 	      $DEBUG $INDENT $INDENT_ARGS | \
 	      perl -np \

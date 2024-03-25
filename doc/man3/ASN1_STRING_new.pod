@@ -2,39 +2,39 @@
 
 =head1 NAME
 
-ASN1_STRING_new, ASN1_STRING_type_new, ASN1_STRING_free -
-ASN1_STRING allocation functions
+YASN1_STRING_new, YASN1_STRING_type_new, YASN1_STRING_free -
+YASN1_STRING allocation functions
 
 =head1 SYNOPSIS
 
  #include <openssl/asn1.h>
 
- ASN1_STRING * ASN1_STRING_new(void);
- ASN1_STRING * ASN1_STRING_type_new(int type);
- void ASN1_STRING_free(ASN1_STRING *a);
+ YASN1_STRING * YASN1_STRING_new(void);
+ YASN1_STRING * YASN1_STRING_type_new(int type);
+ void YASN1_STRING_free(YASN1_STRING *a);
 
 =head1 DESCRIPTION
 
-ASN1_STRING_new() returns an allocated B<ASN1_STRING> structure. Its type
+YASN1_STRING_new() returns an allocated B<YASN1_STRING> structure. Its type
 is undefined.
 
-ASN1_STRING_type_new() returns an allocated B<ASN1_STRING> structure of
+YASN1_STRING_type_new() returns an allocated B<YASN1_STRING> structure of
 type B<type>.
 
-ASN1_STRING_free() frees up B<a>.
+YASN1_STRING_free() frees up B<a>.
 If B<a> is NULL nothing is done.
 
 =head1 NOTES
 
-Other string types call the B<ASN1_STRING> functions. For example
-ASN1_OCTET_STRING_new() calls ASN1_STRING_type(V_ASN1_OCTET_STRING).
+Other string types call the B<YASN1_STRING> functions. For example
+YASN1_OCTET_STRING_new() calls YASN1_STRING_type(V_YASN1_OCTET_STRING).
 
 =head1 RETURN VALUES
 
-ASN1_STRING_new() and ASN1_STRING_type_new() return a valid
-ASN1_STRING structure or B<NULL> if an error occurred.
+YASN1_STRING_new() and YASN1_STRING_type_new() return a valid
+YASN1_STRING structure or B<NULL> if an error occurred.
 
-ASN1_STRING_free() does not return a value.
+YASN1_STRING_free() does not return a value.
 
 =head1 SEE ALSO
 

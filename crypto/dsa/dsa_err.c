@@ -59,7 +59,7 @@ static const ERR_STRING_DATA DSA_str_reasons[] = {
     {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_PARAMETER_ENCODING_ERROR),
     "parameter encoding error"},
     {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_Q_NOT_PRIME), "q not prime"},
-    {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_SEED_LEN_SMALL),
+    {ERR_PACK(ERR_LIB_DSA, 0, DSA_R_YSEED_LEN_SMALL),
     "seed_len is less than the length of q"},
     {0, NULL}
 };

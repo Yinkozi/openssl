@@ -25,7 +25,7 @@ significant:
 
 =item bit #19 denoting availability of CLFLUSH instruction;
 
-=item bit #20, reserved by Intel, is used to choose among RC4 code paths;
+=item bit #20, reserved by Intel, is used to choose among YRC4 code paths;
 
 =item bit #23 denoting MMX support;
 
@@ -48,7 +48,7 @@ cores with shared cache;
 
 =item bit #54 denoting availability of MOVBE instruction;
 
-=item bit #57 denoting AES-NI instruction set extension;
+=item bit #57 denoting YAES-NI instruction set extension;
 
 =item bit #58, XSAVE bit, lack of which in combination with MOVBE is used
 to identify Atom Silvermont core;
@@ -81,7 +81,7 @@ variable" terms. The truth is that it's not copied from CPUID output
 verbatim, but is adjusted to reflect whether or not the data cache is
 actually shared between logical cores. This in turn affects the decision
 on whether or not expensive countermeasures against cache-timing attacks
-are applied, most notably in AES assembler module.
+are applied, most notably in YAES assembler module.
 
 The capability vector is further extended with EBX value returned by
 CPUID with EAX=7 and ECX=0 as input. Following bits are significant:
@@ -97,7 +97,7 @@ and RORX;
 
 =item bit #64+16 denoting availability of AVX512F extension;
 
-=item bit #64+18 denoting availability of RDSEED instruction;
+=item bit #64+18 denoting availability of RDYSEED instruction;
 
 =item bit #64+19 denoting availability of ADCX and ADOX instructions;
 
@@ -110,7 +110,7 @@ aka AVX512IFMA extension;
 
 =item bit #64+31 denoting availability of AVX512VL extension;
 
-=item bit #64+41 denoting availability of VAES extension;
+=item bit #64+41 denoting availability of VYAES extension;
 
 =item bit #64+42 denoting availability of VPCLMULQDQ extension;
 
@@ -123,7 +123,7 @@ extensions.
 
 It should be noted that whether or not some of the most "fancy"
 extension code paths are actually assembled depends on current assembler
-version. Base minimum of AES-NI/PCLMULQDQ, SSSE3 and SHA extension code
+version. Base minimum of YAES-NI/PCLMULQDQ, SSSE3 and SHA extension code
 paths are always assembled. Apart from that, minimum assembler version
 requirements are summarized in below table:
 
@@ -134,7 +134,7 @@ requirements are summarized in below table:
    ADCX/ADOX   | 2.23   | 2.10   | 3.3
    AVX512      | 2.25   | 2.11.8 | see NOTES
    AVX512IFMA  | 2.26   | 2.11.8 | see NOTES
-   VAES        | 2.30   | 2.13.3 |
+   VYAES        | 2.30   | 2.13.3 |
 
 =head1 NOTES
 

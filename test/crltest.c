@@ -71,22 +71,22 @@ static const char *kCRLTestLeaf[] = {
 };
 
 static const char *kBasicCRL[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBpzCBkAIBATANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzESMBAGA1UECgwJ\n",
     "Qm9yaW5nU1NMFw0xNjA5MjYxNTEwNTVaFw0xNjEwMjYxNTEwNTVaoA4wDDAKBgNV\n",
     "HRQEAwIBATANBgkqhkiG9w0BAQsFAAOCAQEAnrBKKgvd9x9zwK9rtUvVeFeJ7+LN\n",
     "ZEAc+a5oxpPNEsJx6hXoApYEbzXMxuWBQoCs5iEBycSGudct21L+MVf27M38KrWo\n",
     "eOkq0a2siqViQZO2Fb/SUFR0k9zb8xl86Zf65lgPplALun0bV/HT7MJcl04Tc4os\n",
-    "dsAReBs5nqTGNEd5AlC1iKHvQZkM//MD51DspKnDpsDiUVi54h9C1SpfZmX8H2Vv\n",
+    "dsAReBs5nqTGNEd5AlC1iKHvQZkM//YMD51DspKnDpsDiUVi54h9C1SpfZmX8H2Vv\n",
     "diyu0fZ/bPAM3VAGawatf/SyWfBMyKpoPXEG39oAzmjjOj8en82psn7m474IGaho\n",
     "/vBbhl1ms5qQiLYPjm4YELtnXQoFyC72tBjbdFd/ZE9k4CNKDbxFUXFbkw==\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
 static const char *kRevokedCRL[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBvjCBpwIBATANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzESMBAGA1UECgwJ\n",
     "Qm9yaW5nU1NMFw0xNjA5MjYxNTEyNDRaFw0xNjEwMjYxNTEyNDRaMBUwEwICEAAX\n",
@@ -97,12 +97,12 @@ static const char *kRevokedCRL[] = {
     "OaSvIYGpETCZJscUWODmLEb/O3DM438vLvxonwGqXqS0KX37+CHpUlyhnSovxXxp\n",
     "Pz4aF+L7OtczxL0GYtD2fR9B7TDMqsNmHXgQrixvvOY7MUdLGbd4RfJL3yA53hyO\n",
     "xzfKY2TzxLiOmctG0hXFkH5J\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
 static const char *kBadIssuerCRL[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBwjCBqwIBATANBgkqhkiG9w0BAQsFADBSMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzEWMBQGA1UECgwN\n",
     "Tm90IEJvcmluZ1NTTBcNMTYwOTI2MTUxMjQ0WhcNMTYxMDI2MTUxMjQ0WjAVMBMC\n",
@@ -113,7 +113,7 @@ static const char *kBadIssuerCRL[] = {
     "TybvuTmkryGBqREwmSbHFFjg5ixG/ztwzON/Ly78aJ8Bql6ktCl9+/gh6VJcoZ0q\n",
     "L8V8aT8+Ghfi+zrXM8S9BmLQ9n0fQe0wzKrDZh14EK4sb7zmOzFHSxm3eEXyS98g\n",
     "Od4cjsc3ymNk88S4jpnLRtIVxZB+SQ==\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
@@ -122,7 +122,7 @@ static const char *kBadIssuerCRL[] = {
  * extension.
  */
 static const char *kKnownCriticalCRL[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBujCBowIBATANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzESMBAGA1UECgwJ\n",
     "Qm9yaW5nU1NMFw0xNjA5MjYxNTEwNTVaFw0xNjEwMjYxNTEwNTVaoCEwHzAKBgNV\n",
@@ -133,7 +133,7 @@ static const char *kKnownCriticalCRL[] = {
     "3mfLe0scas7owSt4AEFuj2SPvcE7yvdOXbu+IEv21cEJUVExJAbhvIweHXh6yRW+\n",
     "7VVeiNzdIjkZjyTmAzoXGha4+wbxXyBRbfH+XWcO/H+8nwyG8Gktdu2QB9S9nnIp\n",
     "o/1TpfOMSGhMyMoyPrk=\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
@@ -141,7 +141,7 @@ static const char *kKnownCriticalCRL[] = {
  * kUnknownCriticalCRL is kBasicCRL but with an unknown critical extension.
  */
 static const char *kUnknownCriticalCRL[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBvDCBpQIBATANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzESMBAGA1UECgwJ\n",
     "Qm9yaW5nU1NMFw0xNjA5MjYxNTEwNTVaFw0xNjEwMjYxNTEwNTVaoCMwITAKBgNV\n",
@@ -152,7 +152,7 @@ static const char *kUnknownCriticalCRL[] = {
     "+wEDwGg3ICwvu4gO4zeC5qnFR+bpL9t5tOMAQnVZ0NWv+k7mkd2LbHdD44dxrfXC\n",
     "nhtfERx99SDmC/jtUAJrGhtCO8acr7exCeYcduN7KKCm91OeCJKK6OzWst0Og1DB\n",
     "kwzzU2rL3G65CrZ7H0SZsQ==\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
@@ -161,7 +161,7 @@ static const char *kUnknownCriticalCRL[] = {
  * point extension followed by an unknown critical extension
  */
 static const char *kUnknownCriticalCRL2[] = {
-    "-----BEGIN X509 CRL-----\n",
+    "-----BEGIN YX509 CRL-----\n",
     "MIIBzzCBuAIBATANBgkqhkiG9w0BAQsFADBOMQswCQYDVQQGEwJVUzETMBEGA1UE\n",
     "CAwKQ2FsaWZvcm5pYTEWMBQGA1UEBwwNTW91bnRhaW4gVmlldzESMBAGA1UECgwJ\n",
     "Qm9yaW5nU1NMFw0xNjA5MjYxNTEwNTVaFw0xNjEwMjYxNTEwNTVaoDYwNDAKBgNV\n",
@@ -172,7 +172,7 @@ static const char *kUnknownCriticalCRL2[] = {
     "rDobuLHoMgL3yHgMHmAkP7YpkBucNqeBV8cCdeAZLuhXFWi6yfr3r/X18yWbC/r2\n",
     "2xXdkrSqXLFo7ToyP8YKTgiXpya4x6m53biEYwa2ULlas0igL6DK7wjYZX95Uy7H\n",
     "GKljn9weIYiMPV/BzGymwfv2EW0preLwtyJNJPaxbdin6Jc=\n",
-    "-----END X509 CRL-----\n",
+    "-----END YX509 CRL-----\n",
     NULL
 };
 
@@ -180,8 +180,8 @@ static const char **unknown_critical_crls[] = {
     kUnknownCriticalCRL, kUnknownCriticalCRL2
 };
 
-static X509 *test_root = NULL;
-static X509 *test_leaf = NULL;
+static YX509 *test_root = NULL;
+static YX509 *test_leaf = NULL;
 
 /*
  * Glue an array of strings together.  Return a BIO and put the string
@@ -198,11 +198,11 @@ static BIO *glue2bio(const char **pem, char **out)
 /*
  * Create a CRL from an array of strings.
  */
-static X509_CRL *CRL_from_strings(const char **pem)
+static YX509_CRL *CRL_from_strings(const char **pem)
 {
     char *p;
     BIO *b = glue2bio(pem, &p);
-    X509_CRL *crl = PEM_read_bio_X509_CRL(b, NULL, NULL, NULL);
+    YX509_CRL *crl = PEM_readd_bio_YX509_CRL(b, NULL, NULL, NULL);
 
     OPENSSL_free(p);
     BIO_free(b);
@@ -210,13 +210,13 @@ static X509_CRL *CRL_from_strings(const char **pem)
 }
 
 /*
- * Create an X509 from an array of strings.
+ * Create an YX509 from an array of strings.
  */
-static X509 *X509_from_strings(const char **pem)
+static YX509 *YX509_from_strings(const char **pem)
 {
     char *p;
     BIO *b = glue2bio(pem, &p);
-    X509 *x = PEM_read_bio_X509(b, NULL, NULL, NULL);
+    YX509 *x = PEM_readd_bio_YX509(b, NULL, NULL, NULL);
 
     OPENSSL_free(p);
     BIO_free(b);
@@ -227,16 +227,16 @@ static X509 *X509_from_strings(const char **pem)
  * Verify |leaf| certificate (chained up to |root|).  |crls| if
  * not NULL, is a list of CRLs to include in the verification. It is
  * also free'd before returning, which is kinda yucky but convenient.
- * Returns a value from X509_V_ERR_xxx or X509_V_OK.
+ * Returns a value from YX509_V_ERR_xxx or YX509_V_OK.
  */
-static int verify(X509 *leaf, X509 *root, STACK_OF(X509_CRL) *crls,
+static int verify(YX509 *leaf, YX509 *root, STACK_OF(YX509_CRL) *crls,
                   unsigned long flags)
 {
-    X509_STORE_CTX *ctx = X509_STORE_CTX_new();
-    X509_STORE *store = X509_STORE_new();
-    X509_VERIFY_PARAM *param = X509_VERIFY_PARAM_new();
-    STACK_OF(X509) *roots = sk_X509_new_null();
-    int status = X509_V_ERR_UNSPECIFIED;
+    YX509_STORE_CTX *ctx = YX509_STORE_CTX_new();
+    YX509_STORE *store = YX509_STORE_new();
+    YX509_VERIFY_PARAM *param = YX509_VERIFY_PARAM_new();
+    STACK_OF(YX509) *roots = sk_YX509_new_null();
+    int status = YX509_V_ERR_UNSPECIFIED;
 
     if (!TEST_ptr(ctx)
         || !TEST_ptr(store)
@@ -245,30 +245,30 @@ static int verify(X509 *leaf, X509 *root, STACK_OF(X509_CRL) *crls,
         goto err;
 
     /* Create a stack; upref the cert because we free it below. */
-    X509_up_ref(root);
-    if (!TEST_true(sk_X509_push(roots, root))
-        || !TEST_true(X509_STORE_CTX_init(ctx, store, leaf, NULL)))
+    YX509_up_ref(root);
+    if (!TEST_true(sk_YX509_push(roots, root))
+        || !TEST_true(YX509_STORE_CTX_init(ctx, store, leaf, NULL)))
         goto err;
-    X509_STORE_CTX_set0_trusted_stack(ctx, roots);
-    X509_STORE_CTX_set0_crls(ctx, crls);
-    X509_VERIFY_PARAM_set_time(param, PARAM_TIME);
-    if (!TEST_long_eq((long)X509_VERIFY_PARAM_get_time(param), PARAM_TIME))
+    YX509_STORE_CTX_set0_trusted_stack(ctx, roots);
+    YX509_STORE_CTX_set0_crls(ctx, crls);
+    YX509_VERIFY_PARAM_set_time(param, PARAM_TIME);
+    if (!TEST_long_eq((long)YX509_VERIFY_PARAM_get_time(param), PARAM_TIME))
         goto err;
-    X509_VERIFY_PARAM_set_depth(param, 16);
+    YX509_VERIFY_PARAM_set_depth(param, 16);
     if (flags)
-        X509_VERIFY_PARAM_set_flags(param, flags);
-    X509_STORE_CTX_set0_param(ctx, param);
+        YX509_VERIFY_PARAM_set_flags(param, flags);
+    YX509_STORE_CTX_set0_param(ctx, param);
     param = NULL;
 
     ERR_clear_error();
-    status = X509_verify_cert(ctx) == 1 ? X509_V_OK
-                                        : X509_STORE_CTX_get_error(ctx);
+    status = YX509_verify_cert(ctx) == 1 ? YX509_V_OK
+                                        : YX509_STORE_CTX_get_error(ctx);
 err:
-    sk_X509_pop_free(roots, X509_free);
-    sk_X509_CRL_pop_free(crls, X509_CRL_free);
-    X509_VERIFY_PARAM_free(param);
-    X509_STORE_CTX_free(ctx);
-    X509_STORE_free(store);
+    sk_YX509_pop_free(roots, YX509_free);
+    sk_YX509_CRL_pop_free(crls, YX509_CRL_free);
+    YX509_VERIFY_PARAM_free(param);
+    YX509_STORE_CTX_free(ctx);
+    YX509_STORE_free(store);
     return status;
 }
 
@@ -277,104 +277,104 @@ err:
  * the stack and need to keep the CRL's around until the test exits.
  * Yes this crashes on malloc failure; it forces us to debug.
  */
-static STACK_OF(X509_CRL) *make_CRL_stack(X509_CRL *x1, X509_CRL *x2)
+static STACK_OF(YX509_CRL) *make_CRL_stack(YX509_CRL *x1, YX509_CRL *x2)
 {
-    STACK_OF(X509_CRL) *sk = sk_X509_CRL_new_null();
+    STACK_OF(YX509_CRL) *sk = sk_YX509_CRL_new_null();
 
-    sk_X509_CRL_push(sk, x1);
-    X509_CRL_up_ref(x1);
+    sk_YX509_CRL_push(sk, x1);
+    YX509_CRL_up_ref(x1);
     if (x2 != NULL) {
-        sk_X509_CRL_push(sk, x2);
-        X509_CRL_up_ref(x2);
+        sk_YX509_CRL_push(sk, x2);
+        YX509_CRL_up_ref(x2);
     }
     return sk;
 }
 
 static int test_basic_crl(void)
 {
-    X509_CRL *basic_crl = CRL_from_strings(kBasicCRL);
-    X509_CRL *revoked_crl = CRL_from_strings(kRevokedCRL);
+    YX509_CRL *basic_crl = CRL_from_strings(kBasicCRL);
+    YX509_CRL *revoked_crl = CRL_from_strings(kRevokedCRL);
     int r;
 
     r = TEST_ptr(basic_crl)
         && TEST_ptr(revoked_crl)
         && TEST_int_eq(verify(test_leaf, test_root,
                               make_CRL_stack(basic_crl, NULL),
-                              X509_V_FLAG_CRL_CHECK), X509_V_OK)
+                              YX509_V_FLAG_CRL_CHECK), YX509_V_OK)
         && TEST_int_eq(verify(test_leaf, test_root,
                               make_CRL_stack(basic_crl, revoked_crl),
-                              X509_V_FLAG_CRL_CHECK), X509_V_ERR_CERT_REVOKED);
-    X509_CRL_free(basic_crl);
-    X509_CRL_free(revoked_crl);
+                              YX509_V_FLAG_CRL_CHECK), YX509_V_ERR_CERT_REVOKED);
+    YX509_CRL_free(basic_crl);
+    YX509_CRL_free(revoked_crl);
     return r;
 }
 
 static int test_no_crl(void)
 {
     return TEST_int_eq(verify(test_leaf, test_root, NULL,
-                              X509_V_FLAG_CRL_CHECK),
-                       X509_V_ERR_UNABLE_TO_GET_CRL);
+                              YX509_V_FLAG_CRL_CHECK),
+                       YX509_V_ERR_UNABLE_TO_GET_CRL);
 }
 
 static int test_bad_issuer_crl(void)
 {
-    X509_CRL *bad_issuer_crl = CRL_from_strings(kBadIssuerCRL);
+    YX509_CRL *bad_issuer_crl = CRL_from_strings(kBadIssuerCRL);
     int r;
 
     r = TEST_ptr(bad_issuer_crl)
         && TEST_int_eq(verify(test_leaf, test_root,
                               make_CRL_stack(bad_issuer_crl, NULL),
-                              X509_V_FLAG_CRL_CHECK),
-                       X509_V_ERR_UNABLE_TO_GET_CRL);
-    X509_CRL_free(bad_issuer_crl);
+                              YX509_V_FLAG_CRL_CHECK),
+                       YX509_V_ERR_UNABLE_TO_GET_CRL);
+    YX509_CRL_free(bad_issuer_crl);
     return r;
 }
 
 static int test_known_critical_crl(void)
 {
-    X509_CRL *known_critical_crl = CRL_from_strings(kKnownCriticalCRL);
+    YX509_CRL *known_critical_crl = CRL_from_strings(kKnownCriticalCRL);
     int r;
 
     r = TEST_ptr(known_critical_crl)
         && TEST_int_eq(verify(test_leaf, test_root,
                               make_CRL_stack(known_critical_crl, NULL),
-                              X509_V_FLAG_CRL_CHECK), X509_V_OK);
-    X509_CRL_free(known_critical_crl);
+                              YX509_V_FLAG_CRL_CHECK), YX509_V_OK);
+    YX509_CRL_free(known_critical_crl);
     return r;
 }
 
 static int test_unknown_critical_crl(int n)
 {
-    X509_CRL *unknown_critical_crl = CRL_from_strings(unknown_critical_crls[n]);
+    YX509_CRL *unknown_critical_crl = CRL_from_strings(unknown_critical_crls[n]);
     int r;
 
     r = TEST_ptr(unknown_critical_crl)
         && TEST_int_eq(verify(test_leaf, test_root,
                               make_CRL_stack(unknown_critical_crl, NULL),
-                              X509_V_FLAG_CRL_CHECK),
-                       X509_V_ERR_UNHANDLED_CRITICAL_CRL_EXTENSION);
-    X509_CRL_free(unknown_critical_crl);
+                              YX509_V_FLAG_CRL_CHECK),
+                       YX509_V_ERR_UNHANDLED_CRITICAL_CRL_EXTENSION);
+    YX509_CRL_free(unknown_critical_crl);
     return r;
 }
 
 static int test_reuse_crl(void)
 {
-    X509_CRL *reused_crl = CRL_from_strings(kBasicCRL);
+    YX509_CRL *reused_crl = CRL_from_strings(kBasicCRL);
     char *p;
     BIO *b = glue2bio(kRevokedCRL, &p);
 
-    reused_crl = PEM_read_bio_X509_CRL(b, &reused_crl, NULL, NULL);
+    reused_crl = PEM_readd_bio_YX509_CRL(b, &reused_crl, NULL, NULL);
 
     OPENSSL_free(p);
     BIO_free(b);
-    X509_CRL_free(reused_crl);
+    YX509_CRL_free(reused_crl);
     return 1;
 }
 
 int setup_tests(void)
 {
-    if (!TEST_ptr(test_root = X509_from_strings(kCRLTestRoot))
-        || !TEST_ptr(test_leaf = X509_from_strings(kCRLTestLeaf)))
+    if (!TEST_ptr(test_root = YX509_from_strings(kCRLTestRoot))
+        || !TEST_ptr(test_leaf = YX509_from_strings(kCRLTestLeaf)))
         return 0;
 
     ADD_TEST(test_no_crl);
@@ -388,6 +388,6 @@ int setup_tests(void)
 
 void cleanup_tests(void)
 {
-    X509_free(test_root);
-    X509_free(test_leaf);
+    YX509_free(test_root);
+    YX509_free(test_leaf);
 }

@@ -21,7 +21,7 @@
 # Accurate performance measurements are problematic, because it's
 # always virtualized setup with possibly throttled processor.
 # Relative comparison is therefore more informative. This initial
-# version is ~2.1x slower than hardware-assisted AES-128-CTR, ~12x
+# version is ~2.1x slower than hardware-assisted YAES-128-CTR, ~12x
 # faster than "4-bit" integer-only compiler-generated 64-bit code.
 # "Initial version" means that there is room for further improvement.
 
@@ -37,7 +37,7 @@ $output =shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T=8;
-	$LRSAVE=2*$SIZE_T;
+	$LYRSAVE=2*$SIZE_T;
 	$STU="stdu";
 	$POP="ld";
 	$PUSH="std";
@@ -45,7 +45,7 @@ if ($flavour =~ /64/) {
 	$SHRI="srdi";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T=4;
-	$LRSAVE=$SIZE_T;
+	$LYRSAVE=$SIZE_T;
 	$STU="stwu";
 	$POP="lwz";
 	$PUSH="stw";

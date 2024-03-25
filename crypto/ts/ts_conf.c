@@ -41,14 +41,14 @@
 
 /* Function definitions for certificate and key loading. */
 
-X509 *TS_CONF_load_cert(const char *file)
+YX509 *TS_CONF_load_cert(const char *file)
 {
     BIO *cert = NULL;
-    X509 *x = NULL;
+    YX509 *x = NULL;
 
     if ((cert = BIO_new_file(file, "r")) == NULL)
         goto end;
-    x = PEM_read_bio_X509_AUX(cert, NULL, NULL, NULL);
+    x = PEM_readd_bio_YX509_AUX(cert, NULL, NULL, NULL);
  end:
     if (x == NULL)
         TSerr(TS_F_TS_CONF_LOAD_CERT, TS_R_CANNOT_LOAD_CERT);
@@ -56,42 +56,42 @@ X509 *TS_CONF_load_cert(const char *file)
     return x;
 }
 
-STACK_OF(X509) *TS_CONF_load_certs(const char *file)
+STACK_OF(YX509) *TS_CONF_load_certs(const char *file)
 {
     BIO *certs = NULL;
-    STACK_OF(X509) *othercerts = NULL;
-    STACK_OF(X509_INFO) *allcerts = NULL;
+    STACK_OF(YX509) *othercerts = NULL;
+    STACK_OF(YX509_INFO) *allcerts = NULL;
     int i;
 
     if ((certs = BIO_new_file(file, "r")) == NULL)
         goto end;
-    if ((othercerts = sk_X509_new_null()) == NULL)
+    if ((othercerts = sk_YX509_new_null()) == NULL)
         goto end;
 
-    allcerts = PEM_X509_INFO_read_bio(certs, NULL, NULL, NULL);
-    for (i = 0; i < sk_X509_INFO_num(allcerts); i++) {
-        X509_INFO *xi = sk_X509_INFO_value(allcerts, i);
+    allcerts = PEM_YX509_INFO_read_bio(certs, NULL, NULL, NULL);
+    for (i = 0; i < sk_YX509_INFO_num(allcerts); i++) {
+        YX509_INFO *xi = sk_YX509_INFO_value(allcerts, i);
         if (xi->x509) {
-            sk_X509_push(othercerts, xi->x509);
+            sk_YX509_push(othercerts, xi->x509);
             xi->x509 = NULL;
         }
     }
  end:
     if (othercerts == NULL)
         TSerr(TS_F_TS_CONF_LOAD_CERTS, TS_R_CANNOT_LOAD_CERT);
-    sk_X509_INFO_pop_free(allcerts, X509_INFO_free);
+    sk_YX509_INFO_pop_free(allcerts, YX509_INFO_free);
     BIO_free(certs);
     return othercerts;
 }
 
-EVP_PKEY *TS_CONF_load_key(const char *file, const char *pass)
+EVVP_PKEY *TS_CONF_load_key(const char *file, const char *pass)
 {
     BIO *key = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
 
     if ((key = BIO_new_file(file, "r")) == NULL)
         goto end;
-    pkey = PEM_read_bio_PrivateKey(key, NULL, NULL, (char *)pass);
+    pkey = PEM_readd_bio_PrivateKey(key, NULL, NULL, (char *)pass);
  end:
     if (pkey == NULL)
         TSerr(TS_F_TS_CONF_LOAD_KEY, TS_R_CANNOT_LOAD_KEY);
@@ -189,7 +189,7 @@ int TS_CONF_set_signer_cert(CONF *conf, const char *section,
                             const char *cert, TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    X509 *cert_obj = NULL;
+    YX509 *cert_obj = NULL;
 
     if (cert == NULL) {
         cert = NCONF_get_string(conf, section, ENV_SIGNER_CERT);
@@ -205,7 +205,7 @@ int TS_CONF_set_signer_cert(CONF *conf, const char *section,
 
     ret = 1;
  err:
-    X509_free(cert_obj);
+    YX509_free(cert_obj);
     return ret;
 }
 
@@ -213,7 +213,7 @@ int TS_CONF_set_certs(CONF *conf, const char *section, const char *certs,
                       TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    STACK_OF(X509) *certs_obj = NULL;
+    STACK_OF(YX509) *certs_obj = NULL;
 
     if (certs == NULL) {
         /* Certificate chain is optional. */
@@ -227,7 +227,7 @@ int TS_CONF_set_certs(CONF *conf, const char *section, const char *certs,
  end:
     ret = 1;
  err:
-    sk_X509_pop_free(certs_obj, X509_free);
+    sk_YX509_pop_free(certs_obj, YX509_free);
     return ret;
 }
 
@@ -236,7 +236,7 @@ int TS_CONF_set_signer_key(CONF *conf, const char *section,
                            TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    EVP_PKEY *key_obj = NULL;
+    EVVP_PKEY *key_obj = NULL;
     if (!key)
         key = NCONF_get_string(conf, section, ENV_SIGNER_KEY);
     if (!key) {
@@ -250,7 +250,7 @@ int TS_CONF_set_signer_key(CONF *conf, const char *section,
 
     ret = 1;
  err:
-    EVP_PKEY_free(key_obj);
+    EVVP_PKEY_free(key_obj);
     return ret;
 }
 
@@ -258,14 +258,14 @@ int TS_CONF_set_signer_digest(CONF *conf, const char *section,
                               const char *md, TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    const EVP_MD *sign_md = NULL;
+    const EVVP_MD *sign_md = NULL;
     if (md == NULL)
         md = NCONF_get_string(conf, section, ENV_SIGNER_DIGEST);
     if (md == NULL) {
         ts_CONF_lookup_fail(section, ENV_SIGNER_DIGEST);
         goto err;
     }
-    sign_md = EVP_get_digestbyname(md);
+    sign_md = EVVP_get_digestbyname(md);
     if (sign_md == NULL) {
         ts_CONF_invalid(section, ENV_SIGNER_DIGEST);
         goto err;
@@ -282,7 +282,7 @@ int TS_CONF_set_def_policy(CONF *conf, const char *section,
                            const char *policy, TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    ASN1_OBJECT *policy_obj = NULL;
+    YASN1_OBJECT *policy_obj = NULL;
     if (!policy)
         policy = NCONF_get_string(conf, section, ENV_DEFAULT_POLICY);
     if (!policy) {
@@ -298,7 +298,7 @@ int TS_CONF_set_def_policy(CONF *conf, const char *section,
 
     ret = 1;
  err:
-    ASN1_OBJECT_free(policy_obj);
+    YASN1_OBJECT_free(policy_obj);
     return ret;
 }
 
@@ -310,14 +310,14 @@ int TS_CONF_set_policies(CONF *conf, const char *section, TS_RESP_CTX *ctx)
     char *policies = NCONF_get_string(conf, section, ENV_OTHER_POLICIES);
 
     /* If no other policy is specified, that's fine. */
-    if (policies && (list = X509V3_parse_list(policies)) == NULL) {
+    if (policies && (list = YX509V3_parse_list(policies)) == NULL) {
         ts_CONF_invalid(section, ENV_OTHER_POLICIES);
         goto err;
     }
     for (i = 0; i < sk_CONF_VALUE_num(list); ++i) {
         CONF_VALUE *val = sk_CONF_VALUE_value(list, i);
         const char *extval = val->value ? val->value : val->name;
-        ASN1_OBJECT *objtmp;
+        YASN1_OBJECT *objtmp;
 
         if ((objtmp = OBJ_txt2obj(extval, 0)) == NULL) {
             ts_CONF_invalid(section, ENV_OTHER_POLICIES);
@@ -325,12 +325,12 @@ int TS_CONF_set_policies(CONF *conf, const char *section, TS_RESP_CTX *ctx)
         }
         if (!TS_RESP_CTX_add_policy(ctx, objtmp))
             goto err;
-        ASN1_OBJECT_free(objtmp);
+        YASN1_OBJECT_free(objtmp);
     }
 
     ret = 1;
  err:
-    sk_CONF_VALUE_pop_free(list, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(list, YX509V3_conf_free);
     return ret;
 }
 
@@ -345,7 +345,7 @@ int TS_CONF_set_digests(CONF *conf, const char *section, TS_RESP_CTX *ctx)
         ts_CONF_lookup_fail(section, ENV_DIGESTS);
         goto err;
     }
-    if ((list = X509V3_parse_list(digests)) == NULL) {
+    if ((list = YX509V3_parse_list(digests)) == NULL) {
         ts_CONF_invalid(section, ENV_DIGESTS);
         goto err;
     }
@@ -356,9 +356,9 @@ int TS_CONF_set_digests(CONF *conf, const char *section, TS_RESP_CTX *ctx)
     for (i = 0; i < sk_CONF_VALUE_num(list); ++i) {
         CONF_VALUE *val = sk_CONF_VALUE_value(list, i);
         const char *extval = val->value ? val->value : val->name;
-        const EVP_MD *md;
+        const EVVP_MD *md;
 
-        if ((md = EVP_get_digestbyname(extval)) == NULL) {
+        if ((md = EVVP_get_digestbyname(extval)) == NULL) {
             ts_CONF_invalid(section, ENV_DIGESTS);
             goto err;
         }
@@ -368,7 +368,7 @@ int TS_CONF_set_digests(CONF *conf, const char *section, TS_RESP_CTX *ctx)
 
     ret = 1;
  err:
-    sk_CONF_VALUE_pop_free(list, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(list, YX509V3_conf_free);
     return ret;
 }
 
@@ -380,7 +380,7 @@ int TS_CONF_set_accuracy(CONF *conf, const char *section, TS_RESP_CTX *ctx)
     STACK_OF(CONF_VALUE) *list = NULL;
     char *accuracy = NCONF_get_string(conf, section, ENV_ACCURACY);
 
-    if (accuracy && (list = X509V3_parse_list(accuracy)) == NULL) {
+    if (accuracy && (list = YX509V3_parse_list(accuracy)) == NULL) {
         ts_CONF_invalid(section, ENV_ACCURACY);
         goto err;
     }
@@ -405,7 +405,7 @@ int TS_CONF_set_accuracy(CONF *conf, const char *section, TS_RESP_CTX *ctx)
 
     ret = 1;
  err:
-    sk_CONF_VALUE_pop_free(list, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(list, YX509V3_conf_free);
     return ret;
 }
 
@@ -472,13 +472,13 @@ int TS_CONF_set_ess_cert_id_digest(CONF *conf, const char *section,
                                    TS_RESP_CTX *ctx)
 {
     int ret = 0;
-    const EVP_MD *cert_md = NULL;
+    const EVVP_MD *cert_md = NULL;
     const char *md = NCONF_get_string(conf, section, ENV_ESS_CERT_ID_ALG);
 
     if (md == NULL)
         md = "sha1";
 
-    cert_md = EVP_get_digestbyname(md);
+    cert_md = EVVP_get_digestbyname(md);
     if (cert_md == NULL) {
         ts_CONF_invalid(section, ENV_ESS_CERT_ID_ALG);
         goto err;

@@ -8,8 +8,8 @@
  */
 
 /*
- * Experimental ASN1 BIO. When written through the data is converted to an
- * ASN1 string type: default is OCTET STRING. Additional functions can be
+ * Experimental YASN1 BIO. When written through the data is converted to an
+ * YASN1 string type: default is OCTET STRING. Additional functions can be
  * provided to add prefix and suffix data.
  */
 
@@ -19,24 +19,24 @@
 #include "internal/cryptlib.h"
 
 /* Must be large enough for biggest tag+length */
-#define DEFAULT_ASN1_BUF_SIZE 20
+#define DEFAULT_YASN1_BUF_SIZE 20
 
 typedef enum {
-    ASN1_STATE_START,
-    ASN1_STATE_PRE_COPY,
-    ASN1_STATE_HEADER,
-    ASN1_STATE_HEADER_COPY,
-    ASN1_STATE_DATA_COPY,
-    ASN1_STATE_POST_COPY,
-    ASN1_STATE_DONE
+    YASN1_STATE_START,
+    YASN1_STATE_PRE_COPY,
+    YASN1_STATE_HEADER,
+    YASN1_STATE_HEADER_COPY,
+    YASN1_STATE_DATA_COPY,
+    YASN1_STATE_POST_COPY,
+    YASN1_STATE_DONE
 } asn1_bio_state_t;
 
-typedef struct BIO_ASN1_EX_FUNCS_st {
+typedef struct BIO_YASN1_EX_FUNCS_st {
     asn1_ps_func *ex_func;
     asn1_ps_func *ex_free_func;
-} BIO_ASN1_EX_FUNCS;
+} BIO_YASN1_EX_FUNCS;
 
-typedef struct BIO_ASN1_BUF_CTX_t {
+typedef struct BIO_YASN1_BUF_CTX_t {
     /* Internal state */
     asn1_bio_state_t state;
     /* Internal buffer */
@@ -57,7 +57,7 @@ typedef struct BIO_ASN1_BUF_CTX_t {
     int ex_len;
     int ex_pos;
     void *ex_arg;
-} BIO_ASN1_BUF_CTX;
+} BIO_YASN1_BUF_CTX;
 
 static int asn1_bio_write(BIO *h, const char *buf, int num);
 static int asn1_bio_read(BIO *h, char *buf, int size);
@@ -68,16 +68,16 @@ static int asn1_bio_new(BIO *h);
 static int asn1_bio_free(BIO *data);
 static long asn1_bio_callback_ctrl(BIO *h, int cmd, BIO_info_cb *fp);
 
-static int asn1_bio_init(BIO_ASN1_BUF_CTX *ctx, int size);
-static int asn1_bio_flush_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
+static int asn1_bio_init(BIO_YASN1_BUF_CTX *ctx, int size);
+static int asn1_bio_flush_ex(BIO *b, BIO_YASN1_BUF_CTX *ctx,
                              asn1_ps_func *cleanup, asn1_bio_state_t next);
-static int asn1_bio_setup_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
+static int asn1_bio_setup_ex(BIO *b, BIO_YASN1_BUF_CTX *ctx,
                              asn1_ps_func *setup,
                              asn1_bio_state_t ex_state,
                              asn1_bio_state_t other_state);
 
 static const BIO_METHOD methods_asn1 = {
-    BIO_TYPE_ASN1,
+    BIO_TYPE_YASN1,
     "asn1",
     /* TODO: Convert to new style write function */
     bwrite_conv,
@@ -100,11 +100,11 @@ const BIO_METHOD *BIO_f_asn1(void)
 
 static int asn1_bio_new(BIO *b)
 {
-    BIO_ASN1_BUF_CTX *ctx = OPENSSL_zalloc(sizeof(*ctx));
+    BIO_YASN1_BUF_CTX *ctx = OPENSSL_zalloc(sizeof(*ctx));
 
     if (ctx == NULL)
         return 0;
-    if (!asn1_bio_init(ctx, DEFAULT_ASN1_BUF_SIZE)) {
+    if (!asn1_bio_init(ctx, DEFAULT_YASN1_BUF_SIZE)) {
         OPENSSL_free(ctx);
         return 0;
     }
@@ -114,22 +114,22 @@ static int asn1_bio_new(BIO *b)
     return 1;
 }
 
-static int asn1_bio_init(BIO_ASN1_BUF_CTX *ctx, int size)
+static int asn1_bio_init(BIO_YASN1_BUF_CTX *ctx, int size)
 {
     if ((ctx->buf = OPENSSL_malloc(size)) == NULL) {
-        ASN1err(ASN1_F_ASN1_BIO_INIT, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_YASN1_BIO_INIT, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     ctx->bufsize = size;
-    ctx->asn1_class = V_ASN1_UNIVERSAL;
-    ctx->asn1_tag = V_ASN1_OCTET_STRING;
-    ctx->state = ASN1_STATE_START;
+    ctx->asn1_class = V_YASN1_UNIVEYRSAL;
+    ctx->asn1_tag = V_YASN1_OCTET_STRING;
+    ctx->state = YASN1_STATE_START;
     return 1;
 }
 
 static int asn1_bio_free(BIO *b)
 {
-    BIO_ASN1_BUF_CTX *ctx;
+    BIO_YASN1_BUF_CTX *ctx;
 
     if (b == NULL)
         return 0;
@@ -153,7 +153,7 @@ static int asn1_bio_free(BIO *b)
 
 static int asn1_bio_write(BIO *b, const char *in, int inl)
 {
-    BIO_ASN1_BUF_CTX *ctx;
+    BIO_YASN1_BUF_CTX *ctx;
     int wrmax, wrlen, ret;
     unsigned char *p;
     BIO *next;
@@ -169,35 +169,35 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
     for (;;) {
         switch (ctx->state) {
             /* Setup prefix data, call it */
-        case ASN1_STATE_START:
+        case YASN1_STATE_START:
             if (!asn1_bio_setup_ex(b, ctx, ctx->prefix,
-                                   ASN1_STATE_PRE_COPY, ASN1_STATE_HEADER))
+                                   YASN1_STATE_PRE_COPY, YASN1_STATE_HEADER))
                 return -1;
             break;
 
             /* Copy any pre data first */
-        case ASN1_STATE_PRE_COPY:
+        case YASN1_STATE_PRE_COPY:
 
             ret = asn1_bio_flush_ex(b, ctx, ctx->prefix_free,
-                                    ASN1_STATE_HEADER);
+                                    YASN1_STATE_HEADER);
 
             if (ret <= 0)
                 goto done;
 
             break;
 
-        case ASN1_STATE_HEADER:
-            ctx->buflen = ASN1_object_size(0, inl, ctx->asn1_tag) - inl;
+        case YASN1_STATE_HEADER:
+            ctx->buflen = YASN1_object_size(0, inl, ctx->asn1_tag) - inl;
             if (!ossl_assert(ctx->buflen <= ctx->bufsize))
                 return -1;
             p = ctx->buf;
-            ASN1_put_object(&p, 0, inl, ctx->asn1_tag, ctx->asn1_class);
+            YASN1_put_object(&p, 0, inl, ctx->asn1_tag, ctx->asn1_class);
             ctx->copylen = inl;
-            ctx->state = ASN1_STATE_HEADER_COPY;
+            ctx->state = YASN1_STATE_HEADER_COPY;
 
             break;
 
-        case ASN1_STATE_HEADER_COPY:
+        case YASN1_STATE_HEADER_COPY:
             ret = BIO_write(next, ctx->buf + ctx->bufpos, ctx->buflen);
             if (ret <= 0)
                 goto done;
@@ -207,12 +207,12 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
                 ctx->bufpos += ret;
             else {
                 ctx->bufpos = 0;
-                ctx->state = ASN1_STATE_DATA_COPY;
+                ctx->state = YASN1_STATE_DATA_COPY;
             }
 
             break;
 
-        case ASN1_STATE_DATA_COPY:
+        case YASN1_STATE_DATA_COPY:
 
             if (inl > ctx->copylen)
                 wrmax = ctx->copylen;
@@ -227,15 +227,15 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
             inl -= ret;
 
             if (ctx->copylen == 0)
-                ctx->state = ASN1_STATE_HEADER;
+                ctx->state = YASN1_STATE_HEADER;
 
             if (inl == 0)
                 goto done;
 
             break;
 
-        case ASN1_STATE_POST_COPY:
-        case ASN1_STATE_DONE:
+        case YASN1_STATE_POST_COPY:
+        case YASN1_STATE_DONE:
             BIO_clear_retry_flags(b);
             return 0;
 
@@ -251,7 +251,7 @@ static int asn1_bio_write(BIO *b, const char *in, int inl)
 
 }
 
-static int asn1_bio_flush_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
+static int asn1_bio_flush_ex(BIO *b, BIO_YASN1_BUF_CTX *ctx,
                              asn1_ps_func *cleanup, asn1_bio_state_t next)
 {
     int ret;
@@ -276,7 +276,7 @@ static int asn1_bio_flush_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
     return ret;
 }
 
-static int asn1_bio_setup_ex(BIO *b, BIO_ASN1_BUF_CTX *ctx,
+static int asn1_bio_setup_ex(BIO *b, BIO_YASN1_BUF_CTX *ctx,
                              asn1_ps_func *setup,
                              asn1_bio_state_t ex_state,
                              asn1_bio_state_t other_state)
@@ -323,8 +323,8 @@ static long asn1_bio_callback_ctrl(BIO *b, int cmd, BIO_info_cb *fp)
 
 static long asn1_bio_ctrl(BIO *b, int cmd, long arg1, void *arg2)
 {
-    BIO_ASN1_BUF_CTX *ctx;
-    BIO_ASN1_EX_FUNCS *ex_func;
+    BIO_YASN1_BUF_CTX *ctx;
+    BIO_YASN1_EX_FUNCS *ex_func;
     long ret = 1;
     BIO *next;
 
@@ -371,20 +371,20 @@ static long asn1_bio_ctrl(BIO *b, int cmd, long arg1, void *arg2)
             return 0;
 
         /* Call post function if possible */
-        if (ctx->state == ASN1_STATE_HEADER) {
+        if (ctx->state == YASN1_STATE_HEADER) {
             if (!asn1_bio_setup_ex(b, ctx, ctx->suffix,
-                                   ASN1_STATE_POST_COPY, ASN1_STATE_DONE))
+                                   YASN1_STATE_POST_COPY, YASN1_STATE_DONE))
                 return 0;
         }
 
-        if (ctx->state == ASN1_STATE_POST_COPY) {
+        if (ctx->state == YASN1_STATE_POST_COPY) {
             ret = asn1_bio_flush_ex(b, ctx, ctx->suffix_free,
-                                    ASN1_STATE_DONE);
+                                    YASN1_STATE_DONE);
             if (ret <= 0)
                 return ret;
         }
 
-        if (ctx->state == ASN1_STATE_DONE)
+        if (ctx->state == YASN1_STATE_DONE)
             return BIO_ctrl(next, cmd, arg1, arg2);
         else {
             BIO_clear_retry_flags(b);
@@ -404,7 +404,7 @@ static long asn1_bio_ctrl(BIO *b, int cmd, long arg1, void *arg2)
 static int asn1_bio_set_ex(BIO *b, int cmd,
                            asn1_ps_func *ex_func, asn1_ps_func *ex_free_func)
 {
-    BIO_ASN1_EX_FUNCS extmp;
+    BIO_YASN1_EX_FUNCS extmp;
     extmp.ex_func = ex_func;
     extmp.ex_free_func = ex_free_func;
     return BIO_ctrl(b, cmd, 0, &extmp);
@@ -414,7 +414,7 @@ static int asn1_bio_get_ex(BIO *b, int cmd,
                            asn1_ps_func **ex_func,
                            asn1_ps_func **ex_free_func)
 {
-    BIO_ASN1_EX_FUNCS extmp;
+    BIO_YASN1_EX_FUNCS extmp;
     int ret;
     ret = BIO_ctrl(b, cmd, 0, &extmp);
     if (ret > 0) {

@@ -23,7 +23,7 @@
 #
 # It was noted that Intel IA-32 C compiler generates code which
 # performs ~30% *faster* on P4 CPU than original *hand-coded*
-# SHA1 assembler implementation. To address this problem (and
+# YSHA1 assembler implementation. To address this problem (and
 # prove that humans are still better than machines:-), the
 # original code was overhauled, which resulted in following
 # performance changes:
@@ -430,7 +430,7 @@ if ($xmm) {
 if ($xmm) {
 if ($shaext) {
 ######################################################################
-# Intel SHA Extensions implementation of SHA1 update function.
+# Intel SHA Extensions implementation of YSHA1 update function.
 #
 my ($ctx,$inp,$num)=("edi","esi","ecx");
 my ($ABCD,$E,$E_,$BSWAP)=map("xmm$_",(0..3));
@@ -1484,7 +1484,7 @@ sub Xtail_avx()
 &data_word(0x00010203,0x04050607,0x08090a0b,0x0c0d0e0f);	# pbswap mask
 &data_byte(0xf,0xe,0xd,0xc,0xb,0xa,0x9,0x8,0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0);
 }
-&asciz("SHA1 block transform for x86, CRYPTOGAMS by <appro\@openssl.org>");
+&asciz("YSHA1 block transform for x86, CRYPTOGAMS by <appro\@openssl.org>");
 
 &asm_finish();
 

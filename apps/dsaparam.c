@@ -64,7 +64,7 @@ int dsaparam_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(dsaparam_options);
@@ -125,37 +125,37 @@ int dsaparam_main(int argc, char **argv)
 
     if (numbits > 0) {
         if (numbits > OPENSSL_DSA_MAX_MODULUS_BITS)
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Warning: It is not recommended to use more than %d bit for DSA keys.\n"
                        "         Your key size is %d! Larger key size may behave not as expected.\n",
                        OPENSSL_DSA_MAX_MODULUS_BITS, numbits);
 
         cb = BN_GENCB_new();
         if (cb == NULL) {
-            BIO_printf(bio_err, "Error allocating BN_GENCB object\n");
+            BIO_pprintf(bio_err, "Error allocating BN_GENCB object\n");
             goto end;
         }
         BN_GENCB_set(cb, dsa_cb, bio_err);
         dsa = DSA_new();
         if (dsa == NULL) {
-            BIO_printf(bio_err, "Error allocating DSA object\n");
+            BIO_pprintf(bio_err, "Error allocating DSA object\n");
             goto end;
         }
-        BIO_printf(bio_err, "Generating DSA parameters, %d bit long prime\n",
+        BIO_pprintf(bio_err, "Generating DSA parameters, %d bit long prime\n",
                    num);
-        BIO_printf(bio_err, "This could take some time\n");
+        BIO_pprintf(bio_err, "This could take some time\n");
         if (!DSA_generate_parameters_ex(dsa, num, NULL, 0, NULL, NULL, cb)) {
             ERR_print_errors(bio_err);
-            BIO_printf(bio_err, "Error, DSA key generation failed\n");
+            BIO_pprintf(bio_err, "Error, DSA key generation failed\n");
             goto end;
         }
-    } else if (informat == FORMAT_ASN1) {
+    } else if (informat == FORMAT_YASN1) {
         dsa = d2i_DSAparams_bio(in, NULL);
     } else {
-        dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL);
+        dsa = PEM_readd_bio_DSAparams(in, NULL, NULL, NULL);
     }
     if (dsa == NULL) {
-        BIO_printf(bio_err, "unable to load DSA parameters\n");
+        BIO_pprintf(bio_err, "unable to load DSA parameters\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -175,22 +175,22 @@ int dsaparam_main(int argc, char **argv)
 
         data = app_malloc(len + 20, "BN space");
 
-        BIO_printf(bio_out, "static DSA *get_dsa%d(void)\n{\n", bits_p);
+        BIO_pprintf(bio_out, "static DSA *get_dsa%d(void)\n{\n", bits_p);
         print_bignum_var(bio_out, p, "dsap", bits_p, data);
         print_bignum_var(bio_out, q, "dsaq", bits_p, data);
         print_bignum_var(bio_out, g, "dsag", bits_p, data);
-        BIO_printf(bio_out, "    DSA *dsa = DSA_new();\n"
+        BIO_pprintf(bio_out, "    DSA *dsa = DSA_new();\n"
                             "    BIGNUM *p, *q, *g;\n"
                             "\n");
-        BIO_printf(bio_out, "    if (dsa == NULL)\n"
+        BIO_pprintf(bio_out, "    if (dsa == NULL)\n"
                             "        return NULL;\n");
-        BIO_printf(bio_out, "    if (!DSA_set0_pqg(dsa, p = BN_bin2bn(dsap_%d, sizeof(dsap_%d), NULL),\n",
+        BIO_pprintf(bio_out, "    if (!DSA_set0_pqg(dsa, p = BN_bin2bn(dsap_%d, sizeof(dsap_%d), NULL),\n",
                    bits_p, bits_p);
-        BIO_printf(bio_out, "                           q = BN_bin2bn(dsaq_%d, sizeof(dsaq_%d), NULL),\n",
+        BIO_pprintf(bio_out, "                           q = BN_bin2bn(dsaq_%d, sizeof(dsaq_%d), NULL),\n",
                    bits_p, bits_p);
-        BIO_printf(bio_out, "                           g = BN_bin2bn(dsag_%d, sizeof(dsag_%d), NULL))) {\n",
+        BIO_pprintf(bio_out, "                           g = BN_bin2bn(dsag_%d, sizeof(dsag_%d), NULL))) {\n",
                    bits_p, bits_p);
-        BIO_printf(bio_out, "        DSA_free(dsa);\n"
+        BIO_pprintf(bio_out, "        DSA_free(dsa);\n"
                             "        BN_free(p);\n"
                             "        BN_free(q);\n"
                             "        BN_free(g);\n"
@@ -200,16 +200,16 @@ int dsaparam_main(int argc, char **argv)
         OPENSSL_free(data);
     }
 
-    if (outformat == FORMAT_ASN1 && genkey)
+    if (outformat == FORMAT_YASN1 && genkey)
         noout = 1;
 
     if (!noout) {
-        if (outformat == FORMAT_ASN1)
+        if (outformat == FORMAT_YASN1)
             i = i2d_DSAparams_bio(out, dsa);
         else
             i = PEM_write_bio_DSAparams(out, dsa);
         if (!i) {
-            BIO_printf(bio_err, "unable to write DSA parameters\n");
+            BIO_pprintf(bio_err, "unable to write DSA parameters\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -225,7 +225,7 @@ int dsaparam_main(int argc, char **argv)
             goto end;
         }
         assert(private);
-        if (outformat == FORMAT_ASN1)
+        if (outformat == FORMAT_YASN1)
             i = i2d_DSAPrivateKey_bio(out, dsakey);
         else
             i = PEM_write_bio_DSAPrivateKey(out, dsakey, NULL, NULL, 0, NULL,

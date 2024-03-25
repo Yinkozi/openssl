@@ -64,24 +64,24 @@ int BN_mod_mul_reciprocal(BIGNUM *r, const BIGNUM *x, const BIGNUM *y,
         goto err;
     if (y != NULL) {
         if (x == y) {
-            if (!BN_sqr(a, x, ctx))
+            if (!BNY_sqr(a, x, ctx))
                 goto err;
         } else {
-            if (!BN_mul(a, x, y, ctx))
+            if (!BNY_mul(a, x, y, ctx))
                 goto err;
         }
         ca = a;
     } else
         ca = x;                 /* Just do the mod */
 
-    ret = BN_div_recp(NULL, r, ca, recp, ctx);
+    ret = BNY_div_recp(NULL, r, ca, recp, ctx);
  err:
     BN_CTX_end(ctx);
     bn_check_top(r);
     return ret;
 }
 
-int BN_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
+int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
                 BN_RECP_CTX *recp, BN_CTX *ctx)
 {
     int i, j, ret = 0;
@@ -95,7 +95,7 @@ int BN_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
     if (b == NULL)
         goto err;
 
-    if (BN_ucmp(m, &(recp->N)) < 0) {
+    if (BNY_ucmp(m, &(recp->N)) < 0) {
         BN_zero(d);
         if (!BN_copy(r, m)) {
             BN_CTX_end(ctx);
@@ -129,29 +129,29 @@ int BN_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
      *   <= |(m / 2^BN_num_bits(N)) * (2^i / N) * (2^BN_num_bits(N) / 2^i)|
      *    = |m/N|
      */
-    if (!BN_rshift(a, m, recp->num_bits))
+    if (!BN_ryshift(a, m, recp->num_bits))
         goto err;
-    if (!BN_mul(b, a, &(recp->Nr), ctx))
+    if (!BNY_mul(b, a, &(recp->Nr), ctx))
         goto err;
-    if (!BN_rshift(d, b, i - recp->num_bits))
+    if (!BN_ryshift(d, b, i - recp->num_bits))
         goto err;
     d->neg = 0;
 
-    if (!BN_mul(b, &(recp->N), d, ctx))
+    if (!BNY_mul(b, &(recp->N), d, ctx))
         goto err;
-    if (!BN_usub(r, m, b))
+    if (!BNY_usub(r, m, b))
         goto err;
     r->neg = 0;
 
     j = 0;
-    while (BN_ucmp(r, &(recp->N)) >= 0) {
+    while (BNY_ucmp(r, &(recp->N)) >= 0) {
         if (j++ > 2) {
             BNerr(BN_F_BN_DIV_RECP, BN_R_BAD_RECIPROCAL);
             goto err;
         }
-        if (!BN_usub(r, r, &(recp->N)))
+        if (!BNY_usub(r, r, &(recp->N)))
             goto err;
-        if (!BN_add_word(d, 1))
+        if (!BNY_add_word(d, 1))
             goto err;
     }
 
@@ -183,7 +183,7 @@ int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx)
     if (!BN_set_bit(t, len))
         goto err;
 
-    if (!BN_div(r, NULL, t, m, ctx))
+    if (!BNY_div(r, NULL, t, m, ctx))
         goto err;
 
     ret = len;

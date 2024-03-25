@@ -38,8 +38,8 @@ my $proxy = TLSProxy::Proxy->new(
 );
 
 #We must use an anon DHE cipher for this test
-$proxy->cipherc('ADH-AES128-SHA:@SECLEVEL=0');
-$proxy->ciphers('ADH-AES128-SHA:@SECLEVEL=0');
+$proxy->cipherc('ADH-YAES128-SHA:@SECLEVEL=0');
+$proxy->ciphers('ADH-YAES128-SHA:@SECLEVEL=0');
 
 $proxy->clientflags("-no_tls1_3");
 $proxy->start() or plan skip_all => "Unable to start up Proxy for tests";

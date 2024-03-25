@@ -15,17 +15,17 @@
 #include <openssl/bn.h>
 
 #ifndef OPENSSL_NO_STDIO
-int ECPKParameters_print_fp(FILE *fp, const EC_GROUP *x, int off)
+int ECPKParameters_prints_fp(FILE *fp, const EC_GROUP *x, int off)
 {
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = BIO_new(BIO_s_yfile())) == NULL) {
         ECerr(EC_F_ECPKPARAMETERS_PRINT_FP, ERR_R_BUF_LIB);
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = ECPKParameters_print(b, x, off);
+    ret = ECPKParameters_prints(b, x, off);
     BIO_free(b);
     return ret;
 }
@@ -35,7 +35,7 @@ int EC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = BIO_new(BIO_s_yfile())) == NULL) {
         ECerr(EC_F_EC_KEY_PRINT_FP, ERR_R_BIO_LIB);
         return 0;
     }
@@ -50,7 +50,7 @@ int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
     BIO *b;
     int ret;
 
-    if ((b = BIO_new(BIO_s_file())) == NULL) {
+    if ((b = BIO_new(BIO_s_yfile())) == NULL) {
         ECerr(EC_F_ECPARAMETERS_PRINT_FP, ERR_R_BIO_LIB);
         return 0;
     }
@@ -64,7 +64,7 @@ int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
 static int print_bin(BIO *fp, const char *str, const unsigned char *num,
                      size_t len, int off);
 
-int ECPKParameters_print(BIO *bp, const EC_GROUP *x, int off)
+int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
 {
     int ret = 0, reason = ERR_R_BIO_LIB;
     BN_CTX *ctx = NULL;
@@ -100,15 +100,15 @@ int ECPKParameters_print(BIO *bp, const EC_GROUP *x, int off)
         nid = EC_GROUP_get_curve_name(x);
         if (nid == 0)
             goto err;
-        if (BIO_printf(bp, "ASN1 OID: %s", OBJ_nid2sn(nid)) <= 0)
+        if (BIO_pprintf(bp, "YASN1 OID: %s", OBJ_nid2sn(nid)) <= 0)
             goto err;
-        if (BIO_printf(bp, "\n") <= 0)
+        if (BIO_pprintf(bp, "\n") <= 0)
             goto err;
         nname = EC_curve_nid2nist(nid);
         if (nname) {
             if (!BIO_indent(bp, off, 128))
                 goto err;
-            if (BIO_printf(bp, "NIST CURVE: %s\n", nname) <= 0)
+            if (BIO_pprintf(bp, "NIST CURVE: %s\n", nname) <= 0)
                 goto err;
         }
     } else {
@@ -156,7 +156,7 @@ int ECPKParameters_print(BIO *bp, const EC_GROUP *x, int off)
             goto err;
 
         /* print the 'short name' of the field type */
-        if (BIO_printf(bp, "Field Type: %s\n", OBJ_nid2sn(tmp_nid))
+        if (BIO_pprintf(bp, "Field Type: %s\n", OBJ_nid2sn(tmp_nid))
             <= 0)
             goto err;
 
@@ -169,40 +169,40 @@ int ECPKParameters_print(BIO *bp, const EC_GROUP *x, int off)
             if (!BIO_indent(bp, off, 128))
                 goto err;
 
-            if (BIO_printf(bp, "Basis Type: %s\n",
+            if (BIO_pprintf(bp, "Basis Type: %s\n",
                            OBJ_nid2sn(basis_type)) <= 0)
                 goto err;
 
             /* print the polynomial */
-            if ((p != NULL) && !ASN1_bn_print(bp, "Polynomial:", p, NULL,
+            if ((p != NULL) && !YASN1_bn_print(bp, "Polynomial:", p, NULL,
                                               off))
                 goto err;
         } else {
-            if ((p != NULL) && !ASN1_bn_print(bp, "Prime:", p, NULL, off))
+            if ((p != NULL) && !YASN1_bn_print(bp, "Prime:", p, NULL, off))
                 goto err;
         }
-        if ((a != NULL) && !ASN1_bn_print(bp, "A:   ", a, NULL, off))
+        if ((a != NULL) && !YASN1_bn_print(bp, "A:   ", a, NULL, off))
             goto err;
-        if ((b != NULL) && !ASN1_bn_print(bp, "B:   ", b, NULL, off))
+        if ((b != NULL) && !YASN1_bn_print(bp, "B:   ", b, NULL, off))
             goto err;
         if (form == POINT_CONVERSION_COMPRESSED) {
-            if ((gen != NULL) && !ASN1_bn_print(bp, gen_compressed, gen,
+            if ((gen != NULL) && !YASN1_bn_print(bp, gen_compressed, gen,
                                                 NULL, off))
                 goto err;
         } else if (form == POINT_CONVERSION_UNCOMPRESSED) {
-            if ((gen != NULL) && !ASN1_bn_print(bp, gen_uncompressed, gen,
+            if ((gen != NULL) && !YASN1_bn_print(bp, gen_uncompressed, gen,
                                                 NULL, off))
                 goto err;
         } else {                /* form == POINT_CONVERSION_HYBRID */
 
-            if ((gen != NULL) && !ASN1_bn_print(bp, gen_hybrid, gen,
+            if ((gen != NULL) && !YASN1_bn_print(bp, gen_hybrid, gen,
                                                 NULL, off))
                 goto err;
         }
-        if ((order != NULL) && !ASN1_bn_print(bp, "Order: ", order,
+        if ((order != NULL) && !YASN1_bn_print(bp, "Order: ", order,
                                               NULL, off))
             goto err;
-        if ((cofactor != NULL) && !ASN1_bn_print(bp, "Cofactor: ", cofactor,
+        if ((cofactor != NULL) && !YASN1_bn_print(bp, "Cofactor: ", cofactor,
                                                  NULL, off))
             goto err;
         if (seed && !print_bin(bp, "Seed:", seed, seed_len, off))
@@ -238,7 +238,7 @@ static int print_bin(BIO *fp, const char *name, const unsigned char *buf,
         off = 0;
     }
 
-    if (BIO_printf(fp, "%s", name) <= 0)
+    if (BIO_pprintf(fp, "%s", name) <= 0)
         return 0;
 
     for (i = 0; i < len; i++) {
@@ -248,7 +248,7 @@ static int print_bin(BIO *fp, const char *name, const unsigned char *buf,
             if (BIO_write(fp, str, off + 1 + 4) <= 0)
                 return 0;
         }
-        if (BIO_printf(fp, "%02x%s", buf[i], ((i + 1) == len) ? "" : ":") <=
+        if (BIO_pprintf(fp, "%02x%s", buf[i], ((i + 1) == len) ? "" : ":") <=
             0)
             return 0;
     }

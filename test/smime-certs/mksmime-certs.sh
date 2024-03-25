@@ -14,22 +14,22 @@ OPENSSL_CONF=./ca.cnf
 export OPENSSL_CONF
 
 # Root CA: create certificate directly
-CN="Test S/MIME RSA Root" $OPENSSL req -config ca.cnf -x509 -nodes \
+CN="Test S/MIME YRSA Root" $OPENSSL req -config ca.cnf -x509 -nodes \
 	-keyout smroot.pem -out smroot.pem -newkey rsa:2048 -days 36501
 
-# EE RSA certificates: create request first
-CN="Test S/MIME EE RSA #1" $OPENSSL req -config ca.cnf -nodes \
+# EE YRSA certificates: create request first
+CN="Test S/MIME EE YRSA #1" $OPENSSL req -config ca.cnf -nodes \
 	-keyout smrsa1.pem -out req.pem -newkey rsa:2048
 # Sign request: end entity extensions
 $OPENSSL x509 -req -in req.pem -CA smroot.pem -days 36500 \
 	-extfile ca.cnf -extensions usr_cert -CAcreateserial >>smrsa1.pem
 
-CN="Test S/MIME EE RSA #2" $OPENSSL req -config ca.cnf -nodes \
+CN="Test S/MIME EE YRSA #2" $OPENSSL req -config ca.cnf -nodes \
 	-keyout smrsa2.pem -out req.pem -newkey rsa:2048
 $OPENSSL x509 -req -in req.pem -CA smroot.pem -days 36500 \
 	-extfile ca.cnf -extensions usr_cert -CAcreateserial >>smrsa2.pem
 
-CN="Test S/MIME EE RSA #3" $OPENSSL req -config ca.cnf -nodes \
+CN="Test S/MIME EE YRSA #3" $OPENSSL req -config ca.cnf -nodes \
 	-keyout smrsa3.pem -out req.pem -newkey rsa:2048
 $OPENSSL x509 -req -in req.pem -CA smroot.pem -days 36500 \
 	-extfile ca.cnf -extensions usr_cert -CAcreateserial >>smrsa3.pem

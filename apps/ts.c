@@ -32,47 +32,47 @@
          ( b && !a && !c) || \
          ( c && !a && !b))
 
-static ASN1_OBJECT *txt2obj(const char *oid);
+static YASN1_OBJECT *txt2obj(const char *oid);
 static CONF *load_config_file(const char *configfile);
 
 /* Query related functions. */
 static int query_command(const char *data, const char *digest,
-                         const EVP_MD *md, const char *policy, int no_nonce,
+                         const EVVP_MD *md, const char *policy, int no_nonce,
                          int cert, const char *in, const char *out, int text);
-static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
+static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVVP_MD *md,
                             const char *policy, int no_nonce, int cert);
 static int create_digest(BIO *input, const char *digest,
-                         const EVP_MD *md, unsigned char **md_value);
-static ASN1_INTEGER *create_nonce(int bits);
+                         const EVVP_MD *md, unsigned char **md_value);
+static YASN1_INTEGER *create_nonce(int bits);
 
 /* Reply related functions. */
 static int reply_command(CONF *conf, const char *section, const char *engine,
                          const char *queryfile, const char *passin, const char *inkey,
-                         const EVP_MD *md, const char *signer, const char *chain,
+                         const EVVP_MD *md, const char *signer, const char *chain,
                          const char *policy, const char *in, int token_in,
                          const char *out, int token_out, int text);
-static TS_RESP *read_PKCS7(BIO *in_bio);
+static TS_RESP *read_YPKCS7(BIO *in_bio);
 static TS_RESP *create_response(CONF *conf, const char *section, const char *engine,
                                 const char *queryfile, const char *passin,
-                                const char *inkey, const EVP_MD *md, const char *signer,
+                                const char *inkey, const EVVP_MD *md, const char *signer,
                                 const char *chain, const char *policy);
-static ASN1_INTEGER *serial_cb(TS_RESP_CTX *ctx, void *data);
-static ASN1_INTEGER *next_serial(const char *serialfile);
-static int save_ts_serial(const char *serialfile, ASN1_INTEGER *serial);
+static YASN1_INTEGER *serial_cb(TS_RESP_CTX *ctx, void *data);
+static YASN1_INTEGER *next_serial(const char *serialfile);
+static int save_ts_serial(const char *serialfile, YASN1_INTEGER *serial);
 
 /* Verify related functions. */
 static int verify_command(const char *data, const char *digest, const char *queryfile,
                           const char *in, int token_in,
                           const char *CApath, const char *CAfile, const char *untrusted,
-                          X509_VERIFY_PARAM *vpm);
+                          YX509_VERIFY_PARAM *vpm);
 static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
                                         const char *queryfile,
                                         const char *CApath, const char *CAfile,
                                         const char *untrusted,
-                                        X509_VERIFY_PARAM *vpm);
-static X509_STORE *create_cert_store(const char *CApath, const char *CAfile,
-                                     X509_VERIFY_PARAM *vpm);
-static int verify_cb(int ok, X509_STORE_CTX *ctx);
+                                        YX509_VERIFY_PARAM *vpm);
+static YX509_STORE *create_cert_store(const char *CApath, const char *CAfile,
+                                     YX509_VERIFY_PARAM *vpm);
+static int verify_cb(int ok, YX509_STORE_CTX *ctx);
 
 typedef enum OPTION_choice {
     OPT_ERR = -1, OPT_EOF = 0, OPT_HELP,
@@ -96,9 +96,9 @@ const OPTIONS ts_options[] = {
     {"no_nonce", OPT_NO_NONCE, '-', "Do not include a nonce"},
     {"cert", OPT_CERT, '-', "Put cert request into query"},
     {"in", OPT_IN, '<', "Input file"},
-    {"token_in", OPT_TOKEN_IN, '-', "Input is a PKCS#7 file"},
+    {"token_in", OPT_TOKEN_IN, '-', "Input is a YPKCS#7 file"},
     {"out", OPT_OUT, '>', "Output file"},
-    {"token_out", OPT_TOKEN_OUT, '-', "Output is a PKCS#7 file"},
+    {"token_out", OPT_TOKEN_OUT, '-', "Output is a YPKCS#7 file"},
     {"text", OPT_TEXT, '-', "Output text (not DER)"},
     {"reply", OPT_REPLY, '-', "Generate a TS reply"},
     {"queryfile", OPT_QUERYFILE, '<', "File containing a TS query"},
@@ -158,17 +158,17 @@ int ts_main(int argc, char **argv)
     char *data = NULL, *digest = NULL, *policy = NULL;
     char *in = NULL, *out = NULL, *queryfile = NULL, *passin = NULL;
     char *inkey = NULL, *signer = NULL, *chain = NULL, *CApath = NULL;
-    const EVP_MD *md = NULL;
+    const EVVP_MD *md = NULL;
     OPTION_CHOICE o, mode = OPT_ERR;
     int ret = 1, no_nonce = 0, cert = 0, text = 0;
     int vpmtouched = 0;
-    X509_VERIFY_PARAM *vpm = NULL;
+    YX509_VERIFY_PARAM *vpm = NULL;
     /* Input is ContentInfo instead of TimeStampResp. */
     int token_in = 0;
     /* Output is ContentInfo instead of TimeStampResp. */
     int token_out = 0;
 
-    if ((vpm = X509_VERIFY_PARAM_new()) == NULL)
+    if ((vpm = YX509_VERIFY_PARAM_new()) == NULL)
         goto end;
 
     prog = opt_init(argc, argv, ts_options);
@@ -177,12 +177,12 @@ int ts_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(ts_options);
             for (helpp = opt_helplist; *helpp; ++helpp)
-                BIO_printf(bio_err, "%s\n", *helpp);
+                BIO_pprintf(bio_err, "%s\n", *helpp);
             ret = 0;
             goto end;
         case OPT_CONFIG:
@@ -275,7 +275,7 @@ int ts_main(int argc, char **argv)
 
     if (mode == OPT_REPLY && passin &&
         !app_passwd(passin, NULL, &password, NULL)) {
-        BIO_printf(bio_err, "Error getting password.\n");
+        BIO_pprintf(bio_err, "Error getting password.\n");
         goto end;
     }
 
@@ -316,7 +316,7 @@ int ts_main(int argc, char **argv)
     }
 
  end:
-    X509_VERIFY_PARAM_free(vpm);
+    YX509_VERIFY_PARAM_free(vpm);
     NCONF_free(conf);
     OPENSSL_free(password);
     return ret;
@@ -326,12 +326,12 @@ int ts_main(int argc, char **argv)
  * Configuration file-related function definitions.
  */
 
-static ASN1_OBJECT *txt2obj(const char *oid)
+static YASN1_OBJECT *txt2obj(const char *oid)
 {
-    ASN1_OBJECT *oid_obj = NULL;
+    YASN1_OBJECT *oid_obj = NULL;
 
     if ((oid_obj = OBJ_txt2obj(oid, 0)) == NULL)
-        BIO_printf(bio_err, "cannot convert %s to OID\n", oid);
+        BIO_pprintf(bio_err, "cannot convert %s to OID\n", oid);
 
     return oid_obj;
 }
@@ -343,7 +343,7 @@ static CONF *load_config_file(const char *configfile)
     if (conf != NULL) {
         const char *p;
 
-        BIO_printf(bio_err, "Using configuration from %s\n", configfile);
+        BIO_pprintf(bio_err, "Using configuration from %s\n", configfile);
         p = NCONF_get_string(conf, NULL, ENV_OID_FILE);
         if (p != NULL) {
             BIO *oid_bio = BIO_new_file(p, "r");
@@ -364,7 +364,7 @@ static CONF *load_config_file(const char *configfile)
 /*
  * Query-related method definitions.
  */
-static int query_command(const char *data, const char *digest, const EVP_MD *md,
+static int query_command(const char *data, const char *digest, const EVVP_MD *md,
                          const char *policy, int no_nonce,
                          int cert, const char *in, const char *out, int text)
 {
@@ -376,12 +376,12 @@ static int query_command(const char *data, const char *digest, const EVP_MD *md,
 
     /* Build query object. */
     if (in != NULL) {
-        if ((in_bio = bio_open_default(in, 'r', FORMAT_ASN1)) == NULL)
+        if ((in_bio = bio_open_default(in, 'r', FORMAT_YASN1)) == NULL)
             goto end;
         query = d2i_TS_REQ_bio(in_bio, NULL);
     } else {
         if (digest == NULL
-            && (data_bio = bio_open_default(data, 'r', FORMAT_ASN1)) == NULL)
+            && (data_bio = bio_open_default(data, 'r', FORMAT_YASN1)) == NULL)
             goto end;
         query = create_query(data_bio, digest, md, policy, no_nonce, cert);
     }
@@ -394,7 +394,7 @@ static int query_command(const char *data, const char *digest, const EVP_MD *md,
         if (!TS_REQ_print_bio(out_bio, query))
             goto end;
     } else {
-        if ((out_bio = bio_open_default(out, 'w', FORMAT_ASN1)) == NULL)
+        if ((out_bio = bio_open_default(out, 'w', FORMAT_YASN1)) == NULL)
             goto end;
         if (!i2d_TS_REQ_bio(out_bio, query))
             goto end;
@@ -411,19 +411,19 @@ static int query_command(const char *data, const char *digest, const EVP_MD *md,
     return ret;
 }
 
-static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
+static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVVP_MD *md,
                             const char *policy, int no_nonce, int cert)
 {
     int ret = 0;
     TS_REQ *ts_req = NULL;
     int len;
     TS_MSG_IMPRINT *msg_imprint = NULL;
-    X509_ALGOR *algo = NULL;
+    YX509_ALGOR *algo = NULL;
     unsigned char *data = NULL;
-    ASN1_OBJECT *policy_obj = NULL;
-    ASN1_INTEGER *nonce_asn1 = NULL;
+    YASN1_OBJECT *policy_obj = NULL;
+    YASN1_INTEGER *nonce_asn1 = NULL;
 
-    if (md == NULL && (md = EVP_get_digestbyname("sha1")) == NULL)
+    if (md == NULL && (md = EVVP_get_digestbyname("sha1")) == NULL)
         goto err;
     if ((ts_req = TS_REQ_new()) == NULL)
         goto err;
@@ -431,13 +431,13 @@ static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
         goto err;
     if ((msg_imprint = TS_MSG_IMPRINT_new()) == NULL)
         goto err;
-    if ((algo = X509_ALGOR_new()) == NULL)
+    if ((algo = YX509_ALGOR_new()) == NULL)
         goto err;
-    if ((algo->algorithm = OBJ_nid2obj(EVP_MD_type(md))) == NULL)
+    if ((algo->algorithm = OBJ_nid2obj(EVVP_MD_type(md))) == NULL)
         goto err;
-    if ((algo->parameter = ASN1_TYPE_new()) == NULL)
+    if ((algo->parameter = YASN1_TYPE_new()) == NULL)
         goto err;
-    algo->parameter->type = V_ASN1_NULL;
+    algo->parameter->type = V_YASN1_NULL;
     if (!TS_MSG_IMPRINT_set_algo(msg_imprint, algo))
         goto err;
     if ((len = create_digest(data_bio, digest, md, &data)) == 0)
@@ -464,25 +464,25 @@ static TS_REQ *create_query(BIO *data_bio, const char *digest, const EVP_MD *md,
     if (!ret) {
         TS_REQ_free(ts_req);
         ts_req = NULL;
-        BIO_printf(bio_err, "could not create query\n");
+        BIO_pprintf(bio_err, "could not create query\n");
         ERR_print_errors(bio_err);
     }
     TS_MSG_IMPRINT_free(msg_imprint);
-    X509_ALGOR_free(algo);
+    YX509_ALGOR_free(algo);
     OPENSSL_free(data);
-    ASN1_OBJECT_free(policy_obj);
-    ASN1_INTEGER_free(nonce_asn1);
+    YASN1_OBJECT_free(policy_obj);
+    YASN1_INTEGER_free(nonce_asn1);
     return ts_req;
 }
 
-static int create_digest(BIO *input, const char *digest, const EVP_MD *md,
+static int create_digest(BIO *input, const char *digest, const EVVP_MD *md,
                          unsigned char **md_value)
 {
     int md_value_len;
     int rv = 0;
-    EVP_MD_CTX *md_ctx = NULL;
+    EVVP_MD_CTX *md_ctx = NULL;
 
-    md_value_len = EVP_MD_size(md);
+    md_value_len = EVVP_MD_size(md);
     if (md_value_len < 0)
         return 0;
 
@@ -490,40 +490,40 @@ static int create_digest(BIO *input, const char *digest, const EVP_MD *md,
         unsigned char buffer[4096];
         int length;
 
-        md_ctx = EVP_MD_CTX_new();
+        md_ctx = EVVP_MD_CTX_new();
         if (md_ctx == NULL)
             return 0;
         *md_value = app_malloc(md_value_len, "digest buffer");
-        if (!EVP_DigestInit(md_ctx, md))
+        if (!EVVP_DigestInit(md_ctx, md))
             goto err;
         while ((length = BIO_read(input, buffer, sizeof(buffer))) > 0) {
-            if (!EVP_DigestUpdate(md_ctx, buffer, length))
+            if (!EVVP_DigestUpdate(md_ctx, buffer, length))
                 goto err;
         }
-        if (!EVP_DigestFinal(md_ctx, *md_value, NULL))
+        if (!EVVP_DigestFinal(md_ctx, *md_value, NULL))
             goto err;
-        md_value_len = EVP_MD_size(md);
+        md_value_len = EVVP_MD_size(md);
     } else {
         long digest_len;
         *md_value = OPENSSL_hexstr2buf(digest, &digest_len);
         if (!*md_value || md_value_len != digest_len) {
             OPENSSL_free(*md_value);
             *md_value = NULL;
-            BIO_printf(bio_err, "bad digest, %d bytes "
+            BIO_pprintf(bio_err, "bad digest, %d bytes "
                        "must be specified\n", md_value_len);
             return 0;
         }
     }
     rv = md_value_len;
  err:
-    EVP_MD_CTX_free(md_ctx);
+    EVVP_MD_CTX_free(md_ctx);
     return rv;
 }
 
-static ASN1_INTEGER *create_nonce(int bits)
+static YASN1_INTEGER *create_nonce(int bits)
 {
     unsigned char buf[20];
-    ASN1_INTEGER *nonce = NULL;
+    YASN1_INTEGER *nonce = NULL;
     int len = (bits - 1) / 8 + 1;
     int i;
 
@@ -532,10 +532,10 @@ static ASN1_INTEGER *create_nonce(int bits)
     if (RAND_bytes(buf, len) <= 0)
         goto err;
 
-    /* Find the first non-zero byte and creating ASN1_INTEGER object. */
+    /* Find the first non-zero byte and creating YASN1_INTEGER object. */
     for (i = 0; i < len && !buf[i]; ++i)
         continue;
-    if ((nonce = ASN1_INTEGER_new()) == NULL)
+    if ((nonce = YASN1_INTEGER_new()) == NULL)
         goto err;
     OPENSSL_free(nonce->data);
     nonce->length = len - i;
@@ -544,8 +544,8 @@ static ASN1_INTEGER *create_nonce(int bits)
     return nonce;
 
  err:
-    BIO_printf(bio_err, "could not create nonce\n");
-    ASN1_INTEGER_free(nonce);
+    BIO_pprintf(bio_err, "could not create nonce\n");
+    YASN1_INTEGER_free(nonce);
     return NULL;
 }
 
@@ -555,7 +555,7 @@ static ASN1_INTEGER *create_nonce(int bits)
 
 static int reply_command(CONF *conf, const char *section, const char *engine,
                          const char *queryfile, const char *passin, const char *inkey,
-                         const EVP_MD *md, const char *signer, const char *chain,
+                         const EVVP_MD *md, const char *signer, const char *chain,
                          const char *policy, const char *in, int token_in,
                          const char *out, int token_out, int text)
 {
@@ -571,7 +571,7 @@ static int reply_command(CONF *conf, const char *section, const char *engine,
         if ((in_bio = BIO_new_file(in, "rb")) == NULL)
             goto end;
         if (token_in) {
-            response = read_PKCS7(in_bio);
+            response = read_YPKCS7(in_bio);
         } else {
             response = d2i_TS_RESP_bio(in_bio, NULL);
         }
@@ -579,9 +579,9 @@ static int reply_command(CONF *conf, const char *section, const char *engine,
         response = create_response(conf, section, engine, queryfile,
                                    passin, inkey, md, signer, chain, policy);
         if (response != NULL)
-            BIO_printf(bio_err, "Response has been generated.\n");
+            BIO_pprintf(bio_err, "Response has been generated.\n");
         else
-            BIO_printf(bio_err, "Response is not generated.\n");
+            BIO_pprintf(bio_err, "Response is not generated.\n");
     }
     if (response == NULL)
         goto end;
@@ -599,11 +599,11 @@ static int reply_command(CONF *conf, const char *section, const char *engine,
                 goto end;
         }
     } else {
-        if ((out_bio = bio_open_default(out, 'w', FORMAT_ASN1)) == NULL)
+        if ((out_bio = bio_open_default(out, 'w', FORMAT_YASN1)) == NULL)
             goto end;
         if (token_out) {
-            PKCS7 *token = TS_RESP_get_token(response);
-            if (!i2d_PKCS7_bio(out_bio, token))
+            YPKCS7 *token = TS_RESP_get_token(response);
+            if (!i2d_YPKCS7_bio(out_bio, token))
                 goto end;
         } else {
             if (!i2d_TS_RESP_bio(out_bio, response))
@@ -624,18 +624,18 @@ static int reply_command(CONF *conf, const char *section, const char *engine,
     return ret;
 }
 
-/* Reads a PKCS7 token and adds default 'granted' status info to it. */
-static TS_RESP *read_PKCS7(BIO *in_bio)
+/* Reads a YPKCS7 token and adds default 'granted' status info to it. */
+static TS_RESP *read_YPKCS7(BIO *in_bio)
 {
     int ret = 0;
-    PKCS7 *token = NULL;
+    YPKCS7 *token = NULL;
     TS_TST_INFO *tst_info = NULL;
     TS_RESP *resp = NULL;
     TS_STATUS_INFO *si = NULL;
 
-    if ((token = d2i_PKCS7_bio(in_bio, NULL)) == NULL)
+    if ((token = d2i_YPKCS7_bio(in_bio, NULL)) == NULL)
         goto end;
-    if ((tst_info = PKCS7_to_TS_TST_INFO(token)) == NULL)
+    if ((tst_info = YPKCS7_to_TS_TST_INFO(token)) == NULL)
         goto end;
     if ((resp = TS_RESP_new()) == NULL)
         goto end;
@@ -651,7 +651,7 @@ static TS_RESP *read_PKCS7(BIO *in_bio)
     ret = 1;
 
  end:
-    PKCS7_free(token);
+    YPKCS7_free(token);
     TS_TST_INFO_free(tst_info);
     if (!ret) {
         TS_RESP_free(resp);
@@ -663,7 +663,7 @@ static TS_RESP *read_PKCS7(BIO *in_bio)
 
 static TS_RESP *create_response(CONF *conf, const char *section, const char *engine,
                                 const char *queryfile, const char *passin,
-                                const char *inkey, const EVP_MD *md, const char *signer,
+                                const char *inkey, const EVVP_MD *md, const char *signer,
                                 const char *chain, const char *policy)
 {
     int ret = 0;
@@ -729,10 +729,10 @@ static TS_RESP *create_response(CONF *conf, const char *section, const char *eng
     return response;
 }
 
-static ASN1_INTEGER *serial_cb(TS_RESP_CTX *ctx, void *data)
+static YASN1_INTEGER *serial_cb(TS_RESP_CTX *ctx, void *data)
 {
     const char *serial_file = (const char *)data;
-    ASN1_INTEGER *serial = next_serial(serial_file);
+    YASN1_INTEGER *serial = next_serial(serial_file);
 
     if (serial == NULL) {
         TS_RESP_CTX_set_status_info(ctx, TS_STATUS_REJECTION,
@@ -746,43 +746,43 @@ static ASN1_INTEGER *serial_cb(TS_RESP_CTX *ctx, void *data)
     return serial;
 }
 
-static ASN1_INTEGER *next_serial(const char *serialfile)
+static YASN1_INTEGER *next_serial(const char *serialfile)
 {
     int ret = 0;
     BIO *in = NULL;
-    ASN1_INTEGER *serial = NULL;
+    YASN1_INTEGER *serial = NULL;
     BIGNUM *bn = NULL;
 
-    if ((serial = ASN1_INTEGER_new()) == NULL)
+    if ((serial = YASN1_INTEGER_new()) == NULL)
         goto err;
 
     if ((in = BIO_new_file(serialfile, "r")) == NULL) {
         ERR_clear_error();
-        BIO_printf(bio_err, "Warning: could not open file %s for "
+        BIO_pprintf(bio_err, "Warning: could not open file %s for "
                    "reading, using serial number: 1\n", serialfile);
-        if (!ASN1_INTEGER_set(serial, 1))
+        if (!YASN1_INTEGER_set(serial, 1))
             goto err;
     } else {
         char buf[1024];
-        if (!a2i_ASN1_INTEGER(in, serial, buf, sizeof(buf))) {
-            BIO_printf(bio_err, "unable to load number from %s\n",
+        if (!a2i_YASN1_INTEGER(in, serial, buf, sizeof(buf))) {
+            BIO_pprintf(bio_err, "unable to load number from %s\n",
                        serialfile);
             goto err;
         }
-        if ((bn = ASN1_INTEGER_to_BN(serial, NULL)) == NULL)
+        if ((bn = YASN1_INTEGER_to_BN(serial, NULL)) == NULL)
             goto err;
-        ASN1_INTEGER_free(serial);
+        YASN1_INTEGER_free(serial);
         serial = NULL;
-        if (!BN_add_word(bn, 1))
+        if (!BNY_add_word(bn, 1))
             goto err;
-        if ((serial = BN_to_ASN1_INTEGER(bn, NULL)) == NULL)
+        if ((serial = BN_to_YASN1_INTEGER(bn, NULL)) == NULL)
             goto err;
     }
     ret = 1;
 
  err:
     if (!ret) {
-        ASN1_INTEGER_free(serial);
+        YASN1_INTEGER_free(serial);
         serial = NULL;
     }
     BIO_free_all(in);
@@ -790,21 +790,21 @@ static ASN1_INTEGER *next_serial(const char *serialfile)
     return serial;
 }
 
-static int save_ts_serial(const char *serialfile, ASN1_INTEGER *serial)
+static int save_ts_serial(const char *serialfile, YASN1_INTEGER *serial)
 {
     int ret = 0;
     BIO *out = NULL;
 
     if ((out = BIO_new_file(serialfile, "w")) == NULL)
         goto err;
-    if (i2a_ASN1_INTEGER(out, serial) <= 0)
+    if (i2a_YASN1_INTEGER(out, serial) <= 0)
         goto err;
     if (BIO_puts(out, "\n") <= 0)
         goto err;
     ret = 1;
  err:
     if (!ret)
-        BIO_printf(bio_err, "could not save serial number to %s\n",
+        BIO_pprintf(bio_err, "could not save serial number to %s\n",
                    serialfile);
     BIO_free_all(out);
     return ret;
@@ -818,10 +818,10 @@ static int save_ts_serial(const char *serialfile, ASN1_INTEGER *serial)
 static int verify_command(const char *data, const char *digest, const char *queryfile,
                           const char *in, int token_in,
                           const char *CApath, const char *CAfile, const char *untrusted,
-                          X509_VERIFY_PARAM *vpm)
+                          YX509_VERIFY_PARAM *vpm)
 {
     BIO *in_bio = NULL;
-    PKCS7 *token = NULL;
+    YPKCS7 *token = NULL;
     TS_RESP *response = NULL;
     TS_VERIFY_CTX *verify_ctx = NULL;
     int ret = 0;
@@ -829,7 +829,7 @@ static int verify_command(const char *data, const char *digest, const char *quer
     if ((in_bio = BIO_new_file(in, "rb")) == NULL)
         goto end;
     if (token_in) {
-        if ((token = d2i_PKCS7_bio(in_bio, NULL)) == NULL)
+        if ((token = d2i_YPKCS7_bio(in_bio, NULL)) == NULL)
             goto end;
     } else {
         if ((response = d2i_TS_RESP_bio(in_bio, NULL)) == NULL)
@@ -855,7 +855,7 @@ static int verify_command(const char *data, const char *digest, const char *quer
     }
 
     BIO_free_all(in_bio);
-    PKCS7_free(token);
+    YPKCS7_free(token);
     TS_RESP_free(response);
     TS_VERIFY_CTX_free(verify_ctx);
     return ret;
@@ -865,7 +865,7 @@ static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
                                         const char *queryfile,
                                         const char *CApath, const char *CAfile,
                                         const char *untrusted,
-                                        X509_VERIFY_PARAM *vpm)
+                                        YX509_VERIFY_PARAM *vpm)
 {
     TS_VERIFY_CTX *ctx = NULL;
     BIO *input = NULL;
@@ -892,7 +892,7 @@ static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
             unsigned char *hexstr = OPENSSL_hexstr2buf(digest, &imprint_len);
             f |= TS_VFY_IMPRINT;
             if (TS_VERIFY_CTX_set_imprint(ctx, hexstr, imprint_len) == NULL) {
-                BIO_printf(bio_err, "invalid digest string\n");
+                BIO_pprintf(bio_err, "invalid digest string\n");
                 goto err;
             }
         }
@@ -911,7 +911,7 @@ static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
     /* Add the signature verification flag and arguments. */
     TS_VERIFY_CTX_add_flags(ctx, f | TS_VFY_SIGNATURE);
 
-    /* Initialising the X509_STORE object. */
+    /* Initialising the YX509_STORE object. */
     if (TS_VERIFY_CTX_set_store(ctx, create_cert_store(CApath, CAfile, vpm))
             == NULL)
         goto err;
@@ -932,52 +932,52 @@ static TS_VERIFY_CTX *create_verify_ctx(const char *data, const char *digest,
     return ctx;
 }
 
-static X509_STORE *create_cert_store(const char *CApath, const char *CAfile,
-                                     X509_VERIFY_PARAM *vpm)
+static YX509_STORE *create_cert_store(const char *CApath, const char *CAfile,
+                                     YX509_VERIFY_PARAM *vpm)
 {
-    X509_STORE *cert_ctx = NULL;
-    X509_LOOKUP *lookup = NULL;
+    YX509_STORE *cert_ctx = NULL;
+    YX509_LOOKUP *lookup = NULL;
     int i;
 
-    cert_ctx = X509_STORE_new();
-    X509_STORE_set_verify_cb(cert_ctx, verify_cb);
+    cert_ctx = YX509_STORE_new();
+    YX509_STORE_set_verify_cb(cert_ctx, verify_cb);
     if (CApath != NULL) {
-        lookup = X509_STORE_add_lookup(cert_ctx, X509_LOOKUP_hash_dir());
+        lookup = YX509_STORE_add_lookup(cert_ctx, YX509_LOOKUP_hash_dir());
         if (lookup == NULL) {
-            BIO_printf(bio_err, "memory allocation failure\n");
+            BIO_pprintf(bio_err, "memory allocation failure\n");
             goto err;
         }
-        i = X509_LOOKUP_add_dir(lookup, CApath, X509_FILETYPE_PEM);
+        i = YX509_LOOKUP_add_dir(lookup, CApath, YX509_FILETYPE_PEM);
         if (!i) {
-            BIO_printf(bio_err, "Error loading directory %s\n", CApath);
+            BIO_pprintf(bio_err, "Error loading directory %s\n", CApath);
             goto err;
         }
     }
 
     if (CAfile != NULL) {
-        lookup = X509_STORE_add_lookup(cert_ctx, X509_LOOKUP_file());
+        lookup = YX509_STORE_add_lookup(cert_ctx, YX509_LOOKUP_file());
         if (lookup == NULL) {
-            BIO_printf(bio_err, "memory allocation failure\n");
+            BIO_pprintf(bio_err, "memory allocation failure\n");
             goto err;
         }
-        i = X509_LOOKUP_load_file(lookup, CAfile, X509_FILETYPE_PEM);
+        i = YX509_LOOKUP_load_file(lookup, CAfile, YX509_FILETYPE_PEM);
         if (!i) {
-            BIO_printf(bio_err, "Error loading file %s\n", CAfile);
+            BIO_pprintf(bio_err, "Error loading file %s\n", CAfile);
             goto err;
         }
     }
 
     if (vpm != NULL)
-        X509_STORE_set1_param(cert_ctx, vpm);
+        YX509_STORE_set1_param(cert_ctx, vpm);
 
     return cert_ctx;
 
  err:
-    X509_STORE_free(cert_ctx);
+    YX509_STORE_free(cert_ctx);
     return NULL;
 }
 
-static int verify_cb(int ok, X509_STORE_CTX *ctx)
+static int verify_cb(int ok, YX509_STORE_CTX *ctx)
 {
     return ok;
 }

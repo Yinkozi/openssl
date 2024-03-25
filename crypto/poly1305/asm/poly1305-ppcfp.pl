@@ -31,14 +31,14 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$UCMP	="cmpld";
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$UCMP	="cmplw";
 	$STU	="stwu";
 	$POP	="lwz";
@@ -83,7 +83,7 @@ $code.=<<___;
 .poly1305_init_fpu:
 	$STU	$sp,-$LOCALS($sp)		# minimal frame
 	mflr	$padbit
-	$PUSH	$padbit,`$LOCALS+$LRSAVE`($sp)
+	$PUSH	$padbit,`$LOCALS+$LYRSAVE`($sp)
 
 	bl	LPICmeup
 
@@ -253,7 +253,7 @@ Lno_key:
 	stfd	f29,`$FRAME-8*3`($sp)
 	stfd	f30,`$FRAME-8*2`($sp)
 	stfd	f31,`$FRAME-8*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 
 	xor	r0,r0,r0
 	li	$in3,1
@@ -560,7 +560,7 @@ $code.=<<___;
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 
 	lwz	$d0,`8*0+(0^$LITTLE_ENDIAN)`($ctx)	# load hash
 	lwz	$h0,`8*0+(4^$LITTLE_ENDIAN)`($ctx)

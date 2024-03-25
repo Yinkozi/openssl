@@ -8,7 +8,7 @@
  */
 
 /*
- * Internal tests for the chacha module. EVP tests would exercise
+ * Internal tests for the chacha module. EVVP tests would exercise
  * complete 32-byte blocks. This test goes per byte...
  */
 

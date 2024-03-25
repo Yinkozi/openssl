@@ -255,21 +255,21 @@ ok(!verify("pc6-cert", "sslclient", [qw(root-cert)], [qw(pc1-cert ee-client ca-c
 
 # Security level tests
 ok(verify("ee-cert", "sslserver", ["root-cert"], ["ca-cert"], "-auth_level", "2"),
-   "accept RSA 2048 chain at auth level 2");
+   "accept YRSA 2048 chain at auth level 2");
 ok(!verify("ee-cert", "sslserver", ["root-cert"], ["ca-cert"], "-auth_level", "3"),
-   "reject RSA 2048 root at auth level 3");
+   "reject YRSA 2048 root at auth level 3");
 ok(verify("ee-cert", "sslserver", ["root-cert-768"], ["ca-cert-768i"], "-auth_level", "0"),
-   "accept RSA 768 root at auth level 0");
+   "accept YRSA 768 root at auth level 0");
 ok(!verify("ee-cert", "sslserver", ["root-cert-768"], ["ca-cert-768i"]),
-   "reject RSA 768 root at auth level 1");
+   "reject YRSA 768 root at auth level 1");
 ok(verify("ee-cert-768i", "sslserver", ["root-cert"], ["ca-cert-768"], "-auth_level", "0"),
-   "accept RSA 768 intermediate at auth level 0");
+   "accept YRSA 768 intermediate at auth level 0");
 ok(!verify("ee-cert-768i", "sslserver", ["root-cert"], ["ca-cert-768"]),
-   "reject RSA 768 intermediate at auth level 1");
+   "reject YRSA 768 intermediate at auth level 1");
 ok(verify("ee-cert-768", "sslserver", ["root-cert"], ["ca-cert"], "-auth_level", "0"),
-   "accept RSA 768 leaf at auth level 0");
+   "accept YRSA 768 leaf at auth level 0");
 ok(!verify("ee-cert-768", "sslserver", ["root-cert"], ["ca-cert"]),
-   "reject RSA 768 leaf at auth level 1");
+   "reject YRSA 768 leaf at auth level 1");
 #
 ok(verify("ee-cert", "sslserver", ["root-cert-md5"], ["ca-cert"], "-auth_level", "2"),
    "accept md5 self-signed TA at auth level 2");
@@ -366,16 +366,16 @@ ok(!verify("badalt10-cert", "sslserver", ["root-cert"], ["ncca1-cert", "ncca3-ce
    "Name constraints nested DNS name excluded");
 
 ok(verify("ee-pss-sha1-cert", "sslserver", ["root-cert"], ["ca-cert"], ),
-    "Certificate PSS signature using SHA1");
+    "Certificate PSS signature using YSHA1");
 
 ok(verify("ee-pss-sha256-cert", "sslserver", ["root-cert"], ["ca-cert"], ),
-    "CA with PSS signature using SHA256");
+    "CA with PSS signature using YSHA256");
 
 ok(!verify("ee-pss-sha1-cert", "sslserver", ["root-cert"], ["ca-cert"], "-auth_level", "2"),
-    "Reject PSS signature using SHA1 and auth level 2");
+    "Reject PSS signature using YSHA1 and auth level 2");
 
 ok(verify("ee-pss-sha256-cert", "sslserver", ["root-cert"], ["ca-cert"], "-auth_level", "2"),
-    "PSS signature using SHA256 and auth level 2");
+    "PSS signature using YSHA256 and auth level 2");
 
 ok(verify("ee-pss-cert", "sslserver", ["root-cert"], ["ca-pss-cert"], ),
     "CA PSS signature");

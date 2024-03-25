@@ -67,7 +67,7 @@ static int test_dtls_unprocessed(int testidx)
                                        &sctx, &cctx, cert, privkey)))
         return 0;
 
-    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "AES128-SHA")))
+    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "YAES128-SHA")))
         goto end;
 
     c_to_s_fbio = BIO_new(bio_f_tls_dump_filter());
@@ -348,13 +348,13 @@ static int test_swap_app_data(void)
         return 0;
 
 #ifndef OPENSSL_NO_DTLS1_2
-    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "AES128-SHA")))
+    if (!TEST_true(SSL_CTX_set_cipher_list(cctx, "YAES128-SHA")))
         goto end;
 #else
-    /* Default sigalgs are SHA1 based in <DTLS1.2 which is in security level 0 */
-    if (!TEST_true(SSL_CTX_set_cipher_list(sctx, "AES128-SHA:@SECLEVEL=0"))
+    /* Default sigalgs are YSHA1 based in <DTLS1.2 which is in security level 0 */
+    if (!TEST_true(SSL_CTX_set_cipher_list(sctx, "YAES128-SHA:@SECLEVEL=0"))
             || !TEST_true(SSL_CTX_set_cipher_list(cctx,
-                                                  "AES128-SHA:@SECLEVEL=0")))
+                                                  "YAES128-SHA:@SECLEVEL=0")))
         goto end;
 #endif
 

@@ -7,7 +7,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-/* X509 v3 extension utilities */
+/* YX509 v3 extension utilities */
 
 #include "e_os.h"
 #include "internal/cryptlib.h"
@@ -23,10 +23,10 @@
 
 static char *strip_spaces(char *name);
 static int sk_strcmp(const char *const *a, const char *const *b);
-static STACK_OF(OPENSSL_STRING) *get_email(X509_NAME *name,
+static STACK_OF(OPENSSL_STRING) *get_email(YX509_NAME *name,
                                            GENERAL_NAMES *gens);
 static void str_free(OPENSSL_STRING str);
-static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email);
+static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const YASN1_IA5STRING *email);
 
 static int ipv4_from_asc(unsigned char *v4, const char *in);
 static int ipv6_from_asc(unsigned char *v6, const char *in);
@@ -66,7 +66,7 @@ static int x509v3_add_len_value(const char *name, const char *value,
         goto err;
     return 1;
  err:
-    X509V3err(X509V3_F_X509V3_ADD_LEN_VALUE, ERR_R_MALLOC_FAILURE);
+    YX509V3err(YX509V3_F_YX509V3_ADD_LEN_VALUE, ERR_R_MALLOC_FAILURE);
     if (sk_allocated) {
         sk_CONF_VALUE_free(*extlist);
         *extlist = NULL;
@@ -77,7 +77,7 @@ static int x509v3_add_len_value(const char *name, const char *value,
     return 0;
 }
 
-int X509V3_add_value(const char *name, const char *value,
+int YX509V3_add_value(const char *name, const char *value,
                      STACK_OF(CONF_VALUE) **extlist)
 {
     return x509v3_add_len_value(name, value,
@@ -85,7 +85,7 @@ int X509V3_add_value(const char *name, const char *value,
                                 extlist);
 }
 
-int X509V3_add_value_uchar(const char *name, const unsigned char *value,
+int YX509V3_add_value_uchar(const char *name, const unsigned char *value,
                            STACK_OF(CONF_VALUE) **extlist)
 {
     return x509v3_add_len_value(name, (const char *)value,
@@ -101,7 +101,7 @@ int x509v3_add_len_value_uchar(const char *name, const unsigned char *value,
 
 /* Free function for STACK_OF(CONF_VALUE) */
 
-void X509V3_conf_free(CONF_VALUE *conf)
+void YX509V3_conf_free(CONF_VALUE *conf)
 {
     if (!conf)
         return;
@@ -111,19 +111,19 @@ void X509V3_conf_free(CONF_VALUE *conf)
     OPENSSL_free(conf);
 }
 
-int X509V3_add_value_bool(const char *name, int asn1_bool,
+int YX509V3_add_value_bool(const char *name, int asn1_bool,
                           STACK_OF(CONF_VALUE) **extlist)
 {
     if (asn1_bool)
-        return X509V3_add_value(name, "TRUE", extlist);
-    return X509V3_add_value(name, "FALSE", extlist);
+        return YX509V3_add_value(name, "TRUE", extlist);
+    return YX509V3_add_value(name, "FALSE", extlist);
 }
 
-int X509V3_add_value_bool_nf(const char *name, int asn1_bool,
+int YX509V3_add_value_bool_nf(const char *name, int asn1_bool,
                              STACK_OF(CONF_VALUE) **extlist)
 {
     if (asn1_bool)
-        return X509V3_add_value(name, "TRUE", extlist);
+        return YX509V3_add_value(name, "TRUE", extlist);
     return 1;
 }
 
@@ -140,14 +140,14 @@ static char *bignum_to_string(const BIGNUM *bn)
     if (BN_num_bits(bn) < 128)
         return BN_bn2dec(bn);
 
-    tmp = BN_bn2hex(bn);
+    tmp = BN_bn2hexx(bn);
     if (tmp == NULL)
         return NULL;
 
     len = strlen(tmp) + 3;
     ret = OPENSSL_malloc(len);
     if (ret == NULL) {
-        X509V3err(X509V3_F_BIGNUM_TO_STRING, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_BIGNUM_TO_STRING, ERR_R_MALLOC_FAILURE);
         OPENSSL_free(tmp);
         return NULL;
     }
@@ -164,47 +164,47 @@ static char *bignum_to_string(const BIGNUM *bn)
     return ret;
 }
 
-char *i2s_ASN1_ENUMERATED(X509V3_EXT_METHOD *method, const ASN1_ENUMERATED *a)
+char *i2s_YASN1_ENUMERATED(YX509V3_EXT_METHOD *method, const YASN1_ENUMERATED *a)
 {
     BIGNUM *bntmp = NULL;
     char *strtmp = NULL;
 
     if (!a)
         return NULL;
-    if ((bntmp = ASN1_ENUMERATED_to_BN(a, NULL)) == NULL
+    if ((bntmp = YASN1_ENUMERATED_to_BN(a, NULL)) == NULL
         || (strtmp = bignum_to_string(bntmp)) == NULL)
-        X509V3err(X509V3_F_I2S_ASN1_ENUMERATED, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_I2S_YASN1_ENUMERATED, ERR_R_MALLOC_FAILURE);
     BN_free(bntmp);
     return strtmp;
 }
 
-char *i2s_ASN1_INTEGER(X509V3_EXT_METHOD *method, const ASN1_INTEGER *a)
+char *i2s_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const YASN1_INTEGER *a)
 {
     BIGNUM *bntmp = NULL;
     char *strtmp = NULL;
 
     if (!a)
         return NULL;
-    if ((bntmp = ASN1_INTEGER_to_BN(a, NULL)) == NULL
+    if ((bntmp = YASN1_INTEGER_to_BN(a, NULL)) == NULL
         || (strtmp = bignum_to_string(bntmp)) == NULL)
-        X509V3err(X509V3_F_I2S_ASN1_INTEGER, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_I2S_YASN1_INTEGER, ERR_R_MALLOC_FAILURE);
     BN_free(bntmp);
     return strtmp;
 }
 
-ASN1_INTEGER *s2i_ASN1_INTEGER(X509V3_EXT_METHOD *method, const char *value)
+YASN1_INTEGER *s2i_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const char *value)
 {
     BIGNUM *bn = NULL;
-    ASN1_INTEGER *aint;
+    YASN1_INTEGER *aint;
     int isneg, ishex;
     int ret;
     if (value == NULL) {
-        X509V3err(X509V3_F_S2I_ASN1_INTEGER, X509V3_R_INVALID_NULL_VALUE);
+        YX509V3err(YX509V3_F_S2I_YASN1_INTEGER, YX509V3_R_INVALID_NULL_VALUE);
         return NULL;
     }
     bn = BN_new();
     if (bn == NULL) {
-        X509V3err(X509V3_F_S2I_ASN1_INTEGER, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_S2I_YASN1_INTEGER, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     if (value[0] == '-') {
@@ -226,26 +226,26 @@ ASN1_INTEGER *s2i_ASN1_INTEGER(X509V3_EXT_METHOD *method, const char *value)
 
     if (!ret || value[ret]) {
         BN_free(bn);
-        X509V3err(X509V3_F_S2I_ASN1_INTEGER, X509V3_R_BN_DEC2BN_ERROR);
+        YX509V3err(YX509V3_F_S2I_YASN1_INTEGER, YX509V3_R_BN_DEC2BN_ERROR);
         return NULL;
     }
 
     if (isneg && BN_is_zero(bn))
         isneg = 0;
 
-    aint = BN_to_ASN1_INTEGER(bn, NULL);
+    aint = BN_to_YASN1_INTEGER(bn, NULL);
     BN_free(bn);
     if (!aint) {
-        X509V3err(X509V3_F_S2I_ASN1_INTEGER,
-                  X509V3_R_BN_TO_ASN1_INTEGER_ERROR);
+        YX509V3err(YX509V3_F_S2I_YASN1_INTEGER,
+                  YX509V3_R_BN_TO_YASN1_INTEGER_ERROR);
         return NULL;
     }
     if (isneg)
-        aint->type |= V_ASN1_NEG;
+        aint->type |= V_YASN1_NEG;
     return aint;
 }
 
-int X509V3_add_value_int(const char *name, const ASN1_INTEGER *aint,
+int YX509V3_add_value_int(const char *name, const YASN1_INTEGER *aint,
                          STACK_OF(CONF_VALUE) **extlist)
 {
     char *strtmp;
@@ -253,14 +253,14 @@ int X509V3_add_value_int(const char *name, const ASN1_INTEGER *aint,
 
     if (!aint)
         return 1;
-    if ((strtmp = i2s_ASN1_INTEGER(NULL, aint)) == NULL)
+    if ((strtmp = i2s_YASN1_INTEGER(NULL, aint)) == NULL)
         return 0;
-    ret = X509V3_add_value(name, strtmp, extlist);
+    ret = YX509V3_add_value(name, strtmp, extlist);
     OPENSSL_free(strtmp);
     return ret;
 }
 
-int X509V3_get_value_bool(const CONF_VALUE *value, int *asn1_bool)
+int YX509V3_get_value_bool(const CONF_VALUE *value, int *asn1_bool)
 {
     const char *btmp;
 
@@ -285,18 +285,18 @@ int X509V3_get_value_bool(const CONF_VALUE *value, int *asn1_bool)
         return 1;
     }
  err:
-    X509V3err(X509V3_F_X509V3_GET_VALUE_BOOL,
-              X509V3_R_INVALID_BOOLEAN_STRING);
-    X509V3_conf_err(value);
+    YX509V3err(YX509V3_F_YX509V3_GET_VALUE_BOOL,
+              YX509V3_R_INVALID_BOOLEAN_STRING);
+    YX509V3_conf_err(value);
     return 0;
 }
 
-int X509V3_get_value_int(const CONF_VALUE *value, ASN1_INTEGER **aint)
+int YX509V3_get_value_int(const CONF_VALUE *value, YASN1_INTEGER **aint)
 {
-    ASN1_INTEGER *itmp;
+    YASN1_INTEGER *itmp;
 
-    if ((itmp = s2i_ASN1_INTEGER(NULL, value->value)) == NULL) {
-        X509V3_conf_err(value);
+    if ((itmp = s2i_YASN1_INTEGER(NULL, value->value)) == NULL) {
+        YX509V3_conf_err(value);
         return 0;
     }
     *aint = itmp;
@@ -310,7 +310,7 @@ int X509V3_get_value_int(const CONF_VALUE *value, ASN1_INTEGER **aint)
  * #define DEBUG
  */
 
-STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
+STACK_OF(CONF_VALUE) *YX509V3_parse_list(const char *line)
 {
     char *p, *q, c;
     char *ntmp, *vtmp;
@@ -320,7 +320,7 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
     /* We are going to modify the line so copy it first */
     linebuf = OPENSSL_strdup(line);
     if (linebuf == NULL) {
-        X509V3err(X509V3_F_X509V3_PARSE_LIST, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_YX509V3_PARSE_LIST, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     state = HDR_NAME;
@@ -336,8 +336,8 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
                 *p = 0;
                 ntmp = strip_spaces(q);
                 if (!ntmp) {
-                    X509V3err(X509V3_F_X509V3_PARSE_LIST,
-                              X509V3_R_INVALID_NULL_NAME);
+                    YX509V3err(YX509V3_F_YX509V3_PARSE_LIST,
+                              YX509V3_R_INVALID_NULL_NAME);
                     goto err;
                 }
                 q = p + 1;
@@ -346,11 +346,11 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
                 ntmp = strip_spaces(q);
                 q = p + 1;
                 if (!ntmp) {
-                    X509V3err(X509V3_F_X509V3_PARSE_LIST,
-                              X509V3_R_INVALID_NULL_NAME);
+                    YX509V3err(YX509V3_F_YX509V3_PARSE_LIST,
+                              YX509V3_R_INVALID_NULL_NAME);
                     goto err;
                 }
-                X509V3_add_value(ntmp, NULL, &values);
+                YX509V3_add_value(ntmp, NULL, &values);
             }
             break;
 
@@ -360,11 +360,11 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
                 *p = 0;
                 vtmp = strip_spaces(q);
                 if (!vtmp) {
-                    X509V3err(X509V3_F_X509V3_PARSE_LIST,
-                              X509V3_R_INVALID_NULL_VALUE);
+                    YX509V3err(YX509V3_F_YX509V3_PARSE_LIST,
+                              YX509V3_R_INVALID_NULL_VALUE);
                     goto err;
                 }
-                X509V3_add_value(ntmp, vtmp, &values);
+                YX509V3_add_value(ntmp, vtmp, &values);
                 ntmp = NULL;
                 q = p + 1;
             }
@@ -375,25 +375,25 @@ STACK_OF(CONF_VALUE) *X509V3_parse_list(const char *line)
     if (state == HDR_VALUE) {
         vtmp = strip_spaces(q);
         if (!vtmp) {
-            X509V3err(X509V3_F_X509V3_PARSE_LIST,
-                      X509V3_R_INVALID_NULL_VALUE);
+            YX509V3err(YX509V3_F_YX509V3_PARSE_LIST,
+                      YX509V3_R_INVALID_NULL_VALUE);
             goto err;
         }
-        X509V3_add_value(ntmp, vtmp, &values);
+        YX509V3_add_value(ntmp, vtmp, &values);
     } else {
         ntmp = strip_spaces(q);
         if (!ntmp) {
-            X509V3err(X509V3_F_X509V3_PARSE_LIST, X509V3_R_INVALID_NULL_NAME);
+            YX509V3err(YX509V3_F_YX509V3_PARSE_LIST, YX509V3_R_INVALID_NULL_NAME);
             goto err;
         }
-        X509V3_add_value(ntmp, NULL, &values);
+        YX509V3_add_value(ntmp, NULL, &values);
     }
     OPENSSL_free(linebuf);
     return values;
 
  err:
     OPENSSL_free(linebuf);
-    sk_CONF_VALUE_pop_free(values, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(values, YX509V3_conf_free);
     return NULL;
 
 }
@@ -441,24 +441,24 @@ static int sk_strcmp(const char *const *a, const char *const *b)
     return strcmp(*a, *b);
 }
 
-STACK_OF(OPENSSL_STRING) *X509_get1_email(X509 *x)
+STACK_OF(OPENSSL_STRING) *YX509_get1_email(YX509 *x)
 {
     GENERAL_NAMES *gens;
     STACK_OF(OPENSSL_STRING) *ret;
 
-    gens = X509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
-    ret = get_email(X509_get_subject_name(x), gens);
+    gens = YX509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
+    ret = get_email(YX509_get_subject_name(x), gens);
     sk_GENERAL_NAME_pop_free(gens, GENERAL_NAME_free);
     return ret;
 }
 
-STACK_OF(OPENSSL_STRING) *X509_get1_ocsp(X509 *x)
+STACK_OF(OPENSSL_STRING) *YX509_get1_ocsp(YX509 *x)
 {
     AUTHORITY_INFO_ACCESS *info;
     STACK_OF(OPENSSL_STRING) *ret = NULL;
     int i;
 
-    info = X509_get_ext_d2i(x, NID_info_access, NULL, NULL);
+    info = YX509_get_ext_d2i(x, NID_info_access, NULL, NULL);
     if (!info)
         return NULL;
     for (i = 0; i < sk_ACCESS_DESCRIPTION_num(info); i++) {
@@ -475,35 +475,35 @@ STACK_OF(OPENSSL_STRING) *X509_get1_ocsp(X509 *x)
     return ret;
 }
 
-STACK_OF(OPENSSL_STRING) *X509_REQ_get1_email(X509_REQ *x)
+STACK_OF(OPENSSL_STRING) *YX509_REQ_get1_email(YX509_REQ *x)
 {
     GENERAL_NAMES *gens;
-    STACK_OF(X509_EXTENSION) *exts;
+    STACK_OF(YX509_EXTENSION) *exts;
     STACK_OF(OPENSSL_STRING) *ret;
 
-    exts = X509_REQ_get_extensions(x);
-    gens = X509V3_get_d2i(exts, NID_subject_alt_name, NULL, NULL);
-    ret = get_email(X509_REQ_get_subject_name(x), gens);
+    exts = YX509_REQ_get_extensions(x);
+    gens = YX509V3_get_d2i(exts, NID_subject_alt_name, NULL, NULL);
+    ret = get_email(YX509_REQ_get_subject_name(x), gens);
     sk_GENERAL_NAME_pop_free(gens, GENERAL_NAME_free);
-    sk_X509_EXTENSION_pop_free(exts, X509_EXTENSION_free);
+    sk_YX509_EXTENSION_pop_free(exts, YX509_EXTENSION_free);
     return ret;
 }
 
-static STACK_OF(OPENSSL_STRING) *get_email(X509_NAME *name,
+static STACK_OF(OPENSSL_STRING) *get_email(YX509_NAME *name,
                                            GENERAL_NAMES *gens)
 {
     STACK_OF(OPENSSL_STRING) *ret = NULL;
-    X509_NAME_ENTRY *ne;
-    const ASN1_IA5STRING *email;
+    YX509_NAME_ENTRY *ne;
+    const YASN1_IA5STRING *email;
     GENERAL_NAME *gen;
     int i = -1;
 
     /* Now add any email address(es) to STACK */
-    /* First supplied X509_NAME */
-    while ((i = X509_NAME_get_index_by_NID(name,
+    /* First supplied YX509_NAME */
+    while ((i = YX509_NAME_get_index_by_NID(name,
                                            NID_pkcs9_emailAddress, i)) >= 0) {
-        ne = X509_NAME_get_entry(name, i);
-        email = X509_NAME_ENTRY_get_data(ne);
+        ne = YX509_NAME_get_entry(name, i);
+        email = YX509_NAME_ENTRY_get_data(ne);
         if (!append_ia5(&ret, email))
             return NULL;
     }
@@ -522,11 +522,11 @@ static void str_free(OPENSSL_STRING str)
     OPENSSL_free(str);
 }
 
-static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email)
+static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const YASN1_IA5STRING *email)
 {
     char *emtmp;
     /* First some sanity checks */
-    if (email->type != V_ASN1_IA5STRING)
+    if (email->type != V_YASN1_IA5STRING)
         return 1;
     if (email->data == NULL || email->length == 0)
         return 1;
@@ -539,7 +539,7 @@ static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email
 
     emtmp = OPENSSL_strndup((char *)email->data, email->length);
     if (emtmp == NULL) {
-        X509_email_free(*sk);
+        YX509_email_free(*sk);
         *sk = NULL;
         return 0;
     }
@@ -551,14 +551,14 @@ static int append_ia5(STACK_OF(OPENSSL_STRING) **sk, const ASN1_IA5STRING *email
     }
     if (!sk_OPENSSL_STRING_push(*sk, emtmp)) {
         OPENSSL_free(emtmp); /* free on push failure */
-        X509_email_free(*sk);
+        YX509_email_free(*sk);
         *sk = NULL;
         return 0;
     }
     return 1;
 }
 
-void X509_email_free(STACK_OF(OPENSSL_STRING) *sk)
+void YX509_email_free(STACK_OF(OPENSSL_STRING) *sk)
 {
     sk_OPENSSL_STRING_pop_free(sk, str_free);
 }
@@ -581,11 +581,11 @@ static void skip_prefix(const unsigned char **p, size_t *plen,
      * full subject (starting at the '.'), provided the prefix contains
      * no NULs.
      */
-    if ((flags & _X509_CHECK_FLAG_DOT_SUBDOMAINS) == 0)
+    if ((flags & _YX509_CHECK_FLAG_DOT_SUBDOMAINS) == 0)
         return;
 
     while (pattern_len > subject_len && *pattern) {
-        if ((flags & X509_CHECK_FLAG_SINGLE_LABEL_SUBDOMAINS) &&
+        if ((flags & YX509_CHECK_FLAG_SINGLE_LABEL_SUBDOMAINS) &&
             *pattern == '.')
             break;
         ++pattern;
@@ -699,7 +699,7 @@ static int wildcard_match(const unsigned char *prefix, size_t prefix_len,
         if (wildcard_start == wildcard_end)
             return 0;
         allow_idna = 1;
-        if (flags & X509_CHECK_FLAG_MULTI_LABEL_WILDCARDS)
+        if (flags & YX509_CHECK_FLAG_MULTI_LABEL_WILDCARDS)
             allow_multi = 1;
     }
     /* IDNA labels cannot match partial wildcards */
@@ -751,7 +751,7 @@ static const unsigned char *valid_star(const unsigned char *p, size_t len,
             if (star != NULL || (state & LABEL_IDNA) != 0 || dots)
                 return NULL;
             /* Only full-label '*.example.com' wildcards? */
-            if ((flags & X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS)
+            if ((flags & YX509_CHECK_FLAG_NO_PARTIAL_WILDCARDS)
                 && (!atstart || !atend))
                 return NULL;
             /* No 'foo*bar' wildcards */
@@ -811,12 +811,12 @@ static int equal_wildcard(const unsigned char *pattern, size_t pattern_len,
 }
 
 /*
- * Compare an ASN1_STRING to a supplied string. If they match return 1. If
+ * Compare an YASN1_STRING to a supplied string. If they match return 1. If
  * cmp_type > 0 only compare if string matches the type, otherwise convert it
  * to UTF8.
  */
 
-static int do_check_string(const ASN1_STRING *a, int cmp_type, equal_fn equal,
+static int do_check_string(const YASN1_STRING *a, int cmp_type, equal_fn equal,
                            unsigned int flags, const char *b, size_t blen,
                            char **peername)
 {
@@ -827,7 +827,7 @@ static int do_check_string(const ASN1_STRING *a, int cmp_type, equal_fn equal,
     if (cmp_type > 0) {
         if (cmp_type != a->type)
             return 0;
-        if (cmp_type == V_ASN1_IA5STRING)
+        if (cmp_type == V_YASN1_IA5STRING)
             rv = equal(a->data, a->length, (unsigned char *)b, blen, flags);
         else if (a->length == (int)blen && !memcmp(a->data, b, blen))
             rv = 1;
@@ -839,7 +839,7 @@ static int do_check_string(const ASN1_STRING *a, int cmp_type, equal_fn equal,
     } else {
         int astrlen;
         unsigned char *astr;
-        astrlen = ASN1_STRING_to_UTF8(&astr, a);
+        astrlen = YASN1_STRING_to_UTF8(&astr, a);
         if (astrlen < 0) {
             /*
              * -1 could be an internal malloc failure or a decoding error from
@@ -860,11 +860,11 @@ static int do_check_string(const ASN1_STRING *a, int cmp_type, equal_fn equal,
     return rv;
 }
 
-static int do_x509_check(X509 *x, const char *chk, size_t chklen,
+static int do_x509_check(YX509 *x, const char *chk, size_t chklen,
                          unsigned int flags, int check_type, char **peername)
 {
     GENERAL_NAMES *gens = NULL;
-    X509_NAME *name = NULL;
+    YX509_NAME *name = NULL;
     int i;
     int cnid = NID_undef;
     int alt_type;
@@ -873,34 +873,34 @@ static int do_x509_check(X509 *x, const char *chk, size_t chklen,
     equal_fn equal;
 
     /* See below, this flag is internal-only */
-    flags &= ~_X509_CHECK_FLAG_DOT_SUBDOMAINS;
+    flags &= ~_YX509_CHECK_FLAG_DOT_SUBDOMAINS;
     if (check_type == GEN_EMAIL) {
         cnid = NID_pkcs9_emailAddress;
-        alt_type = V_ASN1_IA5STRING;
+        alt_type = V_YASN1_IA5STRING;
         equal = equal_email;
     } else if (check_type == GEN_DNS) {
         cnid = NID_commonName;
         /* Implicit client-side DNS sub-domain pattern */
         if (chklen > 1 && chk[0] == '.')
-            flags |= _X509_CHECK_FLAG_DOT_SUBDOMAINS;
-        alt_type = V_ASN1_IA5STRING;
-        if (flags & X509_CHECK_FLAG_NO_WILDCARDS)
+            flags |= _YX509_CHECK_FLAG_DOT_SUBDOMAINS;
+        alt_type = V_YASN1_IA5STRING;
+        if (flags & YX509_CHECK_FLAG_NO_WILDCARDS)
             equal = equal_nocase;
         else
             equal = equal_wildcard;
     } else {
-        alt_type = V_ASN1_OCTET_STRING;
+        alt_type = V_YASN1_OCTET_STRING;
         equal = equal_case;
     }
 
     if (chklen == 0)
         chklen = strlen(chk);
 
-    gens = X509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
+    gens = YX509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
     if (gens) {
         for (i = 0; i < sk_GENERAL_NAME_num(gens); i++) {
             GENERAL_NAME *gen;
-            ASN1_STRING *cstr;
+            YASN1_STRING *cstr;
             gen = sk_GENERAL_NAME_value(gens, i);
             if (gen->type != check_type)
                 continue;
@@ -919,19 +919,19 @@ static int do_x509_check(X509 *x, const char *chk, size_t chklen,
         GENERAL_NAMES_free(gens);
         if (rv != 0)
             return rv;
-        if (san_present && !(flags & X509_CHECK_FLAG_ALWAYS_CHECK_SUBJECT))
+        if (san_present && !(flags & YX509_CHECK_FLAG_ALWAYS_CHECK_SUBJECT))
             return 0;
     }
 
     /* We're done if CN-ID is not pertinent */
-    if (cnid == NID_undef || (flags & X509_CHECK_FLAG_NEVER_CHECK_SUBJECT))
+    if (cnid == NID_undef || (flags & YX509_CHECK_FLAG_NEVER_CHECK_SUBJECT))
         return 0;
 
     i = -1;
-    name = X509_get_subject_name(x);
-    while ((i = X509_NAME_get_index_by_NID(name, cnid, i)) >= 0) {
-        const X509_NAME_ENTRY *ne = X509_NAME_get_entry(name, i);
-        const ASN1_STRING *str = X509_NAME_ENTRY_get_data(ne);
+    name = YX509_get_subject_name(x);
+    while ((i = YX509_NAME_get_index_by_NID(name, cnid, i)) >= 0) {
+        const YX509_NAME_ENTRY *ne = YX509_NAME_get_entry(name, i);
+        const YASN1_STRING *str = YX509_NAME_ENTRY_get_data(ne);
 
         /* Positive on success, negative on error! */
         if ((rv = do_check_string(str, -1, equal, flags,
@@ -941,7 +941,7 @@ static int do_x509_check(X509 *x, const char *chk, size_t chklen,
     return 0;
 }
 
-int X509_check_host(X509 *x, const char *chk, size_t chklen,
+int YX509_check_host(YX509 *x, const char *chk, size_t chklen,
                     unsigned int flags, char **peername)
 {
     if (chk == NULL)
@@ -960,7 +960,7 @@ int X509_check_host(X509 *x, const char *chk, size_t chklen,
     return do_x509_check(x, chk, chklen, flags, GEN_DNS, peername);
 }
 
-int X509_check_email(X509 *x, const char *chk, size_t chklen,
+int YX509_check_email(YX509 *x, const char *chk, size_t chklen,
                      unsigned int flags)
 {
     if (chk == NULL)
@@ -979,7 +979,7 @@ int X509_check_email(X509 *x, const char *chk, size_t chklen,
     return do_x509_check(x, chk, chklen, flags, GEN_EMAIL, NULL);
 }
 
-int X509_check_ip(X509 *x, const unsigned char *chk, size_t chklen,
+int YX509_check_ip(YX509 *x, const unsigned char *chk, size_t chklen,
                   unsigned int flags)
 {
     if (chk == NULL)
@@ -987,7 +987,7 @@ int X509_check_ip(X509 *x, const unsigned char *chk, size_t chklen,
     return do_x509_check(x, (char *)chk, chklen, flags, GEN_IPADD, NULL);
 }
 
-int X509_check_ip_asc(X509 *x, const char *ipasc, unsigned int flags)
+int YX509_check_ip_asc(YX509 *x, const char *ipasc, unsigned int flags)
 {
     unsigned char ipout[16];
     size_t iplen;
@@ -1005,10 +1005,10 @@ int X509_check_ip_asc(X509 *x, const char *ipasc, unsigned int flags)
  * with RFC3280.
  */
 
-ASN1_OCTET_STRING *a2i_IPADDRESS(const char *ipasc)
+YASN1_OCTET_STRING *a2i_IPADDRESS(const char *ipasc)
 {
     unsigned char ipout[16];
-    ASN1_OCTET_STRING *ret;
+    YASN1_OCTET_STRING *ret;
     int iplen;
 
     /* If string contains a ':' assume IPv6 */
@@ -1018,19 +1018,19 @@ ASN1_OCTET_STRING *a2i_IPADDRESS(const char *ipasc)
     if (!iplen)
         return NULL;
 
-    ret = ASN1_OCTET_STRING_new();
+    ret = YASN1_OCTET_STRING_new();
     if (ret == NULL)
         return NULL;
-    if (!ASN1_OCTET_STRING_set(ret, ipout, iplen)) {
-        ASN1_OCTET_STRING_free(ret);
+    if (!YASN1_OCTET_STRING_set(ret, ipout, iplen)) {
+        YASN1_OCTET_STRING_free(ret);
         return NULL;
     }
     return ret;
 }
 
-ASN1_OCTET_STRING *a2i_IPADDRESS_NC(const char *ipasc)
+YASN1_OCTET_STRING *a2i_IPADDRESS_NC(const char *ipasc)
 {
-    ASN1_OCTET_STRING *ret = NULL;
+    YASN1_OCTET_STRING *ret = NULL;
     unsigned char ipout[32];
     char *iptmp = NULL, *p;
     int iplen1, iplen2;
@@ -1056,17 +1056,17 @@ ASN1_OCTET_STRING *a2i_IPADDRESS_NC(const char *ipasc)
     if (!iplen2 || (iplen1 != iplen2))
         goto err;
 
-    ret = ASN1_OCTET_STRING_new();
+    ret = YASN1_OCTET_STRING_new();
     if (ret == NULL)
         goto err;
-    if (!ASN1_OCTET_STRING_set(ret, ipout, iplen1 + iplen2))
+    if (!YASN1_OCTET_STRING_set(ret, ipout, iplen1 + iplen2))
         goto err;
 
     return ret;
 
  err:
     OPENSSL_free(iptmp);
-    ASN1_OCTET_STRING_free(ret);
+    YASN1_OCTET_STRING_free(ret);
     return NULL;
 }
 
@@ -1240,7 +1240,7 @@ static int ipv6_hex(unsigned char *out, const char *in, int inlen)
     return 1;
 }
 
-int X509V3_NAME_from_section(X509_NAME *nm, STACK_OF(CONF_VALUE) *dn_sk,
+int YX509V3_NAME_from_section(YX509_NAME *nm, STACK_OF(CONF_VALUE) *dn_sk,
                              unsigned long chtype)
 {
     CONF_VALUE *v;
@@ -1279,7 +1279,7 @@ int X509V3_NAME_from_section(X509_NAME *nm, STACK_OF(CONF_VALUE) *dn_sk,
             type++;
         } else
             mval = 0;
-        if (!X509_NAME_add_entry_by_txt(nm, type, chtype,
+        if (!YX509_NAME_add_entry_by_txt(nm, type, chtype,
                                         (unsigned char *)v->value, -1, -1,
                                         mval))
             return 0;

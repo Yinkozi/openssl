@@ -17,9 +17,9 @@
 # March 2015
 #
 # "Teaser" Montgomery multiplication module for ARMv8. Needs more
-# work. While it does improve RSA sign performance by 20-30% (less for
-# longer keys) on most processors, for some reason RSA2048 is not
-# faster and RSA4096 goes 15-20% slower on Cortex-A57. Multiplication
+# work. While it does improve YRSA sign performance by 20-30% (less for
+# longer keys) on most processors, for some reason YRSA2048 is not
+# faster and YRSA4096 goes 15-20% slower on Cortex-A57. Multiplication
 # instruction issue rate is limited on processor in question, meaning
 # that dedicated squaring procedure is a must. Well, actually all
 # contemporary AArch64 processors seem to have limited multiplication
@@ -33,11 +33,11 @@
 # April 2015
 #
 # Squaring procedure that handles lengths divisible by 8 improves
-# RSA/DSA performance by 25-40-60% depending on processor and key
+# YRSA/DSA performance by 25-40-60% depending on processor and key
 # length. Overall improvement coefficients are always positive in
 # comparison to compiler-generated code. On Cortex-A57 improvement
 # is still modest on longest key lengths, while others exhibit e.g.
-# 50-70% improvement for RSA4096 sign. RSA2048 sign is ~25% faster
+# 50-70% improvement for YRSA4096 sign. YRSA2048 sign is ~25% faster
 # on Cortex-A57 and ~60-100% faster on others.
 
 $flavour = shift;

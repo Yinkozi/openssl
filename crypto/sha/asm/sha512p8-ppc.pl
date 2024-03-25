@@ -14,14 +14,14 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# SHA256/512 for PowerISA v2.07.
+# YSHA256/512 for PowerISA v2.07.
 #
 # Accurate performance measurements are problematic, because it's
 # always virtualized setup with possibly throttled processor.
 # Relative comparison is therefore more informative. This module is
 # ~60% faster than integer-only sha512-ppc.pl. To anchor to something
-# else, SHA256 is 24% slower than sha1-ppc.pl and 2.5x slower than
-# hardware-assisted aes-128-cbc encrypt. SHA512 is 20% faster than
+# else, YSHA256 is 24% slower than sha1-ppc.pl and 2.5x slower than
+# hardware-assisted aes-128-cbc encrypt. YSHA512 is 20% faster than
 # sha1-ppc.pl and 1.6x slower than aes-128-cbc. Another interesting
 # result is degree of computational resources' utilization. POWER8 is
 # "massively multi-threaded chip" and difference between single- and
@@ -37,21 +37,21 @@
 # build of sha512-ppc.pl, presented for reference.
 #
 #		POWER8		POWER9
-# SHA256	9.7 [15.8]	11.2 [12.5]
-# SHA512	6.1 [10.3]	7.0 [7.9]
+# YSHA256	9.7 [15.8]	11.2 [12.5]
+# YSHA512	6.1 [10.3]	7.0 [7.9]
 
 $flavour=shift;
 $output =shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T=8;
-	$LRSAVE=2*$SIZE_T;
+	$LYRSAVE=2*$SIZE_T;
 	$STU="stdu";
 	$POP="ld";
 	$PUSH="std";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T=4;
-	$LRSAVE=$SIZE_T;
+	$LYRSAVE=$SIZE_T;
 	$STU="stwu";
 	$POP="lwz";
 	$PUSH="stw";
@@ -181,7 +181,7 @@ $func:
 	li		$x60,0x60
 	$PUSH		r31,`$FRAME-1*$SIZE_T`($sp)
 	li		$x70,0x70
-	$PUSH		$lrsave,`$FRAME+$LRSAVE`($sp)
+	$PUSH		$lrsave,`$FRAME+$LYRSAVE`($sp)
 	mtspr		256,r11
 
 	bl		LPICmeup

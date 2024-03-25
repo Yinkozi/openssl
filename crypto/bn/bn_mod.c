@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
+int BNY_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
 {
     /*
      * like BN_mod, but returns non-negative remainder (i.e., 0 <= r < |d|
@@ -22,25 +22,25 @@ int BN_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx)
     if (!r->neg)
         return 1;
     /* now   -|d| < r < 0,  so we have to set  r := r + |d| */
-    return (d->neg ? BN_sub : BN_add) (r, r, d);
+    return (d->neg ? BNY_sub : BNY_add) (r, r, d);
 }
 
 int BN_mod_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
                BN_CTX *ctx)
 {
-    if (!BN_add(r, a, b))
+    if (!BNY_add(r, a, b))
         return 0;
-    return BN_nnmod(r, r, m, ctx);
+    return BNY_nnmod(r, r, m, ctx);
 }
 
 /*
  * BN_mod_add variant that may be used if both a and b are non-negative and
  * less than m. The original algorithm was
  *
- *    if (!BN_uadd(r, a, b))
+ *    if (!BNY_uadd(r, a, b))
  *       return 0;
- *    if (BN_ucmp(r, m) >= 0)
- *       return BN_usub(r, r, m);
+ *    if (BNY_ucmp(r, m) >= 0)
+ *       return BNY_usub(r, r, m);
  *
  * which is replaced with addition, subtracting modulus, and conditional
  * move depending on whether or not subtraction borrowed.
@@ -106,9 +106,9 @@ int BN_mod_add_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 int BN_mod_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
                BN_CTX *ctx)
 {
-    if (!BN_sub(r, a, b))
+    if (!BNY_sub(r, a, b))
         return 0;
-    return BN_nnmod(r, r, m, ctx);
+    return BNY_nnmod(r, r, m, ctx);
 }
 
 /*
@@ -182,10 +182,10 @@ int bn_mod_sub_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 int BN_mod_sub_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                      const BIGNUM *m)
 {
-    if (!BN_sub(r, a, b))
+    if (!BNY_sub(r, a, b))
         return 0;
     if (r->neg)
-        return BN_add(r, r, m);
+        return BNY_add(r, r, m);
     return 1;
 }
 
@@ -204,13 +204,13 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
     if ((t = BN_CTX_get(ctx)) == NULL)
         goto err;
     if (a == b) {
-        if (!BN_sqr(t, a, ctx))
+        if (!BNY_sqr(t, a, ctx))
             goto err;
     } else {
-        if (!BN_mul(t, a, b, ctx))
+        if (!BNY_mul(t, a, b, ctx))
             goto err;
     }
-    if (!BN_nnmod(r, t, m, ctx))
+    if (!BNY_nnmod(r, t, m, ctx))
         goto err;
     bn_check_top(r);
     ret = 1;
@@ -221,9 +221,9 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
 
 int BN_mod_sqr(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx)
 {
-    if (!BN_sqr(r, a, ctx))
+    if (!BNY_sqr(r, a, ctx))
         return 0;
-    /* r->neg == 0,  thus we don't need BN_nnmod */
+    /* r->neg == 0,  thus we don't need BNY_nnmod */
     return BN_mod(r, r, m, ctx);
 }
 
@@ -232,7 +232,7 @@ int BN_mod_lshift1(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx)
     if (!BN_lshift1(r, a))
         return 0;
     bn_check_top(r);
-    return BN_nnmod(r, r, m, ctx);
+    return BNY_nnmod(r, r, m, ctx);
 }
 
 /*
@@ -245,7 +245,7 @@ int BN_mod_lshift1_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *m)
         return 0;
     bn_check_top(r);
     if (BN_cmp(r, m) >= 0)
-        return BN_sub(r, r, m);
+        return BNY_sub(r, r, m);
     return 1;
 }
 
@@ -255,7 +255,7 @@ int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
     BIGNUM *abs_m = NULL;
     int ret;
 
-    if (!BN_nnmod(r, a, m, ctx))
+    if (!BNY_nnmod(r, a, m, ctx))
         return 0;
 
     if (m->neg) {
@@ -311,7 +311,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m)
         /* BN_num_bits(r) <= BN_num_bits(m) */
 
         if (BN_cmp(r, m) >= 0) {
-            if (!BN_sub(r, r, m))
+            if (!BNY_sub(r, r, m))
                 return 0;
         }
     }

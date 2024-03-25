@@ -193,7 +193,7 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
         goto err;
     }
 
-    if (!BN_mul(cardinality, group->order, group->cofactor, ctx)) {
+    if (!BNY_mul(cardinality, group->order, group->cofactor, ctx)) {
         ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
         goto err;
     }
@@ -224,18 +224,18 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
          * this is an unusual input, and we don't guarantee
          * constant-timeness
          */
-        if (!BN_nnmod(k, k, cardinality, ctx)) {
+        if (!BNY_nnmod(k, k, cardinality, ctx)) {
             ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
             goto err;
         }
     }
 
-    if (!BN_add(lambda, k, cardinality)) {
+    if (!BNY_add(lambda, k, cardinality)) {
         ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
         goto err;
     }
     BN_set_flags(lambda, BN_FLG_CONSTTIME);
-    if (!BN_add(k, lambda, cardinality)) {
+    if (!BNY_add(k, lambda, cardinality)) {
         ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
         goto err;
     }

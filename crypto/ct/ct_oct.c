@@ -376,32 +376,32 @@ int i2o_SCT_LIST(const STACK_OF(SCT) *a, unsigned char **pp)
 STACK_OF(SCT) *d2i_SCT_LIST(STACK_OF(SCT) **a, const unsigned char **pp,
                             long len)
 {
-    ASN1_OCTET_STRING *oct = NULL;
+    YASN1_OCTET_STRING *oct = NULL;
     STACK_OF(SCT) *sk = NULL;
     const unsigned char *p;
 
     p = *pp;
-    if (d2i_ASN1_OCTET_STRING(&oct, &p, len) == NULL)
+    if (d2i_YASN1_OCTET_STRING(&oct, &p, len) == NULL)
         return NULL;
 
     p = oct->data;
     if ((sk = o2i_SCT_LIST(a, &p, oct->length)) != NULL)
         *pp += len;
 
-    ASN1_OCTET_STRING_free(oct);
+    YASN1_OCTET_STRING_free(oct);
     return sk;
 }
 
 int i2d_SCT_LIST(const STACK_OF(SCT) *a, unsigned char **out)
 {
-    ASN1_OCTET_STRING oct;
+    YASN1_OCTET_STRING oct;
     int len;
 
     oct.data = NULL;
     if ((oct.length = i2o_SCT_LIST(a, &oct.data)) == -1)
         return -1;
 
-    len = i2d_ASN1_OCTET_STRING(&oct, out);
+    len = i2d_YASN1_OCTET_STRING(&oct, out);
     OPENSSL_free(oct.data);
     return len;
 }

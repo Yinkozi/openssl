@@ -8,7 +8,7 @@
 
 
 ######################################################################
-## Constant-time SSSE3 AES core implementation.
+## Constant-time SSSE3 YAES core implementation.
 ## version 0.1
 ##
 ## By Mike Hamburg (Stanford University), 2009
@@ -39,14 +39,14 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$STU	="stdu";
 	$POP	="ld";
 	$PUSH	="std";
 	$UCMP	="cmpld";
 } elsif ($flavour =~ /32/) {
 	$SIZE_T	=4;
-	$LRSAVE	=$SIZE_T;
+	$LYRSAVE	=$SIZE_T;
 	$STU	="stwu";
 	$POP	="lwz";
 	$PUSH	="stw";
@@ -164,7 +164,7 @@ Lconsts:
 	blr
 	.long	0
 	.byte	0,12,0x14,0,0,0,0,0
-.asciz  "Vector Permutation AES for AltiVec, Mike Hamburg (Stanford University)"
+.asciz  "Vector Permutation YAES for AltiVec, Mike Hamburg (Stanford University)"
 .align	6
 ___
 
@@ -218,7 +218,7 @@ _vpaes_encrypt_preheat:
 ##
 ##  _aes_encrypt_core
 ##
-##  AES-encrypt %xmm0.
+##  YAES-encrypt %xmm0.
 ##
 ##  Inputs:
 ##     %xmm0 = input
@@ -335,7 +335,7 @@ Lenc_entry:
 	stvx	v31,r11,$sp
 	stw	r7,`$FRAME-4`($sp)	# save vrsave
 	li	r0, -1
-	$PUSH	r6,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r6,`$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r0			# preserve all AltiVec registers
 
 	bl	_vpaes_encrypt_preheat
@@ -567,7 +567,7 @@ Ldec_entry:
 	stvx	v31,r11,$sp
 	stw	r7,`$FRAME-4`($sp)	# save vrsave
 	li	r0, -1
-	$PUSH	r6,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r6,`$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r0			# preserve all AltiVec registers
 
 	bl	_vpaes_decrypt_preheat
@@ -669,7 +669,7 @@ Ldec_done:
 	$PUSH	r30,`$FRAME+$SIZE_T*0`($sp)
 	$PUSH	r31,`$FRAME+$SIZE_T*1`($sp)
 	li	r9, -16
-	$PUSH	r0, `$FRAME+$SIZE_T*2+$LRSAVE`($sp)
+	$PUSH	r0, `$FRAME+$SIZE_T*2+$LYRSAVE`($sp)
 
 	and	r30, r5, r9		# copy length&-16
 	andi.	r9, $out, 15		# is $out aligned?
@@ -848,7 +848,7 @@ Lcbc_write_iv:
 	lvx	v30,r10,$sp
 	lvx	v31,r11,$sp
 Lcbc_abort:
-	$POP	r0, `$FRAME+$SIZE_T*2+$LRSAVE`($sp)
+	$POP	r0, `$FRAME+$SIZE_T*2+$LYRSAVE`($sp)
 	$POP	r30,`$FRAME+$SIZE_T*0`($sp)
 	$POP	r31,`$FRAME+$SIZE_T*1`($sp)
 	mtlr	r0
@@ -868,7 +868,7 @@ my ($invlo,$invhi,$iptlo,$ipthi,$rcon) = map("v$_",(10..13,24));
 $code.=<<___;
 ########################################################
 ##                                                    ##
-##                  AES key schedule                  ##
+##                  YAES key schedule                  ##
 ##                                                    ##
 ########################################################
 .align	4
@@ -1416,18 +1416,18 @@ Lschedule_mangle_dec:
 	stvx	v31,r11,$sp
 	stw	r6,`$FRAME-4`($sp)	# save vrsave
 	li	r7, -1
-	$PUSH	r0, `$FRAME+$LRSAVE`($sp)
+	$PUSH	r0, `$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r7			# preserve all AltiVec registers
 
 	srwi	r9, $bits, 5		# shr	\$5,%eax
 	addi	r9, r9, 6		# add	\$5,%eax
-	stw	r9, 240($out)		# mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	stw	r9, 240($out)		# mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 
 	cmplw	$dir, $bits, $bits	# set encrypt direction
 	li	r8, 0x30		# mov	\$0x30,%r8d
 	bl	_vpaes_schedule_core
 
-	$POP	r0, `$FRAME+$LRSAVE`($sp)
+	$POP	r0, `$FRAME+$LYRSAVE`($sp)
 	li	r10,`15+6*$SIZE_T`
 	li	r11,`31+6*$SIZE_T`
 	mtspr	256, r6			# restore vrsave
@@ -1494,12 +1494,12 @@ Lschedule_mangle_dec:
 	stvx	v31,r11,$sp
 	stw	r6,`$FRAME-4`($sp)	# save vrsave
 	li	r7, -1
-	$PUSH	r0, `$FRAME+$LRSAVE`($sp)
+	$PUSH	r0, `$FRAME+$LYRSAVE`($sp)
 	mtspr	256, r7			# preserve all AltiVec registers
 
 	srwi	r9, $bits, 5		# shr	\$5,%eax
 	addi	r9, r9, 6		# add	\$5,%eax
-	stw	r9, 240($out)		# mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	stw	r9, 240($out)		# mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 
 	slwi	r9, r9, 4		# shl	\$4,%eax
 	add	$out, $out, r9		# lea	(%rdx,%rax),%rdx
@@ -1510,7 +1510,7 @@ Lschedule_mangle_dec:
 	xori	r8, r8, 32		# xor	\$32,%r8d	# nbits==192?0:32
 	bl	_vpaes_schedule_core
 
-	$POP	r0,  `$FRAME+$LRSAVE`($sp)
+	$POP	r0,  `$FRAME+$LYRSAVE`($sp)
 	li	r10,`15+6*$SIZE_T`
 	li	r11,`31+6*$SIZE_T`
 	mtspr	256, r6			# restore vrsave

@@ -15,24 +15,24 @@
 #include <openssl/bn.h>
 #include "asn1_local.h"
 
-ASN1_INTEGER *ASN1_INTEGER_dup(const ASN1_INTEGER *x)
+YASN1_INTEGER *YASN1_INTEGER_dup(const YASN1_INTEGER *x)
 {
-    return ASN1_STRING_dup(x);
+    return YASN1_STRING_dup(x);
 }
 
-int ASN1_INTEGER_cmp(const ASN1_INTEGER *x, const ASN1_INTEGER *y)
+int YASN1_INTEGER_cmp(const YASN1_INTEGER *x, const YASN1_INTEGER *y)
 {
     int neg, ret;
     /* Compare signs */
-    neg = x->type & V_ASN1_NEG;
-    if (neg != (y->type & V_ASN1_NEG)) {
+    neg = x->type & V_YASN1_NEG;
+    if (neg != (y->type & V_YASN1_NEG)) {
         if (neg)
             return -1;
         else
             return 1;
     }
 
-    ret = ASN1_STRING_cmp(x, y);
+    ret = YASN1_STRING_cmp(x, y);
 
     if (neg)
         return -ret;
@@ -43,9 +43,9 @@ int ASN1_INTEGER_cmp(const ASN1_INTEGER *x, const ASN1_INTEGER *y)
 /*-
  * This converts a big endian buffer and sign into its content encoding.
  * This is used for INTEGER and ENUMERATED types.
- * The internal representation is an ASN1_STRING whose data is a big endian
+ * The internal representation is an YASN1_STRING whose data is a big endian
  * representation of the value, ignoring the sign. The sign is determined by
- * the type: if type & V_ASN1_NEG is true it is negative, otherwise positive.
+ * the type: if type & V_YASN1_NEG is true it is negative, otherwise positive.
  *
  * Positive integers are no problem: they are almost the same as the DER
  * encoding, except if the first byte is >= 0x80 we need to add a zero pad.
@@ -151,7 +151,7 @@ static size_t c2i_ibuf(unsigned char *b, int *pneg,
     int neg, pad;
     /* Zero content length is illegal */
     if (plen == 0) {
-        ASN1err(ASN1_F_C2I_IBUF, ASN1_R_ILLEGAL_ZERO_CONTENT);
+        YASN1err(YASN1_F_C2I_IBUF, YASN1_R_ILLEGAL_ZERO_CONTENT);
         return 0;
     }
     neg = p[0] & 0x80;
@@ -184,7 +184,7 @@ static size_t c2i_ibuf(unsigned char *b, int *pneg,
     }
     /* reject illegal padding: first two octets MSB can't match */
     if (pad && (neg == (p[1] & 0x80))) {
-        ASN1err(ASN1_F_C2I_IBUF, ASN1_R_ILLEGAL_PADDING);
+        YASN1err(YASN1_F_C2I_IBUF, YASN1_R_ILLEGAL_PADDING);
         return 0;
     }
 
@@ -198,9 +198,9 @@ static size_t c2i_ibuf(unsigned char *b, int *pneg,
     return plen;
 }
 
-int i2c_ASN1_INTEGER(ASN1_INTEGER *a, unsigned char **pp)
+int i2c_YASN1_INTEGER(YASN1_INTEGER *a, unsigned char **pp)
 {
-    return i2c_ibuf(a->data, a->length, a->type & V_ASN1_NEG, pp);
+    return i2c_ibuf(a->data, a->length, a->type & V_YASN1_NEG, pp);
 }
 
 /* Convert big endian buffer into uint64_t, return 0 on error */
@@ -210,7 +210,7 @@ static int asn1_get_uint64(uint64_t *pr, const unsigned char *b, size_t blen)
     uint64_t r;
 
     if (blen > sizeof(*pr)) {
-        ASN1err(ASN1_F_ASN1_GET_UINT64, ASN1_R_TOO_LARGE);
+        YASN1err(YASN1_F_YASN1_GET_UINT64, YASN1_R_TOO_LARGE);
         return 0;
     }
     if (b == NULL)
@@ -262,25 +262,25 @@ static int asn1_get_int64(int64_t *pr, const unsigned char *b, size_t blen,
              * on ones'-complement system. */
             *pr = (int64_t)(0 - r);
         } else {
-            ASN1err(ASN1_F_ASN1_GET_INT64, ASN1_R_TOO_SMALL);
+            YASN1err(YASN1_F_YASN1_GET_INT64, YASN1_R_TOO_SMALL);
             return 0;
         }
     } else {
         if (r <= INT64_MAX) {
             *pr = (int64_t)r;
         } else {
-            ASN1err(ASN1_F_ASN1_GET_INT64, ASN1_R_TOO_LARGE);
+            YASN1err(YASN1_F_YASN1_GET_INT64, YASN1_R_TOO_LARGE);
             return 0;
         }
     }
     return 1;
 }
 
-/* Convert ASN1 INTEGER content octets to ASN1_INTEGER structure */
-ASN1_INTEGER *c2i_ASN1_INTEGER(ASN1_INTEGER **a, const unsigned char **pp,
+/* Convert YASN1 INTEGER content octets to YASN1_INTEGER structure */
+YASN1_INTEGER *c2i_YASN1_INTEGER(YASN1_INTEGER **a, const unsigned char **pp,
                                long len)
 {
-    ASN1_INTEGER *ret = NULL;
+    YASN1_INTEGER *ret = NULL;
     size_t r;
     int neg;
 
@@ -290,46 +290,46 @@ ASN1_INTEGER *c2i_ASN1_INTEGER(ASN1_INTEGER **a, const unsigned char **pp,
         return NULL;
 
     if ((a == NULL) || ((*a) == NULL)) {
-        ret = ASN1_INTEGER_new();
+        ret = YASN1_INTEGER_new();
         if (ret == NULL)
             return NULL;
-        ret->type = V_ASN1_INTEGER;
+        ret->type = V_YASN1_INTEGER;
     } else
         ret = *a;
 
-    if (ASN1_STRING_set(ret, NULL, r) == 0)
+    if (YASN1_STRING_set(ret, NULL, r) == 0)
         goto err;
 
     c2i_ibuf(ret->data, &neg, *pp, len);
 
     if (neg)
-        ret->type |= V_ASN1_NEG;
+        ret->type |= V_YASN1_NEG;
 
     *pp += len;
     if (a != NULL)
         (*a) = ret;
     return ret;
  err:
-    ASN1err(ASN1_F_C2I_ASN1_INTEGER, ERR_R_MALLOC_FAILURE);
+    YASN1err(YASN1_F_C2I_YASN1_INTEGER, ERR_R_MALLOC_FAILURE);
     if ((a == NULL) || (*a != ret))
-        ASN1_INTEGER_free(ret);
+        YASN1_INTEGER_free(ret);
     return NULL;
 }
 
-static int asn1_string_get_int64(int64_t *pr, const ASN1_STRING *a, int itype)
+static int asn1_string_get_int64(int64_t *pr, const YASN1_STRING *a, int itype)
 {
     if (a == NULL) {
-        ASN1err(ASN1_F_ASN1_STRING_GET_INT64, ERR_R_PASSED_NULL_PARAMETER);
+        YASN1err(YASN1_F_YASN1_STRING_GET_INT64, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
-    if ((a->type & ~V_ASN1_NEG) != itype) {
-        ASN1err(ASN1_F_ASN1_STRING_GET_INT64, ASN1_R_WRONG_INTEGER_TYPE);
+    if ((a->type & ~V_YASN1_NEG) != itype) {
+        YASN1err(YASN1_F_YASN1_STRING_GET_INT64, YASN1_R_WRONG_INTEGER_TYPE);
         return 0;
     }
-    return asn1_get_int64(pr, a->data, a->length, a->type & V_ASN1_NEG);
+    return asn1_get_int64(pr, a->data, a->length, a->type & V_YASN1_NEG);
 }
 
-static int asn1_string_set_int64(ASN1_STRING *a, int64_t r, int itype)
+static int asn1_string_set_int64(YASN1_STRING *a, int64_t r, int itype)
 {
     unsigned char tbuf[sizeof(r)];
     size_t off;
@@ -342,52 +342,52 @@ static int asn1_string_set_int64(ASN1_STRING *a, int64_t r, int itype)
          * expected result even on one's-complement. This is because
          * cast to unsigned has to change bit pattern... */
         off = asn1_put_uint64(tbuf, 0 - (uint64_t)r);
-        a->type |= V_ASN1_NEG;
+        a->type |= V_YASN1_NEG;
     } else {
         off = asn1_put_uint64(tbuf, r);
-        a->type &= ~V_ASN1_NEG;
+        a->type &= ~V_YASN1_NEG;
     }
-    return ASN1_STRING_set(a, tbuf + off, sizeof(tbuf) - off);
+    return YASN1_STRING_set(a, tbuf + off, sizeof(tbuf) - off);
 }
 
-static int asn1_string_get_uint64(uint64_t *pr, const ASN1_STRING *a,
+static int asn1_string_get_uint64(uint64_t *pr, const YASN1_STRING *a,
                                   int itype)
 {
     if (a == NULL) {
-        ASN1err(ASN1_F_ASN1_STRING_GET_UINT64, ERR_R_PASSED_NULL_PARAMETER);
+        YASN1err(YASN1_F_YASN1_STRING_GET_UINT64, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
-    if ((a->type & ~V_ASN1_NEG) != itype) {
-        ASN1err(ASN1_F_ASN1_STRING_GET_UINT64, ASN1_R_WRONG_INTEGER_TYPE);
+    if ((a->type & ~V_YASN1_NEG) != itype) {
+        YASN1err(YASN1_F_YASN1_STRING_GET_UINT64, YASN1_R_WRONG_INTEGER_TYPE);
         return 0;
     }
-    if (a->type & V_ASN1_NEG) {
-        ASN1err(ASN1_F_ASN1_STRING_GET_UINT64, ASN1_R_ILLEGAL_NEGATIVE_VALUE);
+    if (a->type & V_YASN1_NEG) {
+        YASN1err(YASN1_F_YASN1_STRING_GET_UINT64, YASN1_R_ILLEGAL_NEGATIVE_VALUE);
         return 0;
     }
     return asn1_get_uint64(pr, a->data, a->length);
 }
 
-static int asn1_string_set_uint64(ASN1_STRING *a, uint64_t r, int itype)
+static int asn1_string_set_uint64(YASN1_STRING *a, uint64_t r, int itype)
 {
     unsigned char tbuf[sizeof(r)];
     size_t off;
 
     a->type = itype;
     off = asn1_put_uint64(tbuf, r);
-    return ASN1_STRING_set(a, tbuf + off, sizeof(tbuf) - off);
+    return YASN1_STRING_set(a, tbuf + off, sizeof(tbuf) - off);
 }
 
 /*
- * This is a version of d2i_ASN1_INTEGER that ignores the sign bit of ASN1
+ * This is a version of d2i_YASN1_INTEGER that ignores the sign bit of YASN1
  * integers: some broken software can encode a positive INTEGER with its MSB
  * set as negative (it doesn't add a padding zero).
  */
 
-ASN1_INTEGER *d2i_ASN1_UINTEGER(ASN1_INTEGER **a, const unsigned char **pp,
+YASN1_INTEGER *d2i_YASN1_UINTEGER(YASN1_INTEGER **a, const unsigned char **pp,
                                 long length)
 {
-    ASN1_INTEGER *ret = NULL;
+    YASN1_INTEGER *ret = NULL;
     const unsigned char *p;
     unsigned char *s;
     long len;
@@ -395,21 +395,21 @@ ASN1_INTEGER *d2i_ASN1_UINTEGER(ASN1_INTEGER **a, const unsigned char **pp,
     int i;
 
     if ((a == NULL) || ((*a) == NULL)) {
-        if ((ret = ASN1_INTEGER_new()) == NULL)
+        if ((ret = YASN1_INTEGER_new()) == NULL)
             return NULL;
-        ret->type = V_ASN1_INTEGER;
+        ret->type = V_YASN1_INTEGER;
     } else
         ret = (*a);
 
     p = *pp;
-    inf = ASN1_get_object(&p, &len, &tag, &xclass, length);
+    inf = YASN1_get_object(&p, &len, &tag, &xclass, length);
     if (inf & 0x80) {
-        i = ASN1_R_BAD_OBJECT_HEADER;
+        i = YASN1_R_BAD_OBJECT_HEADER;
         goto err;
     }
 
-    if (tag != V_ASN1_INTEGER) {
-        i = ASN1_R_EXPECTING_AN_INTEGER;
+    if (tag != V_YASN1_INTEGER) {
+        i = YASN1_R_EXPECTING_AN_INTEGER;
         goto err;
     }
 
@@ -422,7 +422,7 @@ ASN1_INTEGER *d2i_ASN1_UINTEGER(ASN1_INTEGER **a, const unsigned char **pp,
         i = ERR_R_MALLOC_FAILURE;
         goto err;
     }
-    ret->type = V_ASN1_INTEGER;
+    ret->type = V_YASN1_INTEGER;
     if (len) {
         if ((*p == 0) && (len != 1)) {
             p++;
@@ -440,40 +440,40 @@ ASN1_INTEGER *d2i_ASN1_UINTEGER(ASN1_INTEGER **a, const unsigned char **pp,
     *pp = p;
     return ret;
  err:
-    ASN1err(ASN1_F_D2I_ASN1_UINTEGER, i);
+    YASN1err(YASN1_F_D2I_YASN1_UINTEGER, i);
     if ((a == NULL) || (*a != ret))
-        ASN1_INTEGER_free(ret);
+        YASN1_INTEGER_free(ret);
     return NULL;
 }
 
-static ASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, ASN1_STRING *ai,
+static YASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, YASN1_STRING *ai,
                                       int atype)
 {
-    ASN1_INTEGER *ret;
+    YASN1_INTEGER *ret;
     int len;
 
     if (ai == NULL) {
-        ret = ASN1_STRING_type_new(atype);
+        ret = YASN1_STRING_type_new(atype);
     } else {
         ret = ai;
         ret->type = atype;
     }
 
     if (ret == NULL) {
-        ASN1err(ASN1_F_BN_TO_ASN1_STRING, ERR_R_NESTED_ASN1_ERROR);
+        YASN1err(YASN1_F_BN_TO_YASN1_STRING, ERR_R_NESTED_YASN1_ERROR);
         goto err;
     }
 
     if (BN_is_negative(bn) && !BN_is_zero(bn))
-        ret->type |= V_ASN1_NEG_INTEGER;
+        ret->type |= V_YASN1_NEG_INTEGER;
 
     len = BN_num_bytes(bn);
 
     if (len == 0)
         len = 1;
 
-    if (ASN1_STRING_set(ret, NULL, len) == 0) {
-        ASN1err(ASN1_F_BN_TO_ASN1_STRING, ERR_R_MALLOC_FAILURE);
+    if (YASN1_STRING_set(ret, NULL, len) == 0) {
+        YASN1err(YASN1_F_BN_TO_YASN1_STRING, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
@@ -486,62 +486,62 @@ static ASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, ASN1_STRING *ai,
     return ret;
  err:
     if (ret != ai)
-        ASN1_INTEGER_free(ret);
+        YASN1_INTEGER_free(ret);
     return NULL;
 }
 
-static BIGNUM *asn1_string_to_bn(const ASN1_INTEGER *ai, BIGNUM *bn,
+static BIGNUM *asn1_string_to_bn(const YASN1_INTEGER *ai, BIGNUM *bn,
                                  int itype)
 {
     BIGNUM *ret;
 
-    if ((ai->type & ~V_ASN1_NEG) != itype) {
-        ASN1err(ASN1_F_ASN1_STRING_TO_BN, ASN1_R_WRONG_INTEGER_TYPE);
+    if ((ai->type & ~V_YASN1_NEG) != itype) {
+        YASN1err(YASN1_F_YASN1_STRING_TO_BN, YASN1_R_WRONG_INTEGER_TYPE);
         return NULL;
     }
 
     ret = BN_bin2bn(ai->data, ai->length, bn);
     if (ret == NULL) {
-        ASN1err(ASN1_F_ASN1_STRING_TO_BN, ASN1_R_BN_LIB);
+        YASN1err(YASN1_F_YASN1_STRING_TO_BN, YASN1_R_BN_LIB);
         return NULL;
     }
-    if (ai->type & V_ASN1_NEG)
+    if (ai->type & V_YASN1_NEG)
         BN_set_negative(ret, 1);
     return ret;
 }
 
-int ASN1_INTEGER_get_int64(int64_t *pr, const ASN1_INTEGER *a)
+int YASN1_INTEGER_get_int64(int64_t *pr, const YASN1_INTEGER *a)
 {
-    return asn1_string_get_int64(pr, a, V_ASN1_INTEGER);
+    return asn1_string_get_int64(pr, a, V_YASN1_INTEGER);
 }
 
-int ASN1_INTEGER_set_int64(ASN1_INTEGER *a, int64_t r)
+int YASN1_INTEGER_set_int64(YASN1_INTEGER *a, int64_t r)
 {
-    return asn1_string_set_int64(a, r, V_ASN1_INTEGER);
+    return asn1_string_set_int64(a, r, V_YASN1_INTEGER);
 }
 
-int ASN1_INTEGER_get_uint64(uint64_t *pr, const ASN1_INTEGER *a)
+int YASN1_INTEGER_get_uint64(uint64_t *pr, const YASN1_INTEGER *a)
 {
-    return asn1_string_get_uint64(pr, a, V_ASN1_INTEGER);
+    return asn1_string_get_uint64(pr, a, V_YASN1_INTEGER);
 }
 
-int ASN1_INTEGER_set_uint64(ASN1_INTEGER *a, uint64_t r)
+int YASN1_INTEGER_set_uint64(YASN1_INTEGER *a, uint64_t r)
 {
-    return asn1_string_set_uint64(a, r, V_ASN1_INTEGER);
+    return asn1_string_set_uint64(a, r, V_YASN1_INTEGER);
 }
 
-int ASN1_INTEGER_set(ASN1_INTEGER *a, long v)
+int YASN1_INTEGER_set(YASN1_INTEGER *a, long v)
 {
-    return ASN1_INTEGER_set_int64(a, v);
+    return YASN1_INTEGER_set_int64(a, v);
 }
 
-long ASN1_INTEGER_get(const ASN1_INTEGER *a)
+long YASN1_INTEGER_get(const YASN1_INTEGER *a)
 {
     int i;
     int64_t r;
     if (a == NULL)
         return 0;
-    i = ASN1_INTEGER_get_int64(&r, a);
+    i = YASN1_INTEGER_get_int64(&r, a);
     if (i == 0)
         return -1;
     if (r > LONG_MAX || r < LONG_MIN)
@@ -549,42 +549,42 @@ long ASN1_INTEGER_get(const ASN1_INTEGER *a)
     return (long)r;
 }
 
-ASN1_INTEGER *BN_to_ASN1_INTEGER(const BIGNUM *bn, ASN1_INTEGER *ai)
+YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
 {
-    return bn_to_asn1_string(bn, ai, V_ASN1_INTEGER);
+    return bn_to_asn1_string(bn, ai, V_YASN1_INTEGER);
 }
 
-BIGNUM *ASN1_INTEGER_to_BN(const ASN1_INTEGER *ai, BIGNUM *bn)
+BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn)
 {
-    return asn1_string_to_bn(ai, bn, V_ASN1_INTEGER);
+    return asn1_string_to_bn(ai, bn, V_YASN1_INTEGER);
 }
 
-int ASN1_ENUMERATED_get_int64(int64_t *pr, const ASN1_ENUMERATED *a)
+int YASN1_ENUMERATED_get_int64(int64_t *pr, const YASN1_ENUMERATED *a)
 {
-    return asn1_string_get_int64(pr, a, V_ASN1_ENUMERATED);
+    return asn1_string_get_int64(pr, a, V_YASN1_ENUMERATED);
 }
 
-int ASN1_ENUMERATED_set_int64(ASN1_ENUMERATED *a, int64_t r)
+int YASN1_ENUMERATED_set_int64(YASN1_ENUMERATED *a, int64_t r)
 {
-    return asn1_string_set_int64(a, r, V_ASN1_ENUMERATED);
+    return asn1_string_set_int64(a, r, V_YASN1_ENUMERATED);
 }
 
-int ASN1_ENUMERATED_set(ASN1_ENUMERATED *a, long v)
+int YASN1_ENUMERATED_set(YASN1_ENUMERATED *a, long v)
 {
-    return ASN1_ENUMERATED_set_int64(a, v);
+    return YASN1_ENUMERATED_set_int64(a, v);
 }
 
-long ASN1_ENUMERATED_get(const ASN1_ENUMERATED *a)
+long YASN1_ENUMERATED_get(const YASN1_ENUMERATED *a)
 {
     int i;
     int64_t r;
     if (a == NULL)
         return 0;
-    if ((a->type & ~V_ASN1_NEG) != V_ASN1_ENUMERATED)
+    if ((a->type & ~V_YASN1_NEG) != V_YASN1_ENUMERATED)
         return -1;
     if (a->length > (int)sizeof(long))
         return 0xffffffffL;
-    i = ASN1_ENUMERATED_get_int64(&r, a);
+    i = YASN1_ENUMERATED_get_int64(&r, a);
     if (i == 0)
         return -1;
     if (r > LONG_MAX || r < LONG_MIN)
@@ -592,14 +592,14 @@ long ASN1_ENUMERATED_get(const ASN1_ENUMERATED *a)
     return (long)r;
 }
 
-ASN1_ENUMERATED *BN_to_ASN1_ENUMERATED(const BIGNUM *bn, ASN1_ENUMERATED *ai)
+YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(const BIGNUM *bn, YASN1_ENUMERATED *ai)
 {
-    return bn_to_asn1_string(bn, ai, V_ASN1_ENUMERATED);
+    return bn_to_asn1_string(bn, ai, V_YASN1_ENUMERATED);
 }
 
-BIGNUM *ASN1_ENUMERATED_to_BN(const ASN1_ENUMERATED *ai, BIGNUM *bn)
+BIGNUM *YASN1_ENUMERATED_to_BN(const YASN1_ENUMERATED *ai, BIGNUM *bn)
 {
-    return asn1_string_to_bn(ai, bn, V_ASN1_ENUMERATED);
+    return asn1_string_to_bn(ai, bn, V_YASN1_ENUMERATED);
 }
 
 /* Internal functions used by x_int64.c */
@@ -612,7 +612,7 @@ int c2i_uint64_int(uint64_t *ret, int *neg, const unsigned char **pp, long len)
     if (buflen == 0)
         return 0;
     if (buflen > sizeof(uint64_t)) {
-        ASN1err(ASN1_F_C2I_UINT64_INT, ASN1_R_TOO_LARGE);
+        YASN1err(YASN1_F_C2I_UINT64_INT, YASN1_R_TOO_LARGE);
         return 0;
     }
     (void)c2i_ibuf(buf, neg, *pp, len);

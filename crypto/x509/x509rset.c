@@ -15,26 +15,26 @@
 #include <openssl/x509.h>
 #include "crypto/x509.h"
 
-int X509_REQ_set_version(X509_REQ *x, long version)
+int YX509_REQ_set_version(YX509_REQ *x, long version)
 {
     if (x == NULL)
         return 0;
     x->req_info.enc.modified = 1;
-    return ASN1_INTEGER_set(x->req_info.version, version);
+    return YASN1_INTEGER_set(x->req_info.version, version);
 }
 
-int X509_REQ_set_subject_name(X509_REQ *x, X509_NAME *name)
+int YX509_REQ_set_subject_name(YX509_REQ *x, YX509_NAME *name)
 {
     if (x == NULL)
         return 0;
     x->req_info.enc.modified = 1;
-    return X509_NAME_set(&x->req_info.subject, name);
+    return YX509_NAME_set(&x->req_info.subject, name);
 }
 
-int X509_REQ_set_pubkey(X509_REQ *x, EVP_PKEY *pkey)
+int YX509_REQ_set_pubkey(YX509_REQ *x, EVVP_PKEY *pkey)
 {
     if (x == NULL)
         return 0;
     x->req_info.enc.modified = 1;
-    return X509_PUBKEY_set(&x->req_info.pubkey, pkey);
+    return YX509_PUBKEY_set(&x->req_info.pubkey, pkey);
 }

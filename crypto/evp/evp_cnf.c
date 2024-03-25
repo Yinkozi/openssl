@@ -25,23 +25,23 @@ static int alg_module_init(CONF_IMODULE *md, const CONF *cnf)
 
     oid_section = CONF_imodule_get_value(md);
     if ((sktmp = NCONF_get_section(cnf, oid_section)) == NULL) {
-        EVPerr(EVP_F_ALG_MODULE_INIT, EVP_R_ERROR_LOADING_SECTION);
+        EVVPerr(EVVP_F_ALG_MODULE_INIT, EVVP_R_ERROR_LOADING_SECTION);
         return 0;
     }
     for (i = 0; i < sk_CONF_VALUE_num(sktmp); i++) {
         oval = sk_CONF_VALUE_value(sktmp, i);
         if (strcmp(oval->name, "fips_mode") == 0) {
             int m;
-            if (!X509V3_get_value_bool(oval, &m)) {
-                EVPerr(EVP_F_ALG_MODULE_INIT, EVP_R_INVALID_FIPS_MODE);
+            if (!YX509V3_get_value_bool(oval, &m)) {
+                EVVPerr(EVVP_F_ALG_MODULE_INIT, EVVP_R_INVALID_FIPS_MODE);
                 return 0;
             }
             if (m > 0) {
-                EVPerr(EVP_F_ALG_MODULE_INIT, EVP_R_FIPS_MODE_NOT_SUPPORTED);
+                EVVPerr(EVVP_F_ALG_MODULE_INIT, EVVP_R_FIPS_MODE_NOT_SUPPORTED);
                 return 0;
             }
         } else {
-            EVPerr(EVP_F_ALG_MODULE_INIT, EVP_R_UNKNOWN_OPTION);
+            EVVPerr(EVVP_F_ALG_MODULE_INIT, EVVP_R_UNKNOWN_OPTION);
             ERR_add_error_data(4, "name=", oval->name,
                                ", value=", oval->value);
         }
@@ -50,7 +50,7 @@ static int alg_module_init(CONF_IMODULE *md, const CONF *cnf)
     return 1;
 }
 
-void EVP_add_alg_module(void)
+void EVVP_add_alg_module(void)
 {
     CONF_module_add("alg_section", alg_module_init, 0);
 }

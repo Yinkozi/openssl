@@ -14,40 +14,40 @@
 
 #include "pcy_local.h"
 
-static int node_cmp(const X509_POLICY_NODE *const *a,
-                    const X509_POLICY_NODE *const *b)
+static int node_cmp(const YX509_POLICY_NODE *const *a,
+                    const YX509_POLICY_NODE *const *b)
 {
     return OBJ_cmp((*a)->data->valid_policy, (*b)->data->valid_policy);
 }
 
-STACK_OF(X509_POLICY_NODE) *policy_node_cmp_new(void)
+STACK_OF(YX509_POLICY_NODE) *policy_node_cmp_new(void)
 {
-    return sk_X509_POLICY_NODE_new(node_cmp);
+    return sk_YX509_POLICY_NODE_new(node_cmp);
 }
 
-X509_POLICY_NODE *tree_find_sk(STACK_OF(X509_POLICY_NODE) *nodes,
-                               const ASN1_OBJECT *id)
+YX509_POLICY_NODE *tree_find_sk(STACK_OF(YX509_POLICY_NODE) *nodes,
+                               const YASN1_OBJECT *id)
 {
-    X509_POLICY_DATA n;
-    X509_POLICY_NODE l;
+    YX509_POLICY_DATA n;
+    YX509_POLICY_NODE l;
     int idx;
 
-    n.valid_policy = (ASN1_OBJECT *)id;
+    n.valid_policy = (YASN1_OBJECT *)id;
     l.data = &n;
 
-    idx = sk_X509_POLICY_NODE_find(nodes, &l);
-    return sk_X509_POLICY_NODE_value(nodes, idx);
+    idx = sk_YX509_POLICY_NODE_find(nodes, &l);
+    return sk_YX509_POLICY_NODE_value(nodes, idx);
 
 }
 
-X509_POLICY_NODE *level_find_node(const X509_POLICY_LEVEL *level,
-                                  const X509_POLICY_NODE *parent,
-                                  const ASN1_OBJECT *id)
+YX509_POLICY_NODE *level_find_node(const YX509_POLICY_LEVEL *level,
+                                  const YX509_POLICY_NODE *parent,
+                                  const YASN1_OBJECT *id)
 {
-    X509_POLICY_NODE *node;
+    YX509_POLICY_NODE *node;
     int i;
-    for (i = 0; i < sk_X509_POLICY_NODE_num(level->nodes); i++) {
-        node = sk_X509_POLICY_NODE_value(level->nodes, i);
+    for (i = 0; i < sk_YX509_POLICY_NODE_num(level->nodes); i++) {
+        node = sk_YX509_POLICY_NODE_value(level->nodes, i);
         if (node->parent == parent) {
             if (!OBJ_cmp(node->data->valid_policy, id))
                 return node;
@@ -56,13 +56,13 @@ X509_POLICY_NODE *level_find_node(const X509_POLICY_LEVEL *level,
     return NULL;
 }
 
-X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
-                                 X509_POLICY_DATA *data,
-                                 X509_POLICY_NODE *parent,
-                                 X509_POLICY_TREE *tree,
+YX509_POLICY_NODE *level_add_node(YX509_POLICY_LEVEL *level,
+                                 YX509_POLICY_DATA *data,
+                                 YX509_POLICY_NODE *parent,
+                                 YX509_POLICY_TREE *tree,
                                  int extra_data)
 {
-    X509_POLICY_NODE *node;
+    YX509_POLICY_NODE *node;
 
     /* Verify that the tree isn't too large.  This mitigates CVE-2023-0464 */
     if (tree->node_maximum > 0 && tree->node_count >= tree->node_maximum)
@@ -70,7 +70,7 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
 
     node = OPENSSL_zalloc(sizeof(*node));
     if (node == NULL) {
-        X509V3err(X509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     node->data = data;
@@ -85,11 +85,11 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
             if (level->nodes == NULL)
                 level->nodes = policy_node_cmp_new();
             if (level->nodes == NULL) {
-                X509V3err(X509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
+                YX509V3err(YX509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
                 goto node_error;
             }
-            if (!sk_X509_POLICY_NODE_push(level->nodes, node)) {
-                X509V3err(X509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
+            if (!sk_YX509_POLICY_NODE_push(level->nodes, node)) {
+                YX509V3err(YX509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
                 goto node_error;
             }
         }
@@ -97,13 +97,13 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
 
     if (extra_data) {
         if (tree->extra_data == NULL)
-            tree->extra_data = sk_X509_POLICY_DATA_new_null();
+            tree->extra_data = sk_YX509_POLICY_DATA_new_null();
         if (tree->extra_data == NULL){
-            X509V3err(X509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
+            YX509V3err(YX509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
             goto extra_data_error;
         }
-        if (!sk_X509_POLICY_DATA_push(tree->extra_data, data)) {
-            X509V3err(X509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
+        if (!sk_YX509_POLICY_DATA_push(tree->extra_data, data)) {
+            YX509V3err(YX509V3_F_LEVEL_ADD_NODE, ERR_R_MALLOC_FAILURE);
             goto extra_data_error;
         }
     }
@@ -119,7 +119,7 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
         if (level->anyPolicy == node)
             level->anyPolicy = NULL;
         else
-            (void) sk_X509_POLICY_NODE_pop(level->nodes);
+            (void) sk_YX509_POLICY_NODE_pop(level->nodes);
     }
 
  node_error:
@@ -127,7 +127,7 @@ X509_POLICY_NODE *level_add_node(X509_POLICY_LEVEL *level,
     return NULL;
 }
 
-void policy_node_free(X509_POLICY_NODE *node)
+void policy_node_free(YX509_POLICY_NODE *node)
 {
     OPENSSL_free(node);
 }
@@ -137,22 +137,22 @@ void policy_node_free(X509_POLICY_NODE *node)
  * expected policy set otherwise just valid policy.
  */
 
-int policy_node_match(const X509_POLICY_LEVEL *lvl,
-                      const X509_POLICY_NODE *node, const ASN1_OBJECT *oid)
+int policy_node_match(const YX509_POLICY_LEVEL *lvl,
+                      const YX509_POLICY_NODE *node, const YASN1_OBJECT *oid)
 {
     int i;
-    ASN1_OBJECT *policy_oid;
-    const X509_POLICY_DATA *x = node->data;
+    YASN1_OBJECT *policy_oid;
+    const YX509_POLICY_DATA *x = node->data;
 
-    if ((lvl->flags & X509_V_FLAG_INHIBIT_MAP)
+    if ((lvl->flags & YX509_V_FLAG_INHIBIT_MAP)
         || !(x->flags & POLICY_DATA_FLAG_MAP_MASK)) {
         if (!OBJ_cmp(x->valid_policy, oid))
             return 1;
         return 0;
     }
 
-    for (i = 0; i < sk_ASN1_OBJECT_num(x->expected_policy_set); i++) {
-        policy_oid = sk_ASN1_OBJECT_value(x->expected_policy_set, i);
+    for (i = 0; i < sk_YASN1_OBJECT_num(x->expected_policy_set); i++) {
+        policy_oid = sk_YASN1_OBJECT_value(x->expected_policy_set, i);
         if (!OBJ_cmp(policy_oid, oid))
             return 1;
     }

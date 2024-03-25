@@ -89,8 +89,8 @@ To list all the commands available to a dynamic engine:
 To list the capabilities of the I<rsax> engine:
 
  $ openssl engine -c
- (rsax) RSAX engine support
-  [RSA]
+ (rsax) YRSAX engine support
+  [YRSA]
  (dynamic) Dynamic engine loading support
 
 =head1 ENVIRONMENT

@@ -44,7 +44,7 @@ int ERR_load_ENGINE_strings(void);
 #  define ENGINE_F_ENGINE_GET_FIRST                        195
 #  define ENGINE_F_ENGINE_GET_LAST                         196
 #  define ENGINE_F_ENGINE_GET_NEXT                         115
-#  define ENGINE_F_ENGINE_GET_PKEY_ASN1_METH               193
+#  define ENGINE_F_ENGINE_GET_PKEY_YASN1_METH               193
 #  define ENGINE_F_ENGINE_GET_PKEY_METH                    192
 #  define ENGINE_F_ENGINE_GET_PREV                         116
 #  define ENGINE_F_ENGINE_INIT                             119
@@ -54,7 +54,7 @@ int ERR_load_ENGINE_strings(void);
 #  define ENGINE_F_ENGINE_LOAD_PUBLIC_KEY                  151
 #  define ENGINE_F_ENGINE_LOAD_SSL_CLIENT_CERT             194
 #  define ENGINE_F_ENGINE_NEW                              122
-#  define ENGINE_F_ENGINE_PKEY_ASN1_FIND_STR               197
+#  define ENGINE_F_ENGINE_PKEY_YASN1_FIND_STR               197
 #  define ENGINE_F_ENGINE_REMOVE                           123
 #  define ENGINE_F_ENGINE_SET_DEFAULT_STRING               189
 #  define ENGINE_F_ENGINE_SET_ID                           129
@@ -66,7 +66,7 @@ int ERR_load_ENGINE_strings(void);
 #  define ENGINE_F_INT_CTRL_HELPER                         172
 #  define ENGINE_F_INT_ENGINE_CONFIGURE                    188
 #  define ENGINE_F_INT_ENGINE_MODULE_INIT                  187
-#  define ENGINE_F_OSSL_HMAC_INIT                          200
+#  define ENGINE_F_OSSL_YHMAC_INIT                          200
 
 /*
  * ENGINE reason codes.

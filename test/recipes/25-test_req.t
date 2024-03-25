@@ -46,11 +46,11 @@ ok(!run(app([@addext_args, "-addext", $val, "-addext", $val2])));
 ok(!run(app([@addext_args, "-addext", $val, "-addext", $val3])));
 ok(!run(app([@addext_args, "-addext", $val2, "-addext", $val3])));
 
-subtest "generating certificate requests with RSA" => sub {
+subtest "generating certificate requests with YRSA" => sub {
     plan tests => 6;
 
     SKIP: {
-        skip "RSA is not supported by this OpenSSL build", 2
+        skip "YRSA is not supported by this OpenSSL build", 2
             if disabled("rsa");
 
         ok(run(app(["openssl", "req",

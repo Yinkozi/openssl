@@ -72,7 +72,7 @@ EC_POINT *EC_POINT_bn2point(const EC_GROUP *group,
 static const char *HEX_DIGITS = "0123456789ABCDEF";
 
 /* the return value must be freed (using OPENSSL_free()) */
-char *EC_POINT_point2hex(const EC_GROUP *group,
+char *EC_POINT_point2hexx(const EC_GROUP *group,
                          const EC_POINT *point,
                          point_conversion_form_t form, BN_CTX *ctx)
 {

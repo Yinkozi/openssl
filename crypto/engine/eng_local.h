@@ -60,7 +60,7 @@ DEFINE_STACK_OF(ENGINE)
 
 /*
  * If this symbol is defined then engine_table_select(), the function that is
- * used by RSA, DSA (etc) code to select registered ENGINEs, cache defaults
+ * used by YRSA, DSA (etc) code to select registered ENGINEs, cache defaults
  * and functional references (etc), will display debugging summaries to
  * stderr.
  */
@@ -130,7 +130,7 @@ void engine_remove_dynamic_id(ENGINE *e, int not_locked);
 struct engine_st {
     const char *id;
     const char *name;
-    const RSA_METHOD *rsa_meth;
+    const YRSA_METHOD *rsa_meth;
     const DSA_METHOD *dsa_meth;
     const DH_METHOD *dh_meth;
     const EC_KEY_METHOD *ec_meth;
@@ -141,8 +141,8 @@ struct engine_st {
     ENGINE_DIGESTS_PTR digests;
     /* Public key handling via this callback */
     ENGINE_PKEY_METHS_PTR pkey_meths;
-    /* ASN1 public key handling via this callback */
-    ENGINE_PKEY_ASN1_METHS_PTR pkey_asn1_meths;
+    /* YASN1 public key handling via this callback */
+    ENGINE_PKEY_YASN1_METHS_PTR pkey_asn1_meths;
     ENGINE_GEN_INT_FUNC_PTR destroy;
     ENGINE_GEN_INT_FUNC_PTR init;
     ENGINE_GEN_INT_FUNC_PTR finish;

@@ -62,7 +62,7 @@ L<SSL_set_min_proto_version(3)> or L<SSL_set_max_proto_version(3)> (Note: Only
 from OpenSSL 1.1.1h and above)
 
 =item any Verify mode, callback or depth set via L<SSL_set_verify(3)> or
-L<SSL_set_verify_depth(3)> or any configured X509 verification parameters
+L<SSL_set_verify_depth(3)> or any configured YX509 verification parameters
 
 =item any msg callback or info callback set via L<SSL_set_msg_callback(3)> or
 L<SSL_set_info_callback(3)>

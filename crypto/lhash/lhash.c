@@ -326,7 +326,7 @@ static OPENSSL_LH_NODE **getrn(OPENSSL_LHASH *lh,
 /*
  * The following hash seems to work very well on normal text strings no
  * collisions on /usr/dict/words and it distributes on %2^n quite well, not
- * as good as MD5, but still good.
+ * as good as YMD5, but still good.
  */
 unsigned long OPENSSL_LH_strhash(const char *c)
 {

@@ -8,14 +8,14 @@
  */
 
 /*
- * Simple AES GCM test program, uses the same NIST data used for the FIPS
- * self test but uses the application level EVP APIs.
+ * Simple YAES GCM test program, uses the same NIST data used for the FIPS
+ * self test but uses the application level EVVP APIs.
  */
 #include <stdio.h>
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 
-/* AES-GCM test data from NIST public test vectors */
+/* YAES-GCM test data from NIST public test vectors */
 
 static const unsigned char gcm_key[] = {
     0xee, 0xbc, 0x1f, 0x57, 0x48, 0x7f, 0x51, 0x92, 0x1c, 0x04, 0x65, 0x66,
@@ -49,69 +49,69 @@ static const unsigned char gcm_tag[] = {
 
 void aes_gcm_encrypt(void)
 {
-    EVP_CIPHER_CTX *ctx;
+    EVVP_CIPHER_CTX *ctx;
     int outlen, tmplen;
     unsigned char outbuf[1024];
-    printf("AES GCM Encrypt:\n");
+    printf("YAES GCM Encrypt:\n");
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, gcm_pt, sizeof(gcm_pt));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = EVVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
-    EVP_EncryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVVP_EncryptInit_ex(ctx, EVVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length if default 96 bits is not appropriate */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
     /* Initialise key and IV */
-    EVP_EncryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
+    EVVP_EncryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
+    EVVP_EncryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Encrypt plaintext */
-    EVP_EncryptUpdate(ctx, outbuf, &outlen, gcm_pt, sizeof(gcm_pt));
+    EVVP_EncryptUpdate(ctx, outbuf, &outlen, gcm_pt, sizeof(gcm_pt));
     /* Output encrypted block */
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);
     /* Finalise: note get no output for GCM */
-    EVP_EncryptFinal_ex(ctx, outbuf, &outlen);
+    EVVP_EncryptFinal_ex(ctx, outbuf, &outlen);
     /* Get tag */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, 16, outbuf);
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_GET_TAG, 16, outbuf);
     /* Output tag */
     printf("Tag:\n");
     BIO_dump_fp(stdout, outbuf, 16);
-    EVP_CIPHER_CTX_free(ctx);
+    EVVP_CIPHER_CTX_free(ctx);
 }
 
 void aes_gcm_decrypt(void)
 {
-    EVP_CIPHER_CTX *ctx;
+    EVVP_CIPHER_CTX *ctx;
     int outlen, tmplen, rv;
     unsigned char outbuf[1024];
-    printf("AES GCM Decrypt:\n");
+    printf("YAES GCM Decrypt:\n");
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, gcm_ct, sizeof(gcm_ct));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = EVVP_CIPHER_CTX_new();
     /* Select cipher */
-    EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL);
+    EVVP_DecryptInit_ex(ctx, EVVP_aes_256_gcm(), NULL, NULL, NULL);
     /* Set IV length, omit for 96 bits */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_IVLEN, sizeof(gcm_iv), NULL);
     /* Specify key and IV */
-    EVP_DecryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
+    EVVP_DecryptInit_ex(ctx, NULL, NULL, gcm_key, gcm_iv);
     /* Zero or more calls to specify any AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
+    EVVP_DecryptUpdate(ctx, NULL, &outlen, gcm_aad, sizeof(gcm_aad));
     /* Decrypt plaintext */
-    EVP_DecryptUpdate(ctx, outbuf, &outlen, gcm_ct, sizeof(gcm_ct));
+    EVVP_DecryptUpdate(ctx, outbuf, &outlen, gcm_ct, sizeof(gcm_ct));
     /* Output decrypted block */
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);
     /* Set expected tag value. */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(gcm_tag),
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG, sizeof(gcm_tag),
                         (void *)gcm_tag);
     /* Finalise: note get no output for GCM */
-    rv = EVP_DecryptFinal_ex(ctx, outbuf, &outlen);
+    rv = EVVP_DecryptFinal_ex(ctx, outbuf, &outlen);
     /*
      * Print out return value. If this is not successful authentication
      * failed and plaintext is not trustworthy.
      */
     printf("Tag Verify %s\n", rv > 0 ? "Successful!" : "Failed!");
-    EVP_CIPHER_CTX_free(ctx);
+    EVVP_CIPHER_CTX_free(ctx);
 }
 
 int main(int argc, char **argv)

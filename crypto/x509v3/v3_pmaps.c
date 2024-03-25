@@ -14,15 +14,15 @@
 #include <openssl/x509v3.h>
 #include "ext_dat.h"
 
-static void *v2i_POLICY_MAPPINGS(const X509V3_EXT_METHOD *method,
-                                 X509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval);
-static STACK_OF(CONF_VALUE) *i2v_POLICY_MAPPINGS(const X509V3_EXT_METHOD
+static void *v2i_POLICY_MAPPINGS(const YX509V3_EXT_METHOD *method,
+                                 YX509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval);
+static STACK_OF(CONF_VALUE) *i2v_POLICY_MAPPINGS(const YX509V3_EXT_METHOD
                                                  *method, void *pmps, STACK_OF(CONF_VALUE)
                                                  *extlist);
 
-const X509V3_EXT_METHOD v3_policy_mappings = {
+const YX509V3_EXT_METHOD v3_policy_mappings = {
     NID_policy_mappings, 0,
-    ASN1_ITEM_ref(POLICY_MAPPINGS),
+    YASN1_ITEM_ref(POLICY_MAPPINGS),
     0, 0, 0, 0,
     0, 0,
     i2v_POLICY_MAPPINGS,
@@ -31,19 +31,19 @@ const X509V3_EXT_METHOD v3_policy_mappings = {
     NULL
 };
 
-ASN1_SEQUENCE(POLICY_MAPPING) = {
-        ASN1_SIMPLE(POLICY_MAPPING, issuerDomainPolicy, ASN1_OBJECT),
-        ASN1_SIMPLE(POLICY_MAPPING, subjectDomainPolicy, ASN1_OBJECT)
-} ASN1_SEQUENCE_END(POLICY_MAPPING)
+YASN1_SEQUENCE(POLICY_MAPPING) = {
+        YASN1_SIMPLE(POLICY_MAPPING, issuerDomainPolicy, YASN1_OBJECT),
+        YASN1_SIMPLE(POLICY_MAPPING, subjectDomainPolicy, YASN1_OBJECT)
+} YASN1_SEQUENCE_END(POLICY_MAPPING)
 
-ASN1_ITEM_TEMPLATE(POLICY_MAPPINGS) =
-        ASN1_EX_TEMPLATE_TYPE(ASN1_TFLG_SEQUENCE_OF, 0, POLICY_MAPPINGS,
+YASN1_ITEM_TEMPLATE(POLICY_MAPPINGS) =
+        YASN1_EX_TEMPLATE_TYPE(YASN1_TFLG_SEQUENCE_OF, 0, POLICY_MAPPINGS,
                                                                 POLICY_MAPPING)
-ASN1_ITEM_TEMPLATE_END(POLICY_MAPPINGS)
+YASN1_ITEM_TEMPLATE_END(POLICY_MAPPINGS)
 
-IMPLEMENT_ASN1_ALLOC_FUNCTIONS(POLICY_MAPPING)
+IMPLEMENT_YASN1_ALLOC_FUNCTIONS(POLICY_MAPPING)
 
-static STACK_OF(CONF_VALUE) *i2v_POLICY_MAPPINGS(const X509V3_EXT_METHOD
+static STACK_OF(CONF_VALUE) *i2v_POLICY_MAPPINGS(const YX509V3_EXT_METHOD
                                                  *method, void *a, STACK_OF(CONF_VALUE)
                                                  *ext_list)
 {
@@ -55,47 +55,47 @@ static STACK_OF(CONF_VALUE) *i2v_POLICY_MAPPINGS(const X509V3_EXT_METHOD
 
     for (i = 0; i < sk_POLICY_MAPPING_num(pmaps); i++) {
         pmap = sk_POLICY_MAPPING_value(pmaps, i);
-        i2t_ASN1_OBJECT(obj_tmp1, 80, pmap->issuerDomainPolicy);
-        i2t_ASN1_OBJECT(obj_tmp2, 80, pmap->subjectDomainPolicy);
-        X509V3_add_value(obj_tmp1, obj_tmp2, &ext_list);
+        i2t_YASN1_OBJECT(obj_tmp1, 80, pmap->issuerDomainPolicy);
+        i2t_YASN1_OBJECT(obj_tmp2, 80, pmap->subjectDomainPolicy);
+        YX509V3_add_value(obj_tmp1, obj_tmp2, &ext_list);
     }
     return ext_list;
 }
 
-static void *v2i_POLICY_MAPPINGS(const X509V3_EXT_METHOD *method,
-                                 X509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
+static void *v2i_POLICY_MAPPINGS(const YX509V3_EXT_METHOD *method,
+                                 YX509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
 {
     POLICY_MAPPING *pmap = NULL;
-    ASN1_OBJECT *obj1 = NULL, *obj2 = NULL;
+    YASN1_OBJECT *obj1 = NULL, *obj2 = NULL;
     CONF_VALUE *val;
     POLICY_MAPPINGS *pmaps;
     const int num = sk_CONF_VALUE_num(nval);
     int i;
 
     if ((pmaps = sk_POLICY_MAPPING_new_reserve(NULL, num)) == NULL) {
-        X509V3err(X509V3_F_V2I_POLICY_MAPPINGS, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_V2I_POLICY_MAPPINGS, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
     for (i = 0; i < num; i++) {
         val = sk_CONF_VALUE_value(nval, i);
         if (!val->value || !val->name) {
-            X509V3err(X509V3_F_V2I_POLICY_MAPPINGS,
-                      X509V3_R_INVALID_OBJECT_IDENTIFIER);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_V2I_POLICY_MAPPINGS,
+                      YX509V3_R_INVALID_OBJECT_IDENTIFIER);
+            YX509V3_conf_err(val);
             goto err;
         }
         obj1 = OBJ_txt2obj(val->name, 0);
         obj2 = OBJ_txt2obj(val->value, 0);
         if (!obj1 || !obj2) {
-            X509V3err(X509V3_F_V2I_POLICY_MAPPINGS,
-                      X509V3_R_INVALID_OBJECT_IDENTIFIER);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_V2I_POLICY_MAPPINGS,
+                      YX509V3_R_INVALID_OBJECT_IDENTIFIER);
+            YX509V3_conf_err(val);
             goto err;
         }
         pmap = POLICY_MAPPING_new();
         if (pmap == NULL) {
-            X509V3err(X509V3_F_V2I_POLICY_MAPPINGS, ERR_R_MALLOC_FAILURE);
+            YX509V3err(YX509V3_F_V2I_POLICY_MAPPINGS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
         pmap->issuerDomainPolicy = obj1;
@@ -105,8 +105,8 @@ static void *v2i_POLICY_MAPPINGS(const X509V3_EXT_METHOD *method,
     }
     return pmaps;
  err:
-    ASN1_OBJECT_free(obj1);
-    ASN1_OBJECT_free(obj2);
+    YASN1_OBJECT_free(obj1);
+    YASN1_OBJECT_free(obj2);
     sk_POLICY_MAPPING_pop_free(pmaps, POLICY_MAPPING_free);
     return NULL;
 }

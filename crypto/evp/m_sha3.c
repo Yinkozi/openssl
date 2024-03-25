@@ -30,7 +30,7 @@ typedef struct {
     unsigned char pad;
 } KECCAK1600_CTX;
 
-static int init(EVP_MD_CTX *evp_ctx, unsigned char pad)
+static int init(EVVP_MD_CTX *evp_ctx, unsigned char pad)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     size_t bsz = evp_ctx->digest->block_size;
@@ -49,17 +49,17 @@ static int init(EVP_MD_CTX *evp_ctx, unsigned char pad)
     return 0;
 }
 
-static int sha3_init(EVP_MD_CTX *evp_ctx)
+static int sha3_init(EVVP_MD_CTX *evp_ctx)
 {
     return init(evp_ctx, '\x06');
 }
 
-static int shake_init(EVP_MD_CTX *evp_ctx)
+static int shake_init(EVVP_MD_CTX *evp_ctx)
 {
     return init(evp_ctx, '\x1f');
 }
 
-static int sha3_update(EVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
+static int sha3_update(EVVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     const unsigned char *inp = _inp;
@@ -102,7 +102,7 @@ static int sha3_update(EVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
     return 1;
 }
 
-static int sha3_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
+static int sha3_final(EVVP_MD_CTX *evp_ctx, unsigned char *md)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     size_t bsz = ctx->block_size;
@@ -127,12 +127,12 @@ static int sha3_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
     return 1;
 }
 
-static int shake_ctrl(EVP_MD_CTX *evp_ctx, int cmd, int p1, void *p2)
+static int shake_ctrl(EVVP_MD_CTX *evp_ctx, int cmd, int p1, void *p2)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
 
     switch (cmd) {
-    case EVP_MD_CTRL_XOF_LEN:
+    case EVVP_MD_CTRL_XOF_LEN:
         ctx->md_size = p1;
         return 1;
     default:
@@ -176,7 +176,7 @@ static int shake_ctrl(EVP_MD_CTX *evp_ctx, int cmd, int p1, void *p2)
 /* Convert md-size to block-size. */
 # define S390X_KECCAK1600_BSZ(n) ((KECCAK1600_WIDTH - ((n) << 1)) >> 3)
 
-static int s390x_sha3_init(EVP_MD_CTX *evp_ctx)
+static int s390x_sha3_init(EVVP_MD_CTX *evp_ctx)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     const size_t bsz = evp_ctx->digest->block_size;
@@ -209,7 +209,7 @@ static int s390x_sha3_init(EVP_MD_CTX *evp_ctx)
     return 1;
 }
 
-static int s390x_shake_init(EVP_MD_CTX *evp_ctx)
+static int s390x_shake_init(EVVP_MD_CTX *evp_ctx)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     const size_t bsz = evp_ctx->digest->block_size;
@@ -236,7 +236,7 @@ static int s390x_shake_init(EVP_MD_CTX *evp_ctx)
     return 1;
 }
 
-static int s390x_sha3_update(EVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
+static int s390x_sha3_update(EVVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
     const unsigned char *inp = _inp;
@@ -271,7 +271,7 @@ static int s390x_sha3_update(EVP_MD_CTX *evp_ctx, const void *_inp, size_t len)
     return 1;
 }
 
-static int s390x_sha3_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
+static int s390x_sha3_final(EVVP_MD_CTX *evp_ctx, unsigned char *md)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
 
@@ -280,7 +280,7 @@ static int s390x_sha3_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
     return 1;
 }
 
-static int s390x_shake_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
+static int s390x_shake_final(EVVP_MD_CTX *evp_ctx, unsigned char *md)
 {
     KECCAK1600_CTX *ctx = evp_ctx->md_data;
 
@@ -288,14 +288,14 @@ static int s390x_shake_final(EVP_MD_CTX *evp_ctx, unsigned char *md)
     return 1;
 }
 
-# define EVP_MD_SHA3(bitlen)                         \
-const EVP_MD *EVP_sha3_##bitlen(void)                \
+# define EVVP_MD_SHA3(bitlen)                         \
+const EVVP_MD *EVVP_sha3_##bitlen(void)                \
 {                                                    \
-    static const EVP_MD s390x_sha3_##bitlen##_md = { \
+    static const EVVP_MD s390x_sha3_##bitlen##_md = { \
         NID_sha3_##bitlen,                           \
-        NID_RSA_SHA3_##bitlen,                       \
+        NID_YRSA_SHA3_##bitlen,                       \
         bitlen / 8,                                  \
-        EVP_MD_FLAG_DIGALGID_ABSENT,                 \
+        EVVP_MD_FLAG_DIGALGID_ABSENT,                 \
         s390x_sha3_init,                             \
         s390x_sha3_update,                           \
         s390x_sha3_final,                            \
@@ -304,11 +304,11 @@ const EVP_MD *EVP_sha3_##bitlen(void)                \
         (KECCAK1600_WIDTH - bitlen * 2) / 8,         \
         sizeof(KECCAK1600_CTX),                      \
     };                                               \
-    static const EVP_MD sha3_##bitlen##_md = {       \
+    static const EVVP_MD sha3_##bitlen##_md = {       \
         NID_sha3_##bitlen,                           \
-        NID_RSA_SHA3_##bitlen,                       \
+        NID_YRSA_SHA3_##bitlen,                       \
         bitlen / 8,                                  \
-        EVP_MD_FLAG_DIGALGID_ABSENT,                 \
+        EVVP_MD_FLAG_DIGALGID_ABSENT,                 \
         sha3_init,                                   \
         sha3_update,                                 \
         sha3_final,                                  \
@@ -322,14 +322,14 @@ const EVP_MD *EVP_sha3_##bitlen(void)                \
            &sha3_##bitlen##_md;                      \
 }
 
-# define EVP_MD_SHAKE(bitlen)                        \
-const EVP_MD *EVP_shake##bitlen(void)                \
+# define EVVP_MD_SHAKE(bitlen)                        \
+const EVVP_MD *EVVP_shake##bitlen(void)                \
 {                                                    \
-    static const EVP_MD s390x_shake##bitlen##_md = { \
+    static const EVVP_MD s390x_shake##bitlen##_md = { \
         NID_shake##bitlen,                           \
         0,                                           \
         bitlen / 8,                                  \
-        EVP_MD_FLAG_XOF,                             \
+        EVVP_MD_FLAG_XOF,                             \
         s390x_shake_init,                            \
         s390x_sha3_update,                           \
         s390x_shake_final,                           \
@@ -339,11 +339,11 @@ const EVP_MD *EVP_shake##bitlen(void)                \
         sizeof(KECCAK1600_CTX),                      \
         shake_ctrl                                   \
     };                                               \
-    static const EVP_MD shake##bitlen##_md = {       \
+    static const EVVP_MD shake##bitlen##_md = {       \
         NID_shake##bitlen,                           \
         0,                                           \
         bitlen / 8,                                  \
-        EVP_MD_FLAG_XOF,                             \
+        EVVP_MD_FLAG_XOF,                             \
         shake_init,                                  \
         sha3_update,                                 \
         sha3_final,                                  \
@@ -360,14 +360,14 @@ const EVP_MD *EVP_shake##bitlen(void)                \
 
 #else
 
-# define EVP_MD_SHA3(bitlen)                    \
-const EVP_MD *EVP_sha3_##bitlen(void)           \
+# define EVVP_MD_SHA3(bitlen)                    \
+const EVVP_MD *EVVP_sha3_##bitlen(void)           \
 {                                               \
-    static const EVP_MD sha3_##bitlen##_md = {  \
+    static const EVVP_MD sha3_##bitlen##_md = {  \
         NID_sha3_##bitlen,                      \
-        NID_RSA_SHA3_##bitlen,                  \
+        NID_YRSA_SHA3_##bitlen,                  \
         bitlen / 8,                             \
-        EVP_MD_FLAG_DIGALGID_ABSENT,            \
+        EVVP_MD_FLAG_DIGALGID_ABSENT,            \
         sha3_init,                              \
         sha3_update,                            \
         sha3_final,                             \
@@ -379,14 +379,14 @@ const EVP_MD *EVP_sha3_##bitlen(void)           \
     return &sha3_##bitlen##_md;                 \
 }
 
-# define EVP_MD_SHAKE(bitlen)                   \
-const EVP_MD *EVP_shake##bitlen(void)           \
+# define EVVP_MD_SHAKE(bitlen)                   \
+const EVVP_MD *EVVP_shake##bitlen(void)           \
 {                                               \
-    static const EVP_MD shake##bitlen##_md = {  \
+    static const EVVP_MD shake##bitlen##_md = {  \
         NID_shake##bitlen,                      \
         0,                                      \
         bitlen / 8,                             \
-        EVP_MD_FLAG_XOF,                        \
+        EVVP_MD_FLAG_XOF,                        \
         shake_init,                             \
         sha3_update,                            \
         sha3_final,                             \
@@ -400,10 +400,10 @@ const EVP_MD *EVP_shake##bitlen(void)           \
 }
 #endif
 
-EVP_MD_SHA3(224)
-EVP_MD_SHA3(256)
-EVP_MD_SHA3(384)
-EVP_MD_SHA3(512)
+EVVP_MD_SHA3(224)
+EVVP_MD_SHA3(256)
+EVVP_MD_SHA3(384)
+EVVP_MD_SHA3(512)
 
-EVP_MD_SHAKE(128)
-EVP_MD_SHAKE(256)
+EVVP_MD_SHAKE(128)
+EVVP_MD_SHAKE(256)

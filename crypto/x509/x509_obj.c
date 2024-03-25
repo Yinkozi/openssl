@@ -21,9 +21,9 @@
 
 #define NAME_ONELINE_MAX    (1024 * 1024)
 
-char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
+char *YX509_NAME_oneline(const YX509_NAME *a, char *buf, int len)
 {
-    const X509_NAME_ENTRY *ne;
+    const YX509_NAME_ENTRY *ne;
     int i;
     int n, lold, l, l1, l2, num, j, type;
     const char *s;
@@ -52,18 +52,18 @@ char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
             buf = b->data;
             OPENSSL_free(b);
         }
-        strncpy(buf, "NO X509_NAME", len);
+        strncpy(buf, "NO YX509_NAME", len);
         buf[len - 1] = '\0';
         return buf;
     }
 
     len--;                      /* space for '\0' */
     l = 0;
-    for (i = 0; i < sk_X509_NAME_ENTRY_num(a->entries); i++) {
-        ne = sk_X509_NAME_ENTRY_value(a->entries, i);
+    for (i = 0; i < sk_YX509_NAME_ENTRY_num(a->entries); i++) {
+        ne = sk_YX509_NAME_ENTRY_value(a->entries, i);
         n = OBJ_obj2nid(ne->object);
         if ((n == NID_undef) || ((s = OBJ_nid2sn(n)) == NULL)) {
-            i2t_ASN1_OBJECT(tmp_buf, sizeof(tmp_buf), ne->object);
+            i2t_YASN1_OBJECT(tmp_buf, sizeof(tmp_buf), ne->object);
             s = tmp_buf;
         }
         l1 = strlen(s);
@@ -71,16 +71,16 @@ char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
         type = ne->value->type;
         num = ne->value->length;
         if (num > NAME_ONELINE_MAX) {
-            X509err(X509_F_X509_NAME_ONELINE, X509_R_NAME_TOO_LONG);
+            YX509err(YX509_F_YX509_NAME_ONELINE, YX509_R_NAME_TOO_LONG);
             goto end;
         }
         q = ne->value->data;
 #ifdef CHARSET_EBCDIC
-        if (type == V_ASN1_GENERALSTRING ||
-            type == V_ASN1_VISIBLESTRING ||
-            type == V_ASN1_PRINTABLESTRING ||
-            type == V_ASN1_TELETEXSTRING ||
-            type == V_ASN1_IA5STRING) {
+        if (type == V_YASN1_GENERALSTRING ||
+            type == V_YASN1_VISIBLESTRING ||
+            type == V_YASN1_PRINTABLESTRING ||
+            type == V_YASN1_TELETEXSTRING ||
+            type == V_YASN1_IA5STRING) {
             if (num > (int)sizeof(ebcdic_buf))
                 num = sizeof(ebcdic_buf);
             ascii2ebcdic(ebcdic_buf, q, num);
@@ -88,7 +88,7 @@ char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
         }
 #endif
 
-        if ((type == V_ASN1_GENERALSTRING) && ((num % 4) == 0)) {
+        if ((type == V_YASN1_GENERALSTRING) && ((num % 4) == 0)) {
             gs_doit[0] = gs_doit[1] = gs_doit[2] = gs_doit[3] = 0;
             for (j = 0; j < num; j++)
                 if (q[j] != 0)
@@ -120,7 +120,7 @@ char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
         lold = l;
         l += 1 + l1 + 1 + l2;
         if (l > NAME_ONELINE_MAX) {
-            X509err(X509_F_X509_NAME_ONELINE, X509_R_NAME_TOO_LONG);
+            YX509err(YX509_F_YX509_NAME_ONELINE, YX509_R_NAME_TOO_LONG);
             goto end;
         }
         if (b != NULL) {
@@ -174,7 +174,7 @@ char *X509_NAME_oneline(const X509_NAME *a, char *buf, int len)
         *p = '\0';
     return p;
  err:
-    X509err(X509_F_X509_NAME_ONELINE, ERR_R_MALLOC_FAILURE);
+    YX509err(YX509_F_YX509_NAME_ONELINE, ERR_R_MALLOC_FAILURE);
  end:
     BUF_MEM_free(b);
     return NULL;

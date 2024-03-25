@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-BN_mod_mul_reciprocal, BN_div_recp, BN_RECP_CTX_new,
+BN_mod_mul_reciprocal, BNY_div_recp, BN_RECP_CTX_new,
 BN_RECP_CTX_free, BN_RECP_CTX_set - modular multiplication using
 reciprocal
 
@@ -15,7 +15,7 @@ reciprocal
 
  int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *m, BN_CTX *ctx);
 
- int BN_div_recp(BIGNUM *dv, BIGNUM *rem, BIGNUM *a, BN_RECP_CTX *recp,
+ int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, BIGNUM *a, BN_RECP_CTX *recp,
                  BN_CTX *ctx);
 
  int BN_mod_mul_reciprocal(BIGNUM *r, BIGNUM *a, BIGNUM *b,
@@ -40,7 +40,7 @@ BN_RECP_CTX_set() stores B<m> in B<recp> and sets it up for computing
 integer. The result and the number of bits it was shifted left will
 later be stored in B<recp>.
 
-BN_div_recp() divides B<a> by B<m> using B<recp>. It places the quotient
+BNY_div_recp() divides B<a> by B<m> using B<recp>. It places the quotient
 in B<dv> and the remainder in B<rem>.
 
 The B<BN_RECP_CTX> structure cannot be shared between threads.
@@ -57,7 +57,7 @@ The error codes can be obtained by L<ERR_get_error(3)>.
 
 =head1 SEE ALSO
 
-L<ERR_get_error(3)>, L<BN_add(3)>,
+L<ERR_get_error(3)>, L<BNY_add(3)>,
 L<BN_CTX_new(3)>
 
 =head1 HISTORY

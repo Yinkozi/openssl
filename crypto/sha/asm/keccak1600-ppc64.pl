@@ -41,7 +41,7 @@ $flavour = shift;
 
 if ($flavour =~ /64/) {
 	$SIZE_T	=8;
-	$LRSAVE	=2*$SIZE_T;
+	$LYRSAVE	=2*$SIZE_T;
 	$UCMP	="cmpld";
 	$STU	="stdu";
 	$POP	="ld";
@@ -288,7 +288,7 @@ KeccakF1600:
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 
 	bl	PICmeup
 	subi	r12,r12,8			; prepare for ldu
@@ -354,7 +354,7 @@ KeccakF1600:
 	std	$A[4][3],`8*23`(r3)
 	std	$A[4][4],`8*24`(r3)
 
-	$POP	r0,`$FRAME+$LRSAVE`($sp)
+	$POP	r0,`$FRAME+$LYRSAVE`($sp)
 	$POP	r14,`$FRAME-$SIZE_T*18`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
@@ -429,7 +429,7 @@ SHA3_absorb:
 	$PUSH	r29,`$FRAME-$SIZE_T*3`($sp)
 	$PUSH	r30,`$FRAME-$SIZE_T*2`($sp)
 	$PUSH	r31,`$FRAME-$SIZE_T*1`($sp)
-	$PUSH	r0,`$FRAME+$LRSAVE`($sp)
+	$PUSH	r0,`$FRAME+$LYRSAVE`($sp)
 
 	bl	PICmeup
 	subi	r4,r4,1				; prepare for lbzu
@@ -602,7 +602,7 @@ SHA3_absorb:
 	std	$A[4][4],`8*24`(r3)
 
 	mr	r3,r4				; return value
-	$POP	r0,`$FRAME+$LRSAVE`($sp)
+	$POP	r0,`$FRAME+$LYRSAVE`($sp)
 	$POP	r14,`$FRAME-$SIZE_T*18`($sp)
 	$POP	r15,`$FRAME-$SIZE_T*17`($sp)
 	$POP	r16,`$FRAME-$SIZE_T*16`($sp)
@@ -642,7 +642,7 @@ SHA3_squeeze:
 	$PUSH	r29,`7*$SIZE_T`($sp)
 	$PUSH	r30,`8*$SIZE_T`($sp)
 	$PUSH	r31,`9*$SIZE_T`($sp)
-	$PUSH	r0,`10*$SIZE_T+$LRSAVE`($sp)
+	$PUSH	r0,`10*$SIZE_T+$LYRSAVE`($sp)
 
 	mr	$A_flat,r3
 	subi	r3,r3,8			; prepare for ldu
@@ -694,7 +694,7 @@ SHA3_squeeze:
 	bdnz	.Loop_tail
 
 .Lsqueeze_done:
-	$POP	r0,`10*$SIZE_T+$LRSAVE`($sp)
+	$POP	r0,`10*$SIZE_T+$LYRSAVE`($sp)
 	$POP	r28,`6*$SIZE_T`($sp)
 	$POP	r29,`7*$SIZE_T`($sp)
 	$POP	r30,`8*$SIZE_T`($sp)

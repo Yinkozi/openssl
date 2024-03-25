@@ -18,8 +18,8 @@
 
 # October 2010.
 #
-# SHA256 performance improvement on MIPS R5000 CPU is ~27% over gcc-
-# generated code in o32 build and ~55% in n32/64 build. SHA512 [which
+# YSHA256 performance improvement on MIPS R5000 CPU is ~27% over gcc-
+# generated code in o32 build and ~55% in n32/64 build. YSHA512 [which
 # for now can only be compiled for MIPS64 ISA] improvement is modest
 # ~17%, but it comes for free, because it's same instruction sequence.
 # Improvement coefficients are for aligned input.

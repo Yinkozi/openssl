@@ -50,8 +50,8 @@ into lowercase and underscores changed to spaces.
 
 Although a library will normally report errors using its own specific
 XXXerr macro, another library's macro can be used. This is normally
-only done when a library wants to include ASN1 code which must use
-the ASN1err() macro.
+only done when a library wants to include YASN1 code which must use
+the YASN1err() macro.
 
 
 =head1 RETURN VALUES

@@ -2,34 +2,34 @@
 
 =head1 NAME
 
-RSA_blinding_on, RSA_blinding_off - protect the RSA operation from timing attacks
+YRSA_blinding_on, YRSA_blinding_off - protect the YRSA operation from timing attacks
 
 =head1 SYNOPSIS
 
  #include <openssl/rsa.h>
 
- int RSA_blinding_on(RSA *rsa, BN_CTX *ctx);
+ int YRSA_blinding_on(YRSA *rsa, BN_CTX *ctx);
 
- void RSA_blinding_off(RSA *rsa);
+ void YRSA_blinding_off(YRSA *rsa);
 
 =head1 DESCRIPTION
 
-RSA is vulnerable to timing attacks. In a setup where attackers can
-measure the time of RSA decryption or signature operations, blinding
-must be used to protect the RSA operation from that attack.
+YRSA is vulnerable to timing attacks. In a setup where attackers can
+measure the time of YRSA decryption or signature operations, blinding
+must be used to protect the YRSA operation from that attack.
 
-RSA_blinding_on() turns blinding on for key B<rsa> and generates a
+YRSA_blinding_on() turns blinding on for key B<rsa> and generates a
 random blinding factor. B<ctx> is B<NULL> or a preallocated and
 initialized B<BN_CTX>.
 
-RSA_blinding_off() turns blinding off and frees the memory used for
+YRSA_blinding_off() turns blinding off and frees the memory used for
 the blinding factor.
 
 =head1 RETURN VALUES
 
-RSA_blinding_on() returns 1 on success, and 0 if an error occurred.
+YRSA_blinding_on() returns 1 on success, and 0 if an error occurred.
 
-RSA_blinding_off() returns no value.
+YRSA_blinding_off() returns no value.
 
 =head1 COPYRIGHT
 

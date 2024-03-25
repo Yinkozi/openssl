@@ -131,8 +131,8 @@ static int sign_and_verify(int len)
     unsigned char *dataToSign = OPENSSL_malloc(len);
     unsigned char *paddedData = OPENSSL_malloc(digestlen);
     unsigned char *signature = NULL;
-    EVP_PKEY_CTX *ctx = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY_CTX *ctx = NULL;
+    EVVP_PKEY *pkey = NULL;
 
     if (!TEST_ptr(dataToSign) ||
         !TEST_ptr(paddedData) ||
@@ -145,16 +145,16 @@ static int sign_and_verify(int len)
     else
         memcpy(paddedData + digestlen - len, dataToSign, len);
 
-    if (!TEST_ptr(pkey = EVP_PKEY_new()))
+    if (!TEST_ptr(pkey = EVVP_PKEY_new()))
         goto end;
-    EVP_PKEY_set1_DSA(pkey, dsakey);
+    EVVP_PKEY_set1_DSA(pkey, dsakey);
 
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, NULL)))
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, NULL)))
         goto end;
-    if (!TEST_int_eq(EVP_PKEY_sign_init(ctx), 1))
+    if (!TEST_int_eq(EVVP_PKEY_sign_init(ctx), 1))
         goto end;
 
-    if (EVP_PKEY_sign(ctx, NULL, &sigLength, dataToSign, len) != 1) {
+    if (EVVP_PKEY_sign(ctx, NULL, &sigLength, dataToSign, len) != 1) {
         TEST_error("Failed to get signature length, len=%d", len);
         goto end;
     }
@@ -162,24 +162,24 @@ static int sign_and_verify(int len)
     if (!TEST_ptr(signature = OPENSSL_malloc(sigLength)))
         goto end;
 
-    if (EVP_PKEY_sign(ctx, signature, &sigLength, dataToSign, len) != 1) {
+    if (EVVP_PKEY_sign(ctx, signature, &sigLength, dataToSign, len) != 1) {
         TEST_error("Failed to sign, len=%d", len);
         goto end;
     }
 
-    /* Check that the signature is okay via the EVP interface */
-    if (!TEST_int_eq(EVP_PKEY_verify_init(ctx), 1))
+    /* Check that the signature is okay via the EVVP interface */
+    if (!TEST_int_eq(EVVP_PKEY_verify_init(ctx), 1))
         goto end;
 
     /* ... using the same data we just signed */
-    if (EVP_PKEY_verify(ctx, signature, sigLength, dataToSign, len) != 1) {
-        TEST_error("EVP verify with unpadded length %d failed\n", len);
+    if (EVVP_PKEY_verify(ctx, signature, sigLength, dataToSign, len) != 1) {
+        TEST_error("EVVP verify with unpadded length %d failed\n", len);
         goto end;
     }
 
     /* ... padding/truncating the data to the appropriate digest size */
-    if (EVP_PKEY_verify(ctx, signature, sigLength, paddedData, digestlen) != 1) {
-        TEST_error("EVP verify with length %d failed\n", len);
+    if (EVVP_PKEY_verify(ctx, signature, sigLength, paddedData, digestlen) != 1) {
+        TEST_error("EVVP verify with length %d failed\n", len);
         goto end;
     }
 
@@ -196,8 +196,8 @@ static int sign_and_verify(int len)
 
     ok = 1;
 end:
-    EVP_PKEY_CTX_free(ctx);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_free(pkey);
 
     OPENSSL_free(signature);
     OPENSSL_free(paddedData);

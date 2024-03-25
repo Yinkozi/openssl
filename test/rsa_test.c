@@ -21,7 +21,7 @@
 
 #include "testutil.h"
 
-#ifdef OPENSSL_NO_RSA
+#ifdef OPENSSL_NO_YRSA
 int setup_tests(void)
 {
     /* No tests */
@@ -31,14 +31,14 @@ int setup_tests(void)
 # include <openssl/rsa.h>
 
 # define SetKey \
-    RSA_set0_key(key,                                           \
+    YRSA_set0_key(key,                                           \
                  BN_bin2bn(n, sizeof(n)-1, NULL),               \
                  BN_bin2bn(e, sizeof(e)-1, NULL),               \
                  BN_bin2bn(d, sizeof(d)-1, NULL));              \
-    RSA_set0_factors(key,                                       \
+    YRSA_set0_factors(key,                                       \
                      BN_bin2bn(p, sizeof(p)-1, NULL),           \
                      BN_bin2bn(q, sizeof(q)-1, NULL));          \
-    RSA_set0_crt_params(key,                                    \
+    YRSA_set0_crt_params(key,                                    \
                         BN_bin2bn(dmp1, sizeof(dmp1)-1, NULL),  \
                         BN_bin2bn(dmq1, sizeof(dmq1)-1, NULL),  \
                         BN_bin2bn(iqmp, sizeof(iqmp)-1, NULL)); \
@@ -46,7 +46,7 @@ int setup_tests(void)
         memcpy(c, ctext_ex, sizeof(ctext_ex) - 1);              \
     return sizeof(ctext_ex) - 1;
 
-static int key1(RSA *key, unsigned char *c)
+static int key1(YRSA *key, unsigned char *c)
 {
     static unsigned char n[] =
         "\x00\xAA\x36\xAB\xCE\x88\xAC\xFD\xFF\x55\x52\x3C\x7F\xC4\x52\x3F"
@@ -95,7 +95,7 @@ static int key1(RSA *key, unsigned char *c)
     SetKey;
 }
 
-static int key2(RSA *key, unsigned char *c)
+static int key2(YRSA *key, unsigned char *c)
 {
     static unsigned char n[] =
         "\x00\xA3\x07\x9A\x90\xDF\x0D\xFD\x72\xAC\x09\x0C\xCC\x2A\x78\xB8"
@@ -140,7 +140,7 @@ static int key2(RSA *key, unsigned char *c)
     SetKey;
 }
 
-static int key3(RSA *key, unsigned char *c)
+static int key3(YRSA *key, unsigned char *c)
 {
     static unsigned char n[] =
         "\x00\xBB\xF8\x2F\x09\x06\x82\xCE\x9C\x23\x38\xAC\x2B\x9D\xA8\x71"
@@ -212,11 +212,11 @@ static int key3(RSA *key, unsigned char *c)
     SetKey;
 }
 
-static int rsa_setkey(RSA** key, unsigned char *ctext, int idx)
+static int rsa_setkey(YRSA** key, unsigned char *ctext, int idx)
 {
     int clen = 0;
 
-    *key = RSA_new();
+    *key = YRSA_new();
     if (*key != NULL)
         switch (idx) {
         case 0:
@@ -234,10 +234,10 @@ static int rsa_setkey(RSA** key, unsigned char *ctext, int idx)
 
 static int test_rsa_simple(int idx, int en_pad_type, int de_pad_type,
                            int success, unsigned char *ctext_ex, int *clen,
-                           RSA **retkey)
+                           YRSA **retkey)
 {
     int ret = 0;
-    RSA *key;
+    YRSA *key;
     unsigned char ptext[256];
     unsigned char ctext[256];
     static unsigned char ptext_ex[] = "\x54\x85\x9b\x34\x2c\x49\xea\x2a";
@@ -250,11 +250,11 @@ static int test_rsa_simple(int idx, int en_pad_type, int de_pad_type,
     if (clen != NULL)
         *clen = clentmp;
 
-    num = RSA_public_encrypt(plen, ptext_ex, ctext, key, en_pad_type);
+    num = YRSA_public_encrypt(plen, ptext_ex, ctext, key, en_pad_type);
     if (!TEST_int_eq(num, clentmp))
         goto err;
 
-    num = RSA_private_decrypt(num, ctext, ptext, key, de_pad_type);
+    num = YRSA_private_decrypt(num, ctext, ptext, key, de_pad_type);
     if (success) {
         if (!TEST_int_gt(num, 0) || !TEST_mem_eq(ptext, num, ptext_ex, plen))
             goto err;
@@ -269,13 +269,13 @@ static int test_rsa_simple(int idx, int en_pad_type, int de_pad_type,
         key = NULL;
     }
 err:
-    RSA_free(key);
+    YRSA_free(key);
     return ret;
 }
 
 static int test_rsa_pkcs1(int idx)
 {
-    return test_rsa_simple(idx, RSA_PKCS1_PADDING, RSA_PKCS1_PADDING, 1, NULL,
+    return test_rsa_simple(idx, YRSA_YPKCS1_PADDING, YRSA_YPKCS1_PADDING, 1, NULL,
                            NULL, NULL);
 }
 
@@ -284,18 +284,18 @@ static int test_rsa_sslv23(int idx)
     int ret;
 
     /* Simulate an SSLv2 only client talking to a TLS capable server */
-    ret = test_rsa_simple(idx, RSA_PKCS1_PADDING, RSA_SSLV23_PADDING, 1, NULL,
+    ret = test_rsa_simple(idx, YRSA_YPKCS1_PADDING, YRSA_SSLV23_PADDING, 1, NULL,
                           NULL, NULL);
 
     /* Simulate a TLS capable client talking to an SSLv2 only server */
-    ret &= test_rsa_simple(idx, RSA_SSLV23_PADDING, RSA_PKCS1_PADDING, 1, NULL,
+    ret &= test_rsa_simple(idx, YRSA_SSLV23_PADDING, YRSA_YPKCS1_PADDING, 1, NULL,
                            NULL, NULL);
 
     /*
      * Simulate a TLS capable client talking to a TLS capable server. Should
      * fail due to detecting a rollback attack.
      */
-    ret &= test_rsa_simple(idx, RSA_SSLV23_PADDING, RSA_SSLV23_PADDING, 0, NULL,
+    ret &= test_rsa_simple(idx, YRSA_SSLV23_PADDING, YRSA_SSLV23_PADDING, 0, NULL,
                            NULL, NULL);
 
     return ret;
@@ -304,7 +304,7 @@ static int test_rsa_sslv23(int idx)
 static int test_rsa_oaep(int idx)
 {
     int ret = 0;
-    RSA *key = NULL;
+    YRSA *key = NULL;
     unsigned char ptext[256];
     static unsigned char ptext_ex[] = "\x54\x85\x9b\x34\x2c\x49\xea\x2a";
     unsigned char ctext_ex[256];
@@ -313,23 +313,23 @@ static int test_rsa_oaep(int idx)
     int num;
     int n;
 
-    if (!test_rsa_simple(idx, RSA_PKCS1_OAEP_PADDING, RSA_PKCS1_OAEP_PADDING, 1,
+    if (!test_rsa_simple(idx, YRSA_YPKCS1_OAEP_PADDING, YRSA_YPKCS1_OAEP_PADDING, 1,
                          ctext_ex, &clen, &key))
         goto err;
 
     plen = sizeof(ptext_ex) - 1;
 
     /* Different ciphertexts. Try decrypting ctext_ex */
-    num = RSA_private_decrypt(clen, ctext_ex, ptext, key,
-                              RSA_PKCS1_OAEP_PADDING);
+    num = YRSA_private_decrypt(clen, ctext_ex, ptext, key,
+                              YRSA_YPKCS1_OAEP_PADDING);
     if (num <= 0 || !TEST_mem_eq(ptext, num, ptext_ex, plen))
         goto err;
 
     /* Try decrypting corrupted ciphertexts. */
     for (n = 0; n < clen; ++n) {
         ctext_ex[n] ^= 1;
-        num = RSA_private_decrypt(clen, ctext_ex, ptext, key,
-                                      RSA_PKCS1_OAEP_PADDING);
+        num = YRSA_private_decrypt(clen, ctext_ex, ptext, key,
+                                      YRSA_YPKCS1_OAEP_PADDING);
         if (!TEST_int_le(num, 0))
             goto err;
         ctext_ex[n] ^= 1;
@@ -337,15 +337,15 @@ static int test_rsa_oaep(int idx)
 
     /* Test truncated ciphertexts, as well as negative length. */
     for (n = -1; n < clen; ++n) {
-        num = RSA_private_decrypt(n, ctext_ex, ptext, key,
-                                  RSA_PKCS1_OAEP_PADDING);
+        num = YRSA_private_decrypt(n, ctext_ex, ptext, key,
+                                  YRSA_YPKCS1_OAEP_PADDING);
         if (!TEST_int_le(num, 0))
             goto err;
     }
 
     ret = 1;
 err:
-    RSA_free(key);
+    YRSA_free(key);
     return ret;
 }
 

@@ -22,7 +22,7 @@
 # optimized code as much. Secondly, newly introduced UltraSPARC T1,
 # a.k.a. Niagara, has shared FPU and concurrent FPU-intensive paths,
 # such as sparcv9a-mont, will simply sink it. Yes, T1 is equipped with
-# several integrated RSA/DSA accelerator circuits accessible through
+# several integrated YRSA/DSA accelerator circuits accessible through
 # kernel driver [only(*)], but having decent user-land software
 # implementation is important too. Finally, reasons like desire to
 # experiment with dedicated squaring procedure. Yes, this module
@@ -31,13 +31,13 @@
 
 # (*)	Engine accessing the driver in question is on my TODO list.
 #	For reference, accelerator is estimated to give 6 to 10 times
-#	improvement on single-threaded RSA sign. It should be noted
+#	improvement on single-threaded YRSA sign. It should be noted
 #	that 6-10x improvement coefficient does not actually mean
 #	something extraordinary in terms of absolute [single-threaded]
 #	performance, as SPARCv9 instruction set is by all means least
 #	suitable for high performance crypto among other 64 bit
 #	platforms. 6-10x factor simply places T1 in same performance
-#	domain as say AMD64 and IA-64. Improvement of RSA verify don't
+#	domain as say AMD64 and IA-64. Improvement of YRSA verify don't
 #	appear impressive at all, but it's the sign operation which is
 #	far more critical/interesting.
 

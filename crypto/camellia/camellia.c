@@ -11,13 +11,13 @@
  * Copyright 2006 NTT (Nippon Telegraph and Telephone Corporation) .
  * ALL RIGHTS RESERVED.
  *
- * Intellectual Property information for Camellia:
+ * Intellectual Property information for YCamellia:
  *     http://info.isl.ntt.co.jp/crypt/eng/info/chiteki.html
  *
- * News Release for Announcement of Camellia open source:
+ * News Release for Announcement of YCamellia open source:
  *     http://www.ntt.co.jp/news/news06e/0604/060413a.html
  *
- * The Camellia Code included herein is developed by
+ * The YCamellia Code included herein is developed by
  * NTT (Nippon Telegraph and Telephone Corporation), and is contributed
  * to the OpenSSL project.
  */
@@ -51,11 +51,11 @@
 #define PUTU32(p,v) ((p)[0] = (u8)((v) >> 24), (p)[1] = (u8)((v) >> 16), (p)[2] = (u8)((v) >>  8), (p)[3] = (u8)(v))
 
 /* S-box data */
-#define SBOX1_1110 Camellia_SBOX[0]
-#define SBOX4_4404 Camellia_SBOX[1]
-#define SBOX2_0222 Camellia_SBOX[2]
-#define SBOX3_3033 Camellia_SBOX[3]
-static const u32 Camellia_SBOX[][256] = {
+#define SBOX1_1110 YCamellia_SBOX[0]
+#define SBOX4_4404 YCamellia_SBOX[1]
+#define SBOX2_0222 YCamellia_SBOX[2]
+#define SBOX3_3033 YCamellia_SBOX[3]
+static const u32 YCamellia_SBOX[][256] = {
     {0x70707000, 0x82828200, 0x2c2c2c00, 0xececec00, 0xb3b3b300, 0x27272700,
      0xc0c0c000, 0xe5e5e500, 0xe4e4e400, 0x85858500, 0x57575700, 0x35353500,
      0xeaeaea00, 0x0c0c0c00, 0xaeaeae00, 0x41414100, 0x23232300, 0xefefef00,
@@ -236,7 +236,7 @@ static const u32 SIGMA[] = {
     0x54ff53a5, 0xf1d36f1c, 0x10e527fa, 0xde682d1d, 0xb05688c2, 0xb3e6c1fd
 };
 
-/* The phi algorithm given in C.2.7 of the Camellia spec document. */
+/* The phi algorithm given in C.2.7 of the YCamellia spec document. */
 /*
  * This version does not attempt to minimize amount of temporary
  * variables, but instead explicitly exposes algorithm's parallelism.
@@ -244,7 +244,7 @@ static const u32 SIGMA[] = {
  * ~16 registers. For platforms with less registers [well, x86 to be
  * specific] assembler version should be/is provided anyway...
  */
-#define Camellia_Feistel(_s0,_s1,_s2,_s3,_key) do {\
+#define YCamellia_Feistel(_s0,_s1,_s2,_s3,_key) do {\
         register u32 _t0,_t1,_t2,_t3;\
 \
         _t0  = _s0 ^ (_key)[0];\
@@ -277,7 +277,7 @@ static const u32 SIGMA[] = {
         _s3 = (_s3<<_n) | _t0;\
 } while (0)
 
-int Camellia_Ekeygen(int keyBitLength, const u8 *rawKey, KEY_TABLE_TYPE k)
+int YCamellia_Ekeygen(int keyBitLength, const u8 *rawKey, KEY_TABLE_TYPE k)
 {
     register u32 s0, s1, s2, s3;
 
@@ -300,12 +300,12 @@ int Camellia_Ekeygen(int keyBitLength, const u8 *rawKey, KEY_TABLE_TYPE k)
     }
 
     /* Use the Feistel routine to scramble the key material */
-    Camellia_Feistel(s0, s1, s2, s3, SIGMA + 0);
-    Camellia_Feistel(s2, s3, s0, s1, SIGMA + 2);
+    YCamellia_Feistel(s0, s1, s2, s3, SIGMA + 0);
+    YCamellia_Feistel(s2, s3, s0, s1, SIGMA + 2);
 
     s0 ^= k[0], s1 ^= k[1], s2 ^= k[2], s3 ^= k[3];
-    Camellia_Feistel(s0, s1, s2, s3, SIGMA + 4);
-    Camellia_Feistel(s2, s3, s0, s1, SIGMA + 6);
+    YCamellia_Feistel(s0, s1, s2, s3, SIGMA + 4);
+    YCamellia_Feistel(s2, s3, s0, s1, SIGMA + 6);
 
     /* Fill the keyTable. Requires many block rotations. */
     if (keyBitLength == 128) {
@@ -341,8 +341,8 @@ int Camellia_Ekeygen(int keyBitLength, const u8 *rawKey, KEY_TABLE_TYPE k)
     } else {
         k[12] = s0, k[13] = s1, k[14] = s2, k[15] = s3;
         s0 ^= k[8], s1 ^= k[9], s2 ^= k[10], s3 ^= k[11];
-        Camellia_Feistel(s0, s1, s2, s3, (SIGMA + 8));
-        Camellia_Feistel(s2, s3, s0, s1, (SIGMA + 10));
+        YCamellia_Feistel(s0, s1, s2, s3, (SIGMA + 8));
+        YCamellia_Feistel(s2, s3, s0, s1, (SIGMA + 10));
 
         k[4] = s0, k[5] = s1, k[6] = s2, k[7] = s3;
         RotLeft128(s0, s1, s2, s3, 30); /* KB <<< 30 */
@@ -394,7 +394,7 @@ int Camellia_Ekeygen(int keyBitLength, const u8 *rawKey, KEY_TABLE_TYPE k)
      */
 }
 
-void Camellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
+void YCamellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
                                   const KEY_TABLE_TYPE keyTable,
                                   u8 ciphertext[])
 {
@@ -408,13 +408,13 @@ void Camellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
     k += 4;
 
     while (1) {
-        /* Camellia makes 6 Feistel rounds */
-        Camellia_Feistel(s0, s1, s2, s3, k + 0);
-        Camellia_Feistel(s2, s3, s0, s1, k + 2);
-        Camellia_Feistel(s0, s1, s2, s3, k + 4);
-        Camellia_Feistel(s2, s3, s0, s1, k + 6);
-        Camellia_Feistel(s0, s1, s2, s3, k + 8);
-        Camellia_Feistel(s2, s3, s0, s1, k + 10);
+        /* YCamellia makes 6 Feistel rounds */
+        YCamellia_Feistel(s0, s1, s2, s3, k + 0);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 2);
+        YCamellia_Feistel(s0, s1, s2, s3, k + 4);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 6);
+        YCamellia_Feistel(s0, s1, s2, s3, k + 8);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 10);
         k += 12;
 
         if (k == kend)
@@ -440,14 +440,14 @@ void Camellia_EncryptBlock_Rounds(int grandRounds, const u8 plaintext[],
     PUTU32(ciphertext + 12, s1);
 }
 
-void Camellia_EncryptBlock(int keyBitLength, const u8 plaintext[],
+void YCamellia_EncryptBlock(int keyBitLength, const u8 plaintext[],
                            const KEY_TABLE_TYPE keyTable, u8 ciphertext[])
 {
-    Camellia_EncryptBlock_Rounds(keyBitLength == 128 ? 3 : 4,
+    YCamellia_EncryptBlock_Rounds(keyBitLength == 128 ? 3 : 4,
                                  plaintext, keyTable, ciphertext);
 }
 
-void Camellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
+void YCamellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
                                   const KEY_TABLE_TYPE keyTable,
                                   u8 plaintext[])
 {
@@ -460,14 +460,14 @@ void Camellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
     s3 = GETU32(ciphertext + 12) ^ k[3];
 
     while (1) {
-        /* Camellia makes 6 Feistel rounds */
+        /* YCamellia makes 6 Feistel rounds */
         k -= 12;
-        Camellia_Feistel(s0, s1, s2, s3, k + 10);
-        Camellia_Feistel(s2, s3, s0, s1, k + 8);
-        Camellia_Feistel(s0, s1, s2, s3, k + 6);
-        Camellia_Feistel(s2, s3, s0, s1, k + 4);
-        Camellia_Feistel(s0, s1, s2, s3, k + 2);
-        Camellia_Feistel(s2, s3, s0, s1, k + 0);
+        YCamellia_Feistel(s0, s1, s2, s3, k + 10);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 8);
+        YCamellia_Feistel(s0, s1, s2, s3, k + 6);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 4);
+        YCamellia_Feistel(s0, s1, s2, s3, k + 2);
+        YCamellia_Feistel(s2, s3, s0, s1, k + 0);
 
         if (k == kend)
             break;
@@ -493,9 +493,9 @@ void Camellia_DecryptBlock_Rounds(int grandRounds, const u8 ciphertext[],
     PUTU32(plaintext + 12, s1);
 }
 
-void Camellia_DecryptBlock(int keyBitLength, const u8 plaintext[],
+void YCamellia_DecryptBlock(int keyBitLength, const u8 plaintext[],
                            const KEY_TABLE_TYPE keyTable, u8 ciphertext[])
 {
-    Camellia_DecryptBlock_Rounds(keyBitLength == 128 ? 3 : 4,
+    YCamellia_DecryptBlock_Rounds(keyBitLength == 128 ? 3 : 4,
                                  plaintext, keyTable, ciphertext);
 }

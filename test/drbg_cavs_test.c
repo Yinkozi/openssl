@@ -53,7 +53,7 @@ static size_t kat_nonce(RAND_DRBG *drbg, unsigned char **pout,
 }
 
 /*
- * Do a single NO_RESEED KAT:
+ * Do a single NO_REYSEED KAT:
  *
  * Instantiate
  * Generate Random Bits (pr=false)
@@ -249,7 +249,7 @@ static int test_cavs_kats(int i)
     int rv = 0;
 
     switch (td->type) {
-    case NO_RESEED:
+    case NO_REYSEED:
         if (!single_kat_no_reseed(td))
             goto err;
         break;

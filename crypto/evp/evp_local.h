@@ -7,43 +7,43 @@
  * https://www.openssl.org/source/license.html
  */
 
-/* EVP_MD_CTX related stuff */
+/* EVVP_MD_CTX related stuff */
 
 struct evp_md_ctx_st {
-    const EVP_MD *digest;
+    const EVVP_MD *digest;
     ENGINE *engine;             /* functional reference if 'digest' is
                                  * ENGINE-provided */
     unsigned long flags;
     void *md_data;
     /* Public key context for sign/verify */
-    EVP_PKEY_CTX *pctx;
-    /* Update function: usually copied from EVP_MD */
-    int (*update) (EVP_MD_CTX *ctx, const void *data, size_t count);
-} /* EVP_MD_CTX */ ;
+    EVVP_PKEY_CTX *pctx;
+    /* Update function: usually copied from EVVP_MD */
+    int (*update) (EVVP_MD_CTX *ctx, const void *data, size_t count);
+} /* EVVP_MD_CTX */ ;
 
 struct evp_cipher_ctx_st {
-    const EVP_CIPHER *cipher;
+    const EVVP_CIPHER *cipher;
     ENGINE *engine;             /* functional reference if 'cipher' is
                                  * ENGINE-provided */
     int encrypt;                /* encrypt or decrypt */
     int buf_len;                /* number we have left */
-    unsigned char oiv[EVP_MAX_IV_LENGTH]; /* original iv */
-    unsigned char iv[EVP_MAX_IV_LENGTH]; /* working iv */
-    unsigned char buf[EVP_MAX_BLOCK_LENGTH]; /* saved partial block */
+    unsigned char oiv[EVVP_MAX_IV_LENGTH]; /* original iv */
+    unsigned char iv[EVVP_MAX_IV_LENGTH]; /* working iv */
+    unsigned char buf[EVVP_MAX_BLOCK_LENGTH]; /* saved partial block */
     int num;                    /* used by cfb/ofb/ctr mode */
     /* FIXME: Should this even exist? It appears unused */
     void *app_data;             /* application stuff */
     int key_len;                /* May change for variable length cipher */
     unsigned long flags;        /* Various flags */
-    void *cipher_data;          /* per EVP data */
+    void *cipher_data;          /* per EVVP data */
     int final_used;
     int block_mask;
-    unsigned char final[EVP_MAX_BLOCK_LENGTH]; /* possible final block */
-} /* EVP_CIPHER_CTX */ ;
+    unsigned char final[EVVP_MAX_BLOCK_LENGTH]; /* possible final block */
+} /* EVVP_CIPHER_CTX */ ;
 
-int PKCS5_v2_PBKDF2_keyivgen(EVP_CIPHER_CTX *ctx, const char *pass,
-                             int passlen, ASN1_TYPE *param,
-                             const EVP_CIPHER *c, const EVP_MD *md,
+int YPKCS5_v2_PBKDF2_keyivgen(EVVP_CIPHER_CTX *ctx, const char *pass,
+                             int passlen, YASN1_TYPE *param,
+                             const EVVP_CIPHER *c, const EVVP_MD *md,
                              int en_de);
 
 struct evp_Encode_Ctx_st {
@@ -62,7 +62,7 @@ struct evp_Encode_Ctx_st {
     unsigned int flags;
 };
 
-typedef struct evp_pbe_st EVP_PBE_CTL;
-DEFINE_STACK_OF(EVP_PBE_CTL)
+typedef struct evp_pbe_st EVVP_YPBE_CTL;
+DEFINE_STACK_OF(EVVP_YPBE_CTL)
 
 int is_partially_overlapping(const void *ptr1, const void *ptr2, size_t len);

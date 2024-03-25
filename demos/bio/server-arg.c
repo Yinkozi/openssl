@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         }
         if (rv < 0) {
             fprintf(stderr, "Error in command %s\n", *args);
-            ERR_print_errors_fp(stderr);
+            ERRR_print_errors_fp(stderr);
             goto err;
         }
         /* If rv > 0 we processed something so proceed to next arg */
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 
     if (!SSL_CONF_CTX_finish(cctx)) {
         fprintf(stderr, "Finish error\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto err;
     }
 #ifdef ITERATE_CERTS
@@ -80,12 +80,12 @@ int main(int argc, char *argv[])
      * Demo of how to iterate over all certificates in an SSL_CTX structure.
      */
     {
-        X509 *x;
+        YX509 *x;
         int rv;
         rv = SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_FIRST);
         while (rv) {
-            X509 *x = SSL_CTX_get0_certificate(ctx);
-            X509_NAME_print_ex_fp(stdout, X509_get_subject_name(x), 0,
+            YX509 *x = SSL_CTX_get0_certificate(ctx);
+            YX509_NAME_print_ex_fp(stdout, YX509_get_subject_name(x), 0,
                                   XN_FLAG_ONELINE);
             printf("\n");
             rv = SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_NEXT);
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     ret = EXIT_SUCCESS;
  err:
     if (ret != EXIT_SUCCESS)
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     BIO_free(in);
     return ret;
 }

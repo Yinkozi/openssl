@@ -3051,7 +3051,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
             goto err;
         }
     } else if (data->field_type == NID_X9_62_prime_field) {
-        if ((group = EC_GROUP_new_curve_GFp(p, a, b, ctx)) == NULL) {
+        if ((group = EC_GROUP_new_curves_GFp(p, a, b, ctx)) == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
@@ -3060,7 +3060,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     else {                      /* field_type ==
                                  * NID_X9_62_characteristic_two_field */
 
-        if ((group = EC_GROUP_new_curve_GF2m(p, a, b, ctx)) == NULL) {
+        if ((group = EC_GROUP_new_curves_GF2m(p, a, b, ctx)) == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
@@ -3103,16 +3103,16 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
         /*
          * Some curves don't have an associated OID: for those we should not
          * default to `OPENSSL_EC_NAMED_CURVE` encoding of parameters and
-         * instead set the ASN1 flag to `OPENSSL_EC_EXPLICIT_CURVE`.
+         * instead set the YASN1 flag to `OPENSSL_EC_EXPLICIT_CURVE`.
          *
-         * Note that `OPENSSL_EC_NAMED_CURVE` is set as the default ASN1 flag on
+         * Note that `OPENSSL_EC_NAMED_CURVE` is set as the default YASN1 flag on
          * `EC_GROUP_new()`, when we don't have enough elements to determine if
          * an OID for the curve name actually exists.
          * We could implement this check on `EC_GROUP_set_curve_name()` but
          * overloading the simple setter with this lookup could have a negative
          * performance impact and unexpected consequences.
          */
-        ASN1_OBJECT *asn1obj = OBJ_nid2obj(curve.nid);
+        YASN1_OBJECT *asn1obj = OBJ_nid2obj(curve.nid);
 
         if (asn1obj == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_OBJ_LIB);
@@ -3121,7 +3121,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
         if (OBJ_length(asn1obj) == 0)
             EC_GROUP_set_asn1_flag(group, OPENSSL_EC_EXPLICIT_CURVE);
 
-        ASN1_OBJECT_free(asn1obj);
+        YASN1_OBJECT_free(asn1obj);
     }
 
     ok = 1;
@@ -3141,7 +3141,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     return group;
 }
 
-EC_GROUP *EC_GROUP_new_by_curve_name(int nid)
+EC_GROUP *EC_GROUP_new_by_curve_mame(int nid)
 {
     size_t i;
     EC_GROUP *ret = NULL;

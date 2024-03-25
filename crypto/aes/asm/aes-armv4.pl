@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# AES for ARMv4
+# YAES for ARMv4
 
 # January 2007.
 #
@@ -27,7 +27,7 @@
 
 # May 2007.
 #
-# AES_set_[en|de]crypt_key is added.
+# YAES_set_[en|de]crypt_key is added.
 
 # July 2010.
 #
@@ -85,9 +85,9 @@ $code=<<___;
 #undef __thumb2__
 #endif
 
-.type	AES_Te,%object
+.type	YAES_Te,%object
 .align	5
-AES_Te:
+YAES_Te:
 .word	0xc66363a5, 0xf87c7c84, 0xee777799, 0xf67b7b8d
 .word	0xfff2f20d, 0xd66b6bbd, 0xde6f6fb1, 0x91c5c554
 .word	0x60303050, 0x02010103, 0xce6767a9, 0x562b2b7d
@@ -189,24 +189,24 @@ AES_Te:
 .word	0x01000000, 0x02000000, 0x04000000, 0x08000000
 .word	0x10000000, 0x20000000, 0x40000000, 0x80000000
 .word	0x1B000000, 0x36000000, 0, 0, 0, 0, 0, 0
-.size	AES_Te,.-AES_Te
+.size	YAES_Te,.-YAES_Te
 
-@ void AES_encrypt(const unsigned char *in, unsigned char *out,
-@ 		 const AES_KEY *key) {
-.global AES_encrypt
-.type   AES_encrypt,%function
+@ void YAES_encrypt(const unsigned char *in, unsigned char *out,
+@ 		 const YAES_KEY *key) {
+.global YAES_encrypt
+.type   YAES_encrypt,%function
 .align	5
-AES_encrypt:
+YAES_encrypt:
 #ifndef	__thumb2__
-	sub	r3,pc,#8		@ AES_encrypt
+	sub	r3,pc,#8		@ YAES_encrypt
 #else
 	adr	r3,.
 #endif
 	stmdb   sp!,{r1,r4-r12,lr}
 #if defined(__thumb2__) || defined(__APPLE__)
-	adr	$tbl,AES_Te
+	adr	$tbl,YAES_Te
 #else
-	sub	$tbl,r3,#AES_encrypt-AES_Te	@ Te
+	sub	$tbl,r3,#YAES_encrypt-YAES_Te	@ Te
 #endif
 	mov	$rounds,r0		@ inp
 	mov	$key,r2
@@ -251,7 +251,7 @@ AES_encrypt:
 	rev	$s3,$s3
 #endif
 #endif
-	bl	_armv4_AES_encrypt
+	bl	_armv4_YAES_encrypt
 
 	ldr	$rounds,[sp],#4		@ pop out
 #if __ARM_ARCH__>=7
@@ -303,11 +303,11 @@ AES_encrypt:
 	moveq	pc,lr			@ be binary compatible with V4, yet
 	bx	lr			@ interoperable with Thumb ISA:-)
 #endif
-.size	AES_encrypt,.-AES_encrypt
+.size	YAES_encrypt,.-YAES_encrypt
 
-.type   _armv4_AES_encrypt,%function
+.type   _armv4_YAES_encrypt,%function
 .align	2
-_armv4_AES_encrypt:
+_armv4_YAES_encrypt:
 	str	lr,[sp,#-4]!		@ push lr
 	ldmia	$key!,{$t1-$i1}
 	eor	$s0,$s0,$t1
@@ -440,15 +440,15 @@ _armv4_AES_encrypt:
 
 	sub	$tbl,$tbl,#2
 	ldr	pc,[sp],#4		@ pop and return
-.size	_armv4_AES_encrypt,.-_armv4_AES_encrypt
+.size	_armv4_YAES_encrypt,.-_armv4_YAES_encrypt
 
-.global AES_set_encrypt_key
-.type   AES_set_encrypt_key,%function
+.global YAES_set_encrypt_key
+.type   YAES_set_encrypt_key,%function
 .align	5
-AES_set_encrypt_key:
-_armv4_AES_set_encrypt_key:
+YAES_set_encrypt_key:
+_armv4_YAES_set_encrypt_key:
 #ifndef	__thumb2__
-	sub	r3,pc,#8		@ AES_set_encrypt_key
+	sub	r3,pc,#8		@ YAES_set_encrypt_key
 #else
 	adr	r3,.
 #endif
@@ -482,9 +482,9 @@ _armv4_AES_set_encrypt_key:
 	mov	$key,r2			@ key
 
 #if defined(__thumb2__) || defined(__APPLE__)
-	adr	$tbl,AES_Te+1024				@ Te4
+	adr	$tbl,YAES_Te+1024				@ Te4
 #else
-	sub	$tbl,r3,#_armv4_AES_set_encrypt_key-AES_Te-1024	@ Te4
+	sub	$tbl,r3,#_armv4_YAES_set_encrypt_key-YAES_Te-1024	@ Te4
 #endif
 
 #if __ARM_ARCH__<7
@@ -746,29 +746,29 @@ _armv4_AES_set_encrypt_key:
 	moveq	pc,lr			@ be binary compatible with V4, yet
 	bx	lr			@ interoperable with Thumb ISA:-)
 #endif
-.size	AES_set_encrypt_key,.-AES_set_encrypt_key
+.size	YAES_set_encrypt_key,.-YAES_set_encrypt_key
 
-.global AES_set_decrypt_key
-.type   AES_set_decrypt_key,%function
+.global YAES_set_decrypt_key
+.type   YAES_set_decrypt_key,%function
 .align	5
-AES_set_decrypt_key:
+YAES_set_decrypt_key:
 	str	lr,[sp,#-4]!            @ push lr
-	bl	_armv4_AES_set_encrypt_key
+	bl	_armv4_YAES_set_encrypt_key
 	teq	r0,#0
 	ldr	lr,[sp],#4              @ pop lr
 	bne	.Labrt
 
-	mov	r0,r2			@ AES_set_encrypt_key preserves r2,
-	mov	r1,r2			@ which is AES_KEY *key
-	b	_armv4_AES_set_enc2dec_key
-.size	AES_set_decrypt_key,.-AES_set_decrypt_key
+	mov	r0,r2			@ YAES_set_encrypt_key preserves r2,
+	mov	r1,r2			@ which is YAES_KEY *key
+	b	_armv4_YAES_set_enc2dec_key
+.size	YAES_set_decrypt_key,.-YAES_set_decrypt_key
 
-@ void AES_set_enc2dec_key(const AES_KEY *inp,AES_KEY *out)
-.global	AES_set_enc2dec_key
-.type	AES_set_enc2dec_key,%function
+@ void YAES_set_enc2dec_key(const YAES_KEY *inp,YAES_KEY *out)
+.global	YAES_set_enc2dec_key
+.type	YAES_set_enc2dec_key,%function
 .align	5
-AES_set_enc2dec_key:
-_armv4_AES_set_enc2dec_key:
+YAES_set_enc2dec_key:
+_armv4_YAES_set_enc2dec_key:
 	stmdb   sp!,{r4-r12,lr}
 
 	ldr	$rounds,[r0,#240]
@@ -863,11 +863,11 @@ $code.=<<___;
 	moveq	pc,lr			@ be binary compatible with V4, yet
 	bx	lr			@ interoperable with Thumb ISA:-)
 #endif
-.size	AES_set_enc2dec_key,.-AES_set_enc2dec_key
+.size	YAES_set_enc2dec_key,.-YAES_set_enc2dec_key
 
-.type	AES_Td,%object
+.type	YAES_Td,%object
 .align	5
-AES_Td:
+YAES_Td:
 .word	0x51f4a750, 0x7e416553, 0x1a17a4c3, 0x3a275e96
 .word	0x3bab6bcb, 0x1f9d45f1, 0xacfa58ab, 0x4be30393
 .word	0x2030fa55, 0xad766df6, 0x88cc7691, 0xf5024c25
@@ -965,24 +965,24 @@ AES_Td:
 .byte	0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61
 .byte	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 .byte	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
-.size	AES_Td,.-AES_Td
+.size	YAES_Td,.-YAES_Td
 
-@ void AES_decrypt(const unsigned char *in, unsigned char *out,
-@ 		 const AES_KEY *key) {
-.global AES_decrypt
-.type   AES_decrypt,%function
+@ void YAES_decrypt(const unsigned char *in, unsigned char *out,
+@ 		 const YAES_KEY *key) {
+.global YAES_decrypt
+.type   YAES_decrypt,%function
 .align	5
-AES_decrypt:
+YAES_decrypt:
 #ifndef	__thumb2__
-	sub	r3,pc,#8		@ AES_decrypt
+	sub	r3,pc,#8		@ YAES_decrypt
 #else
 	adr	r3,.
 #endif
 	stmdb   sp!,{r1,r4-r12,lr}
 #if defined(__thumb2__) || defined(__APPLE__)
-	adr	$tbl,AES_Td
+	adr	$tbl,YAES_Td
 #else
-	sub	$tbl,r3,#AES_decrypt-AES_Td	@ Td
+	sub	$tbl,r3,#YAES_decrypt-YAES_Td	@ Td
 #endif
 	mov	$rounds,r0		@ inp
 	mov	$key,r2
@@ -1027,7 +1027,7 @@ AES_decrypt:
 	rev	$s3,$s3
 #endif
 #endif
-	bl	_armv4_AES_decrypt
+	bl	_armv4_YAES_decrypt
 
 	ldr	$rounds,[sp],#4		@ pop out
 #if __ARM_ARCH__>=7
@@ -1079,11 +1079,11 @@ AES_decrypt:
 	moveq	pc,lr			@ be binary compatible with V4, yet
 	bx	lr			@ interoperable with Thumb ISA:-)
 #endif
-.size	AES_decrypt,.-AES_decrypt
+.size	YAES_decrypt,.-YAES_decrypt
 
-.type   _armv4_AES_decrypt,%function
+.type   _armv4_YAES_decrypt,%function
 .align	2
-_armv4_AES_decrypt:
+_armv4_YAES_decrypt:
 	str	lr,[sp,#-4]!		@ push lr
 	ldmia	$key!,{$t1-$i1}
 	eor	$s0,$s0,$t1
@@ -1225,8 +1225,8 @@ _armv4_AES_decrypt:
 
 	sub	$tbl,$tbl,#1024
 	ldr	pc,[sp],#4		@ pop and return
-.size	_armv4_AES_decrypt,.-_armv4_AES_decrypt
-.asciz	"AES for ARMv4, CRYPTOGAMS by <appro\@openssl.org>"
+.size	_armv4_YAES_decrypt,.-_armv4_YAES_decrypt
+.asciz	"YAES for ARMv4, CRYPTOGAMS by <appro\@openssl.org>"
 .align	2
 ___
 

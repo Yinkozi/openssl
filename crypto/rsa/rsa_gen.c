@@ -19,7 +19,7 @@
 #include <openssl/bn.h>
 #include "rsa_local.h"
 
-static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
+static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
                               BN_GENCB *cb);
 
 /*
@@ -27,18 +27,18 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
  * implementation would probably be in rsa_eay.c. Nonetheless, is kept here
  * so that we don't introduce a new linker dependency. Eg. any application
  * that wasn't previously linking object code related to key-generation won't
- * have to now just because key-generation is part of RSA_METHOD.
+ * have to now just because key-generation is part of YRSA_METHOD.
  */
-int RSA_generate_key_ex(RSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb)
+int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb)
 {
     if (rsa->meth->rsa_keygen != NULL)
         return rsa->meth->rsa_keygen(rsa, bits, e_value, cb);
 
-    return RSA_generate_multi_prime_key(rsa, bits, RSA_DEFAULT_PRIME_NUM,
+    return YRSA_generate_multi_prime_key(rsa, bits, YRSA_DEFAULT_PRIME_NUM,
                                         e_value, cb);
 }
 
-int RSA_generate_multi_prime_key(RSA *rsa, int bits, int primes,
+int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes,
                                  BIGNUM *e_value, BN_GENCB *cb)
 {
     /* multi-prime is only supported with the builtin key generation */
@@ -61,27 +61,27 @@ int RSA_generate_multi_prime_key(RSA *rsa, int bits, int primes,
     return rsa_builtin_keygen(rsa, bits, primes, e_value, cb);
 }
 
-static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
+static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
                               BN_GENCB *cb)
 {
     BIGNUM *r0 = NULL, *r1 = NULL, *r2 = NULL, *tmp, *prime;
-    int ok = -1, n = 0, bitsr[RSA_MAX_PRIME_NUM], bitse = 0;
+    int ok = -1, n = 0, bitsr[YRSA_MAX_PRIME_NUM], bitse = 0;
     int i = 0, quo = 0, rmd = 0, adj = 0, retries = 0;
-    RSA_PRIME_INFO *pinfo = NULL;
-    STACK_OF(RSA_PRIME_INFO) *prime_infos = NULL;
+    YRSA_PRIME_INFO *pinfo = NULL;
+    STACK_OF(YRSA_PRIME_INFO) *prime_infos = NULL;
     BN_CTX *ctx = NULL;
     BN_ULONG bitst = 0;
     unsigned long error = 0;
 
-    if (bits < RSA_MIN_MODULUS_BITS) {
+    if (bits < YRSA_MIN_MODULUS_BITS) {
         ok = 0;             /* we set our own err */
-        RSAerr(RSA_F_RSA_BUILTIN_KEYGEN, RSA_R_KEY_SIZE_TOO_SMALL);
+        YRSAerr(YRSA_F_YRSA_BUILTIN_KEYGEN, YRSA_R_KEY_SIZE_TOO_SMALL);
         goto err;
     }
 
-    if (primes < RSA_DEFAULT_PRIME_NUM || primes > rsa_multip_cap(bits)) {
+    if (primes < YRSA_DEFAULT_PRIME_NUM || primes > rsa_multip_cap(bits)) {
         ok = 0;             /* we set our own err */
-        RSAerr(RSA_F_RSA_BUILTIN_KEYGEN, RSA_R_KEY_PRIME_NUM_INVALID);
+        YRSAerr(YRSA_F_YRSA_BUILTIN_KEYGEN, YRSA_R_KEY_PRIME_NUM_INVALID);
         goto err;
     }
 
@@ -102,7 +102,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
     for (i = 0; i < primes; i++)
         bitsr[i] = (i < rmd) ? quo + 1 : quo;
 
-    /* We need the RSA components non-NULL */
+    /* We need the YRSA components non-NULL */
     if (!rsa->n && ((rsa->n = BN_new()) == NULL))
         goto err;
     if (!rsa->d && ((rsa->d = BN_secure_new()) == NULL))
@@ -121,14 +121,14 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
         goto err;
 
     /* initialize multi-prime components */
-    if (primes > RSA_DEFAULT_PRIME_NUM) {
-        rsa->version = RSA_ASN1_VERSION_MULTI;
-        prime_infos = sk_RSA_PRIME_INFO_new_reserve(NULL, primes - 2);
+    if (primes > YRSA_DEFAULT_PRIME_NUM) {
+        rsa->version = YRSA_YASN1_VERSION_MULTI;
+        prime_infos = sk_YRSA_PRIME_INFO_new_reserve(NULL, primes - 2);
         if (prime_infos == NULL)
             goto err;
         if (rsa->prime_infos != NULL) {
             /* could this happen? */
-            sk_RSA_PRIME_INFO_pop_free(rsa->prime_infos, rsa_multip_info_free);
+            sk_YRSA_PRIME_INFO_pop_free(rsa->prime_infos, rsa_multip_info_free);
         }
         rsa->prime_infos = prime_infos;
 
@@ -137,7 +137,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
             pinfo = rsa_multip_info_new();
             if (pinfo == NULL)
                 goto err;
-            (void)sk_RSA_PRIME_INFO_push(prime_infos, pinfo);
+            (void)sk_YRSA_PRIME_INFO_push(prime_infos, pinfo);
         }
     }
 
@@ -154,14 +154,14 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
         } else if (i == 1) {
             prime = rsa->q;
         } else {
-            pinfo = sk_RSA_PRIME_INFO_value(prime_infos, i - 2);
+            pinfo = sk_YRSA_PRIME_INFO_value(prime_infos, i - 2);
             prime = pinfo->r;
         }
         BN_set_flags(prime, BN_FLG_CONSTTIME);
 
         for (;;) {
  redo:
-            if (!BN_generate_prime_ex(prime, bitsr[i] + adj, 0, NULL, NULL, cb))
+            if (!BNY_generate_prime_ex(prime, bitsr[i] + adj, 0, NULL, NULL, cb))
                 goto err;
             /*
              * prime should not be equal to p, q, r_3...
@@ -178,7 +178,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
                     else if (j == 1)
                         prev_prime = rsa->q;
                     else
-                        prev_prime = sk_RSA_PRIME_INFO_value(prime_infos,
+                        prev_prime = sk_YRSA_PRIME_INFO_value(prime_infos,
                                                              j - 2)->r;
 
                     if (!BN_cmp(prime, prev_prime)) {
@@ -186,7 +186,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
                     }
                 }
             }
-            if (!BN_sub(r2, prime, BN_value_one()))
+            if (!BNY_sub(r2, prime, BN_value_one()))
                 goto err;
             ERR_set_mark();
             BN_set_flags(r2, BN_FLG_CONSTTIME);
@@ -211,11 +211,11 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
         /* calculate n immediately to see if it's sufficient */
         if (i == 1) {
             /* we get at least 2 primes */
-            if (!BN_mul(r1, rsa->p, rsa->q, ctx))
+            if (!BNY_mul(r1, rsa->p, rsa->q, ctx))
                 goto err;
         } else if (i != 0) {
             /* modulus n = p * q * r_3 * r_4 ... */
-            if (!BN_mul(r1, rsa->n, prime, ctx))
+            if (!BNY_mul(r1, rsa->n, prime, ctx))
                 goto err;
         } else {
             /* i == 0, do nothing */
@@ -237,7 +237,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
          * key by using the modulus in a certificate. This is also covered
          * by checking the length should not be less than 0x9.
          */
-        if (!BN_rshift(r2, r1, bitse - 4))
+        if (!BN_ryshift(r2, r1, bitse - 4))
             goto err;
         bitst = BN_get_word(r2);
 
@@ -292,21 +292,21 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
     /* calculate d */
 
     /* p - 1 */
-    if (!BN_sub(r1, rsa->p, BN_value_one()))
+    if (!BNY_sub(r1, rsa->p, BN_value_one()))
         goto err;
     /* q - 1 */
-    if (!BN_sub(r2, rsa->q, BN_value_one()))
+    if (!BNY_sub(r2, rsa->q, BN_value_one()))
         goto err;
     /* (p - 1)(q - 1) */
-    if (!BN_mul(r0, r1, r2, ctx))
+    if (!BNY_mul(r0, r1, r2, ctx))
         goto err;
     /* multi-prime */
     for (i = 2; i < primes; i++) {
-        pinfo = sk_RSA_PRIME_INFO_value(prime_infos, i - 2);
+        pinfo = sk_YRSA_PRIME_INFO_value(prime_infos, i - 2);
         /* save r_i - 1 to pinfo->d temporarily */
-        if (!BN_sub(pinfo->d, pinfo->r, BN_value_one()))
+        if (!BNY_sub(pinfo->d, pinfo->r, BN_value_one()))
             goto err;
-        if (!BN_mul(r0, r0, pinfo->d, ctx))
+        if (!BNY_mul(r0, r0, pinfo->d, ctx))
             goto err;
     }
 
@@ -342,7 +342,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
 
         /* calculate CRT exponents */
         for (i = 2; i < primes; i++) {
-            pinfo = sk_RSA_PRIME_INFO_value(prime_infos, i - 2);
+            pinfo = sk_YRSA_PRIME_INFO_value(prime_infos, i - 2);
             /* pinfo->d == r_i - 1 */
             if (!BN_mod(pinfo->d, d, pinfo->d, ctx)) {
                 BN_free(d);
@@ -369,7 +369,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
 
         /* calculate CRT coefficient for other primes */
         for (i = 2; i < primes; i++) {
-            pinfo = sk_RSA_PRIME_INFO_value(prime_infos, i - 2);
+            pinfo = sk_YRSA_PRIME_INFO_value(prime_infos, i - 2);
             BN_with_flags(p, pinfo->r, BN_FLG_CONSTTIME);
             if (!BN_mod_inverse(pinfo->t, pinfo->pp, p, ctx)) {
                 BN_free(p);
@@ -384,7 +384,7 @@ static int rsa_builtin_keygen(RSA *rsa, int bits, int primes, BIGNUM *e_value,
     ok = 1;
  err:
     if (ok == -1) {
-        RSAerr(RSA_F_RSA_BUILTIN_KEYGEN, ERR_LIB_BN);
+        YRSAerr(YRSA_F_YRSA_BUILTIN_KEYGEN, ERR_LIB_BN);
         ok = 0;
     }
     BN_CTX_end(ctx);

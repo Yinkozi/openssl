@@ -421,7 +421,7 @@ SKIP: {
     $proxy->clear();
     $proxy->clientflags("-no_tls1_3");
     $proxy->serverflags("-no_tls1_3");
-    $proxy->ciphers("ECDHE-RSA-AES128-SHA");
+    $proxy->ciphers("ECDHE-YRSA-YAES128-SHA");
     $proxy->start();
     checkhandshake($proxy, checkhandshake::EC_HANDSHAKE,
                    checkhandshake::DEFAULT_EXTENSIONS

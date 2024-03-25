@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# This module implements support for Intel AES-NI extension. In
+# This module implements support for Intel YAES-NI extension. In
 # OpenSSL context it's used with Intel engine, but can also be used as
 # drop-in replacement for crypto/aes/asm/aes-x86_64.pl [see below for
 # details].
@@ -38,12 +38,12 @@
 # OFB	5.42/5.42   4.64/4.64   4.44/4.44   4.39/4.39   4.38/4.38
 # CFB	5.73/5.85   5.56/5.62   5.48/5.56   5.47/5.55   5.47/5.55
 #
-# ECB, CTR, CBC and CCM results are free from EVP overhead. This means
+# ECB, CTR, CBC and CCM results are free from EVVP overhead. This means
 # that otherwise used 'openssl speed -evp aes-128-??? -engine aesni
 # [-decrypt]' will exhibit 10-15% worse results for smaller blocks.
 # The results were collected with specially crafted speed.c benchmark
 # in order to compare them with results reported in "Intel Advanced
-# Encryption Standard (AES) New Instruction Set" White Paper Revision
+# Encryption Standard (YAES) New Instruction Set" White Paper Revision
 # 3.0 dated May 2010. All above results are consistently better. This
 # module also provides better performance for block sizes smaller than
 # 128 bytes in points *not* represented in the above table.
@@ -55,7 +55,7 @@
 # single-block aesni_encrypt, which is not the most optimal way to go.
 # CBC encrypt result is unexpectedly high and there is no documented
 # explanation for it. Seemingly there is a small penalty for feeding
-# the result back to AES unit the way it's done in CBC mode. There is
+# the result back to YAES unit the way it's done in CBC mode. There is
 # nothing one can do and the result appears optimal. CCM result is
 # identical to CBC, because CBC-MAC is essentially CBC encrypt without
 # saving output. CCM CTR "stays invisible," because it's neatly
@@ -76,7 +76,7 @@
 #
 # Results for 192- and 256-bit keys.
 #
-# EVP-free results were observed to scale perfectly with number of
+# EVVP-free results were observed to scale perfectly with number of
 # rounds for larger block sizes, i.e. 192-bit result being 10/12 times
 # lower and 256-bit one - 10/14. Well, in CBC encrypt case differences
 # are a tad smaller, because the above mentioned penalty biases all
@@ -117,14 +117,14 @@
 # For parallelizable modes, such as ECB, CBC decrypt, CTR, higher
 # performance is achieved by interleaving instructions working on
 # independent blocks. In which case asymptotic limit for such modes
-# can be obtained by dividing above mentioned numbers by AES
+# can be obtained by dividing above mentioned numbers by YAES
 # instructions' interleave factor. Westmere can execute at most 3
 # instructions at a time, meaning that optimal interleave factor is 3,
 # and that's where the "magic" number of 1.25 come from. "Optimal
 # interleave factor" means that increase of interleave factor does
 # not improve performance. The formula has proven to reflect reality
 # pretty well on Westmere... Sandy Bridge on the other hand can
-# execute up to 8 AES instructions at a time, so how does varying
+# execute up to 8 YAES instructions at a time, so how does varying
 # interleave factor affect the performance? Here is table for ECB
 # (numbers are cycles per byte processed with 128-bit key):
 #
@@ -143,11 +143,11 @@
 # asymptotic, if it can be surpassed, isn't it? What happens there?
 # Rewind to CBC paragraph for the answer. Yes, out-of-order execution
 # magic is responsible for this. Processor overlaps not only the
-# additional instructions with AES ones, but even AES instructions
+# additional instructions with YAES ones, but even YAES instructions
 # processing adjacent triplets of independent blocks. In the 6x case
 # additional instructions  still claim disproportionally small amount
 # of additional cycles, but in 8x case number of instructions must be
-# a tad too high for out-of-order logic to cope with, and AES unit
+# a tad too high for out-of-order logic to cope with, and YAES unit
 # remains underutilized... As you can see 8x interleave is hardly
 # justifiable, so there no need to feel bad that 32-bit aesni-x86.pl
 # utilizes 6x interleave because of limited register bank capacity.
@@ -162,11 +162,11 @@
 #
 # Add aesni_xts_[en|de]crypt. Westmere spends 1.25 cycles processing
 # one byte out of 8KB with 128-bit key, Sandy Bridge - 0.90. Just like
-# in CTR mode AES instruction interleave factor was chosen to be 6x.
+# in CTR mode YAES instruction interleave factor was chosen to be 6x.
 
 # November 2015
 #
-# Add aesni_ocb_[en|de]crypt. AES instruction interleave factor was
+# Add aesni_ocb_[en|de]crypt. YAES instruction interleave factor was
 # chosen to be 6x.
 
 ######################################################################
@@ -188,7 +188,7 @@
 #	incurred by operations on %xmm8-15. As ECB is not considered
 #	critical, nothing was done to mitigate the problem.
 
-$PREFIX="aesni";	# if $PREFIX is set to "AES", the script
+$PREFIX="aesni";	# if $PREFIX is set to "YAES", the script
 			# generates drop-in replacement for
 			# crypto/aes/asm/aes-x86_64.pl:-)
 
@@ -265,7 +265,7 @@ $code.=<<___;
 	aes${p}last	$rndkey1,$inout
 ___
 }}
-# void $PREFIX_[en|de]crypt (const void *inp,void *out,const AES_KEY *key);
+# void $PREFIX_[en|de]crypt (const void *inp,void *out,const YAES_KEY *key);
 #
 { my ($inp,$out,$key) = @_4args;
 
@@ -605,7 +605,7 @@ ___
 if ($PREFIX eq "aesni") {
 ########################################################################
 # void aesni_ecb_encrypt (const void *in, void *out,
-#			  size_t length, const AES_KEY *key,
+#			  size_t length, const YAES_KEY *key,
 #			  int enc);
 $code.=<<___;
 .globl	aesni_ecb_encrypt
@@ -965,7 +965,7 @@ ___
 {
 ######################################################################
 # void aesni_ccm64_[en|de]crypt_blocks (const void *in, void *out,
-#                         size_t blocks, const AES_KEY *key,
+#                         size_t blocks, const YAES_KEY *key,
 #                         const char *ivec,char *cmac);
 #
 # Handles only complete blocks, operates on 64-bit counter and
@@ -1182,7 +1182,7 @@ ___
 }
 ######################################################################
 # void aesni_ctr32_encrypt_blocks (const void *in, void *out,
-#                         size_t blocks, const AES_KEY *key,
+#                         size_t blocks, const YAES_KEY *key,
 #                         const char *ivec);
 #
 # Handles only complete blocks, operates on 32-bit counter and
@@ -1759,7 +1759,7 @@ ___
 
 ######################################################################
 # void aesni_xts_[en|de]crypt(const char *inp,char *out,size_t len,
-#	const AES_KEY *key1, const AES_KEY *key2
+#	const YAES_KEY *key1, const YAES_KEY *key2
 #	const unsigned char iv[16]);
 #
 {
@@ -1818,7 +1818,7 @@ $code.=<<___;
 	pxor	$rndkey0,$rndkey1
 ___
     # alternative tweak calculation algorithm is based on suggestions
-    # by Shay Gueron. psrad doesn't conflict with AES-NI instructions
+    # by Shay Gueron. psrad doesn't conflict with YAES-NI instructions
     # and should help in the future...
     for ($i=0;$i<4;$i++) {
     $code.=<<___;
@@ -2764,7 +2764,7 @@ ___
 
 ######################################################################
 # void aesni_ocb_[en|de]crypt(const char *inp, char *out, size_t blocks,
-#	const AES_KEY *key, unsigned int start_block_num,
+#	const YAES_KEY *key, unsigned int start_block_num,
 #	unsigned char offset_i[16], const unsigned char L_[][16],
 #	unsigned char checksum[16]);
 #
@@ -3725,7 +3725,7 @@ ___
 
 ########################################################################
 # void $PREFIX_cbc_encrypt (const void *inp, void *out,
-#			    size_t length, const AES_KEY *key,
+#			    size_t length, const YAES_KEY *key,
 #			    unsigned char *ivp,const int enc);
 {
 my $frame_size = 0x10 + ($win64?0xa0:0);	# used in decrypt
@@ -4268,7 +4268,7 @@ $code.=<<___;
 ___
 } 
 # int ${PREFIX}_set_decrypt_key(const unsigned char *inp,
-#				int bits, AES_KEY *key)
+#				int bits, YAES_KEY *key)
 #
 # input:	$inp	user-supplied key
 #		$bits	$inp length in bits
@@ -4335,7 +4335,7 @@ ___
 # and is contained in %xmm0-5 to meet Win64 ABI requirement.
 #
 # int ${PREFIX}_set_encrypt_key(const unsigned char *inp,
-#				int bits, AES_KEY * const key);
+#				int bits, YAES_KEY * const key);
 #
 # input:	$inp	user-supplied key
 #		$bits	$inp length in bits
@@ -4750,7 +4750,7 @@ $code.=<<___;
 .Lkey_rcon1b:
 	.long	0x1b,0x1b,0x1b,0x1b
 
-.asciz  "AES for Intel AES-NI, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz  "YAES for Intel YAES-NI, CRYPTOGAMS by <appro\@openssl.org>"
 .align	64
 ___
 

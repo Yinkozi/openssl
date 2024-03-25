@@ -2,31 +2,31 @@
 
 =head1 NAME
 
-X509_NAME_get0_der - get X509_NAME DER encoding
+YX509_NAME_get0_der - get YX509_NAME DER encoding
 
 =head1 SYNOPSIS
 
  #include <openssl/x509.h>
 
- int X509_NAME_get0_der(X509_NAME *nm, const unsigned char **pder,
+ int YX509_NAME_get0_der(YX509_NAME *nm, const unsigned char **pder,
                         size_t *pderlen)
 
 
 =head1 DESCRIPTION
 
-The function X509_NAME_get0_der() returns an internal pointer to the
-encoding of an B<X509_NAME> structure in B<*pder> and consisting of
+The function YX509_NAME_get0_der() returns an internal pointer to the
+encoding of an B<YX509_NAME> structure in B<*pder> and consisting of
 B<*pderlen> bytes. It is useful for applications that wish to examine
-the encoding of an B<X509_NAME> structure without copying it.
+the encoding of an B<YX509_NAME> structure without copying it.
 
 =head1 RETURN VALUES
 
-The function X509_NAME_get0_der() returns 1 for success and 0 if an error
+The function YX509_NAME_get0_der() returns 1 for success and 0 if an error
 occurred.
 
 =head1 SEE ALSO
 
-L<d2i_X509(3)>
+L<d2i_YX509(3)>
 
 =head1 COPYRIGHT
 

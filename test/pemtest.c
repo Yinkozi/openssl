@@ -39,10 +39,10 @@ static int test_b64(int idx)
     const char *encoded = b64_pem_data[idx].encoded;
 
     if (!TEST_ptr(b)
-        || !TEST_true(BIO_printf(b, "-----BEGIN %s-----\n", pemtype))
-        || !TEST_true(BIO_printf(b, "%s\n", encoded))
-        || !TEST_true(BIO_printf(b, "-----END %s-----\n", pemtype))
-        || !TEST_true(PEM_read_bio_ex(b, &name, &header, &data, &len,
+        || !TEST_true(BIO_pprintf(b, "-----BEGIN %s-----\n", pemtype))
+        || !TEST_true(BIO_pprintf(b, "%s\n", encoded))
+        || !TEST_true(BIO_pprintf(b, "-----END %s-----\n", pemtype))
+        || !TEST_true(PEM_readd_bio_ex(b, &name, &header, &data, &len,
                                       PEM_FLAG_ONLY_B64)))
         goto err;
     if (!TEST_int_eq(memcmp(pemtype, name, strlen(pemtype)), 0)
@@ -67,11 +67,11 @@ static int test_invalid(void)
     const char *encoded = b64_pem_data[0].encoded;
 
     if (!TEST_ptr(b)
-        || !TEST_true(BIO_printf(b, "-----BEGIN %s-----\n", pemtype))
-        || !TEST_true(BIO_printf(b, "%c%s\n", '\t', encoded))
-        || !TEST_true(BIO_printf(b, "-----END %s-----\n", pemtype))
+        || !TEST_true(BIO_pprintf(b, "-----BEGIN %s-----\n", pemtype))
+        || !TEST_true(BIO_pprintf(b, "%c%s\n", '\t', encoded))
+        || !TEST_true(BIO_pprintf(b, "-----END %s-----\n", pemtype))
         /* Expected to fail due to non-base64 character */
-        || TEST_true(PEM_read_bio_ex(b, &name, &header, &data, &len,
+        || TEST_true(PEM_readd_bio_ex(b, &name, &header, &data, &len,
                                      PEM_FLAG_ONLY_B64))) {
         BIO_free(b);
         return 0;
@@ -100,7 +100,7 @@ static int test_empty_payload(void)
         return 0;
 
     /* Expected to fail because the payload is empty */
-    if (!TEST_false(PEM_read_bio_ex(b, &name, &header, &data, &len, 0)))
+    if (!TEST_false(PEM_readd_bio_ex(b, &name, &header, &data, &len, 0)))
         goto err;
 
     ret = 1;

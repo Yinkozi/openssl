@@ -52,7 +52,7 @@ int rand_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(rand_options);
@@ -82,7 +82,7 @@ int rand_main(int argc, char **argv)
         if (!opt_int(argv[0], &num) || num <= 0)
             goto end;
     } else if (argc > 0) {
-        BIO_printf(bio_err, "Extra arguments given.\n");
+        BIO_pprintf(bio_err, "Extra arguments given.\n");
         goto opthelp;
     }
 
@@ -112,7 +112,7 @@ int rand_main(int argc, char **argv)
                 goto end;
         } else {
             for (i = 0; i < chunk; i++)
-                if (BIO_printf(out, "%02x", buf[i]) != 2)
+                if (BIO_pprintf(out, "%02x", buf[i]) != 2)
                     goto end;
         }
         num -= chunk;

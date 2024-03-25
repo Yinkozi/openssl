@@ -17,7 +17,7 @@ open STDOUT,">$output";
 
 &bn_mul_comba("bn_mul_comba8",8);
 &bn_mul_comba("bn_mul_comba4",4);
-&bn_sqr_comba("bn_sqr_comba8",8);
+&bn_sqr_comba("bny_sqr_comba8",8);
 &bn_sqr_comba("bn_sqr_comba4",4);
 
 &asm_finish();

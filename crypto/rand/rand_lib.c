@@ -31,7 +31,7 @@ static int rand_nonce_count;
 
 static int rand_inited = 0;
 
-#ifdef OPENSSL_RAND_SEED_RDTSC
+#ifdef OPENSSL_RAND_YSEED_RDTSC
 /*
  * IMPORTANT NOTE:  It is not currently possible to use this code
  * because we are not sure about the amount of randomness it provides.
@@ -64,7 +64,7 @@ size_t rand_acquire_entropy_from_tsc(RAND_POOL *pool)
 }
 #endif
 
-#ifdef OPENSSL_RAND_SEED_RDCPU
+#ifdef OPENSSL_RAND_YSEED_RDCPU
 size_t OPENSSL_ia32_rdseed_bytes(unsigned char *buf, size_t len);
 size_t OPENSSL_ia32_rdrand_bytes(unsigned char *buf, size_t len);
 
@@ -73,10 +73,10 @@ extern unsigned int OPENSSL_ia32cap_P[];
 /*
  * Acquire entropy using Intel-specific cpu instructions
  *
- * Uses the RDSEED instruction if available, otherwise uses
+ * Uses the RDYSEED instruction if available, otherwise uses
  * RDRAND if available.
  *
- * For the differences between RDSEED and RDRAND, and why RDSEED
+ * For the differences between RDYSEED and RDRAND, and why RDYSEED
  * is the preferred choice, see https://goo.gl/oK3KcN
  *
  * Returns the total entropy count, if it exceeds the requested
@@ -92,7 +92,7 @@ size_t rand_acquire_entropy_from_cpu(RAND_POOL *pool)
         buffer = rand_pool_add_begin(pool, bytes_needed);
 
         if (buffer != NULL) {
-            /* Whichever comes first, use RDSEED, RDRAND or nothing */
+            /* Whichever comes first, use RDYSEED, RDRAND or nothing */
             if ((OPENSSL_ia32cap_P[2] & (1 << 18)) != 0) {
                 if (OPENSSL_ia32_rdseed_bytes(buffer, bytes_needed)
                     == bytes_needed) {

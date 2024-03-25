@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
         fprintf(stderr, "errno=%d ", errno);
         perror("error");
     } else {
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
  done:
     BIO_free_all(out);

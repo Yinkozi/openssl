@@ -105,7 +105,7 @@ int ciphers_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(ciphers_options);
@@ -170,7 +170,7 @@ int ciphers_main(int argc, char **argv)
         goto opthelp;
 
     if (convert != NULL) {
-        BIO_printf(bio_out, "OpenSSL cipher name: %s\n",
+        BIO_pprintf(bio_out, "OpenSSL cipher name: %s\n",
                    OPENSSL_cipher_name(convert));
         ret = 0;
         goto end;
@@ -194,13 +194,13 @@ int ciphers_main(int argc, char **argv)
 #endif
 
     if (ciphersuites != NULL && !SSL_CTX_set_ciphersuites(ctx, ciphersuites)) {
-        BIO_printf(bio_err, "Error setting TLSv1.3 ciphersuites\n");
+        BIO_pprintf(bio_err, "Error setting TLSv1.3 ciphersuites\n");
         goto err;
     }
 
     if (ciphers != NULL) {
         if (!SSL_CTX_set_cipher_list(ctx, ciphers)) {
-            BIO_printf(bio_err, "Error in cipher list\n");
+            BIO_pprintf(bio_err, "Error in cipher list\n");
             goto err;
         }
     }
@@ -220,10 +220,10 @@ int ciphers_main(int argc, char **argv)
             if (p == NULL)
                 break;
             if (i != 0)
-                BIO_printf(bio_out, ":");
-            BIO_printf(bio_out, "%s", p);
+                BIO_pprintf(bio_out, ":");
+            BIO_pprintf(bio_out, "%s", p);
         }
-        BIO_printf(bio_out, "\n");
+        BIO_pprintf(bio_out, "\n");
     } else {
 
         for (i = 0; i < sk_SSL_CIPHER_num(sk); i++) {
@@ -239,16 +239,16 @@ int ciphers_main(int argc, char **argv)
                 int id3 = (int)(id & 0xffL);
 
                 if ((id & 0xff000000L) == 0x03000000L)
-                    BIO_printf(bio_out, "          0x%02X,0x%02X - ", id2, id3); /* SSL3
+                    BIO_pprintf(bio_out, "          0x%02X,0x%02X - ", id2, id3); /* SSL3
                                                                                   * cipher */
                 else
-                    BIO_printf(bio_out, "0x%02X,0x%02X,0x%02X,0x%02X - ", id0, id1, id2, id3); /* whatever */
+                    BIO_pprintf(bio_out, "0x%02X,0x%02X,0x%02X,0x%02X - ", id0, id1, id2, id3); /* whatever */
             }
             if (stdname) {
                 const char *nm = SSL_CIPHER_standard_name(c);
                 if (nm == NULL)
                     nm = "UNKNOWN";
-                BIO_printf(bio_out, "%s - ", nm);
+                BIO_pprintf(bio_out, "%s - ", nm);
             }
             BIO_puts(bio_out, SSL_CIPHER_description(c, buf, sizeof(buf)));
         }

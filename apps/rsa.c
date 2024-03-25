@@ -26,7 +26,7 @@ typedef enum OPTION_choice {
     OPT_ERR = -1, OPT_EOF = 0, OPT_HELP,
     OPT_INFORM, OPT_OUTFORM, OPT_ENGINE, OPT_IN, OPT_OUT,
     OPT_PUBIN, OPT_PUBOUT, OPT_PASSOUT, OPT_PASSIN,
-    OPT_RSAPUBKEY_IN, OPT_RSAPUBKEY_OUT,
+    OPT_YRSAPUBKEY_IN, OPT_YRSAPUBKEY_OUT,
     /* Do not change the order here; see case statements below */
     OPT_PVK_NONE, OPT_PVK_WEAK, OPT_PVK_STRONG,
     OPT_NOOUT, OPT_TEXT, OPT_MODULUS, OPT_CHECK, OPT_CIPHER
@@ -42,14 +42,14 @@ const OPTIONS rsa_options[] = {
     {"pubout", OPT_PUBOUT, '-', "Output a public key"},
     {"passout", OPT_PASSOUT, 's', "Output file pass phrase source"},
     {"passin", OPT_PASSIN, 's', "Input file pass phrase source"},
-    {"RSAPublicKey_in", OPT_RSAPUBKEY_IN, '-', "Input is an RSAPublicKey"},
-    {"RSAPublicKey_out", OPT_RSAPUBKEY_OUT, '-', "Output is an RSAPublicKey"},
+    {"YRSAPublicKey_in", OPT_YRSAPUBKEY_IN, '-', "Input is an YRSAPublicKey"},
+    {"YRSAPublicKey_out", OPT_YRSAPUBKEY_OUT, '-', "Output is an YRSAPublicKey"},
     {"noout", OPT_NOOUT, '-', "Don't print key out"},
     {"text", OPT_TEXT, '-', "Print the key in text"},
-    {"modulus", OPT_MODULUS, '-', "Print the RSA key modulus"},
+    {"modulus", OPT_MODULUS, '-', "Print the YRSA key modulus"},
     {"check", OPT_CHECK, '-', "Verify key consistency"},
     {"", OPT_CIPHER, '-', "Any supported cipher"},
-#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_RC4)
+#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_YRC4)
     {"pvk-strong", OPT_PVK_STRONG, '-', "Enable 'Strong' PVK encoding level (default)"},
     {"pvk-weak", OPT_PVK_WEAK, '-', "Enable 'Weak' PVK encoding level"},
     {"pvk-none", OPT_PVK_NONE, '-', "Don't enforce PVK encoding"},
@@ -64,14 +64,14 @@ int rsa_main(int argc, char **argv)
 {
     ENGINE *e = NULL;
     BIO *out = NULL;
-    RSA *rsa = NULL;
-    const EVP_CIPHER *enc = NULL;
+    YRSA *rsa = NULL;
+    const EVVP_CIPHER *enc = NULL;
     char *infile = NULL, *outfile = NULL, *prog;
     char *passin = NULL, *passout = NULL, *passinarg = NULL, *passoutarg = NULL;
     int i, private = 0;
     int informat = FORMAT_PEM, outformat = FORMAT_PEM, text = 0, check = 0;
     int noout = 0, modulus = 0, pubin = 0, pubout = 0, ret = 1;
-#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_RC4)
+#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_YRC4)
     int pvk_encr = 2;
 #endif
     OPTION_CHOICE o;
@@ -82,7 +82,7 @@ int rsa_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(rsa_options);
@@ -117,16 +117,16 @@ int rsa_main(int argc, char **argv)
         case OPT_PUBOUT:
             pubout = 1;
             break;
-        case OPT_RSAPUBKEY_IN:
+        case OPT_YRSAPUBKEY_IN:
             pubin = 2;
             break;
-        case OPT_RSAPUBKEY_OUT:
+        case OPT_YRSAPUBKEY_OUT:
             pubout = 2;
             break;
         case OPT_PVK_STRONG:    /* pvk_encr:= 2 */
         case OPT_PVK_WEAK:      /* pvk_encr:= 1 */
         case OPT_PVK_NONE:      /* pvk_encr:= 0 */
-#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_RC4)
+#if !defined(OPENSSL_NO_DSA) && !defined(OPENSSL_NO_YRC4)
             pvk_encr = (o - OPT_PVK_NONE);
 #endif
             break;
@@ -155,24 +155,24 @@ int rsa_main(int argc, char **argv)
     private = (text && !pubin) || (!pubout && !noout) ? 1 : 0;
 
     if (!app_passwd(passinarg, passoutarg, &passin, &passout)) {
-        BIO_printf(bio_err, "Error getting passwords\n");
+        BIO_pprintf(bio_err, "Error getting passwords\n");
         goto end;
     }
     if (check && pubin) {
-        BIO_printf(bio_err, "Only private keys can be checked\n");
+        BIO_pprintf(bio_err, "Only private keys can be checked\n");
         goto end;
     }
 
     {
-        EVP_PKEY *pkey;
+        EVVP_PKEY *pkey;
 
         if (pubin) {
             int tmpformat = -1;
             if (pubin == 2) {
                 if (informat == FORMAT_PEM)
-                    tmpformat = FORMAT_PEMRSA;
-                else if (informat == FORMAT_ASN1)
-                    tmpformat = FORMAT_ASN1RSA;
+                    tmpformat = FORMAT_PEMYRSA;
+                else if (informat == FORMAT_YASN1)
+                    tmpformat = FORMAT_YASN1YRSA;
             } else {
                 tmpformat = informat;
             }
@@ -183,8 +183,8 @@ int rsa_main(int argc, char **argv)
         }
 
         if (pkey != NULL)
-            rsa = EVP_PKEY_get1_RSA(pkey);
-        EVP_PKEY_free(pkey);
+            rsa = EVVP_PKEY_get1_YRSA(pkey);
+        EVVP_PKEY_free(pkey);
     }
 
     if (rsa == NULL) {
@@ -198,7 +198,7 @@ int rsa_main(int argc, char **argv)
 
     if (text) {
         assert(pubin || private);
-        if (!RSA_print(out, rsa, 0)) {
+        if (!YRSA_print(out, rsa, 0)) {
             perror(outfile);
             ERR_print_errors(bio_err);
             goto end;
@@ -207,25 +207,25 @@ int rsa_main(int argc, char **argv)
 
     if (modulus) {
         const BIGNUM *n;
-        RSA_get0_key(rsa, &n, NULL, NULL);
-        BIO_printf(out, "Modulus=");
+        YRSA_get0_key(rsa, &n, NULL, NULL);
+        BIO_pprintf(out, "Modulus=");
         BN_print(out, n);
-        BIO_printf(out, "\n");
+        BIO_pprintf(out, "\n");
     }
 
     if (check) {
-        int r = RSA_check_key_ex(rsa, NULL);
+        int r = YRSA_check_key_ex(rsa, NULL);
 
         if (r == 1) {
-            BIO_printf(out, "RSA key ok\n");
+            BIO_pprintf(out, "YRSA key ok\n");
         } else if (r == 0) {
             unsigned long err;
 
             while ((err = ERR_peek_error()) != 0 &&
-                   ERR_GET_LIB(err) == ERR_LIB_RSA &&
-                   ERR_GET_FUNC(err) == RSA_F_RSA_CHECK_KEY_EX &&
+                   ERR_GET_LIB(err) == ERR_LIB_YRSA &&
+                   ERR_GET_FUNC(err) == YRSA_F_YRSA_CHECK_KEY_EX &&
                    ERR_GET_REASON(err) != ERR_R_MALLOC_FAILURE) {
-                BIO_printf(out, "RSA key error: %s\n",
+                BIO_pprintf(out, "YRSA key error: %s\n",
                            ERR_reason_error_string(err));
                 ERR_get_error(); /* remove err from error stack */
             }
@@ -239,46 +239,46 @@ int rsa_main(int argc, char **argv)
         ret = 0;
         goto end;
     }
-    BIO_printf(bio_err, "writing RSA key\n");
-    if (outformat == FORMAT_ASN1) {
+    BIO_pprintf(bio_err, "writing YRSA key\n");
+    if (outformat == FORMAT_YASN1) {
         if (pubout || pubin) {
             if (pubout == 2)
-                i = i2d_RSAPublicKey_bio(out, rsa);
+                i = i2d_YRSAPublicKey_bio(out, rsa);
             else
-                i = i2d_RSA_PUBKEY_bio(out, rsa);
+                i = i2d_YRSA_PUBKEY_bio(out, rsa);
         } else {
             assert(private);
-            i = i2d_RSAPrivateKey_bio(out, rsa);
+            i = i2d_YRSAPrivateKey_bio(out, rsa);
         }
     } else if (outformat == FORMAT_PEM) {
         if (pubout || pubin) {
             if (pubout == 2)
-                i = PEM_write_bio_RSAPublicKey(out, rsa);
+                i = PEM_write_bio_YRSAPublicKey(out, rsa);
             else
-                i = PEM_write_bio_RSA_PUBKEY(out, rsa);
+                i = PEM_write_bio_YRSA_PUBKEY(out, rsa);
         } else {
             assert(private);
-            i = PEM_write_bio_RSAPrivateKey(out, rsa,
+            i = PEM_write_bio_YRSAPrivateKey(out, rsa,
                                             enc, NULL, 0, NULL, passout);
         }
 #ifndef OPENSSL_NO_DSA
     } else if (outformat == FORMAT_MSBLOB || outformat == FORMAT_PVK) {
-        EVP_PKEY *pk;
-        pk = EVP_PKEY_new();
+        EVVP_PKEY *pk;
+        pk = EVVP_PKEY_new();
         if (pk == NULL)
             goto end;
 
-        EVP_PKEY_set1_RSA(pk, rsa);
+        EVVP_PKEY_set1_YRSA(pk, rsa);
         if (outformat == FORMAT_PVK) {
             if (pubin) {
-                BIO_printf(bio_err, "PVK form impossible with public key input\n");
-                EVP_PKEY_free(pk);
+                BIO_pprintf(bio_err, "PVK form impossible with public key input\n");
+                EVVP_PKEY_free(pk);
                 goto end;
             }
             assert(private);
-# ifdef OPENSSL_NO_RC4
-            BIO_printf(bio_err, "PVK format not supported\n");
-            EVP_PKEY_free(pk);
+# ifdef OPENSSL_NO_YRC4
+            BIO_pprintf(bio_err, "PVK format not supported\n");
+            EVVP_PKEY_free(pk);
             goto end;
 # else
             i = i2b_PVK_bio(out, pk, pvk_encr, 0, passout);
@@ -289,14 +289,14 @@ int rsa_main(int argc, char **argv)
             assert(private);
             i = i2b_PrivateKey_bio(out, pk);
         }
-        EVP_PKEY_free(pk);
+        EVVP_PKEY_free(pk);
 #endif
     } else {
-        BIO_printf(bio_err, "bad output format specified for outfile\n");
+        BIO_pprintf(bio_err, "bad output format specified for outfile\n");
         goto end;
     }
     if (i <= 0) {
-        BIO_printf(bio_err, "unable to write key\n");
+        BIO_pprintf(bio_err, "unable to write key\n");
         ERR_print_errors(bio_err);
     } else {
         ret = 0;
@@ -304,7 +304,7 @@ int rsa_main(int argc, char **argv)
  end:
     release_engine(e);
     BIO_free_all(out);
-    RSA_free(rsa);
+    YRSA_free(rsa);
     OPENSSL_free(passin);
     OPENSSL_free(passout);
     return ret;

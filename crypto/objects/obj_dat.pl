@@ -173,7 +173,7 @@ print @lvalues;
 print "};\n\n";
 
 printf "#define NUM_NID %d\n", $n;
-printf "static const ASN1_OBJECT nid_objs[NUM_NID] = {\n";
+printf "static const YASN1_OBJECT nid_objs[NUM_NID] = {\n";
 print @out;
 print  "};\n\n";
 

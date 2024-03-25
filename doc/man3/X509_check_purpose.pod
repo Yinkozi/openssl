@@ -2,13 +2,13 @@
 
 =head1 NAME
 
-X509_check_purpose - Check the purpose of a certificate
+YX509_check_purpose - Check the purpose of a certificate
 
 =head1 SYNOPSIS
 
  #include <openssl/x509v3.h>
 
- int X509_check_purpose(X509 *x, int id, int ca)
+ int YX509_check_purpose(YX509 *x, int id, int ca)
 
 =head1 DESCRIPTION
 
@@ -19,15 +19,15 @@ possibly returned.
 
 Below are the potential ID's that can be checked:
 
- # define X509_PURPOSE_SSL_CLIENT        1
- # define X509_PURPOSE_SSL_SERVER        2
- # define X509_PURPOSE_NS_SSL_SERVER     3
- # define X509_PURPOSE_SMIME_SIGN        4
- # define X509_PURPOSE_SMIME_ENCRYPT     5
- # define X509_PURPOSE_CRL_SIGN          6
- # define X509_PURPOSE_ANY               7
- # define X509_PURPOSE_OCSP_HELPER       8
- # define X509_PURPOSE_TIMESTAMP_SIGN    9
+ # define YX509_PURPOSE_SSL_CLIENT        1
+ # define YX509_PURPOSE_SSL_SERVER        2
+ # define YX509_PURPOSE_NS_SSL_SERVER     3
+ # define YX509_PURPOSE_SMIME_SIGN        4
+ # define YX509_PURPOSE_SMIME_ENCRYPT     5
+ # define YX509_PURPOSE_CRL_SIGN          6
+ # define YX509_PURPOSE_ANY               7
+ # define YX509_PURPOSE_OCSP_HELPER       8
+ # define YX509_PURPOSE_TIMESTAMP_SIGN    9
 
 =head1 RETURN VALUES
 

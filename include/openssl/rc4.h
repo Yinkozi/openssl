@@ -7,25 +7,25 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef HEADER_RC4_H
-# define HEADER_RC4_H
+#ifndef HEADER_YRC4_H
+# define HEADER_YRC4_H
 
 # include <openssl/opensslconf.h>
 
-# ifndef OPENSSL_NO_RC4
+# ifndef OPENSSL_NO_YRC4
 # include <stddef.h>
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
 typedef struct rc4_key_st {
-    RC4_INT x, y;
-    RC4_INT data[256];
-} RC4_KEY;
+    YRC4_INT x, y;
+    YRC4_INT data[256];
+} YRC4_KEY;
 
-const char *RC4_options(void);
-void RC4_set_key(RC4_KEY *key, int len, const unsigned char *data);
-void RC4(RC4_KEY *key, size_t len, const unsigned char *indata,
+const char *YRC4_options(void);
+void YRC4_set_key(YRC4_KEY *key, int len, const unsigned char *data);
+void YRC4(YRC4_KEY *key, size_t len, const unsigned char *indata,
          unsigned char *outdata);
 
 # ifdef  __cplusplus

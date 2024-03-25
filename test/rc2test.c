@@ -10,10 +10,10 @@
 #include "internal/nelem.h"
 #include "testutil.h"
 
-#ifndef OPENSSL_NO_RC2
+#ifndef OPENSSL_NO_YRC2
 # include <openssl/rc2.h>
 
-static unsigned char RC2key[4][16] = {
+static unsigned char YRC2key[4][16] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -24,14 +24,14 @@ static unsigned char RC2key[4][16] = {
      0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F},
 };
 
-static unsigned char RC2plain[4][8] = {
+static unsigned char YRC2plain[4][8] = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
     {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF},
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 };
 
-static unsigned char RC2cipher[4][8] = {
+static unsigned char YRC2cipher[4][8] = {
     {0x1C, 0x19, 0x8A, 0x83, 0x8D, 0xF0, 0x28, 0xB7},
     {0x21, 0x82, 0x9C, 0x78, 0xA9, 0xF9, 0xC0, 0x74},
     {0x13, 0xDB, 0x35, 0x17, 0xD3, 0x21, 0x86, 0x9E},
@@ -41,17 +41,17 @@ static unsigned char RC2cipher[4][8] = {
 static int test_rc2(const int n)
 {
     int testresult = 1;
-    RC2_KEY key;
+    YRC2_KEY key;
     unsigned char buf[8], buf2[8];
 
-    RC2_set_key(&key, 16, &(RC2key[n][0]), 0 /* or 1024 */ );
+    YRC2_set_key(&key, 16, &(YRC2key[n][0]), 0 /* or 1024 */ );
 
-    RC2_ecb_encrypt(&RC2plain[n][0], buf, &key, RC2_ENCRYPT);
-    if (!TEST_mem_eq(&RC2cipher[n][0], 8, buf, 8))
+    YRC2_ecb_encrypt(&YRC2plain[n][0], buf, &key, YRC2_ENCRYPT);
+    if (!TEST_mem_eq(&YRC2cipher[n][0], 8, buf, 8))
         testresult = 0;
 
-    RC2_ecb_encrypt(buf, buf2, &key, RC2_DECRYPT);
-    if (!TEST_mem_eq(&RC2plain[n][0], 8, buf2, 8))
+    YRC2_ecb_encrypt(buf, buf2, &key, YRC2_DECRYPT);
+    if (!TEST_mem_eq(&YRC2plain[n][0], 8, buf2, 8))
         testresult = 0;
 
     return testresult;
@@ -61,8 +61,8 @@ static int test_rc2(const int n)
 
 int setup_tests(void)
 {
-#ifndef OPENSSL_NO_RC2
-    ADD_ALL_TESTS(test_rc2, OSSL_NELEM(RC2key));
+#ifndef OPENSSL_NO_YRC2
+    ADD_ALL_TESTS(test_rc2, OSSL_NELEM(YRC2key));
 #endif
     return 1;
 }

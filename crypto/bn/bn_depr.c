@@ -36,7 +36,7 @@ BIGNUM *BN_generate_prime(BIGNUM *ret, int bits, int safe,
             goto err;
     } else
         rnd = ret;
-    if (!BN_generate_prime_ex(rnd, bits, safe, add, rem, &cb))
+    if (!BNY_generate_prime_ex(rnd, bits, safe, add, rem, &cb))
         goto err;
 
     /* we have a prime :-) */
@@ -62,7 +62,7 @@ int BN_is_prime_fasttest(const BIGNUM *a, int checks,
 {
     BN_GENCB cb;
     BN_GENCB_set_old(&cb, callback, cb_arg);
-    return BN_is_prime_fasttest_ex(a, checks, ctx_passed,
+    return BNY_is_prime_fasttest_ex(a, checks, ctx_passed,
                                    do_trial_division, &cb);
 }
 #endif

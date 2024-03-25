@@ -192,7 +192,7 @@ void bn_sqr_words(BN_ULONG *r, const BN_ULONG *a, int n)
     }
 }
 
-BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d)
+BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d)
 {
     BN_ULONG ret, waste;
 
@@ -533,7 +533,7 @@ void bn_mul_comba4(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b)
     r[7] = c2;
 }
 
-void bn_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
+void bny_sqr_comba8(BN_ULONG *r, const BN_ULONG *a)
 {
     BN_ULONG c1, c2, c3;
 

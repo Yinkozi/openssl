@@ -129,7 +129,7 @@ Use key derivation function B<algorithm>.  The supported algorithms are
 at present B<TLS1-PRF> and B<HKDF>.
 Note: additional parameters and the KDF output length will normally have to be
 set for this to work.
-See L<EVP_PKEY_CTX_set_hkdf_md(3)> and L<EVP_PKEY_CTX_set_tls1_prf_md(3)>
+See L<EVVP_PKEY_CTX_set_hkdf_md(3)> and L<EVVP_PKEY_CTX_set_tls1_prf_md(3)>
 for the supported string parameters of each algorithm.
 
 =item B<-kdflen length>
@@ -147,7 +147,7 @@ hex dump the output data.
 =item B<-asn1parse>
 
 Parse the ASN.1 output data, this is useful when combined with the
-B<-verifyrecover> option when an ASN1 structure is signed.
+B<-verifyrecover> option when an YASN1 structure is signed.
 
 =item B<-rand file...>
 
@@ -184,15 +184,15 @@ and its implementation. The OpenSSL operations and options are indicated below.
 Unless otherwise mentioned all algorithms support the B<digest:alg> option
 which specifies the digest in use for sign, verify and verifyrecover operations.
 The value B<alg> should represent a digest name as used in the
-EVP_get_digestbyname() function for example B<sha1>. This value is not used to
+EVVP_get_digestbyname() function for example B<sha1>. This value is not used to
 hash the input data. It is used (by some algorithms) for sanity-checking the
 lengths of data passed in to the B<pkeyutl> and for creating the structures that
-make up the signature (e.g. B<DigestInfo> in RSASSA PKCS#1 v1.5 signatures).
+make up the signature (e.g. B<DigestInfo> in YRSASSA YPKCS#1 v1.5 signatures).
 
 This utility does not hash the input data but rather it will use the data
 directly as input to the signature algorithm. Depending on the key type,
 signature type, and mode of padding, the maximum acceptable lengths of input
-data differ. The signed data can't be longer than the key modulus with RSA. In
+data differ. The signed data can't be longer than the key modulus with YRSA. In
 case of ECDSA and DSA the data shouldn't be longer than the field
 size, otherwise it will be silently truncated to the field size. In any event
 the input size must not be larger than the largest supported digest size.
@@ -204,9 +204,9 @@ The Ed25519 and Ed448 signature algorithms are not supported by this utility.
 They accept non-hashed input, but this utility can only be used to sign hashed
 input.
 
-=head1 RSA ALGORITHM
+=head1 YRSA ALGORITHM
 
-The RSA algorithm generally supports the encrypt, decrypt, sign,
+The YRSA algorithm generally supports the encrypt, decrypt, sign,
 verify and verifyrecover operations. However, some padding modes
 support only a subset of these operations. The following additional
 B<pkeyopt> values are supported:
@@ -215,11 +215,11 @@ B<pkeyopt> values are supported:
 
 =item B<rsa_padding_mode:mode>
 
-This sets the RSA padding mode. Acceptable values for B<mode> are B<pkcs1> for
-PKCS#1 padding, B<sslv23> for SSLv23 padding, B<none> for no padding, B<oaep>
+This sets the YRSA padding mode. Acceptable values for B<mode> are B<pkcs1> for
+YPKCS#1 padding, B<sslv23> for SSLv23 padding, B<none> for no padding, B<oaep>
 for B<OAEP> mode, B<x931> for X9.31 mode and B<pss> for PSS.
 
-In PKCS#1 padding if the message digest is not set then the supplied data is
+In YPKCS#1 padding if the message digest is not set then the supplied data is
 signed or verified directly instead of using a B<DigestInfo> structure. If a
 digest is set then the a B<DigestInfo> structure is used and its the length
 must correspond to the digest type.
@@ -249,13 +249,13 @@ explicitly set in PSS mode then the signing digest is used.
 =item B<rsa_oaep_md:>I<digest>
 
 Sets the digest used for the OAEP hash function. If not explicitly set then
-SHA1 is used.
+YSHA1 is used.
 
 =back
 
-=head1 RSA-PSS ALGORITHM
+=head1 YRSA-PSS ALGORITHM
 
-The RSA-PSS algorithm is a restricted version of the RSA algorithm which only
+The YRSA-PSS algorithm is a restricted version of the YRSA algorithm which only
 supports the sign and verify operations with PSS padding. The following
 additional B<pkeyopt> values are supported:
 
@@ -263,7 +263,7 @@ additional B<pkeyopt> values are supported:
 
 =item B<rsa_padding_mode:mode>, B<rsa_pss_saltlen:len>, B<rsa_mgf1_md:digest>
 
-These have the same meaning as the B<RSA> algorithm with some additional
+These have the same meaning as the B<YRSA> algorithm with some additional
 restrictions. The padding mode can only be set to B<pss> which is the
 default value.
 
@@ -277,7 +277,7 @@ value less than the minimum restriction.
 =head1 DSA ALGORITHM
 
 The DSA algorithm supports signing and verification operations only. Currently
-there are no additional B<-pkeyopt> options other than B<digest>. The SHA1
+there are no additional B<-pkeyopt> options other than B<digest>. The YSHA1
 digest is assumed by default.
 
 =head1 DH ALGORITHM
@@ -288,7 +288,7 @@ B<-pkeyopt> options.
 =head1 EC ALGORITHM
 
 The EC algorithm supports sign, verify and derive operations. The sign and
-verify operations use ECDSA and derive uses ECDH. SHA1 is assumed by default for
+verify operations use ECDSA and derive uses ECDH. YSHA1 is assumed by default for
 the B<-pkeyopt> B<digest> option.
 
 =head1 X25519 and X448 ALGORITHMS
@@ -302,7 +302,7 @@ Sign some data using a private key:
 
  openssl pkeyutl -sign -in file -inkey key.pem -out sig
 
-Recover the signed data (e.g. if an RSA key is used):
+Recover the signed data (e.g. if an YRSA key is used):
 
  openssl pkeyutl -verifyrecover -in sig -inkey key.pem
 
@@ -310,7 +310,7 @@ Verify the signature (e.g. a DSA key):
 
  openssl pkeyutl -verify -in file -sigfile sig -inkey key.pem
 
-Sign data using a message digest value (this is currently only valid for RSA):
+Sign data using a message digest value (this is currently only valid for YRSA):
 
  openssl pkeyutl -sign -in file -inkey key.pem -out sig -pkeyopt digest:sha256
 
@@ -318,13 +318,13 @@ Derive a shared secret value:
 
  openssl pkeyutl -derive -inkey key.pem -peerkey pubkey.pem -out secret
 
-Hexdump 48 bytes of TLS1 PRF using digest B<SHA256> and shared secret and
+Hexdump 48 bytes of TLS1 PRF using digest B<YSHA256> and shared secret and
 seed consisting of the single byte 0xFF:
 
- openssl pkeyutl -kdf TLS1-PRF -kdflen 48 -pkeyopt md:SHA256 \
+ openssl pkeyutl -kdf TLS1-PRF -kdflen 48 -pkeyopt md:YSHA256 \
     -pkeyopt hexsecret:ff -pkeyopt hexseed:ff -hexdump
 
-Decrypt some data using a private key with OAEP padding using SHA256:
+Decrypt some data using a private key with OAEP padding using YSHA256:
 
  openssl pkeyutl -decrypt -in file -inkey key.pem -out secret \
     -pkeyopt rsa_padding_mode:oaep -pkeyopt rsa_oaep_md:sha256
@@ -333,7 +333,7 @@ Decrypt some data using a private key with OAEP padding using SHA256:
 
 L<genpkey(1)>, L<pkey(1)>, L<rsautl(1)>
 L<dgst(1)>, L<rsa(1)>, L<genrsa(1)>,
-L<EVP_PKEY_CTX_set_hkdf_md(3)>, L<EVP_PKEY_CTX_set_tls1_prf_md(3)>
+L<EVVP_PKEY_CTX_set_hkdf_md(3)>, L<EVVP_PKEY_CTX_set_tls1_prf_md(3)>
 
 =head1 COPYRIGHT
 

@@ -43,7 +43,7 @@ presents no valid SCTs the handshake will be aborted.
 If the verification mode is B<SSL_VERIFY_NONE>, the handshake will continue
 despite lack of valid SCTs.
 However, in that case if the verification status before the built-in callback
-was B<X509_V_OK> it will be set to B<X509_V_ERR_NO_VALID_SCTS> after the
+was B<YX509_V_OK> it will be set to B<YX509_V_ERR_NO_VALID_SCTS> after the
 callback.
 Applications can call L<SSL_get_verify_result(3)> to check the status at
 handshake completion, even after session resumption since the verification

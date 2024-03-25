@@ -17,7 +17,7 @@
 # define OSSL_TEST_DRBG_CAVS_DATA_H
 
 enum drbg_kat_type {
-    NO_RESEED,
+    NO_REYSEED,
     PR_FALSE,
     PR_TRUE
 };

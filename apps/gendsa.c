@@ -46,7 +46,7 @@ int gendsa_main(int argc, char **argv)
     ENGINE *e = NULL;
     BIO *out = NULL, *in = NULL;
     DSA *dsa = NULL;
-    const EVP_CIPHER *enc = NULL;
+    const EVVP_CIPHER *enc = NULL;
     char *dsaparams = NULL;
     char *outfile = NULL, *passoutarg = NULL, *passout = NULL, *prog;
     OPTION_CHOICE o;
@@ -59,7 +59,7 @@ int gendsa_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             ret = 0;
@@ -93,7 +93,7 @@ int gendsa_main(int argc, char **argv)
     dsaparams = *argv;
 
     if (!app_passwd(NULL, passoutarg, NULL, &passout)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
 
@@ -101,8 +101,8 @@ int gendsa_main(int argc, char **argv)
     if (in == NULL)
         goto end2;
 
-    if ((dsa = PEM_read_bio_DSAparams(in, NULL, NULL, NULL)) == NULL) {
-        BIO_printf(bio_err, "unable to load DSA parameter file\n");
+    if ((dsa = PEM_readd_bio_DSAparams(in, NULL, NULL, NULL)) == NULL) {
+        BIO_pprintf(bio_err, "unable to load DSA parameter file\n");
         goto end;
     }
     BIO_free(in);
@@ -115,12 +115,12 @@ int gendsa_main(int argc, char **argv)
     DSA_get0_pqg(dsa, &p, NULL, NULL);
 
     if (BN_num_bits(p) > OPENSSL_DSA_MAX_MODULUS_BITS)
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "Warning: It is not recommended to use more than %d bit for DSA keys.\n"
                    "         Your key size is %d! Larger key size may behave not as expected.\n",
                    OPENSSL_DSA_MAX_MODULUS_BITS, BN_num_bits(p));
 
-    BIO_printf(bio_err, "Generating DSA key, %d bits\n", BN_num_bits(p));
+    BIO_pprintf(bio_err, "Generating DSA key, %d bits\n", BN_num_bits(p));
     if (!DSA_generate_key(dsa))
         goto end;
 

@@ -8,7 +8,7 @@
 
 
 ######################################################################
-## Constant-time SSSE3 AES core implementation.
+## Constant-time SSSE3 YAES core implementation.
 ## version 0.1
 ##
 ## By Mike Hamburg (Stanford University), 2009
@@ -21,9 +21,9 @@
 # September 2011.
 #
 # Interface to OpenSSL as "almost" drop-in replacement for
-# aes-x86_64.pl. "Almost" refers to the fact that AES_cbc_encrypt
+# aes-x86_64.pl. "Almost" refers to the fact that YAES_cbc_encrypt
 # doesn't handle partial vectors (doesn't have to if called from
-# EVP only). "Drop-in" implies that this module doesn't share key
+# EVVP only). "Drop-in" implies that this module doesn't share key
 # schedule structure with the original nor does it make assumption
 # about its alignment...
 #
@@ -76,7 +76,7 @@ $code.=<<___;
 ##
 ##  _aes_encrypt_core
 ##
-##  AES-encrypt %xmm0.
+##  YAES-encrypt %xmm0.
 ##
 ##  Inputs:
 ##     %xmm0 = input
@@ -285,7 +285,7 @@ _vpaes_decrypt_core:
 
 ########################################################
 ##                                                    ##
-##                  AES key schedule                  ##
+##                  YAES key schedule                  ##
 ##                                                    ##
 ########################################################
 .type	_vpaes_schedule_core,\@abi-omnipotent
@@ -715,7 +715,7 @@ $code.=<<___;
 	mov	%esi,%eax
 	shr	\$5,%eax
 	add	\$5,%eax
-	mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 
 	mov	\$0,%ecx
 	mov	\$0x30,%r8d
@@ -765,7 +765,7 @@ $code.=<<___;
 	mov	%esi,%eax
 	shr	\$5,%eax
 	add	\$5,%eax
-	mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 	shl	\$4,%eax
 	lea	16(%rdx,%rax),%rdx
 
@@ -888,8 +888,8 @@ $code.=<<___;
 ___
 {
 my ($inp,$out,$len,$key,$ivp,$enc)=("%rdi","%rsi","%rdx","%rcx","%r8","%r9");
-# void AES_cbc_encrypt (const void char *inp, unsigned char *out,
-#                       size_t length, const AES_KEY *key,
+# void YAES_cbc_encrypt (const void char *inp, unsigned char *out,
+#                       size_t length, const YAES_KEY *key,
 #                       unsigned char *ivp,const int enc);
 $code.=<<___;
 .globl	${PREFIX}_cbc_encrypt
@@ -1094,7 +1094,7 @@ _vpaes_consts:
 .Lk_dsbo:	# decryption sbox final output
 	.quad	0x1387EA537EF94000, 0xC7AA6DB9D4943E2D
 	.quad	0x12D7560F93441D00, 0xCA4B8159D8C58E9C
-.asciz	"Vector Permutation AES for x86_64/SSSE3, Mike Hamburg (Stanford University)"
+.asciz	"Vector Permutation YAES for x86_64/SSSE3, Mike Hamburg (Stanford University)"
 .align	64
 .size	_vpaes_consts,.-_vpaes_consts
 ___

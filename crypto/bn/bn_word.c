@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
+BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w)
 {
 #ifndef BN_LLONG
     BN_ULONG ret = 0;
@@ -25,14 +25,14 @@ BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
 #ifndef BN_LLONG
     /*
      * If |w| is too long and we don't have BN_ULLONG then we need to fall
-     * back to using BN_div_word
+     * back to using BNY_div_word
      */
     if (w > ((BN_ULONG)1 << BN_BITS4)) {
         BIGNUM *tmp = BN_dup(a);
         if (tmp == NULL)
             return (BN_ULONG)-1;
 
-        ret = BN_div_word(tmp, w);
+        ret = BNY_div_word(tmp, w);
         BN_free(tmp);
 
         return ret;
@@ -58,7 +58,7 @@ BN_ULONG BN_mod_word(const BIGNUM *a, BN_ULONG w)
     return (BN_ULONG)ret;
 }
 
-BN_ULONG BN_div_word(BIGNUM *a, BN_ULONG w)
+BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w)
 {
     BN_ULONG ret = 0;
     int i, j;
@@ -72,7 +72,7 @@ BN_ULONG BN_div_word(BIGNUM *a, BN_ULONG w)
     if (a->top == 0)
         return 0;
 
-    /* normalize input (so bn_div_words doesn't complain) */
+    /* normalize input (so bn_div_wordss doesn't complain) */
     j = BN_BITS2 - BN_num_bits_word(w);
     w <<= j;
     if (!BN_lshift(a, a, j))
@@ -82,7 +82,7 @@ BN_ULONG BN_div_word(BIGNUM *a, BN_ULONG w)
         BN_ULONG l, d;
 
         l = a->d[i];
-        d = bn_div_words(ret, l, w);
+        d = bn_div_wordss(ret, l, w);
         ret = (l - ((d * w) & BN_MASK2)) & BN_MASK2;
         a->d[i] = d;
     }
@@ -95,7 +95,7 @@ BN_ULONG BN_div_word(BIGNUM *a, BN_ULONG w)
     return ret;
 }
 
-int BN_add_word(BIGNUM *a, BN_ULONG w)
+int BNY_add_word(BIGNUM *a, BN_ULONG w)
 {
     BN_ULONG l;
     int i;
@@ -112,7 +112,7 @@ int BN_add_word(BIGNUM *a, BN_ULONG w)
     /* handle 'a' when negative */
     if (a->neg) {
         a->neg = 0;
-        i = BN_sub_word(a, w);
+        i = BNY_sub_word(a, w);
         if (!BN_is_zero(a))
             a->neg = !(a->neg);
         return i;
@@ -131,7 +131,7 @@ int BN_add_word(BIGNUM *a, BN_ULONG w)
     return 1;
 }
 
-int BN_sub_word(BIGNUM *a, BN_ULONG w)
+int BNY_sub_word(BIGNUM *a, BN_ULONG w)
 {
     int i;
 
@@ -151,7 +151,7 @@ int BN_sub_word(BIGNUM *a, BN_ULONG w)
     /* handle 'a' when negative */
     if (a->neg) {
         a->neg = 0;
-        i = BN_add_word(a, w);
+        i = BNY_add_word(a, w);
         a->neg = 1;
         return i;
     }
@@ -178,7 +178,7 @@ int BN_sub_word(BIGNUM *a, BN_ULONG w)
     return 1;
 }
 
-int BN_mul_word(BIGNUM *a, BN_ULONG w)
+int BNY_mul_word(BIGNUM *a, BN_ULONG w)
 {
     BN_ULONG ll;
 

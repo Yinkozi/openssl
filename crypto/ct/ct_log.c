@@ -24,7 +24,7 @@
 struct ctlog_st {
     char *name;
     uint8_t log_id[CT_V1_HASHLEN];
-    EVP_PKEY *public_key;
+    EVVP_PKEY *public_key;
 };
 
 /*
@@ -69,8 +69,8 @@ static void ctlog_store_load_ctx_free(CTLOG_STORE_LOAD_CTX* ctx)
     OPENSSL_free(ctx);
 }
 
-/* Converts a log's public key into a SHA256 log ID */
-static int ct_v1_log_id_from_pkey(EVP_PKEY *pkey,
+/* Converts a log's public key into a YSHA256 log ID */
+static int ct_v1_log_id_from_pkey(EVVP_PKEY *pkey,
                                   unsigned char log_id[CT_V1_HASHLEN])
 {
     int ret = 0;
@@ -82,7 +82,7 @@ static int ct_v1_log_id_from_pkey(EVP_PKEY *pkey,
         goto err;
     }
 
-    SHA256(pkey_der, pkey_der_len, log_id);
+    YSHA256(pkey_der, pkey_der_len, log_id);
     ret = 1;
 err:
     OPENSSL_free(pkey_der);
@@ -137,7 +137,7 @@ static int ctlog_new_from_conf(CTLOG **ct_log, const CONF *conf, const char *sec
 
 int CTLOG_STORE_load_default_file(CTLOG_STORE *store)
 {
-    const char *fpath = ossl_safe_getenv(CTLOG_FILE_EVP);
+    const char *fpath = ossl_safe_getenv(CTLOG_FILE_EVVP);
 
     if (fpath == NULL)
       fpath = CTLOG_FILE;
@@ -234,7 +234,7 @@ end:
  * Takes ownership of the public key.
  * Copies the name.
  */
-CTLOG *CTLOG_new(EVP_PKEY *public_key, const char *name)
+CTLOG *CTLOG_new(EVVP_PKEY *public_key, const char *name)
 {
     CTLOG *ret = OPENSSL_zalloc(sizeof(*ret));
 
@@ -264,7 +264,7 @@ void CTLOG_free(CTLOG *log)
 {
     if (log != NULL) {
         OPENSSL_free(log->name);
-        EVP_PKEY_free(log->public_key);
+        EVVP_PKEY_free(log->public_key);
         OPENSSL_free(log);
     }
 }
@@ -281,7 +281,7 @@ void CTLOG_get0_log_id(const CTLOG *log, const uint8_t **log_id,
     *log_id_len = CT_V1_HASHLEN;
 }
 
-EVP_PKEY *CTLOG_get0_public_key(const CTLOG *log)
+EVVP_PKEY *CTLOG_get0_public_key(const CTLOG *log)
 {
     return log->public_key;
 }

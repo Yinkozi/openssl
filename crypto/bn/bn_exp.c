@@ -40,7 +40,7 @@ extern unsigned int OPENSSL_sparcv9cap_P[];
 /*
  * Beyond this limit the constant time code is disabled due to
  * the possible overflow in the computation of powerbufLen in
- * BN_mod_exp_mont_consttime.
+ * BNY_mod_exp_mont_consttime.
  * When this limit is exceeded, the computation will be done using
  * non-constant time code, but it will take very long.
  */
@@ -54,7 +54,7 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
-        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        /* BN_FLG_CONSTTIME only supported by BNY_mod_exp_mont() */
         BNerr(BN_F_BN_EXP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -78,10 +78,10 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     }
 
     for (i = 1; i < bits; i++) {
-        if (!BN_sqr(v, v, ctx))
+        if (!BNY_sqr(v, v, ctx))
             goto err;
         if (BN_is_bit_set(p, i)) {
-            if (!BN_mul(rr, rr, v, ctx))
+            if (!BNY_mul(rr, rr, v, ctx))
                 goto err;
         }
     }
@@ -119,14 +119,14 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
      * 4096, 8192 bits], compared to the running time of the
      * standard algorithm:
      *
-     *   BN_mod_exp_mont   33 .. 40 %  [AMD K6-2, Linux, debug configuration]
+     *   BNY_mod_exp_mont   33 .. 40 %  [AMD K6-2, Linux, debug configuration]
      *                     55 .. 77 %  [UltraSparc processor, but
      *                                  debug-solaris-sparcv8-gcc conf.]
      *
      *   BN_mod_exp_recp   50 .. 70 %  [AMD K6-2, Linux, debug configuration]
      *                     62 .. 118 % [UltraSparc, debug-solaris-sparcv8-gcc]
      *
-     * On the Sparc, BN_mod_exp_recp was faster than BN_mod_exp_mont
+     * On the Sparc, BN_mod_exp_recp was faster than BNY_mod_exp_mont
      * at 2048 and more bits, but at 512 and 1024 bits, it was
      * slower even than the standard algorithm!
      *
@@ -147,10 +147,10 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
             && (BN_get_flags(a, BN_FLG_CONSTTIME) == 0)
             && (BN_get_flags(m, BN_FLG_CONSTTIME) == 0)) {
             BN_ULONG A = a->d[0];
-            ret = BN_mod_exp_mont_word(r, A, p, m, ctx, NULL);
+            ret = BNY_mod_exp_mont_word(r, A, p, m, ctx, NULL);
         } else
 # endif
-            ret = BN_mod_exp_mont(r, a, p, m, ctx, NULL);
+            ret = BNY_mod_exp_mont(r, a, p, m, ctx, NULL);
     } else
 #endif
 #ifdef RECP_MUL_MOD
@@ -180,7 +180,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        /* BN_FLG_CONSTTIME only supported by BNY_mod_exp_mont() */
         BNerr(BN_F_BN_MOD_EXP_RECP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -217,7 +217,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
             goto err;
     }
 
-    if (!BN_nnmod(val[0], a, m, ctx))
+    if (!BNY_nnmod(val[0], a, m, ctx))
         goto err;               /* 1 */
     if (BN_is_zero(val[0])) {
         BN_zero(r);
@@ -303,7 +303,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                     const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
@@ -327,7 +327,7 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         && (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0)) {
-        return BN_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
+        return BNY_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
     }
 
     bits = BN_num_bits(p);
@@ -362,8 +362,8 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;
     }
 
-    if (a->neg || BN_ucmp(a, m) >= 0) {
-        if (!BN_nnmod(val[0], a, m, ctx))
+    if (a->neg || BNY_ucmp(a, m) >= 0) {
+        if (!BNY_nnmod(val[0], a, m, ctx))
             goto err;
         aa = val[0];
     } else
@@ -466,7 +466,7 @@ int BN_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         for (i = 1; i < j; i++)
             val[0]->d[i] = 0;
         val[0]->top = j;
-        if (!BN_mod_mul_montgomery(rr, r, val[0], mont, ctx))
+        if (!BNY_mod_mul_montgomery(rr, r, val[0], mont, ctx))
             goto err;
     } else
 #endif
@@ -501,7 +501,7 @@ static BN_ULONG bn_get_bits(const BIGNUM *a, int bitpos)
 }
 
 /*
- * BN_mod_exp_mont_consttime() stores the precomputed powers in a specific
+ * BNY_mod_exp_mont_consttime() stores the precomputed powers in a specific
  * layout so that accessing any of these table values shows the same access
  * pattern as far as cache lines are concerned.  The following functions are
  * used to transfer a BIGNUM from/to that table.
@@ -595,13 +595,13 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
         ((unsigned char*)(x_) + (MOD_EXP_CTIME_MIN_CACHE_LINE_WIDTH - (((size_t)(x_)) & (MOD_EXP_CTIME_MIN_CACHE_LINE_MASK))))
 
 /*
- * This variant of BN_mod_exp_mont() uses fixed windows and the special
+ * This variant of BNY_mod_exp_mont() uses fixed windows and the special
  * precomputation memory layout to limit data-dependency to a minimum to
  * protect secret exponents (cf. the hyper-threading timing attacks pointed
  * out by Colin Percival,
  * http://www.daemonology.net/hyperthreading-considered-harmful/)
  */
-int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
+int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
                               const BIGNUM *m, BN_CTX *ctx,
                               BN_MONT_CTX *in_mont)
 {
@@ -631,7 +631,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
     if (top > BN_CONSTTIME_SIZE_LIMIT) {
         /* Prevent overflowing the powerbufLen computation below */
-        return BN_mod_exp_mont(rr, a, p, m, ctx, in_mont);
+        return BNY_mod_exp_mont(rr, a, p, m, ctx, in_mont);
     }
 
     /*
@@ -665,26 +665,26 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;
     }
 
-    if (a->neg || BN_ucmp(a, m) >= 0) {
+    if (a->neg || BNY_ucmp(a, m) >= 0) {
         BIGNUM *reduced = BN_CTX_get(ctx);
         if (reduced == NULL
-            || !BN_nnmod(reduced, a, m, ctx)) {
+            || !BNY_nnmod(reduced, a, m, ctx)) {
             goto err;
         }
         a = reduced;
     }
 
-#ifdef RSAZ_ENABLED
+#ifdef YRSAZ_ENABLED
     /*
      * If the size of the operands allow it, perform the optimized
-     * RSAZ exponentiation. For further information see
+     * YRSAZ exponentiation. For further information see
      * crypto/bn/rsaz_exp.c and accompanying assembly modules.
      */
     if ((16 == a->top) && (16 == p->top) && (BN_num_bits(m) == 1024)
         && rsaz_avx2_eligible()) {
         if (NULL == bn_wexpand(rr, 16))
             goto err;
-        RSAZ_1024_mod_exp_avx2(rr->d, a->d, p->d, m->d, mont->RR.d,
+        YRSAZ_1024_mod_exp_avx2(rr->d, a->d, p->d, m->d, mont->RR.d,
                                mont->n0[0]);
         rr->top = 16;
         rr->neg = 0;
@@ -694,7 +694,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     } else if ((8 == a->top) && (8 == p->top) && (BN_num_bits(m) == 512)) {
         if (NULL == bn_wexpand(rr, 8))
             goto err;
-        RSAZ_512_mod_exp(rr->d, a->d, p->d, m->d, mont->n0[0], mont->RR.d);
+        YRSAZ_512_mod_exp(rr->d, a->d, p->d, m->d, mont->n0[0], mont->RR.d);
         rr->top = 8;
         rr->neg = 0;
         bn_correct_top(rr);
@@ -714,8 +714,8 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 #endif
 #if defined(OPENSSL_BN_ASM_MONT5)
     if (window >= 5 && top <= BN_SOFT_LIMIT) {
-        window = 5;             /* ~5% improvement for RSA2048 sign, and even
-                                 * for RSA4096 */
+        window = 5;             /* ~5% improvement for YRSA2048 sign, and even
+                                 * for YRSA4096 */
         /* reserve space for mont->N.d[] copy */
         powerbufLen += top * sizeof(mont->N.d[0]);
     }
@@ -924,7 +924,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
          * pre-computation optimization, and Almost Montgomery Multiplication.
          *
          * The paper discusses a 4-bit window to optimize 512-bit modular
-         * exponentiation, used in RSA-1024 with CRT, but RSA-1024 is no longer
+         * exponentiation, used in YRSA-1024 with CRT, but YRSA-1024 is no longer
          * important.
          *
          * |bn_mul_mont_gather5| and |bn_power5| implement the "almost"
@@ -1108,7 +1108,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
              * is not only slower but also makes each bit vulnerable to
              * EM (and likely other) side-channel attacks like One&Done
              * (for details see "One&Done: A Single-Decryption EM-Based
-             *  Attack on OpenSSL's Constant-Time Blinded RSA" by M. Alam,
+             *  Attack on OpenSSL's Constant-Time Blinded YRSA" by M. Alam,
              *  H. Khan, M. Dey, N. Sinha, R. Callan, A. Zajic, and
              *  M. Prvulovic, in USENIX Security'18)
              */
@@ -1137,7 +1137,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         am.d[0] = 1;            /* borrow am */
         for (i = 1; i < top; i++)
             am.d[i] = 0;
-        if (!BN_mod_mul_montgomery(rr, &tmp, &am, mont, ctx))
+        if (!BNY_mod_mul_montgomery(rr, &tmp, &am, mont, ctx))
             goto err;
     } else
 #endif
@@ -1155,7 +1155,7 @@ int BN_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
+int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
                          const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
 {
     BN_MONT_CTX *mont = NULL;
@@ -1165,16 +1165,16 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     BIGNUM *r, *t;
     BIGNUM *swap_tmp;
 #define BN_MOD_MUL_WORD(r, w, m) \
-                (BN_mul_word(r, (w)) && \
-                (/* BN_ucmp(r, (m)) < 0 ? 1 :*/  \
+                (BNY_mul_word(r, (w)) && \
+                (/* BNY_ucmp(r, (m)) < 0 ? 1 :*/  \
                         (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
     /*
-     * BN_MOD_MUL_WORD is only used with 'w' large, so the BN_ucmp test is
+     * BN_MOD_MUL_WORD is only used with 'w' large, so the BNY_ucmp test is
      * probably more overhead than always using BN_mod (which uses BN_copy if
      * a similar test returns true).
      */
     /*
-     * We can use BN_mod and do not need BN_nnmod because our accumulator is
+     * We can use BN_mod and do not need BNY_nnmod because our accumulator is
      * never negative (the result of BN_mod does not depend on the sign of
      * the modulus).
      */
@@ -1183,7 +1183,7 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        /* BN_FLG_CONSTTIME only supported by BNY_mod_exp_mont() */
         BNerr(BN_F_BN_MOD_EXP_MONT_WORD, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -1252,7 +1252,7 @@ int BN_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
         }
         w = next_w;
         if (!r_is_one) {
-            if (!BN_mod_mul_montgomery(r, r, r, mont, ctx))
+            if (!BNY_mod_mul_montgomery(r, r, r, mont, ctx))
                 goto err;
         }
 
@@ -1315,7 +1315,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(m, BN_FLG_CONSTTIME) != 0) {
-        /* BN_FLG_CONSTTIME only supported by BN_mod_exp_mont() */
+        /* BN_FLG_CONSTTIME only supported by BNY_mod_exp_mont() */
         BNerr(BN_F_BN_MOD_EXP_SIMPLE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -1338,7 +1338,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     if (val[0] == NULL)
         goto err;
 
-    if (!BN_nnmod(val[0], a, m, ctx))
+    if (!BNY_nnmod(val[0], a, m, ctx))
         goto err;               /* 1 */
     if (BN_is_zero(val[0])) {
         BN_zero(r);

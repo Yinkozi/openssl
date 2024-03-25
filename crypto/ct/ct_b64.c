@@ -39,7 +39,7 @@ static int ct_base64_decode(const char *in, unsigned char **out)
         goto err;
     }
 
-    outlen = EVP_DecodeBlock(outbuf, (unsigned char *)in, inlen);
+    outlen = EVVP_DecodeBlock(outbuf, (unsigned char *)in, inlen);
     if (outlen < 0) {
         CTerr(CT_F_CT_BASE64_DECODE, CT_R_BASE64_DECODE_ERROR);
         goto err;
@@ -86,7 +86,7 @@ SCT *SCT_new_from_base64(unsigned char version, const char *logid_base64,
 
     declen = ct_base64_decode(logid_base64, &dec);
     if (declen < 0) {
-        CTerr(CT_F_SCT_NEW_FROM_BASE64, X509_R_BASE64_DECODE_ERROR);
+        CTerr(CT_F_SCT_NEW_FROM_BASE64, YX509_R_BASE64_DECODE_ERROR);
         goto err;
     }
     if (!SCT_set0_log_id(sct, dec, declen))
@@ -95,7 +95,7 @@ SCT *SCT_new_from_base64(unsigned char version, const char *logid_base64,
 
     declen = ct_base64_decode(extensions_base64, &dec);
     if (declen < 0) {
-        CTerr(CT_F_SCT_NEW_FROM_BASE64, X509_R_BASE64_DECODE_ERROR);
+        CTerr(CT_F_SCT_NEW_FROM_BASE64, YX509_R_BASE64_DECODE_ERROR);
         goto err;
     }
     SCT_set0_extensions(sct, dec, declen);
@@ -103,7 +103,7 @@ SCT *SCT_new_from_base64(unsigned char version, const char *logid_base64,
 
     declen = ct_base64_decode(signature_base64, &dec);
     if (declen < 0) {
-        CTerr(CT_F_SCT_NEW_FROM_BASE64, X509_R_BASE64_DECODE_ERROR);
+        CTerr(CT_F_SCT_NEW_FROM_BASE64, YX509_R_BASE64_DECODE_ERROR);
         goto err;
     }
 
@@ -137,7 +137,7 @@ int CTLOG_new_from_base64(CTLOG **ct_log, const char *pkey_base64, const char *n
     unsigned char *pkey_der = NULL;
     int pkey_der_len;
     const unsigned char *p;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
 
     if (ct_log == NULL) {
         CTerr(CT_F_CTLOG_NEW_FROM_BASE64, ERR_R_PASSED_INVALID_ARGUMENT);
@@ -160,7 +160,7 @@ int CTLOG_new_from_base64(CTLOG **ct_log, const char *pkey_base64, const char *n
 
     *ct_log = CTLOG_new(pkey, name);
     if (*ct_log == NULL) {
-        EVP_PKEY_free(pkey);
+        EVVP_PKEY_free(pkey);
         return 0;
     }
 

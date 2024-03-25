@@ -75,7 +75,7 @@ This is a file descriptor BIO version of "Hello World":
  BIO *out;
 
  out = BIO_new_fd(fileno(stdout), BIO_NOCLOSE);
- BIO_printf(out, "Hello World\n");
+ BIO_pprintf(out, "Hello World\n");
  BIO_free(out);
 
 =head1 SEE ALSO
@@ -83,7 +83,7 @@ This is a file descriptor BIO version of "Hello World":
 L<BIO_seek(3)>, L<BIO_tell(3)>,
 L<BIO_reset(3)>, L<BIO_read_ex(3)>,
 L<BIO_write_ex(3)>, L<BIO_puts(3)>,
-L<BIO_gets(3)>, L<BIO_printf(3)>,
+L<BIO_gets(3)>, L<BIO_pprintf(3)>,
 L<BIO_set_close(3)>, L<BIO_get_close(3)>
 
 =head1 COPYRIGHT

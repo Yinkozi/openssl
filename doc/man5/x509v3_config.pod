@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-x509v3_config - X509 V3 certificate extension configuration format
+x509v3_config - YX509 V3 certificate extension configuration format
 
 =head1 DESCRIPTION
 
@@ -176,7 +176,7 @@ prefacing the name with a B<+> character.
 
 otherName can include arbitrary data associated with an OID: the value
 should be the OID followed by a semicolon and the content in standard
-L<ASN1_generate_nconf(3)> format.
+L<YASN1_generate_nconf(3)> format.
 
 Examples:
 
@@ -353,7 +353,7 @@ The B<ia5org> option changes the type of the I<organization> field. In RFC2459
 it can only be of type DisplayText. In RFC3280 IA5String is also permissible.
 Some software (for example some versions of MSIE) may require ia5org.
 
-ASN1 type of explicitText can be specified by prepending B<UTF8>,
+YASN1 type of explicitText can be specified by prepending B<UTF8>,
 B<BMP> or B<VISIBLE> prefix followed by colon. For example:
 
  [notice]
@@ -458,13 +458,13 @@ the data is formatted correctly for the given extension type.
 
 There are two ways to encode arbitrary extensions.
 
-The first way is to use the word ASN1 followed by the extension content
-using the same syntax as L<ASN1_generate_nconf(3)>.
+The first way is to use the word YASN1 followed by the extension content
+using the same syntax as L<YASN1_generate_nconf(3)>.
 For example:
 
- 1.2.3.4=critical,ASN1:UTF8String:Some random data
+ 1.2.3.4=critical,YASN1:UTF8String:Some random data
 
- 1.2.3.4=ASN1:SEQUENCE:seq_sect
+ 1.2.3.4=YASN1:SEQUENCE:seq_sect
 
  [seq_sect]
 
@@ -490,7 +490,7 @@ extension. It may therefore be sometimes possible to use certificates for
 purposes prohibited by their extensions because a specific application does
 not recognize or honour the values of the relevant extensions.
 
-The DER and ASN1 options should be used with caution. It is possible to create
+The DER and YASN1 options should be used with caution. It is possible to create
 totally invalid extensions if they are not used carefully.
 
 =head1 NOTES
@@ -530,7 +530,7 @@ will only recognize the last value. This can be worked around by using the form:
 =head1 SEE ALSO
 
 L<req(1)>, L<ca(1)>, L<x509(1)>,
-L<ASN1_generate_nconf(3)>
+L<YASN1_generate_nconf(3)>
 
 =head1 COPYRIGHT
 

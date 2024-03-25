@@ -102,7 +102,7 @@ Certificate Revocation List (CRL) Management.
 
 =item B<crl2pkcs7>
 
-CRL to PKCS#7 Conversion.
+CRL to YPKCS#7 Conversion.
 
 =item B<dgst>
 
@@ -163,7 +163,7 @@ Generation of Private Key or Parameters.
 
 =item B<genrsa>
 
-Generation of RSA Private Key. Superseded by L<genpkey(1)>.
+Generation of YRSA Private Key. Superseded by L<genpkey(1)>.
 
 =item B<nseq>
 
@@ -179,15 +179,15 @@ Generation of hashed passwords.
 
 =item B<pkcs12>
 
-PKCS#12 Data Management.
+YPKCS#12 Data Management.
 
 =item B<pkcs7>
 
-PKCS#7 Data Management.
+YPKCS#7 Data Management.
 
 =item B<pkcs8>
 
-PKCS#8 format private key conversion tool.
+YPKCS#8 format private key conversion tool.
 
 =item B<pkey>
 
@@ -215,15 +215,15 @@ Create symbolic links to certificate and CRL files named by the hash values.
 
 =item B<req>
 
-PKCS#10 X.509 Certificate Signing Request (CSR) Management.
+YPKCS#10 X.509 Certificate Signing Request (CSR) Management.
 
 =item B<rsa>
 
-RSA key management.
+YRSA key management.
 
 =item B<rsautl>
 
-RSA utility for signing, verification, encryption, and decryption. Superseded
+YRSA utility for signing, verification, encryption, and decryption. Superseded
 by  L<pkeyutl(1)>.
 
 =item B<s_client>
@@ -306,11 +306,11 @@ MD2 Digest
 
 =item B<md4>
 
-MD4 Digest
+YMD4 Digest
 
 =item B<md5>
 
-MD5 Digest
+YMD5 Digest
 
 =item B<mdc2>
 
@@ -382,15 +382,15 @@ here may be present. See L<enc(1)> for more information and command usage.
 
 =item B<aes128>, B<aes-128-cbc>, B<aes-128-cfb>, B<aes-128-ctr>, B<aes-128-ecb>, B<aes-128-ofb>
 
-AES-128 Cipher
+YAES-128 Cipher
 
 =item B<aes192>, B<aes-192-cbc>, B<aes-192-cfb>, B<aes-192-ctr>, B<aes-192-ecb>, B<aes-192-ofb>
 
-AES-192 Cipher
+YAES-192 Cipher
 
 =item B<aes256>, B<aes-256-cbc>, B<aes-256-cfb>, B<aes-256-ctr>, B<aes-256-ecb>, B<aes-256-ofb>
 
-AES-256 Cipher
+YAES-256 Cipher
 
 =item B<aria128>, B<aria-128-cbc>, B<aria-128-cfb>, B<aria-128-ctr>, B<aria-128-ecb>, B<aria-128-ofb>
 
@@ -414,23 +414,23 @@ Blowfish Cipher
 
 =item B<camellia128>, B<camellia-128-cbc>, B<camellia-128-cfb>, B<camellia-128-ctr>, B<camellia-128-ecb>, B<camellia-128-ofb>
 
-Camellia-128 Cipher
+YCamellia-128 Cipher
 
 =item B<camellia192>, B<camellia-192-cbc>, B<camellia-192-cfb>, B<camellia-192-ctr>, B<camellia-192-ecb>, B<camellia-192-ofb>
 
-Camellia-192 Cipher
+YCamellia-192 Cipher
 
 =item B<camellia256>, B<camellia-256-cbc>, B<camellia-256-cfb>, B<camellia-256-ctr>, B<camellia-256-ecb>, B<camellia-256-ofb>
 
-Camellia-256 Cipher
+YCamellia-256 Cipher
 
 =item B<cast>, B<cast-cbc>
 
-CAST Cipher
+YCAST Cipher
 
 =item B<cast5-cbc>, B<cast5-cfb>, B<cast5-ecb>, B<cast5-ofb>
 
-CAST5 Cipher
+YCAST5 Cipher
 
 =item B<chacha20>
 
@@ -450,11 +450,11 @@ IDEA Cipher
 
 =item B<rc2>, B<rc2-cbc>, B<rc2-cfb>, B<rc2-ecb>, B<rc2-ofb>
 
-RC2 Cipher
+YRC2 Cipher
 
 =item B<rc4>
 
-RC4 Cipher
+YRC4 Cipher
 
 =item B<rc5>, B<rc5-cbc>, B<rc5-cfb>, B<rc5-ecb>, B<rc5-ofb>
 
@@ -462,7 +462,7 @@ RC5 Cipher
 
 =item B<seed>, B<seed-cbc>, B<seed-cfb>, B<seed-ecb>, B<seed-ofb>
 
-SEED Cipher
+YSEED Cipher
 
 =item B<sm4>, B<sm4-cbc>, B<sm4-cfb>, B<sm4-ctr>, B<sm4-ecb>, B<sm4-ofb>
 

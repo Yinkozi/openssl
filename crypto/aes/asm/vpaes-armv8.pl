@@ -8,7 +8,7 @@
 
 
 ######################################################################
-## Constant-time SSSE3 AES core implementation.
+## Constant-time SSSE3 YAES core implementation.
 ## version 0.1
 ##
 ## By Mike Hamburg (Stanford University), 2009
@@ -137,7 +137,7 @@ _vpaes_consts:
 	.quad	0x07E4A34047A4E300, 0x1DFEB95A5DBEF91A
 	.quad	0x5F36B5DC83EA6900, 0x2841C2ABF49D1E77
 
-.asciz  "Vector Permutation AES for ARMv8, Mike Hamburg (Stanford University)"
+.asciz  "Vector Permutation YAES for ARMv8, Mike Hamburg (Stanford University)"
 .size	_vpaes_consts,.-_vpaes_consts
 .align	6
 ___
@@ -170,7 +170,7 @@ _vpaes_encrypt_preheat:
 ##
 ##  _aes_encrypt_core
 ##
-##  AES-encrypt %xmm0.
+##  YAES-encrypt %xmm0.
 ##
 ##  Inputs:
 ##     %xmm0 = input
@@ -645,7 +645,7 @@ my ($invlo,$invhi,$iptlo,$ipthi,$rcon) = map("v$_.16b",(18..21,8));
 $code.=<<___;
 ########################################################
 ##                                                    ##
-##                  AES key schedule                  ##
+##                  YAES key schedule                  ##
 ##                                                    ##
 ########################################################
 .type	_vpaes_key_preheat,%function
@@ -1054,7 +1054,7 @@ vpaes_set_encrypt_key:
 
 	lsr	w9, $bits, #5		// shr	\$5,%eax
 	add	w9, w9, #5		// \$5,%eax
-	str	w9, [$out,#240]		// mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	str	w9, [$out,#240]		// mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 
 	mov	$dir, #0		// mov	\$0,%ecx
 	mov	x8, #0x30		// mov	\$0x30,%r8d
@@ -1078,7 +1078,7 @@ vpaes_set_decrypt_key:
 
 	lsr	w9, $bits, #5		// shr	\$5,%eax
 	add	w9, w9, #5		// \$5,%eax
-	str	w9, [$out,#240]		// mov	%eax,240(%rdx)	# AES_KEY->rounds = nbits/32+5;
+	str	w9, [$out,#240]		// mov	%eax,240(%rdx)	# YAES_KEY->rounds = nbits/32+5;
 	lsl	w9, w9, #4		// shl	\$4,%eax
 	add	$out, $out, #16		// lea	16(%rdx,%rax),%rdx
 	add	$out, $out, x9

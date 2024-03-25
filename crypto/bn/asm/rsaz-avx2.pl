@@ -22,7 +22,7 @@
 #     Proceedings of 9th International Conference on Information Technology:
 #     New Generations (ITNG 2012), pp.821-823 (2012)
 # [4] S. Gueron, V. Krasnov: "[PATCH] Efficient and side channel analysis
-#     resistant 1024-bit modular exponentiation, for optimizing RSA2048
+#     resistant 1024-bit modular exponentiation, for optimizing YRSA2048
 #     on AVX2 capable x86_64 platforms",
 #     http://rt.openssl.org/Ticket/Display.html?id=2850&user=guest&pass=guest
 #

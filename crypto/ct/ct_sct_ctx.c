@@ -34,7 +34,7 @@ void SCT_CTX_free(SCT_CTX *sctx)
 {
     if (sctx == NULL)
         return;
-    EVP_PKEY_free(sctx->pkey);
+    EVVP_PKEY_free(sctx->pkey);
     OPENSSL_free(sctx->pkeyhash);
     OPENSSL_free(sctx->ihash);
     OPENSSL_free(sctx->certder);
@@ -47,12 +47,12 @@ void SCT_CTX_free(SCT_CTX *sctx)
  * If there is more than one extension with that NID, *is_duplicated is set to
  * 1, otherwise 0 (unless it is NULL).
  */
-static int ct_x509_get_ext(X509 *cert, int nid, int *is_duplicated)
+static int ct_x509_get_ext(YX509 *cert, int nid, int *is_duplicated)
 {
-    int ret = X509_get_ext_by_NID(cert, nid, -1);
+    int ret = YX509_get_ext_by_NID(cert, nid, -1);
 
     if (is_duplicated != NULL)
-        *is_duplicated = ret >= 0 && X509_get_ext_by_NID(cert, nid, ret) >= 0;
+        *is_duplicated = ret >= 0 && YX509_get_ext_by_NID(cert, nid, ret) >= 0;
 
     return ret;
 }
@@ -62,7 +62,7 @@ static int ct_x509_get_ext(X509 *cert, int nid, int *is_duplicated)
  * AKID from the presigner certificate, if necessary.
  * Returns 1 on success, 0 otherwise.
  */
-__owur static int ct_x509_cert_fixup(X509 *cert, X509 *presigner)
+__owur static int ct_x509_cert_fixup(YX509 *cert, YX509 *presigner)
 {
     int preidx, certidx;
     int pre_akid_ext_is_dup, cert_akid_ext_is_dup;
@@ -87,29 +87,29 @@ __owur static int ct_x509_cert_fixup(X509 *cert, X509 *presigner)
     if (preidx == -1 && certidx >= 0)
         return 0;
     /* Copy issuer name */
-    if (!X509_set_issuer_name(cert, X509_get_issuer_name(presigner)))
+    if (!YX509_set_issuer_name(cert, YX509_get_issuer_name(presigner)))
         return 0;
     if (preidx != -1) {
         /* Retrieve and copy AKID encoding */
-        X509_EXTENSION *preext = X509_get_ext(presigner, preidx);
-        X509_EXTENSION *certext = X509_get_ext(cert, certidx);
-        ASN1_OCTET_STRING *preextdata;
+        YX509_EXTENSION *preext = YX509_get_ext(presigner, preidx);
+        YX509_EXTENSION *certext = YX509_get_ext(cert, certidx);
+        YASN1_OCTET_STRING *preextdata;
 
         /* Should never happen */
         if (preext == NULL || certext == NULL)
             return 0;
-        preextdata = X509_EXTENSION_get_data(preext);
+        preextdata = YX509_EXTENSION_get_data(preext);
         if (preextdata == NULL ||
-            !X509_EXTENSION_set_data(certext, preextdata))
+            !YX509_EXTENSION_set_data(certext, preextdata))
             return 0;
     }
     return 1;
 }
 
-int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner)
+int SCT_CTX_set1_cert(SCT_CTX *sctx, YX509 *cert, YX509 *presigner)
 {
     unsigned char *certder = NULL, *preder = NULL;
-    X509 *pretmp = NULL;
+    YX509 *pretmp = NULL;
     int certderlen = 0, prederlen = 0;
     int idx = -1;
     int poison_ext_is_dup, sct_ext_is_dup;
@@ -125,7 +125,7 @@ int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner)
         if (presigner != NULL)
             goto err;
 
-        certderlen = i2d_X509(cert, &certder);
+        certderlen = i2d_YX509(cert, &certder);
         if (certderlen < 0)
             goto err;
     }
@@ -155,25 +155,25 @@ int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner)
      * SCT.
      */
     if (idx >= 0) {
-        X509_EXTENSION *ext;
+        YX509_EXTENSION *ext;
 
         /* Take a copy of certificate so we don't modify passed version */
-        pretmp = X509_dup(cert);
+        pretmp = YX509_dup(cert);
         if (pretmp == NULL)
             goto err;
 
-        ext = X509_delete_ext(pretmp, idx);
-        X509_EXTENSION_free(ext);
+        ext = YX509_delete_ext(pretmp, idx);
+        YX509_EXTENSION_free(ext);
 
         if (!ct_x509_cert_fixup(pretmp, presigner))
             goto err;
 
-        prederlen = i2d_re_X509_tbs(pretmp, &preder);
+        prederlen = i2d_re_YX509_tbs(pretmp, &preder);
         if (prederlen <= 0)
             goto err;
     }
 
-    X509_free(pretmp);
+    YX509_free(pretmp);
 
     OPENSSL_free(sctx->certder);
     sctx->certder = certder;
@@ -187,11 +187,11 @@ int SCT_CTX_set1_cert(SCT_CTX *sctx, X509 *cert, X509 *presigner)
 err:
     OPENSSL_free(certder);
     OPENSSL_free(preder);
-    X509_free(pretmp);
+    YX509_free(pretmp);
     return 0;
 }
 
-__owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
+__owur static int ct_public_key_hash(YX509_PUBKEY *pkey, unsigned char **hash,
                                      size_t *hash_len)
 {
     int ret = 0;
@@ -200,26 +200,26 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
     unsigned int md_len;
 
     /* Reuse buffer if possible */
-    if (*hash != NULL && *hash_len >= SHA256_DIGEST_LENGTH) {
+    if (*hash != NULL && *hash_len >= YSHA256_DIGEST_LENGTH) {
         md = *hash;
     } else {
-        md = OPENSSL_malloc(SHA256_DIGEST_LENGTH);
+        md = OPENSSL_malloc(YSHA256_DIGEST_LENGTH);
         if (md == NULL)
             goto err;
     }
 
     /* Calculate key hash */
-    der_len = i2d_X509_PUBKEY(pkey, &der);
+    der_len = i2d_YX509_PUBKEY(pkey, &der);
     if (der_len <= 0)
         goto err;
 
-    if (!EVP_Digest(der, der_len, md, &md_len, EVP_sha256(), NULL))
+    if (!EVVP_Digest(der, der_len, md, &md_len, EVVP_sha256(), NULL))
         goto err;
 
     if (md != *hash) {
         OPENSSL_free(*hash);
         *hash = md;
-        *hash_len = SHA256_DIGEST_LENGTH;
+        *hash_len = YSHA256_DIGEST_LENGTH;
     }
 
     md = NULL;
@@ -230,29 +230,29 @@ __owur static int ct_public_key_hash(X509_PUBKEY *pkey, unsigned char **hash,
     return ret;
 }
 
-int SCT_CTX_set1_issuer(SCT_CTX *sctx, const X509 *issuer)
+int SCT_CTX_set1_issuer(SCT_CTX *sctx, const YX509 *issuer)
 {
-    return SCT_CTX_set1_issuer_pubkey(sctx, X509_get_X509_PUBKEY(issuer));
+    return SCT_CTX_set1_issuer_pubkey(sctx, YX509_get_YX509_PUBKEY(issuer));
 }
 
-int SCT_CTX_set1_issuer_pubkey(SCT_CTX *sctx, X509_PUBKEY *pubkey)
+int SCT_CTX_set1_issuer_pubkey(SCT_CTX *sctx, YX509_PUBKEY *pubkey)
 {
     return ct_public_key_hash(pubkey, &sctx->ihash, &sctx->ihashlen);
 }
 
-int SCT_CTX_set1_pubkey(SCT_CTX *sctx, X509_PUBKEY *pubkey)
+int SCT_CTX_set1_pubkey(SCT_CTX *sctx, YX509_PUBKEY *pubkey)
 {
-    EVP_PKEY *pkey = X509_PUBKEY_get(pubkey);
+    EVVP_PKEY *pkey = YX509_PUBKEY_get(pubkey);
 
     if (pkey == NULL)
         return 0;
 
     if (!ct_public_key_hash(pubkey, &sctx->pkeyhash, &sctx->pkeyhashlen)) {
-        EVP_PKEY_free(pkey);
+        EVVP_PKEY_free(pkey);
         return 0;
     }
 
-    EVP_PKEY_free(sctx->pkey);
+    EVVP_PKEY_free(sctx->pkey);
     sctx->pkey = pkey;
     return 1;
 }

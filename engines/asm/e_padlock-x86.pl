@@ -291,7 +291,7 @@ my ($mode,$opcode) = @_;
 						}
 	&lea	("eax",&DWP(-16,$ctx));		# ivp
 	&lea	("ebx",&DWP(16,$ctx));		# key
-	&shr	($len,4);			# len/=AES_BLOCK_SIZE
+	&shr	($len,4);			# len/=YAES_BLOCK_SIZE
 	&data_byte(0xf3,0x0f,0xa7,$opcode);	# rep xcrypt*
 						if ($mode !~ /ecb|ctr/) {
 	&movaps	("xmm0",&QWP(0,"eax"));
@@ -382,7 +382,7 @@ my ($mode,$opcode) = @_;
     }
 	&lea	("eax",&DWP(-16,$ctx));		# ivp
 	&lea	("ebx",&DWP(16,$ctx));		# key
-	&shr	($len,4);			# len/=AES_BLOCK_SIZE
+	&shr	($len,4);			# len/=YAES_BLOCK_SIZE
 	&data_byte(0xf3,0x0f,0xa7,$opcode);	# rep xcrypt*
 						if ($mode ne "ecb") {
 	&movaps	("xmm0",&QWP(0,"eax"));

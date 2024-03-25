@@ -90,9 +90,9 @@ option can be used multiple times to "drill down" into a nested structure.
 =item B<-genstr string>, B<-genconf file>
 
 Generate encoded data based on B<string>, B<file> or both using
-L<ASN1_generate_nconf(3)> format. If B<file> only is
+L<YASN1_generate_nconf(3)> format. If B<file> only is
 present then the string is obtained from the default section using the name
-B<asn1>. The encoded data is passed through the ASN1 parser and printed out as
+B<asn1>. The encoded data is passed through the YASN1 parser and printed out as
 though it came from a file, the contents can thus be examined and written to a
 file using the B<out> option.
 
@@ -106,7 +106,7 @@ END marker in a PEM file.
 
 =item B<-item name>
 
-Attempt to decode and print the data as B<ASN1_ITEM name>. This can be used to
+Attempt to decode and print the data as B<YASN1_ITEM name>. This can be used to
 print out the fields of any supported ASN.1 structure if the type is known.
 
 =back
@@ -123,10 +123,10 @@ The output will typically contain lines like this:
   373:d=2  hl=3 l= 162 cons: cont [ 3 ]
   376:d=3  hl=3 l= 159 cons: SEQUENCE
   379:d=4  hl=2 l=  29 cons: SEQUENCE
-  381:d=5  hl=2 l=   3 prim: OBJECT            :X509v3 Subject Key Identifier
+  381:d=5  hl=2 l=   3 prim: OBJECT            :YX509v3 Subject Key Identifier
   386:d=5  hl=2 l=  22 prim: OCTET STRING
   410:d=4  hl=2 l= 112 cons: SEQUENCE
-  412:d=5  hl=2 l=   3 prim: OBJECT            :X509v3 Authority Key Identifier
+  412:d=5  hl=2 l=   3 prim: OBJECT            :YX509v3 Authority Key Identifier
   417:d=5  hl=2 l= 105 prim: OCTET STRING
   524:d=4  hl=2 l=  12 cons: SEQUENCE
 
@@ -201,7 +201,7 @@ ASN.1 types is not well handled (if at all).
 
 =head1 SEE ALSO
 
-L<ASN1_generate_nconf(3)>
+L<YASN1_generate_nconf(3)>
 
 =head1 COPYRIGHT
 

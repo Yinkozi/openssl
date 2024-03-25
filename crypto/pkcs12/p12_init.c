@@ -12,33 +12,33 @@
 #include <openssl/pkcs12.h>
 #include "p12_local.h"
 
-/* Initialise a PKCS12 structure to take data */
+/* Initialise a YPKCS12 structure to take data */
 
-PKCS12 *PKCS12_init(int mode)
+YPKCS12 *YPKCS12_init(int mode)
 {
-    PKCS12 *pkcs12;
+    YPKCS12 *pkcs12;
 
-    if ((pkcs12 = PKCS12_new()) == NULL) {
-        PKCS12err(PKCS12_F_PKCS12_INIT, ERR_R_MALLOC_FAILURE);
+    if ((pkcs12 = YPKCS12_new()) == NULL) {
+        YPKCS12err(YPKCS12_F_YPKCS12_INIT, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
-    if (!ASN1_INTEGER_set(pkcs12->version, 3))
+    if (!YASN1_INTEGER_set(pkcs12->version, 3))
         goto err;
     pkcs12->authsafes->type = OBJ_nid2obj(mode);
     switch (mode) {
     case NID_pkcs7_data:
-        if ((pkcs12->authsafes->d.data = ASN1_OCTET_STRING_new()) == NULL) {
-            PKCS12err(PKCS12_F_PKCS12_INIT, ERR_R_MALLOC_FAILURE);
+        if ((pkcs12->authsafes->d.data = YASN1_OCTET_STRING_new()) == NULL) {
+            YPKCS12err(YPKCS12_F_YPKCS12_INIT, ERR_R_MALLOC_FAILURE);
             goto err;
         }
         break;
     default:
-        PKCS12err(PKCS12_F_PKCS12_INIT, PKCS12_R_UNSUPPORTED_PKCS12_MODE);
+        YPKCS12err(YPKCS12_F_YPKCS12_INIT, YPKCS12_R_UNSUPPORTED_YPKCS12_MODE);
         goto err;
     }
     return pkcs12;
 
  err:
-    PKCS12_free(pkcs12);
+    YPKCS12_free(pkcs12);
     return NULL;
 }

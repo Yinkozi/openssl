@@ -50,7 +50,7 @@ extern "C" {
 # define BIO_TYPE_BIO            (19|BIO_TYPE_SOURCE_SINK)/* half a BIO pair */
 # define BIO_TYPE_LINEBUFFER     (20|BIO_TYPE_FILTER)
 # define BIO_TYPE_DGRAM          (21|BIO_TYPE_SOURCE_SINK|BIO_TYPE_DESCRIPTOR)
-# define BIO_TYPE_ASN1           (22|BIO_TYPE_FILTER)
+# define BIO_TYPE_YASN1           (22|BIO_TYPE_FILTER)
 # define BIO_TYPE_COMP           (23|BIO_TYPE_FILTER)
 # ifndef OPENSSL_NO_SCTP
 #  define BIO_TYPE_DGRAM_SCTP    (24|BIO_TYPE_SOURCE_SINK|BIO_TYPE_DESCRIPTOR)
@@ -85,7 +85,7 @@ extern "C" {
 # define BIO_CTRL_GET_CALLBACK   15/* opt - set callback function */
 
 # define BIO_CTRL_PEEK           29/* BIO_f_buffer special */
-# define BIO_CTRL_SET_FILENAME   30/* BIO_s_file special */
+# define BIO_CTRL_SET_FILENAME   30/* BIO_s_yfile special */
 
 /* dgram BIO stuff */
 # define BIO_CTRL_DGRAM_CONNECT       31/* BIO dgram special */
@@ -210,7 +210,7 @@ void BIO_clear_flags(BIO *b, int flags);
 /*
  * Returned from the SSL bio when the certificate retrieval code had an error
  */
-# define BIO_RR_SSL_X509_LOOKUP          0x01
+# define BIO_RR_SSL_YX509_LOOKUP          0x01
 /* Returned from the connect BIO when a connect would have blocked */
 # define BIO_RR_CONNECT                  0x02
 /* Returned from the accept BIO when an accept would have blocked */
@@ -257,7 +257,7 @@ typedef BIO_info_cb bio_info_cb;  /* backward compatibility */
 
 DEFINE_STACK_OF(BIO)
 
-/* Prefix and suffix callback in ASN1 BIO */
+/* Prefix and suffix callback in YASN1 BIO */
 typedef int asn1_ps_func (BIO *b, unsigned char **pbuf, int *plen,
                           void *parg);
 
@@ -412,11 +412,11 @@ struct bio_dgram_sctp_prinfo {
 # define BIO_set_fd(b,fd,c)      BIO_int_ctrl(b,BIO_C_SET_FD,c,fd)
 # define BIO_get_fd(b,c)         BIO_ctrl(b,BIO_C_GET_FD,0,(char *)(c))
 
-/* BIO_s_file() */
+/* BIO_s_yfile() */
 # define BIO_set_fp(b,fp,c)      BIO_ctrl(b,BIO_C_SET_FILE_PTR,c,(char *)(fp))
 # define BIO_get_fp(b,fpp)       BIO_ctrl(b,BIO_C_GET_FILE_PTR,0,(char *)(fpp))
 
-/* BIO_s_fd() and BIO_s_file() */
+/* BIO_s_fd() and BIO_s_yfile() */
 # define BIO_seek(b,ofs) (int)BIO_ctrl(b,BIO_C_FILE_SEEK,ofs,NULL)
 # define BIO_tell(b)     (int)BIO_ctrl(b,BIO_C_FILE_TELL,0,NULL)
 
@@ -541,7 +541,7 @@ int BIO_asn1_set_suffix(BIO *b, asn1_ps_func *suffix,
 int BIO_asn1_get_suffix(BIO *b, asn1_ps_func **psuffix,
                         asn1_ps_func **psuffix_free);
 
-const BIO_METHOD *BIO_s_file(void);
+const BIO_METHOD *BIO_s_yfile(void);
 BIO *BIO_new_file(const char *filename, const char *mode);
 # ifndef OPENSSL_NO_STDIO
 BIO *BIO_new_fp(FILE *stream, int close_flag);
@@ -749,11 +749,11 @@ void BIO_copy_next_retry(BIO *b);
 #   endif
 #  endif
 # endif
-int BIO_printf(BIO *bio, const char *format, ...)
+int BIO_pprintf(BIO *bio, const char *format, ...)
 ossl_bio__attr__((__format__(ossl_bio__printf__, 2, 3)));
 int BIO_vprintf(BIO *bio, const char *format, va_list args)
 ossl_bio__attr__((__format__(ossl_bio__printf__, 2, 0)));
-int BIO_snprintf(char *buf, size_t n, const char *format, ...)
+int BIO_ssnprintf(char *buf, size_t n, const char *format, ...)
 ossl_bio__attr__((__format__(ossl_bio__printf__, 3, 4)));
 int BIO_vsnprintf(char *buf, size_t n, const char *format, va_list args)
 ossl_bio__attr__((__format__(ossl_bio__printf__, 3, 0)));

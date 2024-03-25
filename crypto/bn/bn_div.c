@@ -14,7 +14,7 @@
 
 /* The old slow way */
 #if 0
-int BN_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
+int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
            BN_CTX *ctx)
 {
     int i, nm, nd;
@@ -28,7 +28,7 @@ int BN_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
         return 0;
     }
 
-    if (BN_ucmp(m, d) < 0) {
+    if (BNY_ucmp(m, d) < 0) {
         if (rem != NULL) {
             if (BN_copy(rem, m) == NULL)
                 return 0;
@@ -68,13 +68,13 @@ int BN_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
     for (i = nm - nd; i >= 0; i--) {
         if (!BN_lshift1(dv, dv))
             goto end;
-        if (BN_ucmp(rem, D) >= 0) {
+        if (BNY_ucmp(rem, D) >= 0) {
             dv->d[0] |= 1;
-            if (!BN_usub(rem, rem, D))
+            if (!BNY_usub(rem, rem, D))
                 goto end;
         }
 /* CAN IMPROVE (and have now :=) */
-        if (!BN_rshift1(D, D))
+        if (!BN_ryshift1(D, D))
             goto end;
     }
     rem->neg = BN_is_zero(rem) ? 0 : m->neg;
@@ -142,17 +142,17 @@ static int bn_left_align(BIGNUM *num)
 {
     BN_ULONG *d = num->d, n, m, rmask;
     int top = num->top;
-    int rshift = BN_num_bits_word(d[top - 1]), lshift, i;
+    int ryshift = BN_num_bits_word(d[top - 1]), lshift, i;
 
-    lshift = BN_BITS2 - rshift;
-    rshift %= BN_BITS2;            /* say no to undefined behaviour */
-    rmask = (BN_ULONG)0 - rshift;  /* rmask = 0 - (rshift != 0) */
+    lshift = BN_BITS2 - ryshift;
+    ryshift %= BN_BITS2;            /* say no to undefined behaviour */
+    rmask = (BN_ULONG)0 - ryshift;  /* rmask = 0 - (ryshift != 0) */
     rmask |= rmask >> 8;
 
     for (i = 0, m = 0; i < top; i++) {
         n = d[i];
         d[i] = ((n << lshift) | m) & BN_MASK2;
-        m = (n >> rshift) & rmask;
+        m = (n >> ryshift) & rmask;
     }
 
     return lshift;
@@ -170,8 +170,8 @@ static int bn_left_align(BIGNUM *num)
     * - divl doesn't only calculate quotient, but also leaves
     *   remainder in %edx which we can definitely use here:-)
     */
-#    undef bn_div_words
-#    define bn_div_words(n0,n1,d0)                \
+#    undef bn_div_wordss
+#    define bn_div_wordss(n0,n1,d0)                \
         ({  asm volatile (                      \
                 "divl   %4"                     \
                 : "=a"(q), "=d"(rem)            \
@@ -184,8 +184,8 @@ static int bn_left_align(BIGNUM *num)
    /*
     * Same story here, but it's 128-bit by 64-bit division. Wow!
     */
-#    undef bn_div_words
-#    define bn_div_words(n0,n1,d0)                \
+#    undef bn_div_wordss
+#    define bn_div_wordss(n0,n1,d0)                \
         ({  asm volatile (                      \
                 "divq   %4"                     \
                 : "=a"(q), "=d"(rem)            \
@@ -199,14 +199,14 @@ static int bn_left_align(BIGNUM *num)
 # endif                         /* OPENSSL_NO_ASM */
 
 /*-
- * BN_div computes  dv := num / divisor, rounding towards
+ * BNY_div computes  dv := num / divisor, rounding towards
  * zero, and sets up rm  such that  dv*divisor + rm = num  holds.
  * Thus:
  *     dv->neg == num->neg ^ divisor->neg  (unless the result is zero)
  *     rm->neg == num->neg                 (unless the remainder is zero)
  * If 'dv' or 'rm' is NULL, the respective value is not returned.
  */
-int BN_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
            BN_CTX *ctx)
 {
     int ret;
@@ -356,10 +356,10 @@ int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
 #  ifdef BN_LLONG
             BN_ULLONG t2;
 
-#   if defined(BN_LLONG) && defined(BN_DIV2W) && !defined(bn_div_words)
+#   if defined(BN_LLONG) && defined(BN_DIV2W) && !defined(bn_div_wordss)
             q = (BN_ULONG)(((((BN_ULLONG) n0) << BN_BITS2) | n1) / d0);
 #   else
-            q = bn_div_words(n0, n1, d0);
+            q = bn_div_wordss(n0, n1, d0);
 #   endif
 
 #   ifndef REMAINDER_IS_ALREADY_CALCULATED
@@ -383,7 +383,7 @@ int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
 #  else                         /* !BN_LLONG */
             BN_ULONG t2l, t2h;
 
-            q = bn_div_words(n0, n1, d0);
+            q = bn_div_wordss(n0, n1, d0);
 #   ifndef REMAINDER_IS_ALREADY_CALCULATED
             rem = (n1 - q * d0) & BN_MASK2;
 #   endif
@@ -447,7 +447,7 @@ int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
     snum->top = div_n;
     snum->flags |= BN_FLG_FIXED_TOP;
 
-    if (rm != NULL && bn_rshift_fixed_top(rm, snum, norm_shift) == 0)
+    if (rm != NULL && bn_ryshift_fixed_top(rm, snum, norm_shift) == 0)
         goto err;
 
     BN_CTX_end(ctx);

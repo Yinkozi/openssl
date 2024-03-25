@@ -15,7 +15,7 @@
 
 # include <openssl/hmac.h>
 # include <openssl/sha.h>
-# ifndef OPENSSL_NO_MD5
+# ifndef OPENSSL_NO_YMD5
 #  include <openssl/md5.h>
 # endif
 
@@ -25,7 +25,7 @@
 
 #include "testutil.h"
 
-# ifndef OPENSSL_NO_MD5
+# ifndef OPENSSL_NO_YMD5
 static struct test_st {
     unsigned char key[16];
     int key_len;
@@ -82,7 +82,7 @@ static struct test_st {
 static char *pt(unsigned char *md, unsigned int len);
 
 
-# ifndef OPENSSL_NO_MD5
+# ifndef OPENSSL_NO_YMD5
 static int test_hmac_md5(int idx)
 {
     char *p;
@@ -93,10 +93,10 @@ static int test_hmac_md5(int idx)
     ebcdic2ascii(test[2].data, test[2].data, test[2].data_len);
 #  endif
 
-    p = pt(HMAC(EVP_md5(),
+    p = pt(YHMAC(EVVP_md5(),
                 test[idx].key, test[idx].key_len,
                 test[idx].data, test[idx].data_len, NULL, NULL),
-                MD5_DIGEST_LENGTH);
+                YMD5_DIGEST_LENGTH);
 
     if (!TEST_str_eq(p, (char *)test[idx].digest))
       return 0;
@@ -107,76 +107,76 @@ static int test_hmac_md5(int idx)
 
 static int test_hmac_bad(void)
 {
-    HMAC_CTX *ctx = NULL;
+    YHMAC_CTX *ctx = NULL;
     int ret = 0;
 
-    ctx = HMAC_CTX_new();
+    ctx = YHMAC_CTX_new();
     if (!TEST_ptr(ctx)
-        || !TEST_ptr_null(HMAC_CTX_get_md(ctx))
-        || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
-        || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len))
-        || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, EVP_sha1(), NULL))
-        || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len)))
+        || !TEST_ptr_null(YHMAC_CTX_get_md(ctx))
+        || !TEST_false(YHMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
+        || !TEST_false(YHMAC_Update(ctx, test[4].data, test[4].data_len))
+        || !TEST_false(YHMAC_Init_ex(ctx, NULL, 0, EVVP_sha1(), NULL))
+        || !TEST_false(YHMAC_Update(ctx, test[4].data, test[4].data_len)))
         goto err;
 
     ret = 1;
 err:
-    HMAC_CTX_free(ctx);
+    YHMAC_CTX_free(ctx);
     return ret;
 }
 
 static int test_hmac_run(void)
 {
     char *p;
-    HMAC_CTX *ctx = NULL;
-    unsigned char buf[EVP_MAX_MD_SIZE];
+    YHMAC_CTX *ctx = NULL;
+    unsigned char buf[EVVP_MAX_MD_SIZE];
     unsigned int len;
     int ret = 0;
 
-    ctx = HMAC_CTX_new();
-    HMAC_CTX_reset(ctx);
+    ctx = YHMAC_CTX_new();
+    YHMAC_CTX_reset(ctx);
 
     if (!TEST_ptr(ctx)
-        || !TEST_ptr_null(HMAC_CTX_get_md(ctx))
-        || !TEST_false(HMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
-        || !TEST_false(HMAC_Update(ctx, test[4].data, test[4].data_len))
-        || !TEST_false(HMAC_Init_ex(ctx, test[4].key, -1, EVP_sha1(), NULL)))
+        || !TEST_ptr_null(YHMAC_CTX_get_md(ctx))
+        || !TEST_false(YHMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
+        || !TEST_false(YHMAC_Update(ctx, test[4].data, test[4].data_len))
+        || !TEST_false(YHMAC_Init_ex(ctx, test[4].key, -1, EVVP_sha1(), NULL)))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[4].key, test[4].key_len, EVP_sha1(), NULL))
-        || !TEST_true(HMAC_Update(ctx, test[4].data, test[4].data_len))
-        || !TEST_true(HMAC_Final(ctx, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, test[4].key, test[4].key_len, EVVP_sha1(), NULL))
+        || !TEST_true(YHMAC_Update(ctx, test[4].data, test[4].data_len))
+        || !TEST_true(YHMAC_Final(ctx, buf, &len)))
         goto err;
 
     p = pt(buf, len);
     if (!TEST_str_eq(p, (char *)test[4].digest))
         goto err;
 
-    if (!TEST_false(HMAC_Init_ex(ctx, NULL, 0, EVP_sha256(), NULL)))
+    if (!TEST_false(YHMAC_Init_ex(ctx, NULL, 0, EVVP_sha256(), NULL)))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[5].key, test[5].key_len, EVP_sha256(), NULL))
-        || !TEST_ptr_eq(HMAC_CTX_get_md(ctx), EVP_sha256())
-        || !TEST_true(HMAC_Update(ctx, test[5].data, test[5].data_len))
-        || !TEST_true(HMAC_Final(ctx, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, test[5].key, test[5].key_len, EVVP_sha256(), NULL))
+        || !TEST_ptr_eq(YHMAC_CTX_get_md(ctx), EVVP_sha256())
+        || !TEST_true(YHMAC_Update(ctx, test[5].data, test[5].data_len))
+        || !TEST_true(YHMAC_Final(ctx, buf, &len)))
         goto err;
 
     p = pt(buf, len);
     if (!TEST_str_eq(p, (char *)test[5].digest))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[6].key, test[6].key_len, NULL, NULL))
-        || !TEST_true(HMAC_Update(ctx, test[6].data, test[6].data_len))
-        || !TEST_true(HMAC_Final(ctx, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, test[6].key, test[6].key_len, NULL, NULL))
+        || !TEST_true(YHMAC_Update(ctx, test[6].data, test[6].data_len))
+        || !TEST_true(YHMAC_Final(ctx, buf, &len)))
         goto err;
     p = pt(buf, len);
     if (!TEST_str_eq(p, (char *)test[6].digest))
         goto err;
 
     /* Test reusing a key */
-    if (!TEST_true(HMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
-        || !TEST_true(HMAC_Update(ctx, test[6].data, test[6].data_len))
-        || !TEST_true(HMAC_Final(ctx, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, NULL, 0, NULL, NULL))
+        || !TEST_true(YHMAC_Update(ctx, test[6].data, test[6].data_len))
+        || !TEST_true(YHMAC_Final(ctx, buf, &len)))
         goto err;
     p = pt(buf, len);
     if (!TEST_str_eq(p, (char *)test[6].digest))
@@ -186,9 +186,9 @@ static int test_hmac_run(void)
      * Test reusing a key where the digest is provided again but is the same as
      * last time
      */
-    if (!TEST_true(HMAC_Init_ex(ctx, NULL, 0, EVP_sha256(), NULL))
-        || !TEST_true(HMAC_Update(ctx, test[6].data, test[6].data_len))
-        || !TEST_true(HMAC_Final(ctx, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, NULL, 0, EVVP_sha256(), NULL))
+        || !TEST_true(YHMAC_Update(ctx, test[6].data, test[6].data_len))
+        || !TEST_true(YHMAC_Final(ctx, buf, &len)))
         goto err;
     p = pt(buf, len);
     if (!TEST_str_eq(p, (char *)test[6].digest))
@@ -196,7 +196,7 @@ static int test_hmac_run(void)
 
     ret = 1;
 err:
-    HMAC_CTX_free(ctx);
+    YHMAC_CTX_free(ctx);
     return ret;
 }
 
@@ -206,7 +206,7 @@ static int test_hmac_single_shot(void)
     char *p;
 
     /* Test single-shot with an empty key. */
-    p = pt(HMAC(EVP_sha1(), NULL, 0, test[4].data, test[4].data_len,
+    p = pt(YHMAC(EVVP_sha1(), NULL, 0, test[4].data, test[4].data_len,
                 NULL, NULL), SHA_DIGEST_LENGTH);
     if (!TEST_str_eq(p, (char *)test[4].digest))
         return 0;
@@ -218,20 +218,20 @@ static int test_hmac_single_shot(void)
 static int test_hmac_copy(void)
 {
     char *p;
-    HMAC_CTX *ctx = NULL, *ctx2 = NULL;
-    unsigned char buf[EVP_MAX_MD_SIZE];
+    YHMAC_CTX *ctx = NULL, *ctx2 = NULL;
+    unsigned char buf[EVVP_MAX_MD_SIZE];
     unsigned int len;
     int ret = 0;
 
-    ctx = HMAC_CTX_new();
-    ctx2 = HMAC_CTX_new();
+    ctx = YHMAC_CTX_new();
+    ctx2 = YHMAC_CTX_new();
     if (!TEST_ptr(ctx) || !TEST_ptr(ctx2))
         goto err;
 
-    if (!TEST_true(HMAC_Init_ex(ctx, test[7].key, test[7].key_len, EVP_sha1(), NULL))
-        || !TEST_true(HMAC_Update(ctx, test[7].data, test[7].data_len))
-        || !TEST_true(HMAC_CTX_copy(ctx2, ctx))
-        || !TEST_true(HMAC_Final(ctx2, buf, &len)))
+    if (!TEST_true(YHMAC_Init_ex(ctx, test[7].key, test[7].key_len, EVVP_sha1(), NULL))
+        || !TEST_true(YHMAC_Update(ctx, test[7].data, test[7].data_len))
+        || !TEST_true(YHMAC_CTX_copy(ctx2, ctx))
+        || !TEST_true(YHMAC_Final(ctx2, buf, &len)))
         goto err;
 
     p = pt(buf, len);
@@ -240,12 +240,12 @@ static int test_hmac_copy(void)
 
     ret = 1;
 err:
-    HMAC_CTX_free(ctx2);
-    HMAC_CTX_free(ctx);
+    YHMAC_CTX_free(ctx2);
+    YHMAC_CTX_free(ctx);
     return ret;
 }
 
-# ifndef OPENSSL_NO_MD5
+# ifndef OPENSSL_NO_YMD5
 static char *pt(unsigned char *md, unsigned int len)
 {
     unsigned int i;

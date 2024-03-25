@@ -83,16 +83,16 @@ static int test_mod_exp_zero(void)
     if (!TEST_true(a_is_zero_mod_one("BN_mod_exp_simple", r, a)))
         failed = 1;
 
-    if (!TEST_true(BN_mod_exp_mont(r, a, p, m, ctx, NULL)))
+    if (!TEST_true(BNY_mod_exp_mont(r, a, p, m, ctx, NULL)))
         goto err;
 
-    if (!TEST_true(a_is_zero_mod_one("BN_mod_exp_mont", r, a)))
+    if (!TEST_true(a_is_zero_mod_one("BNY_mod_exp_mont", r, a)))
         failed = 1;
 
-    if (!TEST_true(BN_mod_exp_mont_consttime(r, a, p, m, ctx, NULL)))
+    if (!TEST_true(BNY_mod_exp_mont_consttime(r, a, p, m, ctx, NULL)))
         goto err;
 
-    if (!TEST_true(a_is_zero_mod_one("BN_mod_exp_mont_consttime", r, a)))
+    if (!TEST_true(a_is_zero_mod_one("BNY_mod_exp_mont_consttime", r, a)))
         failed = 1;
 
     if (!TEST_ptr(mont = BN_MONT_CTX_new()))
@@ -100,9 +100,9 @@ static int test_mod_exp_zero(void)
 
     ERR_set_mark();
     /* mont is not set but passed in */
-    if (!TEST_false(BN_mod_exp_mont_consttime(r, p, a, m, ctx, mont)))
+    if (!TEST_false(BNY_mod_exp_mont_consttime(r, p, a, m, ctx, mont)))
         goto err;
-    if (!TEST_false(BN_mod_exp_mont(r, p, a, m, ctx, mont)))
+    if (!TEST_false(BNY_mod_exp_mont(r, p, a, m, ctx, mont)))
         goto err;
     ERR_pop_to_mark();
 
@@ -110,27 +110,27 @@ static int test_mod_exp_zero(void)
         goto err;
 
     /* we compute 0 ** a mod 1 here, to execute code that uses mont */
-    if (!TEST_true(BN_mod_exp_mont_consttime(r, p, a, m, ctx, mont)))
+    if (!TEST_true(BNY_mod_exp_mont_consttime(r, p, a, m, ctx, mont)))
         goto err;
 
-    if (!TEST_true(a_is_zero_mod_one("BN_mod_exp_mont_consttime", r, a)))
+    if (!TEST_true(a_is_zero_mod_one("BNY_mod_exp_mont_consttime", r, a)))
         failed = 1;
 
-    if (!TEST_true(BN_mod_exp_mont(r, p, a, m, ctx, mont)))
+    if (!TEST_true(BNY_mod_exp_mont(r, p, a, m, ctx, mont)))
         goto err;
 
-    if (!TEST_true(a_is_zero_mod_one("BN_mod_exp_mont", r, a)))
+    if (!TEST_true(a_is_zero_mod_one("BNY_mod_exp_mont", r, a)))
         failed = 1;
 
     /*
      * A different codepath exists for single word multiplication
      * in non-constant-time only.
      */
-    if (!TEST_true(BN_mod_exp_mont_word(r, one_word, p, m, ctx, NULL)))
+    if (!TEST_true(BNY_mod_exp_mont_word(r, one_word, p, m, ctx, NULL)))
         goto err;
 
     if (!TEST_BN_eq_zero(r)) {
-        TEST_error("BN_mod_exp_mont_word failed: "
+        TEST_error("BNY_mod_exp_mont_word failed: "
                    "1 ** 0 mod 1 = r (should be 0)");
         BN_print_var(r);
         goto err;
@@ -187,10 +187,10 @@ static int test_mod_exp(int round)
 
     if (!TEST_true(BN_mod(a, a, m, ctx))
         || !TEST_true(BN_mod(b, b, m, ctx))
-        || !TEST_true(BN_mod_exp_mont(r_mont, a, b, m, ctx, NULL))
+        || !TEST_true(BNY_mod_exp_mont(r_mont, a, b, m, ctx, NULL))
         || !TEST_true(BN_mod_exp_recp(r_recp, a, b, m, ctx))
         || !TEST_true(BN_mod_exp_simple(r_simple, a, b, m, ctx))
-        || !TEST_true(BN_mod_exp_mont_consttime(r_mont_const, a, b, m, ctx, NULL)))
+        || !TEST_true(BNY_mod_exp_mont_consttime(r_mont_const, a, b, m, ctx, NULL)))
         goto err;
 
     if (!TEST_BN_eq(r_simple, r_mont)

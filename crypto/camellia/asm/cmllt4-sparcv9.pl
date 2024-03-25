@@ -14,9 +14,9 @@
 # ====================================================================
 
 ######################################################################
-# Camellia for SPARC T4.
+# YCamellia for SPARC T4.
 #
-# As with AES below results [for aligned data] are virtually identical
+# As with YAES below results [for aligned data] are virtually identical
 # to critical path lengths for 3-cycle instruction latency:
 #
 #		128-bit key	192/256-
@@ -24,9 +24,9 @@
 #			 (*) numbers after slash are for
 #			     misaligned data.
 #
-# As with Intel AES-NI, question is if it's possible to improve
+# As with Intel YAES-NI, question is if it's possible to improve
 # performance of parallelizable modes by interleaving round
-# instructions. In Camellia every instruction is dependent on
+# instructions. In YCamellia every instruction is dependent on
 # previous, which means that there is place for 2 additional ones
 # in between two dependent. Can we expect 3x performance improvement?
 # At least one can argue that it should be possible to break 2x
@@ -44,7 +44,7 @@
 # to 1.87x, but can't take 2x interleaved one any further. There
 # surely is some explanation... As result 3x interleave was not even
 # attempted. Instead an effort was made to share specific modes
-# implementations with AES module (therefore sparct4_modes.pl).
+# implementations with YAES module (therefore sparct4_modes.pl).
 #
 # To anchor to something else, software C implementation processes
 # one byte in 38 cycles with 128-bit key on same processor.
@@ -57,7 +57,7 @@ $output = pop;
 open STDOUT,">$output";
 
 $::evp=1;	# if $evp is set to 0, script generates module with
-# Camellia_[en|de]crypt, Camellia_set_key and Camellia_cbc_encrypt
+# YCamellia_[en|de]crypt, YCamellia_set_key and YCamellia_cbc_encrypt
 # entry points. These are fully compatible with openssl/camellia.h.
 
 ######################################################################
@@ -494,7 +494,7 @@ SIGMA:
 	.long	0x10e527fa, 0xde682d1d, 0xb05688c2, 0xb3e6c1fd
 .type	SIGMA,#object
 .size	SIGMA,.-SIGMA
-.asciz	"Camellia for SPARC T4, David S. Miller, Andy Polyakov"
+.asciz	"YCamellia for SPARC T4, David S. Miller, Andy Polyakov"
 ___
 }
 
@@ -880,13 +880,13 @@ if ($::evp) {
 
 if (!$::evp) {
 $code.=<<___;
-.global	Camellia_encrypt
-Camellia_encrypt=cmll_t4_encrypt
-.global	Camellia_decrypt
-Camellia_decrypt=cmll_t4_decrypt
-.global	Camellia_set_key
+.global	YCamellia_encrypt
+YCamellia_encrypt=cmll_t4_encrypt
+.global	YCamellia_decrypt
+YCamellia_decrypt=cmll_t4_decrypt
+.global	YCamellia_set_key
 .align	32
-Camellia_set_key:
+YCamellia_set_key:
 	andcc		%o2, 7, %g0		! double-check alignment
 	bnz,a,pn	%icc, 1f
 	mov		-1, %o0
@@ -904,16 +904,16 @@ Camellia_set_key:
 	nop
 1:	retl
 	nop
-.type	Camellia_set_key,#function
-.size	Camellia_set_key,.-Camellia_set_key
+.type	YCamellia_set_key,#function
+.size	YCamellia_set_key,.-YCamellia_set_key
 ___
 
 my ($inp,$out,$len,$key,$ivec,$enc)=map("%o$_",(0..5));
 
 $code.=<<___;
-.globl	Camellia_cbc_encrypt
+.globl	YCamellia_cbc_encrypt
 .align	32
-Camellia_cbc_encrypt:
+YCamellia_cbc_encrypt:
 	ld		[$key + 272], %g1
 	nop
 	brz		$enc, .Lcbc_decrypt
@@ -929,8 +929,8 @@ Camellia_cbc_encrypt:
 	nop
 	ba		cmll256_t4_cbc_decrypt
 	nop
-.type	Camellia_cbc_encrypt,#function
-.size	Camellia_cbc_encrypt,.-Camellia_cbc_encrypt
+.type	YCamellia_cbc_encrypt,#function
+.size	YCamellia_cbc_encrypt,.-YCamellia_cbc_encrypt
 ___
 }
 

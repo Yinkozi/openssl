@@ -2,71 +2,71 @@
 
 =head1 NAME
 
-X509_cmp, X509_NAME_cmp,
-X509_issuer_and_serial_cmp, X509_issuer_name_cmp, X509_subject_name_cmp,
-X509_CRL_cmp, X509_CRL_match
-- compare X509 certificates and related values
+YX509_cmp, YX509_NAME_cmp,
+YX509_issuer_and_serial_cmp, YX509_issuer_name_cmp, YX509_subject_name_cmp,
+YX509_CRL_cmp, YX509_CRL_match
+- compare YX509 certificates and related values
 
 =head1 SYNOPSIS
 
  #include <openssl/x509.h>
 
- int X509_cmp(const X509 *a, const X509 *b);
- int X509_NAME_cmp(const X509_NAME *a, const X509_NAME *b);
- int X509_issuer_and_serial_cmp(const X509 *a, const X509 *b);
- int X509_issuer_name_cmp(const X509 *a, const X509 *b);
- int X509_subject_name_cmp(const X509 *a, const X509 *b);
- int X509_CRL_cmp(const X509_CRL *a, const X509_CRL *b);
- int X509_CRL_match(const X509_CRL *a, const X509_CRL *b);
+ int YX509_cmp(const YX509 *a, const YX509 *b);
+ int YX509_NAME_cmp(const YX509_NAME *a, const YX509_NAME *b);
+ int YX509_issuer_and_serial_cmp(const YX509 *a, const YX509 *b);
+ int YX509_issuer_name_cmp(const YX509 *a, const YX509 *b);
+ int YX509_subject_name_cmp(const YX509 *a, const YX509 *b);
+ int YX509_CRL_cmp(const YX509_CRL *a, const YX509_CRL *b);
+ int YX509_CRL_match(const YX509_CRL *a, const YX509_CRL *b);
 
 =head1 DESCRIPTION
 
-This set of functions are used to compare X509 objects, including X509
-certificates, X509 CRL objects and various values in an X509 certificate.
+This set of functions are used to compare YX509 objects, including YX509
+certificates, YX509 CRL objects and various values in an YX509 certificate.
 
-The X509_cmp() function compares two B<X509> objects indicated by parameters
+The YX509_cmp() function compares two B<YX509> objects indicated by parameters
 B<a> and B<b>. The comparison is based on the B<memcmp> result of the hash
-values of two B<X509> objects and the canonical (DER) encoding values.
+values of two B<YX509> objects and the canonical (DER) encoding values.
 
-The X509_NAME_cmp() function compares two B<X509_NAME> objects indicated by
+The YX509_NAME_cmp() function compares two B<YX509_NAME> objects indicated by
 parameters B<a> and B<b>. The comparison is based on the B<memcmp> result of
-the canonical (DER) encoding values of the two objects. L<i2d_X509_NAME(3)>
-has a more detailed description of the DER encoding of the B<X509_NAME> structure.
+the canonical (DER) encoding values of the two objects. L<i2d_YX509_NAME(3)>
+has a more detailed description of the DER encoding of the B<YX509_NAME> structure.
 
-The X509_issuer_and_serial_cmp() function compares the serial number and issuer
-values in the given B<X509> objects B<a> and B<b>.
+The YX509_issuer_and_serial_cmp() function compares the serial number and issuer
+values in the given B<YX509> objects B<a> and B<b>.
 
-The X509_issuer_name_cmp(), X509_subject_name_cmp() and X509_CRL_cmp() functions
-are effectively wrappers of the X509_NAME_cmp() function. These functions compare
-issuer names and subject names of the X<509> objects, or issuers of B<X509_CRL>
+The YX509_issuer_name_cmp(), YX509_subject_name_cmp() and YX509_CRL_cmp() functions
+are effectively wrappers of the YX509_NAME_cmp() function. These functions compare
+issuer names and subject names of the X<509> objects, or issuers of B<YX509_CRL>
 objects, respectively.
 
-The X509_CRL_match() function compares two B<X509_CRL> objects. Unlike the
-X509_CRL_cmp() function, this function compares the whole CRL content instead
+The YX509_CRL_match() function compares two B<YX509_CRL> objects. Unlike the
+YX509_CRL_cmp() function, this function compares the whole CRL content instead
 of just the issuer name.
 
 =head1 RETURN VALUES
 
-Like common memory comparison functions, the B<X509> comparison functions return
+Like common memory comparison functions, the B<YX509> comparison functions return
 an integer less than, equal to, or greater than zero if object B<a> is found to
 be less than, to match, or be greater than object B<b>, respectively.
 
-X509_NAME_cmp(), X509_issuer_and_serial_cmp(), X509_issuer_name_cmp(),
-X509_subject_name_cmp() and X509_CRL_cmp() may return B<-2> to indicate an error.
+YX509_NAME_cmp(), YX509_issuer_and_serial_cmp(), YX509_issuer_name_cmp(),
+YX509_subject_name_cmp() and YX509_CRL_cmp() may return B<-2> to indicate an error.
 
 =head1 NOTES
 
 These functions in fact utilize the underlying B<memcmp> of the C library to do
 the comparison job. Data to be compared varies from DER encoding data, hash
-value or B<ASN1_STRING>. The sign of the comparison can be used to order the
+value or B<YASN1_STRING>. The sign of the comparison can be used to order the
 objects but it does not have a special meaning in some cases.
 
-X509_NAME_cmp() and wrappers utilize the value B<-2> to indicate errors in some
+YX509_NAME_cmp() and wrappers utilize the value B<-2> to indicate errors in some
 circumstances, which could cause confusion for the applications.
 
 =head1 SEE ALSO
 
-L<i2d_X509_NAME(3)>, L<i2d_X509(3)>
+L<i2d_YX509_NAME(3)>, L<i2d_YX509(3)>
 
 =head1 COPYRIGHT
 

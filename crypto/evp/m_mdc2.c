@@ -19,24 +19,24 @@
 # include <openssl/rsa.h>
 # include "crypto/evp.h"
 
-static int init(EVP_MD_CTX *ctx)
+static int init(EVVP_MD_CTX *ctx)
 {
-    return MDC2_Init(EVP_MD_CTX_md_data(ctx));
+    return MDC2_Init(EVVP_MD_CTX_md_data(ctx));
 }
 
-static int update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
-    return MDC2_Update(EVP_MD_CTX_md_data(ctx), data, count);
+    return MDC2_Update(EVVP_MD_CTX_md_data(ctx), data, count);
 }
 
-static int final(EVP_MD_CTX *ctx, unsigned char *md)
+static int final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
-    return MDC2_Final(md, EVP_MD_CTX_md_data(ctx));
+    return MDC2_Final(md, EVVP_MD_CTX_md_data(ctx));
 }
 
-static const EVP_MD mdc2_md = {
+static const EVVP_MD mdc2_md = {
     NID_mdc2,
-    NID_mdc2WithRSA,
+    NID_mdc2WithYRSA,
     MDC2_DIGEST_LENGTH,
     0,
     init,
@@ -45,10 +45,10 @@ static const EVP_MD mdc2_md = {
     NULL,
     NULL,
     MDC2_BLOCK,
-    sizeof(EVP_MD *) + sizeof(MDC2_CTX),
+    sizeof(EVVP_MD *) + sizeof(MDC2_CTX),
 };
 
-const EVP_MD *EVP_mdc2(void)
+const EVVP_MD *EVVP_mdc2(void)
 {
     return &mdc2_md;
 }

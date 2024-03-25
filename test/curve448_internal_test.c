@@ -592,14 +592,14 @@ static const uint8_t phsig2[114] = {
     0xeb, 0x51, 0x1d, 0x13, 0x21, 0x00
 };
 
-static const uint8_t *dohash(EVP_MD_CTX *hashctx, const uint8_t *msg,
+static const uint8_t *dohash(EVVP_MD_CTX *hashctx, const uint8_t *msg,
                              size_t msglen)
 {
     static uint8_t hashout[64];
 
-    if (!EVP_DigestInit_ex(hashctx, EVP_shake256(), NULL)
-            || !EVP_DigestUpdate(hashctx, msg, msglen)
-            || !EVP_DigestFinalXOF(hashctx, hashout, sizeof(hashout)))
+    if (!EVVP_DigestInit_ex(hashctx, EVVP_shake256(), NULL)
+            || !EVVP_DigestUpdate(hashctx, msg, msglen)
+            || !EVVP_DigestFinalXOF(hashctx, hashout, sizeof(hashout)))
         return NULL;
 
     return hashout;
@@ -608,7 +608,7 @@ static const uint8_t *dohash(EVP_MD_CTX *hashctx, const uint8_t *msg,
 static int test_ed448(void)
 {
     uint8_t outsig[114];
-    EVP_MD_CTX *hashctx = EVP_MD_CTX_new();
+    EVVP_MD_CTX *hashctx = EVVP_MD_CTX_new();
 
     if (!TEST_ptr(hashctx)
             || !TEST_true(ED448_sign(outsig, NULL, 0, pubkey1, privkey1, NULL,
@@ -646,11 +646,11 @@ static int test_ed448(void)
                                        sizeof(phmsg2)), phpubkey2, phprivkey2,
                                        phcontext2, sizeof(phcontext2)))
             || !TEST_int_eq(memcmp(phsig2, outsig, sizeof(phsig2)), 0)) {
-        EVP_MD_CTX_free(hashctx);
+        EVVP_MD_CTX_free(hashctx);
         return 0;
     }
 
-    EVP_MD_CTX_free(hashctx);
+    EVVP_MD_CTX_free(hashctx);
     return 1;
 }
 

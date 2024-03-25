@@ -15,8 +15,8 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL, *cont = NULL;
-    X509_STORE *st = NULL;
-    X509 *cacert = NULL;
+    YX509_STORE *st = NULL;
+    YX509 *cacert = NULL;
     CMS_ContentInfo *cms = NULL;
 
     int ret = 1;
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     /* Set up trusted CA certificate store */
 
-    st = X509_STORE_new();
+    st = YX509_STORE_new();
 
     /* Read in CA certificate */
     tbio = BIO_new_file("cacert.pem", "r");
@@ -34,12 +34,12 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    cacert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    cacert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     if (!cacert)
         goto err;
 
-    if (!X509_STORE_add_cert(st, cacert))
+    if (!YX509_STORE_add_cert(st, cacert))
         goto err;
 
     /* Open message being verified */
@@ -73,11 +73,11 @@ int main(int argc, char **argv)
 
     if (ret) {
         fprintf(stderr, "Error Verifying Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
 
     CMS_ContentInfo_free(cms);
-    X509_free(cacert);
+    YX509_free(cacert);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

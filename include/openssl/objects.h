@@ -55,17 +55,17 @@ void OBJ_NAME_do_all_sorted(int type,
                             void (*fn) (const OBJ_NAME *, void *arg),
                             void *arg);
 
-ASN1_OBJECT *OBJ_dup(const ASN1_OBJECT *o);
-ASN1_OBJECT *OBJ_nid2obj(int n);
+YASN1_OBJECT *OBJ_dup(const YASN1_OBJECT *o);
+YASN1_OBJECT *OBJ_nid2obj(int n);
 const char *OBJ_nid2ln(int n);
 const char *OBJ_nid2sn(int n);
-int OBJ_obj2nid(const ASN1_OBJECT *o);
-ASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name);
-int OBJ_obj2txt(char *buf, int buf_len, const ASN1_OBJECT *a, int no_name);
+int OBJ_obj2nid(const YASN1_OBJECT *o);
+YASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name);
+int OBJ_obj2txt(char *buf, int buf_len, const YASN1_OBJECT *a, int no_name);
 int OBJ_txt2nid(const char *s);
 int OBJ_ln2nid(const char *s);
 int OBJ_sn2nid(const char *s);
-int OBJ_cmp(const ASN1_OBJECT *a, const ASN1_OBJECT *b);
+int OBJ_cmp(const YASN1_OBJECT *a, const YASN1_OBJECT *b);
 const void *OBJ_bsearch_(const void *key, const void *base, int num, int size,
                          int (*cmp) (const void *, const void *));
 const void *OBJ_bsearch_ex_(const void *key, const void *base, int num,
@@ -153,15 +153,15 @@ const void *OBJ_bsearch_ex_(const void *key, const void *base, int num,
                           cmp##_BSEARCH_CMP_FN)),flags)
 
 int OBJ_new_nid(int num);
-int OBJ_add_object(const ASN1_OBJECT *obj);
+int OBJ_add_object(const YASN1_OBJECT *obj);
 int OBJ_create(const char *oid, const char *sn, const char *ln);
 #if OPENSSL_API_COMPAT < 0x10100000L
 # define OBJ_cleanup() while(0) continue
 #endif
 int OBJ_create_objects(BIO *in);
 
-size_t OBJ_length(const ASN1_OBJECT *obj);
-const unsigned char *OBJ_get0_data(const ASN1_OBJECT *obj);
+size_t OBJ_length(const YASN1_OBJECT *obj);
+const unsigned char *OBJ_get0_data(const YASN1_OBJECT *obj);
 
 int OBJ_find_sigid_algs(int signid, int *pdig_nid, int *ppkey_nid);
 int OBJ_find_sigid_by_algs(int *psignid, int dig_nid, int pkey_nid);

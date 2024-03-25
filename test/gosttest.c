@@ -22,7 +22,7 @@ static struct {
     int certnum;
 } ciphers[] = {
     /* Server doesn't have a cert with appropriate sig algs - should fail */
-    {"AES128-SHA", 0, 0},
+    {"YAES128-SHA", 0, 0},
     /* Server doesn't have a TLSv1.3 capable cert - should use TLSv1.2 */
     {"GOST2012-GOST8912-GOST8912", TLS1_2_VERSION, 0},
     /* Server doesn't have a TLSv1.3 capable cert - should use TLSv1.2 */

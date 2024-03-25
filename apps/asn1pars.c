@@ -41,9 +41,9 @@ const OPTIONS asn1parse_options[] = {
      "dump the first arg bytes of unknown data in hex form"},
     {"strparse", OPT_STRPARSE, 'p',
      "offset; a series of these can be used to 'dig'"},
-    {OPT_MORE_STR, 0, 0, "into multiple ASN1 blob wrappings"},
-    {"genstr", OPT_GENSTR, 's', "string to generate ASN1 structure from"},
-    {"genconf", OPT_GENCONF, 's', "file to generate ASN1 structure from"},
+    {OPT_MORE_STR, 0, 0, "into multiple YASN1 blob wrappings"},
+    {"genstr", OPT_GENSTR, 's', "string to generate YASN1 structure from"},
+    {"genconf", OPT_GENCONF, 's', "file to generate YASN1 structure from"},
     {OPT_MORE_STR, 0, 0, "(-inform  will be ignored)"},
     {"strictpem", OPT_STRICTPEM, 0,
      "do not attempt base64 decode outside PEM markers"},
@@ -55,7 +55,7 @@ static int do_generate(char *genstr, const char *genconf, BUF_MEM *buf);
 
 int asn1parse_main(int argc, char **argv)
 {
-    ASN1_TYPE *at = NULL;
+    YASN1_TYPE *at = NULL;
     BIO *in = NULL, *b64 = NULL, *derout = NULL;
     BUF_MEM *buf = NULL;
     STACK_OF(OPENSSL_STRING) *osk = NULL;
@@ -70,12 +70,12 @@ int asn1parse_main(int argc, char **argv)
     unsigned char *tmpbuf;
     unsigned int length = 0;
     OPTION_CHOICE o;
-    const ASN1_ITEM *it = NULL;
+    const YASN1_ITEM *it = NULL;
 
     prog = opt_init(argc, argv, asn1parse_options);
 
     if ((osk = sk_OPENSSL_STRING_new_null()) == NULL) {
-        BIO_printf(bio_err, "%s: Memory allocation failure\n", prog);
+        BIO_pprintf(bio_err, "%s: Memory allocation failure\n", prog);
         goto end;
     }
 
@@ -84,7 +84,7 @@ int asn1parse_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(asn1parse_options);
@@ -135,17 +135,17 @@ int asn1parse_main(int argc, char **argv)
             informat = FORMAT_PEM;
             break;
         case OPT_ITEM:
-            it = ASN1_ITEM_lookup(opt_arg());
+            it = YASN1_ITEM_lookup(opt_arg());
             if (it == NULL) {
                 size_t tmp;
 
-                BIO_printf(bio_err, "Unknown item name %s\n", opt_arg());
+                BIO_pprintf(bio_err, "Unknown item name %s\n", opt_arg());
                 BIO_puts(bio_err, "Supported types:\n");
                 for (tmp = 0;; tmp++) {
-                    it = ASN1_ITEM_get(tmp);
+                    it = YASN1_ITEM_get(tmp);
                     if (it == NULL)
                         break;
-                    BIO_printf(bio_err, "    %s\n", it->sname);
+                    BIO_pprintf(bio_err, "    %s\n", it->sname);
                 }
                 goto end;
             }
@@ -167,14 +167,14 @@ int asn1parse_main(int argc, char **argv)
     if ((in = bio_open_default(infile, 'r', informat)) == NULL)
         goto end;
 
-    if (derfile && (derout = bio_open_default(derfile, 'w', FORMAT_ASN1)) == NULL)
+    if (derfile && (derout = bio_open_default(derfile, 'w', FORMAT_YASN1)) == NULL)
         goto end;
 
     if ((buf = BUF_MEM_new()) == NULL)
         goto end;
     if (strictpem) {
-        if (PEM_read_bio(in, &name, &header, &str, &num) != 1) {
-            BIO_printf(bio_err, "Error reading PEM file\n");
+        if (PEM_readd_bio(in, &name, &header, &str, &num) != 1) {
+            BIO_pprintf(bio_err, "Error reading PEM file\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -223,11 +223,11 @@ int asn1parse_main(int argc, char **argv)
         tmpbuf = str;
         tmplen = num;
         for (i = 0; i < sk_OPENSSL_STRING_num(osk); i++) {
-            ASN1_TYPE *atmp;
+            YASN1_TYPE *atmp;
             int typ;
             j = strtol(sk_OPENSSL_STRING_value(osk, i), NULL, 0);
             if (j <= 0 || j >= tmplen) {
-                BIO_printf(bio_err, "'%s' is out of range\n",
+                BIO_pprintf(bio_err, "'%s' is out of range\n",
                            sk_OPENSSL_STRING_value(osk, i));
                 continue;
             }
@@ -235,18 +235,18 @@ int asn1parse_main(int argc, char **argv)
             tmplen -= j;
             atmp = at;
             ctmpbuf = tmpbuf;
-            at = d2i_ASN1_TYPE(NULL, &ctmpbuf, tmplen);
-            ASN1_TYPE_free(atmp);
+            at = d2i_YASN1_TYPE(NULL, &ctmpbuf, tmplen);
+            YASN1_TYPE_free(atmp);
             if (!at) {
-                BIO_printf(bio_err, "Error parsing structure\n");
+                BIO_pprintf(bio_err, "Error parsing structure\n");
                 ERR_print_errors(bio_err);
                 goto end;
             }
-            typ = ASN1_TYPE_get(at);
-            if ((typ == V_ASN1_OBJECT)
-                || (typ == V_ASN1_BOOLEAN)
-                || (typ == V_ASN1_NULL)) {
-                BIO_printf(bio_err, "Can't parse %s type\n", ASN1_tag2str(typ));
+            typ = YASN1_TYPE_get(at);
+            if ((typ == V_YASN1_OBJECT)
+                || (typ == V_YASN1_BOOLEAN)
+                || (typ == V_YASN1_NULL)) {
+                BIO_pprintf(bio_err, "Can't parse %s type\n", YASN1_tag2str(typ));
                 ERR_print_errors(bio_err);
                 goto end;
             }
@@ -259,7 +259,7 @@ int asn1parse_main(int argc, char **argv)
     }
 
     if (offset < 0 || offset >= num) {
-        BIO_printf(bio_err, "Error: offset out of range\n");
+        BIO_pprintf(bio_err, "Error: offset out of range\n");
         goto end;
     }
 
@@ -269,7 +269,7 @@ int asn1parse_main(int argc, char **argv)
         length = (unsigned int)num;
     if (derout != NULL) {
         if (BIO_write(derout, str + offset, length) != (int)length) {
-            BIO_printf(bio_err, "Error writing output\n");
+            BIO_pprintf(bio_err, "Error writing output\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -278,16 +278,16 @@ int asn1parse_main(int argc, char **argv)
         const unsigned char *p = str + offset;
 
         if (it != NULL) {
-            ASN1_VALUE *value = ASN1_item_d2i(NULL, &p, length, it);
+            YASN1_VALUE *value = YASN1_item_d2i(NULL, &p, length, it);
             if (value == NULL) {
-                BIO_printf(bio_err, "Error parsing item %s\n", it->sname);
+                BIO_pprintf(bio_err, "Error parsing item %s\n", it->sname);
                 ERR_print_errors(bio_err);
                 goto end;
             }
-            ASN1_item_print(bio_out, value, 0, it, NULL);
-            ASN1_item_free(value, it);
+            YASN1_item_print(bio_out, value, 0, it, NULL);
+            YASN1_item_free(value, it);
         } else {
-            if (!ASN1_parse_dump(bio_out, p, length, indent, dump)) {
+            if (!YASN1_parse_dump(bio_out, p, length, indent, dump)) {
                 ERR_print_errors(bio_err);
                 goto end;
             }
@@ -303,7 +303,7 @@ int asn1parse_main(int argc, char **argv)
     BUF_MEM_free(buf);
     OPENSSL_free(name);
     OPENSSL_free(header);
-    ASN1_TYPE_free(at);
+    YASN1_TYPE_free(at);
     sk_OPENSSL_STRING_free(osk);
     return ret;
 }
@@ -313,7 +313,7 @@ static int do_generate(char *genstr, const char *genconf, BUF_MEM *buf)
     CONF *cnf = NULL;
     int len;
     unsigned char *p;
-    ASN1_TYPE *atyp = NULL;
+    YASN1_TYPE *atyp = NULL;
 
     if (genconf != NULL) {
         if ((cnf = app_load_config(genconf)) == NULL)
@@ -321,19 +321,19 @@ static int do_generate(char *genstr, const char *genconf, BUF_MEM *buf)
         if (genstr == NULL)
             genstr = NCONF_get_string(cnf, "default", "asn1");
         if (genstr == NULL) {
-            BIO_printf(bio_err, "Can't find 'asn1' in '%s'\n", genconf);
+            BIO_pprintf(bio_err, "Can't find 'asn1' in '%s'\n", genconf);
             goto err;
         }
     }
 
-    atyp = ASN1_generate_nconf(genstr, cnf);
+    atyp = YASN1_generate_nconf(genstr, cnf);
     NCONF_free(cnf);
     cnf = NULL;
 
     if (atyp == NULL)
         return -1;
 
-    len = i2d_ASN1_TYPE(atyp, NULL);
+    len = i2d_YASN1_TYPE(atyp, NULL);
 
     if (len <= 0)
         goto err;
@@ -343,13 +343,13 @@ static int do_generate(char *genstr, const char *genconf, BUF_MEM *buf)
 
     p = (unsigned char *)buf->data;
 
-    i2d_ASN1_TYPE(atyp, &p);
+    i2d_YASN1_TYPE(atyp, &p);
 
-    ASN1_TYPE_free(atyp);
+    YASN1_TYPE_free(atyp);
     return len;
 
  err:
     NCONF_free(cnf);
-    ASN1_TYPE_free(atyp);
+    YASN1_TYPE_free(atyp);
     return -1;
 }

@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# SHA1 block procedure for PA-RISC.
+# YSHA1 block procedure for PA-RISC.
 
 # June 2009.
 #
@@ -257,7 +257,7 @@ $code.=<<___;
 	.EXIT
 	$POPMB	-$FRAME(%sp),%r3
 	.PROCEND
-	.STRINGZ "SHA1 block transform for PA-RISC, CRYPTOGAMS by <appro\@openssl.org>"
+	.STRINGZ "YSHA1 block transform for PA-RISC, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 if (`$ENV{CC} -Wa,-v -c -o /dev/null -x assembler /dev/null 2>&1`

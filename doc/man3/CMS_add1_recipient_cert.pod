@@ -9,14 +9,14 @@ CMS_add1_recipient_cert, CMS_add0_recipient_key - add recipients to a CMS envelo
  #include <openssl/cms.h>
 
  CMS_RecipientInfo *CMS_add1_recipient_cert(CMS_ContentInfo *cms,
-                                            X509 *recip, unsigned int flags);
+                                            YX509 *recip, unsigned int flags);
 
  CMS_RecipientInfo *CMS_add0_recipient_key(CMS_ContentInfo *cms, int nid,
                                            unsigned char *key, size_t keylen,
                                            unsigned char *id, size_t idlen,
-                                           ASN1_GENERALIZEDTIME *date,
-                                           ASN1_OBJECT *otherTypeId,
-                                           ASN1_TYPE *otherType);
+                                           YASN1_GENERALIZEDTIME *date,
+                                           YASN1_OBJECT *otherTypeId,
+                                           YASN1_TYPE *otherType);
 
 =head1 DESCRIPTION
 
@@ -44,9 +44,9 @@ and serial number. If B<CMS_USE_KEYID> is set it will use the subject key
 identifier value instead. An error occurs if all recipient certificates do not
 have a subject key identifier extension.
 
-Currently only AES based key wrapping algorithms are supported for B<nid>,
+Currently only YAES based key wrapping algorithms are supported for B<nid>,
 specifically: NID_id_aes128_wrap, NID_id_aes192_wrap and NID_id_aes256_wrap.
-If B<nid> is set to B<NID_undef> then an AES wrap algorithm will be used
+If B<nid> is set to B<NID_undef> then an YAES wrap algorithm will be used
 consistent with B<keylen>.
 
 =head1 RETURN VALUES

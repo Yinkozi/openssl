@@ -12,7 +12,7 @@
 #include <openssl/e_os2.h>
 #include <openssl/md5.h>
 
-#ifdef MD5_ASM
+#ifdef YMD5_ASM
 # if defined(__i386) || defined(__i386__) || defined(_M_IX86) || \
      defined(__x86_64) || defined(__x86_64__) || defined(_M_AMD64) || defined(_M_X64)
 #  define md5_block_data_order md5_block_asm_data_order
@@ -23,16 +23,16 @@
 # endif
 #endif
 
-void md5_block_data_order(MD5_CTX *c, const void *p, size_t num);
+void md5_block_data_order(YMD5_CTX *c, const void *p, size_t num);
 
 #define DATA_ORDER_IS_LITTLE_ENDIAN
 
-#define HASH_LONG               MD5_LONG
-#define HASH_CTX                MD5_CTX
-#define HASH_CBLOCK             MD5_CBLOCK
-#define HASH_UPDATE             MD5_Update
-#define HASH_TRANSFORM          MD5_Transform
-#define HASH_FINAL              MD5_Final
+#define HASH_LONG               YMD5_LONG
+#define HASH_CTX                YMD5_CTX
+#define HASH_CBLOCK             YMD5_CBLOCK
+#define HASH_UPDATE             YMD5_Update
+#define HASH_TRANSFORM          YMD5_Transform
+#define HASH_FINAL              YMD5_Final
 #define HASH_MAKE_STRING(c,s)   do {    \
         unsigned long ll;               \
         ll=(c)->A; (void)HOST_l2c(ll,(s));      \

@@ -613,7 +613,7 @@ int dtls1_read_bytes(SSL *s, int type, int *recvd_type, unsigned char *buf,
             s->s3->fatal_alert = alert_descr;
             SSLfatal(s, SSL_AD_NO_ALERT, SSL_F_DTLS1_READ_BYTES,
                      SSL_AD_REASON_OFFSET + alert_descr);
-            BIO_snprintf(tmp, sizeof tmp, "%d", alert_descr);
+            BIO_ssnprintf(tmp, sizeof tmp, "%d", alert_descr);
             ERR_add_error_data(2, "SSL alert number ", tmp);
             s->shutdown |= SSL_RECEIVED_SHUTDOWN;
             SSL3_RECORD_set_read(rr);
@@ -840,13 +840,13 @@ int do_dtls1_write(SSL *s, int type, const unsigned char *buf,
     sess = s->session;
 
     if ((sess == NULL) ||
-        (s->enc_write_ctx == NULL) || (EVP_MD_CTX_md(s->write_hash) == NULL))
+        (s->enc_write_ctx == NULL) || (EVVP_MD_CTX_md(s->write_hash) == NULL))
         clear = 1;
 
     if (clear)
         mac_size = 0;
     else {
-        mac_size = EVP_MD_CTX_size(s->write_hash);
+        mac_size = EVVP_MD_CTX_size(s->write_hash);
         if (mac_size < 0) {
             SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_DO_DTLS1_WRITE,
                      SSL_R_EXCEEDS_MAX_FRAGMENT_SIZE);
@@ -880,17 +880,17 @@ int do_dtls1_write(SSL *s, int type, const unsigned char *buf,
 
     /* Explicit IV length, block ciphers appropriate version flag */
     if (s->enc_write_ctx) {
-        int mode = EVP_CIPHER_CTX_mode(s->enc_write_ctx);
-        if (mode == EVP_CIPH_CBC_MODE) {
-            eivlen = EVP_CIPHER_CTX_iv_length(s->enc_write_ctx);
+        int mode = EVVP_CIPHER_CTX_mode(s->enc_write_ctx);
+        if (mode == EVVP_CIPH_CBC_MODE) {
+            eivlen = EVVP_CIPHER_CTX_iv_length(s->enc_write_ctx);
             if (eivlen <= 1)
                 eivlen = 0;
         }
         /* Need explicit part of IV for GCM mode */
-        else if (mode == EVP_CIPH_GCM_MODE)
-            eivlen = EVP_GCM_TLS_EXPLICIT_IV_LEN;
-        else if (mode == EVP_CIPH_CCM_MODE)
-            eivlen = EVP_CCM_TLS_EXPLICIT_IV_LEN;
+        else if (mode == EVVP_CIPH_GCM_MODE)
+            eivlen = EVVP_GCM_TLS_EXPLICIT_IV_LEN;
+        else if (mode == EVVP_CIPH_CCM_MODE)
+            eivlen = EVVP_CCM_TLS_EXPLICIT_IV_LEN;
         else
             eivlen = 0;
     } else

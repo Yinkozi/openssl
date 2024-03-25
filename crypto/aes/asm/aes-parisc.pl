@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# AES for PA-RISC.
+# YAES for PA-RISC.
 #
 # June 2009.
 #
@@ -74,9 +74,9 @@ $code=<<___;
 	.SPACE	\$TEXT\$
 	.SUBSPA	\$CODE\$,QUAD=0,ALIGN=8,ACCESS=0x2C,CODE_ONLY
 
-	.EXPORT	AES_encrypt,ENTRY,ARGW0=GR,ARGW1=GR,ARGW2=GR
+	.EXPORT	YAES_encrypt,ENTRY,ARGW0=GR,ARGW1=GR,ARGW2=GR
 	.ALIGN	64
-AES_encrypt
+YAES_encrypt
 	.PROC
 	.CALLINFO	FRAME=`$FRAME-16*$SIZE_T`,NO_CALLS,SAVE_RP,ENTRY_GR=18
 	.ENTRY
@@ -102,7 +102,7 @@ AES_encrypt
 	ldi	3,$t0
 L\$enc_pic
 	andcm	$tbl,$t0,$tbl
-	ldo	L\$AES_Te-L\$enc_pic($tbl),$tbl
+	ldo	L\$YAES_Te-L\$enc_pic($tbl),$tbl
 
 	and	$inp,$t0,$t0
 	sub	$inp,$t0,$inp
@@ -122,7 +122,7 @@ L\$enc_pic
 	vshd	$s3,$t1,$s3
 
 L\$enc_inp_aligned
-	bl	_parisc_AES_encrypt,%r31
+	bl	_parisc_YAES_encrypt,%r31
 	nop
 
 	extru,<> $out,31,2,%r0
@@ -188,7 +188,7 @@ L\$enc_done
 	.PROCEND
 
 	.ALIGN	16
-_parisc_AES_encrypt
+_parisc_YAES_encrypt
 	.PROC
 	.CALLINFO	MILLICODE
 	.ENTRY
@@ -443,7 +443,7 @@ L\$enc_last
 	.PROCEND
 
 	.ALIGN	64
-L\$AES_Te
+L\$YAES_Te
 	.WORD	0xc66363a5, 0xf87c7c84, 0xee777799, 0xf67b7b8d
 	.WORD	0xfff2f20d, 0xd66b6bbd, 0xde6f6fb1, 0x91c5c554
 	.WORD	0x60303050, 0x02010103, 0xce6767a9, 0x562b2b7d
@@ -543,9 +543,9 @@ L\$AES_Te
 ___
 
 $code.=<<___;
-	.EXPORT	AES_decrypt,ENTRY,ARGW0=GR,ARGW1=GR,ARGW2=GR
+	.EXPORT	YAES_decrypt,ENTRY,ARGW0=GR,ARGW1=GR,ARGW2=GR
 	.ALIGN	16
-AES_decrypt
+YAES_decrypt
 	.PROC
 	.CALLINFO	FRAME=`$FRAME-16*$SIZE_T`,NO_CALLS,SAVE_RP,ENTRY_GR=18
 	.ENTRY
@@ -571,7 +571,7 @@ AES_decrypt
 	ldi	3,$t0
 L\$dec_pic
 	andcm	$tbl,$t0,$tbl
-	ldo	L\$AES_Td-L\$dec_pic($tbl),$tbl
+	ldo	L\$YAES_Td-L\$dec_pic($tbl),$tbl
 
 	and	$inp,$t0,$t0
 	sub	$inp,$t0,$inp
@@ -591,7 +591,7 @@ L\$dec_pic
 	vshd	$s3,$t1,$s3
 
 L\$dec_inp_aligned
-	bl	_parisc_AES_decrypt,%r31
+	bl	_parisc_YAES_decrypt,%r31
 	nop
 
 	extru,<> $out,31,2,%r0
@@ -657,7 +657,7 @@ L\$dec_done
 	.PROCEND
 
 	.ALIGN	16
-_parisc_AES_decrypt
+_parisc_YAES_decrypt
 	.PROC
 	.CALLINFO	MILLICODE
 	.ENTRY
@@ -912,7 +912,7 @@ L\$dec_last
 	.PROCEND
 
 	.ALIGN	64
-L\$AES_Td
+L\$YAES_Td
 	.WORD	0x51f4a750, 0x7e416553, 0x1a17a4c3, 0x3a275e96
 	.WORD	0x3bab6bcb, 0x1f9d45f1, 0xacfa58ab, 0x4be30393
 	.WORD	0x2030fa55, 0xad766df6, 0x88cc7691, 0xf5024c25
@@ -1009,7 +1009,7 @@ L\$AES_Td
 	.BYTE	0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61
 	.BYTE	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 	.BYTE	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
-	.STRINGZ "AES for PA-RISC, CRYPTOGAMS by <appro\@openssl.org>"
+	.STRINGZ "YAES for PA-RISC, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 if (`$ENV{CC} -Wa,-v -c -o /dev/null -x assembler /dev/null 2>&1`

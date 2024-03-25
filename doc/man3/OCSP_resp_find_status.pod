@@ -21,42 +21,42 @@ OCSP_basic_verify
 
  int OCSP_resp_find_status(OCSP_BASICRESP *bs, OCSP_CERTID *id, int *status,
                            int *reason,
-                           ASN1_GENERALIZEDTIME **revtime,
-                           ASN1_GENERALIZEDTIME **thisupd,
-                           ASN1_GENERALIZEDTIME **nextupd);
+                           YASN1_GENERALIZEDTIME **revtime,
+                           YASN1_GENERALIZEDTIME **thisupd,
+                           YASN1_GENERALIZEDTIME **nextupd);
 
  int OCSP_resp_count(OCSP_BASICRESP *bs);
  OCSP_SINGLERESP *OCSP_resp_get0(OCSP_BASICRESP *bs, int idx);
  int OCSP_resp_find(OCSP_BASICRESP *bs, OCSP_CERTID *id, int last);
  int OCSP_single_get0_status(OCSP_SINGLERESP *single, int *reason,
-                             ASN1_GENERALIZEDTIME **revtime,
-                             ASN1_GENERALIZEDTIME **thisupd,
-                             ASN1_GENERALIZEDTIME **nextupd);
+                             YASN1_GENERALIZEDTIME **revtime,
+                             YASN1_GENERALIZEDTIME **thisupd,
+                             YASN1_GENERALIZEDTIME **nextupd);
 
- const ASN1_GENERALIZEDTIME *OCSP_resp_get0_produced_at(
+ const YASN1_GENERALIZEDTIME *OCSP_resp_get0_produced_at(
                              const OCSP_BASICRESP* single);
 
- const ASN1_OCTET_STRING *OCSP_resp_get0_signature(const OCSP_BASICRESP *bs);
- const X509_ALGOR *OCSP_resp_get0_tbs_sigalg(const OCSP_BASICRESP *bs);
+ const YASN1_OCTET_STRING *OCSP_resp_get0_signature(const OCSP_BASICRESP *bs);
+ const YX509_ALGOR *OCSP_resp_get0_tbs_sigalg(const OCSP_BASICRESP *bs);
  const OCSP_RESPDATA *OCSP_resp_get0_respdata(const OCSP_BASICRESP *bs);
- const STACK_OF(X509) *OCSP_resp_get0_certs(const OCSP_BASICRESP *bs);
+ const STACK_OF(YX509) *OCSP_resp_get0_certs(const OCSP_BASICRESP *bs);
 
- int OCSP_resp_get0_signer(OCSP_BASICRESP *bs, X509 **signer,
-                           STACK_OF(X509) *extra_certs);
+ int OCSP_resp_get0_signer(OCSP_BASICRESP *bs, YX509 **signer,
+                           STACK_OF(YX509) *extra_certs);
 
  int OCSP_resp_get0_id(const OCSP_BASICRESP *bs,
-                       const ASN1_OCTET_STRING **pid,
-                       const X509_NAME **pname);
+                       const YASN1_OCTET_STRING **pid,
+                       const YX509_NAME **pname);
  int OCSP_resp_get1_id(const OCSP_BASICRESP *bs,
-                       ASN1_OCTET_STRING **pid,
-                       X509_NAME **pname);
+                       YASN1_OCTET_STRING **pid,
+                       YX509_NAME **pname);
 
- int OCSP_check_validity(ASN1_GENERALIZEDTIME *thisupd,
-                         ASN1_GENERALIZEDTIME *nextupd,
+ int OCSP_check_validity(YASN1_GENERALIZEDTIME *thisupd,
+                         YASN1_GENERALIZEDTIME *nextupd,
                          long sec, long maxsec);
 
- int OCSP_basic_verify(OCSP_BASICRESP *bs, STACK_OF(X509) *certs,
-                      X509_STORE *st, unsigned long flags);
+ int OCSP_basic_verify(OCSP_BASICRESP *bs, STACK_OF(YX509) *certs,
+                      YX509_STORE *st, unsigned long flags);
 
 =head1 DESCRIPTION
 

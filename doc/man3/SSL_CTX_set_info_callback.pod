@@ -132,18 +132,18 @@ about alerts being handled and error messages to the B<bio_err> BIO.
          str = "undefined";
 
      if (where & SSL_CB_LOOP) {
-         BIO_printf(bio_err, "%s:%s\n", str, SSL_state_string_long(s));
+         BIO_pprintf(bio_err, "%s:%s\n", str, SSL_state_string_long(s));
      } else if (where & SSL_CB_ALERT) {
          str = (where & SSL_CB_READ) ? "read" : "write";
-         BIO_printf(bio_err, "SSL3 alert %s:%s:%s\n", str,
+         BIO_pprintf(bio_err, "SSL3 alert %s:%s:%s\n", str,
                     SSL_alert_type_string_long(ret),
                     SSL_alert_desc_string_long(ret));
      } else if (where & SSL_CB_EXIT) {
          if (ret == 0) {
-             BIO_printf(bio_err, "%s:failed in %s\n",
+             BIO_pprintf(bio_err, "%s:failed in %s\n",
                         str, SSL_state_string_long(s));
          } else if (ret < 0) {
-             BIO_printf(bio_err, "%s:error in %s\n",
+             BIO_pprintf(bio_err, "%s:error in %s\n",
                         str, SSL_state_string_long(s));
          }
      }

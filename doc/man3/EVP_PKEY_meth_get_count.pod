@@ -2,41 +2,41 @@
 
 =head1 NAME
 
-EVP_PKEY_meth_get_count, EVP_PKEY_meth_get0, EVP_PKEY_meth_get0_info - enumerate public key methods
+EVVP_PKEY_meth_get_count, EVVP_PKEY_meth_get0, EVVP_PKEY_meth_get0_info - enumerate public key methods
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- size_t EVP_PKEY_meth_get_count(void);
- const EVP_PKEY_METHOD *EVP_PKEY_meth_get0(size_t idx);
- void EVP_PKEY_meth_get0_info(int *ppkey_id, int *pflags,
-                              const EVP_PKEY_METHOD *meth);
+ size_t EVVP_PKEY_meth_get_count(void);
+ const EVVP_PKEY_METHOD *EVVP_PKEY_meth_get0(size_t idx);
+ void EVVP_PKEY_meth_get0_info(int *ppkey_id, int *pflags,
+                              const EVVP_PKEY_METHOD *meth);
 
 =head1 DESCRIPTION
 
-EVP_PKEY_meth_count() returns a count of the number of public key methods
+EVVP_PKEY_meth_count() returns a count of the number of public key methods
 available: it includes standard methods and any methods added by the
 application.
 
-EVP_PKEY_meth_get0() returns the public key method B<idx>. The value of B<idx>
-must be between zero and EVP_PKEY_meth_get_count() - 1.
+EVVP_PKEY_meth_get0() returns the public key method B<idx>. The value of B<idx>
+must be between zero and EVVP_PKEY_meth_get_count() - 1.
 
-EVP_PKEY_meth_get0_info() returns the public key ID (a NID) and any flags
+EVVP_PKEY_meth_get0_info() returns the public key ID (a NID) and any flags
 associated with the public key method B<*meth>.
 
 =head1 RETURN VALUES
 
-EVP_PKEY_meth_count() returns the number of available public key methods.
+EVVP_PKEY_meth_count() returns the number of available public key methods.
 
-EVP_PKEY_meth_get0() return a public key method or B<NULL> if B<idx> is
+EVVP_PKEY_meth_get0() return a public key method or B<NULL> if B<idx> is
 out of range.
 
-EVP_PKEY_meth_get0_info() does not return a value.
+EVVP_PKEY_meth_get0_info() does not return a value.
 
 =head1 SEE ALSO
 
-L<EVP_PKEY_new(3)>
+L<EVVP_PKEY_new(3)>
 
 =head1 COPYRIGHT
 

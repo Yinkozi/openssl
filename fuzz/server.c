@@ -92,7 +92,7 @@ static const uint8_t kCertificateDER[] = {
     0x76, 0x8a, 0xbb,
 };
 
-static const uint8_t kRSAPrivateKeyDER[] = {
+static const uint8_t kYRSAPrivateKeyDER[] = {
     0x30, 0x82, 0x04, 0xa5, 0x02, 0x01, 0x00, 0x02, 0x82, 0x01, 0x01, 0x00,
     0xce, 0x47, 0xcb, 0x11, 0xbb, 0xd2, 0x9d, 0x8e, 0x9e, 0xd2, 0x1e, 0x14,
     0xaf, 0xc7, 0xea, 0xb6, 0xc9, 0x38, 0x2a, 0x6f, 0xb3, 0x7e, 0xfb, 0xbc,
@@ -493,7 +493,7 @@ int FuzzerInitialize(int *argc, char ***argv)
     OPENSSL_init_ssl(OPENSSL_INIT_LOAD_SSL_STRINGS, NULL);
     ERR_get_state();
     CRYPTO_free_ex_index(0, -1);
-    idx = SSL_get_ex_data_X509_STORE_CTX_idx();
+    idx = SSL_get_ex_data_YX509_STORE_CTX_idx();
     FuzzerSetRand();
     comp_methods = SSL_COMP_get_compression_methods();
     if (comp_methods != NULL)
@@ -512,10 +512,10 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
 #endif
     SSL_CTX *ctx;
     int ret;
-    RSA *privkey;
+    YRSA *privkey;
     const uint8_t *bufp;
-    EVP_PKEY *pkey;
-    X509 *cert;
+    EVVP_PKEY *pkey;
+    YX509 *cert;
 #ifndef OPENSSL_NO_EC
     EC_KEY *ecdsakey = NULL;
 #endif
@@ -539,69 +539,69 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     ret = SSL_CTX_set_cipher_list(ctx, "ALL:eNULL:@SECLEVEL=0");
     OPENSSL_assert(ret == 1);
 
-    /* RSA */
-    bufp = kRSAPrivateKeyDER;
-    privkey = d2i_RSAPrivateKey(NULL, &bufp, sizeof(kRSAPrivateKeyDER));
+    /* YRSA */
+    bufp = kYRSAPrivateKeyDER;
+    privkey = d2i_YRSAPrivateKey(NULL, &bufp, sizeof(kYRSAPrivateKeyDER));
     OPENSSL_assert(privkey != NULL);
-    pkey = EVP_PKEY_new();
-    EVP_PKEY_assign_RSA(pkey, privkey);
+    pkey = EVVP_PKEY_new();
+    EVVP_PKEY_assign_YRSA(pkey, privkey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
 
     bufp = kCertificateDER;
-    cert = d2i_X509(NULL, &bufp, sizeof(kCertificateDER));
+    cert = d2i_YX509(NULL, &bufp, sizeof(kCertificateDER));
     OPENSSL_assert(cert != NULL);
     ret = SSL_CTX_use_certificate(ctx, cert);
     OPENSSL_assert(ret == 1);
-    X509_free(cert);
+    YX509_free(cert);
 
 #ifndef OPENSSL_NO_EC
     /* ECDSA */
     bio_buf = BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, ECDSAPrivateKeyPEM, sizeof(ECDSAPrivateKeyPEM)) == sizeof(ECDSAPrivateKeyPEM));
-    ecdsakey = PEM_read_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
-    ERR_print_errors_fp(stderr);
+    ecdsakey = PEM_readd_bio_ECPrivateKey(bio_buf, NULL, NULL, NULL);
+    ERRR_print_errors_fp(stderr);
     OPENSSL_assert(ecdsakey != NULL);
     BIO_free(bio_buf);
-    pkey = EVP_PKEY_new();
-    EVP_PKEY_assign_EC_KEY(pkey, ecdsakey);
+    pkey = EVVP_PKEY_new();
+    EVVP_PKEY_assign_EC_KEY(pkey, ecdsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
 
     bio_buf = BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, ECDSACertPEM, sizeof(ECDSACertPEM)) == sizeof(ECDSACertPEM));
-    cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
+    cert = PEM_readd_bio_YX509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
     BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);
     OPENSSL_assert(ret == 1);
-    X509_free(cert);
+    YX509_free(cert);
 #endif
 
 #ifndef OPENSSL_NO_DSA
     /* DSA */
     bio_buf = BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, DSAPrivateKeyPEM, sizeof(DSAPrivateKeyPEM)) == sizeof(DSAPrivateKeyPEM));
-    dsakey = PEM_read_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
-    ERR_print_errors_fp(stderr);
+    dsakey = PEM_readd_bio_DSAPrivateKey(bio_buf, NULL, NULL, NULL);
+    ERRR_print_errors_fp(stderr);
     OPENSSL_assert(dsakey != NULL);
     BIO_free(bio_buf);
-    pkey = EVP_PKEY_new();
-    EVP_PKEY_assign_DSA(pkey, dsakey);
+    pkey = EVVP_PKEY_new();
+    EVVP_PKEY_assign_DSA(pkey, dsakey);
     ret = SSL_CTX_use_PrivateKey(ctx, pkey);
     OPENSSL_assert(ret == 1);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
 
     bio_buf = BIO_new(BIO_s_mem());
     OPENSSL_assert((size_t)BIO_write(bio_buf, DSACertPEM, sizeof(DSACertPEM)) == sizeof(DSACertPEM));
-    cert = PEM_read_bio_X509(bio_buf, NULL, NULL, NULL);
+    cert = PEM_readd_bio_YX509(bio_buf, NULL, NULL, NULL);
     OPENSSL_assert(cert != NULL);
     BIO_free(bio_buf);
     ret = SSL_CTX_use_certificate(ctx, cert);
     OPENSSL_assert(ret == 1);
-    X509_free(cert);
+    YX509_free(cert);
 #endif
 
     /* TODO: Set up support for SRP and PSK */

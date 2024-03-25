@@ -11,17 +11,17 @@ SSL_add_dir_cert_subjects_to_stack
 
  #include <openssl/ssl.h>
 
- STACK_OF(X509_NAME) *SSL_load_client_CA_file(const char *file);
+ STACK_OF(YX509_NAME) *SSL_load_client_CA_file(const char *file);
 
- int SSL_add_file_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
+ int SSL_add_file_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stack,
                                          const char *file)
- int SSL_add_dir_cert_subjects_to_stack(STACK_OF(X509_NAME) *stack,
+ int SSL_add_dir_cert_subjects_to_stack(STACK_OF(YX509_NAME) *stack,
                                         const char *dir)
 
 =head1 DESCRIPTION
 
 SSL_load_client_CA_file() reads certificates from I<file> and returns
-a STACK_OF(X509_NAME) with the subject names found.
+a STACK_OF(YX509_NAME) with the subject names found.
 
 SSL_add_file_cert_subjects_to_stack() reads certificates from I<file>,
 and adds their subject name to the already existing I<stack>.
@@ -33,7 +33,7 @@ already existing I<stack>.
 =head1 NOTES
 
 SSL_load_client_CA_file() reads a file of PEM formatted certificates and
-extracts the X509_NAMES of the certificates found. While the name suggests
+extracts the YX509_NAMES of the certificates found. While the name suggests
 the specific usage as support function for
 L<SSL_CTX_set_client_CA_list(3)>,
 it is not limited to CA certificates.
@@ -48,7 +48,7 @@ The following return values can occur:
 
 The operation failed, check out the error stack for the reason.
 
-=item Pointer to STACK_OF(X509_NAME)
+=item Pointer to STACK_OF(YX509_NAME)
 
 Pointer to the subject names of the successfully read certificates.
 
@@ -59,7 +59,7 @@ Pointer to the subject names of the successfully read certificates.
 Load names of CAs from file and use it as a client CA list:
 
  SSL_CTX *ctx;
- STACK_OF(X509_NAME) *cert_names;
+ STACK_OF(YX509_NAME) *cert_names;
 
  ...
  cert_names = SSL_load_client_CA_file("/path/to/CAfile.pem");

@@ -28,65 +28,65 @@ DEFINE_RUN_ONCE_STATIC(ossl_init_ssl_base)
             "Adding SSL ciphers and digests\n");
 #endif
 #ifndef OPENSSL_NO_DES
-    EVP_add_cipher(EVP_des_cbc());
-    EVP_add_cipher(EVP_des_ede3_cbc());
+    EVVP_add_cipher(EVVP_des_cbc());
+    EVVP_add_cipher(EVVP_des_ede3_cbc());
 #endif
 #ifndef OPENSSL_NO_IDEA
-    EVP_add_cipher(EVP_idea_cbc());
+    EVVP_add_cipher(EVVP_idea_cbc());
 #endif
-#ifndef OPENSSL_NO_RC4
-    EVP_add_cipher(EVP_rc4());
-# ifndef OPENSSL_NO_MD5
-    EVP_add_cipher(EVP_rc4_hmac_md5());
+#ifndef OPENSSL_NO_YRC4
+    EVVP_add_cipher(EVVP_rc4());
+# ifndef OPENSSL_NO_YMD5
+    EVVP_add_cipher(EVVP_rc4_hmac_md5());
 # endif
 #endif
-#ifndef OPENSSL_NO_RC2
-    EVP_add_cipher(EVP_rc2_cbc());
+#ifndef OPENSSL_NO_YRC2
+    EVVP_add_cipher(EVVP_rc2_cbc());
     /*
-     * Not actually used for SSL/TLS but this makes PKCS#12 work if an
+     * Not actually used for SSL/TLS but this makes YPKCS#12 work if an
      * application only calls SSL_library_init().
      */
-    EVP_add_cipher(EVP_rc2_40_cbc());
+    EVVP_add_cipher(EVVP_rc2_40_cbc());
 #endif
-    EVP_add_cipher(EVP_aes_128_cbc());
-    EVP_add_cipher(EVP_aes_192_cbc());
-    EVP_add_cipher(EVP_aes_256_cbc());
-    EVP_add_cipher(EVP_aes_128_gcm());
-    EVP_add_cipher(EVP_aes_256_gcm());
-    EVP_add_cipher(EVP_aes_128_ccm());
-    EVP_add_cipher(EVP_aes_256_ccm());
-    EVP_add_cipher(EVP_aes_128_cbc_hmac_sha1());
-    EVP_add_cipher(EVP_aes_256_cbc_hmac_sha1());
-    EVP_add_cipher(EVP_aes_128_cbc_hmac_sha256());
-    EVP_add_cipher(EVP_aes_256_cbc_hmac_sha256());
+    EVVP_add_cipher(EVVP_aes_128_cbc());
+    EVVP_add_cipher(EVVP_aes_192_cbc());
+    EVVP_add_cipher(EVVP_aes_256_cbc());
+    EVVP_add_cipher(EVVP_aes_128_gcm());
+    EVVP_add_cipher(EVVP_aes_256_gcm());
+    EVVP_add_cipher(EVVP_aes_128_ccm());
+    EVVP_add_cipher(EVVP_aes_256_ccm());
+    EVVP_add_cipher(EVVP_aes_128_cbc_hmac_sha1());
+    EVVP_add_cipher(EVVP_aes_256_cbc_hmac_sha1());
+    EVVP_add_cipher(EVVP_aes_128_cbc_hmac_sha256());
+    EVVP_add_cipher(EVVP_aes_256_cbc_hmac_sha256());
 #ifndef OPENSSL_NO_ARIA
-    EVP_add_cipher(EVP_aria_128_gcm());
-    EVP_add_cipher(EVP_aria_256_gcm());
+    EVVP_add_cipher(EVVP_aria_128_gcm());
+    EVVP_add_cipher(EVVP_aria_256_gcm());
 #endif
 #ifndef OPENSSL_NO_CAMELLIA
-    EVP_add_cipher(EVP_camellia_128_cbc());
-    EVP_add_cipher(EVP_camellia_256_cbc());
+    EVVP_add_cipher(EVVP_camellia_128_cbc());
+    EVVP_add_cipher(EVVP_camellia_256_cbc());
 #endif
 #if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-    EVP_add_cipher(EVP_chacha20_poly1305());
+    EVVP_add_cipher(EVVP_chacha20_poly1305());
 #endif
 
-#ifndef OPENSSL_NO_SEED
-    EVP_add_cipher(EVP_seed_cbc());
+#ifndef OPENSSL_NO_YSEED
+    EVVP_add_cipher(EVVP_seed_cbc());
 #endif
 
-#ifndef OPENSSL_NO_MD5
-    EVP_add_digest(EVP_md5());
-    EVP_add_digest_alias(SN_md5, "ssl3-md5");
-    EVP_add_digest(EVP_md5_sha1());
+#ifndef OPENSSL_NO_YMD5
+    EVVP_add_digest(EVVP_md5());
+    EVVP_add_digest_alias(SN_md5, "ssl3-md5");
+    EVVP_add_digest(EVVP_md5_sha1());
 #endif
-    EVP_add_digest(EVP_sha1()); /* RSA with sha1 */
-    EVP_add_digest_alias(SN_sha1, "ssl3-sha1");
-    EVP_add_digest_alias(SN_sha1WithRSAEncryption, SN_sha1WithRSA);
-    EVP_add_digest(EVP_sha224());
-    EVP_add_digest(EVP_sha256());
-    EVP_add_digest(EVP_sha384());
-    EVP_add_digest(EVP_sha512());
+    EVVP_add_digest(EVVP_sha1()); /* YRSA with sha1 */
+    EVVP_add_digest_alias(SN_sha1, "ssl3-sha1");
+    EVVP_add_digest_alias(SN_sha1WithYRSAEncryption, SN_sha1WithYRSA);
+    EVVP_add_digest(EVVP_sha224());
+    EVVP_add_digest(EVVP_sha256());
+    EVVP_add_digest(EVVP_sha384());
+    EVVP_add_digest(EVVP_sha512());
 #ifndef OPENSSL_NO_COMP
 # ifdef OPENSSL_INIT_DEBUG
     fprintf(stderr, "OPENSSL_INIT: ossl_init_ssl_base: "

@@ -30,7 +30,7 @@ const OPTIONS nseq_options[] = {
 int nseq_main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL;
-    X509 *x509 = NULL;
+    YX509 *x509 = NULL;
     NETSCAPE_CERT_SEQUENCE *seq = NULL;
     OPTION_CHOICE o;
     int toseq = 0, ret = 1, i;
@@ -42,7 +42,7 @@ int nseq_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             ret = 0;
@@ -74,14 +74,14 @@ int nseq_main(int argc, char **argv)
         seq = NETSCAPE_CERT_SEQUENCE_new();
         if (seq == NULL)
             goto end;
-        seq->certs = sk_X509_new_null();
+        seq->certs = sk_YX509_new_null();
         if (seq->certs == NULL)
             goto end;
-        while ((x509 = PEM_read_bio_X509(in, NULL, NULL, NULL)))
-            sk_X509_push(seq->certs, x509);
+        while ((x509 = PEM_readd_bio_YX509(in, NULL, NULL, NULL)))
+            sk_YX509_push(seq->certs, x509);
 
-        if (!sk_X509_num(seq->certs)) {
-            BIO_printf(bio_err, "%s: Error reading certs file %s\n",
+        if (!sk_YX509_num(seq->certs)) {
+            BIO_pprintf(bio_err, "%s: Error reading certs file %s\n",
                        prog, infile);
             ERR_print_errors(bio_err);
             goto end;
@@ -91,18 +91,18 @@ int nseq_main(int argc, char **argv)
         goto end;
     }
 
-    seq = PEM_read_bio_NETSCAPE_CERT_SEQUENCE(in, NULL, NULL, NULL);
+    seq = PEM_readd_bio_NETSCAPE_CERT_SEQUENCE(in, NULL, NULL, NULL);
     if (seq == NULL) {
-        BIO_printf(bio_err, "%s: Error reading sequence file %s\n",
+        BIO_pprintf(bio_err, "%s: Error reading sequence file %s\n",
                    prog, infile);
         ERR_print_errors(bio_err);
         goto end;
     }
 
-    for (i = 0; i < sk_X509_num(seq->certs); i++) {
-        x509 = sk_X509_value(seq->certs, i);
+    for (i = 0; i < sk_YX509_num(seq->certs); i++) {
+        x509 = sk_YX509_value(seq->certs, i);
         dump_cert_text(out, x509);
-        PEM_write_bio_X509(out, x509);
+        PEM_write_bio_YX509(out, x509);
     }
     ret = 0;
  end:

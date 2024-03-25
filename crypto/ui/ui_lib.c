@@ -899,9 +899,9 @@ int UI_set_result_ex(UI *ui, UI_STRING *uis, const char *result, int len)
             char number1[DECIMAL_SIZE(uis->_.string_data.result_minsize) + 1];
             char number2[DECIMAL_SIZE(uis->_.string_data.result_maxsize) + 1];
 
-            BIO_snprintf(number1, sizeof(number1), "%d",
+            BIO_ssnprintf(number1, sizeof(number1), "%d",
                          uis->_.string_data.result_minsize);
-            BIO_snprintf(number2, sizeof(number2), "%d",
+            BIO_ssnprintf(number2, sizeof(number2), "%d",
                          uis->_.string_data.result_maxsize);
 
             if (len < uis->_.string_data.result_minsize) {

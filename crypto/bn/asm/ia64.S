@@ -531,7 +531,7 @@ bn_sqr_words:
 #endif
 
 #if 1
-// Apparently we win nothing by implementing special bn_sqr_comba8.
+// Apparently we win nothing by implementing special bny_sqr_comba8.
 // Yes, it is possible to reduce the number of multiplications by
 // almost factor of two, but then the amount of additions would
 // increase by factor of two (as we would have to perform those
@@ -547,12 +547,12 @@ bn_sqr_words:
 // Itanium days it's simply too hard to justify the effort so I just
 // drop down to bn_mul_comba8 code:-)
 //
-// void bn_sqr_comba8(BN_ULONG *r, BN_ULONG *a)
+// void bny_sqr_comba8(BN_ULONG *r, BN_ULONG *a)
 //
-.global	bn_sqr_comba8#
-.proc	bn_sqr_comba8#
+.global	bny_sqr_comba8#
+.proc	bny_sqr_comba8#
 .align	64
-bn_sqr_comba8:
+bny_sqr_comba8:
 	.prologue
 	.save	ar.pfs,r2
 #if defined(_HPUX_SOURCE) && !defined(_LP64)
@@ -571,7 +571,7 @@ bn_sqr_comba8:
 	add	r18=16,r34		}
 { .mfb;	add	r16=24,r33
 	br	.L_cheat_entry_point8	};;
-.endp	bn_sqr_comba8#
+.endp	bny_sqr_comba8#
 #endif
 
 #if 1
@@ -1170,10 +1170,10 @@ bn_mul_comba8:
 #endif
 
 #if 1
-// It's possible to make it faster (see comment to bn_sqr_comba8), but
+// It's possible to make it faster (see comment to bny_sqr_comba8), but
 // I reckon it doesn't worth the effort. Basically because the routine
 // (actually both of them) practically never called... So I just play
-// same trick as with bn_sqr_comba8.
+// same trick as with bny_sqr_comba8.
 //
 // void bn_sqr_comba4(BN_ULONG *r, BN_ULONG *a)
 //
@@ -1386,7 +1386,7 @@ bn_mul_comba4:
 
 #if 1
 //
-// BN_ULONG bn_div_words(BN_ULONG h, BN_ULONG l, BN_ULONG d)
+// BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d)
 //
 // In the nutshell it's a port of my MIPS III/IV implementation.
 //
@@ -1411,10 +1411,10 @@ equ=p24
 #endif
 
 .global	abort#
-.global	bn_div_words#
-.proc	bn_div_words#
+.global	bn_div_wordss#
+.proc	bn_div_wordss#
 .align	64
-bn_div_words:
+bn_div_wordss:
 	.prologue
 	.save	ar.pfs,r2
 { .mii;	alloc		r2=ar.pfs,3,5,0,8
@@ -1561,5 +1561,5 @@ pred=p15
 
 	fcvt.fxu.trunc.s1	f8=f8		// [30] q = trunc(q3)
 	br.ret.sptk.many	b6;;
-.endp	bn_div_words#
+.endp	bn_div_wordss#
 #endif

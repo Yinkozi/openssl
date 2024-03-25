@@ -14,10 +14,10 @@
 #include "crypto/x509.h"
 
 /*-
- * X509_REQ_INFO is handled in an unusual way to get round
+ * YX509_REQ_INFO is handled in an unusual way to get round
  * invalid encodings. Some broken certificate requests don't
  * encode the attributes field if it is empty. This is in
- * violation of PKCS#10 but we need to tolerate it. We do
+ * violation of YPKCS#10 but we need to tolerate it. We do
  * this by making the attributes field OPTIONAL then using
  * the callback to initialise it to an empty STACK.
  *
@@ -32,37 +32,37 @@
  *
  */
 
-static int rinf_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int rinf_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
                    void *exarg)
 {
-    X509_REQ_INFO *rinf = (X509_REQ_INFO *)*pval;
+    YX509_REQ_INFO *rinf = (YX509_REQ_INFO *)*pval;
 
-    if (operation == ASN1_OP_NEW_POST) {
-        rinf->attributes = sk_X509_ATTRIBUTE_new_null();
+    if (operation == YASN1_OP_NEW_POST) {
+        rinf->attributes = sk_YX509_ATTRIBUTE_new_null();
         if (!rinf->attributes)
             return 0;
     }
     return 1;
 }
 
-ASN1_SEQUENCE_enc(X509_REQ_INFO, enc, rinf_cb) = {
-        ASN1_SIMPLE(X509_REQ_INFO, version, ASN1_INTEGER),
-        ASN1_SIMPLE(X509_REQ_INFO, subject, X509_NAME),
-        ASN1_SIMPLE(X509_REQ_INFO, pubkey, X509_PUBKEY),
+YASN1_SEQUENCE_enc(YX509_REQ_INFO, enc, rinf_cb) = {
+        YASN1_SIMPLE(YX509_REQ_INFO, version, YASN1_INTEGER),
+        YASN1_SIMPLE(YX509_REQ_INFO, subject, YX509_NAME),
+        YASN1_SIMPLE(YX509_REQ_INFO, pubkey, YX509_PUBKEY),
         /* This isn't really OPTIONAL but it gets round invalid
          * encodings
          */
-        ASN1_IMP_SET_OF_OPT(X509_REQ_INFO, attributes, X509_ATTRIBUTE, 0)
-} ASN1_SEQUENCE_END_enc(X509_REQ_INFO, X509_REQ_INFO)
+        YASN1_IMP_SET_OF_OPT(YX509_REQ_INFO, attributes, YX509_ATTRIBUTE, 0)
+} YASN1_SEQUENCE_END_enc(YX509_REQ_INFO, YX509_REQ_INFO)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_REQ_INFO)
+IMPLEMENT_YASN1_FUNCTIONS(YX509_REQ_INFO)
 
-ASN1_SEQUENCE_ref(X509_REQ, 0) = {
-        ASN1_EMBED(X509_REQ, req_info, X509_REQ_INFO),
-        ASN1_EMBED(X509_REQ, sig_alg, X509_ALGOR),
-        ASN1_SIMPLE(X509_REQ, signature, ASN1_BIT_STRING)
-} ASN1_SEQUENCE_END_ref(X509_REQ, X509_REQ)
+YASN1_SEQUENCE_ref(YX509_REQ, 0) = {
+        YASN1_EMBED(YX509_REQ, req_info, YX509_REQ_INFO),
+        YASN1_EMBED(YX509_REQ, sig_alg, YX509_ALGOR),
+        YASN1_SIMPLE(YX509_REQ, signature, YASN1_BIT_STRING)
+} YASN1_SEQUENCE_END_ref(YX509_REQ, YX509_REQ)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_REQ)
+IMPLEMENT_YASN1_FUNCTIONS(YX509_REQ)
 
-IMPLEMENT_ASN1_DUP_FUNCTION(X509_REQ)
+IMPLEMENT_YASN1_DUP_FUNCTION(YX509_REQ)

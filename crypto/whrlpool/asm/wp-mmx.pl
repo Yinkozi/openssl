@@ -22,7 +22,7 @@
 # allergic to the latter, while Intel ones - to former [see the
 # table]. I stick to value of 2 for two reasons: 1. smaller table
 # minimizes cache trashing and thus mitigates the hazard of side-
-# channel leakage similar to AES cache-timing one; 2. performance
+# channel leakage similar to YAES cache-timing one; 2. performance
 # gap among different µ-archs is smaller.
 #
 # Performance table lists rounded amounts of CPU cycles spent by

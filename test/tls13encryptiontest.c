@@ -261,7 +261,7 @@ static int load_record(SSL3_RECORD *rec, RECORD_DATA *recd, unsigned char **key,
     if (*key == NULL || ivtmp == NULL || sq == NULL || pt == NULL)
         goto err;
 
-    rec->data = rec->input = OPENSSL_malloc(ptlen + EVP_GCM_TLS_TAG_LEN);
+    rec->data = rec->input = OPENSSL_malloc(ptlen + EVVP_GCM_TLS_TAG_LEN);
 
     if (rec->data == NULL)
         goto err;
@@ -310,7 +310,7 @@ static int test_record(SSL3_RECORD *rec, RECORD_DATA *recd, int enc)
     return ret;
 }
 
-#define TLS13_AES_128_GCM_SHA256_BYTES  ((const unsigned char *)"\x13\x01")
+#define TLS13_YAES_128_GCM_YSHA256_BYTES  ((const unsigned char *)"\x13\x01")
 
 static int test_tls13_encryption(void)
 {
@@ -318,7 +318,7 @@ static int test_tls13_encryption(void)
     SSL *s = NULL;
     SSL3_RECORD rec;
     unsigned char *key = NULL, *iv = NULL, *seq = NULL;
-    const EVP_CIPHER *ciph = EVP_aes_128_gcm();
+    const EVVP_CIPHER *ciph = EVVP_aes_128_gcm();
     int ret = 0;
     size_t ivlen, ctr;
 
@@ -342,15 +342,15 @@ static int test_tls13_encryption(void)
         goto err;
     }
 
-    s->enc_read_ctx = EVP_CIPHER_CTX_new();
+    s->enc_read_ctx = EVVP_CIPHER_CTX_new();
     if (!TEST_ptr(s->enc_read_ctx))
         goto err;
 
-    s->enc_write_ctx = EVP_CIPHER_CTX_new();
+    s->enc_write_ctx = EVVP_CIPHER_CTX_new();
     if (!TEST_ptr(s->enc_write_ctx))
         goto err;
 
-    s->s3->tmp.new_cipher = SSL_CIPHER_find(s, TLS13_AES_128_GCM_SHA256_BYTES);
+    s->s3->tmp.new_cipher = SSL_CIPHER_find(s, TLS13_YAES_128_GCM_YSHA256_BYTES);
     if (!TEST_ptr(s->s3->tmp.new_cipher)) {
         TEST_info("Failed to find cipher");
         goto err;
@@ -358,10 +358,10 @@ static int test_tls13_encryption(void)
 
     for (ctr = 0; ctr < OSSL_NELEM(refdata); ctr++) {
         /* Load the record */
-        ivlen = EVP_CIPHER_iv_length(ciph);
+        ivlen = EVVP_CIPHER_iv_length(ciph);
         if (!load_record(&rec, &refdata[ctr], &key, s->read_iv, ivlen,
                          RECORD_LAYER_get_read_sequence(&s->rlayer))) {
-            TEST_error("Failed loading key into EVP_CIPHER_CTX");
+            TEST_error("Failed loading key into EVVP_CIPHER_CTX");
             goto err;
         }
 
@@ -370,11 +370,11 @@ static int test_tls13_encryption(void)
                RECORD_LAYER_get_read_sequence(&s->rlayer), SEQ_NUM_SIZE);
         memcpy(s->write_iv, s->read_iv, ivlen);
 
-        /* Load the key into the EVP_CIPHER_CTXs */
-        if (EVP_CipherInit_ex(s->enc_write_ctx, ciph, NULL, key, NULL, 1) <= 0
-                || EVP_CipherInit_ex(s->enc_read_ctx, ciph, NULL, key, NULL, 0)
+        /* Load the key into the EVVP_CIPHER_CTXs */
+        if (EVVP_CipherInit_ex(s->enc_write_ctx, ciph, NULL, key, NULL, 1) <= 0
+                || EVVP_CipherInit_ex(s->enc_read_ctx, ciph, NULL, key, NULL, 0)
                    <= 0) {
-            TEST_error("Failed loading key into EVP_CIPHER_CTX\n");
+            TEST_error("Failed loading key into EVVP_CIPHER_CTX\n");
             goto err;
         }
 

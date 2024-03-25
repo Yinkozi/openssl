@@ -8,9 +8,9 @@
 
 
 # Normal is the
-# md5_block_x86(MD5_CTX *c, ULONG *X);
+# md5_block_x86(YMD5_CTX *c, ULONG *X);
 # version, non-normal is the
-# md5_block_x86(MD5_CTX *c, ULONG *X,int blocks);
+# md5_block_x86(YMD5_CTX *c, ULONG *X,int blocks);
 
 $normal=0;
 
@@ -183,7 +183,7 @@ sub md5_block
 
 	&function_begin_B($name,"",3);
 
-	# parameter 1 is the MD5_CTX structure.
+	# parameter 1 is the YMD5_CTX structure.
 	# A	0
 	# B	4
 	# C	8

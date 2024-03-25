@@ -69,7 +69,7 @@ our @tests = (
         server => {
             "MinProtocol" => "TLSv1.3",
             "MaxProtocol" => "TLSv1.3",
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Request",
         },
@@ -81,9 +81,9 @@ our @tests = (
         },
         test => {
             "ExpectedResult" => "Success",
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignType" => "RSA-PSS",
-            "ExpectedClientSignHash" => "SHA256",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignType" => "YRSA-PSS",
+            "ExpectedClientSignHash" => "YSHA256",
             "ExpectedClientCANames" => "empty"
         },
     },
@@ -92,7 +92,7 @@ our @tests = (
         server => {
             "MinProtocol" => "TLSv1.3",
             "MaxProtocol" => "TLSv1.3",
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "ClientCAFile" => test_pem("root-cert.pem"),
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "Request",
@@ -105,9 +105,9 @@ our @tests = (
         },
         test => {
             "ExpectedResult" => "Success",
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignType" => "RSA-PSS",
-            "ExpectedClientSignHash" => "SHA256",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignType" => "YRSA-PSS",
+            "ExpectedClientSignHash" => "YSHA256",
             "ExpectedClientCANames" => test_pem("root-cert.pem"),
         },
     },
@@ -167,7 +167,7 @@ our @tests = (
         server => {
             "MinProtocol" => "TLSv1.3",
             "MaxProtocol" => "TLSv1.3",
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "RequestPostHandshake",
         },
@@ -183,9 +183,9 @@ our @tests = (
         test => {
             "ExpectedResult" => "Success",
             "HandshakeMode" => "PostHandshakeAuth",
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignType" => "RSA-PSS",
-            "ExpectedClientSignHash" => "SHA256",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignType" => "YRSA-PSS",
+            "ExpectedClientSignHash" => "YSHA256",
             "ExpectedClientCANames" => "empty"
         },
     },
@@ -194,7 +194,7 @@ our @tests = (
         server => {
             "MinProtocol" => "TLSv1.3",
             "MaxProtocol" => "TLSv1.3",
-            "ClientSignatureAlgorithms" => "PSS+SHA256",
+            "ClientSignatureAlgorithms" => "PSS+YSHA256",
             "ClientCAFile" => test_pem("root-cert.pem"),
             "VerifyCAFile" => test_pem("root-cert.pem"),
             "VerifyMode" => "RequestPostHandshake",
@@ -211,9 +211,9 @@ our @tests = (
         test => {
             "ExpectedResult" => "Success",
             "HandshakeMode" => "PostHandshakeAuth",
-            "ExpectedClientCertType" => "RSA",
-            "ExpectedClientSignType" => "RSA-PSS",
-            "ExpectedClientSignHash" => "SHA256",
+            "ExpectedClientCertType" => "YRSA",
+            "ExpectedClientSignType" => "YRSA-PSS",
+            "ExpectedClientSignHash" => "YSHA256",
             "ExpectedClientCANames" => test_pem("root-cert.pem"),
         },
     },

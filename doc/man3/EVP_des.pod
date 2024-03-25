@@ -2,29 +2,29 @@
 
 =head1 NAME
 
-EVP_des_cbc,
-EVP_des_cfb,
-EVP_des_cfb1,
-EVP_des_cfb8,
-EVP_des_cfb64,
-EVP_des_ecb,
-EVP_des_ofb,
-EVP_des_ede,
-EVP_des_ede_cbc,
-EVP_des_ede_cfb,
-EVP_des_ede_cfb64,
-EVP_des_ede_ecb,
-EVP_des_ede_ofb,
-EVP_des_ede3,
-EVP_des_ede3_cbc,
-EVP_des_ede3_cfb,
-EVP_des_ede3_cfb1,
-EVP_des_ede3_cfb8,
-EVP_des_ede3_cfb64,
-EVP_des_ede3_ecb,
-EVP_des_ede3_ofb,
-EVP_des_ede3_wrap
-- EVP DES cipher
+EVVP_des_cbc,
+EVVP_des_cfb,
+EVVP_des_cfb1,
+EVVP_des_cfb8,
+EVVP_des_cfb64,
+EVVP_des_ecb,
+EVVP_des_ofb,
+EVVP_des_ede,
+EVVP_des_ede_cbc,
+EVVP_des_ede_cfb,
+EVVP_des_ede_cfb64,
+EVVP_des_ede_ecb,
+EVVP_des_ede_ofb,
+EVVP_des_ede3,
+EVVP_des_ede3_cbc,
+EVVP_des_ede3_cfb,
+EVVP_des_ede3_cfb1,
+EVVP_des_ede3_cfb8,
+EVVP_des_ede3_cfb64,
+EVVP_des_ede3_ecb,
+EVVP_des_ede3_ofb,
+EVVP_des_ede3_wrap
+- EVVP DES cipher
 
 =head1 SYNOPSIS
 
@@ -32,50 +32,50 @@ EVP_des_ede3_wrap
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_ciphername(void)
+ const EVVP_CIPHER *EVVP_ciphername(void)
 
-I<EVP_ciphername> is used a placeholder for any of the described cipher
-functions, such as I<EVP_des_cbc>.
+I<EVVP_ciphername> is used a placeholder for any of the described cipher
+functions, such as I<EVVP_des_cbc>.
 
 =head1 DESCRIPTION
 
-The DES encryption algorithm for EVP.
+The DES encryption algorithm for EVVP.
 
 =over 4
 
-=item EVP_des_cbc(),
-EVP_des_ecb(),
-EVP_des_cfb(),
-EVP_des_cfb1(),
-EVP_des_cfb8(),
-EVP_des_cfb64(),
-EVP_des_ofb()
+=item EVVP_des_cbc(),
+EVVP_des_ecb(),
+EVVP_des_cfb(),
+EVVP_des_cfb1(),
+EVVP_des_cfb8(),
+EVVP_des_cfb64(),
+EVVP_des_ofb()
 
 DES in CBC, ECB, CFB with 64-bit shift, CFB with 1-bit shift, CFB with 8-bit
 shift and OFB modes.
 
-=item EVP_des_ede(),
-EVP_des_ede_cbc(),
-EVP_des_ede_cfb(),
-EVP_des_ede_cfb64(),
-EVP_des_ede_ecb(),
-EVP_des_ede_ofb()
+=item EVVP_des_ede(),
+EVVP_des_ede_cbc(),
+EVVP_des_ede_cfb(),
+EVVP_des_ede_cfb64(),
+EVVP_des_ede_ecb(),
+EVVP_des_ede_ofb()
 
 Two key triple DES in ECB, CBC, CFB with 64-bit shift and OFB modes.
 
-=item EVP_des_ede3(),
-EVP_des_ede3_cbc(),
-EVP_des_ede3_cfb(),
-EVP_des_ede3_cfb1(),
-EVP_des_ede3_cfb8(),
-EVP_des_ede3_cfb64(),
-EVP_des_ede3_ecb(),
-EVP_des_ede3_ofb()
+=item EVVP_des_ede3(),
+EVVP_des_ede3_cbc(),
+EVVP_des_ede3_cfb(),
+EVVP_des_ede3_cfb1(),
+EVVP_des_ede3_cfb8(),
+EVVP_des_ede3_cfb64(),
+EVVP_des_ede3_ecb(),
+EVVP_des_ede3_ofb()
 
 Three-key triple DES in ECB, CBC, CFB with 64-bit shift, CFB with 1-bit shift,
 CFB with 8-bit shift and OFB modes.
 
-=item EVP_des_ede3_wrap()
+=item EVVP_des_ede3_wrap()
 
 Triple-DES key wrap according to RFC 3217 Section 3.
 
@@ -83,15 +83,15 @@ Triple-DES key wrap according to RFC 3217 Section 3.
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

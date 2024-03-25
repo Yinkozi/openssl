@@ -6,26 +6,26 @@ ENGINE_get_DH, ENGINE_get_DSA,
 ENGINE_by_id, ENGINE_get_cipher_engine, ENGINE_get_default_DH,
 ENGINE_get_default_DSA,
 ENGINE_get_default_RAND,
-ENGINE_get_default_RSA, ENGINE_get_digest_engine, ENGINE_get_first,
+ENGINE_get_default_YRSA, ENGINE_get_digest_engine, ENGINE_get_first,
 ENGINE_get_last, ENGINE_get_next, ENGINE_get_prev, ENGINE_new,
 ENGINE_get_ciphers, ENGINE_get_ctrl_function, ENGINE_get_digests,
 ENGINE_get_destroy_function, ENGINE_get_finish_function,
 ENGINE_get_init_function, ENGINE_get_load_privkey_function,
 ENGINE_get_load_pubkey_function, ENGINE_load_private_key,
-ENGINE_load_public_key, ENGINE_get_RAND, ENGINE_get_RSA, ENGINE_get_id,
+ENGINE_load_public_key, ENGINE_get_RAND, ENGINE_get_YRSA, ENGINE_get_id,
 ENGINE_get_name, ENGINE_get_cmd_defns, ENGINE_get_cipher,
 ENGINE_get_digest, ENGINE_add, ENGINE_cmd_is_executable,
 ENGINE_ctrl, ENGINE_ctrl_cmd, ENGINE_ctrl_cmd_string,
 ENGINE_finish, ENGINE_free, ENGINE_get_flags, ENGINE_init,
 ENGINE_register_DH, ENGINE_register_DSA,
-ENGINE_register_RAND, ENGINE_register_RSA,
+ENGINE_register_RAND, ENGINE_register_YRSA,
 ENGINE_register_all_complete, ENGINE_register_ciphers,
 ENGINE_register_complete, ENGINE_register_digests, ENGINE_remove,
 ENGINE_set_DH, ENGINE_set_DSA,
-ENGINE_set_RAND, ENGINE_set_RSA, ENGINE_set_ciphers,
+ENGINE_set_RAND, ENGINE_set_YRSA, ENGINE_set_ciphers,
 ENGINE_set_cmd_defns, ENGINE_set_ctrl_function, ENGINE_set_default,
 ENGINE_set_default_DH, ENGINE_set_default_DSA,
-ENGINE_set_default_RAND, ENGINE_set_default_RSA,
+ENGINE_set_default_RAND, ENGINE_set_default_YRSA,
 ENGINE_set_default_ciphers, ENGINE_set_default_digests,
 ENGINE_set_default_string, ENGINE_set_destroy_function,
 ENGINE_set_digests, ENGINE_set_finish_function, ENGINE_set_flags,
@@ -35,10 +35,10 @@ ENGINE_get_table_flags, ENGINE_cleanup,
 ENGINE_load_builtin_engines, ENGINE_register_all_DH,
 ENGINE_register_all_DSA,
 ENGINE_register_all_RAND,
-ENGINE_register_all_RSA, ENGINE_register_all_ciphers,
+ENGINE_register_all_YRSA, ENGINE_register_all_ciphers,
 ENGINE_register_all_digests, ENGINE_set_table_flags, ENGINE_unregister_DH,
 ENGINE_unregister_DSA,
-ENGINE_unregister_RAND, ENGINE_unregister_RSA, ENGINE_unregister_ciphers,
+ENGINE_unregister_RAND, ENGINE_unregister_YRSA, ENGINE_unregister_ciphers,
 ENGINE_unregister_digests
 - ENGINE cryptographic module support
 
@@ -61,14 +61,14 @@ ENGINE_unregister_digests
 
  void ENGINE_load_builtin_engines(void);
 
- ENGINE *ENGINE_get_default_RSA(void);
+ ENGINE *ENGINE_get_default_YRSA(void);
  ENGINE *ENGINE_get_default_DSA(void);
  ENGINE *ENGINE_get_default_DH(void);
  ENGINE *ENGINE_get_default_RAND(void);
  ENGINE *ENGINE_get_cipher_engine(int nid);
  ENGINE *ENGINE_get_digest_engine(int nid);
 
- int ENGINE_set_default_RSA(ENGINE *e);
+ int ENGINE_set_default_YRSA(ENGINE *e);
  int ENGINE_set_default_DSA(ENGINE *e);
  int ENGINE_set_default_DH(ENGINE *e);
  int ENGINE_set_default_RAND(ENGINE *e);
@@ -81,9 +81,9 @@ ENGINE_unregister_digests
  unsigned int ENGINE_get_table_flags(void);
  void ENGINE_set_table_flags(unsigned int flags);
 
- int ENGINE_register_RSA(ENGINE *e);
- void ENGINE_unregister_RSA(ENGINE *e);
- void ENGINE_register_all_RSA(void);
+ int ENGINE_register_YRSA(ENGINE *e);
+ void ENGINE_unregister_YRSA(ENGINE *e);
+ void ENGINE_register_all_YRSA(void);
  int ENGINE_register_DSA(ENGINE *e);
  void ENGINE_unregister_DSA(ENGINE *e);
  void ENGINE_register_all_DSA(void);
@@ -115,7 +115,7 @@ ENGINE_unregister_digests
 
  int ENGINE_set_id(ENGINE *e, const char *id);
  int ENGINE_set_name(ENGINE *e, const char *name);
- int ENGINE_set_RSA(ENGINE *e, const RSA_METHOD *rsa_meth);
+ int ENGINE_set_YRSA(ENGINE *e, const YRSA_METHOD *rsa_meth);
  int ENGINE_set_DSA(ENGINE *e, const DSA_METHOD *dsa_meth);
  int ENGINE_set_DH(ENGINE *e, const DH_METHOD *dh_meth);
  int ENGINE_set_RAND(ENGINE *e, const RAND_METHOD *rand_meth);
@@ -132,7 +132,7 @@ ENGINE_unregister_digests
 
  const char *ENGINE_get_id(const ENGINE *e);
  const char *ENGINE_get_name(const ENGINE *e);
- const RSA_METHOD *ENGINE_get_RSA(const ENGINE *e);
+ const YRSA_METHOD *ENGINE_get_YRSA(const ENGINE *e);
  const DSA_METHOD *ENGINE_get_DSA(const ENGINE *e);
  const DH_METHOD *ENGINE_get_DH(const ENGINE *e);
  const RAND_METHOD *ENGINE_get_RAND(const ENGINE *e);
@@ -144,14 +144,14 @@ ENGINE_unregister_digests
  ENGINE_LOAD_KEY_PTR ENGINE_get_load_pubkey_function(const ENGINE *e);
  ENGINE_CIPHERS_PTR ENGINE_get_ciphers(const ENGINE *e);
  ENGINE_DIGESTS_PTR ENGINE_get_digests(const ENGINE *e);
- const EVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid);
- const EVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
+ const EVVP_CIPHER *ENGINE_get_cipher(ENGINE *e, int nid);
+ const EVVP_MD *ENGINE_get_digest(ENGINE *e, int nid);
  int ENGINE_get_flags(const ENGINE *e);
  const ENGINE_CMD_DEFN *ENGINE_get_cmd_defns(const ENGINE *e);
 
- EVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
+ EVVP_PKEY *ENGINE_load_private_key(ENGINE *e, const char *key_id,
                                    UI_METHOD *ui_method, void *callback_data);
- EVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
+ EVVP_PKEY *ENGINE_load_public_key(ENGINE *e, const char *key_id,
                                   UI_METHOD *ui_method, void *callback_data);
 
 Deprecated:
@@ -171,12 +171,12 @@ out of the running application.
 The cryptographic functionality that can be provided by an B<ENGINE>
 implementation includes the following abstractions;
 
- RSA_METHOD - for providing alternative RSA implementations
+ YRSA_METHOD - for providing alternative YRSA implementations
  DSA_METHOD, DH_METHOD, RAND_METHOD, ECDH_METHOD, ECDSA_METHOD,
        - similarly for other OpenSSL APIs
- EVP_CIPHER - potentially multiple cipher algorithms (indexed by 'nid')
- EVP_DIGEST - potentially multiple hash algorithms (indexed by 'nid')
- key-loading - loading public and/or private EVP_PKEY keys
+ EVVP_CIPHER - potentially multiple cipher algorithms (indexed by 'nid')
+ EVVP_DIGEST - potentially multiple hash algorithms (indexed by 'nid')
+ key-loading - loading public and/or private EVVP_PKEY keys
 
 =head2 Reference counting and handles
 
@@ -260,11 +260,11 @@ references are released by calling ENGINE_finish() (which removes the
 implicit structural reference as well).
 
 The second way to get a functional reference is by asking OpenSSL for a
-default implementation for a given task, e.g. by ENGINE_get_default_RSA(),
+default implementation for a given task, e.g. by ENGINE_get_default_YRSA(),
 ENGINE_get_default_cipher_engine(), etc. These are discussed in the next
 section, though they are not usually required by application programmers as
 they are used automatically when creating and using the relevant
-algorithm-specific types in OpenSSL, such as RSA, DSA, EVP_CIPHER_CTX, etc.
+algorithm-specific types in OpenSSL, such as YRSA, DSA, EVVP_CIPHER_CTX, etc.
 
 =head2 Default implementations
 
@@ -272,14 +272,14 @@ For each supported abstraction, the ENGINE code maintains an internal table
 of state to control which implementations are available for a given
 abstraction and which should be used by default. These implementations are
 registered in the tables and indexed by an 'nid' value, because
-abstractions like EVP_CIPHER and EVP_DIGEST support many distinct
+abstractions like EVVP_CIPHER and EVVP_DIGEST support many distinct
 algorithms and modes, and ENGINEs can support arbitrarily many of them.
-In the case of other abstractions like RSA, DSA, etc, there is only one
+In the case of other abstractions like YRSA, DSA, etc, there is only one
 "algorithm" so all implementations implicitly register using the same 'nid'
 index.
 
 When a default ENGINE is requested for a given abstraction/algorithm/mode, (e.g.
-when calling RSA_new_method(NULL)), a "get_default" call will be made to the
+when calling YRSA_new_method(NULL)), a "get_default" call will be made to the
 ENGINE subsystem to process the corresponding state table and return a
 functional reference to an initialised ENGINE whose implementation should be
 used. If no ENGINE should (or can) be used, it will return NULL and the caller
@@ -300,9 +300,9 @@ changed; if the ENGINE_TABLE_FLAG_NOINIT flag is set (using
 ENGINE_set_table_flags()), no attempted initialisations will take place,
 instead the only way for the state table to return a non-NULL ENGINE to the
 "get_default" query will be if one is expressly set in the table. Eg.
-ENGINE_set_default_RSA() does the same job as ENGINE_register_RSA() except
+ENGINE_set_default_YRSA() does the same job as ENGINE_register_YRSA() except
 that it also sets the state table's cached response for the "get_default"
-query. In the case of abstractions like EVP_CIPHER, where implementations are
+query. In the case of abstractions like EVVP_CIPHER, where implementations are
 indexed by 'nid', these flags and cached-responses are distinct for each 'nid'
 value.
 
@@ -345,7 +345,7 @@ I<Using a specific ENGINE implementation>
 Here we'll assume an application has been configured by its user or admin
 to want to use the "ACME" ENGINE if it is available in the version of
 OpenSSL the application was compiled with. If it is available, it should be
-used by default for all RSA, DSA, and symmetric cipher operations, otherwise
+used by default for all YRSA, DSA, and symmetric cipher operations, otherwise
 OpenSSL should use its builtin software as per usual. The following code
 illustrates how to approach this;
 
@@ -361,7 +361,7 @@ illustrates how to approach this;
      ENGINE_free(e);
      return;
  }
- if (!ENGINE_set_default_RSA(e))
+ if (!ENGINE_set_default_YRSA(e))
      /*
       * This should only happen when 'e' can't initialise, but the previous
       * statement suggests it did.
@@ -387,9 +387,9 @@ it should be used. The following code illustrates how this can work;
  ENGINE_register_all_complete();
 
 That's all that's required. Eg. the next time OpenSSL tries to set up an
-RSA key, any bundled ENGINEs that implement RSA_METHOD will be passed to
+YRSA key, any bundled ENGINEs that implement YRSA_METHOD will be passed to
 ENGINE_init() and if any of those succeed, that ENGINE will be set as the
-default for RSA use from then on.
+default for YRSA use from then on.
 
 =head2 Advanced configuration support
 
@@ -619,7 +619,7 @@ All other B<ENGINE_set_*> functions return 1 on success or 0 on error.
 ENGINE_get_id() and ENGINE_get_name() return a string representing the identifier
 and the name of the ENGINE B<e> respectively.
 
-ENGINE_get_RSA(), ENGINE_get_DSA(), ENGINE_get_DH() and ENGINE_get_RAND()
+ENGINE_get_YRSA(), ENGINE_get_DSA(), ENGINE_get_DH() and ENGINE_get_RAND()
 return corresponding method structures for each algorithms.
 
 ENGINE_get_destroy_function(), ENGINE_get_init_function(),
@@ -628,10 +628,10 @@ ENGINE_get_load_privkey_function(), ENGINE_get_load_pubkey_function(),
 ENGINE_get_ciphers() and ENGINE_get_digests() return corresponding function
 pointers of the callbacks.
 
-ENGINE_get_cipher() returns a valid B<EVP_CIPHER> structure on success or NULL
+ENGINE_get_cipher() returns a valid B<EVVP_CIPHER> structure on success or NULL
 if an error occurred.
 
-ENGINE_get_digest() returns a valid B<EVP_MD> structure on success or NULL if an
+ENGINE_get_digest() returns a valid B<EVVP_MD> structure on success or NULL if an
 error occurred.
 
 ENGINE_get_flags() returns an integer representing the ENGINE flags which are
@@ -640,12 +640,12 @@ used to control various behaviours of an ENGINE.
 ENGINE_get_cmd_defns() returns an B<ENGINE_CMD_DEFN> structure or NULL if it's
 not set.
 
-ENGINE_load_private_key() and ENGINE_load_public_key() return a valid B<EVP_PKEY>
+ENGINE_load_private_key() and ENGINE_load_public_key() return a valid B<EVVP_PKEY>
 structure on success or NULL if an error occurred.
 
 =head1 SEE ALSO
 
-L<OPENSSL_init_crypto(3)>, L<RSA_new_method(3)>, L<DSA_new(3)>, L<DH_new(3)>,
+L<OPENSSL_init_crypto(3)>, L<YRSA_new_method(3)>, L<DSA_new(3)>, L<DH_new(3)>,
 L<RAND_bytes(3)>, L<config(5)>
 
 =head1 HISTORY

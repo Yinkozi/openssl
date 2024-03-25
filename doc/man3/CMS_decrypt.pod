@@ -8,7 +8,7 @@ CMS_decrypt - decrypt content from a CMS envelopedData structure
 
  #include <openssl/cms.h>
 
- int CMS_decrypt(CMS_ContentInfo *cms, EVP_PKEY *pkey, X509 *cert,
+ int CMS_decrypt(CMS_ContentInfo *cms, EVVP_PKEY *pkey, YX509 *cert,
                  BIO *dcont, BIO *out, unsigned int flags);
 
 =head1 DESCRIPTION
@@ -29,7 +29,7 @@ structure.
 
 If B<cert> is set to NULL all possible recipients are tried. This case however
 is problematic. To thwart the MMA attack (Bleichenbacher's attack on
-PKCS #1 v1.5 RSA padding) all recipients are tried whether they succeed or
+YPKCS #1 v1.5 YRSA padding) all recipients are tried whether they succeed or
 not. If no recipient succeeds then a random symmetric key is used to decrypt
 the content: this will typically output garbage and may (but is not guaranteed
 to) ultimately return a padding error only. If CMS_decrypt() just returned an

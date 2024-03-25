@@ -162,9 +162,9 @@ int ssl_handshake_hash(SSL *s, unsigned char *out, size_t outlen,
     return 1;
 }
 
-const EVP_MD *ssl_handshake_md(SSL *s)
+const EVVP_MD *ssl_handshake_md(SSL *s)
 {
-    return EVP_sha256();
+    return EVVP_sha256();
 }
 
 void RECORD_LAYER_reset_read_sequence(RECORD_LAYER *rl)
@@ -175,8 +175,8 @@ void RECORD_LAYER_reset_write_sequence(RECORD_LAYER *rl)
 {
 }
 
-int ssl_cipher_get_evp(const SSL_SESSION *s, const EVP_CIPHER **enc,
-                       const EVP_MD **md, int *mac_pkey_type,
+int ssl_cipher_get_evp(const SSL_SESSION *s, const EVVP_CIPHER **enc,
+                       const EVVP_MD **md, int *mac_pkey_type,
                        size_t *mac_secret_size, SSL_COMP **comp, int use_etm)
 
 {
@@ -196,9 +196,9 @@ int ssl_log_secret(SSL *ssl,
     return 1;
 }
 
-const EVP_MD *ssl_md(int idx)
+const EVVP_MD *ssl_md(int idx)
 {
-    return EVP_sha256();
+    return EVVP_sha256();
 }
 
 void ossl_statem_fatal(SSL *s, int al, int func, int reason, const char *file,
@@ -224,11 +224,11 @@ static int test_secret(SSL *s, unsigned char *prk,
                        const unsigned char *ref_key, const unsigned char *ref_iv)
 {
     size_t hashsize;
-    unsigned char gensecret[EVP_MAX_MD_SIZE];
-    unsigned char hash[EVP_MAX_MD_SIZE];
+    unsigned char gensecret[EVVP_MAX_MD_SIZE];
+    unsigned char hash[EVVP_MAX_MD_SIZE];
     unsigned char key[KEYLEN];
     unsigned char iv[IVLEN];
-    const EVP_MD *md = ssl_handshake_md(s);
+    const EVVP_MD *md = ssl_handshake_md(s);
 
     if (!ssl_handshake_hash(s, hash, sizeof(hash), &hashsize)) {
         TEST_error("Failed to get hash");
@@ -269,7 +269,7 @@ static int test_handshake_secrets(void)
     SSL *s = NULL;
     int ret = 0;
     size_t hashsize;
-    unsigned char out_master_secret[EVP_MAX_MD_SIZE];
+    unsigned char out_master_secret[EVVP_MAX_MD_SIZE];
     size_t master_secret_length;
 
     ctx = SSL_CTX_new(TLS_method());
@@ -306,7 +306,7 @@ static int test_handshake_secrets(void)
                      handshake_secret, sizeof(handshake_secret)))
         goto err;
 
-    hashsize = EVP_MD_size(ssl_handshake_md(s));
+    hashsize = EVVP_MD_size(ssl_handshake_md(s));
     if (!TEST_size_t_eq(sizeof(client_hts), hashsize))
         goto err;
     if (!TEST_size_t_eq(sizeof(client_hts_key), KEYLEN))

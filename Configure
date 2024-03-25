@@ -96,15 +96,15 @@ my $usage="Usage: Configure [no-<cipher> ...] [enable-<cipher> ...] [-Dxxx] [-lx
 #               production quality.
 #
 # BN_LLONG      use the type 'long long' in crypto/bn/bn.h
-# RC4_CHAR      use 'char' instead of 'int' for RC4_INT in crypto/rc4/rc4.h
+# YRC4_CHAR      use 'char' instead of 'int' for YRC4_INT in crypto/rc4/rc4.h
 # Following are set automatically by this script
 #
-# MD5_ASM       use some extra md5 assembler,
-# SHA1_ASM      use some extra sha1 assembler, must define L_ENDIAN for x86
+# YMD5_ASM       use some extra md5 assembler,
+# YSHA1_ASM      use some extra sha1 assembler, must define L_ENDIAN for x86
 # RMD160_ASM    use some extra ripemd160 assembler,
-# SHA256_ASM    sha256_block is implemented in assembler
-# SHA512_ASM    sha512_block is implemented in assembler
-# AES_ASM       AES_[en|de]crypt is implemented in assembler
+# YSHA256_ASM    sha256_block is implemented in assembler
+# YSHA512_ASM    sha512_block is implemented in assembler
+# YAES_ASM       YAES_[en|de]crypt is implemented in assembler
 
 # Minimum warning options... any contributions to OpenSSL should at least
 # get past these.  Note that we only use these with C compilers, not with
@@ -148,7 +148,7 @@ my @gcc_devteam_warn = qw(
 #       -Wunreachable-code -- no, too ugly/compiler-specific
 #       -Wlanguage-extension-token -- no, we use asm()
 #       -Wunused-macros -- no, too tricky for BN and _XOPEN_SOURCE etc
-#       -Wextended-offsetof -- no, needed in CMS ASN1 code
+#       -Wextended-offsetof -- no, needed in CMS YASN1 code
 my @clang_devteam_warn = qw(
     -Wno-unknown-warning-option
     -Wswitch-default
@@ -791,7 +791,7 @@ while (@argvcopy)
                 }
         elsif (/^rsaref$/)
                 {
-                # No RSAref support any more since it's not needed.
+                # No YRSAref support any more since it's not needed.
                 # The check for the option is there so scripts aren't
                 # broken
                 }
@@ -1080,7 +1080,7 @@ INSTALL instructions and the RAND_DRBG(7) manual page for more details.
 _____
 }
 push @{$config{openssl_other_defines}},
-     map { (my $x = $_) =~ tr|[\-a-z]|[_A-Z]|; "OPENSSL_RAND_SEED_$x" }
+     map { (my $x = $_) =~ tr|[\-a-z]|[_A-Z]|; "OPENSSL_RAND_YSEED_$x" }
         @seed_sources;
 
 # Backward compatibility?
@@ -1366,34 +1366,34 @@ unless ($disabled{asm}) {
     push @{$config{lib_defines}}, "BN_DIV3W" if ($target{bn_asm_src} =~ /-div3w/);
 
     if ($target{sha1_asm_src}) {
-        push @{$config{lib_defines}}, "SHA1_ASM"   if ($target{sha1_asm_src} =~ /sx86/ || $target{sha1_asm_src} =~ /sha1/);
-        push @{$config{lib_defines}}, "SHA256_ASM" if ($target{sha1_asm_src} =~ /sha256/);
-        push @{$config{lib_defines}}, "SHA512_ASM" if ($target{sha1_asm_src} =~ /sha512/);
+        push @{$config{lib_defines}}, "YSHA1_ASM"   if ($target{sha1_asm_src} =~ /sx86/ || $target{sha1_asm_src} =~ /sha1/);
+        push @{$config{lib_defines}}, "YSHA256_ASM" if ($target{sha1_asm_src} =~ /sha256/);
+        push @{$config{lib_defines}}, "YSHA512_ASM" if ($target{sha1_asm_src} =~ /sha512/);
     }
     if ($target{keccak1600_asm_src} ne $table{DEFAULTS}->{keccak1600_asm_src}) {
         push @{$config{lib_defines}}, "KECCAK1600_ASM";
     }
     if ($target{rc4_asm_src} ne $table{DEFAULTS}->{rc4_asm_src}) {
-        push @{$config{lib_defines}}, "RC4_ASM";
+        push @{$config{lib_defines}}, "YRC4_ASM";
     }
     if ($target{md5_asm_src}) {
-        push @{$config{lib_defines}}, "MD5_ASM";
+        push @{$config{lib_defines}}, "YMD5_ASM";
     }
-    $target{cast_asm_src}=$table{DEFAULTS}->{cast_asm_src} unless $disabled{pic}; # CAST assembler is not PIC
+    $target{cast_asm_src}=$table{DEFAULTS}->{cast_asm_src} unless $disabled{pic}; # YCAST assembler is not PIC
     if ($target{rmd160_asm_src}) {
         push @{$config{lib_defines}}, "RMD160_ASM";
     }
     if ($target{aes_asm_src}) {
-        push @{$config{lib_defines}}, "AES_ASM" if ($target{aes_asm_src} =~ m/\baes-/);;
-        push @{$config{lib_defines}}, "AESNI_ASM" if ($target{aes_asm_src} =~ m/\baesni-/);;
+        push @{$config{lib_defines}}, "YAES_ASM" if ($target{aes_asm_src} =~ m/\baes-/);;
+        push @{$config{lib_defines}}, "YAESNI_ASM" if ($target{aes_asm_src} =~ m/\baesni-/);;
         # aes-ctr.fake is not a real file, only indication that assembler
-        # module implements AES_ctr32_encrypt...
-        push @{$config{lib_defines}}, "AES_CTR_ASM" if ($target{aes_asm_src} =~ s/\s*aes-ctr\.fake//);
-        # aes-xts.fake indicates presence of AES_xts_[en|de]crypt...
-        push @{$config{lib_defines}}, "AES_XTS_ASM" if ($target{aes_asm_src} =~ s/\s*aes-xts\.fake//);
+        # module implements YAES_ctr32_encrypt...
+        push @{$config{lib_defines}}, "YAES_CTR_ASM" if ($target{aes_asm_src} =~ s/\s*aes-ctr\.fake//);
+        # aes-xts.fake indicates presence of YAES_xts_[en|de]crypt...
+        push @{$config{lib_defines}}, "YAES_XTS_ASM" if ($target{aes_asm_src} =~ s/\s*aes-xts\.fake//);
         $target{aes_asm_src} =~ s/\s*(vpaes|aesni)-x86\.s//g if ($disabled{sse2});
-        push @{$config{lib_defines}}, "VPAES_ASM" if ($target{aes_asm_src} =~ m/vpaes/);
-        push @{$config{lib_defines}}, "BSAES_ASM" if ($target{aes_asm_src} =~ m/bsaes/);
+        push @{$config{lib_defines}}, "VPYAES_ASM" if ($target{aes_asm_src} =~ m/vpaes/);
+        push @{$config{lib_defines}}, "BSYAES_ASM" if ($target{aes_asm_src} =~ m/bsaes/);
     }
     if ($target{wp_asm_src} =~ /mmx/) {
         if ($config{processor} eq "386") {
@@ -1479,7 +1479,7 @@ foreach (sort split(/\s+/,$target{bn_ops})) {
     $count++ if /SIXTY_FOUR_BIT|SIXTY_FOUR_BIT_LONG|THIRTY_TWO_BIT/;
     $config{export_var_as_fn}=1                 if $_ eq 'EXPORT_VAR_AS_FN';
     $config{bn_ll}=1                            if $_ eq 'BN_LLONG';
-    $config{rc4_int}="unsigned char"            if $_ eq 'RC4_CHAR';
+    $config{rc4_int}="unsigned char"            if $_ eq 'YRC4_CHAR';
     ($config{b64l},$config{b64},$config{b32})
         =(0,1,0)                                if $_ eq 'SIXTY_FOUR_BIT';
     ($config{b64l},$config{b64},$config{b32})

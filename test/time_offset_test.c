@@ -7,7 +7,7 @@
  * https://www.openssl.org/source/license.html
  */
 
-/* time_t/offset (+/-XXXX) tests for ASN1 and X509 */
+/* time_t/offset (+/-XXXX) tests for YASN1 and YX509 */
 
 #include <stdio.h>
 #include <string.h>
@@ -32,41 +32,41 @@ typedef struct {
  ***/
 
 static TESTDATA tests[] = {
-    { "20001201000000Z",      0, V_ASN1_GENERALIZEDTIME },
-    { "20001201010000+0100",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001201050000+0500",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001130230000-0100",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001130190000-0500",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001130190001-0500",  1, V_ASN1_GENERALIZEDTIME }, /* +1 second */
-    { "20001130185959-0500", -1, V_ASN1_GENERALIZEDTIME }, /* -1 second */
-    { "001201000000Z",        0, V_ASN1_UTCTIME },
-    { "001201010000+0100",    0, V_ASN1_UTCTIME },
-    { "001201050000+0500",    0, V_ASN1_UTCTIME },
-    { "001130230000-0100",    0, V_ASN1_UTCTIME },
-    { "001130190000-0500",    0, V_ASN1_UTCTIME },
-    { "001201000000-0000",    0, V_ASN1_UTCTIME },
-    { "001201000001-0000",    1, V_ASN1_UTCTIME }, /* +1 second */
-    { "001130235959-0000",   -1, V_ASN1_UTCTIME }, /* -1 second */
-    { "20001201000000+0000",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001201000000+0100", -1, V_ASN1_GENERALIZEDTIME },
-    { "001201000000+0100",   -1, V_ASN1_UTCTIME },
-    { "20001201000000-0100",  1, V_ASN1_GENERALIZEDTIME },
-    { "001201000000-0100",    1, V_ASN1_UTCTIME },
-    { "20001201123400+1234",  0, V_ASN1_GENERALIZEDTIME },
-    { "20001130112600-1234",  0, V_ASN1_GENERALIZEDTIME },
+    { "20001201000000Z",      0, V_YASN1_GENERALIZEDTIME },
+    { "20001201010000+0100",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001201050000+0500",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001130230000-0100",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001130190000-0500",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001130190001-0500",  1, V_YASN1_GENERALIZEDTIME }, /* +1 second */
+    { "20001130185959-0500", -1, V_YASN1_GENERALIZEDTIME }, /* -1 second */
+    { "001201000000Z",        0, V_YASN1_UTCTIME },
+    { "001201010000+0100",    0, V_YASN1_UTCTIME },
+    { "001201050000+0500",    0, V_YASN1_UTCTIME },
+    { "001130230000-0100",    0, V_YASN1_UTCTIME },
+    { "001130190000-0500",    0, V_YASN1_UTCTIME },
+    { "001201000000-0000",    0, V_YASN1_UTCTIME },
+    { "001201000001-0000",    1, V_YASN1_UTCTIME }, /* +1 second */
+    { "001130235959-0000",   -1, V_YASN1_UTCTIME }, /* -1 second */
+    { "20001201000000+0000",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001201000000+0100", -1, V_YASN1_GENERALIZEDTIME },
+    { "001201000000+0100",   -1, V_YASN1_UTCTIME },
+    { "20001201000000-0100",  1, V_YASN1_GENERALIZEDTIME },
+    { "001201000000-0100",    1, V_YASN1_UTCTIME },
+    { "20001201123400+1234",  0, V_YASN1_GENERALIZEDTIME },
+    { "20001130112600-1234",  0, V_YASN1_GENERALIZEDTIME },
 };
 
 static time_t the_time = 975628800;
-static ASN1_TIME the_asn1_time = {
+static YASN1_TIME the_asn1_time = {
     15,
-    V_ASN1_GENERALIZEDTIME,
+    V_YASN1_GENERALIZEDTIME,
     (unsigned char*)"20001201000000Z",
     0
 };
 
 static int test_offset(int idx)
 {
-    ASN1_TIME at;
+    YASN1_TIME at;
     const TESTDATA *testdata = &tests[idx];
     int ret = -2;
     int day, sec;
@@ -76,8 +76,8 @@ static int test_offset(int idx)
     at.type = testdata->type;
     at.flags = 0;
 
-    if (!TEST_true(ASN1_TIME_diff(&day, &sec, &the_asn1_time, &at))) {
-        TEST_info("ASN1_TIME_diff() failed for %s\n", at.data);
+    if (!TEST_true(YASN1_TIME_diff(&day, &sec, &the_asn1_time, &at))) {
+        TEST_info("YASN1_TIME_diff() failed for %s\n", at.data);
         return 0;
     }
     if (day > 0)
@@ -92,14 +92,14 @@ static int test_offset(int idx)
         ret = 0;
 
     if (!TEST_int_eq(testdata->time_result, ret)) {
-        TEST_info("ASN1_TIME_diff() test failed for %s day=%d sec=%d\n", at.data, day, sec);
+        TEST_info("YASN1_TIME_diff() test failed for %s day=%d sec=%d\n", at.data, day, sec);
         return 0;
     }
 
-    ret = ASN1_TIME_cmp_time_t(&at, the_time);
+    ret = YASN1_TIME_cmp_time_t(&at, the_time);
 
     if (!TEST_int_eq(testdata->time_result, ret)) {
-        TEST_info("ASN1_UTCTIME_cmp_time_t() test failed for %s\n", at.data);
+        TEST_info("YASN1_UTCTIME_cmp_time_t() test failed for %s\n", at.data);
         return 0;
     }
 

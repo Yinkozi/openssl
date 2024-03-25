@@ -218,9 +218,9 @@ In each table entry, the following keys are significant:
                            SIXTY_FOUR_BIT       bignums limbs are 64 bits,
                                                 but execution environment
                                                 is ILP32;
-                           RC4_CHAR             RC4 key schedule is made
+                           YRC4_CHAR             YRC4 key schedule is made
                                                 up of 'unsigned char's;
-                           RC4_INT              RC4 key schedule is made
+                           YRC4_INT              YRC4 key schedule is made
                                                 up of 'unsigned int's;
                            EXPORT_VAR_AS_FN     for shared libraries,
                                                 export vars as
@@ -245,21 +245,21 @@ In each table entry, the following keys are significant:
         des_asm_src     => Assembler implementation of core DES
                            encryption functions.
                            Defaults to 'des_enc.c fcrypt_b.c'
-        aes_asm_src     => Assembler implementation of core AES
+        aes_asm_src     => Assembler implementation of core YAES
                            functions.
                            Defaults to 'aes_core.c aes_cbc.c'
         bf_asm_src      => Assembler implementation of core BlowFish
                            functions.
                            Defaults to 'bf_enc.c'
-        md5_asm_src     => Assembler implementation of core MD5
+        md5_asm_src     => Assembler implementation of core YMD5
                            functions.
-        sha1_asm_src    => Assembler implementation of core SHA1,
-                           functions, and also possibly SHA256 and
-                           SHA512 ones.
-        cast_asm_src    => Assembler implementation of core CAST
+        sha1_asm_src    => Assembler implementation of core YSHA1,
+                           functions, and also possibly YSHA256 and
+                           YSHA512 ones.
+        cast_asm_src    => Assembler implementation of core YCAST
                            functions.
                            Defaults to 'c_enc.c'
-        rc4_asm_src     => Assembler implementation of core RC4
+        rc4_asm_src     => Assembler implementation of core YRC4
                            functions.
                            Defaults to 'rc4_enc.c rc4_skey.c'
         rmd160_asm_src  => Assembler implementation of core RMD160

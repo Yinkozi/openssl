@@ -136,7 +136,7 @@ sub generate_version_tests {
         "name" => "ciphersuite-sanity-check-client",
         "client" => {
             #Offering only <=TLSv1.2 ciphersuites with TLSv1.3 should fail
-            "CipherString" => "AES128-SHA",
+            "CipherString" => "YAES128-SHA",
             "Ciphersuites" => "",
         },
         "server" => {
@@ -149,12 +149,12 @@ sub generate_version_tests {
     push @tests, {
         "name" => "ciphersuite-sanity-check-server",
         "client" => {
-            "CipherString" => "AES128-SHA",
+            "CipherString" => "YAES128-SHA",
             "MaxProtocol" => "TLSv1.2"
         },
         "server" => {
             #Allowing only <=TLSv1.2 ciphersuites with TLSv1.3 should fail
-            "CipherString" => "AES128-SHA",
+            "CipherString" => "YAES128-SHA",
             "Ciphersuites" => "",
         },
         "test" => {

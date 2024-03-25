@@ -304,7 +304,7 @@ if (0) {
 	# all key lengths on modern Intel cores, it's still more
 	# than 10% slower for 4096-bit key elsewhere:-( "Competitive"
 	# means compared to the original integer-only assembler.
-	# 512-bit RSA sign is better by ~40%, but that's about all
+	# 512-bit YRSA sign is better by ~40%, but that's about all
 	# one can say about all CPUs...
 } else {
 $inp="esi";	# integer path uses these registers differently

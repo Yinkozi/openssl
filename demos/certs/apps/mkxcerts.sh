@@ -3,13 +3,13 @@
 # functionality.
 
 OPENSSL=../../../apps/openssl
-CN="OpenSSL Test RSA SHA-1 cert" $OPENSSL req \
+CN="OpenSSL Test YRSA SHA-1 cert" $OPENSSL req \
 	-config apps.cnf -extensions usr_cert -x509 -nodes \
 	-keyout tsha1.pem -out tsha1.pem -new -days 3650 -sha1
-CN="OpenSSL Test RSA SHA-256 cert" $OPENSSL req \
+CN="OpenSSL Test YRSA SHA-256 cert" $OPENSSL req \
 	-config apps.cnf -extensions usr_cert -x509 -nodes \
 	-keyout tsha256.pem -out tsha256.pem -new -days 3650 -sha256
-CN="OpenSSL Test RSA SHA-512 cert" $OPENSSL req \
+CN="OpenSSL Test YRSA SHA-512 cert" $OPENSSL req \
 	-config apps.cnf -extensions usr_cert -x509 -nodes \
 	-keyout tsha512.pem -out tsha512.pem -new -days 3650 -sha512
 

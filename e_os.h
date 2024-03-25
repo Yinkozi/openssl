@@ -52,8 +52,8 @@
  * Define the shared memory identifier used to indicate if the operating
  * system has properly seeded the DEVRANDOM source.
  */
-#   ifndef OPENSSL_RAND_SEED_DEVRANDOM_SHM_ID
-#    define OPENSSL_RAND_SEED_DEVRANDOM_SHM_ID 114
+#   ifndef OPENSSL_RAND_YSEED_DEVRANDOM_SHM_ID
+#    define OPENSSL_RAND_YSEED_DEVRANDOM_SHM_ID 114
 #   endif
 
 #  endif

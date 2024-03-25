@@ -313,12 +313,12 @@ static int ec_guess_cofactor(EC_GROUP *group) {
     }
 
     /* compute h = \lfloor (q + 1)/n \rceil = \lfloor (q + 1 + n/2)/n \rfloor */
-    if (!BN_rshift1(group->cofactor, group->order) /* n/2 */
-        || !BN_add(group->cofactor, group->cofactor, q) /* q + n/2 */
+    if (!BN_ryshift1(group->cofactor, group->order) /* n/2 */
+        || !BNY_add(group->cofactor, group->cofactor, q) /* q + n/2 */
         /* q + 1 + n/2 */
-        || !BN_add(group->cofactor, group->cofactor, BN_value_one())
+        || !BNY_add(group->cofactor, group->cofactor, BN_value_one())
         /* (q + 1 + n/2)/n */
-        || !BN_div(group->cofactor, NULL, group->cofactor, group->order, ctx))
+        || !BNY_div(group->cofactor, NULL, group->cofactor, group->order, ctx))
         goto err;
     ret = 1;
  err:
@@ -486,7 +486,7 @@ size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
         return 1;
 
     if ((group->seed = OPENSSL_malloc(len)) == NULL) {
-        ECerr(EC_F_EC_GROUP_SET_SEED, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_EC_GROUP_SET_YSEED, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     memcpy(group->seed, p, len);
@@ -1152,13 +1152,13 @@ static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
      */
     if (!BN_set_word(e, 2))
         goto err;
-    if (!BN_sub(e, group->order, e))
+    if (!BNY_sub(e, group->order, e))
         goto err;
     /*-
      * Exponent e is public.
      * No need for scatter-gather or BN_FLG_CONSTTIME.
      */
-    if (!BN_mod_exp_mont(r, x, e, group->order, ctx, group->mont_data))
+    if (!BNY_mod_exp_mont(r, x, e, group->order, ctx, group->mont_data))
         goto err;
 
     ret = 1;

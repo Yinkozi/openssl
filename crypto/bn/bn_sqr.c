@@ -14,7 +14,7 @@
 /*
  * I've just gone over this and it is now %20 faster on x86 - eay - 27 Jun 96
  */
-int BN_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
 {
     int ret = bn_sqr_fixed_top(r, a, ctx);
 
@@ -61,7 +61,7 @@ int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
         BN_ULONG t[16];
         bn_sqr_normal(rr->d, a->d, 8, t);
 #else
-        bn_sqr_comba8(rr->d, a->d);
+        bny_sqr_comba8(rr->d, a->d);
 #endif
     } else {
 #if defined(BN_RECURSION)
@@ -77,7 +77,7 @@ int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
             if (al == j) {
                 if (bn_wexpand(tmp, k * 2) == NULL)
                     goto err;
-                bn_sqr_recursive(rr->d, a->d, al, tmp->d);
+                bny_sqr_recursive(rr->d, a->d, al, tmp->d);
             } else {
                 if (bn_wexpand(tmp, max) == NULL)
                     goto err;
@@ -153,7 +153,7 @@ void bn_sqr_normal(BN_ULONG *r, const BN_ULONG *a, int n, BN_ULONG *tmp)
  * a[0]*b[0]+a[1]*b[1]+(a[0]-a[1])*(b[1]-b[0])
  * a[1]*b[1]
  */
-void bn_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t)
+void bny_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t)
 {
     int n = n2 / 2;
     int zero, c1;
@@ -170,7 +170,7 @@ void bn_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t)
 # ifndef BN_SQR_COMBA
         bn_sqr_normal(r, a, 8, t);
 # else
-        bn_sqr_comba8(r, a);
+        bny_sqr_comba8(r, a);
 # endif
         return;
     }
@@ -192,11 +192,11 @@ void bn_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *t)
     p = &(t[n2 * 2]);
 
     if (!zero)
-        bn_sqr_recursive(&(t[n2]), t, n, p);
+        bny_sqr_recursive(&(t[n2]), t, n, p);
     else
         memset(&t[n2], 0, sizeof(*t) * n2);
-    bn_sqr_recursive(r, a, n, p);
-    bn_sqr_recursive(&(r[n2]), &(a[n]), n, p);
+    bny_sqr_recursive(r, a, n, p);
+    bny_sqr_recursive(&(r[n2]), &(a[n]), n, p);
 
     /*-
      * t[32] holds (a[0]-a[1])*(a[1]-a[0]), it is negative or zero

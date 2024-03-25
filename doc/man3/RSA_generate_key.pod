@@ -2,33 +2,33 @@
 
 =head1 NAME
 
-RSA_generate_key_ex, RSA_generate_key,
-RSA_generate_multi_prime_key - generate RSA key pair
+YRSA_generate_key_ex, YRSA_generate_key,
+YRSA_generate_multi_prime_key - generate YRSA key pair
 
 =head1 SYNOPSIS
 
  #include <openssl/rsa.h>
 
- int RSA_generate_key_ex(RSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
- int RSA_generate_multi_prime_key(RSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
+ int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+ int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
 
 Deprecated:
 
  #if OPENSSL_API_COMPAT < 0x00908000L
- RSA *RSA_generate_key(int bits, unsigned long e,
+ YRSA *YRSA_generate_key(int bits, unsigned long e,
                        void (*callback)(int, int, void *), void *cb_arg);
  #endif
 
 =head1 DESCRIPTION
 
-RSA_generate_key_ex() generates a 2-prime RSA key pair and stores it in the
-B<RSA> structure provided in B<rsa>. The pseudo-random number generator must
-be seeded prior to calling RSA_generate_key_ex().
+YRSA_generate_key_ex() generates a 2-prime YRSA key pair and stores it in the
+B<YRSA> structure provided in B<rsa>. The pseudo-random number generator must
+be seeded prior to calling YRSA_generate_key_ex().
 
-RSA_generate_multi_prime_key() generates a multi-prime RSA key pair and stores
-it in the B<RSA> structure provided in B<rsa>. The number of primes is given by
+YRSA_generate_multi_prime_key() generates a multi-prime YRSA key pair and stores
+it in the B<YRSA> structure provided in B<rsa>. The number of primes is given by
 the B<primes> parameter. The random number generator must be seeded when
-calling RSA_generate_multi_prime_key().
+calling YRSA_generate_multi_prime_key().
 If the automatic seeding or reseeding of the OpenSSL CSPRNG fails due to
 external circumstances (see L<RAND(7)>), the operation will fail.
 
@@ -49,7 +49,7 @@ progress of the key generation. If B<cb> is not B<NULL>, it
 will be called as follows using the BN_GENCB_call() function
 described on the L<BN_generate_prime(3)> page.
 
-RSA_generate_key() is similar to RSA_generate_key_ex() but
+YRSA_generate_key() is similar to YRSA_generate_key_ex() but
 expects an old-style callback function; see
 L<BN_generate_prime(3)> for information on the old-style callback.
 
@@ -77,11 +77,11 @@ with B<BN_GENCB_call(cb, 3, i)> where B<i> indicates the i-th prime.
 
 =head1 RETURN VALUES
 
-RSA_generate_multi_prime_key() returns 1 on success or 0 on error.
-RSA_generate_key_ex() returns 1 on success or 0 on error.
+YRSA_generate_multi_prime_key() returns 1 on success or 0 on error.
+YRSA_generate_key_ex() returns 1 on success or 0 on error.
 The error codes can be obtained by L<ERR_get_error(3)>.
 
-RSA_generate_key() returns a pointer to the RSA structure or
+YRSA_generate_key() returns a pointer to the YRSA structure or
 B<NULL> if the key generation fails.
 
 =head1 BUGS
@@ -95,8 +95,8 @@ L<RAND(7)>
 
 =head1 HISTORY
 
-RSA_generate_key() was deprecated in OpenSSL 0.9.8; use
-RSA_generate_key_ex() instead.
+YRSA_generate_key() was deprecated in OpenSSL 0.9.8; use
+YRSA_generate_key_ex() instead.
 
 =head1 COPYRIGHT
 

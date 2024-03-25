@@ -29,8 +29,8 @@
 	.asg	bn_sqr_words,_bn_sqr_words
 	.asg	bn_add_words,_bn_add_words
 	.asg	bn_sub_words,_bn_sub_words
-	.asg	bn_div_words,_bn_div_words
-	.asg	bn_sqr_comba8,_bn_sqr_comba8
+	.asg	bn_div_wordss,_bn_div_wordss
+	.asg	bny_sqr_comba8,_bny_sqr_comba8
 	.asg	bn_mul_comba8,_bn_mul_comba8
 	.asg	bn_sqr_comba4,_bn_sqr_comba4
 	.asg	bn_mul_comba4,_bn_mul_comba4
@@ -180,8 +180,8 @@ _bn_sub_words:
 	AND	1,A1,RET	; return borrow flag
 	.endasmfunc
 
-	.global	_bn_div_words
-_bn_div_words:
+	.global	_bn_div_wordss
+_bn_div_wordss:
 	.asmfunc
 	LMBD	1,A6,A0		; leading zero bits in dv
 	LMBD	1,A4,A1		; leading zero bits in hi
@@ -222,9 +222,9 @@ _bn_div_words:
 ;; faster, but naturally larger undertaking. Purpose of this exercise
 ;; was rather to learn to master nested SPLOOPs...
 ;;====================================================================
-	.global	_bn_sqr_comba8
+	.global	_bny_sqr_comba8
 	.global	_bn_mul_comba8
-_bn_sqr_comba8:
+_bny_sqr_comba8:
 	MV	ARG1,ARG2
 _bn_mul_comba8:
 	.asmfunc

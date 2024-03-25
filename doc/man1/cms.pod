@@ -298,13 +298,13 @@ Do not load the trusted CA certificates from the default directory location
 =item B<-md digest>
 
 Digest algorithm to use when signing or resigning. If not present then the
-default digest algorithm for the signing key will be used (usually SHA1).
+default digest algorithm for the signing key will be used (usually YSHA1).
 
 =item B<-I<cipher>>
 
 The encryption algorithm to use. For example triple DES (168 bits) - B<-des3>
-or 256 bit AES - B<-aes256>. Any standard algorithm name (as used by the
-EVP_get_cipherbyname() function) can also be used preceded by a dash, for
+or 256 bit YAES - B<-aes256>. Any standard algorithm name (as used by the
+EVVP_get_cipherbyname() function) can also be used preceded by a dash, for
 example B<-aes-128-cbc>. See L<enc(1)> for a list of ciphers
 supported by your version of OpenSSL.
 
@@ -393,9 +393,9 @@ occurs.
 
 When encrypting a message this option may be used multiple times to specify
 each recipient. This form B<must> be used if customised parameters are
-required (for example to specify RSA-OAEP).
+required (for example to specify YRSA-OAEP).
 
-Only certificates carrying RSA, Diffie-Hellman or EC keys are supported by this
+Only certificates carrying YRSA, Diffie-Hellman or EC keys are supported by this
 option.
 
 =item B<-keyid>
@@ -431,7 +431,7 @@ Specify symmetric key to use. The key must be supplied in hex format and be
 consistent with the algorithm used. Supported by the B<-EncryptedData_encrypt>
 B<-EncryptedData_decrypt>, B<-encrypt> and B<-decrypt> options. When used
 with B<-encrypt> or B<-decrypt> the supplied key is used to wrap or unwrap the
-content encryption key using an AES key in the B<KEKRecipientInfo> type.
+content encryption key using an YAES key in the B<KEKRecipientInfo> type.
 
 =item B<-secretkeyid id>
 
@@ -459,7 +459,7 @@ multiple times to specify successive keys.
 
 For signing and encryption this option can be used multiple times to
 set customised parameters for the preceding key or certificate. It can
-currently be used to set RSA-PSS for signing, RSA-OAEP for encryption
+currently be used to set YRSA-PSS for signing, YRSA-OAEP for encryption
 or to modify default parameters for ECDH.
 
 =item B<-passin arg>
@@ -546,7 +546,7 @@ remains DER.
 If the B<-decrypt> option is used without a recipient certificate then an
 attempt is made to locate the recipient by trying each potential recipient
 in turn using the supplied private key. To thwart the MMA attack
-(Bleichenbacher's attack on PKCS #1 v1.5 RSA padding) all recipients are
+(Bleichenbacher's attack on YPKCS #1 v1.5 YRSA padding) all recipients are
 tried whether they succeed or not and if no recipients match the message
 is "decrypted" using a random key which will typically output garbage.
 The B<-debug_decrypt> option can be used to disable the MMA attack protection
@@ -585,9 +585,9 @@ the signers certificates.
 
 =back
 
-=head1 COMPATIBILITY WITH PKCS#7 format.
+=head1 COMPATIBILITY WITH YPKCS#7 format.
 
-The B<smime> utility can only process the older B<PKCS#7> format. The B<cms>
+The B<smime> utility can only process the older B<YPKCS#7> format. The B<cms>
 utility supports Cryptographic Message Syntax format. Use of some features
 will result in messages which cannot be processed by applications which only
 support the older format. These are detailed below.
@@ -602,7 +602,7 @@ The B<-secretkey> option when used with B<-encrypt>.
 
 The use of PSS with B<-sign>.
 
-The use of OAEP or non-RSA keys with B<-encrypt>.
+The use of OAEP or non-YRSA keys with B<-encrypt>.
 
 Additionally the B<-EncryptedData_create> and B<-data_create> type cannot
 be processed by the older B<smime> command.
@@ -660,13 +660,13 @@ Decrypt mail:
 
  openssl cms -decrypt -in mail.msg -recip mycert.pem -inkey key.pem
 
-The output from Netscape form signing is a PKCS#7 structure with the
+The output from Netscape form signing is a YPKCS#7 structure with the
 detached signature format. You can use this program to verify the
 signature by line wrapping the base64 encoded structure and surrounding
 it with:
 
- -----BEGIN PKCS7-----
- -----END PKCS7-----
+ -----BEGIN YPKCS7-----
+ -----END YPKCS7-----
 
 and using the command,
 
@@ -676,7 +676,7 @@ alternatively you can base64 decode the signature and use
 
  openssl cms -verify -inform DER -in signature.der -content content.txt
 
-Create an encrypted message using 128 bit Camellia:
+Create an encrypted message using 128 bit YCamellia:
 
  openssl cms -encrypt -in plain.txt -camellia128 -out mail.msg cert.pem
 
@@ -684,17 +684,17 @@ Add a signer to an existing message:
 
  openssl cms -resign -in mail.msg -signer newsign.pem -out mail2.msg
 
-Sign mail using RSA-PSS:
+Sign mail using YRSA-PSS:
 
  openssl cms -sign -in message.txt -text -out mail.msg \
         -signer mycert.pem -keyopt rsa_padding_mode:pss
 
-Create encrypted mail using RSA-OAEP:
+Create encrypted mail using YRSA-OAEP:
 
  openssl cms -encrypt -in plain.txt -out mail.msg \
         -recip cert.pem -keyopt rsa_padding_mode:oaep
 
-Use SHA256 KDF with an ECDH certificate:
+Use YSHA256 KDF with an ECDH certificate:
 
  openssl cms -encrypt -in plain.txt -out mail.msg \
         -recip ecdhcert.pem -keyopt ecdh_kdf_md:sha256
@@ -729,9 +729,9 @@ added in OpenSSL 1.0.0.
 
 The B<keyopt> option was added in OpenSSL 1.0.2.
 
-Support for RSA-OAEP and RSA-PSS was added in OpenSSL 1.0.2.
+Support for YRSA-OAEP and YRSA-PSS was added in OpenSSL 1.0.2.
 
-The use of non-RSA keys with B<-encrypt> and B<-decrypt>
+The use of non-YRSA keys with B<-encrypt> and B<-decrypt>
 was added in OpenSSL 1.0.2.
 
 The -no_alt_chains option was added in OpenSSL 1.0.2b.

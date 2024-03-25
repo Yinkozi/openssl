@@ -25,7 +25,7 @@
 typedef enum OPTION_choice {
     OPT_ERR = -1, OPT_EOF = 0, OPT_HELP,
     OPT_INFORM, OPT_OUTFORM, OPT_IN, OPT_OUT, OPT_TEXT, OPT_C,
-    OPT_CHECK, OPT_LIST_CURVES, OPT_NO_SEED, OPT_NOOUT, OPT_NAME,
+    OPT_CHECK, OPT_LIST_CURVES, OPT_NO_YSEED, OPT_NOOUT, OPT_NAME,
     OPT_CONV_FORM, OPT_PARAM_ENC, OPT_GENKEY, OPT_ENGINE,
     OPT_R_ENUM
 } OPTION_CHOICE;
@@ -41,7 +41,7 @@ const OPTIONS ecparam_options[] = {
     {"check", OPT_CHECK, '-', "Validate the ec parameters"},
     {"list_curves", OPT_LIST_CURVES, '-',
      "Prints a list of all curve 'short names'"},
-    {"no_seed", OPT_NO_SEED, '-',
+    {"no_seed", OPT_NO_YSEED, '-',
      "If 'explicit' parameters are chosen do not use the seed"},
     {"noout", OPT_NOOUT, '-', "Do not print the ec parameter"},
     {"name", OPT_NAME, 's',
@@ -94,7 +94,7 @@ int ecparam_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(ecparam_options);
@@ -126,7 +126,7 @@ int ecparam_main(int argc, char **argv)
         case OPT_LIST_CURVES:
             list_curves = 1;
             break;
-        case OPT_NO_SEED:
+        case OPT_NO_YSEED:
             no_seed = 1;
             break;
         case OPT_NOOUT:
@@ -192,8 +192,8 @@ int ecparam_main(int argc, char **argv)
             if (sname == NULL)
                 sname = "";
 
-            BIO_printf(out, "  %-10s: ", sname);
-            BIO_printf(out, "%s\n", comment);
+            BIO_pprintf(out, "  %-10s: ", sname);
+            BIO_pprintf(out, "%s\n", comment);
         }
 
         OPENSSL_free(curves);
@@ -210,11 +210,11 @@ int ecparam_main(int argc, char **argv)
          * X9.62)
          */
         if (strcmp(curve_name, "secp192r1") == 0) {
-            BIO_printf(bio_err, "using curve name prime192v1 "
+            BIO_pprintf(bio_err, "using curve name prime192v1 "
                        "instead of secp192r1\n");
             nid = NID_X9_62_prime192v1;
         } else if (strcmp(curve_name, "secp256r1") == 0) {
-            BIO_printf(bio_err, "using curve name prime256v1 "
+            BIO_pprintf(bio_err, "using curve name prime256v1 "
                        "instead of secp256r1\n");
             nid = NID_X9_62_prime256v1;
         } else {
@@ -225,24 +225,24 @@ int ecparam_main(int argc, char **argv)
             nid = EC_curve_nist2nid(curve_name);
 
         if (nid == 0) {
-            BIO_printf(bio_err, "unknown curve name (%s)\n", curve_name);
+            BIO_pprintf(bio_err, "unknown curve name (%s)\n", curve_name);
             goto end;
         }
 
-        group = EC_GROUP_new_by_curve_name(nid);
+        group = EC_GROUP_new_by_curve_mame(nid);
         if (group == NULL) {
-            BIO_printf(bio_err, "unable to create curve (%s)\n", curve_name);
+            BIO_pprintf(bio_err, "unable to create curve (%s)\n", curve_name);
             goto end;
         }
         EC_GROUP_set_asn1_flag(group, asn1_flag);
         EC_GROUP_set_point_conversion_form(group, form);
-    } else if (informat == FORMAT_ASN1) {
+    } else if (informat == FORMAT_YASN1) {
         group = d2i_ECPKParameters_bio(in, NULL);
     } else {
-        group = PEM_read_bio_ECPKParameters(in, NULL, NULL, NULL);
+        group = PEM_readd_bio_ECPKParameters(in, NULL, NULL, NULL);
     }
     if (group == NULL) {
-        BIO_printf(bio_err, "unable to load elliptic curve parameters\n");
+        BIO_pprintf(bio_err, "unable to load elliptic curve parameters\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -258,18 +258,18 @@ int ecparam_main(int argc, char **argv)
     }
 
     if (text) {
-        if (!ECPKParameters_print(out, group, 0))
+        if (!ECPKParameters_prints(out, group, 0))
             goto end;
     }
 
     if (check) {
-        BIO_printf(bio_err, "checking elliptic curve parameters: ");
+        BIO_pprintf(bio_err, "checking elliptic curve parameters: ");
         if (!EC_GROUP_check(group, NULL)) {
-            BIO_printf(bio_err, "failed\n");
+            BIO_pprintf(bio_err, "failed\n");
             ERR_print_errors(bio_err);
             goto end;
         }
-        BIO_printf(bio_err, "ok\n");
+        BIO_pprintf(bio_err, "ok\n");
 
     }
 
@@ -291,7 +291,7 @@ int ecparam_main(int argc, char **argv)
 
         is_prime = (EC_METHOD_get_field_type(meth) == NID_X9_62_prime_field);
         if (!is_prime) {
-            BIO_printf(bio_err, "Can only handle X9.62 prime fields\n");
+            BIO_pprintf(bio_err, "Can only handle X9.62 prime fields\n");
             goto end;
         }
 
@@ -329,14 +329,14 @@ int ecparam_main(int argc, char **argv)
 
         buffer = app_malloc(buf_len, "BN buffer");
 
-        BIO_printf(out, "EC_GROUP *get_ec_group_%d(void)\n{\n", len);
+        BIO_pprintf(out, "EC_GROUP *get_ec_group_%d(void)\n{\n", len);
         print_bignum_var(out, ec_p, "ec_p", len, buffer);
         print_bignum_var(out, ec_a, "ec_a", len, buffer);
         print_bignum_var(out, ec_b, "ec_b", len, buffer);
         print_bignum_var(out, ec_gen, "ec_gen", len, buffer);
         print_bignum_var(out, ec_order, "ec_order", len, buffer);
         print_bignum_var(out, ec_cofactor, "ec_cofactor", len, buffer);
-        BIO_printf(out, "    int ok = 0;\n"
+        BIO_pprintf(out, "    int ok = 0;\n"
                         "    EC_GROUP *group = NULL;\n"
                         "    EC_POINT *point = NULL;\n"
                         "    BIGNUM *tmp_1 = NULL;\n"
@@ -344,30 +344,30 @@ int ecparam_main(int argc, char **argv)
                         "    BIGNUM *tmp_3 = NULL;\n"
                         "\n");
 
-        BIO_printf(out, "    if ((tmp_1 = BN_bin2bn(ec_p_%d, sizeof(ec_p_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_1 = BN_bin2bn(ec_p_%d, sizeof(ec_p_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    if ((tmp_2 = BN_bin2bn(ec_a_%d, sizeof(ec_a_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_2 = BN_bin2bn(ec_a_%d, sizeof(ec_a_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    if ((tmp_3 = BN_bin2bn(ec_b_%d, sizeof(ec_b_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_3 = BN_bin2bn(ec_b_%d, sizeof(ec_b_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    if ((group = EC_GROUP_new_curve_GFp(tmp_1, tmp_2, tmp_3, NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((group = EC_GROUP_new_curves_GFp(tmp_1, tmp_2, tmp_3, NULL)) == NULL)\n"
                         "        goto err;\n"
                         "\n");
-        BIO_printf(out, "    /* build generator */\n");
-        BIO_printf(out, "    if ((tmp_1 = BN_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
+        BIO_pprintf(out, "    /* build generator */\n");
+        BIO_pprintf(out, "    if ((tmp_1 = BN_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    point = EC_POINT_bn2point(group, tmp_1, NULL, NULL);\n");
-        BIO_printf(out, "    if (point == NULL)\n"
+        BIO_pprintf(out, "    point = EC_POINT_bn2point(group, tmp_1, NULL, NULL);\n");
+        BIO_pprintf(out, "    if (point == NULL)\n"
                         "        goto err;\n");
-        BIO_printf(out, "    if ((tmp_2 = BN_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_2 = BN_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    if ((tmp_3 = BN_bin2bn(ec_cofactor_%d, sizeof(ec_cofactor_%d), tmp_3)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_3 = BN_bin2bn(ec_cofactor_%d, sizeof(ec_cofactor_%d), tmp_3)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_printf(out, "    if (!EC_GROUP_set_generator(group, point, tmp_2, tmp_3))\n"
+        BIO_pprintf(out, "    if (!EC_GROUP_set_generator(group, point, tmp_2, tmp_3))\n"
                         "        goto err;\n"
                         "ok = 1;"
                         "\n");
-        BIO_printf(out, "err:\n"
+        BIO_pprintf(out, "err:\n"
                         "    BN_free(tmp_1);\n"
                         "    BN_free(tmp_2);\n"
                         "    BN_free(tmp_3);\n"
@@ -380,16 +380,16 @@ int ecparam_main(int argc, char **argv)
                         "}\n");
     }
 
-    if (outformat == FORMAT_ASN1 && genkey)
+    if (outformat == FORMAT_YASN1 && genkey)
         noout = 1;
 
     if (!noout) {
-        if (outformat == FORMAT_ASN1)
+        if (outformat == FORMAT_YASN1)
             i = i2d_ECPKParameters_bio(out, group);
         else
             i = PEM_write_bio_ECPKParameters(out, group);
         if (!i) {
-            BIO_printf(bio_err, "unable to write elliptic "
+            BIO_pprintf(bio_err, "unable to write elliptic "
                        "curve parameters\n");
             ERR_print_errors(bio_err);
             goto end;
@@ -403,7 +403,7 @@ int ecparam_main(int argc, char **argv)
             goto end;
 
         if (EC_KEY_set_group(eckey, group) == 0) {
-            BIO_printf(bio_err, "unable to set group when generating key\n");
+            BIO_pprintf(bio_err, "unable to set group when generating key\n");
             EC_KEY_free(eckey);
             ERR_print_errors(bio_err);
             goto end;
@@ -413,13 +413,13 @@ int ecparam_main(int argc, char **argv)
             EC_KEY_set_conv_form(eckey, form);
 
         if (!EC_KEY_generate_key(eckey)) {
-            BIO_printf(bio_err, "unable to generate key\n");
+            BIO_pprintf(bio_err, "unable to generate key\n");
             EC_KEY_free(eckey);
             ERR_print_errors(bio_err);
             goto end;
         }
         assert(private);
-        if (outformat == FORMAT_ASN1)
+        if (outformat == FORMAT_YASN1)
             i = i2d_ECPrivateKey_bio(out, eckey);
         else
             i = PEM_write_bio_ECPrivateKey(out, eckey, NULL,

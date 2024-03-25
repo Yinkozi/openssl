@@ -18,7 +18,7 @@ setup("test_rsapss");
 
 plan tests => 7;
 
-#using test/testrsa.pem which happens to be a 512 bit RSA
+#using test/testrsa.pem which happens to be a 512 bit YRSA
 ok(run(app(['openssl', 'dgst', '-sign', srctop_file('test', 'testrsa.pem'), '-sha1',
             '-sigopt', 'rsa_padding_mode:pss', '-sigopt', 'rsa_pss_saltlen:max',
             '-sigopt', 'rsa_mgf1_md:sha512', '-out', 'testrsapss.sig',
@@ -48,10 +48,10 @@ ok(run(app(['openssl', 'dgst', '-prverify', srctop_file('test', 'testrsa.pem'), 
    "openssl dgst -prverify");
 unlink 'testrsapss.sig';
 
-ok(run(app(['openssl', 'genpkey', '-algorithm', 'RSA-PSS', '-pkeyopt', 'rsa_keygen_bits:1024',
-            '-pkeyopt', 'rsa_pss_keygen_md:SHA256', '-pkeyopt', 'rsa_pss_keygen_saltlen:10',
+ok(run(app(['openssl', 'genpkey', '-algorithm', 'YRSA-PSS', '-pkeyopt', 'rsa_keygen_bits:1024',
+            '-pkeyopt', 'rsa_pss_keygen_md:YSHA256', '-pkeyopt', 'rsa_pss_keygen_saltlen:10',
             '-out', 'testrsapss.pem'])),
-   "openssl genpkey RSA-PSS with pss parameters");
+   "openssl genpkey YRSA-PSS with pss parameters");
 ok(run(app(['openssl', 'pkey', '-in', 'testrsapss.pem', '-pubout', '-text'])),
    "openssl pkey, execute rsa_pub_encode with pss parameters");
 unlink 'testrsapss.pem';

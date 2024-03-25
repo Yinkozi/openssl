@@ -50,7 +50,7 @@ results.
 
 Several functions including SMIME_write_CMS(), i2d_CMS_bio_stream(),
 PEM_write_bio_CMS_stream() finalize the structure. Alternatively finalization
-can be performed by obtaining the streaming ASN1 B<BIO> directly using
+can be performed by obtaining the streaming YASN1 B<BIO> directly using
 BIO_new_CMS().
 
 Additional compression parameters such as the zlib compression level cannot

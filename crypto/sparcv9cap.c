@@ -178,7 +178,7 @@ void OPENSSL_cpuid_setup(void)
             if (vec[0]&0x01000) OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJHPCACE;
             if (vec[0]&0x02000) OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJDESX;
             if (vec[0]&0x08000) OPENSSL_sparcv9cap_P[0] |= SPARCV9_IMA;
-            if (vec[0]&0x10000) OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJAESX;
+            if (vec[0]&0x10000) OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJYAESX;
             if (vec[1]&0x00008) OPENSSL_sparcv9cap_P[0] |= SPARCV9_VIS4;
 
             /* reconstruct %cfr copy */
@@ -264,7 +264,7 @@ void OPENSSL_cpuid_setup(void)
 
     if (sigsetjmp(common_jmp, 1) == 0) {
         _sparcv9_fjaesx_probe();
-        OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJAESX;
+        OPENSSL_sparcv9cap_P[0] |= SPARCV9_FJYAESX;
     }
 
     /*

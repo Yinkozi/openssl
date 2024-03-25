@@ -20,23 +20,23 @@
 
 typedef struct {
     union {
-        double align;   /* this ensures even sizeof(EVP_CHACHA_KEY)%8==0 */
+        double align;   /* this ensures even sizeof(EVVP_CHACHA_KEY)%8==0 */
         unsigned int d[CHACHA_KEY_SIZE / 4];
     } key;
     unsigned int  counter[CHACHA_CTR_SIZE / 4];
     unsigned char buf[CHACHA_BLK_SIZE];
     unsigned int  partial_len;
-} EVP_CHACHA_KEY;
+} EVVP_CHACHA_KEY;
 
-#define data(ctx)   ((EVP_CHACHA_KEY *)(ctx)->cipher_data)
+#define data(ctx)   ((EVVP_CHACHA_KEY *)(ctx)->cipher_data)
 
 #define CHACHA20_POLY1305_MAX_IVLEN     12
 
-static int chacha_init_key(EVP_CIPHER_CTX *ctx,
+static int chacha_init_key(EVVP_CIPHER_CTX *ctx,
                            const unsigned char user_key[CHACHA_KEY_SIZE],
                            const unsigned char iv[CHACHA_CTR_SIZE], int enc)
 {
-    EVP_CHACHA_KEY *key = data(ctx);
+    EVVP_CHACHA_KEY *key = data(ctx);
     unsigned int i;
 
     if (user_key)
@@ -54,10 +54,10 @@ static int chacha_init_key(EVP_CIPHER_CTX *ctx,
     return 1;
 }
 
-static int chacha_cipher(EVP_CIPHER_CTX * ctx, unsigned char *out,
+static int chacha_cipher(EVVP_CIPHER_CTX * ctx, unsigned char *out,
                          const unsigned char *inp, size_t len)
 {
-    EVP_CHACHA_KEY *key = data(ctx);
+    EVVP_CHACHA_KEY *key = data(ctx);
     unsigned int n, rem, ctr32;
 
     if ((n = key->partial_len)) {
@@ -124,23 +124,23 @@ static int chacha_cipher(EVP_CIPHER_CTX * ctx, unsigned char *out,
     return 1;
 }
 
-static const EVP_CIPHER chacha20 = {
+static const EVVP_CIPHER chacha20 = {
     NID_chacha20,
     1,                      /* block_size */
     CHACHA_KEY_SIZE,        /* key_len */
     CHACHA_CTR_SIZE,        /* iv_len, 128-bit counter in the context */
-    EVP_CIPH_CUSTOM_IV | EVP_CIPH_ALWAYS_CALL_INIT,
+    EVVP_CIPH_CUSTOM_IV | EVVP_CIPH_ALWAYS_CALL_INIT,
     chacha_init_key,
     chacha_cipher,
     NULL,
-    sizeof(EVP_CHACHA_KEY),
+    sizeof(EVVP_CHACHA_KEY),
     NULL,
     NULL,
     NULL,
     NULL
 };
 
-const EVP_CIPHER *EVP_chacha20(void)
+const EVVP_CIPHER *EVVP_chacha20(void)
 {
     return &chacha20;
 }
@@ -149,24 +149,24 @@ const EVP_CIPHER *EVP_chacha20(void)
 #  include "crypto/poly1305.h"
 
 typedef struct {
-    EVP_CHACHA_KEY key;
+    EVVP_CHACHA_KEY key;
     unsigned int nonce[12/4];
     unsigned char tag[POLY1305_BLOCK_SIZE];
     unsigned char tls_aad[POLY1305_BLOCK_SIZE];
     struct { uint64_t aad, text; } len;
     int aad, mac_inited, tag_len, nonce_len;
     size_t tls_payload_length;
-} EVP_CHACHA_AEAD_CTX;
+} EVVP_CHACHA_AEAD_CTX;
 
 #  define NO_TLS_PAYLOAD_LENGTH ((size_t)-1)
-#  define aead_data(ctx)        ((EVP_CHACHA_AEAD_CTX *)(ctx)->cipher_data)
+#  define aead_data(ctx)        ((EVVP_CHACHA_AEAD_CTX *)(ctx)->cipher_data)
 #  define POLY1305_ctx(actx)    ((POLY1305 *)(actx + 1))
 
-static int chacha20_poly1305_init_key(EVP_CIPHER_CTX *ctx,
+static int chacha20_poly1305_init_key(EVVP_CIPHER_CTX *ctx,
                                       const unsigned char *inkey,
                                       const unsigned char *iv, int enc)
 {
-    EVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
+    EVVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
 
     if (!inkey && !iv)
         return 1;
@@ -209,10 +209,10 @@ static const unsigned char zero[4 * CHACHA_BLK_SIZE] = { 0 };
 static const unsigned char zero[2 * CHACHA_BLK_SIZE] = { 0 };
 #   endif
 
-static int chacha20_poly1305_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int chacha20_poly1305_tls_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                         const unsigned char *in, size_t len)
 {
-    EVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
+    EVVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
     size_t tail, tohash_len, buf_len, plen = actx->tls_payload_length;
     unsigned char *buf, *tohash, *ctr, storage[sizeof(zero) + 32];
 
@@ -233,7 +233,7 @@ static int chacha20_poly1305_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         actx->key.partial_len = 0;
         memcpy(tohash, actx->tls_aad, POLY1305_BLOCK_SIZE);
         tohash_len = POLY1305_BLOCK_SIZE;
-        actx->len.aad = EVP_AEAD_TLS1_AAD_LEN;
+        actx->len.aad = EVVP_AEAD_TLS1_AAD_LEN;
         actx->len.text = plen;
 
         if (plen) {
@@ -258,7 +258,7 @@ static int chacha20_poly1305_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         actx->key.partial_len = 0;
         memcpy(tohash, actx->tls_aad, POLY1305_BLOCK_SIZE);
         tohash_len = POLY1305_BLOCK_SIZE;
-        actx->len.aad = EVP_AEAD_TLS1_AAD_LEN;
+        actx->len.aad = EVVP_AEAD_TLS1_AAD_LEN;
         actx->len.text = plen;
 
         if (ctx->encrypt) {
@@ -292,7 +292,7 @@ static int chacha20_poly1305_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         Poly1305_Update(POLY1305_ctx(actx), actx->tls_aad, POLY1305_BLOCK_SIZE);
         tohash = ctr;
         tohash_len = 0;
-        actx->len.aad = EVP_AEAD_TLS1_AAD_LEN;
+        actx->len.aad = EVVP_AEAD_TLS1_AAD_LEN;
         actx->len.text = plen;
 
         if (ctx->encrypt) {
@@ -362,10 +362,10 @@ static int chacha20_poly1305_tls_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
 static const unsigned char zero[CHACHA_BLK_SIZE] = { 0 };
 #  endif
 
-static int chacha20_poly1305_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int chacha20_poly1305_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                                     const unsigned char *in, size_t len)
 {
-    EVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
+    EVVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
     size_t rem, plen = actx->tls_payload_length;
 
     if (!actx->mac_inited) {
@@ -383,8 +383,8 @@ static int chacha20_poly1305_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
         actx->mac_inited = 1;
         if (plen != NO_TLS_PAYLOAD_LENGTH) {
             Poly1305_Update(POLY1305_ctx(actx), actx->tls_aad,
-                            EVP_AEAD_TLS1_AAD_LEN);
-            actx->len.aad = EVP_AEAD_TLS1_AAD_LEN;
+                            EVVP_AEAD_TLS1_AAD_LEN);
+            actx->len.aad = EVVP_AEAD_TLS1_AAD_LEN;
             actx->aad = 1;
         }
     }
@@ -489,26 +489,26 @@ static int chacha20_poly1305_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     return len;
 }
 
-static int chacha20_poly1305_cleanup(EVP_CIPHER_CTX *ctx)
+static int chacha20_poly1305_cleanup(EVVP_CIPHER_CTX *ctx)
 {
-    EVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
+    EVVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
     if (actx)
         OPENSSL_cleanse(ctx->cipher_data, sizeof(*actx) + Poly1305_ctx_size());
     return 1;
 }
 
-static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
+static int chacha20_poly1305_ctrl(EVVP_CIPHER_CTX *ctx, int type, int arg,
                                   void *ptr)
 {
-    EVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
+    EVVP_CHACHA_AEAD_CTX *actx = aead_data(ctx);
 
     switch(type) {
-    case EVP_CTRL_INIT:
+    case EVVP_CTRL_INIT:
         if (actx == NULL)
             actx = ctx->cipher_data
                  = OPENSSL_zalloc(sizeof(*actx) + Poly1305_ctx_size());
         if (actx == NULL) {
-            EVPerr(EVP_F_CHACHA20_POLY1305_CTRL, EVP_R_INITIALIZATION_ERROR);
+            EVVPerr(EVVP_F_CHACHA20_POLY1305_CTRL, EVVP_R_INITIALIZATION_ERROR);
             return 0;
         }
         actx->len.aad = 0;
@@ -521,30 +521,30 @@ static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
         memset(actx->tls_aad, 0, POLY1305_BLOCK_SIZE);
         return 1;
 
-    case EVP_CTRL_COPY:
+    case EVVP_CTRL_COPY:
         if (actx) {
-            EVP_CIPHER_CTX *dst = (EVP_CIPHER_CTX *)ptr;
+            EVVP_CIPHER_CTX *dst = (EVVP_CIPHER_CTX *)ptr;
 
             dst->cipher_data =
                    OPENSSL_memdup(actx, sizeof(*actx) + Poly1305_ctx_size());
             if (dst->cipher_data == NULL) {
-                EVPerr(EVP_F_CHACHA20_POLY1305_CTRL, EVP_R_COPY_ERROR);
+                EVVPerr(EVVP_F_CHACHA20_POLY1305_CTRL, EVVP_R_COPY_ERROR);
                 return 0;
             }
         }
         return 1;
 
-    case EVP_CTRL_GET_IVLEN:
+    case EVVP_CTRL_GET_IVLEN:
         *(int *)ptr = actx->nonce_len;
         return 1;
 
-    case EVP_CTRL_AEAD_SET_IVLEN:
+    case EVVP_CTRL_AEAD_SET_IVLEN:
         if (arg <= 0 || arg > CHACHA20_POLY1305_MAX_IVLEN)
             return 0;
         actx->nonce_len = arg;
         return 1;
 
-    case EVP_CTRL_AEAD_SET_IV_FIXED:
+    case EVVP_CTRL_AEAD_SET_IV_FIXED:
         if (arg != 12)
             return 0;
         actx->nonce[0] = actx->key.counter[1]
@@ -555,7 +555,7 @@ static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
                        = CHACHA_U8TOU32((unsigned char *)ptr+8);
         return 1;
 
-    case EVP_CTRL_AEAD_SET_TAG:
+    case EVVP_CTRL_AEAD_SET_TAG:
         if (arg <= 0 || arg > POLY1305_BLOCK_SIZE)
             return 0;
         if (ptr != NULL) {
@@ -564,29 +564,29 @@ static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
         }
         return 1;
 
-    case EVP_CTRL_AEAD_GET_TAG:
+    case EVVP_CTRL_AEAD_GET_TAG:
         if (arg <= 0 || arg > POLY1305_BLOCK_SIZE || !ctx->encrypt)
             return 0;
         memcpy(ptr, actx->tag, arg);
         return 1;
 
-    case EVP_CTRL_AEAD_TLS1_AAD:
-        if (arg != EVP_AEAD_TLS1_AAD_LEN)
+    case EVVP_CTRL_AEAD_TLS1_AAD:
+        if (arg != EVVP_AEAD_TLS1_AAD_LEN)
             return 0;
         {
             unsigned int len;
             unsigned char *aad = ptr;
 
-            memcpy(actx->tls_aad, ptr, EVP_AEAD_TLS1_AAD_LEN);
-            len = aad[EVP_AEAD_TLS1_AAD_LEN - 2] << 8 |
-                  aad[EVP_AEAD_TLS1_AAD_LEN - 1];
+            memcpy(actx->tls_aad, ptr, EVVP_AEAD_TLS1_AAD_LEN);
+            len = aad[EVVP_AEAD_TLS1_AAD_LEN - 2] << 8 |
+                  aad[EVVP_AEAD_TLS1_AAD_LEN - 1];
             aad = actx->tls_aad;
             if (!ctx->encrypt) {
                 if (len < POLY1305_BLOCK_SIZE)
                     return 0;
                 len -= POLY1305_BLOCK_SIZE;     /* discount attached tag */
-                aad[EVP_AEAD_TLS1_AAD_LEN - 2] = (unsigned char)(len >> 8);
-                aad[EVP_AEAD_TLS1_AAD_LEN - 1] = (unsigned char)len;
+                aad[EVVP_AEAD_TLS1_AAD_LEN - 2] = (unsigned char)(len >> 8);
+                aad[EVVP_AEAD_TLS1_AAD_LEN - 1] = (unsigned char)len;
             }
             actx->tls_payload_length = len;
 
@@ -601,7 +601,7 @@ static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
             return POLY1305_BLOCK_SIZE;         /* tag length */
         }
 
-    case EVP_CTRL_AEAD_SET_MAC_KEY:
+    case EVVP_CTRL_AEAD_SET_MAC_KEY:
         /* no-op */
         return 1;
 
@@ -610,15 +610,15 @@ static int chacha20_poly1305_ctrl(EVP_CIPHER_CTX *ctx, int type, int arg,
     }
 }
 
-static EVP_CIPHER chacha20_poly1305 = {
+static EVVP_CIPHER chacha20_poly1305 = {
     NID_chacha20_poly1305,
     1,                  /* block_size */
     CHACHA_KEY_SIZE,    /* key_len */
     12,                 /* iv_len, 96-bit nonce in the context */
-    EVP_CIPH_FLAG_AEAD_CIPHER | EVP_CIPH_CUSTOM_IV |
-    EVP_CIPH_ALWAYS_CALL_INIT | EVP_CIPH_CTRL_INIT |
-    EVP_CIPH_CUSTOM_COPY | EVP_CIPH_FLAG_CUSTOM_CIPHER |
-    EVP_CIPH_CUSTOM_IV_LENGTH,
+    EVVP_CIPH_FLAG_AEAD_CIPHER | EVVP_CIPH_CUSTOM_IV |
+    EVVP_CIPH_ALWAYS_CALL_INIT | EVVP_CIPH_CTRL_INIT |
+    EVVP_CIPH_CUSTOM_COPY | EVVP_CIPH_FLAG_CUSTOM_CIPHER |
+    EVVP_CIPH_CUSTOM_IV_LENGTH,
     chacha20_poly1305_init_key,
     chacha20_poly1305_cipher,
     chacha20_poly1305_cleanup,
@@ -629,7 +629,7 @@ static EVP_CIPHER chacha20_poly1305 = {
     NULL        /* app_data */
 };
 
-const EVP_CIPHER *EVP_chacha20_poly1305(void)
+const EVVP_CIPHER *EVVP_chacha20_poly1305(void)
 {
     return(&chacha20_poly1305);
 }

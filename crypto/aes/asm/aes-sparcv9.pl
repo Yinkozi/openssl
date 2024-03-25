@@ -92,7 +92,7 @@ $code.=<<___;
 .section	".text",#alloc,#execinstr
 
 .align	256
-AES_Te:
+YAES_Te:
 ___
 &_data_word(
 	0xc66363a5, 0xf87c7c84, 0xee777799, 0xf67b7b8d,
@@ -192,12 +192,12 @@ $code.=<<___;
 	.byte	0x9b, 0x1e, 0x87, 0xe9, 0xce, 0x55, 0x28, 0xdf
 	.byte	0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68
 	.byte	0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
-.type	AES_Te,#object
-.size	AES_Te,(.-AES_Te)
+.type	YAES_Te,#object
+.size	YAES_Te,(.-YAES_Te)
 
 .align	64
 .skip	16
-_sparcv9_AES_encrypt:
+_sparcv9_YAES_encrypt:
 	save	%sp,-$frame-$locals,%sp
 	stx	%i7,[%sp+$bias+$frame+0]	! off-load return address
 	ld	[$key+240],$rounds
@@ -516,12 +516,12 @@ _sparcv9_AES_encrypt:
 
 	ret
 	restore
-.type	_sparcv9_AES_encrypt,#function
-.size	_sparcv9_AES_encrypt,(.-_sparcv9_AES_encrypt)
+.type	_sparcv9_YAES_encrypt,#function
+.size	_sparcv9_YAES_encrypt,(.-_sparcv9_YAES_encrypt)
 
 .align	32
-.globl	AES_encrypt
-AES_encrypt:
+.globl	YAES_encrypt
+YAES_encrypt:
 	or	%o0,%o1,%g1
 	andcc	%g1,3,%g0
 	bnz,pn	%xcc,.Lunaligned_enc
@@ -533,8 +533,8 @@ AES_encrypt:
 	ld	[%i0+12],%o3
 
 1:	call	.+8
-	add	%o7,AES_Te-1b,%o4
-	call	_sparcv9_AES_encrypt
+	add	%o7,YAES_Te-1b,%o4
+	call	_sparcv9_YAES_encrypt
 	mov	%i2,%o5
 
 	st	%o0,[%i1+0]
@@ -593,8 +593,8 @@ AES_encrypt:
 	or	%l4,%l6,%o3
 
 1:	call	.+8
-	add	%o7,AES_Te-1b,%o4
-	call	_sparcv9_AES_encrypt
+	add	%o7,YAES_Te-1b,%o4
+	call	_sparcv9_YAES_encrypt
 	mov	%i2,%o5
 
 	srl	%o0,24,%l0
@@ -631,14 +631,14 @@ AES_encrypt:
 
 	ret
 	restore
-.type	AES_encrypt,#function
-.size	AES_encrypt,(.-AES_encrypt)
+.type	YAES_encrypt,#function
+.size	YAES_encrypt,(.-YAES_encrypt)
 
 ___
 
 $code.=<<___;
 .align	256
-AES_Td:
+YAES_Td:
 ___
 &_data_word(
 	0x51f4a750, 0x7e416553, 0x1a17a4c3, 0x3a275e96,
@@ -738,12 +738,12 @@ $code.=<<___;
 	.byte	0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61
 	.byte	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26
 	.byte	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d
-.type	AES_Td,#object
-.size	AES_Td,(.-AES_Td)
+.type	YAES_Td,#object
+.size	YAES_Td,(.-YAES_Td)
 
 .align	64
 .skip	16
-_sparcv9_AES_decrypt:
+_sparcv9_YAES_decrypt:
 	save	%sp,-$frame-$locals,%sp
 	stx	%i7,[%sp+$bias+$frame+0]	! off-load return address
 	ld	[$key+240],$rounds
@@ -1062,12 +1062,12 @@ _sparcv9_AES_decrypt:
 
 	ret
 	restore
-.type	_sparcv9_AES_decrypt,#function
-.size	_sparcv9_AES_decrypt,(.-_sparcv9_AES_decrypt)
+.type	_sparcv9_YAES_decrypt,#function
+.size	_sparcv9_YAES_decrypt,(.-_sparcv9_YAES_decrypt)
 
 .align	32
-.globl	AES_decrypt
-AES_decrypt:
+.globl	YAES_decrypt
+YAES_decrypt:
 	or	%o0,%o1,%g1
 	andcc	%g1,3,%g0
 	bnz,pn	%xcc,.Lunaligned_dec
@@ -1079,8 +1079,8 @@ AES_decrypt:
 	ld	[%i0+12],%o3
 
 1:	call	.+8
-	add	%o7,AES_Td-1b,%o4
-	call	_sparcv9_AES_decrypt
+	add	%o7,YAES_Td-1b,%o4
+	call	_sparcv9_YAES_decrypt
 	mov	%i2,%o5
 
 	st	%o0,[%i1+0]
@@ -1139,8 +1139,8 @@ AES_decrypt:
 	or	%l4,%l6,%o3
 
 1:	call	.+8
-	add	%o7,AES_Td-1b,%o4
-	call	_sparcv9_AES_decrypt
+	add	%o7,YAES_Td-1b,%o4
+	call	_sparcv9_YAES_decrypt
 	mov	%i2,%o5
 
 	srl	%o0,24,%l0
@@ -1177,8 +1177,8 @@ AES_decrypt:
 
 	ret
 	restore
-.type	AES_decrypt,#function
-.size	AES_decrypt,(.-AES_decrypt)
+.type	YAES_decrypt,#function
+.size	YAES_decrypt,(.-YAES_decrypt)
 ___
 
 # fmovs instructions substituting for FP nops were originally added

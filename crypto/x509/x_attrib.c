@@ -15,44 +15,44 @@
 #include "x509_local.h"
 
 /*-
- * X509_ATTRIBUTE: this has the following form:
+ * YX509_ATTRIBUTE: this has the following form:
  *
  * typedef struct x509_attributes_st
  *      {
- *      ASN1_OBJECT *object;
- *      STACK_OF(ASN1_TYPE) *set;
- *      } X509_ATTRIBUTE;
+ *      YASN1_OBJECT *object;
+ *      STACK_OF(YASN1_TYPE) *set;
+ *      } YX509_ATTRIBUTE;
  *
  */
 
-ASN1_SEQUENCE(X509_ATTRIBUTE) = {
-        ASN1_SIMPLE(X509_ATTRIBUTE, object, ASN1_OBJECT),
-        ASN1_SET_OF(X509_ATTRIBUTE, set, ASN1_ANY)
-} ASN1_SEQUENCE_END(X509_ATTRIBUTE)
+YASN1_SEQUENCE(YX509_ATTRIBUTE) = {
+        YASN1_SIMPLE(YX509_ATTRIBUTE, object, YASN1_OBJECT),
+        YASN1_SET_OF(YX509_ATTRIBUTE, set, YASN1_ANY)
+} YASN1_SEQUENCE_END(YX509_ATTRIBUTE)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_ATTRIBUTE)
-IMPLEMENT_ASN1_DUP_FUNCTION(X509_ATTRIBUTE)
+IMPLEMENT_YASN1_FUNCTIONS(YX509_ATTRIBUTE)
+IMPLEMENT_YASN1_DUP_FUNCTION(YX509_ATTRIBUTE)
 
-X509_ATTRIBUTE *X509_ATTRIBUTE_create(int nid, int atrtype, void *value)
+YX509_ATTRIBUTE *YX509_ATTRIBUTE_create(int nid, int atrtype, void *value)
 {
-    X509_ATTRIBUTE *ret = NULL;
-    ASN1_TYPE *val = NULL;
-    ASN1_OBJECT *oid;
+    YX509_ATTRIBUTE *ret = NULL;
+    YASN1_TYPE *val = NULL;
+    YASN1_OBJECT *oid;
 
     if ((oid = OBJ_nid2obj(nid)) == NULL)
         return NULL;
-    if ((ret = X509_ATTRIBUTE_new()) == NULL)
+    if ((ret = YX509_ATTRIBUTE_new()) == NULL)
         return NULL;
     ret->object = oid;
-    if ((val = ASN1_TYPE_new()) == NULL)
+    if ((val = YASN1_TYPE_new()) == NULL)
         goto err;
-    if (!sk_ASN1_TYPE_push(ret->set, val))
+    if (!sk_YASN1_TYPE_push(ret->set, val))
         goto err;
 
-    ASN1_TYPE_set(val, atrtype, value);
+    YASN1_TYPE_set(val, atrtype, value);
     return ret;
  err:
-    X509_ATTRIBUTE_free(ret);
-    ASN1_TYPE_free(val);
+    YX509_ATTRIBUTE_free(ret);
+    YASN1_TYPE_free(val);
     return NULL;
 }

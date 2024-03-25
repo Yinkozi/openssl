@@ -11,19 +11,19 @@
 #include "cast_local.h"
 #include <openssl/opensslv.h>
 
-void CAST_ecb_encrypt(const unsigned char *in, unsigned char *out,
-                      const CAST_KEY *ks, int enc)
+void YCAST_ecb_encrypt(const unsigned char *in, unsigned char *out,
+                      const YCAST_KEY *ks, int enc)
 {
-    CAST_LONG l, d[2];
+    YCAST_LONG l, d[2];
 
     n2l(in, l);
     d[0] = l;
     n2l(in, l);
     d[1] = l;
     if (enc)
-        CAST_encrypt(d, ks);
+        YCAST_encrypt(d, ks);
     else
-        CAST_decrypt(d, ks);
+        YCAST_decrypt(d, ks);
     l = d[0];
     l2n(l, out);
     l = d[1];

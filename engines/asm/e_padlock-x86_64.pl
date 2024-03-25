@@ -494,7 +494,7 @@ $code.=<<___				if ($mode eq "ctr32");
 
 	lea	-16($ctx),%rax		# ivp
 	lea	16($ctx),%rbx		# key
-	shr	\$4,$len		# len/=AES_BLOCK_SIZE
+	shr	\$4,$len		# len/=YAES_BLOCK_SIZE
 	.byte	0xf3,0x0f,0xa7,$opcode	# rep xcrypt*
 
 	mov	-4($ctx),%eax		# pull 32-bit counter
@@ -527,7 +527,7 @@ ___
 $code.=<<___;
 	lea	-16($ctx),%rax		# ivp
 	lea	16($ctx),%rbx		# key
-	shr	\$4,$len		# len/=AES_BLOCK_SIZE
+	shr	\$4,$len		# len/=YAES_BLOCK_SIZE
 	.byte	0xf3,0x0f,0xa7,$opcode	# rep xcrypt*
 ___
 $code.=<<___				if ($mode !~ /ecb|ctr/);

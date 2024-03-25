@@ -18,12 +18,12 @@
 
 typedef struct {
     SM4_KEY ks;
-} EVP_SM4_KEY;
+} EVVP_SM4_KEY;
 
-static int sm4_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int sm4_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                         const unsigned char *iv, int enc)
 {
-    SM4_set_key(key, EVP_CIPHER_CTX_get_cipher_data(ctx));
+    SM4_set_key(key, EVVP_CIPHER_CTX_get_cipher_data(ctx));
     return 1;
 }
 
@@ -64,35 +64,35 @@ static void sm4_ofb128_encrypt(const unsigned char *in, unsigned char *out,
                           (block128_f)SM4_encrypt);
 }
 
-IMPLEMENT_BLOCK_CIPHER(sm4, ks, sm4, EVP_SM4_KEY, NID_sm4,
-                       16, 16, 16, 128, EVP_CIPH_FLAG_DEFAULT_ASN1,
+IMPLEMENT_BLOCK_CIPHER(sm4, ks, sm4, EVVP_SM4_KEY, NID_sm4,
+                       16, 16, 16, 128, EVVP_CIPH_FLAG_DEFAULT_YASN1,
                        sm4_init_key, 0, 0, 0, 0)
 
-static int sm4_ctr_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int sm4_ctr_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                           const unsigned char *in, size_t len)
 {
-    unsigned int num = EVP_CIPHER_CTX_num(ctx);
-    EVP_SM4_KEY *dat = EVP_C_DATA(EVP_SM4_KEY, ctx);
+    unsigned int num = EVVP_CIPHER_CTX_num(ctx);
+    EVVP_SM4_KEY *dat = EVVP_C_DATA(EVVP_SM4_KEY, ctx);
 
     CRYPTO_ctr128_encrypt(in, out, len, &dat->ks,
-                          EVP_CIPHER_CTX_iv_noconst(ctx),
-                          EVP_CIPHER_CTX_buf_noconst(ctx), &num,
+                          EVVP_CIPHER_CTX_iv_noconst(ctx),
+                          EVVP_CIPHER_CTX_buf_noconst(ctx), &num,
                           (block128_f)SM4_encrypt);
-    EVP_CIPHER_CTX_set_num(ctx, num);
+    EVVP_CIPHER_CTX_set_num(ctx, num);
     return 1;
 }
 
-static const EVP_CIPHER sm4_ctr_mode = {
+static const EVVP_CIPHER sm4_ctr_mode = {
     NID_sm4_ctr, 1, 16, 16,
-    EVP_CIPH_CTR_MODE,
+    EVVP_CIPH_CTR_MODE,
     sm4_init_key,
     sm4_ctr_cipher,
     NULL,
-    sizeof(EVP_SM4_KEY),
+    sizeof(EVVP_SM4_KEY),
     NULL, NULL, NULL, NULL
 };
 
-const EVP_CIPHER *EVP_sm4_ctr(void)
+const EVVP_CIPHER *EVVP_sm4_ctr(void)
 {
     return &sm4_ctr_mode;
 }

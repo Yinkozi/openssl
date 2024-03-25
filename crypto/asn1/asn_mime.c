@@ -19,8 +19,8 @@
 #include "asn1_local.h"
 
 /*
- * Generalised MIME like utilities for streaming ASN1. Although many have a
- * PKCS7/CMS like flavour others are more general purpose.
+ * Generalised MIME like utilities for streaming YASN1. Although many have a
+ * YPKCS7/CMS like flavour others are more general purpose.
  */
 
 /*
@@ -39,8 +39,8 @@ struct mime_header_st {
     STACK_OF(MIME_PARAM) *params; /* Zero or more parameters */
 };
 
-static int asn1_output_data(BIO *out, BIO *data, ASN1_VALUE *val, int flags,
-                            const ASN1_ITEM *it);
+static int asn1_output_data(BIO *out, BIO *data, YASN1_VALUE *val, int flags,
+                            const YASN1_ITEM *it);
 static char *strip_ends(char *name);
 static char *strip_start(char *name);
 static char *strip_end(char *name);
@@ -62,17 +62,17 @@ static void mime_hdr_free(MIME_HEADER *hdr);
 #define MAX_SMLEN 1024
 #define mime_debug(x)           /* x */
 
-/* Output an ASN1 structure in BER format streaming if necessary */
+/* Output an YASN1 structure in BER format streaming if necessary */
 
-int i2d_ASN1_bio_stream(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
-                        const ASN1_ITEM *it)
+int i2d_YASN1_bio_stream(BIO *out, YASN1_VALUE *val, BIO *in, int flags,
+                        const YASN1_ITEM *it)
 {
     /* If streaming create stream BIO and copy all content through it */
     if (flags & SMIME_STREAM) {
         BIO *bio, *tbio;
         bio = BIO_new_NDEF(out, val, it);
         if (!bio) {
-            ASN1err(ASN1_F_I2D_ASN1_BIO_STREAM, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_I2D_YASN1_BIO_STREAM, ERR_R_MALLOC_FAILURE);
             return 0;
         }
         SMIME_crlf_copy(in, bio, flags);
@@ -85,62 +85,62 @@ int i2d_ASN1_bio_stream(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
         } while (bio != out);
     }
     /*
-     * else just write out ASN1 structure which will have all content stored
+     * else just write out YASN1 structure which will have all content stored
      * internally
      */
     else
-        ASN1_item_i2d_bio(it, out, val);
+        YASN1_item_i2d_bio(it, out, val);
     return 1;
 }
 
-/* Base 64 read and write of ASN1 structure */
+/* Base 64 read and write of YASN1 structure */
 
-static int B64_write_ASN1(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
-                          const ASN1_ITEM *it)
+static int B64_write_YASN1(BIO *out, YASN1_VALUE *val, BIO *in, int flags,
+                          const YASN1_ITEM *it)
 {
     BIO *b64;
     int r;
     b64 = BIO_new(BIO_f_base64());
     if (b64 == NULL) {
-        ASN1err(ASN1_F_B64_WRITE_ASN1, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_B64_WRITE_YASN1, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     /*
      * prepend the b64 BIO so all data is base64 encoded.
      */
     out = BIO_push(b64, out);
-    r = i2d_ASN1_bio_stream(out, val, in, flags, it);
+    r = i2d_YASN1_bio_stream(out, val, in, flags, it);
     (void)BIO_flush(out);
     BIO_pop(out);
     BIO_free(b64);
     return r;
 }
 
-/* Streaming ASN1 PEM write */
+/* Streaming YASN1 PEM write */
 
-int PEM_write_bio_ASN1_stream(BIO *out, ASN1_VALUE *val, BIO *in, int flags,
-                              const char *hdr, const ASN1_ITEM *it)
+int PEM_write_bio_YASN1_stream(BIO *out, YASN1_VALUE *val, BIO *in, int flags,
+                              const char *hdr, const YASN1_ITEM *it)
 {
     int r;
-    BIO_printf(out, "-----BEGIN %s-----\n", hdr);
-    r = B64_write_ASN1(out, val, in, flags, it);
-    BIO_printf(out, "-----END %s-----\n", hdr);
+    BIO_pprintf(out, "-----BEGIN %s-----\n", hdr);
+    r = B64_write_YASN1(out, val, in, flags, it);
+    BIO_pprintf(out, "-----END %s-----\n", hdr);
     return r;
 }
 
-static ASN1_VALUE *b64_read_asn1(BIO *bio, const ASN1_ITEM *it)
+static YASN1_VALUE *b64_read_asn1(BIO *bio, const YASN1_ITEM *it)
 {
     BIO *b64;
-    ASN1_VALUE *val;
+    YASN1_VALUE *val;
 
     if ((b64 = BIO_new(BIO_f_base64())) == NULL) {
-        ASN1err(ASN1_F_B64_READ_ASN1, ERR_R_MALLOC_FAILURE);
+        YASN1err(YASN1_F_B64_READ_YASN1, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     bio = BIO_push(b64, bio);
-    val = ASN1_item_d2i_bio(it, bio, NULL);
+    val = YASN1_item_d2i_bio(it, bio, NULL);
     if (!val)
-        ASN1err(ASN1_F_B64_READ_ASN1, ASN1_R_DECODE_ERROR);
+        YASN1err(YASN1_F_B64_READ_YASN1, YASN1_R_DECODE_ERROR);
     (void)BIO_flush(bio);
     BIO_pop(bio);
     BIO_free(b64);
@@ -149,22 +149,22 @@ static ASN1_VALUE *b64_read_asn1(BIO *bio, const ASN1_ITEM *it)
 
 /* Generate the MIME "micalg" parameter from RFC3851, RFC4490 */
 
-static int asn1_write_micalg(BIO *out, STACK_OF(X509_ALGOR) *mdalgs)
+static int asn1_write_micalg(BIO *out, STACK_OF(YX509_ALGOR) *mdalgs)
 {
-    const EVP_MD *md;
+    const EVVP_MD *md;
     int i, have_unknown = 0, write_comma, ret = 0, md_nid;
     have_unknown = 0;
     write_comma = 0;
-    for (i = 0; i < sk_X509_ALGOR_num(mdalgs); i++) {
+    for (i = 0; i < sk_YX509_ALGOR_num(mdalgs); i++) {
         if (write_comma)
             BIO_write(out, ",", 1);
         write_comma = 1;
-        md_nid = OBJ_obj2nid(sk_X509_ALGOR_value(mdalgs, i)->algorithm);
-        md = EVP_get_digestbynid(md_nid);
+        md_nid = OBJ_obj2nid(sk_YX509_ALGOR_value(mdalgs, i)->algorithm);
+        md = EVVP_get_digestbynid(md_nid);
         if (md && md->md_ctrl) {
             int rv;
             char *micstr;
-            rv = md->md_ctrl(NULL, EVP_MD_CTRL_MICALG, 0, &micstr);
+            rv = md->md_ctrl(NULL, EVVP_MD_CTRL_MICALG, 0, &micstr);
             if (rv > 0) {
                 BIO_puts(out, micstr);
                 OPENSSL_free(micstr);
@@ -227,9 +227,9 @@ static int asn1_write_micalg(BIO *out, STACK_OF(X509_ALGOR) *mdalgs)
 
 /* SMIME sender */
 
-int SMIME_write_ASN1(BIO *bio, ASN1_VALUE *val, BIO *data, int flags,
+int SMIME_write_YASN1(BIO *bio, YASN1_VALUE *val, BIO *data, int flags,
                      int ctype_nid, int econt_nid,
-                     STACK_OF(X509_ALGOR) *mdalgs, const ASN1_ITEM *it)
+                     STACK_OF(YX509_ALGOR) *mdalgs, const YASN1_ITEM *it)
 {
     char bound[33], c;
     int i;
@@ -258,30 +258,30 @@ int SMIME_write_ASN1(BIO *bio, ASN1_VALUE *val, BIO *data, int flags,
             bound[i] = c;
         }
         bound[32] = 0;
-        BIO_printf(bio, "MIME-Version: 1.0%s", mime_eol);
-        BIO_printf(bio, "Content-Type: multipart/signed;");
-        BIO_printf(bio, " protocol=\"%ssignature\";", mime_prefix);
+        BIO_pprintf(bio, "MIME-Version: 1.0%s", mime_eol);
+        BIO_pprintf(bio, "Content-Type: multipart/signed;");
+        BIO_pprintf(bio, " protocol=\"%ssignature\";", mime_prefix);
         BIO_puts(bio, " micalg=\"");
         asn1_write_micalg(bio, mdalgs);
-        BIO_printf(bio, "\"; boundary=\"----%s\"%s%s",
+        BIO_pprintf(bio, "\"; boundary=\"----%s\"%s%s",
                    bound, mime_eol, mime_eol);
-        BIO_printf(bio, "This is an S/MIME signed message%s%s",
+        BIO_pprintf(bio, "This is an S/MIME signed message%s%s",
                    mime_eol, mime_eol);
         /* Now write out the first part */
-        BIO_printf(bio, "------%s%s", bound, mime_eol);
+        BIO_pprintf(bio, "------%s%s", bound, mime_eol);
         if (!asn1_output_data(bio, data, val, flags, it))
             return 0;
-        BIO_printf(bio, "%s------%s%s", mime_eol, bound, mime_eol);
+        BIO_pprintf(bio, "%s------%s%s", mime_eol, bound, mime_eol);
 
         /* Headers for signature */
 
-        BIO_printf(bio, "Content-Type: %ssignature;", mime_prefix);
-        BIO_printf(bio, " name=\"smime.p7s\"%s", mime_eol);
-        BIO_printf(bio, "Content-Transfer-Encoding: base64%s", mime_eol);
-        BIO_printf(bio, "Content-Disposition: attachment;");
-        BIO_printf(bio, " filename=\"smime.p7s\"%s%s", mime_eol, mime_eol);
-        B64_write_ASN1(bio, val, NULL, 0, it);
-        BIO_printf(bio, "%s------%s--%s%s", mime_eol, bound,
+        BIO_pprintf(bio, "Content-Type: %ssignature;", mime_prefix);
+        BIO_pprintf(bio, " name=\"smime.p7s\"%s", mime_eol);
+        BIO_pprintf(bio, "Content-Transfer-Encoding: base64%s", mime_eol);
+        BIO_pprintf(bio, "Content-Disposition: attachment;");
+        BIO_pprintf(bio, " filename=\"smime.p7s\"%s%s", mime_eol, mime_eol);
+        B64_write_YASN1(bio, val, NULL, 0, it);
+        BIO_pprintf(bio, "%s------%s--%s%s", mime_eol, bound,
                    mime_eol, mime_eol);
         return 1;
     }
@@ -293,7 +293,7 @@ int SMIME_write_ASN1(BIO *bio, ASN1_VALUE *val, BIO *data, int flags,
     else if (ctype_nid == NID_pkcs7_signed) {
         if (econt_nid == NID_id_smime_ct_receipt)
             msg_type = "signed-receipt";
-        else if (sk_X509_ALGOR_num(mdalgs) >= 0)
+        else if (sk_YX509_ALGOR_num(mdalgs) >= 0)
             msg_type = "signed-data";
         else
             msg_type = "certs-only";
@@ -302,42 +302,42 @@ int SMIME_write_ASN1(BIO *bio, ASN1_VALUE *val, BIO *data, int flags,
         cname = "smime.p7z";
     }
     /* MIME headers */
-    BIO_printf(bio, "MIME-Version: 1.0%s", mime_eol);
-    BIO_printf(bio, "Content-Disposition: attachment;");
-    BIO_printf(bio, " filename=\"%s\"%s", cname, mime_eol);
-    BIO_printf(bio, "Content-Type: %smime;", mime_prefix);
+    BIO_pprintf(bio, "MIME-Version: 1.0%s", mime_eol);
+    BIO_pprintf(bio, "Content-Disposition: attachment;");
+    BIO_pprintf(bio, " filename=\"%s\"%s", cname, mime_eol);
+    BIO_pprintf(bio, "Content-Type: %smime;", mime_prefix);
     if (msg_type)
-        BIO_printf(bio, " smime-type=%s;", msg_type);
-    BIO_printf(bio, " name=\"%s\"%s", cname, mime_eol);
-    BIO_printf(bio, "Content-Transfer-Encoding: base64%s%s",
+        BIO_pprintf(bio, " smime-type=%s;", msg_type);
+    BIO_pprintf(bio, " name=\"%s\"%s", cname, mime_eol);
+    BIO_pprintf(bio, "Content-Transfer-Encoding: base64%s%s",
                mime_eol, mime_eol);
-    if (!B64_write_ASN1(bio, val, data, flags, it))
+    if (!B64_write_YASN1(bio, val, data, flags, it))
         return 0;
-    BIO_printf(bio, "%s", mime_eol);
+    BIO_pprintf(bio, "%s", mime_eol);
     return 1;
 }
 
-/* Handle output of ASN1 data */
+/* Handle output of YASN1 data */
 
-static int asn1_output_data(BIO *out, BIO *data, ASN1_VALUE *val, int flags,
-                            const ASN1_ITEM *it)
+static int asn1_output_data(BIO *out, BIO *data, YASN1_VALUE *val, int flags,
+                            const YASN1_ITEM *it)
 {
     BIO *tmpbio;
-    const ASN1_AUX *aux = it->funcs;
-    ASN1_STREAM_ARG sarg;
+    const YASN1_AUX *aux = it->funcs;
+    YASN1_STREAM_ARG sarg;
     int rv = 1;
 
     /*
      * If data is not detached or resigning then the output BIO is already
      * set up to finalise when it is written through.
      */
-    if (!(flags & SMIME_DETACHED) || (flags & PKCS7_REUSE_DIGEST)) {
+    if (!(flags & SMIME_DETACHED) || (flags & YPKCS7_REUSE_DIGEST)) {
         SMIME_crlf_copy(data, out, flags);
         return 1;
     }
 
     if (!aux || !aux->asn1_cb) {
-        ASN1err(ASN1_F_ASN1_OUTPUT_DATA, ASN1_R_STREAMING_NOT_SUPPORTED);
+        YASN1err(YASN1_F_YASN1_OUTPUT_DATA, YASN1_R_STREAMING_NOT_SUPPORTED);
         return 0;
     }
 
@@ -345,16 +345,16 @@ static int asn1_output_data(BIO *out, BIO *data, ASN1_VALUE *val, int flags,
     sarg.ndef_bio = NULL;
     sarg.boundary = NULL;
 
-    /* Let ASN1 code prepend any needed BIOs */
+    /* Let YASN1 code prepend any needed BIOs */
 
-    if (aux->asn1_cb(ASN1_OP_DETACHED_PRE, &val, it, &sarg) <= 0)
+    if (aux->asn1_cb(YASN1_OP_DETACHED_PRE, &val, it, &sarg) <= 0)
         return 0;
 
     /* Copy data across, passing through filter BIOs for processing */
     SMIME_crlf_copy(data, sarg.ndef_bio, flags);
 
     /* Finalize structure */
-    if (aux->asn1_cb(ASN1_OP_DETACHED_POST, &val, it, &sarg) <= 0)
+    if (aux->asn1_cb(YASN1_OP_DETACHED_POST, &val, it, &sarg) <= 0)
         rv = 0;
 
     /* Now remove any digests prepended to the BIO */
@@ -375,28 +375,28 @@ static int asn1_output_data(BIO *out, BIO *data, ASN1_VALUE *val, int flags,
  * opaque this is set to NULL
  */
 
-ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
+YASN1_VALUE *SMIME_read_YASN1(BIO *bio, BIO **bcont, const YASN1_ITEM *it)
 {
     BIO *asnin;
     STACK_OF(MIME_HEADER) *headers = NULL;
     STACK_OF(BIO) *parts = NULL;
     MIME_HEADER *hdr;
     MIME_PARAM *prm;
-    ASN1_VALUE *val;
+    YASN1_VALUE *val;
     int ret;
 
     if (bcont)
         *bcont = NULL;
 
     if ((headers = mime_parse_hdr(bio)) == NULL) {
-        ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_MIME_PARSE_ERROR);
+        YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_MIME_PARSE_ERROR);
         return NULL;
     }
 
     if ((hdr = mime_hdr_find(headers, "content-type")) == NULL
         || hdr->value == NULL) {
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
-        ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_NO_CONTENT_TYPE);
+        YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_NO_CONTENT_TYPE);
         return NULL;
     }
 
@@ -407,13 +407,13 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
         prm = mime_param_find(hdr, "boundary");
         if (!prm || !prm->param_value) {
             sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_NO_MULTIPART_BOUNDARY);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_NO_MULTIPART_BOUNDARY);
             return NULL;
         }
         ret = multi_split(bio, prm->param_value, &parts);
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
         if (!ret || (sk_BIO_num(parts) != 2)) {
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_NO_MULTIPART_BODY_FAILURE);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_NO_MULTIPART_BODY_FAILURE);
             sk_BIO_pop_free(parts, BIO_vfree);
             return NULL;
         }
@@ -422,7 +422,7 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
         asnin = sk_BIO_value(parts, 1);
 
         if ((headers = mime_parse_hdr(asnin)) == NULL) {
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_MIME_SIG_PARSE_ERROR);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_MIME_SIG_PARSE_ERROR);
             sk_BIO_pop_free(parts, BIO_vfree);
             return NULL;
         }
@@ -432,23 +432,23 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
         if ((hdr = mime_hdr_find(headers, "content-type")) == NULL
             || hdr->value == NULL) {
             sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_NO_SIG_CONTENT_TYPE);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_NO_SIG_CONTENT_TYPE);
             sk_BIO_pop_free(parts, BIO_vfree);
             return NULL;
         }
 
         if (strcmp(hdr->value, "application/x-pkcs7-signature") &&
             strcmp(hdr->value, "application/pkcs7-signature")) {
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_SIG_INVALID_MIME_TYPE);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_SIG_INVALID_MIME_TYPE);
             ERR_add_error_data(2, "type: ", hdr->value);
             sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
             sk_BIO_pop_free(parts, BIO_vfree);
             return NULL;
         }
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
-        /* Read in ASN1 */
+        /* Read in YASN1 */
         if ((val = b64_read_asn1(asnin, it)) == NULL) {
-            ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_ASN1_SIG_PARSE_ERROR);
+            YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_YASN1_SIG_PARSE_ERROR);
             sk_BIO_pop_free(parts, BIO_vfree);
             return NULL;
         }
@@ -466,7 +466,7 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
 
     if (strcmp(hdr->value, "application/x-pkcs7-mime") &&
         strcmp(hdr->value, "application/pkcs7-mime")) {
-        ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_INVALID_MIME_TYPE);
+        YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_INVALID_MIME_TYPE);
         ERR_add_error_data(2, "type: ", hdr->value);
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
         return NULL;
@@ -475,7 +475,7 @@ ASN1_VALUE *SMIME_read_ASN1(BIO *bio, BIO **bcont, const ASN1_ITEM *it)
     sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
 
     if ((val = b64_read_asn1(bio, it)) == NULL) {
-        ASN1err(ASN1_F_SMIME_READ_ASN1, ASN1_R_ASN1_PARSE_ERROR);
+        YASN1err(YASN1_F_SMIME_READ_YASN1, YASN1_R_YASN1_PARSE_ERROR);
         return NULL;
     }
     return val;
@@ -504,7 +504,7 @@ int SMIME_crlf_copy(BIO *in, BIO *out, int flags)
     } else {
         int eolcnt = 0;
         if (flags & SMIME_TEXT)
-            BIO_printf(out, "Content-Type: text/plain\r\n\r\n");
+            BIO_pprintf(out, "Content-Type: text/plain\r\n\r\n");
         while ((len = BIO_gets(in, linebuf, MAX_SMLEN)) > 0) {
             eol = strip_eol(linebuf, &len, flags);
             if (len) {
@@ -542,17 +542,17 @@ int SMIME_text(BIO *in, BIO *out)
     MIME_HEADER *hdr;
 
     if ((headers = mime_parse_hdr(in)) == NULL) {
-        ASN1err(ASN1_F_SMIME_TEXT, ASN1_R_MIME_PARSE_ERROR);
+        YASN1err(YASN1_F_SMIME_TEXT, YASN1_R_MIME_PARSE_ERROR);
         return 0;
     }
     if ((hdr = mime_hdr_find(headers, "content-type")) == NULL
         || hdr->value == NULL) {
-        ASN1err(ASN1_F_SMIME_TEXT, ASN1_R_MIME_NO_CONTENT_TYPE);
+        YASN1err(YASN1_F_SMIME_TEXT, YASN1_R_MIME_NO_CONTENT_TYPE);
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
         return 0;
     }
     if (strcmp(hdr->value, "text/plain")) {
-        ASN1err(ASN1_F_SMIME_TEXT, ASN1_R_INVALID_MIME_TYPE);
+        YASN1err(YASN1_F_SMIME_TEXT, YASN1_R_INVALID_MIME_TYPE);
         ERR_add_error_data(2, "type: ", hdr->value);
         sk_MIME_HEADER_pop_free(headers, mime_hdr_free);
         return 0;

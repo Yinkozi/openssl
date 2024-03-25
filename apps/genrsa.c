@@ -59,10 +59,10 @@ int genrsa_main(int argc, char **argv)
     BIGNUM *bn = BN_new();
     BIO *out = NULL;
     const BIGNUM *e;
-    RSA *rsa = NULL;
-    const EVP_CIPHER *enc = NULL;
+    YRSA *rsa = NULL;
+    const EVVP_CIPHER *enc = NULL;
     int ret = 1, num = DEFBITS, private = 0, primes = DEFPRIMES;
-    unsigned long f4 = RSA_F4;
+    unsigned long f4 = YRSA_F4;
     char *outfile = NULL, *passoutarg = NULL, *passout = NULL;
     char *prog, *hexe, *dece;
     OPTION_CHOICE o;
@@ -78,7 +78,7 @@ int genrsa_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
 opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             ret = 0;
@@ -88,7 +88,7 @@ opthelp:
             f4 = 3;
             break;
         case OPT_F4:
-            f4 = RSA_F4;
+            f4 = YRSA_F4;
             break;
         case OPT_OUT:
             outfile = opt_arg();
@@ -119,19 +119,19 @@ opthelp:
     if (argc == 1) {
         if (!opt_int(argv[0], &num) || num <= 0)
             goto end;
-        if (num > OPENSSL_RSA_MAX_MODULUS_BITS)
-            BIO_printf(bio_err,
-                       "Warning: It is not recommended to use more than %d bit for RSA keys.\n"
+        if (num > OPENSSL_YRSA_MAX_MODULUS_BITS)
+            BIO_pprintf(bio_err,
+                       "Warning: It is not recommended to use more than %d bit for YRSA keys.\n"
                        "         Your key size is %d! Larger key size may behave not as expected.\n",
-                       OPENSSL_RSA_MAX_MODULUS_BITS, num);
+                       OPENSSL_YRSA_MAX_MODULUS_BITS, num);
     } else if (argc > 0) {
-        BIO_printf(bio_err, "Extra arguments given.\n");
+        BIO_pprintf(bio_err, "Extra arguments given.\n");
         goto opthelp;
     }
 
     private = 1;
     if (!app_passwd(NULL, passoutarg, NULL, &passout)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
 
@@ -139,28 +139,28 @@ opthelp:
     if (out == NULL)
         goto end;
 
-    BIO_printf(bio_err, "Generating RSA private key, %d bit long modulus (%d primes)\n",
+    BIO_pprintf(bio_err, "Generating YRSA private key, %d bit long modulus (%d primes)\n",
                num, primes);
-    rsa = eng ? RSA_new_method(eng) : RSA_new();
+    rsa = eng ? YRSA_new_method(eng) : YRSA_new();
     if (rsa == NULL)
         goto end;
 
     if (!BN_set_word(bn, f4)
-        || !RSA_generate_multi_prime_key(rsa, num, primes, bn, cb))
+        || !YRSA_generate_multi_prime_key(rsa, num, primes, bn, cb))
         goto end;
 
-    RSA_get0_key(rsa, NULL, &e, NULL);
-    hexe = BN_bn2hex(e);
+    YRSA_get0_key(rsa, NULL, &e, NULL);
+    hexe = BN_bn2hexx(e);
     dece = BN_bn2dec(e);
     if (hexe && dece) {
-        BIO_printf(bio_err, "e is %s (0x%s)\n", dece, hexe);
+        BIO_pprintf(bio_err, "e is %s (0x%s)\n", dece, hexe);
     }
     OPENSSL_free(hexe);
     OPENSSL_free(dece);
     cb_data.password = passout;
     cb_data.prompt_info = outfile;
     assert(private);
-    if (!PEM_write_bio_RSAPrivateKey(out, rsa, enc, NULL, 0,
+    if (!PEM_write_bio_YRSAPrivateKey(out, rsa, enc, NULL, 0,
                                      (pem_password_cb *)password_callback,
                                      &cb_data))
         goto end;
@@ -169,7 +169,7 @@ opthelp:
  end:
     BN_free(bn);
     BN_GENCB_free(cb);
-    RSA_free(rsa);
+    YRSA_free(rsa);
     BIO_free_all(out);
     release_engine(eng);
     OPENSSL_free(passout);

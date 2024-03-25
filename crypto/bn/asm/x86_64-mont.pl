@@ -26,19 +26,19 @@
 #
 # Add dedicated squaring procedure. Performance improvement varies
 # from platform to platform, but in average it's ~5%/15%/25%/33%
-# for 512-/1024-/2048-/4096-bit RSA *sign* benchmarks respectively.
+# for 512-/1024-/2048-/4096-bit YRSA *sign* benchmarks respectively.
 
 # August 2011.
 #
 # Unroll and modulo-schedule inner loops in such manner that they
 # are "fallen through" for input lengths of 8, which is critical for
-# 1024-bit RSA *sign*. Average performance improvement in comparison
+# 1024-bit YRSA *sign*. Average performance improvement in comparison
 # to *initial* version of this module from 2005 is ~0%/30%/40%/45%
-# for 512-/1024-/2048-/4096-bit RSA *sign* benchmarks respectively.
+# for 512-/1024-/2048-/4096-bit YRSA *sign* benchmarks respectively.
 
 # June 2013.
 #
-# Optimize reduction in squaring procedure and improve 1024+-bit RSA
+# Optimize reduction in squaring procedure and improve 1024+-bit YRSA
 # sign performance by 10-16% on Intel Sandy Bridge and later
 # (virtually same on non-Intel processors).
 

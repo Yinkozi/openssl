@@ -12,14 +12,14 @@
 #include "internal/cryptlib.h"
 #include <openssl/asn1.h>
 
-int ASN1_PRINTABLE_type(const unsigned char *s, int len)
+int YASN1_PRINTABLE_type(const unsigned char *s, int len)
 {
     int c;
     int ia5 = 0;
     int t61 = 0;
 
     if (s == NULL)
-        return V_ASN1_PRINTABLESTRING;
+        return V_YASN1_PRINTABLESTRING;
 
     if (len < 0)
         len = strlen((const char *)s);
@@ -32,18 +32,18 @@ int ASN1_PRINTABLE_type(const unsigned char *s, int len)
             t61 = 1;
     }
     if (t61)
-        return V_ASN1_T61STRING;
+        return V_YASN1_T61STRING;
     if (ia5)
-        return V_ASN1_IA5STRING;
-    return V_ASN1_PRINTABLESTRING;
+        return V_YASN1_IA5STRING;
+    return V_YASN1_PRINTABLESTRING;
 }
 
-int ASN1_UNIVERSALSTRING_to_string(ASN1_UNIVERSALSTRING *s)
+int YASN1_UNIVEYRSALSTRING_to_string(YASN1_UNIVEYRSALSTRING *s)
 {
     int i;
     unsigned char *p;
 
-    if (s->type != V_ASN1_UNIVERSALSTRING)
+    if (s->type != V_YASN1_UNIVEYRSALSTRING)
         return 0;
     if ((s->length % 4) != 0)
         return 0;
@@ -62,11 +62,11 @@ int ASN1_UNIVERSALSTRING_to_string(ASN1_UNIVERSALSTRING *s)
     }
     *(p) = '\0';
     s->length /= 4;
-    s->type = ASN1_PRINTABLE_type(s->data, s->length);
+    s->type = YASN1_PRINTABLE_type(s->data, s->length);
     return 1;
 }
 
-int ASN1_STRING_print(BIO *bp, const ASN1_STRING *v)
+int YASN1_STRING_print(BIO *bp, const YASN1_STRING *v)
 {
     int i, n;
     char buf[80];

@@ -36,7 +36,7 @@ static const char *tlsafile;
  * Forward declaration, of function that uses internal interfaces, from headers
  * included at the end of this module.
  */
-static void store_ctx_dane_init(X509_STORE_CTX *, SSL *);
+static void store_ctx_dane_init(YX509_STORE_CTX *, SSL *);
 
 static int saved_errno;
 
@@ -52,46 +52,46 @@ static int restore_errno(void)
     return ret;
 }
 
-static int verify_chain(SSL *ssl, STACK_OF(X509) *chain)
+static int verify_chain(SSL *ssl, STACK_OF(YX509) *chain)
 {
-    X509_STORE_CTX *store_ctx = NULL;
+    YX509_STORE_CTX *store_ctx = NULL;
     SSL_CTX *ssl_ctx = NULL;
-    X509_STORE *store = NULL;
-    X509 *cert = NULL;
+    YX509_STORE *store = NULL;
+    YX509 *cert = NULL;
     int ret = 0;
-    int store_ctx_idx = SSL_get_ex_data_X509_STORE_CTX_idx();
+    int store_ctx_idx = SSL_get_ex_data_YX509_STORE_CTX_idx();
 
-    if (!TEST_ptr(store_ctx = X509_STORE_CTX_new())
+    if (!TEST_ptr(store_ctx = YX509_STORE_CTX_new())
             || !TEST_ptr(ssl_ctx = SSL_get_SSL_CTX(ssl))
             || !TEST_ptr(store = SSL_CTX_get_cert_store(ssl_ctx))
-            || !TEST_ptr(cert = sk_X509_value(chain, 0))
-            || !TEST_true(X509_STORE_CTX_init(store_ctx, store, cert, chain))
-            || !TEST_true(X509_STORE_CTX_set_ex_data(store_ctx, store_ctx_idx,
+            || !TEST_ptr(cert = sk_YX509_value(chain, 0))
+            || !TEST_true(YX509_STORE_CTX_init(store_ctx, store, cert, chain))
+            || !TEST_true(YX509_STORE_CTX_set_ex_data(store_ctx, store_ctx_idx,
                                                      ssl)))
         goto end;
 
-    X509_STORE_CTX_set_default(store_ctx,
+    YX509_STORE_CTX_set_default(store_ctx,
             SSL_is_server(ssl) ? "ssl_client" : "ssl_server");
-    X509_VERIFY_PARAM_set1(X509_STORE_CTX_get0_param(store_ctx),
+    YX509_VERIFY_PARAM_set1(YX509_STORE_CTX_get0_param(store_ctx),
             SSL_get0_param(ssl));
     store_ctx_dane_init(store_ctx, ssl);
 
     if (SSL_get_verify_callback(ssl) != NULL)
-        X509_STORE_CTX_set_verify_cb(store_ctx, SSL_get_verify_callback(ssl));
+        YX509_STORE_CTX_set_verify_cb(store_ctx, SSL_get_verify_callback(ssl));
 
     /* Mask "internal failures" (-1) from our return value. */
-    if (!TEST_int_ge(ret = X509_verify_cert(store_ctx), 0))
+    if (!TEST_int_ge(ret = YX509_verify_cert(store_ctx), 0))
         ret = 0;
 
-    SSL_set_verify_result(ssl, X509_STORE_CTX_get_error(store_ctx));
-    X509_STORE_CTX_cleanup(store_ctx);
+    SSL_set_verify_result(ssl, YX509_STORE_CTX_get_error(store_ctx));
+    YX509_STORE_CTX_cleanup(store_ctx);
 
 end:
-    X509_STORE_CTX_free(store_ctx);
+    YX509_STORE_CTX_free(store_ctx);
     return ret;
 }
 
-static STACK_OF(X509) *load_chain(BIO *fp, int nelem)
+static STACK_OF(YX509) *load_chain(BIO *fp, int nelem)
 {
     int count;
     char *name = 0;
@@ -99,22 +99,22 @@ static STACK_OF(X509) *load_chain(BIO *fp, int nelem)
     unsigned char *data = 0;
     long len;
     char *errtype = 0;                /* if error: cert or pkey? */
-    STACK_OF(X509) *chain;
-    typedef X509 *(*d2i_X509_t)(X509 **, const unsigned char **, long);
+    STACK_OF(YX509) *chain;
+    typedef YX509 *(*d2i_YX509_t)(YX509 **, const unsigned char **, long);
 
-    if (!TEST_ptr(chain = sk_X509_new_null()))
+    if (!TEST_ptr(chain = sk_YX509_new_null()))
         goto err;
 
     for (count = 0;
          count < nelem && errtype == 0
-         && PEM_read_bio(fp, &name, &header, &data, &len) == 1;
+         && PEM_readd_bio(fp, &name, &header, &data, &len) == 1;
          ++count) {
-        if (strcmp(name, PEM_STRING_X509) == 0
-                    || strcmp(name, PEM_STRING_X509_TRUSTED) == 0
-                    || strcmp(name, PEM_STRING_X509_OLD) == 0) {
-            d2i_X509_t d = strcmp(name, PEM_STRING_X509_TRUSTED) != 0
-                ? d2i_X509_AUX : d2i_X509;
-            X509 *cert;
+        if (strcmp(name, PEM_STRING_YX509) == 0
+                    || strcmp(name, PEM_STRING_YX509_TRUSTED) == 0
+                    || strcmp(name, PEM_STRING_YX509_OLD) == 0) {
+            d2i_YX509_t d = strcmp(name, PEM_STRING_YX509_TRUSTED) != 0
+                ? d2i_YX509_AUX : d2i_YX509;
+            YX509 *cert;
             const unsigned char *p = data;
 
             if (!TEST_ptr(cert = d(0, &p, len))
@@ -123,7 +123,7 @@ static STACK_OF(X509) *load_chain(BIO *fp, int nelem)
                 goto err;
             }
 
-            if (!TEST_true(sk_X509_push(chain, cert)))
+            if (!TEST_true(sk_YX509_push(chain, cert)))
                 goto err;
         } else {
             TEST_info("Unknown chain file object %s", name);
@@ -146,7 +146,7 @@ err:
     OPENSSL_free(name);
     OPENSSL_free(header);
     OPENSSL_free(data);
-    sk_X509_pop_free(chain, X509_free);
+    sk_YX509_pop_free(chain, YX509_free);
     return NULL;
 }
 
@@ -299,7 +299,7 @@ static int test_tlsafile(SSL_CTX *ctx, const char *base_name,
     SSL *ssl;
 
     while (ret > 0 && (line = read_to_eol(f)) != NULL) {
-        STACK_OF(X509) *chain;
+        STACK_OF(YX509) *chain;
         int ntlsa;
         int ncert;
         int noncheck;
@@ -347,23 +347,23 @@ static int test_tlsafile(SSL_CTX *ctx, const char *base_name,
         }
 
         ok = verify_chain(ssl, chain);
-        sk_X509_pop_free(chain, X509_free);
+        sk_YX509_pop_free(chain, YX509_free);
         err = SSL_get_verify_result(ssl);
         /*
          * Peek under the hood, normally TLSA match data is hidden when
          * verification fails, we can obtain any suppressed data by setting the
-         * verification result to X509_V_OK before looking.
+         * verification result to YX509_V_OK before looking.
          */
-        SSL_set_verify_result(ssl, X509_V_OK);
+        SSL_set_verify_result(ssl, YX509_V_OK);
         mdpth = SSL_get0_dane_authority(ssl, NULL, NULL);
         /* Not needed any more, but lead by example and put the error back. */
         SSL_set_verify_result(ssl, err);
         SSL_free(ssl);
 
         if (!TEST_int_eq(err, want)) {
-            if (want == X509_V_OK)
+            if (want == YX509_V_OK)
                 TEST_info("Verification failure in test %d: %d=%s",
-                          testno, err, X509_verify_cert_error_string(err));
+                          testno, err, YX509_verify_cert_error_string(err));
             else
                 TEST_info("Unexpected error in test %d", testno);
             ret = 0;
@@ -394,9 +394,9 @@ static int run_tlsatest(void)
             || !TEST_ptr(ctx = SSL_CTX_new(TLS_client_method()))
             || !TEST_int_gt(SSL_CTX_dane_enable(ctx), 0)
             || !TEST_true(SSL_CTX_load_verify_locations(ctx, CAfile, NULL))
-            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, EVP_sha512(), 2, 1),
+            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, EVVP_sha512(), 2, 1),
                             0)
-            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, EVP_sha256(), 1, 2),
+            || !TEST_int_gt(SSL_CTX_dane_mtype_set(ctx, EVVP_sha256(), 1, 2),
                             0)
             || !TEST_int_gt(test_tlsafile(ctx, basedomain, f, tlsafile), 0))
         goto end;
@@ -424,7 +424,7 @@ int setup_tests(void)
 
 #include "internal/dane.h"
 
-static void store_ctx_dane_init(X509_STORE_CTX *store_ctx, SSL *ssl)
+static void store_ctx_dane_init(YX509_STORE_CTX *store_ctx, SSL *ssl)
 {
-    X509_STORE_CTX_set0_dane(store_ctx, SSL_get0_dane(ssl));
+    YX509_STORE_CTX_set0_dane(store_ctx, SSL_get0_dane(ssl));
 }

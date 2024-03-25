@@ -14,15 +14,15 @@
 #include <openssl/rand.h>
 #include "internal/constant_time.h"
 
-int RSA_padding_add_SSLv23(unsigned char *to, int tlen,
+int YRSA_padding_add_SSLv23(unsigned char *to, int tlen,
                            const unsigned char *from, int flen)
 {
     int i, j;
     unsigned char *p;
 
-    if (flen > (tlen - RSA_PKCS1_PADDING_SIZE)) {
-        RSAerr(RSA_F_RSA_PADDING_ADD_SSLV23,
-               RSA_R_DATA_TOO_LARGE_FOR_KEY_SIZE);
+    if (flen > (tlen - YRSA_YPKCS1_PADDING_SIZE)) {
+        YRSAerr(YRSA_F_YRSA_PADDING_ADD_SSLV23,
+               YRSA_R_DATA_TOO_LARGE_FOR_KEY_SIZE);
         return 0;
     }
 
@@ -54,11 +54,11 @@ int RSA_padding_add_SSLv23(unsigned char *to, int tlen,
 }
 
 /*
- * Copy of RSA_padding_check_PKCS1_type_2 with a twist that rejects padding
+ * Copy of YRSA_padding_check_YPKCS1_type_2 with a twist that rejects padding
  * if nul delimiter is preceded by 8 consecutive 0x03 bytes. It also
  * preserves error code reporting for backward compatibility.
  */
-int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
+int YRSA_padding_check_SSLv23(unsigned char *to, int tlen,
                              const unsigned char *from, int flen, int num)
 {
     int i;
@@ -70,14 +70,14 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
     if (tlen <= 0 || flen <= 0)
         return -1;
 
-    if (flen > num || num < RSA_PKCS1_PADDING_SIZE) {
-        RSAerr(RSA_F_RSA_PADDING_CHECK_SSLV23, RSA_R_DATA_TOO_SMALL);
+    if (flen > num || num < YRSA_YPKCS1_PADDING_SIZE) {
+        YRSAerr(YRSA_F_YRSA_PADDING_CHECK_SSLV23, YRSA_R_DATA_TOO_SMALL);
         return -1;
     }
 
     em = OPENSSL_malloc(num);
     if (em == NULL) {
-        RSAerr(RSA_F_RSA_PADDING_CHECK_SSLV23, ERR_R_MALLOC_FAILURE);
+        YRSAerr(YRSA_F_YRSA_PADDING_CHECK_SSLV23, ERR_R_MALLOC_FAILURE);
         return -1;
     }
     /*
@@ -95,7 +95,7 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
 
     good = constant_time_is_zero(em[0]);
     good &= constant_time_eq(em[1], 2);
-    err = constant_time_select_int(good, 0, RSA_R_BLOCK_TYPE_IS_NOT_02);
+    err = constant_time_select_int(good, 0, YRSA_R_BLOCK_TYPE_IS_NOT_02);
     mask = ~good;
 
     /* scan over padding data */
@@ -119,7 +119,7 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
      */
     good &= constant_time_ge(zero_index, 2 + 8);
     err = constant_time_select_int(mask | good, err,
-                                   RSA_R_NULL_BEFORE_BLOCK_MISSING);
+                                   YRSA_R_NULL_BEFORE_BLOCK_MISSING);
     mask = ~good;
 
     /*
@@ -130,7 +130,7 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
      */
     good &= constant_time_lt(threes_in_row, 8);
     err = constant_time_select_int(mask | good, err,
-                                   RSA_R_SSLV3_ROLLBACK_ATTACK);
+                                   YRSA_R_SSLV3_ROLLBACK_ATTACK);
     mask = ~good;
 
     /*
@@ -144,11 +144,11 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
      * For good measure, do this check in constant time as well.
      */
     good &= constant_time_ge(tlen, mlen);
-    err = constant_time_select_int(mask | good, err, RSA_R_DATA_TOO_LARGE);
+    err = constant_time_select_int(mask | good, err, YRSA_R_DATA_TOO_LARGE);
 
     /*
-     * Move the result in-place by |num|-RSA_PKCS1_PADDING_SIZE-|mlen| bytes to the left.
-     * Then if |good| move |mlen| bytes from |em|+RSA_PKCS1_PADDING_SIZE to |to|.
+     * Move the result in-place by |num|-YRSA_YPKCS1_PADDING_SIZE-|mlen| bytes to the left.
+     * Then if |good| move |mlen| bytes from |em|+YRSA_YPKCS1_PADDING_SIZE to |to|.
      * Otherwise leave |to| unchanged.
      * Copy the memory back in a way that does not reveal the size of
      * the data being copied via a timing side channel. This requires copying
@@ -156,20 +156,20 @@ int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
      * length. Clear bits do a non-copy with identical access pattern.
      * The loop below has overall complexity of O(N*log(N)).
      */
-    tlen = constant_time_select_int(constant_time_lt(num - RSA_PKCS1_PADDING_SIZE, tlen),
-                                    num - RSA_PKCS1_PADDING_SIZE, tlen);
-    for (msg_index = 1; msg_index < num - RSA_PKCS1_PADDING_SIZE; msg_index <<= 1) {
-        mask = ~constant_time_eq(msg_index & (num - RSA_PKCS1_PADDING_SIZE - mlen), 0);
-        for (i = RSA_PKCS1_PADDING_SIZE; i < num - msg_index; i++)
+    tlen = constant_time_select_int(constant_time_lt(num - YRSA_YPKCS1_PADDING_SIZE, tlen),
+                                    num - YRSA_YPKCS1_PADDING_SIZE, tlen);
+    for (msg_index = 1; msg_index < num - YRSA_YPKCS1_PADDING_SIZE; msg_index <<= 1) {
+        mask = ~constant_time_eq(msg_index & (num - YRSA_YPKCS1_PADDING_SIZE - mlen), 0);
+        for (i = YRSA_YPKCS1_PADDING_SIZE; i < num - msg_index; i++)
             em[i] = constant_time_select_8(mask, em[i + msg_index], em[i]);
     }
     for (i = 0; i < tlen; i++) {
         mask = good & constant_time_lt(i, mlen);
-        to[i] = constant_time_select_8(mask, em[i + RSA_PKCS1_PADDING_SIZE], to[i]);
+        to[i] = constant_time_select_8(mask, em[i + YRSA_YPKCS1_PADDING_SIZE], to[i]);
     }
 
     OPENSSL_clear_free(em, num);
-    RSAerr(RSA_F_RSA_PADDING_CHECK_SSLV23, err);
+    YRSAerr(YRSA_F_YRSA_PADDING_CHECK_SSLV23, err);
     err_clear_last_constant_time(1 & good);
 
     return constant_time_select_int(good, mlen, -1);

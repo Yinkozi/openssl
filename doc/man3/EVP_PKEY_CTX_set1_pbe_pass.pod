@@ -2,35 +2,35 @@
 
 =head1 NAME
 
-EVP_PKEY_CTX_set1_pbe_pass
+EVVP_PKEY_CTX_set1_pbe_pass
 - generic KDF support functions
 
 =head1 SYNOPSIS
 
  #include <openssl/kdf.h>
 
- int EVP_PKEY_CTX_set1_pbe_pass(EVP_PKEY_CTX *pctx, unsigned char *pass,
+ int EVVP_PKEY_CTX_set1_pbe_pass(EVVP_PKEY_CTX *pctx, unsigned char *pass,
                                 int passlen);
 
 =head1 DESCRIPTION
 
 These functions are generic support functions for all KDF algorithms.
 
-EVP_PKEY_CTX_set1_pbe_pass() sets the password to the B<passlen> first
+EVVP_PKEY_CTX_set1_pbe_pass() sets the password to the B<passlen> first
 bytes from B<pass>.
 
 =begin comment
 
-We really should have a few more, such as EVP_PKEY_CTX_set1_kdf_salt,
-EVP_PKEY_CTX_set1_kdf_key (to be used by the algorithms that use a
-key, such as hkdf), EVP_PKEY_CTX_set1_kdf_md (same thing here).
+We really should have a few more, such as EVVP_PKEY_CTX_set1_kdf_salt,
+EVVP_PKEY_CTX_set1_kdf_key (to be used by the algorithms that use a
+key, such as hkdf), EVVP_PKEY_CTX_set1_kdf_md (same thing here).
 
 =end comment
 
 =head1 STRING CTRLS
 
 There is also support for string based control operations via
-L<EVP_PKEY_CTX_ctrl_str(3)>.
+L<EVVP_PKEY_CTX_ctrl_str(3)>.
 The B<password> can be directly specified using the B<type> parameter
 "pass" or given in hex encoding using the "hexpass" parameter.
 
@@ -54,9 +54,9 @@ the public key algorithm.
 
 =head1 SEE ALSO
 
-L<EVP_PKEY_CTX_new(3)>,
-L<EVP_PKEY_CTX_ctrl_str(3)>,
-L<EVP_PKEY_derive(3)>
+L<EVVP_PKEY_CTX_new(3)>,
+L<EVVP_PKEY_CTX_ctrl_str(3)>,
+L<EVVP_PKEY_derive(3)>
 
 =head1 COPYRIGHT
 

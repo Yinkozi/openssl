@@ -7,5 +7,5 @@
  * https://www.openssl.org/source/license.html
  */
 
-typedef struct evp_test_buffer_st EVP_TEST_BUFFER;
-DEFINE_STACK_OF(EVP_TEST_BUFFER)
+typedef struct evp_test_buffer_st EVVP_TEST_BUFFER;
+DEFINE_STACK_OF(EVVP_TEST_BUFFER)

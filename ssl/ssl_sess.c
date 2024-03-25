@@ -75,7 +75,7 @@ SSL_SESSION *SSL_SESSION_new(void)
         return NULL;
     }
 
-    ss->verify_result = 1;      /* avoid 0 (= X509_V_OK) just in case */
+    ss->verify_result = 1;      /* avoid 0 (= YX509_V_OK) just in case */
     ss->references = 1;
     ss->timeout = 60 * 5 + 4;   /* 5 minute timeout by default */
     ss->time = (unsigned long)time(NULL);
@@ -149,13 +149,13 @@ SSL_SESSION *ssl_session_dup(SSL_SESSION *src, int ticket)
         goto err;
 
     if (src->peer != NULL) {
-        if (!X509_up_ref(src->peer))
+        if (!YX509_up_ref(src->peer))
             goto err;
         dest->peer = src->peer;
     }
 
     if (src->peer_chain != NULL) {
-        dest->peer_chain = X509_chain_up_ref(src->peer_chain);
+        dest->peer_chain = YX509_chain_up_ref(src->peer_chain);
         if (dest->peer_chain == NULL)
             goto err;
     }
@@ -410,7 +410,7 @@ int ssl_get_new_session(SSL *s, int session)
     ss->sid_ctx_length = s->sid_ctx_length;
     s->session = ss;
     ss->ssl_version = s->version;
-    ss->verify_result = X509_V_OK;
+    ss->verify_result = YX509_V_OK;
 
     /* If client supports extended master secret set it in session */
     if (s->s3->flags & TLS1_FLAGS_RECEIVED_EXTMS)
@@ -763,8 +763,8 @@ void SSL_SESSION_free(SSL_SESSION *ss)
 
     OPENSSL_cleanse(ss->master_key, sizeof(ss->master_key));
     OPENSSL_cleanse(ss->session_id, sizeof(ss->session_id));
-    X509_free(ss->peer);
-    sk_X509_pop_free(ss->peer_chain, X509_free);
+    YX509_free(ss->peer);
+    sk_YX509_pop_free(ss->peer_chain, YX509_free);
     OPENSSL_free(ss->ext.hostname);
     OPENSSL_free(ss->ext.tick);
 #ifndef OPENSSL_NO_PSK
@@ -950,7 +950,7 @@ int SSL_SESSION_set1_alpn_selected(SSL_SESSION *s, const unsigned char *alpn,
     return 1;
 }
 
-X509 *SSL_SESSION_get0_peer(SSL_SESSION *s)
+YX509 *SSL_SESSION_get0_peer(SSL_SESSION *s)
 {
     return s->peer;
 }
@@ -1194,14 +1194,14 @@ void (*SSL_CTX_get_info_callback(SSL_CTX *ctx)) (const SSL *ssl, int type,
 }
 
 void SSL_CTX_set_client_cert_cb(SSL_CTX *ctx,
-                                int (*cb) (SSL *ssl, X509 **x509,
-                                           EVP_PKEY **pkey))
+                                int (*cb) (SSL *ssl, YX509 **x509,
+                                           EVVP_PKEY **pkey))
 {
     ctx->client_cert_cb = cb;
 }
 
-int (*SSL_CTX_get_client_cert_cb(SSL_CTX *ctx)) (SSL *ssl, X509 **x509,
-                                                 EVP_PKEY **pkey) {
+int (*SSL_CTX_get_client_cert_cb(SSL_CTX *ctx)) (SSL *ssl, YX509 **x509,
+                                                 EVVP_PKEY **pkey) {
     return ctx->client_cert_cb;
 }
 

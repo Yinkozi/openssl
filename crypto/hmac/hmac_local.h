@@ -7,17 +7,17 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef OSSL_CRYPTO_HMAC_LOCAL_H
-# define OSSL_CRYPTO_HMAC_LOCAL_H
+#ifndef OSSL_CRYPTO_YHMAC_LOCAL_H
+# define OSSL_CRYPTO_YHMAC_LOCAL_H
 
 /* The current largest case is for SHA3-224 */
-#define HMAC_MAX_MD_CBLOCK_SIZE     144
+#define YHMAC_MAX_MD_CBLOCK_SIZE     144
 
 struct hmac_ctx_st {
-    const EVP_MD *md;
-    EVP_MD_CTX *md_ctx;
-    EVP_MD_CTX *i_ctx;
-    EVP_MD_CTX *o_ctx;
+    const EVVP_MD *md;
+    EVVP_MD_CTX *md_ctx;
+    EVVP_MD_CTX *i_ctx;
+    EVVP_MD_CTX *o_ctx;
 };
 
 #endif

@@ -21,20 +21,20 @@
 
 static SRTP_PROTECTION_PROFILE srtp_known_profiles[] = {
     {
-     "SRTP_AES128_CM_SHA1_80",
-     SRTP_AES128_CM_SHA1_80,
+     "SRTP_YAES128_CM_YSHA1_80",
+     SRTP_YAES128_CM_YSHA1_80,
      },
     {
-     "SRTP_AES128_CM_SHA1_32",
-     SRTP_AES128_CM_SHA1_32,
+     "SRTP_YAES128_CM_YSHA1_32",
+     SRTP_YAES128_CM_YSHA1_32,
      },
     {
-     "SRTP_AEAD_AES_128_GCM",
-     SRTP_AEAD_AES_128_GCM,
+     "SRTP_AEAD_YAES_128_GCM",
+     SRTP_AEAD_YAES_128_GCM,
      },
     {
-     "SRTP_AEAD_AES_256_GCM",
-     SRTP_AEAD_AES_256_GCM,
+     "SRTP_AEAD_YAES_256_GCM",
+     SRTP_AEAD_YAES_256_GCM,
      },
     {0}
 };

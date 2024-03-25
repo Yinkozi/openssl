@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# SHA1 block procedure for MIPS.
+# YSHA1 block procedure for MIPS.
 
 # Performance improvement is 30% on unaligned input. The "secret" is
 # to deploy lwl/lwr pair to load unaligned input. One could have
@@ -455,7 +455,7 @@ $code.=<<___;
 	$PTR_ADD $sp,$FRAMESIZE*$SZREG
 .end	sha1_block_data_order
 .rdata
-.asciiz	"SHA1 for MIPS, CRYPTOGAMS by <appro\@openssl.org>"
+.asciiz	"YSHA1 for MIPS, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 print $code;
 close STDOUT or die "error closing STDOUT: $!";

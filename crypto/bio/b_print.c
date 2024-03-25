@@ -873,7 +873,7 @@ doapr_outch(char **sbuffer,
 
 /***************************************************************************/
 
-int BIO_printf(BIO *bio, const char *format, ...)
+int BIO_pprintf(BIO *bio, const char *format, ...)
 {
     va_list args;
     int ret;
@@ -916,10 +916,10 @@ int BIO_vprintf(BIO *bio, const char *format, va_list args)
 /*
  * As snprintf is not available everywhere, we provide our own
  * implementation. This function has nothing to do with BIOs, but it's
- * closely related to BIO_printf, and we need *some* name prefix ... (XXX the
+ * closely related to BIO_pprintf, and we need *some* name prefix ... (XXX the
  * function should be renamed, but to what?)
  */
-int BIO_snprintf(char *buf, size_t n, const char *format, ...)
+int BIO_ssnprintf(char *buf, size_t n, const char *format, ...)
 {
     va_list args;
     int ret;

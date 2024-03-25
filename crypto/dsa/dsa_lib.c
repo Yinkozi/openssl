@@ -146,22 +146,22 @@ int DSA_up_ref(DSA *r)
 int DSA_size(const DSA *r)
 {
     int ret, i;
-    ASN1_INTEGER bs;
+    YASN1_INTEGER bs;
     unsigned char buf[4];       /* 4 bytes looks really small. However,
-                                 * i2d_ASN1_INTEGER() will not look beyond
+                                 * i2d_YASN1_INTEGER() will not look beyond
                                  * the first byte, as long as the second
                                  * parameter is NULL. */
 
     i = BN_num_bits(r->q);
     bs.length = (i + 7) / 8;
     bs.data = buf;
-    bs.type = V_ASN1_INTEGER;
+    bs.type = V_YASN1_INTEGER;
     /* If the top bit is set the asn1 encoding is 1 larger. */
     buf[0] = 0xff;
 
-    i = i2d_ASN1_INTEGER(&bs, NULL);
+    i = i2d_YASN1_INTEGER(&bs, NULL);
     i += i;                     /* r and s */
-    ret = ASN1_object_size(1, i, V_ASN1_SEQUENCE);
+    ret = YASN1_object_size(1, i, V_YASN1_SEQUENCE);
     return ret;
 }
 

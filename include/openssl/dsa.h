@@ -64,12 +64,12 @@ extern "C" {
 
 typedef struct DSA_SIG_st DSA_SIG;
 
-# define d2i_DSAparams_fp(fp,x) (DSA *)ASN1_d2i_fp((char *(*)())DSA_new, \
+# define d2i_DSAparams_fp(fp,x) (DSA *)YASN1_d2i_fp((char *(*)())DSA_new, \
                 (char *(*)())d2i_DSAparams,(fp),(unsigned char **)(x))
-# define i2d_DSAparams_fp(fp,x) ASN1_i2d_fp(i2d_DSAparams,(fp), \
+# define i2d_DSAparams_fp(fp,x) YASN1_i2d_fp(i2d_DSAparams,(fp), \
                 (unsigned char *)(x))
-# define d2i_DSAparams_bio(bp,x) ASN1_d2i_bio_of(DSA,DSA_new,d2i_DSAparams,bp,x)
-# define i2d_DSAparams_bio(bp,x) ASN1_i2d_bio_of_const(DSA,i2d_DSAparams,bp,x)
+# define d2i_DSAparams_bio(bp,x) YASN1_d2i_bio_of(DSA,DSA_new,d2i_DSAparams,bp,x)
+# define i2d_DSAparams_bio(bp,x) YASN1_i2d_bio_of_const(DSA,i2d_DSAparams,bp,x)
 
 DSA *DSAparams_dup(DSA *x);
 DSA_SIG *DSA_SIG_new(void);
@@ -159,19 +159,19 @@ int DSA_print_fp(FILE *bp, const DSA *x, int off);
 DH *DSA_dup_DH(const DSA *r);
 # endif
 
-# define EVP_PKEY_CTX_set_dsa_paramgen_bits(ctx, nbits) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_DSA, EVP_PKEY_OP_PARAMGEN, \
-                                EVP_PKEY_CTRL_DSA_PARAMGEN_BITS, nbits, NULL)
-# define EVP_PKEY_CTX_set_dsa_paramgen_q_bits(ctx, qbits) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_DSA, EVP_PKEY_OP_PARAMGEN, \
-                                EVP_PKEY_CTRL_DSA_PARAMGEN_Q_BITS, qbits, NULL)
-# define EVP_PKEY_CTX_set_dsa_paramgen_md(ctx, md) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_DSA, EVP_PKEY_OP_PARAMGEN, \
-                                EVP_PKEY_CTRL_DSA_PARAMGEN_MD, 0, (void *)(md))
+# define EVVP_PKEY_CTX_set_dsa_paramgen_bits(ctx, nbits) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_DSA, EVVP_PKEY_OP_PARAMGEN, \
+                                EVVP_PKEY_CTRL_DSA_PARAMGEN_BITS, nbits, NULL)
+# define EVVP_PKEY_CTX_set_dsa_paramgen_q_bits(ctx, qbits) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_DSA, EVVP_PKEY_OP_PARAMGEN, \
+                                EVVP_PKEY_CTRL_DSA_PARAMGEN_Q_BITS, qbits, NULL)
+# define EVVP_PKEY_CTX_set_dsa_paramgen_md(ctx, md) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_DSA, EVVP_PKEY_OP_PARAMGEN, \
+                                EVVP_PKEY_CTRL_DSA_PARAMGEN_MD, 0, (void *)(md))
 
-# define EVP_PKEY_CTRL_DSA_PARAMGEN_BITS         (EVP_PKEY_ALG_CTRL + 1)
-# define EVP_PKEY_CTRL_DSA_PARAMGEN_Q_BITS       (EVP_PKEY_ALG_CTRL + 2)
-# define EVP_PKEY_CTRL_DSA_PARAMGEN_MD           (EVP_PKEY_ALG_CTRL + 3)
+# define EVVP_PKEY_CTRL_DSA_PARAMGEN_BITS         (EVVP_PKEY_ALG_CTRL + 1)
+# define EVVP_PKEY_CTRL_DSA_PARAMGEN_Q_BITS       (EVVP_PKEY_ALG_CTRL + 2)
+# define EVVP_PKEY_CTRL_DSA_PARAMGEN_MD           (EVVP_PKEY_ALG_CTRL + 3)
 
 void DSA_get0_pqg(const DSA *d,
                   const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);

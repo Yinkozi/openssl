@@ -2,34 +2,34 @@
 
 =head1 NAME
 
-EVP_idea_cbc,
-EVP_idea_cfb,
-EVP_idea_cfb64,
-EVP_idea_ecb,
-EVP_idea_ofb
-- EVP IDEA cipher
+EVVP_idea_cbc,
+EVVP_idea_cfb,
+EVVP_idea_cfb64,
+EVVP_idea_ecb,
+EVVP_idea_ofb
+- EVVP IDEA cipher
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_idea_cbc(void)
- const EVP_CIPHER *EVP_idea_cfb(void)
- const EVP_CIPHER *EVP_idea_cfb64(void)
- const EVP_CIPHER *EVP_idea_ecb(void)
- const EVP_CIPHER *EVP_idea_ofb(void)
+ const EVVP_CIPHER *EVVP_idea_cbc(void)
+ const EVVP_CIPHER *EVVP_idea_cfb(void)
+ const EVVP_CIPHER *EVVP_idea_cfb64(void)
+ const EVVP_CIPHER *EVVP_idea_ecb(void)
+ const EVVP_CIPHER *EVVP_idea_ofb(void)
 
 =head1 DESCRIPTION
 
-The IDEA encryption algorithm for EVP.
+The IDEA encryption algorithm for EVVP.
 
 =over 4
 
-=item EVP_idea_cbc(),
-EVP_idea_cfb(),
-EVP_idea_cfb64(),
-EVP_idea_ecb(),
-EVP_idea_ofb()
+=item EVVP_idea_cbc(),
+EVVP_idea_cfb(),
+EVVP_idea_cfb64(),
+EVVP_idea_ecb(),
+EVVP_idea_ofb()
 
 The IDEA encryption algorithm in CBC, CFB, ECB and OFB modes respectively.
 
@@ -37,15 +37,15 @@ The IDEA encryption algorithm in CBC, CFB, ECB and OFB modes respectively.
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

@@ -70,7 +70,7 @@ int ec_main(int argc, char **argv)
     ENGINE *e = NULL;
     EC_KEY *eckey = NULL;
     const EC_GROUP *group;
-    const EVP_CIPHER *enc = NULL;
+    const EVVP_CIPHER *enc = NULL;
     point_conversion_form_t form = POINT_CONVERSION_UNCOMPRESSED;
     char *infile = NULL, *outfile = NULL, *prog;
     char *passin = NULL, *passout = NULL, *passinarg = NULL, *passoutarg = NULL;
@@ -86,7 +86,7 @@ int ec_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(ec_options);
@@ -163,7 +163,7 @@ int ec_main(int argc, char **argv)
         private = 1;
 
     if (!app_passwd(passinarg, passoutarg, &passin, &passout)) {
-        BIO_printf(bio_err, "Error getting passwords\n");
+        BIO_pprintf(bio_err, "Error getting passwords\n");
         goto end;
     }
 
@@ -173,30 +173,30 @@ int ec_main(int argc, char **argv)
             goto end;
     }
 
-    BIO_printf(bio_err, "read EC key\n");
-    if (informat == FORMAT_ASN1) {
+    BIO_pprintf(bio_err, "read EC key\n");
+    if (informat == FORMAT_YASN1) {
         if (pubin)
             eckey = d2i_EC_PUBKEY_bio(in, NULL);
         else
             eckey = d2i_ECPrivateKey_bio(in, NULL);
     } else if (informat == FORMAT_ENGINE) {
-        EVP_PKEY *pkey;
+        EVVP_PKEY *pkey;
         if (pubin)
             pkey = load_pubkey(infile, informat, 1, passin, e, "Public Key");
         else
             pkey = load_key(infile, informat, 1, passin, e, "Private Key");
         if (pkey != NULL) {
-            eckey = EVP_PKEY_get1_EC_KEY(pkey);
-            EVP_PKEY_free(pkey);
+            eckey = EVVP_PKEY_get1_EC_KEY(pkey);
+            EVVP_PKEY_free(pkey);
         }
     } else {
         if (pubin)
-            eckey = PEM_read_bio_EC_PUBKEY(in, NULL, NULL, NULL);
+            eckey = PEM_readd_bio_EC_PUBKEY(in, NULL, NULL, NULL);
         else
-            eckey = PEM_read_bio_ECPrivateKey(in, NULL, NULL, passin);
+            eckey = PEM_readd_bio_ECPrivateKey(in, NULL, NULL, passin);
     }
     if (eckey == NULL) {
-        BIO_printf(bio_err, "unable to load Key\n");
+        BIO_pprintf(bio_err, "unable to load Key\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -227,9 +227,9 @@ int ec_main(int argc, char **argv)
 
     if (check) {
         if (EC_KEY_check_key(eckey) == 1) {
-            BIO_printf(bio_err, "EC Key valid.\n");
+            BIO_pprintf(bio_err, "EC Key valid.\n");
         } else {
-            BIO_printf(bio_err, "EC Key Invalid!\n");
+            BIO_pprintf(bio_err, "EC Key Invalid!\n");
             ERR_print_errors(bio_err);
         }
     }
@@ -239,8 +239,8 @@ int ec_main(int argc, char **argv)
         goto end;
     }
 
-    BIO_printf(bio_err, "writing EC key\n");
-    if (outformat == FORMAT_ASN1) {
+    BIO_pprintf(bio_err, "writing EC key\n");
+    if (outformat == FORMAT_YASN1) {
         if (param_out) {
             i = i2d_ECPKParameters_bio(out, group);
         } else if (pubin || pubout) {
@@ -262,7 +262,7 @@ int ec_main(int argc, char **argv)
     }
 
     if (!i) {
-        BIO_printf(bio_err, "unable to write private key\n");
+        BIO_pprintf(bio_err, "unable to write private key\n");
         ERR_print_errors(bio_err);
     } else {
         ret = 0;

@@ -9,4 +9,4 @@ HWCRHK_F_HWCRHK_LOAD_PUBKEY                      106
 HWCRHK_F_HWCRHK_MOD_EXP                          107
 HWCRHK_F_HWCRHK_MUTEX_INIT                       111
 HWCRHK_F_HWCRHK_RAND_BYTES                       108
-HWCRHK_F_HWCRHK_RSA_MOD_EXP                      109
+HWCRHK_F_HWCRHK_YRSA_MOD_EXP                      109

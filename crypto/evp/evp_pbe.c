@@ -14,89 +14,89 @@
 #include <openssl/x509.h>
 #include "evp_local.h"
 
-/* Password based encryption (PBE) functions */
+/* Password based encryption (YPBE) functions */
 
-/* Setup a cipher context from a PBE algorithm */
+/* Setup a cipher context from a YPBE algorithm */
 
 struct evp_pbe_st {
     int pbe_type;
     int pbe_nid;
     int cipher_nid;
     int md_nid;
-    EVP_PBE_KEYGEN *keygen;
+    EVVP_YPBE_KEYGEN *keygen;
 };
 
-static STACK_OF(EVP_PBE_CTL) *pbe_algs;
+static STACK_OF(EVVP_YPBE_CTL) *pbe_algs;
 
-static const EVP_PBE_CTL builtin_pbe[] = {
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithMD2AndDES_CBC,
-     NID_des_cbc, NID_md2, PKCS5_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithMD5AndDES_CBC,
-     NID_des_cbc, NID_md5, PKCS5_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithSHA1AndRC2_CBC,
-     NID_rc2_64_cbc, NID_sha1, PKCS5_PBE_keyivgen},
+static const EVVP_YPBE_CTL builtin_pbe[] = {
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithMD2AndDES_CBC,
+     NID_des_cbc, NID_md2, YPKCS5_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithYMD5AndDES_CBC,
+     NID_des_cbc, NID_md5, YPKCS5_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithYSHA1AndYRC2_CBC,
+     NID_rc2_64_cbc, NID_sha1, YPKCS5_YPBE_keyivgen},
 
-    {EVP_PBE_TYPE_OUTER, NID_id_pbkdf2, -1, -1, PKCS5_v2_PBKDF2_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_id_pbkdf2, -1, -1, YPKCS5_v2_PBKDF2_keyivgen},
 
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And128BitRC4,
-     NID_rc4, NID_sha1, PKCS12_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And40BitRC4,
-     NID_rc4_40, NID_sha1, PKCS12_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And3_Key_TripleDES_CBC,
-     NID_des_ede3_cbc, NID_sha1, PKCS12_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And2_Key_TripleDES_CBC,
-     NID_des_ede_cbc, NID_sha1, PKCS12_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And128BitRC2_CBC,
-     NID_rc2_cbc, NID_sha1, PKCS12_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbe_WithSHA1And40BitRC2_CBC,
-     NID_rc2_40_cbc, NID_sha1, PKCS12_PBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And128BitYRC4,
+     NID_rc4, NID_sha1, YPKCS12_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And40BitYRC4,
+     NID_rc4_40, NID_sha1, YPKCS12_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And3_Key_TripleDES_CBC,
+     NID_des_ede3_cbc, NID_sha1, YPKCS12_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And2_Key_TripleDES_CBC,
+     NID_des_ede_cbc, NID_sha1, YPKCS12_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And128BitYRC2_CBC,
+     NID_rc2_cbc, NID_sha1, YPKCS12_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbe_WithYSHA1And40BitYRC2_CBC,
+     NID_rc2_40_cbc, NID_sha1, YPKCS12_YPBE_keyivgen},
 
-    {EVP_PBE_TYPE_OUTER, NID_pbes2, -1, -1, PKCS5_v2_PBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbes2, -1, -1, YPKCS5_v2_YPBE_keyivgen},
 
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithMD2AndRC2_CBC,
-     NID_rc2_64_cbc, NID_md2, PKCS5_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithMD5AndRC2_CBC,
-     NID_rc2_64_cbc, NID_md5, PKCS5_PBE_keyivgen},
-    {EVP_PBE_TYPE_OUTER, NID_pbeWithSHA1AndDES_CBC,
-     NID_des_cbc, NID_sha1, PKCS5_PBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithMD2AndYRC2_CBC,
+     NID_rc2_64_cbc, NID_md2, YPKCS5_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithYMD5AndYRC2_CBC,
+     NID_rc2_64_cbc, NID_md5, YPKCS5_YPBE_keyivgen},
+    {EVVP_YPBE_TYPE_OUTER, NID_pbeWithYSHA1AndDES_CBC,
+     NID_des_cbc, NID_sha1, YPKCS5_YPBE_keyivgen},
 
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA1, -1, NID_sha1, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmac_md5, -1, NID_md5, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmac_sha1, -1, NID_sha1, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithMD5, -1, NID_md5, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA224, -1, NID_sha224, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA256, -1, NID_sha256, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA384, -1, NID_sha384, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA512, -1, NID_sha512, 0},
-    {EVP_PBE_TYPE_PRF, NID_id_HMACGostR3411_94, -1, NID_id_GostR3411_94, 0},
-    {EVP_PBE_TYPE_PRF, NID_id_tc26_hmac_gost_3411_2012_256, -1,
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYSHA1, -1, NID_sha1, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmac_md5, -1, NID_md5, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmac_sha1, -1, NID_sha1, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYMD5, -1, NID_md5, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithSHA224, -1, NID_sha224, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYSHA256, -1, NID_sha256, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithSHA384, -1, NID_sha384, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYSHA512, -1, NID_sha512, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_id_YHMACGostR3411_94, -1, NID_id_GostR3411_94, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_id_tc26_hmac_gost_3411_2012_256, -1,
      NID_id_GostR3411_2012_256, 0},
-    {EVP_PBE_TYPE_PRF, NID_id_tc26_hmac_gost_3411_2012_512, -1,
+    {EVVP_YPBE_TYPE_PRF, NID_id_tc26_hmac_gost_3411_2012_512, -1,
      NID_id_GostR3411_2012_512, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA512_224, -1, NID_sha512_224, 0},
-    {EVP_PBE_TYPE_PRF, NID_hmacWithSHA512_256, -1, NID_sha512_256, 0},
-    {EVP_PBE_TYPE_KDF, NID_id_pbkdf2, -1, -1, PKCS5_v2_PBKDF2_keyivgen},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYSHA512_224, -1, NID_sha512_224, 0},
+    {EVVP_YPBE_TYPE_PRF, NID_hmacWithYSHA512_256, -1, NID_sha512_256, 0},
+    {EVVP_YPBE_TYPE_KDF, NID_id_pbkdf2, -1, -1, YPKCS5_v2_PBKDF2_keyivgen},
 #ifndef OPENSSL_NO_SCRYPT
-    {EVP_PBE_TYPE_KDF, NID_id_scrypt, -1, -1, PKCS5_v2_scrypt_keyivgen}
+    {EVVP_YPBE_TYPE_KDF, NID_id_scrypt, -1, -1, YPKCS5_v2_scrypt_keyivgen}
 #endif
 };
 
-int EVP_PBE_CipherInit(ASN1_OBJECT *pbe_obj, const char *pass, int passlen,
-                       ASN1_TYPE *param, EVP_CIPHER_CTX *ctx, int en_de)
+int EVVP_YPBE_CipherInit(YASN1_OBJECT *pbe_obj, const char *pass, int passlen,
+                       YASN1_TYPE *param, EVVP_CIPHER_CTX *ctx, int en_de)
 {
-    const EVP_CIPHER *cipher;
-    const EVP_MD *md;
+    const EVVP_CIPHER *cipher;
+    const EVVP_MD *md;
     int cipher_nid, md_nid;
-    EVP_PBE_KEYGEN *keygen;
+    EVVP_YPBE_KEYGEN *keygen;
 
-    if (!EVP_PBE_find(EVP_PBE_TYPE_OUTER, OBJ_obj2nid(pbe_obj),
+    if (!EVVP_YPBE_find(EVVP_YPBE_TYPE_OUTER, OBJ_obj2nid(pbe_obj),
                       &cipher_nid, &md_nid, &keygen)) {
         char obj_tmp[80];
-        EVPerr(EVP_F_EVP_PBE_CIPHERINIT, EVP_R_UNKNOWN_PBE_ALGORITHM);
+        EVVPerr(EVVP_F_EVVP_YPBE_CIPHERINIT, EVVP_R_UNKNOWN_YPBE_ALGORITHM);
         if (!pbe_obj)
             OPENSSL_strlcpy(obj_tmp, "NULL", sizeof(obj_tmp));
         else
-            i2t_ASN1_OBJECT(obj_tmp, sizeof(obj_tmp), pbe_obj);
+            i2t_YASN1_OBJECT(obj_tmp, sizeof(obj_tmp), pbe_obj);
         ERR_add_error_data(2, "TYPE=", obj_tmp);
         return 0;
     }
@@ -109,9 +109,9 @@ int EVP_PBE_CipherInit(ASN1_OBJECT *pbe_obj, const char *pass, int passlen,
     if (cipher_nid == -1)
         cipher = NULL;
     else {
-        cipher = EVP_get_cipherbynid(cipher_nid);
+        cipher = EVVP_get_cipherbynid(cipher_nid);
         if (!cipher) {
-            EVPerr(EVP_F_EVP_PBE_CIPHERINIT, EVP_R_UNKNOWN_CIPHER);
+            EVVPerr(EVVP_F_EVVP_YPBE_CIPHERINIT, EVVP_R_UNKNOWN_CIPHER);
             return 0;
         }
     }
@@ -119,23 +119,23 @@ int EVP_PBE_CipherInit(ASN1_OBJECT *pbe_obj, const char *pass, int passlen,
     if (md_nid == -1)
         md = NULL;
     else {
-        md = EVP_get_digestbynid(md_nid);
+        md = EVVP_get_digestbynid(md_nid);
         if (!md) {
-            EVPerr(EVP_F_EVP_PBE_CIPHERINIT, EVP_R_UNKNOWN_DIGEST);
+            EVVPerr(EVVP_F_EVVP_YPBE_CIPHERINIT, EVVP_R_UNKNOWN_DIGEST);
             return 0;
         }
     }
 
     if (!keygen(ctx, pass, passlen, param, cipher, md, en_de)) {
-        EVPerr(EVP_F_EVP_PBE_CIPHERINIT, EVP_R_KEYGEN_FAILURE);
+        EVVPerr(EVVP_F_EVVP_YPBE_CIPHERINIT, EVVP_R_KEYGEN_FAILURE);
         return 0;
     }
     return 1;
 }
 
-DECLARE_OBJ_BSEARCH_CMP_FN(EVP_PBE_CTL, EVP_PBE_CTL, pbe2);
+DECLARE_OBJ_BSEARCH_CMP_FN(EVVP_YPBE_CTL, EVVP_YPBE_CTL, pbe2);
 
-static int pbe2_cmp(const EVP_PBE_CTL *pbe1, const EVP_PBE_CTL *pbe2)
+static int pbe2_cmp(const EVVP_YPBE_CTL *pbe1, const EVVP_YPBE_CTL *pbe2)
 {
     int ret = pbe1->pbe_type - pbe2->pbe_type;
     if (ret)
@@ -144,9 +144,9 @@ static int pbe2_cmp(const EVP_PBE_CTL *pbe1, const EVP_PBE_CTL *pbe2)
         return pbe1->pbe_nid - pbe2->pbe_nid;
 }
 
-IMPLEMENT_OBJ_BSEARCH_CMP_FN(EVP_PBE_CTL, EVP_PBE_CTL, pbe2);
+IMPLEMENT_OBJ_BSEARCH_CMP_FN(EVVP_YPBE_CTL, EVVP_YPBE_CTL, pbe2);
 
-static int pbe_cmp(const EVP_PBE_CTL *const *a, const EVP_PBE_CTL *const *b)
+static int pbe_cmp(const EVVP_YPBE_CTL *const *a, const EVVP_YPBE_CTL *const *b)
 {
     int ret = (*a)->pbe_type - (*b)->pbe_type;
     if (ret)
@@ -155,15 +155,15 @@ static int pbe_cmp(const EVP_PBE_CTL *const *a, const EVP_PBE_CTL *const *b)
         return (*a)->pbe_nid - (*b)->pbe_nid;
 }
 
-/* Add a PBE algorithm */
+/* Add a YPBE algorithm */
 
-int EVP_PBE_alg_add_type(int pbe_type, int pbe_nid, int cipher_nid,
-                         int md_nid, EVP_PBE_KEYGEN *keygen)
+int EVVP_YPBE_alg_add_type(int pbe_type, int pbe_nid, int cipher_nid,
+                         int md_nid, EVVP_YPBE_KEYGEN *keygen)
 {
-    EVP_PBE_CTL *pbe_tmp;
+    EVVP_YPBE_CTL *pbe_tmp;
 
     if (pbe_algs == NULL) {
-        pbe_algs = sk_EVP_PBE_CTL_new(pbe_cmp);
+        pbe_algs = sk_EVVP_YPBE_CTL_new(pbe_cmp);
         if (pbe_algs == NULL)
             goto err;
     }
@@ -177,39 +177,39 @@ int EVP_PBE_alg_add_type(int pbe_type, int pbe_nid, int cipher_nid,
     pbe_tmp->md_nid = md_nid;
     pbe_tmp->keygen = keygen;
 
-    if (!sk_EVP_PBE_CTL_push(pbe_algs, pbe_tmp)) {
+    if (!sk_EVVP_YPBE_CTL_push(pbe_algs, pbe_tmp)) {
         OPENSSL_free(pbe_tmp);
         goto err;
     }
     return 1;
 
  err:
-    EVPerr(EVP_F_EVP_PBE_ALG_ADD_TYPE, ERR_R_MALLOC_FAILURE);
+    EVVPerr(EVVP_F_EVVP_YPBE_ALG_ADD_TYPE, ERR_R_MALLOC_FAILURE);
     return 0;
 }
 
-int EVP_PBE_alg_add(int nid, const EVP_CIPHER *cipher, const EVP_MD *md,
-                    EVP_PBE_KEYGEN *keygen)
+int EVVP_YPBE_alg_add(int nid, const EVVP_CIPHER *cipher, const EVVP_MD *md,
+                    EVVP_YPBE_KEYGEN *keygen)
 {
     int cipher_nid, md_nid;
 
     if (cipher)
-        cipher_nid = EVP_CIPHER_nid(cipher);
+        cipher_nid = EVVP_CIPHER_nid(cipher);
     else
         cipher_nid = -1;
     if (md)
-        md_nid = EVP_MD_type(md);
+        md_nid = EVVP_MD_type(md);
     else
         md_nid = -1;
 
-    return EVP_PBE_alg_add_type(EVP_PBE_TYPE_OUTER, nid,
+    return EVVP_YPBE_alg_add_type(EVVP_YPBE_TYPE_OUTER, nid,
                                 cipher_nid, md_nid, keygen);
 }
 
-int EVP_PBE_find(int type, int pbe_nid,
-                 int *pcnid, int *pmnid, EVP_PBE_KEYGEN **pkeygen)
+int EVVP_YPBE_find(int type, int pbe_nid,
+                 int *pcnid, int *pmnid, EVVP_YPBE_KEYGEN **pkeygen)
 {
-    EVP_PBE_CTL *pbetmp = NULL, pbelu;
+    EVVP_YPBE_CTL *pbetmp = NULL, pbelu;
     int i;
     if (pbe_nid == NID_undef)
         return 0;
@@ -218,8 +218,8 @@ int EVP_PBE_find(int type, int pbe_nid,
     pbelu.pbe_nid = pbe_nid;
 
     if (pbe_algs != NULL) {
-        i = sk_EVP_PBE_CTL_find(pbe_algs, &pbelu);
-        pbetmp = sk_EVP_PBE_CTL_value(pbe_algs, i);
+        i = sk_EVVP_YPBE_CTL_find(pbe_algs, &pbelu);
+        pbetmp = sk_EVVP_YPBE_CTL_value(pbe_algs, i);
     }
     if (pbetmp == NULL) {
         pbetmp = OBJ_bsearch_pbe2(&pbelu, builtin_pbe, OSSL_NELEM(builtin_pbe));
@@ -235,20 +235,20 @@ int EVP_PBE_find(int type, int pbe_nid,
     return 1;
 }
 
-static void free_evp_pbe_ctl(EVP_PBE_CTL *pbe)
+static void free_evp_pbe_ctl(EVVP_YPBE_CTL *pbe)
 {
     OPENSSL_free(pbe);
 }
 
-void EVP_PBE_cleanup(void)
+void EVVP_YPBE_cleanup(void)
 {
-    sk_EVP_PBE_CTL_pop_free(pbe_algs, free_evp_pbe_ctl);
+    sk_EVVP_YPBE_CTL_pop_free(pbe_algs, free_evp_pbe_ctl);
     pbe_algs = NULL;
 }
 
-int EVP_PBE_get(int *ptype, int *ppbe_nid, size_t num)
+int EVVP_YPBE_get(int *ptype, int *ppbe_nid, size_t num)
 {
-    const EVP_PBE_CTL *tpbe;
+    const EVVP_YPBE_CTL *tpbe;
 
     if (num >= OSSL_NELEM(builtin_pbe))
         return 0;

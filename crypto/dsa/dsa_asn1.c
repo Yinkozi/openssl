@@ -14,12 +14,12 @@
 #include <openssl/asn1t.h>
 #include <openssl/rand.h>
 
-ASN1_SEQUENCE(DSA_SIG) = {
-        ASN1_SIMPLE(DSA_SIG, r, CBIGNUM),
-        ASN1_SIMPLE(DSA_SIG, s, CBIGNUM)
-} static_ASN1_SEQUENCE_END(DSA_SIG)
+YASN1_SEQUENCE(DSA_SIG) = {
+        YASN1_SIMPLE(DSA_SIG, r, CBIGNUM),
+        YASN1_SIMPLE(DSA_SIG, s, CBIGNUM)
+} static_YASN1_SEQUENCE_END(DSA_SIG)
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DSA_SIG, DSA_SIG, DSA_SIG)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA_SIG, DSA_SIG, DSA_SIG)
 
 DSA_SIG *DSA_SIG_new(void)
 {
@@ -58,15 +58,15 @@ int DSA_SIG_set0(DSA_SIG *sig, BIGNUM *r, BIGNUM *s)
 }
 
 /* Override the default free and new methods */
-static int dsa_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int dsa_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
                   void *exarg)
 {
-    if (operation == ASN1_OP_NEW_PRE) {
-        *pval = (ASN1_VALUE *)DSA_new();
+    if (operation == YASN1_OP_NEW_PRE) {
+        *pval = (YASN1_VALUE *)DSA_new();
         if (*pval != NULL)
             return 2;
         return 0;
-    } else if (operation == ASN1_OP_FREE_PRE) {
+    } else if (operation == YASN1_OP_FREE_PRE) {
         DSA_free((DSA *)*pval);
         *pval = NULL;
         return 2;
@@ -74,37 +74,37 @@ static int dsa_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
     return 1;
 }
 
-ASN1_SEQUENCE_cb(DSAPrivateKey, dsa_cb) = {
-        ASN1_EMBED(DSA, version, INT32),
-        ASN1_SIMPLE(DSA, p, BIGNUM),
-        ASN1_SIMPLE(DSA, q, BIGNUM),
-        ASN1_SIMPLE(DSA, g, BIGNUM),
-        ASN1_SIMPLE(DSA, pub_key, BIGNUM),
-        ASN1_SIMPLE(DSA, priv_key, CBIGNUM)
-} static_ASN1_SEQUENCE_END_cb(DSA, DSAPrivateKey)
+YASN1_SEQUENCE_cb(DSAPrivateKey, dsa_cb) = {
+        YASN1_EMBED(DSA, version, INT32),
+        YASN1_SIMPLE(DSA, p, BIGNUM),
+        YASN1_SIMPLE(DSA, q, BIGNUM),
+        YASN1_SIMPLE(DSA, g, BIGNUM),
+        YASN1_SIMPLE(DSA, pub_key, BIGNUM),
+        YASN1_SIMPLE(DSA, priv_key, CBIGNUM)
+} static_YASN1_SEQUENCE_END_cb(DSA, DSAPrivateKey)
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPrivateKey, DSAPrivateKey)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPrivateKey, DSAPrivateKey)
 
-ASN1_SEQUENCE_cb(DSAparams, dsa_cb) = {
-        ASN1_SIMPLE(DSA, p, BIGNUM),
-        ASN1_SIMPLE(DSA, q, BIGNUM),
-        ASN1_SIMPLE(DSA, g, BIGNUM),
-} static_ASN1_SEQUENCE_END_cb(DSA, DSAparams)
+YASN1_SEQUENCE_cb(DSAparams, dsa_cb) = {
+        YASN1_SIMPLE(DSA, p, BIGNUM),
+        YASN1_SIMPLE(DSA, q, BIGNUM),
+        YASN1_SIMPLE(DSA, g, BIGNUM),
+} static_YASN1_SEQUENCE_END_cb(DSA, DSAparams)
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAparams, DSAparams)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAparams, DSAparams)
 
-ASN1_SEQUENCE_cb(DSAPublicKey, dsa_cb) = {
-        ASN1_SIMPLE(DSA, pub_key, BIGNUM),
-        ASN1_SIMPLE(DSA, p, BIGNUM),
-        ASN1_SIMPLE(DSA, q, BIGNUM),
-        ASN1_SIMPLE(DSA, g, BIGNUM)
-} static_ASN1_SEQUENCE_END_cb(DSA, DSAPublicKey)
+YASN1_SEQUENCE_cb(DSAPublicKey, dsa_cb) = {
+        YASN1_SIMPLE(DSA, pub_key, BIGNUM),
+        YASN1_SIMPLE(DSA, p, BIGNUM),
+        YASN1_SIMPLE(DSA, q, BIGNUM),
+        YASN1_SIMPLE(DSA, g, BIGNUM)
+} static_YASN1_SEQUENCE_END_cb(DSA, DSAPublicKey)
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPublicKey, DSAPublicKey)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPublicKey, DSAPublicKey)
 
 DSA *DSAparams_dup(DSA *dsa)
 {
-    return ASN1_item_dup(ASN1_ITEM_rptr(DSAparams), dsa);
+    return YASN1_item_dup(YASN1_ITEM_rptr(DSAparams), dsa);
 }
 
 int DSA_sign(int type, const unsigned char *dgst, int dlen,

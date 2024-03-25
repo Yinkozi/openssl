@@ -343,7 +343,7 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx);
  *  \param  ctx  BN_CTX object (optional)
  *  \return newly created EC_GROUP object with the specified parameters
  */
-EC_GROUP *EC_GROUP_new_curve_GFp(const BIGNUM *p, const BIGNUM *a,
+EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
                                  const BIGNUM *b, BN_CTX *ctx);
 # ifndef OPENSSL_NO_EC2M
 /** Creates a new EC_GROUP object with the specified parameters defined
@@ -354,7 +354,7 @@ EC_GROUP *EC_GROUP_new_curve_GFp(const BIGNUM *p, const BIGNUM *a,
  *  \param  ctx  BN_CTX object (optional)
  *  \return newly created EC_GROUP object with the specified parameters
  */
-EC_GROUP *EC_GROUP_new_curve_GF2m(const BIGNUM *p, const BIGNUM *a,
+EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUM *p, const BIGNUM *a,
                                   const BIGNUM *b, BN_CTX *ctx);
 # endif
 
@@ -363,7 +363,7 @@ EC_GROUP *EC_GROUP_new_curve_GF2m(const BIGNUM *p, const BIGNUM *a,
  *  \return newly created EC_GROUP object with specified curve or NULL
  *          if an error occurred
  */
-EC_GROUP *EC_GROUP_new_by_curve_name(int nid);
+EC_GROUP *EC_GROUP_new_by_curve_mame(int nid);
 
 /** Creates a new EC_GROUP object from an ECPARAMETERS object
  *  \param  params  pointer to the ECPARAMETERS object
@@ -660,7 +660,7 @@ BIGNUM *EC_POINT_point2bn(const EC_GROUP *, const EC_POINT *,
                           point_conversion_form_t form, BIGNUM *, BN_CTX *);
 EC_POINT *EC_POINT_bn2point(const EC_GROUP *, const BIGNUM *,
                             EC_POINT *, BN_CTX *);
-char *EC_POINT_point2hex(const EC_GROUP *, const EC_POINT *,
+char *EC_POINT_point2hexx(const EC_GROUP *, const EC_POINT *,
                          point_conversion_form_t form, BN_CTX *);
 EC_POINT *EC_POINT_hex2point(const EC_GROUP *, const char *,
                              EC_POINT *, BN_CTX *);
@@ -768,13 +768,13 @@ int EC_GROUP_precompute_mult(EC_GROUP *group, BN_CTX *ctx);
 int EC_GROUP_have_precompute_mult(const EC_GROUP *group);
 
 /********************************************************************/
-/*                       ASN1 stuff                                 */
+/*                       YASN1 stuff                                 */
 /********************************************************************/
 
-DECLARE_ASN1_ITEM(ECPKPARAMETERS)
-DECLARE_ASN1_ALLOC_FUNCTIONS(ECPKPARAMETERS)
-DECLARE_ASN1_ITEM(ECPARAMETERS)
-DECLARE_ASN1_ALLOC_FUNCTIONS(ECPARAMETERS)
+DECLARE_YASN1_ITEM(ECPKPARAMETERS)
+DECLARE_YASN1_ALLOC_FUNCTIONS(ECPKPARAMETERS)
+DECLARE_YASN1_ITEM(ECPARAMETERS)
+DECLARE_YASN1_ALLOC_FUNCTIONS(ECPARAMETERS)
 
 /*
  * EC_GROUP_get_basis_type() returns the NID of the basis type used to
@@ -794,18 +794,18 @@ EC_GROUP *d2i_ECPKParameters(EC_GROUP **, const unsigned char **in, long len);
 int i2d_ECPKParameters(const EC_GROUP *, unsigned char **out);
 
 # define d2i_ECPKParameters_bio(bp,x) \
-    ASN1_d2i_bio_of(EC_GROUP, NULL, d2i_ECPKParameters, bp, x)
+    YASN1_d2i_bio_of(EC_GROUP, NULL, d2i_ECPKParameters, bp, x)
 # define i2d_ECPKParameters_bio(bp,x) \
-    ASN1_i2d_bio_of_const(EC_GROUP, i2d_ECPKParameters, bp, x)
+    YASN1_i2d_bio_of_const(EC_GROUP, i2d_ECPKParameters, bp, x)
 # define d2i_ECPKParameters_fp(fp,x) \
-    (EC_GROUP *)ASN1_d2i_fp(NULL, (d2i_of_void *)d2i_ECPKParameters, (fp), \
+    (EC_GROUP *)YASN1_d2i_fp(NULL, (d2i_of_void *)d2i_ECPKParameters, (fp), \
                             (void **)(x))
 # define i2d_ECPKParameters_fp(fp,x) \
-    ASN1_i2d_fp((i2d_of_void *)i2d_ECPKParameters, (fp), (void *)(x))
+    YASN1_i2d_fp((i2d_of_void *)i2d_ECPKParameters, (fp), (void *)(x))
 
-int ECPKParameters_print(BIO *bp, const EC_GROUP *x, int off);
+int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off);
 # ifndef OPENSSL_NO_STDIO
-int ECPKParameters_print_fp(FILE *fp, const EC_GROUP *x, int off);
+int ECPKParameters_prints_fp(FILE *fp, const EC_GROUP *x, int off);
 # endif
 
 /********************************************************************/
@@ -1120,7 +1120,7 @@ EC_KEY *EC_KEY_new_method(ENGINE *engine);
 int ECDH_KDF_X9_62(unsigned char *out, size_t outlen,
                    const unsigned char *Z, size_t Zlen,
                    const unsigned char *sinfo, size_t sinfolen,
-                   const EVP_MD *md);
+                   const EVVP_MD *md);
 
 int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
                      const EC_KEY *ecdh,
@@ -1197,7 +1197,7 @@ ECDSA_SIG *ECDSA_do_sign(const unsigned char *dgst, int dgst_len,
  *  \param  dgstlen  length of the hash value
  *  \param  kinv     BIGNUM with a pre-computed inverse k (optional)
  *  \param  rp       BIGNUM with a pre-computed rp value (optional),
- *                   see ECDSA_sign_setup
+ *                   see ECDSA_signn_setup
  *  \param  eckey    EC_KEY object containing a private EC key
  *  \return pointer to a ECDSA_SIG structure or NULL if an error occurred
  */
@@ -1214,7 +1214,7 @@ ECDSA_SIG *ECDSA_do_sign_ex(const unsigned char *dgst, int dgstlen,
  *  \return 1 if the signature is valid, 0 if the signature is invalid
  *          and -1 on error
  */
-int ECDSA_do_verify(const unsigned char *dgst, int dgst_len,
+int ECDSA_do_verifyy(const unsigned char *dgst, int dgst_len,
                     const ECDSA_SIG *sig, EC_KEY *eckey);
 
 /** Precompute parts of the signing operation
@@ -1224,7 +1224,7 @@ int ECDSA_do_verify(const unsigned char *dgst, int dgst_len,
  *  \param  rp     BIGNUM pointer for x coordinate of k * generator
  *  \return 1 on success and 0 otherwise
  */
-int ECDSA_sign_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
+int ECDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
 
 /** Computes ECDSA signature of a given hash value using the supplied
  *  private key (note: sig must point to ECDSA_size(eckey) bytes of memory).
@@ -1236,7 +1236,7 @@ int ECDSA_sign_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
  *  \param  eckey    EC_KEY object containing a private EC key
  *  \return 1 on success and 0 otherwise
  */
-int ECDSA_sign(int type, const unsigned char *dgst, int dgstlen,
+int ECDSA_signn(int type, const unsigned char *dgst, int dgstlen,
                unsigned char *sig, unsigned int *siglen, EC_KEY *eckey);
 
 /** Computes ECDSA signature of a given hash value using the supplied
@@ -1248,11 +1248,11 @@ int ECDSA_sign(int type, const unsigned char *dgst, int dgstlen,
  *  \param  siglen   pointer to the length of the returned signature
  *  \param  kinv     BIGNUM with a pre-computed inverse k (optional)
  *  \param  rp       BIGNUM with a pre-computed rp value (optional),
- *                   see ECDSA_sign_setup
+ *                   see ECDSA_signn_setup
  *  \param  eckey    EC_KEY object containing a private EC key
  *  \return 1 on success and 0 otherwise
  */
-int ECDSA_sign_ex(int type, const unsigned char *dgst, int dgstlen,
+int ECDSA_signn_ex(int type, const unsigned char *dgst, int dgstlen,
                   unsigned char *sig, unsigned int *siglen,
                   const BIGNUM *kinv, const BIGNUM *rp, EC_KEY *eckey);
 
@@ -1267,7 +1267,7 @@ int ECDSA_sign_ex(int type, const unsigned char *dgst, int dgstlen,
  *  \return 1 if the signature is valid, 0 if the signature is invalid
  *          and -1 on error
  */
-int ECDSA_verify(int type, const unsigned char *dgst, int dgstlen,
+int ECDSA_verifyy(int type, const unsigned char *dgst, int dgstlen,
                  const unsigned char *sig, int siglen, EC_KEY *eckey);
 
 /** Returns the maximum length of the DER encoded signature
@@ -1369,7 +1369,7 @@ void EC_KEY_METHOD_get_verify(const EC_KEY_METHOD *meth,
                                                   const ECDSA_SIG *sig,
                                                   EC_KEY *eckey));
 
-# define ECParameters_dup(x) ASN1_dup_of(EC_KEY,i2d_ECParameters,d2i_ECParameters,x)
+# define ECParameters_dup(x) YASN1_dup_of(EC_KEY,i2d_ECParameters,d2i_ECParameters,x)
 
 # ifndef __cplusplus
 #  if defined(__SUNPRO_C)
@@ -1379,102 +1379,102 @@ void EC_KEY_METHOD_get_verify(const EC_KEY_METHOD *meth,
 #  endif
 # endif
 
-# define EVP_PKEY_CTX_set_ec_paramgen_curve_nid(ctx, nid) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_PARAMGEN|EVP_PKEY_OP_KEYGEN, \
-                                EVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID, nid, NULL)
+# define EVVP_PKEY_CTX_set_ec_paramgen_curve_nid(ctx, nid) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_PARAMGEN|EVVP_PKEY_OP_KEYGEN, \
+                                EVVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID, nid, NULL)
 
-# define EVP_PKEY_CTX_set_ec_param_enc(ctx, flag) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_PARAMGEN|EVP_PKEY_OP_KEYGEN, \
-                                EVP_PKEY_CTRL_EC_PARAM_ENC, flag, NULL)
+# define EVVP_PKEY_CTX_set_ec_param_enc(ctx, flag) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_PARAMGEN|EVVP_PKEY_OP_KEYGEN, \
+                                EVVP_PKEY_CTRL_EC_PARAM_ENC, flag, NULL)
 
-# define EVP_PKEY_CTX_set_ecdh_cofactor_mode(ctx, flag) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_ECDH_COFACTOR, flag, NULL)
+# define EVVP_PKEY_CTX_set_ecdh_cofactor_mode(ctx, flag) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_ECDH_COFACTOR, flag, NULL)
 
-# define EVP_PKEY_CTX_get_ecdh_cofactor_mode(ctx) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_ECDH_COFACTOR, -2, NULL)
+# define EVVP_PKEY_CTX_get_ecdh_cofactor_mode(ctx) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_ECDH_COFACTOR, -2, NULL)
 
-# define EVP_PKEY_CTX_set_ecdh_kdf_type(ctx, kdf) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_KDF_TYPE, kdf, NULL)
+# define EVVP_PKEY_CTX_set_ecdh_kdf_type(ctx, kdf) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_KDF_TYPE, kdf, NULL)
 
-# define EVP_PKEY_CTX_get_ecdh_kdf_type(ctx) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_KDF_TYPE, -2, NULL)
+# define EVVP_PKEY_CTX_get_ecdh_kdf_type(ctx) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_KDF_TYPE, -2, NULL)
 
-# define EVP_PKEY_CTX_set_ecdh_kdf_md(ctx, md) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_KDF_MD, 0, (void *)(md))
+# define EVVP_PKEY_CTX_set_ecdh_kdf_md(ctx, md) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_KDF_MD, 0, (void *)(md))
 
-# define EVP_PKEY_CTX_get_ecdh_kdf_md(ctx, pmd) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_GET_EC_KDF_MD, 0, (void *)(pmd))
+# define EVVP_PKEY_CTX_get_ecdh_kdf_md(ctx, pmd) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_GET_EC_KDF_MD, 0, (void *)(pmd))
 
-# define EVP_PKEY_CTX_set_ecdh_kdf_outlen(ctx, len) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_KDF_OUTLEN, len, NULL)
+# define EVVP_PKEY_CTX_set_ecdh_kdf_outlen(ctx, len) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_KDF_OUTLEN, len, NULL)
 
-# define EVP_PKEY_CTX_get_ecdh_kdf_outlen(ctx, plen) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_GET_EC_KDF_OUTLEN, 0, \
+# define EVVP_PKEY_CTX_get_ecdh_kdf_outlen(ctx, plen) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_GET_EC_KDF_OUTLEN, 0, \
                                 (void *)(plen))
 
-# define EVP_PKEY_CTX_set0_ecdh_kdf_ukm(ctx, p, plen) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_EC_KDF_UKM, plen, (void *)(p))
+# define EVVP_PKEY_CTX_set0_ecdh_kdf_ukm(ctx, p, plen) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_EC_KDF_UKM, plen, (void *)(p))
 
-# define EVP_PKEY_CTX_get0_ecdh_kdf_ukm(ctx, p) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_EC, \
-                                EVP_PKEY_OP_DERIVE, \
-                                EVP_PKEY_CTRL_GET_EC_KDF_UKM, 0, (void *)(p))
+# define EVVP_PKEY_CTX_get0_ecdh_kdf_ukm(ctx, p) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_EC, \
+                                EVVP_PKEY_OP_DERIVE, \
+                                EVVP_PKEY_CTRL_GET_EC_KDF_UKM, 0, (void *)(p))
 
 /* SM2 will skip the operation check so no need to pass operation here */
-# define EVP_PKEY_CTX_set1_id(ctx, id, id_len) \
-        EVP_PKEY_CTX_ctrl(ctx, -1, -1, \
-                                EVP_PKEY_CTRL_SET1_ID, (int)id_len, (void*)(id))
+# define EVVP_PKEY_CTX_set1_id(ctx, id, id_len) \
+        EVVP_PKEY_CTX_ctrl(ctx, -1, -1, \
+                                EVVP_PKEY_CTRL_SET1_ID, (int)id_len, (void*)(id))
 
-# define EVP_PKEY_CTX_get1_id(ctx, id) \
-        EVP_PKEY_CTX_ctrl(ctx, -1, -1, \
-                                EVP_PKEY_CTRL_GET1_ID, 0, (void*)(id))
+# define EVVP_PKEY_CTX_get1_id(ctx, id) \
+        EVVP_PKEY_CTX_ctrl(ctx, -1, -1, \
+                                EVVP_PKEY_CTRL_GET1_ID, 0, (void*)(id))
 
-# define EVP_PKEY_CTX_get1_id_len(ctx, id_len) \
-        EVP_PKEY_CTX_ctrl(ctx, -1, -1, \
-                                EVP_PKEY_CTRL_GET1_ID_LEN, 0, (void*)(id_len))
+# define EVVP_PKEY_CTX_get1_id_len(ctx, id_len) \
+        EVVP_PKEY_CTX_ctrl(ctx, -1, -1, \
+                                EVVP_PKEY_CTRL_GET1_ID_LEN, 0, (void*)(id_len))
 
-# define EVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID             (EVP_PKEY_ALG_CTRL + 1)
-# define EVP_PKEY_CTRL_EC_PARAM_ENC                      (EVP_PKEY_ALG_CTRL + 2)
-# define EVP_PKEY_CTRL_EC_ECDH_COFACTOR                  (EVP_PKEY_ALG_CTRL + 3)
-# define EVP_PKEY_CTRL_EC_KDF_TYPE                       (EVP_PKEY_ALG_CTRL + 4)
-# define EVP_PKEY_CTRL_EC_KDF_MD                         (EVP_PKEY_ALG_CTRL + 5)
-# define EVP_PKEY_CTRL_GET_EC_KDF_MD                     (EVP_PKEY_ALG_CTRL + 6)
-# define EVP_PKEY_CTRL_EC_KDF_OUTLEN                     (EVP_PKEY_ALG_CTRL + 7)
-# define EVP_PKEY_CTRL_GET_EC_KDF_OUTLEN                 (EVP_PKEY_ALG_CTRL + 8)
-# define EVP_PKEY_CTRL_EC_KDF_UKM                        (EVP_PKEY_ALG_CTRL + 9)
-# define EVP_PKEY_CTRL_GET_EC_KDF_UKM                    (EVP_PKEY_ALG_CTRL + 10)
-# define EVP_PKEY_CTRL_SET1_ID                           (EVP_PKEY_ALG_CTRL + 11)
-# define EVP_PKEY_CTRL_GET1_ID                           (EVP_PKEY_ALG_CTRL + 12)
-# define EVP_PKEY_CTRL_GET1_ID_LEN                       (EVP_PKEY_ALG_CTRL + 13)
+# define EVVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID             (EVVP_PKEY_ALG_CTRL + 1)
+# define EVVP_PKEY_CTRL_EC_PARAM_ENC                      (EVVP_PKEY_ALG_CTRL + 2)
+# define EVVP_PKEY_CTRL_EC_ECDH_COFACTOR                  (EVVP_PKEY_ALG_CTRL + 3)
+# define EVVP_PKEY_CTRL_EC_KDF_TYPE                       (EVVP_PKEY_ALG_CTRL + 4)
+# define EVVP_PKEY_CTRL_EC_KDF_MD                         (EVVP_PKEY_ALG_CTRL + 5)
+# define EVVP_PKEY_CTRL_GET_EC_KDF_MD                     (EVVP_PKEY_ALG_CTRL + 6)
+# define EVVP_PKEY_CTRL_EC_KDF_OUTLEN                     (EVVP_PKEY_ALG_CTRL + 7)
+# define EVVP_PKEY_CTRL_GET_EC_KDF_OUTLEN                 (EVVP_PKEY_ALG_CTRL + 8)
+# define EVVP_PKEY_CTRL_EC_KDF_UKM                        (EVVP_PKEY_ALG_CTRL + 9)
+# define EVVP_PKEY_CTRL_GET_EC_KDF_UKM                    (EVVP_PKEY_ALG_CTRL + 10)
+# define EVVP_PKEY_CTRL_SET1_ID                           (EVVP_PKEY_ALG_CTRL + 11)
+# define EVVP_PKEY_CTRL_GET1_ID                           (EVVP_PKEY_ALG_CTRL + 12)
+# define EVVP_PKEY_CTRL_GET1_ID_LEN                       (EVVP_PKEY_ALG_CTRL + 13)
 /* KDF types */
-# define EVP_PKEY_ECDH_KDF_NONE                          1
-# define EVP_PKEY_ECDH_KDF_X9_63                         2
-/** The old name for EVP_PKEY_ECDH_KDF_X9_63
+# define EVVP_PKEY_ECDH_KDF_NONE                          1
+# define EVVP_PKEY_ECDH_KDF_X9_63                         2
+/** The old name for EVVP_PKEY_ECDH_KDF_X9_63
  *  The ECDH KDF specification has been mistakingly attributed to ANSI X9.62,
  *  it is actually specified in ANSI X9.63.
  *  This identifier is retained for backwards compatibility
  */
-# define EVP_PKEY_ECDH_KDF_X9_62   EVP_PKEY_ECDH_KDF_X9_63
+# define EVVP_PKEY_ECDH_KDF_X9_62   EVVP_PKEY_ECDH_KDF_X9_63
 
 
 #  ifdef  __cplusplus

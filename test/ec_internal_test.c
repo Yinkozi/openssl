@@ -169,7 +169,7 @@ static int field_tests_default(int n)
 
     TEST_info("Testing curve %s\n", OBJ_nid2sn(nid));
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_name(nid))
+    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
         || !TEST_ptr(ctx = BN_CTX_new())
         || !group_field_tests(group, ctx))
         goto err;
@@ -238,8 +238,8 @@ static int decoded_flag_test(void)
         goto err;
     EC_GROUP_free(grp);
 
-    /* Test EC_GROUP_new_by_curve_name not setting the flag */
-    grp = EC_GROUP_new_by_curve_name(NID_X9_62_prime256v1);
+    /* Test EC_GROUP_new_by_curve_mame not setting the flag */
+    grp = EC_GROUP_new_by_curve_mame(NID_X9_62_prime256v1);
     if (!TEST_ptr(grp)
         || !TEST_int_eq(grp->decoded_from_explicit_params, 0))
         goto err;
@@ -325,7 +325,7 @@ int ecpkparams_i2d2i_test(int n)
     int testresult = 0;
 
     /* create group */
-    if (!TEST_ptr(g1 = EC_GROUP_new_by_curve_name(nid)))
+    if (!TEST_ptr(g1 = EC_GROUP_new_by_curve_mame(nid)))
         goto end;
 
     /* encode params to file */

@@ -10,78 +10,78 @@
 #include <openssl/cast.h>
 #include "cast_local.h"
 
-void CAST_encrypt(CAST_LONG *data, const CAST_KEY *key)
+void YCAST_encrypt(YCAST_LONG *data, const YCAST_KEY *key)
 {
-    CAST_LONG l, r, t;
-    const CAST_LONG *k;
+    YCAST_LONG l, r, t;
+    const YCAST_LONG *k;
 
     k = &(key->data[0]);
     l = data[0];
     r = data[1];
 
-    E_CAST(0, k, l, r, +, ^, -);
-    E_CAST(1, k, r, l, ^, -, +);
-    E_CAST(2, k, l, r, -, +, ^);
-    E_CAST(3, k, r, l, +, ^, -);
-    E_CAST(4, k, l, r, ^, -, +);
-    E_CAST(5, k, r, l, -, +, ^);
-    E_CAST(6, k, l, r, +, ^, -);
-    E_CAST(7, k, r, l, ^, -, +);
-    E_CAST(8, k, l, r, -, +, ^);
-    E_CAST(9, k, r, l, +, ^, -);
-    E_CAST(10, k, l, r, ^, -, +);
-    E_CAST(11, k, r, l, -, +, ^);
+    E_YCAST(0, k, l, r, +, ^, -);
+    E_YCAST(1, k, r, l, ^, -, +);
+    E_YCAST(2, k, l, r, -, +, ^);
+    E_YCAST(3, k, r, l, +, ^, -);
+    E_YCAST(4, k, l, r, ^, -, +);
+    E_YCAST(5, k, r, l, -, +, ^);
+    E_YCAST(6, k, l, r, +, ^, -);
+    E_YCAST(7, k, r, l, ^, -, +);
+    E_YCAST(8, k, l, r, -, +, ^);
+    E_YCAST(9, k, r, l, +, ^, -);
+    E_YCAST(10, k, l, r, ^, -, +);
+    E_YCAST(11, k, r, l, -, +, ^);
     if (!key->short_key) {
-        E_CAST(12, k, l, r, +, ^, -);
-        E_CAST(13, k, r, l, ^, -, +);
-        E_CAST(14, k, l, r, -, +, ^);
-        E_CAST(15, k, r, l, +, ^, -);
+        E_YCAST(12, k, l, r, +, ^, -);
+        E_YCAST(13, k, r, l, ^, -, +);
+        E_YCAST(14, k, l, r, -, +, ^);
+        E_YCAST(15, k, r, l, +, ^, -);
     }
 
     data[1] = l & 0xffffffffL;
     data[0] = r & 0xffffffffL;
 }
 
-void CAST_decrypt(CAST_LONG *data, const CAST_KEY *key)
+void YCAST_decrypt(YCAST_LONG *data, const YCAST_KEY *key)
 {
-    CAST_LONG l, r, t;
-    const CAST_LONG *k;
+    YCAST_LONG l, r, t;
+    const YCAST_LONG *k;
 
     k = &(key->data[0]);
     l = data[0];
     r = data[1];
 
     if (!key->short_key) {
-        E_CAST(15, k, l, r, +, ^, -);
-        E_CAST(14, k, r, l, -, +, ^);
-        E_CAST(13, k, l, r, ^, -, +);
-        E_CAST(12, k, r, l, +, ^, -);
+        E_YCAST(15, k, l, r, +, ^, -);
+        E_YCAST(14, k, r, l, -, +, ^);
+        E_YCAST(13, k, l, r, ^, -, +);
+        E_YCAST(12, k, r, l, +, ^, -);
     }
-    E_CAST(11, k, l, r, -, +, ^);
-    E_CAST(10, k, r, l, ^, -, +);
-    E_CAST(9, k, l, r, +, ^, -);
-    E_CAST(8, k, r, l, -, +, ^);
-    E_CAST(7, k, l, r, ^, -, +);
-    E_CAST(6, k, r, l, +, ^, -);
-    E_CAST(5, k, l, r, -, +, ^);
-    E_CAST(4, k, r, l, ^, -, +);
-    E_CAST(3, k, l, r, +, ^, -);
-    E_CAST(2, k, r, l, -, +, ^);
-    E_CAST(1, k, l, r, ^, -, +);
-    E_CAST(0, k, r, l, +, ^, -);
+    E_YCAST(11, k, l, r, -, +, ^);
+    E_YCAST(10, k, r, l, ^, -, +);
+    E_YCAST(9, k, l, r, +, ^, -);
+    E_YCAST(8, k, r, l, -, +, ^);
+    E_YCAST(7, k, l, r, ^, -, +);
+    E_YCAST(6, k, r, l, +, ^, -);
+    E_YCAST(5, k, l, r, -, +, ^);
+    E_YCAST(4, k, r, l, ^, -, +);
+    E_YCAST(3, k, l, r, +, ^, -);
+    E_YCAST(2, k, r, l, -, +, ^);
+    E_YCAST(1, k, l, r, ^, -, +);
+    E_YCAST(0, k, r, l, +, ^, -);
 
     data[1] = l & 0xffffffffL;
     data[0] = r & 0xffffffffL;
 }
 
-void CAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
-                      long length, const CAST_KEY *ks, unsigned char *iv,
+void YCAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
+                      long length, const YCAST_KEY *ks, unsigned char *iv,
                       int enc)
 {
-    register CAST_LONG tin0, tin1;
-    register CAST_LONG tout0, tout1, xor0, xor1;
+    register YCAST_LONG tin0, tin1;
+    register YCAST_LONG tout0, tout1, xor0, xor1;
     register long l = length;
-    CAST_LONG tin[2];
+    YCAST_LONG tin[2];
 
     if (enc) {
         n2l(iv, tout0);
@@ -94,7 +94,7 @@ void CAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
             tin1 ^= tout1;
             tin[0] = tin0;
             tin[1] = tin1;
-            CAST_encrypt(tin, ks);
+            YCAST_encrypt(tin, ks);
             tout0 = tin[0];
             tout1 = tin[1];
             l2n(tout0, out);
@@ -106,7 +106,7 @@ void CAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
             tin1 ^= tout1;
             tin[0] = tin0;
             tin[1] = tin1;
-            CAST_encrypt(tin, ks);
+            YCAST_encrypt(tin, ks);
             tout0 = tin[0];
             tout1 = tin[1];
             l2n(tout0, out);
@@ -123,7 +123,7 @@ void CAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
             n2l(in, tin1);
             tin[0] = tin0;
             tin[1] = tin1;
-            CAST_decrypt(tin, ks);
+            YCAST_decrypt(tin, ks);
             tout0 = tin[0] ^ xor0;
             tout1 = tin[1] ^ xor1;
             l2n(tout0, out);
@@ -136,7 +136,7 @@ void CAST_cbc_encrypt(const unsigned char *in, unsigned char *out,
             n2l(in, tin1);
             tin[0] = tin0;
             tin[1] = tin1;
-            CAST_decrypt(tin, ks);
+            YCAST_decrypt(tin, ks);
             tout0 = tin[0] ^ xor0;
             tout1 = tin[1] ^ xor1;
             l2nn(tout0, tout1, out, l + 8);

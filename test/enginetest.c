@@ -181,29 +181,29 @@ static int test_engines(void)
     return to_return;
 }
 
-/* Test EVP_PKEY method */
-static EVP_PKEY_METHOD *test_rsa = NULL;
+/* Test EVVP_PKEY method */
+static EVVP_PKEY_METHOD *test_rsa = NULL;
 
 static int called_encrypt = 0;
 
 /* Test function to check operation has been redirected */
-static int test_encrypt(EVP_PKEY_CTX *ctx, unsigned char *sig,
+static int test_encrypt(EVVP_PKEY_CTX *ctx, unsigned char *sig,
                         size_t *siglen, const unsigned char *tbs, size_t tbslen)
 {
     called_encrypt = 1;
     return 1;
 }
 
-static int test_pkey_meths(ENGINE *e, EVP_PKEY_METHOD **pmeth,
+static int test_pkey_meths(ENGINE *e, EVVP_PKEY_METHOD **pmeth,
                            const int **pnids, int nid)
 {
-    static const int rnid = EVP_PKEY_RSA;
+    static const int rnid = EVVP_PKEY_YRSA;
     if (pmeth == NULL) {
         *pnids = &rnid;
         return 1;
     }
 
-    if (nid == EVP_PKEY_RSA) {
+    if (nid == EVVP_PKEY_YRSA) {
         *pmeth = test_rsa;
         return 1;
     }
@@ -212,9 +212,9 @@ static int test_pkey_meths(ENGINE *e, EVP_PKEY_METHOD **pmeth,
     return 0;
 }
 
-/* Return a test EVP_PKEY value */
+/* Return a test EVVP_PKEY value */
 
-static EVP_PKEY *get_test_pkey(void)
+static EVVP_PKEY *get_test_pkey(void)
 {
     static unsigned char n[] =
         "\x00\xAA\x36\xAB\xCE\x88\xAC\xFD\xFF\x55\x52\x3C\x7F\xC4\x52\x3F"
@@ -224,18 +224,18 @@ static EVP_PKEY *get_test_pkey(void)
         "\xF5";
     static unsigned char e[] = "\x11";
 
-    RSA *rsa = RSA_new();
-    EVP_PKEY *pk = EVP_PKEY_new();
+    YRSA *rsa = YRSA_new();
+    EVVP_PKEY *pk = EVVP_PKEY_new();
 
-    if (rsa == NULL || pk == NULL || !EVP_PKEY_assign_RSA(pk, rsa)) {
-        RSA_free(rsa);
-        EVP_PKEY_free(pk);
+    if (rsa == NULL || pk == NULL || !EVVP_PKEY_assign_YRSA(pk, rsa)) {
+        YRSA_free(rsa);
+        EVVP_PKEY_free(pk);
         return NULL;
     }
 
-    if (!RSA_set0_key(rsa, BN_bin2bn(n, sizeof(n)-1, NULL),
+    if (!YRSA_set0_key(rsa, BN_bin2bn(n, sizeof(n)-1, NULL),
                       BN_bin2bn(e, sizeof(e)-1, NULL), NULL)) {
-        EVP_PKEY_free(pk);
+        EVVP_PKEY_free(pk);
         return NULL;
     }
 
@@ -247,28 +247,28 @@ static int test_redirect(void)
     const unsigned char pt[] = "Hello World\n";
     unsigned char *tmp = NULL;
     size_t len;
-    EVP_PKEY_CTX *ctx = NULL;
+    EVVP_PKEY_CTX *ctx = NULL;
     ENGINE *e = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
 
     int to_return = 0;
 
     if (!TEST_ptr(pkey = get_test_pkey()))
         goto err;
 
-    len = EVP_PKEY_size(pkey);
+    len = EVVP_PKEY_size(pkey);
     if (!TEST_ptr(tmp = OPENSSL_malloc(len)))
         goto err;
 
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, NULL)))
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, NULL)))
         goto err;
-    TEST_info("EVP_PKEY_encrypt test: no redirection");
+    TEST_info("EVVP_PKEY_encrypt test: no redirection");
     /* Encrypt some data: should succeed but not be redirected */
-    if (!TEST_int_gt(EVP_PKEY_encrypt_init(ctx), 0)
-            || !TEST_int_gt(EVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
+    if (!TEST_int_gt(EVVP_PKEY_encrypt_init(ctx), 0)
+            || !TEST_int_gt(EVVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
             || !TEST_false(called_encrypt))
         goto err;
-    EVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_CTX_free(ctx);
     ctx = NULL;
 
     /* Create a test ENGINE */
@@ -282,68 +282,68 @@ static int test_redirect(void)
      * Try setting test key engine. Both should fail because the
      * engine has no public key methods.
      */
-    if (!TEST_ptr_null(EVP_PKEY_CTX_new(pkey, e))
-            || !TEST_int_le(EVP_PKEY_set1_engine(pkey, e), 0))
+    if (!TEST_ptr_null(EVVP_PKEY_CTX_new(pkey, e))
+            || !TEST_int_le(EVVP_PKEY_set1_engine(pkey, e), 0))
         goto err;
 
-    /* Setup an empty test EVP_PKEY_METHOD and set callback to return it */
-    if (!TEST_ptr(test_rsa = EVP_PKEY_meth_new(EVP_PKEY_RSA, 0)))
+    /* Setup an empty test EVVP_PKEY_METHOD and set callback to return it */
+    if (!TEST_ptr(test_rsa = EVVP_PKEY_meth_new(EVVP_PKEY_YRSA, 0)))
         goto err;
     ENGINE_set_pkey_meths(e, test_pkey_meths);
 
     /* Getting a context for test ENGINE should now succeed */
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, e)))
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, e)))
         goto err;
     /* Encrypt should fail because operation is not supported */
-    if (!TEST_int_le(EVP_PKEY_encrypt_init(ctx), 0))
+    if (!TEST_int_le(EVVP_PKEY_encrypt_init(ctx), 0))
         goto err;
-    EVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_CTX_free(ctx);
     ctx = NULL;
 
     /* Add test encrypt operation to method */
-    EVP_PKEY_meth_set_encrypt(test_rsa, 0, test_encrypt);
+    EVVP_PKEY_meth_set_encrypt(test_rsa, 0, test_encrypt);
 
-    TEST_info("EVP_PKEY_encrypt test: redirection via EVP_PKEY_CTX_new()");
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, e)))
+    TEST_info("EVVP_PKEY_encrypt test: redirection via EVVP_PKEY_CTX_new()");
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, e)))
         goto err;
     /* Encrypt some data: should succeed and be redirected */
-    if (!TEST_int_gt(EVP_PKEY_encrypt_init(ctx), 0)
-            || !TEST_int_gt(EVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
+    if (!TEST_int_gt(EVVP_PKEY_encrypt_init(ctx), 0)
+            || !TEST_int_gt(EVVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
             || !TEST_true(called_encrypt))
         goto err;
 
-    EVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_CTX_free(ctx);
     ctx = NULL;
     called_encrypt = 0;
 
     /* Create context with default engine: should not be redirected */
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, NULL))
-            || !TEST_int_gt(EVP_PKEY_encrypt_init(ctx), 0)
-            || !TEST_int_gt(EVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, NULL))
+            || !TEST_int_gt(EVVP_PKEY_encrypt_init(ctx), 0)
+            || !TEST_int_gt(EVVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
             || !TEST_false(called_encrypt))
         goto err;
 
-    EVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_CTX_free(ctx);
     ctx = NULL;
 
     /* Set engine explicitly for test key */
-    if (!TEST_true(EVP_PKEY_set1_engine(pkey, e)))
+    if (!TEST_true(EVVP_PKEY_set1_engine(pkey, e)))
         goto err;
 
-    TEST_info("EVP_PKEY_encrypt test: redirection via EVP_PKEY_set1_engine()");
+    TEST_info("EVVP_PKEY_encrypt test: redirection via EVVP_PKEY_set1_engine()");
 
     /* Create context with default engine: should be redirected now */
-    if (!TEST_ptr(ctx = EVP_PKEY_CTX_new(pkey, NULL))
-            || !TEST_int_gt(EVP_PKEY_encrypt_init(ctx), 0)
-            || !TEST_int_gt(EVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
+    if (!TEST_ptr(ctx = EVVP_PKEY_CTX_new(pkey, NULL))
+            || !TEST_int_gt(EVVP_PKEY_encrypt_init(ctx), 0)
+            || !TEST_int_gt(EVVP_PKEY_encrypt(ctx, tmp, &len, pt, sizeof(pt)), 0)
             || !TEST_true(called_encrypt))
         goto err;
 
     to_return = 1;
 
  err:
-    EVP_PKEY_CTX_free(ctx);
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_CTX_free(ctx);
+    EVVP_PKEY_free(pkey);
     ENGINE_free(e);
     OPENSSL_free(tmp);
     return to_return;

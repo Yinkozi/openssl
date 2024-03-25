@@ -31,7 +31,7 @@ typedef struct {
 static int custom_ext_add_old_cb_wrap(SSL *s, unsigned int ext_type,
                                       unsigned int context,
                                       const unsigned char **out,
-                                      size_t *outlen, X509 *x, size_t chainidx,
+                                      size_t *outlen, YX509 *x, size_t chainidx,
                                       int *al, void *add_arg)
 {
     custom_ext_add_cb_wrap *add_cb_wrap = (custom_ext_add_cb_wrap *)add_arg;
@@ -58,7 +58,7 @@ static void custom_ext_free_old_cb_wrap(SSL *s, unsigned int ext_type,
 static int custom_ext_parse_old_cb_wrap(SSL *s, unsigned int ext_type,
                                         unsigned int context,
                                         const unsigned char *in,
-                                        size_t inlen, X509 *x, size_t chainidx,
+                                        size_t inlen, YX509 *x, size_t chainidx,
                                         int *al, void *parse_arg)
 {
     custom_ext_parse_cb_wrap *parse_cb_wrap =
@@ -111,7 +111,7 @@ void custom_ext_init(custom_ext_methods *exts)
 
 /* Pass received custom extension data to the application for parsing. */
 int custom_ext_parse(SSL *s, unsigned int context, unsigned int ext_type,
-                     const unsigned char *ext_data, size_t ext_size, X509 *x,
+                     const unsigned char *ext_data, size_t ext_size, YX509 *x,
                      size_t chainidx)
 {
     int al;
@@ -171,7 +171,7 @@ int custom_ext_parse(SSL *s, unsigned int context, unsigned int ext_type,
  * Request custom extension data from the application and add to the return
  * buffer.
  */
-int custom_ext_add(SSL *s, int context, WPACKET *pkt, X509 *x, size_t chainidx,
+int custom_ext_add(SSL *s, int context, WPACKET *pkt, YX509 *x, size_t chainidx,
                    int maxversion)
 {
     custom_ext_methods *exts = &s->cert->custext;

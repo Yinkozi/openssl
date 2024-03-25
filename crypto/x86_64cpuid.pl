@@ -151,7 +151,7 @@ OPENSSL_ia32_cpuid:
 	and	\$15,%ah
 	cmp	\$15,%ah		# examine Family ID
 	jne	.LnotP4
-	or	\$0x00100000,%edx	# set reserved bit#20 to engage RC4_CHAR
+	or	\$0x00100000,%edx	# set reserved bit#20 to engage YRC4_CHAR
 .LnotP4:
 	cmp	\$6,%ah
 	jne	.Lnotintel

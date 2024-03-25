@@ -518,13 +518,13 @@ const char *ssl_max_fragment_len_name(int MFL_mode)
 __owur static int parse_expected_key_type(int *ptype, const char *value)
 {
     int nid;
-    const EVP_PKEY_ASN1_METHOD *ameth;
+    const EVVP_PKEY_YASN1_METHOD *ameth;
 
     if (value == NULL)
         return 0;
-    ameth = EVP_PKEY_asn1_find_str(NULL, value, -1);
+    ameth = EVVP_PKEY_asn1_find_str(NULL, value, -1);
     if (ameth != NULL)
-        EVP_PKEY_asn1_get0_info(&nid, NULL, NULL, NULL, NULL, ameth);
+        EVVP_PKEY_asn1_get0_info(&nid, NULL, NULL, NULL, NULL, ameth);
     else
         nid = OBJ_sn2nid(value);
     if (nid == NID_undef)
@@ -605,13 +605,13 @@ __owur static int parse_expected_client_sign_hash(SSL_TEST_CTX *test_ctx,
                                     value);
 }
 
-__owur static int parse_expected_ca_names(STACK_OF(X509_NAME) **pnames,
+__owur static int parse_expected_ca_names(STACK_OF(YX509_NAME) **pnames,
                                           const char *value)
 {
     if (value == NULL)
         return 0;
     if (!strcmp(value, "empty"))
-        *pnames = sk_X509_NAME_new_null();
+        *pnames = sk_YX509_NAME_new_null();
     else
         *pnames = SSL_load_client_CA_file(value);
     return *pnames != NULL;
@@ -757,8 +757,8 @@ void SSL_TEST_CTX_free(SSL_TEST_CTX *ctx)
     OPENSSL_free(ctx->expected_npn_protocol);
     OPENSSL_free(ctx->expected_alpn_protocol);
     OPENSSL_free(ctx->expected_session_ticket_app_data);
-    sk_X509_NAME_pop_free(ctx->expected_server_ca_names, X509_NAME_free);
-    sk_X509_NAME_pop_free(ctx->expected_client_ca_names, X509_NAME_free);
+    sk_YX509_NAME_pop_free(ctx->expected_server_ca_names, YX509_NAME_free);
+    sk_YX509_NAME_pop_free(ctx->expected_client_ca_names, YX509_NAME_free);
     OPENSSL_free(ctx->expected_cipher);
     OPENSSL_free(ctx);
 }

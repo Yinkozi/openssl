@@ -76,7 +76,7 @@ typedef struct hentry_st {
     char *filename;
     unsigned short old_id;
     unsigned char need_symlink;
-    unsigned char digest[EVP_MAX_MD_SIZE];
+    unsigned char digest[EVVP_MAX_MD_SIZE];
 } HENTRY;
 
 typedef struct bucket_st {
@@ -98,7 +98,7 @@ enum Hash {
 
 
 static int evpmdsize;
-static const EVP_MD *evpmd;
+static const EVVP_MD *evpmd;
 static int remove_links = 1;
 static int verbose = 0;
 static BUCKET *hash_table[257];
@@ -145,7 +145,7 @@ static int add_entry(enum Type type, unsigned int hash, const char *filename,
 
     for (ep = bp->first_entry; ep; ep = ep->next) {
         if (digest && memcmp(digest, ep->digest, evpmdsize) == 0) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: warning: skipping duplicate %s in %s\n",
                        opt_getprog(),
                        type == TYPE_CERT ? "certificate" : "CRL", filename);
@@ -160,7 +160,7 @@ static int add_entry(enum Type type, unsigned int hash, const char *filename,
     ep = found;
     if (ep == NULL) {
         if (bp->num_needed >= MAX_COLLISIONS) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: error: hash table overflow for %s\n",
                        opt_getprog(), filename);
             return 1;
@@ -231,12 +231,12 @@ static int handle_symlink(const char *filename, const char *fullpath)
  */
 static int do_file(const char *filename, const char *fullpath, enum Hash h)
 {
-    STACK_OF (X509_INFO) *inf = NULL;
-    X509_INFO *x;
-    X509_NAME *name = NULL;
+    STACK_OF (YX509_INFO) *inf = NULL;
+    YX509_INFO *x;
+    YX509_NAME *name = NULL;
     BIO *b;
     const char *ext;
-    unsigned char digest[EVP_MAX_MD_SIZE];
+    unsigned char digest[EVVP_MAX_MD_SIZE];
     int type, errs = 0;
     size_t i;
 
@@ -252,38 +252,38 @@ static int do_file(const char *filename, const char *fullpath, enum Hash h)
 
     /* Does it have X.509 data in it? */
     if ((b = BIO_new_file(fullpath, "r")) == NULL) {
-        BIO_printf(bio_err, "%s: error: skipping %s, cannot open file\n",
+        BIO_pprintf(bio_err, "%s: error: skipping %s, cannot open file\n",
                    opt_getprog(), filename);
         errs++;
         goto end;
     }
-    inf = PEM_X509_INFO_read_bio(b, NULL, NULL, NULL);
+    inf = PEM_YX509_INFO_read_bio(b, NULL, NULL, NULL);
     BIO_free(b);
     if (inf == NULL)
         goto end;
 
-    if (sk_X509_INFO_num(inf) != 1) {
-        BIO_printf(bio_err,
+    if (sk_YX509_INFO_num(inf) != 1) {
+        BIO_pprintf(bio_err,
                    "%s: warning: skipping %s,"
                    "it does not contain exactly one certificate or CRL\n",
                    opt_getprog(), filename);
         /* This is not an error. */
         goto end;
     }
-    x = sk_X509_INFO_value(inf, 0);
+    x = sk_YX509_INFO_value(inf, 0);
     if (x->x509 != NULL) {
         type = TYPE_CERT;
-        name = X509_get_subject_name(x->x509);
-        if (!X509_digest(x->x509, evpmd, digest, NULL)) {
-            BIO_printf(bio_err, "out of memory\n");
+        name = YX509_get_subject_name(x->x509);
+        if (!YX509_digest(x->x509, evpmd, digest, NULL)) {
+            BIO_pprintf(bio_err, "out of memory\n");
             ++errs;
             goto end;
         }
     } else if (x->crl != NULL) {
         type = TYPE_CRL;
-        name = X509_CRL_get_issuer(x->crl);
-        if (!X509_CRL_digest(x->crl, evpmd, digest, NULL)) {
-            BIO_printf(bio_err, "out of memory\n");
+        name = YX509_CRL_get_issuer(x->crl);
+        if (!YX509_CRL_digest(x->crl, evpmd, digest, NULL)) {
+            BIO_pprintf(bio_err, "out of memory\n");
             ++errs;
             goto end;
         }
@@ -293,13 +293,13 @@ static int do_file(const char *filename, const char *fullpath, enum Hash h)
     }
     if (name != NULL) {
         if ((h == HASH_NEW) || (h == HASH_BOTH))
-            errs += add_entry(type, X509_NAME_hash(name), filename, digest, 1, ~0);
+            errs += add_entry(type, YX509_NAME_hash(name), filename, digest, 1, ~0);
         if ((h == HASH_OLD) || (h == HASH_BOTH))
-            errs += add_entry(type, X509_NAME_hash_old(name), filename, digest, 1, ~0);
+            errs += add_entry(type, YX509_NAME_hash_old(name), filename, digest, 1, ~0);
     }
 
 end:
-    sk_X509_INFO_pop_free(inf, X509_INFO_free);
+    sk_YX509_INFO_pop_free(inf, YX509_INFO_free);
     return errs;
 }
 
@@ -340,7 +340,7 @@ static int do_dir(const char *dirname, enum Hash h)
     STACK_OF(OPENSSL_STRING) *files = NULL;
 
     if (app_access(dirname, W_OK) < 0) {
-        BIO_printf(bio_err, "Skipping %s, can't write\n", dirname);
+        BIO_pprintf(bio_err, "Skipping %s, can't write\n", dirname);
         return 1;
     }
     buflen = strlen(dirname);
@@ -349,10 +349,10 @@ static int do_dir(const char *dirname, enum Hash h)
     buf = app_malloc(buflen, "filename buffer");
 
     if (verbose)
-        BIO_printf(bio_out, "Doing %s\n", dirname);
+        BIO_pprintf(bio_out, "Doing %s\n", dirname);
 
     if ((files = sk_OPENSSL_STRING_new_null()) == NULL) {
-        BIO_printf(bio_err, "Skipping %s, out of memory\n", dirname);
+        BIO_pprintf(bio_err, "Skipping %s, out of memory\n", dirname);
         errs = 1;
         goto err;
     }
@@ -371,7 +371,7 @@ static int do_dir(const char *dirname, enum Hash h)
     numfiles = sk_OPENSSL_STRING_num(files);
     for (n = 0; n < numfiles; ++n) {
         filename = sk_OPENSSL_STRING_value(files, n);
-        if (BIO_snprintf(buf, buflen, "%s%s%s",
+        if (BIO_ssnprintf(buf, buflen, "%s%s%s",
                          dirname, pathsep, filename) >= buflen)
             continue;
         if (lstat(buf, &st) < 0)
@@ -394,30 +394,30 @@ static int do_dir(const char *dirname, enum Hash h)
                 nextep = ep->next;
                 if (ep->old_id < bp->num_needed) {
                     /* Link exists, and is used as-is */
-                    BIO_snprintf(buf, buflen, "%08x.%s%d", bp->hash,
+                    BIO_ssnprintf(buf, buflen, "%08x.%s%d", bp->hash,
                                  suffixes[bp->type], ep->old_id);
                     if (verbose)
-                        BIO_printf(bio_out, "link %s -> %s\n",
+                        BIO_pprintf(bio_out, "link %s -> %s\n",
                                    ep->filename, buf);
                 } else if (ep->need_symlink) {
                     /* New link needed (it may replace something) */
                     while (bit_isset(idmask, nextid))
                         nextid++;
 
-                    BIO_snprintf(buf, buflen, "%s%s%n%08x.%s%d",
+                    BIO_ssnprintf(buf, buflen, "%s%s%n%08x.%s%d",
                                  dirname, pathsep, &n, bp->hash,
                                  suffixes[bp->type], nextid);
                     if (verbose)
-                        BIO_printf(bio_out, "link %s -> %s\n",
+                        BIO_pprintf(bio_out, "link %s -> %s\n",
                                    ep->filename, &buf[n]);
                     if (unlink(buf) < 0 && errno != ENOENT) {
-                        BIO_printf(bio_err,
+                        BIO_pprintf(bio_err,
                                    "%s: Can't unlink %s, %s\n",
                                    opt_getprog(), buf, strerror(errno));
                         errs++;
                     }
                     if (symlink(ep->filename, buf) < 0) {
-                        BIO_printf(bio_err,
+                        BIO_pprintf(bio_err,
                                    "%s: Can't symlink %s, %s\n",
                                    opt_getprog(), ep->filename,
                                    strerror(errno));
@@ -426,14 +426,14 @@ static int do_dir(const char *dirname, enum Hash h)
                     bit_set(idmask, nextid);
                 } else if (remove_links) {
                     /* Link to be deleted */
-                    BIO_snprintf(buf, buflen, "%s%s%n%08x.%s%d",
+                    BIO_ssnprintf(buf, buflen, "%s%s%n%08x.%s%d",
                                  dirname, pathsep, &n, bp->hash,
                                  suffixes[bp->type], ep->old_id);
                     if (verbose)
-                        BIO_printf(bio_out, "unlink %s\n",
+                        BIO_pprintf(bio_out, "unlink %s\n",
                                    &buf[n]);
                     if (unlink(buf) < 0 && errno != ENOENT) {
-                        BIO_printf(bio_err,
+                        BIO_pprintf(bio_err,
                                    "%s: Can't unlink %s, %s\n",
                                    opt_getprog(), buf, strerror(errno));
                         errs++;
@@ -484,7 +484,7 @@ int rehash_main(int argc, char **argv)
         switch (o) {
         case OPT_EOF:
         case OPT_ERR:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(rehash_options);
@@ -506,20 +506,20 @@ int rehash_main(int argc, char **argv)
     argc = opt_num_rest();
     argv = opt_rest();
 
-    evpmd = EVP_sha1();
-    evpmdsize = EVP_MD_size(evpmd);
+    evpmd = EVVP_sha1();
+    evpmdsize = EVVP_MD_size(evpmd);
 
     if (*argv != NULL) {
         while (*argv != NULL)
             errs += do_dir(*argv++, h);
-    } else if ((env = getenv(X509_get_default_cert_dir_env())) != NULL) {
+    } else if ((env = getenv(YX509_get_default_cert_dir_env())) != NULL) {
         char lsc[2] = { LIST_SEPARATOR_CHAR, '\0' };
         m = OPENSSL_strdup(env);
         for (e = strtok(m, lsc); e != NULL; e = strtok(NULL, lsc))
             errs += do_dir(e, h);
         OPENSSL_free(m);
     } else {
-        errs += do_dir(X509_get_default_cert_dir(), h);
+        errs += do_dir(YX509_get_default_cert_dir(), h);
     }
 
  end:
@@ -533,7 +533,7 @@ const OPTIONS rehash_options[] = {
 
 int rehash_main(int argc, char **argv)
 {
-    BIO_printf(bio_err, "Not available; use c_rehash script\n");
+    BIO_pprintf(bio_err, "Not available; use c_rehash script\n");
     return 1;
 }
 

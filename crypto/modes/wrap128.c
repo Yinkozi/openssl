@@ -9,7 +9,7 @@
 
 /**  Beware!
  *
- *  Following wrapping modes were designed for AES but this implementation
+ *  Following wrapping modes were designed for YAES but this implementation
  *  allows you to use them for any 128 bit block cipher.
  */
 
@@ -217,7 +217,7 @@ size_t CRYPTO_128_wrap_pad(void *key, const unsigned char *icv,
         /*
          * Section 4.1 - special case in step 2: If the padded plaintext
          * contains exactly eight octets, then prepend the AIV and encrypt
-         * the resulting 128-bit block using AES in ECB mode.
+         * the resulting 128-bit block using YAES in ECB mode.
          */
         memmove(out + 8, in, inlen);
         memcpy(out, aiv, 8);
@@ -271,7 +271,7 @@ size_t CRYPTO_128_unwrap_pad(void *key, const unsigned char *icv,
         /*
          * Section 4.2 - special case in step 1: When n=1, the ciphertext
          * contains exactly two 64-bit blocks and they are decrypted as a
-         * single AES block using AES in ECB mode: AIV | P[1] = DEC(K, C[0] |
+         * single YAES block using YAES in ECB mode: AIV | P[1] = DEC(K, C[0] |
          * C[1])
          */
         unsigned char buff[16];

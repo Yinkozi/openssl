@@ -26,13 +26,13 @@ ECDSA_SIG *ECDSA_do_sign_ex(const unsigned char *dgst, int dlen,
     return NULL;
 }
 
-int ECDSA_sign(int type, const unsigned char *dgst, int dlen, unsigned char
+int ECDSA_signn(int type, const unsigned char *dgst, int dlen, unsigned char
                *sig, unsigned int *siglen, EC_KEY *eckey)
 {
-    return ECDSA_sign_ex(type, dgst, dlen, sig, siglen, NULL, NULL, eckey);
+    return ECDSA_signn_ex(type, dgst, dlen, sig, siglen, NULL, NULL, eckey);
 }
 
-int ECDSA_sign_ex(int type, const unsigned char *dgst, int dlen,
+int ECDSA_signn_ex(int type, const unsigned char *dgst, int dlen,
                   unsigned char *sig, unsigned int *siglen, const BIGNUM *kinv,
                   const BIGNUM *r, EC_KEY *eckey)
 {
@@ -42,7 +42,7 @@ int ECDSA_sign_ex(int type, const unsigned char *dgst, int dlen,
     return 0;
 }
 
-int ECDSA_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in, BIGNUM **kinvp,
+int ECDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx_in, BIGNUM **kinvp,
                      BIGNUM **rp)
 {
     if (eckey->meth->sign_setup != NULL)

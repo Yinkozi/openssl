@@ -16,7 +16,7 @@
 # Permission to use under GPL terms is granted.
 # ====================================================================
 
-# SHA256 block procedure for ARMv4. May 2007.
+# YSHA256 block procedure for ARMv4. May 2007.
 
 # Performance is ~2x better than gcc 3.4 generated code and in "abso-
 # lute" terms is ~2250 cycles per 64-byte block or ~35 cycles per
@@ -231,7 +231,7 @@ sha256_block_data_order:
 #ifdef	__APPLE__
 	ldr	r12,[r12]
 #endif
-	tst	r12,#ARMV8_SHA256
+	tst	r12,#ARMV8_YSHA256
 	bne	.LARMv8
 	tst	r12,#ARMV7_NEON
 	bne	.LNEON
@@ -680,7 +680,7 @@ $code.=<<___;
 ___
 }}}
 $code.=<<___;
-.asciz  "SHA256 block transform for ARMv4/NEON/ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz  "YSHA256 block transform for ARMv4/NEON/ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 .align	2
 #if __ARM_MAX_ARCH__>=7 && !defined(__KERNEL__)
 .comm   OPENSSL_armcap_P,4,4

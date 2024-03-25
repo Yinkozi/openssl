@@ -89,7 +89,7 @@ static int sanity_check_rdrand_bytes(void)
 static int sanity_check_rdseed_bytes(void)
 {
     /*-
-     * RDSEED may take many retries to succeed; note that this is effectively
+     * RDYSEED may take many retries to succeed; note that this is effectively
      * multiplied by the 8x retry loop in asm, and failure probabilities are
      * increased by the fact that we need either 4 or 8 samples depending on
      * the platform.

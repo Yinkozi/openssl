@@ -16,7 +16,7 @@ use Encode;
 
 setup("test_pkcs12");
 
-plan skip_all => "The PKCS12 command line utility is not supported by this OpenSSL build"
+plan skip_all => "The YPKCS12 command line utility is not supported by this OpenSSL build"
     if disabled("des");
 
 my $pass = "σύνθημα γνώρισμα";

@@ -12,33 +12,33 @@
  * represents (corresponding to the pkey_id field) as OBJ_bsearch
  * is used to search it.
  */
-static const EVP_PKEY_ASN1_METHOD *standard_methods[] = {
-#ifndef OPENSSL_NO_RSA
+static const EVVP_PKEY_YASN1_METHOD *standard_methods[] = {
+#ifndef OPENSSL_NO_YRSA
     &rsa_asn1_meths[0],
     &rsa_asn1_meths[1],
 #endif
 #ifndef OPENSSL_NO_DH
-    &dh_asn1_meth,
+    &dh_asn1_mmeth,
 #endif
 #ifndef OPENSSL_NO_DSA
-    &dsa_asn1_meths[0],
-    &dsa_asn1_meths[1],
-    &dsa_asn1_meths[2],
-    &dsa_asn1_meths[3],
-    &dsa_asn1_meths[4],
+    &dsa_asn1_mmeths[0],
+    &dsa_asn1_mmeths[1],
+    &dsa_asn1_mmeths[2],
+    &dsa_asn1_mmeths[3],
+    &dsa_asn1_mmeths[4],
 #endif
 #ifndef OPENSSL_NO_EC
     &eckey_asn1_meth,
 #endif
-    &hmac_asn1_meth,
+    &hmac_asn1_mmeth,
 #ifndef OPENSSL_NO_CMAC
-    &cmac_asn1_meth,
+    &cmac_asn1_mmeth,
 #endif
-#ifndef OPENSSL_NO_RSA
+#ifndef OPENSSL_NO_YRSA
     &rsa_pss_asn1_meth,
 #endif
 #ifndef OPENSSL_NO_DH
-    &dhx_asn1_meth,
+    &dhx_asn1_mmeth,
 #endif
 #ifndef OPENSSL_NO_EC
     &ecx25519_asn1_meth,

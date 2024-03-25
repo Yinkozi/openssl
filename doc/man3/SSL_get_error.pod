@@ -100,7 +100,7 @@ In order to find out, when the connection has been successfully established,
 on many platforms select() or poll() for writing on the socket file descriptor
 can be used.
 
-=item SSL_ERROR_WANT_X509_LOOKUP
+=item SSL_ERROR_WANT_YX509_LOOKUP
 
 The operation did not complete because an application callback set by
 SSL_CTX_set_client_cert_cb() has asked to be called again.

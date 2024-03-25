@@ -45,7 +45,7 @@ typedef struct danetls_record_st {
     uint8_t mtype;
     unsigned char *data;
     size_t dlen;
-    EVP_PKEY *spki;
+    EVVP_PKEY *spki;
 } danetls_record;
 
 DEFINE_STACK_OF(danetls_record)
@@ -54,7 +54,7 @@ DEFINE_STACK_OF(danetls_record)
  * Shared DANE context
  */
 struct dane_ctx_st {
-    const EVP_MD  **mdevp;      /* mtype -> digest */
+    const EVVP_MD  **mdevp;      /* mtype -> digest */
     uint8_t        *mdord;      /* mtype -> preference */
     uint8_t         mdmax;      /* highest supported mtype */
     unsigned long   flags;      /* feature bitmask */
@@ -66,9 +66,9 @@ struct dane_ctx_st {
 struct ssl_dane_st {
     struct dane_ctx_st *dctx;
     STACK_OF(danetls_record) *trecs;
-    STACK_OF(X509) *certs;      /* DANE-TA(2) Cert(0) Full(0) certs */
+    STACK_OF(YX509) *certs;      /* DANE-TA(2) Cert(0) Full(0) certs */
     danetls_record *mtlsa;      /* Matching TLSA record */
-    X509           *mcert;      /* DANE matched cert */
+    YX509           *mcert;      /* DANE matched cert */
     uint32_t        umask;      /* Usages present */
     int             mdpth;      /* Depth of matched cert */
     int             pdpth;      /* Depth of PKIX trust */

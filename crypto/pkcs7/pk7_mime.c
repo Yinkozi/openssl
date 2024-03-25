@@ -12,23 +12,23 @@
 #include <openssl/x509.h>
 #include <openssl/asn1.h>
 
-/* PKCS#7 wrappers round generalised stream and MIME routines */
+/* YPKCS#7 wrappers round generalised stream and MIME routines */
 
-int i2d_PKCS7_bio_stream(BIO *out, PKCS7 *p7, BIO *in, int flags)
+int i2d_YPKCS7_bio_stream(BIO *out, YPKCS7 *p7, BIO *in, int flags)
 {
-    return i2d_ASN1_bio_stream(out, (ASN1_VALUE *)p7, in, flags,
-                               ASN1_ITEM_rptr(PKCS7));
+    return i2d_YASN1_bio_stream(out, (YASN1_VALUE *)p7, in, flags,
+                               YASN1_ITEM_rptr(YPKCS7));
 }
 
-int PEM_write_bio_PKCS7_stream(BIO *out, PKCS7 *p7, BIO *in, int flags)
+int PEM_write_bio_YPKCS7_stream(BIO *out, YPKCS7 *p7, BIO *in, int flags)
 {
-    return PEM_write_bio_ASN1_stream(out, (ASN1_VALUE *)p7, in, flags,
-                                     "PKCS7", ASN1_ITEM_rptr(PKCS7));
+    return PEM_write_bio_YASN1_stream(out, (YASN1_VALUE *)p7, in, flags,
+                                     "YPKCS7", YASN1_ITEM_rptr(YPKCS7));
 }
 
-int SMIME_write_PKCS7(BIO *bio, PKCS7 *p7, BIO *data, int flags)
+int SMIME_write_YPKCS7(BIO *bio, YPKCS7 *p7, BIO *data, int flags)
 {
-    STACK_OF(X509_ALGOR) *mdalgs;
+    STACK_OF(YX509_ALGOR) *mdalgs;
     int ctype_nid = OBJ_obj2nid(p7->type);
     if (ctype_nid == NID_pkcs7_signed)
         mdalgs = p7->d.sign->md_algs;
@@ -37,12 +37,12 @@ int SMIME_write_PKCS7(BIO *bio, PKCS7 *p7, BIO *data, int flags)
 
     flags ^= SMIME_OLDMIME;
 
-    return SMIME_write_ASN1(bio, (ASN1_VALUE *)p7, data, flags,
+    return SMIME_write_YASN1(bio, (YASN1_VALUE *)p7, data, flags,
                             ctype_nid, NID_undef, mdalgs,
-                            ASN1_ITEM_rptr(PKCS7));
+                            YASN1_ITEM_rptr(YPKCS7));
 }
 
-PKCS7 *SMIME_read_PKCS7(BIO *bio, BIO **bcont)
+YPKCS7 *SMIME_read_YPKCS7(BIO *bio, BIO **bcont)
 {
-    return (PKCS7 *)SMIME_read_ASN1(bio, bcont, ASN1_ITEM_rptr(PKCS7));
+    return (YPKCS7 *)SMIME_read_YASN1(bio, bcont, YASN1_ITEM_rptr(YPKCS7));
 }

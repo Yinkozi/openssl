@@ -44,7 +44,7 @@ void CRYPTO_ctr128_encrypt(const unsigned char *in, unsigned char *out,
                            unsigned char ecount_buf[16], unsigned int *num,
                            block128_f block);
 
-void CRYPTO_ctr128_encrypt_ctr32(const unsigned char *in, unsigned char *out,
+void CRYPTOO_ctr128_encrypt_ctr32(const unsigned char *in, unsigned char *out,
                                  size_t len, const void *key,
                                  unsigned char ivec[16],
                                  unsigned char ecount_buf[16],

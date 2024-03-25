@@ -49,80 +49,80 @@
 #include <openssl/x509v3.h>
 #include "ext_dat.h"
 
-static int i2r_pci(X509V3_EXT_METHOD *method, PROXY_CERT_INFO_EXTENSION *ext,
+static int i2r_pci(YX509V3_EXT_METHOD *method, PROXY_CERT_INFO_EXTENSION *ext,
                    BIO *out, int indent);
-static PROXY_CERT_INFO_EXTENSION *r2i_pci(X509V3_EXT_METHOD *method,
-                                          X509V3_CTX *ctx, char *str);
+static PROXY_CERT_INFO_EXTENSION *r2i_pci(YX509V3_EXT_METHOD *method,
+                                          YX509V3_CTX *ctx, char *str);
 
-const X509V3_EXT_METHOD v3_pci =
-    { NID_proxyCertInfo, 0, ASN1_ITEM_ref(PROXY_CERT_INFO_EXTENSION),
+const YX509V3_EXT_METHOD v3_pci =
+    { NID_proxyCertInfo, 0, YASN1_ITEM_ref(PROXY_CERT_INFO_EXTENSION),
     0, 0, 0, 0,
     0, 0,
     NULL, NULL,
-    (X509V3_EXT_I2R)i2r_pci,
-    (X509V3_EXT_R2I)r2i_pci,
+    (YX509V3_EXT_I2R)i2r_pci,
+    (YX509V3_EXT_R2I)r2i_pci,
     NULL,
 };
 
-static int i2r_pci(X509V3_EXT_METHOD *method, PROXY_CERT_INFO_EXTENSION *pci,
+static int i2r_pci(YX509V3_EXT_METHOD *method, PROXY_CERT_INFO_EXTENSION *pci,
                    BIO *out, int indent)
 {
-    BIO_printf(out, "%*sPath Length Constraint: ", indent, "");
+    BIO_pprintf(out, "%*sPath Length Constraint: ", indent, "");
     if (pci->pcPathLengthConstraint)
-        i2a_ASN1_INTEGER(out, pci->pcPathLengthConstraint);
+        i2a_YASN1_INTEGER(out, pci->pcPathLengthConstraint);
     else
-        BIO_printf(out, "infinite");
+        BIO_pprintf(out, "infinite");
     BIO_puts(out, "\n");
-    BIO_printf(out, "%*sPolicy Language: ", indent, "");
-    i2a_ASN1_OBJECT(out, pci->proxyPolicy->policyLanguage);
+    BIO_pprintf(out, "%*sPolicy Language: ", indent, "");
+    i2a_YASN1_OBJECT(out, pci->proxyPolicy->policyLanguage);
     BIO_puts(out, "\n");
     if (pci->proxyPolicy->policy && pci->proxyPolicy->policy->data)
-        BIO_printf(out, "%*sPolicy Text: %.*s\n", indent, "",
+        BIO_pprintf(out, "%*sPolicy Text: %.*s\n", indent, "",
                    pci->proxyPolicy->policy->length,
                    pci->proxyPolicy->policy->data);
     return 1;
 }
 
 static int process_pci_value(CONF_VALUE *val,
-                             ASN1_OBJECT **language, ASN1_INTEGER **pathlen,
-                             ASN1_OCTET_STRING **policy)
+                             YASN1_OBJECT **language, YASN1_INTEGER **pathlen,
+                             YASN1_OCTET_STRING **policy)
 {
     int free_policy = 0;
 
     if (strcmp(val->name, "language") == 0) {
         if (*language) {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE,
-                      X509V3_R_POLICY_LANGUAGE_ALREADY_DEFINED);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
+                      YX509V3_R_POLICY_LANGUAGE_ALREADY_DEFINED);
+            YX509V3_conf_err(val);
             return 0;
         }
         if ((*language = OBJ_txt2obj(val->value, 0)) == NULL) {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE,
-                      X509V3_R_INVALID_OBJECT_IDENTIFIER);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
+                      YX509V3_R_INVALID_OBJECT_IDENTIFIER);
+            YX509V3_conf_err(val);
             return 0;
         }
     } else if (strcmp(val->name, "pathlen") == 0) {
         if (*pathlen) {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE,
-                      X509V3_R_POLICY_PATH_LENGTH_ALREADY_DEFINED);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
+                      YX509V3_R_POLICY_PATH_LENGTH_ALREADY_DEFINED);
+            YX509V3_conf_err(val);
             return 0;
         }
-        if (!X509V3_get_value_int(val, pathlen)) {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE,
-                      X509V3_R_POLICY_PATH_LENGTH);
-            X509V3_conf_err(val);
+        if (!YX509V3_get_value_int(val, pathlen)) {
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
+                      YX509V3_R_POLICY_PATH_LENGTH);
+            YX509V3_conf_err(val);
             return 0;
         }
     } else if (strcmp(val->name, "policy") == 0) {
         unsigned char *tmp_data = NULL;
         long val_len;
         if (!*policy) {
-            *policy = ASN1_OCTET_STRING_new();
+            *policy = YASN1_OCTET_STRING_new();
             if (*policy == NULL) {
-                X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
+                YX509V3_conf_err(val);
                 return 0;
             }
             free_policy = 1;
@@ -132,7 +132,7 @@ static int process_pci_value(CONF_VALUE *val,
                 OPENSSL_hexstr2buf(val->value + 4, &val_len);
 
             if (!tmp_data2) {
-                X509V3_conf_err(val);
+                YX509V3_conf_err(val);
                 goto err;
             }
 
@@ -153,8 +153,8 @@ static int process_pci_value(CONF_VALUE *val,
                 OPENSSL_free((*policy)->data);
                 (*policy)->data = NULL;
                 (*policy)->length = 0;
-                X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
+                YX509V3_conf_err(val);
                 goto err;
             }
             OPENSSL_free(tmp_data2);
@@ -163,8 +163,8 @@ static int process_pci_value(CONF_VALUE *val,
             int n;
             BIO *b = BIO_new_file(val->value + 5, "r");
             if (!b) {
-                X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_BIO_LIB);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_BIO_LIB);
+                YX509V3_conf_err(val);
                 goto err;
             }
             while ((n = BIO_read(b, buf, sizeof(buf))) > 0
@@ -179,9 +179,9 @@ static int process_pci_value(CONF_VALUE *val,
                     OPENSSL_free((*policy)->data);
                     (*policy)->data = NULL;
                     (*policy)->length = 0;
-                    X509V3err(X509V3_F_PROCESS_PCI_VALUE,
+                    YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
                               ERR_R_MALLOC_FAILURE);
-                    X509V3_conf_err(val);
+                    YX509V3_conf_err(val);
                     BIO_free_all(b);
                     goto err;
                 }
@@ -194,8 +194,8 @@ static int process_pci_value(CONF_VALUE *val,
             BIO_free_all(b);
 
             if (n < 0) {
-                X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_BIO_LIB);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_BIO_LIB);
+                YX509V3_conf_err(val);
                 goto err;
             }
         } else if (strncmp(val->value, "text:", 5) == 0) {
@@ -216,58 +216,58 @@ static int process_pci_value(CONF_VALUE *val,
                 OPENSSL_free((*policy)->data);
                 (*policy)->data = NULL;
                 (*policy)->length = 0;
-                X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
+                YX509V3_conf_err(val);
                 goto err;
             }
         } else {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE,
-                      X509V3_R_INCORRECT_POLICY_SYNTAX_TAG);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE,
+                      YX509V3_R_INCORRECT_POLICY_SYNTAX_TAG);
+            YX509V3_conf_err(val);
             goto err;
         }
         if (!tmp_data) {
-            X509V3err(X509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
-            X509V3_conf_err(val);
+            YX509V3err(YX509V3_F_PROCESS_PCI_VALUE, ERR_R_MALLOC_FAILURE);
+            YX509V3_conf_err(val);
             goto err;
         }
     }
     return 1;
  err:
     if (free_policy) {
-        ASN1_OCTET_STRING_free(*policy);
+        YASN1_OCTET_STRING_free(*policy);
         *policy = NULL;
     }
     return 0;
 }
 
-static PROXY_CERT_INFO_EXTENSION *r2i_pci(X509V3_EXT_METHOD *method,
-                                          X509V3_CTX *ctx, char *value)
+static PROXY_CERT_INFO_EXTENSION *r2i_pci(YX509V3_EXT_METHOD *method,
+                                          YX509V3_CTX *ctx, char *value)
 {
     PROXY_CERT_INFO_EXTENSION *pci = NULL;
     STACK_OF(CONF_VALUE) *vals;
-    ASN1_OBJECT *language = NULL;
-    ASN1_INTEGER *pathlen = NULL;
-    ASN1_OCTET_STRING *policy = NULL;
+    YASN1_OBJECT *language = NULL;
+    YASN1_INTEGER *pathlen = NULL;
+    YASN1_OCTET_STRING *policy = NULL;
     int i, j;
 
-    vals = X509V3_parse_list(value);
+    vals = YX509V3_parse_list(value);
     for (i = 0; i < sk_CONF_VALUE_num(vals); i++) {
         CONF_VALUE *cnf = sk_CONF_VALUE_value(vals, i);
         if (!cnf->name || (*cnf->name != '@' && !cnf->value)) {
-            X509V3err(X509V3_F_R2I_PCI,
-                      X509V3_R_INVALID_PROXY_POLICY_SETTING);
-            X509V3_conf_err(cnf);
+            YX509V3err(YX509V3_F_R2I_PCI,
+                      YX509V3_R_INVALID_PROXY_POLICY_SETTING);
+            YX509V3_conf_err(cnf);
             goto err;
         }
         if (*cnf->name == '@') {
             STACK_OF(CONF_VALUE) *sect;
             int success_p = 1;
 
-            sect = X509V3_get_section(ctx, cnf->name + 1);
+            sect = YX509V3_get_section(ctx, cnf->name + 1);
             if (!sect) {
-                X509V3err(X509V3_F_R2I_PCI, X509V3_R_INVALID_SECTION);
-                X509V3_conf_err(cnf);
+                YX509V3err(YX509V3_F_R2I_PCI, YX509V3_R_INVALID_SECTION);
+                YX509V3_conf_err(cnf);
                 goto err;
             }
             for (j = 0; success_p && j < sk_CONF_VALUE_num(sect); j++) {
@@ -275,12 +275,12 @@ static PROXY_CERT_INFO_EXTENSION *r2i_pci(X509V3_EXT_METHOD *method,
                     process_pci_value(sk_CONF_VALUE_value(sect, j),
                                       &language, &pathlen, &policy);
             }
-            X509V3_section_free(ctx, sect);
+            YX509V3_section_free(ctx, sect);
             if (!success_p)
                 goto err;
         } else {
             if (!process_pci_value(cnf, &language, &pathlen, &policy)) {
-                X509V3_conf_err(cnf);
+                YX509V3_conf_err(cnf);
                 goto err;
             }
         }
@@ -288,20 +288,20 @@ static PROXY_CERT_INFO_EXTENSION *r2i_pci(X509V3_EXT_METHOD *method,
 
     /* Language is mandatory */
     if (!language) {
-        X509V3err(X509V3_F_R2I_PCI,
-                  X509V3_R_NO_PROXY_CERT_POLICY_LANGUAGE_DEFINED);
+        YX509V3err(YX509V3_F_R2I_PCI,
+                  YX509V3_R_NO_PROXY_CERT_POLICY_LANGUAGE_DEFINED);
         goto err;
     }
     i = OBJ_obj2nid(language);
     if ((i == NID_Independent || i == NID_id_ppl_inheritAll) && policy) {
-        X509V3err(X509V3_F_R2I_PCI,
-                  X509V3_R_POLICY_WHEN_PROXY_LANGUAGE_REQUIRES_NO_POLICY);
+        YX509V3err(YX509V3_F_R2I_PCI,
+                  YX509V3_R_POLICY_WHEN_PROXY_LANGUAGE_REQUIRES_NO_POLICY);
         goto err;
     }
 
     pci = PROXY_CERT_INFO_EXTENSION_new();
     if (pci == NULL) {
-        X509V3err(X509V3_F_R2I_PCI, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_R2I_PCI, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
@@ -313,14 +313,14 @@ static PROXY_CERT_INFO_EXTENSION *r2i_pci(X509V3_EXT_METHOD *method,
     pathlen = NULL;
     goto end;
  err:
-    ASN1_OBJECT_free(language);
-    ASN1_INTEGER_free(pathlen);
+    YASN1_OBJECT_free(language);
+    YASN1_INTEGER_free(pathlen);
     pathlen = NULL;
-    ASN1_OCTET_STRING_free(policy);
+    YASN1_OCTET_STRING_free(policy);
     policy = NULL;
     PROXY_CERT_INFO_EXTENSION_free(pci);
     pci = NULL;
  end:
-    sk_CONF_VALUE_pop_free(vals, X509V3_conf_free);
+    sk_CONF_VALUE_pop_free(vals, YX509V3_conf_free);
     return pci;
 }

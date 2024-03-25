@@ -208,7 +208,7 @@ sha1_block_data_order:
 #ifdef	__APPLE__
 	ldr	r12,[r12]
 #endif
-	tst	r12,#ARMV8_SHA1
+	tst	r12,#ARMV8_YSHA1
 	bne	.LARMv8
 	tst	r12,#ARMV7_NEON
 	bne	.LNEON
@@ -313,7 +313,7 @@ $code.=<<___;
 .LOPENSSL_armcap:
 .word	OPENSSL_armcap_P-.Lsha1_block
 #endif
-.asciz	"SHA1 block transform for ARMv4/NEON/ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA1 block transform for ARMv4/NEON/ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 .align	5
 ___
 #####################################################################

@@ -38,7 +38,7 @@ int pkeyparam_main(int argc, char **argv)
 {
     ENGINE *e = NULL;
     BIO *in = NULL, *out = NULL;
-    EVP_PKEY *pkey = NULL;
+    EVVP_PKEY *pkey = NULL;
     int text = 0, noout = 0, ret = 1, check = 0;
     OPTION_CHOICE o;
     char *infile = NULL, *outfile = NULL, *prog;
@@ -49,7 +49,7 @@ int pkeyparam_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(pkeyparam_options);
@@ -85,55 +85,55 @@ int pkeyparam_main(int argc, char **argv)
     out = bio_open_default(outfile, 'w', FORMAT_PEM);
     if (out == NULL)
         goto end;
-    pkey = PEM_read_bio_Parameters(in, NULL);
+    pkey = PEM_readd_bio_Parameters(in, NULL);
     if (pkey == NULL) {
-        BIO_printf(bio_err, "Error reading parameters\n");
+        BIO_pprintf(bio_err, "Error reading parameters\n");
         ERR_print_errors(bio_err);
         goto end;
     }
 
     if (check) {
         int r;
-        EVP_PKEY_CTX *ctx;
+        EVVP_PKEY_CTX *ctx;
 
-        ctx = EVP_PKEY_CTX_new(pkey, e);
+        ctx = EVVP_PKEY_CTX_new(pkey, e);
         if (ctx == NULL) {
             ERR_print_errors(bio_err);
             goto end;
         }
 
-        r = EVP_PKEY_param_check(ctx);
+        r = EVVP_PKEY_param_check(ctx);
 
         if (r == 1) {
-            BIO_printf(out, "Parameters are valid\n");
+            BIO_pprintf(out, "Parameters are valid\n");
         } else {
             /*
-             * Note: at least for RSA keys if this function returns
+             * Note: at least for YRSA keys if this function returns
              * -1, there will be no error reasons.
              */
             unsigned long err;
 
-            BIO_printf(out, "Parameters are invalid\n");
+            BIO_pprintf(out, "Parameters are invalid\n");
 
             while ((err = ERR_peek_error()) != 0) {
-                BIO_printf(out, "Detailed error: %s\n",
+                BIO_pprintf(out, "Detailed error: %s\n",
                            ERR_reason_error_string(err));
                 ERR_get_error(); /* remove err from error stack */
             }
         }
-        EVP_PKEY_CTX_free(ctx);
+        EVVP_PKEY_CTX_free(ctx);
     }
 
     if (!noout)
         PEM_write_bio_Parameters(out, pkey);
 
     if (text)
-        EVP_PKEY_print_params(out, pkey, 0, NULL);
+        EVVP_PKEY_print_params(out, pkey, 0, NULL);
 
     ret = 0;
 
  end:
-    EVP_PKEY_free(pkey);
+    EVVP_PKEY_free(pkey);
     release_engine(e);
     BIO_free_all(out);
     BIO_free(in);

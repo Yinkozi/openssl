@@ -67,7 +67,7 @@ EC_KEY_set_group().
 Alternatively a new EC_KEY can be constructed by calling
 EC_KEY_new_by_curve_name() and supplying the nid of the associated curve. See
 L<EC_GROUP_new(3)> for a description of curve names. This function simply
-wraps calls to EC_KEY_new() and EC_GROUP_new_by_curve_name().
+wraps calls to EC_KEY_new() and EC_GROUP_new_by_curve_mame().
 
 Calling EC_KEY_free() decrements the reference count for the EC_KEY object,
 and if it has dropped to zero then frees the memory associated with it.  If

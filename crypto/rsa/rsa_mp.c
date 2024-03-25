@@ -12,29 +12,29 @@
 #include <openssl/err.h>
 #include "rsa_local.h"
 
-void rsa_multip_info_free_ex(RSA_PRIME_INFO *pinfo)
+void rsa_multip_info_free_ex(YRSA_PRIME_INFO *pinfo)
 {
     /* free pp and pinfo only */
     BN_clear_free(pinfo->pp);
     OPENSSL_free(pinfo);
 }
 
-void rsa_multip_info_free(RSA_PRIME_INFO *pinfo)
+void rsa_multip_info_free(YRSA_PRIME_INFO *pinfo)
 {
-    /* free a RSA_PRIME_INFO structure */
+    /* free a YRSA_PRIME_INFO structure */
     BN_clear_free(pinfo->r);
     BN_clear_free(pinfo->d);
     BN_clear_free(pinfo->t);
     rsa_multip_info_free_ex(pinfo);
 }
 
-RSA_PRIME_INFO *rsa_multip_info_new(void)
+YRSA_PRIME_INFO *rsa_multip_info_new(void)
 {
-    RSA_PRIME_INFO *pinfo;
+    YRSA_PRIME_INFO *pinfo;
 
-    /* create a RSA_PRIME_INFO structure */
-    if ((pinfo = OPENSSL_zalloc(sizeof(RSA_PRIME_INFO))) == NULL) {
-        RSAerr(RSA_F_RSA_MULTIP_INFO_NEW, ERR_R_MALLOC_FAILURE);
+    /* create a YRSA_PRIME_INFO structure */
+    if ((pinfo = OPENSSL_zalloc(sizeof(YRSA_PRIME_INFO))) == NULL) {
+        YRSAerr(YRSA_F_YRSA_MULTIP_INFO_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
     if ((pinfo->r = BN_secure_new()) == NULL)
@@ -58,14 +58,14 @@ RSA_PRIME_INFO *rsa_multip_info_new(void)
 }
 
 /* Refill products of primes */
-int rsa_multip_calc_product(RSA *rsa)
+int rsa_multip_calc_product(YRSA *rsa)
 {
-    RSA_PRIME_INFO *pinfo;
+    YRSA_PRIME_INFO *pinfo;
     BIGNUM *p1 = NULL, *p2 = NULL;
     BN_CTX *ctx = NULL;
     int i, rv = 0, ex_primes;
 
-    if ((ex_primes = sk_RSA_PRIME_INFO_num(rsa->prime_infos)) <= 0) {
+    if ((ex_primes = sk_YRSA_PRIME_INFO_num(rsa->prime_infos)) <= 0) {
         /* invalid */
         goto err;
     }
@@ -78,13 +78,13 @@ int rsa_multip_calc_product(RSA *rsa)
     p2 = rsa->q;
 
     for (i = 0; i < ex_primes; i++) {
-        pinfo = sk_RSA_PRIME_INFO_value(rsa->prime_infos, i);
+        pinfo = sk_YRSA_PRIME_INFO_value(rsa->prime_infos, i);
         if (pinfo->pp == NULL) {
             pinfo->pp = BN_secure_new();
             if (pinfo->pp == NULL)
                 goto err;
         }
-        if (!BN_mul(pinfo->pp, p1, p2, ctx))
+        if (!BNY_mul(pinfo->pp, p1, p2, ctx))
             goto err;
         /* save previous one */
         p1 = pinfo->pp;
@@ -108,8 +108,8 @@ int rsa_multip_cap(int bits)
     else if (bits < 8192)
         cap = 4;
 
-    if (cap > RSA_MAX_PRIME_NUM)
-        cap = RSA_MAX_PRIME_NUM;
+    if (cap > YRSA_MAX_PRIME_NUM)
+        cap = YRSA_MAX_PRIME_NUM;
 
     return cap;
 }

@@ -9,7 +9,7 @@ SSL_CTX_set_cert_verify_callback - set peer certificate verification procedure
  #include <openssl/ssl.h>
 
  void SSL_CTX_set_cert_verify_callback(SSL_CTX *ctx,
-                                       int (*callback)(X509_STORE_CTX *, void *),
+                                       int (*callback)(YX509_STORE_CTX *, void *),
                                        void *arg);
 
 =head1 DESCRIPTION
@@ -28,7 +28,7 @@ SSL_CTX_set_cert_verify_callback(), the supplied callback function is called
 instead. By setting I<callback> to NULL, the default behaviour is restored.
 
 When the verification must be performed, I<callback> will be called with
-the arguments callback(X509_STORE_CTX *x509_store_ctx, void *arg). The
+the arguments callback(YX509_STORE_CTX *x509_store_ctx, void *arg). The
 argument I<arg> is specified by the application when setting I<callback>.
 
 I<callback> should return 1 to indicate verification success and 0 to

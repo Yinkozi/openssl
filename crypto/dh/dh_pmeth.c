@@ -28,7 +28,7 @@ typedef struct {
     int subprime_len;
     int pad;
     /* message digest used for parameter generation */
-    const EVP_MD *md;
+    const EVVP_MD *md;
     int rfc5114_param;
     int param_nid;
     /* Keygen callback info */
@@ -36,9 +36,9 @@ typedef struct {
     /* KDF (if any) to use for DH */
     char kdf_type;
     /* OID to use for KDF */
-    ASN1_OBJECT *kdf_oid;
+    YASN1_OBJECT *kdf_oid;
     /* Message digest to use for key derivation */
-    const EVP_MD *kdf_md;
+    const EVVP_MD *kdf_md;
     /* User key material */
     unsigned char *kdf_ukm;
     size_t kdf_ukmlen;
@@ -46,7 +46,7 @@ typedef struct {
     size_t kdf_outlen;
 } DH_PKEY_CTX;
 
-static int pkey_dh_init(EVP_PKEY_CTX *ctx)
+static int pkey_dh_init(EVVP_PKEY_CTX *ctx)
 {
     DH_PKEY_CTX *dctx;
 
@@ -57,7 +57,7 @@ static int pkey_dh_init(EVP_PKEY_CTX *ctx)
     dctx->prime_len = 2048;
     dctx->subprime_len = -1;
     dctx->generator = 2;
-    dctx->kdf_type = EVP_PKEY_DH_KDF_NONE;
+    dctx->kdf_type = EVVP_PKEY_DH_KDF_NONE;
 
     ctx->data = dctx;
     ctx->keygen_info = dctx->gentmp;
@@ -66,18 +66,18 @@ static int pkey_dh_init(EVP_PKEY_CTX *ctx)
     return 1;
 }
 
-static void pkey_dh_cleanup(EVP_PKEY_CTX *ctx)
+static void pkey_dh_cleanup(EVVP_PKEY_CTX *ctx)
 {
     DH_PKEY_CTX *dctx = ctx->data;
     if (dctx != NULL) {
         OPENSSL_free(dctx->kdf_ukm);
-        ASN1_OBJECT_free(dctx->kdf_oid);
+        YASN1_OBJECT_free(dctx->kdf_oid);
         OPENSSL_free(dctx);
     }
 }
 
 
-static int pkey_dh_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
+static int pkey_dh_copy(EVVP_PKEY_CTX *dst, EVVP_PKEY_CTX *src)
 {
     DH_PKEY_CTX *dctx, *sctx;
     if (!pkey_dh_init(dst))
@@ -108,33 +108,33 @@ static int pkey_dh_copy(EVP_PKEY_CTX *dst, EVP_PKEY_CTX *src)
     return 1;
 }
 
-static int pkey_dh_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
+static int pkey_dh_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
     DH_PKEY_CTX *dctx = ctx->data;
     switch (type) {
-    case EVP_PKEY_CTRL_DH_PARAMGEN_PRIME_LEN:
+    case EVVP_PKEY_CTRL_DH_PARAMGEN_PRIME_LEN:
         if (p1 < 256)
             return -2;
         dctx->prime_len = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_PARAMGEN_SUBPRIME_LEN:
+    case EVVP_PKEY_CTRL_DH_PARAMGEN_SUBPRIME_LEN:
         if (dctx->use_dsa == 0)
             return -2;
         dctx->subprime_len = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_PAD:
+    case EVVP_PKEY_CTRL_DH_PAD:
         dctx->pad = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_PARAMGEN_GENERATOR:
+    case EVVP_PKEY_CTRL_DH_PARAMGEN_GENERATOR:
         if (dctx->use_dsa)
             return -2;
         dctx->generator = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_PARAMGEN_TYPE:
+    case EVVP_PKEY_CTRL_DH_PARAMGEN_TYPE:
 #ifdef OPENSSL_NO_DSA
         if (p1 != 0)
             return -2;
@@ -145,53 +145,53 @@ static int pkey_dh_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         dctx->use_dsa = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_RFC5114:
+    case EVVP_PKEY_CTRL_DH_RFC5114:
         if (p1 < 1 || p1 > 3 || dctx->param_nid != NID_undef)
             return -2;
         dctx->rfc5114_param = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_NID:
+    case EVVP_PKEY_CTRL_DH_NID:
         if (p1 <= 0 || dctx->rfc5114_param != 0)
             return -2;
         dctx->param_nid = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_PEER_KEY:
+    case EVVP_PKEY_CTRL_PEER_KEY:
         /* Default behaviour is OK */
         return 1;
 
-    case EVP_PKEY_CTRL_DH_KDF_TYPE:
+    case EVVP_PKEY_CTRL_DH_KDF_TYPE:
         if (p1 == -2)
             return dctx->kdf_type;
 #ifdef OPENSSL_NO_CMS
-        if (p1 != EVP_PKEY_DH_KDF_NONE)
+        if (p1 != EVVP_PKEY_DH_KDF_NONE)
 #else
-        if (p1 != EVP_PKEY_DH_KDF_NONE && p1 != EVP_PKEY_DH_KDF_X9_42)
+        if (p1 != EVVP_PKEY_DH_KDF_NONE && p1 != EVVP_PKEY_DH_KDF_X9_42)
 #endif
             return -2;
         dctx->kdf_type = p1;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_KDF_MD:
+    case EVVP_PKEY_CTRL_DH_KDF_MD:
         dctx->kdf_md = p2;
         return 1;
 
-    case EVP_PKEY_CTRL_GET_DH_KDF_MD:
-        *(const EVP_MD **)p2 = dctx->kdf_md;
+    case EVVP_PKEY_CTRL_GET_DH_KDF_MD:
+        *(const EVVP_MD **)p2 = dctx->kdf_md;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_KDF_OUTLEN:
+    case EVVP_PKEY_CTRL_DH_KDF_OUTLEN:
         if (p1 <= 0)
             return -2;
         dctx->kdf_outlen = (size_t)p1;
         return 1;
 
-    case EVP_PKEY_CTRL_GET_DH_KDF_OUTLEN:
+    case EVVP_PKEY_CTRL_GET_DH_KDF_OUTLEN:
         *(int *)p2 = dctx->kdf_outlen;
         return 1;
 
-    case EVP_PKEY_CTRL_DH_KDF_UKM:
+    case EVVP_PKEY_CTRL_DH_KDF_UKM:
         OPENSSL_free(dctx->kdf_ukm);
         dctx->kdf_ukm = p2;
         if (p2)
@@ -200,17 +200,17 @@ static int pkey_dh_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             dctx->kdf_ukmlen = 0;
         return 1;
 
-    case EVP_PKEY_CTRL_GET_DH_KDF_UKM:
+    case EVVP_PKEY_CTRL_GET_DH_KDF_UKM:
         *(unsigned char **)p2 = dctx->kdf_ukm;
         return dctx->kdf_ukmlen;
 
-    case EVP_PKEY_CTRL_DH_KDF_OID:
-        ASN1_OBJECT_free(dctx->kdf_oid);
+    case EVVP_PKEY_CTRL_DH_KDF_OID:
+        YASN1_OBJECT_free(dctx->kdf_oid);
         dctx->kdf_oid = p2;
         return 1;
 
-    case EVP_PKEY_CTRL_GET_DH_KDF_OID:
-        *(ASN1_OBJECT **)p2 = dctx->kdf_oid;
+    case EVVP_PKEY_CTRL_GET_DH_KDF_OID:
+        *(YASN1_OBJECT **)p2 = dctx->kdf_oid;
         return 1;
 
     default:
@@ -219,13 +219,13 @@ static int pkey_dh_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
     }
 }
 
-static int pkey_dh_ctrl_str(EVP_PKEY_CTX *ctx,
+static int pkey_dh_ctrl_str(EVVP_PKEY_CTX *ctx,
                             const char *type, const char *value)
 {
     if (strcmp(type, "dh_paramgen_prime_len") == 0) {
         int len;
         len = atoi(value);
-        return EVP_PKEY_CTX_set_dh_paramgen_prime_len(ctx, len);
+        return EVVP_PKEY_CTX_set_dh_paramgen_prime_len(ctx, len);
     }
     if (strcmp(type, "dh_rfc5114") == 0) {
         DH_PKEY_CTX *dctx = ctx->data;
@@ -250,22 +250,22 @@ static int pkey_dh_ctrl_str(EVP_PKEY_CTX *ctx,
     if (strcmp(type, "dh_paramgen_generator") == 0) {
         int len;
         len = atoi(value);
-        return EVP_PKEY_CTX_set_dh_paramgen_generator(ctx, len);
+        return EVVP_PKEY_CTX_set_dh_paramgen_generator(ctx, len);
     }
     if (strcmp(type, "dh_paramgen_subprime_len") == 0) {
         int len;
         len = atoi(value);
-        return EVP_PKEY_CTX_set_dh_paramgen_subprime_len(ctx, len);
+        return EVVP_PKEY_CTX_set_dh_paramgen_subprime_len(ctx, len);
     }
     if (strcmp(type, "dh_paramgen_type") == 0) {
         int typ;
         typ = atoi(value);
-        return EVP_PKEY_CTX_set_dh_paramgen_type(ctx, typ);
+        return EVVP_PKEY_CTX_set_dh_paramgen_type(ctx, typ);
     }
     if (strcmp(type, "dh_pad") == 0) {
         int pad;
         pad = atoi(value);
-        return EVP_PKEY_CTX_set_dh_pad(ctx, pad);
+        return EVVP_PKEY_CTX_set_dh_pad(ctx, pad);
     }
     return -2;
 }
@@ -273,13 +273,13 @@ static int pkey_dh_ctrl_str(EVP_PKEY_CTX *ctx,
 #ifndef OPENSSL_NO_DSA
 
 extern int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
-                                const EVP_MD *evpmd,
+                                const EVVP_MD *evpmd,
                                 const unsigned char *seed_in, size_t seed_len,
                                 unsigned char *seed_out, int *counter_ret,
                                 unsigned long *h_ret, BN_GENCB *cb);
 
 extern int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
-                                 const EVP_MD *evpmd,
+                                 const EVVP_MD *evpmd,
                                  const unsigned char *seed_in,
                                  size_t seed_len, int idx,
                                  unsigned char *seed_out, int *counter_ret,
@@ -291,7 +291,7 @@ static DSA *dsa_dh_generate(DH_PKEY_CTX *dctx, BN_GENCB *pcb)
     int rv = 0;
     int prime_len = dctx->prime_len;
     int subprime_len = dctx->subprime_len;
-    const EVP_MD *md = dctx->md;
+    const EVVP_MD *md = dctx->md;
     if (dctx->use_dsa > 2)
         return NULL;
     ret = DSA_new();
@@ -305,9 +305,9 @@ static DSA *dsa_dh_generate(DH_PKEY_CTX *dctx, BN_GENCB *pcb)
     }
     if (md == NULL) {
         if (prime_len >= 2048)
-            md = EVP_sha256();
+            md = EVVP_sha256();
         else
-            md = EVP_sha1();
+            md = EVVP_sha1();
     }
     if (dctx->use_dsa == 1)
         rv = dsa_builtin_paramgen(ret, prime_len, subprime_len, md,
@@ -324,7 +324,7 @@ static DSA *dsa_dh_generate(DH_PKEY_CTX *dctx, BN_GENCB *pcb)
 
 #endif
 
-static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
+static int pkey_dh_paramgen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
 {
     DH *dh = NULL;
     DH_PKEY_CTX *dctx = ctx->data;
@@ -347,14 +347,14 @@ static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         default:
             return -2;
         }
-        EVP_PKEY_assign(pkey, EVP_PKEY_DHX, dh);
+        EVVP_PKEY_assign(pkey, EVVP_PKEY_DHX, dh);
         return 1;
     }
 
     if (dctx->param_nid != 0) {
         if ((dh = DH_new_by_nid(dctx->param_nid)) == NULL)
             return 0;
-        EVP_PKEY_assign(pkey, EVP_PKEY_DH, dh);
+        EVVP_PKEY_assign(pkey, EVVP_PKEY_DH, dh);
         return 1;
     }
 
@@ -376,7 +376,7 @@ static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         DSA_free(dsa_dh);
         if (!dh)
             return 0;
-        EVP_PKEY_assign(pkey, EVP_PKEY_DHX, dh);
+        EVVP_PKEY_assign(pkey, EVVP_PKEY_DHX, dh);
         return 1;
     }
 #endif
@@ -389,13 +389,13 @@ static int pkey_dh_paramgen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
                                     dctx->prime_len, dctx->generator, pcb);
     BN_GENCB_free(pcb);
     if (ret)
-        EVP_PKEY_assign_DH(pkey, dh);
+        EVVP_PKEY_assign_DH(pkey, dh);
     else
         DH_free(dh);
     return ret;
 }
 
-static int pkey_dh_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
+static int pkey_dh_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
 {
     DH_PKEY_CTX *dctx = ctx->data;
     DH *dh = NULL;
@@ -410,14 +410,14 @@ static int pkey_dh_keygen(EVP_PKEY_CTX *ctx, EVP_PKEY *pkey)
         dh = DH_new();
     if (dh == NULL)
         return 0;
-    EVP_PKEY_assign(pkey, ctx->pmeth->pkey_id, dh);
+    EVVP_PKEY_assign(pkey, ctx->pmeth->pkey_id, dh);
     /* Note: if error return, pkey is freed by parent routine */
-    if (ctx->pkey != NULL && !EVP_PKEY_copy_parameters(pkey, ctx->pkey))
+    if (ctx->pkey != NULL && !EVVP_PKEY_copy_parameters(pkey, ctx->pkey))
         return 0;
     return DH_generate_key(pkey->pkey.dh);
 }
 
-static int pkey_dh_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
+static int pkey_dh_derive(EVVP_PKEY_CTX *ctx, unsigned char *key,
                           size_t *keylen)
 {
     int ret;
@@ -430,7 +430,7 @@ static int pkey_dh_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
     }
     dh = ctx->pkey->pkey.dh;
     dhpub = ctx->peerkey->pkey.dh->pub_key;
-    if (dctx->kdf_type == EVP_PKEY_DH_KDF_NONE) {
+    if (dctx->kdf_type == EVVP_PKEY_DH_KDF_NONE) {
         if (key == NULL) {
             *keylen = DH_size(dh);
             return 1;
@@ -445,7 +445,7 @@ static int pkey_dh_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
         return 1;
     }
 #ifndef OPENSSL_NO_CMS
-    else if (dctx->kdf_type == EVP_PKEY_DH_KDF_X9_42) {
+    else if (dctx->kdf_type == EVVP_PKEY_DH_KDF_X9_42) {
 
         unsigned char *Z = NULL;
         size_t Zlen = 0;
@@ -478,8 +478,8 @@ static int pkey_dh_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
     return 0;
 }
 
-const EVP_PKEY_METHOD dh_pkey_meth = {
-    EVP_PKEY_DH,
+const EVVP_PKEY_METHOD dh_pkey_mmeth = {
+    EVVP_PKEY_DH,
     0,
     pkey_dh_init,
     pkey_dh_copy,
@@ -512,8 +512,8 @@ const EVP_PKEY_METHOD dh_pkey_meth = {
     pkey_dh_ctrl_str
 };
 
-const EVP_PKEY_METHOD dhx_pkey_meth = {
-    EVP_PKEY_DHX,
+const EVVP_PKEY_METHOD dhx_pkey_mmeth = {
+    EVVP_PKEY_DHX,
     0,
     pkey_dh_init,
     pkey_dh_copy,

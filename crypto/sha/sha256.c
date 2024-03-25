@@ -16,7 +16,7 @@
 #include <openssl/sha.h>
 #include <openssl/opensslv.h>
 
-int SHA224_Init(SHA256_CTX *c)
+int SHA224_Init(YSHA256_CTX *c)
 {
     memset(c, 0, sizeof(*c));
     c->h[0] = 0xc1059ed8UL;
@@ -31,7 +31,7 @@ int SHA224_Init(SHA256_CTX *c)
     return 1;
 }
 
-int SHA256_Init(SHA256_CTX *c)
+int YSHA256_Init(YSHA256_CTX *c)
 {
     memset(c, 0, sizeof(*c));
     c->h[0] = 0x6a09e667UL;
@@ -42,52 +42,52 @@ int SHA256_Init(SHA256_CTX *c)
     c->h[5] = 0x9b05688cUL;
     c->h[6] = 0x1f83d9abUL;
     c->h[7] = 0x5be0cd19UL;
-    c->md_len = SHA256_DIGEST_LENGTH;
+    c->md_len = YSHA256_DIGEST_LENGTH;
     return 1;
 }
 
 unsigned char *SHA224(const unsigned char *d, size_t n, unsigned char *md)
 {
-    SHA256_CTX c;
+    YSHA256_CTX c;
     static unsigned char m[SHA224_DIGEST_LENGTH];
 
     if (md == NULL)
         md = m;
     SHA224_Init(&c);
-    SHA256_Update(&c, d, n);
-    SHA256_Final(md, &c);
+    YSHA256_Update(&c, d, n);
+    YSHA256_Final(md, &c);
     OPENSSL_cleanse(&c, sizeof(c));
     return md;
 }
 
-unsigned char *SHA256(const unsigned char *d, size_t n, unsigned char *md)
+unsigned char *YSHA256(const unsigned char *d, size_t n, unsigned char *md)
 {
-    SHA256_CTX c;
-    static unsigned char m[SHA256_DIGEST_LENGTH];
+    YSHA256_CTX c;
+    static unsigned char m[YSHA256_DIGEST_LENGTH];
 
     if (md == NULL)
         md = m;
-    SHA256_Init(&c);
-    SHA256_Update(&c, d, n);
-    SHA256_Final(md, &c);
+    YSHA256_Init(&c);
+    YSHA256_Update(&c, d, n);
+    YSHA256_Final(md, &c);
     OPENSSL_cleanse(&c, sizeof(c));
     return md;
 }
 
-int SHA224_Update(SHA256_CTX *c, const void *data, size_t len)
+int SHA224_Update(YSHA256_CTX *c, const void *data, size_t len)
 {
-    return SHA256_Update(c, data, len);
+    return YSHA256_Update(c, data, len);
 }
 
-int SHA224_Final(unsigned char *md, SHA256_CTX *c)
+int SHA224_Final(unsigned char *md, YSHA256_CTX *c)
 {
-    return SHA256_Final(md, c);
+    return YSHA256_Final(md, c);
 }
 
 #define DATA_ORDER_IS_BIG_ENDIAN
 
 #define HASH_LONG               SHA_LONG
-#define HASH_CTX                SHA256_CTX
+#define HASH_CTX                YSHA256_CTX
 #define HASH_CBLOCK             SHA_CBLOCK
 
 /*
@@ -106,12 +106,12 @@ int SHA224_Final(unsigned char *md, SHA256_CTX *c)
                 for (nn=0;nn<SHA224_DIGEST_LENGTH/4;nn++)       \
                 {   ll=(c)->h[nn]; (void)HOST_l2c(ll,(s));   }  \
                 break;                  \
-            case SHA256_DIGEST_LENGTH:  \
-                for (nn=0;nn<SHA256_DIGEST_LENGTH/4;nn++)       \
+            case YSHA256_DIGEST_LENGTH:  \
+                for (nn=0;nn<YSHA256_DIGEST_LENGTH/4;nn++)       \
                 {   ll=(c)->h[nn]; (void)HOST_l2c(ll,(s));   }  \
                 break;                  \
             default:                    \
-                if ((c)->md_len > SHA256_DIGEST_LENGTH) \
+                if ((c)->md_len > YSHA256_DIGEST_LENGTH) \
                     return 0;                           \
                 for (nn=0;nn<(c)->md_len/4;nn++)                \
                 {   ll=(c)->h[nn]; (void)HOST_l2c(ll,(s));   }  \
@@ -119,18 +119,18 @@ int SHA224_Final(unsigned char *md, SHA256_CTX *c)
         }                               \
         } while (0)
 
-#define HASH_UPDATE             SHA256_Update
-#define HASH_TRANSFORM          SHA256_Transform
-#define HASH_FINAL              SHA256_Final
+#define HASH_UPDATE             YSHA256_Update
+#define HASH_TRANSFORM          YSHA256_Transform
+#define HASH_FINAL              YSHA256_Final
 #define HASH_BLOCK_DATA_ORDER   sha256_block_data_order
-#ifndef SHA256_ASM
+#ifndef YSHA256_ASM
 static
 #endif
-void sha256_block_data_order(SHA256_CTX *ctx, const void *in, size_t num);
+void sha256_block_data_order(YSHA256_CTX *ctx, const void *in, size_t num);
 
 #include "crypto/md32_common.h"
 
-#ifndef SHA256_ASM
+#ifndef YSHA256_ASM
 static const SHA_LONG K256[64] = {
     0x428a2f98UL, 0x71374491UL, 0xb5c0fbcfUL, 0xe9b5dba5UL,
     0x3956c25bUL, 0x59f111f1UL, 0x923f82a4UL, 0xab1c5ed5UL,
@@ -165,7 +165,7 @@ static const SHA_LONG K256[64] = {
 
 # ifdef OPENSSL_SMALL_FOOTPRINT
 
-static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
+static void sha256_block_data_order(YSHA256_CTX *ctx, const void *in,
                                     size_t num)
 {
     unsigned MD32_REG_T a, b, c, d, e, f, g, h, s0, s1, T1, T2;
@@ -243,7 +243,7 @@ static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
         T1 = X[(i)&0x0f] += s0 + s1 + X[(i+9)&0x0f];    \
         ROUND_00_15(i,a,b,c,d,e,f,g,h);         } while (0)
 
-static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
+static void sha256_block_data_order(YSHA256_CTX *ctx, const void *in,
                                     size_t num)
 {
     unsigned MD32_REG_T a, b, c, d, e, f, g, h, s0, s1, T1;
@@ -305,7 +305,7 @@ static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
             T1 = X[15] = W[15];
             ROUND_00_15(15, b, c, d, e, f, g, h, a);
 
-            data += SHA256_CBLOCK;
+            data += YSHA256_CBLOCK;
         } else {
             SHA_LONG l;
 
@@ -383,4 +383,4 @@ static void sha256_block_data_order(SHA256_CTX *ctx, const void *in,
 }
 
 # endif
-#endif                         /* SHA256_ASM */
+#endif                         /* YSHA256_ASM */

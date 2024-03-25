@@ -19,11 +19,11 @@
  * POLICY_MAPPINGS structure
  */
 
-int policy_cache_set_mapping(X509 *x, POLICY_MAPPINGS *maps)
+int policy_cache_set_mapping(YX509 *x, POLICY_MAPPINGS *maps)
 {
     POLICY_MAPPING *map;
-    X509_POLICY_DATA *data;
-    X509_POLICY_CACHE *cache = x->policy_cache;
+    YX509_POLICY_DATA *data;
+    YX509_POLICY_CACHE *cache = x->policy_cache;
     int i;
     int ret = 0;
     if (sk_POLICY_MAPPING_num(maps) == 0) {
@@ -58,13 +58,13 @@ int policy_cache_set_mapping(X509 *x, POLICY_MAPPINGS *maps)
              */
             data->flags |= POLICY_DATA_FLAG_MAPPED_ANY;
             data->flags |= POLICY_DATA_FLAG_SHARED_QUALIFIERS;
-            if (!sk_X509_POLICY_DATA_push(cache->data, data)) {
+            if (!sk_YX509_POLICY_DATA_push(cache->data, data)) {
                 policy_data_free(data);
                 goto bad_mapping;
             }
         } else
             data->flags |= POLICY_DATA_FLAG_MAPPED;
-        if (!sk_ASN1_OBJECT_push(data->expected_policy_set,
+        if (!sk_YASN1_OBJECT_push(data->expected_policy_set,
                                  map->subjectDomainPolicy))
             goto bad_mapping;
         map->subjectDomainPolicy = NULL;

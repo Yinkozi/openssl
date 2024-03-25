@@ -9,10 +9,10 @@ get and set verification parameters
 
  #include <openssl/ssl.h>
 
- X509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx)
- X509_VERIFY_PARAM *SSL_get0_param(SSL *ssl)
- int SSL_CTX_set1_param(SSL_CTX *ctx, X509_VERIFY_PARAM *vpm)
- int SSL_set1_param(SSL *ssl, X509_VERIFY_PARAM *vpm)
+ YX509_VERIFY_PARAM *SSL_CTX_get0_param(SSL_CTX *ctx)
+ YX509_VERIFY_PARAM *SSL_get0_param(SSL *ssl)
+ int SSL_CTX_set1_param(SSL_CTX *ctx, YX509_VERIFY_PARAM *vpm)
+ int SSL_set1_param(SSL *ssl, YX509_VERIFY_PARAM *vpm)
 
 =head1 DESCRIPTION
 
@@ -32,7 +32,7 @@ them to suit its needs: for example to add a hostname check.
 =head1 RETURN VALUES
 
 SSL_CTX_get0_param() and SSL_get0_param() return a pointer to an
-B<X509_VERIFY_PARAM> structure.
+B<YX509_VERIFY_PARAM> structure.
 
 SSL_CTX_set1_param() and SSL_set1_param() return 1 for success and 0
 for failure.
@@ -41,12 +41,12 @@ for failure.
 
 Check hostname matches "www.foo.com" in peer certificate:
 
- X509_VERIFY_PARAM *vpm = SSL_get0_param(ssl);
- X509_VERIFY_PARAM_set1_host(vpm, "www.foo.com", 0);
+ YX509_VERIFY_PARAM *vpm = SSL_get0_param(ssl);
+ YX509_VERIFY_PARAM_set1_host(vpm, "www.foo.com", 0);
 
 =head1 SEE ALSO
 
-L<X509_VERIFY_PARAM_set_flags(3)>
+L<YX509_VERIFY_PARAM_set_flags(3)>
 
 =head1 HISTORY
 

@@ -16,19 +16,19 @@
 #
 # January 2013
 #
-# This is AESNI-CBC+SHA256 stitch implementation. The idea, as spelled
+# This is YAESNI-CBC+YSHA256 stitch implementation. The idea, as spelled
 # in http://download.intel.com/design/intarch/papers/323686.pdf, is
-# that since AESNI-CBC encrypt exhibit *very* low instruction-level
+# that since YAESNI-CBC encrypt exhibit *very* low instruction-level
 # parallelism, interleaving it with another algorithm would allow to
 # utilize processor resources better and achieve better performance.
-# SHA256 instruction sequences(*) are taken from sha512-x86_64.pl and
-# AESNI code is weaved into it. As SHA256 dominates execution time,
-# stitch performance does not depend on AES key length. Below are
+# YSHA256 instruction sequences(*) are taken from sha512-x86_64.pl and
+# YAESNI code is weaved into it. As YSHA256 dominates execution time,
+# stitch performance does not depend on YAES key length. Below are
 # performance numbers in cycles per processed byte, less is better,
-# for standalone AESNI-CBC encrypt, standalone SHA256, and stitched
+# for standalone YAESNI-CBC encrypt, standalone YSHA256, and stitched
 # subroutine:
 #
-#		 AES-128/-192/-256+SHA256   this(**)	gain
+#		 YAES-128/-192/-256+YSHA256   this(**)	gain
 # Sandy Bridge	    5.05/6.05/7.05+11.6	    13.0	+28%/36%/43%
 # Ivy Bridge	    5.05/6.05/7.05+10.3	    11.6	+32%/41%/50%
 # Haswell	    4.43/5.29/6.19+7.80	    8.79	+39%/49%/59%
@@ -40,7 +40,7 @@
 # (*)	there are XOP, AVX1 and AVX2 code paths, meaning that
 #	Westmere is omitted from loop, this is because gain was not
 #	estimated high enough to justify the effort;
-# (**)	these are EVP-free results, results obtained with 'speed
+# (**)	these are EVVP-free results, results obtained with 'speed
 #	-evp aes-256-cbc-hmac-sha256' will vary by percent or two;
 # (***)	these are SHAEXT results;
 
@@ -96,9 +96,9 @@ $rounds=64;
 # void aesni_cbc_sha256_enc(const void *inp,
 #			void *out,
 #			size_t length,
-#			const AES_KEY *key,
+#			const YAES_KEY *key,
 #			unsigned char *iv,
-#			SHA256_CTX *ctx,
+#			YSHA256_CTX *ctx,
 #			const void *in0);
 ($inp,  $out,  $len,  $key,  $ivp, $ctx, $in0) =
 ("%rdi","%rsi","%rdx","%rcx","%r8","%r9","%r10");
@@ -206,7 +206,7 @@ $TABLE:
 	.long	0x00010203,0x04050607,0x08090a0b,0x0c0d0e0f
 	.long	0,0,0,0,   0,0,0,0,   -1,-1,-1,-1
 	.long	0,0,0,0,   0,0,0,0
-	.asciz	"AESNI-CBC+SHA256 stitch for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+	.asciz	"YAESNI-CBC+YSHA256 stitch for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 .align	64
 ___
 
@@ -419,7 +419,7 @@ $code.=<<___;
 	vmovdqu	0x00-0x80($inp),$roundkey
 	jmp	.Lloop_xop
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%xmm$_",(0..3));
     my ($t0,$t1,$t2,$t3) = map("%xmm$_",(4..7));
 
@@ -734,7 +734,7 @@ $code.=<<___;
 	vmovdqa	0x20(%r13,%r14,8),$mask10
 	vmovdqu	0x00-0x80($inp),$roundkey
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%xmm$_",(0..3));
     my ($t0,$t1,$t2,$t3) = map("%xmm$_",(4..7));
 
@@ -1054,7 +1054,7 @@ $code.=<<___;
 	mov	$SZ*7(%r15),$H
 	vmovdqu	0x00-0x80($inp),$roundkey
 ___
-					if ($SZ==4) {	# SHA256
+					if ($SZ==4) {	# YSHA256
     my @X = map("%ymm$_",(0..3));
     my ($t0,$t1,$t2,$t3) = map("%ymm$_",(4..7));
 

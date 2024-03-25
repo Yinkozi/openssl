@@ -85,7 +85,7 @@ struct TestState {
   bool cert_ready = false;
   bool handshake_done = false;
   // private_key is the underlying private key used when testing custom keys.
-  bssl::UniquePtr<EVP_PKEY> private_key;
+  bssl::UniquePtr<EVVP_PKEY> private_key;
   bool got_new_session = false;
   bssl::UniquePtr<SSL_SESSION> new_session;
   bool ticket_decrypt_done = false;
@@ -121,21 +121,21 @@ static TestState *GetTestState(const SSL *ssl) {
   return (TestState *)SSL_get_ex_data(ssl, g_state_index);
 }
 
-static bssl::UniquePtr<X509> LoadCertificate(const std::string &file) {
-  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_file()));
+static bssl::UniquePtr<YX509> LoadCertificate(const std::string &file) {
+  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_yfile()));
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }
-  return bssl::UniquePtr<X509>(PEM_read_bio_X509(bio.get(), NULL, NULL, NULL));
+  return bssl::UniquePtr<YX509>(PEM_readd_bio_YX509(bio.get(), NULL, NULL, NULL));
 }
 
-static bssl::UniquePtr<EVP_PKEY> LoadPrivateKey(const std::string &file) {
-  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_file()));
+static bssl::UniquePtr<EVVP_PKEY> LoadPrivateKey(const std::string &file) {
+  bssl::UniquePtr<BIO> bio(BIO_new(BIO_s_yfile()));
   if (!bio || !BIO_read_filename(bio.get(), file.c_str())) {
     return nullptr;
   }
-  return bssl::UniquePtr<EVP_PKEY>(
-      PEM_read_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
+  return bssl::UniquePtr<EVVP_PKEY>(
+      PEM_readd_bio_PrivateKey(bio.get(), NULL, NULL, NULL));
 }
 
 template<typename T>
@@ -145,8 +145,8 @@ struct Free {
   }
 };
 
-static bool GetCertificate(SSL *ssl, bssl::UniquePtr<X509> *out_x509,
-                           bssl::UniquePtr<EVP_PKEY> *out_pkey) {
+static bool GetCertificate(SSL *ssl, bssl::UniquePtr<YX509> *out_x509,
+                           bssl::UniquePtr<EVVP_PKEY> *out_pkey) {
   const TestConfig *config = GetTestConfig(ssl);
 
   if (!config->key_file.empty()) {
@@ -165,8 +165,8 @@ static bool GetCertificate(SSL *ssl, bssl::UniquePtr<X509> *out_x509,
 }
 
 static bool InstallCertificate(SSL *ssl) {
-  bssl::UniquePtr<X509> x509;
-  bssl::UniquePtr<EVP_PKEY> pkey;
+  bssl::UniquePtr<YX509> x509;
+  bssl::UniquePtr<EVVP_PKEY> pkey;
   if (!GetCertificate(ssl, &x509, &pkey)) {
     return false;
   }
@@ -182,13 +182,13 @@ static bool InstallCertificate(SSL *ssl) {
   return true;
 }
 
-static int ClientCertCallback(SSL *ssl, X509 **out_x509, EVP_PKEY **out_pkey) {
+static int ClientCertCallback(SSL *ssl, YX509 **out_x509, EVVP_PKEY **out_pkey) {
   if (GetTestConfig(ssl)->async && !GetTestState(ssl)->cert_ready) {
     return -1;
   }
 
-  bssl::UniquePtr<X509> x509;
-  bssl::UniquePtr<EVP_PKEY> pkey;
+  bssl::UniquePtr<YX509> x509;
+  bssl::UniquePtr<EVVP_PKEY> pkey;
   if (!GetCertificate(ssl, &x509, &pkey)) {
     return -1;
   }
@@ -204,12 +204,12 @@ static int ClientCertCallback(SSL *ssl, X509 **out_x509, EVP_PKEY **out_pkey) {
   return 1;
 }
 
-static int VerifySucceed(X509_STORE_CTX *store_ctx, void *arg) {
+static int VerifySucceed(YX509_STORE_CTX *store_ctx, void *arg) {
   return 1;
 }
 
-static int VerifyFail(X509_STORE_CTX *store_ctx, void *arg) {
-  X509_STORE_CTX_set_error(store_ctx, X509_V_ERR_APPLICATION_VERIFICATION);
+static int VerifyFail(YX509_STORE_CTX *store_ctx, void *arg) {
+  YX509_STORE_CTX_set_error(store_ctx, YX509_V_ERR_APPLICATION_VERIFICATION);
   return 0;
 }
 
@@ -370,7 +370,7 @@ static int NewSessionCallback(SSL *ssl, SSL_SESSION *session) {
 }
 
 static int TicketKeyCallback(SSL *ssl, uint8_t *key_name, uint8_t *iv,
-                             EVP_CIPHER_CTX *ctx, HMAC_CTX *hmac_ctx,
+                             EVVP_CIPHER_CTX *ctx, YHMAC_CTX *hmac_ctx,
                              int encrypt) {
   if (!encrypt) {
     if (GetTestState(ssl)->ticket_decrypt_done) {
@@ -391,8 +391,8 @@ static int TicketKeyCallback(SSL *ssl, uint8_t *key_name, uint8_t *iv,
     return 0;
   }
 
-  if (!HMAC_Init_ex(hmac_ctx, kZeros, sizeof(kZeros), EVP_sha256(), NULL) ||
-      !EVP_CipherInit_ex(ctx, EVP_aes_128_cbc(), NULL, kZeros, iv, encrypt)) {
+  if (!YHMAC_Init_ex(hmac_ctx, kZeros, sizeof(kZeros), EVVP_sha256(), NULL) ||
+      !EVVP_CipherInit_ex(ctx, EVVP_aes_128_cbc(), NULL, kZeros, iv, encrypt)) {
     return -1;
   }
 
@@ -702,7 +702,7 @@ static bool RetryAsync(SSL *ssl, int ret) {
     case SSL_ERROR_WANT_WRITE:
       AsyncBioAllowWrite(test_state->async_bio, 1);
       return true;
-    case SSL_ERROR_WANT_X509_LOOKUP:
+    case SSL_ERROR_WANT_YX509_LOOKUP:
       test_state->cert_ready = true;
       return true;
     default:
@@ -868,8 +868,8 @@ static bool CheckHandshakeProperties(SSL *ssl, bool is_resume) {
 
   if (config->expect_verify_result) {
     int expected_verify_result = config->verify_fail ?
-      X509_V_ERR_APPLICATION_VERIFICATION :
-      X509_V_OK;
+      YX509_V_ERR_APPLICATION_VERIFICATION :
+      YX509_V_OK;
 
     if (SSL_get_verify_result(ssl) != expected_verify_result) {
       fprintf(stderr, "Wrong certificate verification result\n");
@@ -1269,7 +1269,7 @@ static int Main(int argc, char **argv) {
 
   bssl::UniquePtr<SSL_CTX> ssl_ctx = SetupCtx(&config);
   if (!ssl_ctx) {
-    ERR_print_errors_fp(stderr);
+    ERRR_print_errors_fp(stderr);
     return 1;
   }
 
@@ -1285,7 +1285,7 @@ static int Main(int argc, char **argv) {
     if (!DoExchange(&session, ssl_ctx.get(), &config, is_resume,
                     offer_session.get())) {
       fprintf(stderr, "Connection %d failed.\n", i + 1);
-      ERR_print_errors_fp(stderr);
+      ERRR_print_errors_fp(stderr);
       return 1;
     }
   }

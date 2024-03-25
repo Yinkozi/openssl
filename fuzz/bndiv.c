@@ -80,7 +80,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         goto done;
     }
 
-    OPENSSL_assert(BN_div(b3, b4, b1, b2, ctx));
+    OPENSSL_assert(BNY_div(b3, b4, b1, b2, ctx));
     if (BN_is_zero(b1))
         success = BN_is_zero(b3) && BN_is_zero(b4);
     else if (BN_is_negative(b1))
@@ -89,8 +89,8 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     else
         success = (BN_is_negative(b3) == BN_is_negative(b2)  || BN_is_zero(b3))
             && (!BN_is_negative(b4) || BN_is_zero(b4));
-    OPENSSL_assert(BN_mul(b5, b3, b2, ctx));
-    OPENSSL_assert(BN_add(b5, b5, b4));
+    OPENSSL_assert(BNY_mul(b5, b3, b2, ctx));
+    OPENSSL_assert(BNY_add(b5, b5, b4));
 
     success = success && BN_cmp(b5, b1) == 0;
     if (!success) {

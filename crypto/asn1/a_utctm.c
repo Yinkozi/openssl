@@ -13,45 +13,45 @@
 #include <openssl/asn1.h>
 #include "asn1_local.h"
 
-/* This is the primary function used to parse ASN1_UTCTIME */
-int asn1_utctime_to_tm(struct tm *tm, const ASN1_UTCTIME *d)
+/* This is the primary function used to parse YASN1_UTCTIME */
+int asn1_utctime_to_tm(struct tm *tm, const YASN1_UTCTIME *d)
 {
     /* wrapper around ans1_time_to_tm */
-    if (d->type != V_ASN1_UTCTIME)
+    if (d->type != V_YASN1_UTCTIME)
         return 0;
     return asn1_time_to_tm(tm, d);
 }
 
-int ASN1_UTCTIME_check(const ASN1_UTCTIME *d)
+int YASN1_UTCTIME_check(const YASN1_UTCTIME *d)
 {
     return asn1_utctime_to_tm(NULL, d);
 }
 
 /* Sets the string via simple copy without cleaning it up */
-int ASN1_UTCTIME_set_string(ASN1_UTCTIME *s, const char *str)
+int YASN1_UTCTIME_set_string(YASN1_UTCTIME *s, const char *str)
 {
-    ASN1_UTCTIME t;
+    YASN1_UTCTIME t;
 
-    t.type = V_ASN1_UTCTIME;
+    t.type = V_YASN1_UTCTIME;
     t.length = strlen(str);
     t.data = (unsigned char *)str;
     t.flags = 0;
 
-    if (!ASN1_UTCTIME_check(&t))
+    if (!YASN1_UTCTIME_check(&t))
         return 0;
 
-    if (s != NULL && !ASN1_STRING_copy(s, &t))
+    if (s != NULL && !YASN1_STRING_copy(s, &t))
         return 0;
 
     return 1;
 }
 
-ASN1_UTCTIME *ASN1_UTCTIME_set(ASN1_UTCTIME *s, time_t t)
+YASN1_UTCTIME *YASN1_UTCTIME_set(YASN1_UTCTIME *s, time_t t)
 {
-    return ASN1_UTCTIME_adj(s, t, 0, 0);
+    return YASN1_UTCTIME_adj(s, t, 0, 0);
 }
 
-ASN1_UTCTIME *ASN1_UTCTIME_adj(ASN1_UTCTIME *s, time_t t,
+YASN1_UTCTIME *YASN1_UTCTIME_adj(YASN1_UTCTIME *s, time_t t,
                                int offset_day, long offset_sec)
 {
     struct tm *ts;
@@ -66,10 +66,10 @@ ASN1_UTCTIME *ASN1_UTCTIME_adj(ASN1_UTCTIME *s, time_t t,
             return NULL;
     }
 
-    return asn1_time_from_tm(s, ts, V_ASN1_UTCTIME);
+    return asn1_time_from_tm(s, ts, V_YASN1_UTCTIME);
 }
 
-int ASN1_UTCTIME_cmp_time_t(const ASN1_UTCTIME *s, time_t t)
+int YASN1_UTCTIME_cmp_time_t(const YASN1_UTCTIME *s, time_t t)
 {
     struct tm stm, ttm;
     int day, sec;
@@ -90,9 +90,9 @@ int ASN1_UTCTIME_cmp_time_t(const ASN1_UTCTIME *s, time_t t)
     return 0;
 }
 
-int ASN1_UTCTIME_print(BIO *bp, const ASN1_UTCTIME *tm)
+int YASN1_UTCTIME_print(BIO *bp, const YASN1_UTCTIME *tm)
 {
-    if (tm->type != V_ASN1_UTCTIME)
+    if (tm->type != V_YASN1_UTCTIME)
         return 0;
-    return ASN1_TIME_print(bp, tm);
+    return YASN1_TIME_print(bp, tm);
 }

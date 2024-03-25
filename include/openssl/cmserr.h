@@ -61,7 +61,7 @@ int ERR_load_CMS_strings(void);
 #  define CMS_F_CMS_ENVELOPEDDATA_CREATE                   124
 #  define CMS_F_CMS_ENVELOPEDDATA_INIT_BIO                 125
 #  define CMS_F_CMS_ENVELOPED_DATA_INIT                    126
-#  define CMS_F_CMS_ENV_ASN1_CTRL                          171
+#  define CMS_F_CMS_ENV_YASN1_CTRL                          171
 #  define CMS_F_CMS_FINAL                                  127
 #  define CMS_F_CMS_GET0_CERTIFICATE_CHOICES               128
 #  define CMS_F_CMS_GET0_CONTENT                           129
@@ -92,7 +92,7 @@ int ERR_load_CMS_strings(void);
 #  define CMS_F_CMS_RECIPIENTINFO_SET0_KEY                 144
 #  define CMS_F_CMS_RECIPIENTINFO_SET0_PASSWORD            168
 #  define CMS_F_CMS_RECIPIENTINFO_SET0_PKEY                145
-#  define CMS_F_CMS_SD_ASN1_CTRL                           170
+#  define CMS_F_CMS_SD_YASN1_CTRL                           170
 #  define CMS_F_CMS_SET1_IAS                               176
 #  define CMS_F_CMS_SET1_KEYID                             177
 #  define CMS_F_CMS_SET1_SIGNERIDENTIFIER                  146

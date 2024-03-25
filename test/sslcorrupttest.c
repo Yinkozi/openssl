@@ -129,9 +129,9 @@ static void bio_f_tls_corrupt_filter_free(void)
 }
 
 /*
- * The test is supposed to be executed with RSA key, customarily
+ * The test is supposed to be executed with YRSA key, customarily
  * with apps/server.pem used even in other tests. For this reason
- * |cipher_list| is initialized with RSA ciphers' names. This
+ * |cipher_list| is initialized with YRSA ciphers' names. This
  * naturally means that if test is to be re-purposed for other
  * type of key, then NID_auth_* filter below would need adjustment.
  */
@@ -150,7 +150,7 @@ static int setup_cipher_list(void)
         goto err;
 
     /*
-     * The |cipher_list| will be filled only with names of RSA ciphers,
+     * The |cipher_list| will be filled only with names of YRSA ciphers,
      * so that some of the allocated space will be wasted, but the loss
      * is deemed acceptable...
      */

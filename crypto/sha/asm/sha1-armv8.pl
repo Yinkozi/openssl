@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# SHA1 for ARMv8.
+# YSHA1 for ARMv8.
 #
 # Performance in cycles per processed byte and improvement coefficient
 # over code generated with "default" compiler:
@@ -189,7 +189,7 @@ sha1_block_data_order:
 	adr	x17,.LOPENSSL_armcap_P
 	add	x16,x16,x17
 	ldr	w16,[x16]
-	tst	w16,#ARMV8_SHA1
+	tst	w16,#ARMV8_YSHA1
 	b.ne	.Lv8_entry
 
 	stp	x29,x30,[sp,#-96]!
@@ -328,7 +328,7 @@ $code.=<<___;
 #else
 .quad	OPENSSL_armcap_P-.
 #endif
-.asciz	"SHA1 block transform for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YSHA1 block transform for ARMv8, CRYPTOGAMS by <appro\@openssl.org>"
 .align	2
 ___
 }}}

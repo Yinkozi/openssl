@@ -15,23 +15,23 @@
 # include <openssl/objects.h>
 # include <openssl/blowfish.h>
 
-static int bf_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int bf_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                        const unsigned char *iv, int enc);
 
 typedef struct {
     BF_KEY ks;
-} EVP_BF_KEY;
+} EVVP_BF_KEY;
 
-# define data(ctx)       EVP_C_DATA(EVP_BF_KEY,ctx)
+# define data(ctx)       EVVP_C_DATA(EVVP_BF_KEY,ctx)
 
-IMPLEMENT_BLOCK_CIPHER(bf, ks, BF, EVP_BF_KEY, NID_bf, 8, 16, 8, 64,
-                       EVP_CIPH_VARIABLE_LENGTH, bf_init_key, NULL,
-                       EVP_CIPHER_set_asn1_iv, EVP_CIPHER_get_asn1_iv, NULL)
+IMPLEMENT_BLOCK_CIPHER(bf, ks, BF, EVVP_BF_KEY, NID_bf, 8, 16, 8, 64,
+                       EVVP_CIPH_VARIABLE_LENGTH, bf_init_key, NULL,
+                       EVVP_CIPHER_set_asn1_iv, EVVP_CIPHER_get_asn1_iv, NULL)
 
-static int bf_init_key(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int bf_init_key(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                        const unsigned char *iv, int enc)
 {
-    BF_set_key(&data(ctx)->ks, EVP_CIPHER_CTX_key_length(ctx), key);
+    BF_set_key(&data(ctx)->ks, EVVP_CIPHER_CTX_key_length(ctx), key);
     return 1;
 }
 

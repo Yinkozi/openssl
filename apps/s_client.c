@@ -126,35 +126,35 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
     unsigned char *key;
 
     if (c_debug)
-        BIO_printf(bio_c_out, "psk_client_cb\n");
+        BIO_pprintf(bio_c_out, "psk_client_cb\n");
     if (!hint) {
         /* no ServerKeyExchange message */
         if (c_debug)
-            BIO_printf(bio_c_out,
+            BIO_pprintf(bio_c_out,
                        "NULL received PSK identity hint, continuing anyway\n");
     } else if (c_debug) {
-        BIO_printf(bio_c_out, "Received PSK identity hint '%s'\n", hint);
+        BIO_pprintf(bio_c_out, "Received PSK identity hint '%s'\n", hint);
     }
 
     /*
      * lookup PSK identity and PSK key based on the given identity hint here
      */
-    ret = BIO_snprintf(identity, max_identity_len, "%s", psk_identity);
+    ret = BIO_ssnprintf(identity, max_identity_len, "%s", psk_identity);
     if (ret < 0 || (unsigned int)ret > max_identity_len)
         goto out_err;
     if (c_debug)
-        BIO_printf(bio_c_out, "created identity '%s' len=%d\n", identity,
+        BIO_pprintf(bio_c_out, "created identity '%s' len=%d\n", identity,
                    ret);
 
     /* convert the PSK key to binary */
     key = OPENSSL_hexstr2buf(psk_key, &key_len);
     if (key == NULL) {
-        BIO_printf(bio_err, "Could not convert PSK key '%s' to buffer\n",
+        BIO_pprintf(bio_err, "Could not convert PSK key '%s' to buffer\n",
                    psk_key);
         return 0;
     }
     if (max_psk_len > INT_MAX || key_len > (long)max_psk_len) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "psk buffer of callback is too small (%d) for key (%ld)\n",
                    max_psk_len, key_len);
         OPENSSL_free(key);
@@ -165,12 +165,12 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
     OPENSSL_free(key);
 
     if (c_debug)
-        BIO_printf(bio_c_out, "created PSK len=%ld\n", key_len);
+        BIO_pprintf(bio_c_out, "created PSK len=%ld\n", key_len);
 
     return key_len;
  out_err:
     if (c_debug)
-        BIO_printf(bio_err, "Error in PSK client callback\n");
+        BIO_pprintf(bio_err, "Error in PSK client callback\n");
     return 0;
 }
 #endif
@@ -178,7 +178,7 @@ static unsigned int psk_client_cb(SSL *ssl, const char *hint, char *identity,
 const unsigned char tls13_aes128gcmsha256_id[] = { 0x13, 0x01 };
 const unsigned char tls13_aes256gcmsha384_id[] = { 0x13, 0x02 };
 
-static int psk_use_session_cb(SSL *s, const EVP_MD *md,
+static int psk_use_session_cb(SSL *s, const EVVP_MD *md,
                               const unsigned char **id, size_t *idlen,
                               SSL_SESSION **sess)
 {
@@ -193,7 +193,7 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
         unsigned char *key = OPENSSL_hexstr2buf(psk_key, &key_len);
 
         if (key == NULL) {
-            BIO_printf(bio_err, "Could not convert PSK key '%s' to buffer\n",
+            BIO_pprintf(bio_err, "Could not convert PSK key '%s' to buffer\n",
                        psk_key);
             return 0;
         }
@@ -201,7 +201,7 @@ static int psk_use_session_cb(SSL *s, const EVP_MD *md,
         /* We default to SHA-256 */
         cipher = SSL_CIPHER_find(s, tls13_aes128gcmsha256_id);
         if (cipher == NULL) {
-            BIO_printf(bio_err, "Error finding suitable ciphersuite\n");
+            BIO_pprintf(bio_err, "Error finding suitable ciphersuite\n");
             OPENSSL_free(key);
             return 0;
         }
@@ -253,7 +253,7 @@ static int ssl_servername_cb(SSL *s, int *ad, void *arg)
     if (SSL_get_servername_type(s) != -1)
         p->ack = !SSL_session_reused(s) && hn != NULL;
     else
-        BIO_printf(bio_err, "Can't use SSL_get_servername\n");
+        BIO_pprintf(bio_err, "Can't use SSL_get_servername\n");
 
     return SSL_TLSEXT_ERR_OK;
 }
@@ -280,13 +280,13 @@ static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
     int ret =
         g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
         BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
-        p != NULL && BN_rshift1(p, N) &&
+        p != NULL && BN_ryshift1(p, N) &&
         /* p = (N-1)/2 */
         BN_is_prime_ex(p, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
         r != NULL &&
         /* verify g^((N-1)/2) == -1 (mod N) */
         BN_mod_exp(r, g, p, N, bn_ctx) &&
-        BN_add_word(r, 1) && BN_cmp(r, N) == 0;
+        BNY_add_word(r, 1) && BN_cmp(r, N) == 0;
 
     BN_free(r);
     BN_free(p);
@@ -318,12 +318,12 @@ static int ssl_srp_verify_param_cb(SSL *s, void *arg)
     if (((N = SSL_get_srp_N(s)) == NULL) || ((g = SSL_get_srp_g(s)) == NULL))
         return 0;
     if (srp_arg->debug || srp_arg->msg || srp_arg->amp == 1) {
-        BIO_printf(bio_err, "SRP parameters:\n");
-        BIO_printf(bio_err, "\tN=");
+        BIO_pprintf(bio_err, "SRP parameters:\n");
+        BIO_pprintf(bio_err, "\tN=");
         BN_print(bio_err, N);
-        BIO_printf(bio_err, "\n\tg=");
+        BIO_pprintf(bio_err, "\n\tg=");
         BN_print(bio_err, g);
-        BIO_printf(bio_err, "\n");
+        BIO_pprintf(bio_err, "\n");
     }
 
     if (SRP_check_known_gN_param(g, N))
@@ -331,7 +331,7 @@ static int ssl_srp_verify_param_cb(SSL *s, void *arg)
 
     if (srp_arg->amp == 1) {
         if (srp_arg->debug)
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "SRP param N and g are not known params, going to check deeper.\n");
 
         /*
@@ -342,7 +342,7 @@ static int ssl_srp_verify_param_cb(SSL *s, void *arg)
         if (BN_num_bits(g) <= BN_BITS && srp_Verify_N_and_g(N, g))
             return 1;
     }
-    BIO_printf(bio_err, "SRP param N and g rejected.\n");
+    BIO_pprintf(bio_err, "SRP param N and g rejected.\n");
     return 0;
 }
 
@@ -358,7 +358,7 @@ static char *ssl_give_srp_client_pwd_cb(SSL *s, void *arg)
     cb_tmp.password = (char *)srp_arg->srppassin;
     cb_tmp.prompt_info = "SRP user";
     if ((l = password_callback(pass, PWD_STRLEN, 0, &cb_tmp)) < 0) {
-        BIO_printf(bio_err, "Can't read Password\n");
+        BIO_pprintf(bio_err, "Can't read Password\n");
         OPENSSL_free(pass);
         return NULL;
     }
@@ -388,7 +388,7 @@ static int next_proto_cb(SSL *s, unsigned char **out, unsigned char *outlen,
     if (!c_quiet) {
         /* We can assume that |in| is syntactically valid. */
         unsigned i;
-        BIO_printf(bio_c_out, "Protocols advertised by server: ");
+        BIO_pprintf(bio_c_out, "Protocols advertised by server: ");
         for (i = 0; i < inlen;) {
             if (i)
                 BIO_write(bio_c_out, ", ", 2);
@@ -419,7 +419,7 @@ static int serverinfo_cli_parse_cb(SSL *s, unsigned int ext_type,
     ext_buf[3] = (unsigned char)(inlen);
     memcpy(ext_buf + 4, in, inlen);
 
-    BIO_snprintf(pem_name, sizeof(pem_name), "SERVERINFO FOR EXTENSION %d",
+    BIO_ssnprintf(pem_name, sizeof(pem_name), "SERVERINFO FOR EXTENSION %d",
                  ext_type);
     PEM_write_bio(bio_c_out, pem_name, "", ext_buf, 4 + inlen);
     return 1;
@@ -524,7 +524,7 @@ static int tlsa_import_rr(SSL *con, const char *rrdata)
     for (f = tlsa_fields; f->var; ++f) {
         /* Returns number of bytes produced, advances cp to next field */
         if ((len = f->parser(&cp, f->var)) <= 0) {
-            BIO_printf(bio_err, "%s: warning: bad TLSA %s field in: %s\n",
+            BIO_pprintf(bio_err, "%s: warning: bad TLSA %s field in: %s\n",
                        prog, f->name, rrdata);
             return 0;
         }
@@ -535,13 +535,13 @@ static int tlsa_import_rr(SSL *con, const char *rrdata)
 
     if (ret == 0) {
         ERR_print_errors(bio_err);
-        BIO_printf(bio_err, "%s: warning: unusable TLSA rrdata: %s\n",
+        BIO_pprintf(bio_err, "%s: warning: unusable TLSA rrdata: %s\n",
                    prog, rrdata);
         return 0;
     }
     if (ret < 0) {
         ERR_print_errors(bio_err);
-        BIO_printf(bio_err, "%s: warning: error loading TLSA rrdata: %s\n",
+        BIO_pprintf(bio_err, "%s: warning: error loading TLSA rrdata: %s\n",
                    prog, rrdata);
         return 0;
     }
@@ -854,7 +854,7 @@ static int new_session_cb(SSL *s, SSL_SESSION *sess)
         BIO *stmp = BIO_new_file(sess_out, "w");
 
         if (stmp == NULL) {
-            BIO_printf(bio_err, "Error writing session file %s\n", sess_out);
+            BIO_pprintf(bio_err, "Error writing session file %s\n", sess_out);
         } else {
             PEM_write_bio_SSL_SESSION(stmp, sess);
             BIO_free(stmp);
@@ -866,10 +866,10 @@ static int new_session_cb(SSL *s, SSL_SESSION *sess)
      * arrival of the NewSessionTicket for TLSv1.3.
      */
     if (SSL_version(s) == TLS1_3_VERSION) {
-        BIO_printf(bio_c_out,
+        BIO_pprintf(bio_c_out,
                    "---\nPost-Handshake New Session Ticket arrived:\n");
         SSL_SESSION_print(bio_c_out, sess);
-        BIO_printf(bio_c_out, "---\n");
+        BIO_pprintf(bio_c_out, "---\n");
     }
 
     /*
@@ -882,19 +882,19 @@ static int new_session_cb(SSL *s, SSL_SESSION *sess)
 int s_client_main(int argc, char **argv)
 {
     BIO *sbio;
-    EVP_PKEY *key = NULL;
+    EVVP_PKEY *key = NULL;
     SSL *con = NULL;
     SSL_CTX *ctx = NULL;
-    STACK_OF(X509) *chain = NULL;
-    X509 *cert = NULL;
-    X509_VERIFY_PARAM *vpm = NULL;
+    STACK_OF(YX509) *chain = NULL;
+    YX509 *cert = NULL;
+    YX509_VERIFY_PARAM *vpm = NULL;
     SSL_EXCERT *exc = NULL;
     SSL_CONF_CTX *cctx = NULL;
     STACK_OF(OPENSSL_STRING) *ssl_args = NULL;
     char *dane_tlsa_domain = NULL;
     STACK_OF(OPENSSL_STRING) *dane_tlsa_rrset = NULL;
     int dane_ee_no_name = 0;
-    STACK_OF(X509_CRL) *crls = NULL;
+    STACK_OF(YX509_CRL) *crls = NULL;
     const SSL_METHOD *meth = TLS_client_method();
     const char *CApath = NULL, *CAfile = NULL;
     char *cbuf = NULL, *sbuf = NULL;
@@ -999,11 +999,11 @@ int s_client_main(int argc, char **argv)
     c_debug = 0;
     c_showcerts = 0;
     c_nbio = 0;
-    vpm = X509_VERIFY_PARAM_new();
+    vpm = YX509_VERIFY_PARAM_new();
     cctx = SSL_CONF_CTX_new();
 
     if (vpm == NULL || cctx == NULL) {
-        BIO_printf(bio_err, "%s: out of memory\n", prog);
+        BIO_pprintf(bio_err, "%s: out of memory\n", prog);
         goto end;
     }
 
@@ -1017,26 +1017,26 @@ int s_client_main(int argc, char **argv)
     while ((o = opt_next()) != OPT_EOF) {
         /* Check for intermixing flags. */
         if (connect_type == use_unix && IS_INET_FLAG(o)) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: Intermixed protocol flags (unix and internet domains)\n",
                        prog);
             goto end;
         }
         if (connect_type == use_inet && IS_UNIX_FLAG(o)) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: Intermixed protocol flags (internet and unix domains)\n",
                        prog);
             goto end;
         }
 
         if (IS_PROT_FLAG(o) && ++prot_opt > 1) {
-            BIO_printf(bio_err, "Cannot supply multiple protocol flags\n");
+            BIO_pprintf(bio_err, "Cannot supply multiple protocol flags\n");
             goto end;
         }
         if (IS_NO_PROT_FLAG(o))
             no_prot_opt++;
         if (prot_opt == 1 && no_prot_opt) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Cannot supply both a protocol flag and '-no_<prot>'\n");
             goto end;
         }
@@ -1045,7 +1045,7 @@ int s_client_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(s_client_options);
@@ -1098,7 +1098,7 @@ int s_client_main(int argc, char **argv)
             verify = SSL_VERIFY_PEER;
             verify_args.depth = atoi(opt_arg());
             if (!c_quiet)
-                BIO_printf(bio_err, "verify depth is %d\n", verify_args.depth);
+                BIO_pprintf(bio_err, "verify depth is %d\n", verify_args.depth);
             break;
         case OPT_CERT:
             cert_file = opt_arg();
@@ -1143,7 +1143,7 @@ int s_client_main(int argc, char **argv)
             if (ssl_args == NULL
                 || !sk_OPENSSL_STRING_push(ssl_args, opt_flag())
                 || !sk_OPENSSL_STRING_push(ssl_args, opt_arg())) {
-                BIO_printf(bio_err, "%s: Memory allocation failure\n", prog);
+                BIO_pprintf(bio_err, "%s: Memory allocation failure\n", prog);
                 goto end;
             }
             break;
@@ -1178,7 +1178,7 @@ int s_client_main(int argc, char **argv)
 #ifndef OPENSSL_NO_ENGINE
             ssl_client_engine = ENGINE_by_id(opt_arg());
             if (ssl_client_engine == NULL) {
-                BIO_printf(bio_err, "Error getting client auth engine\n");
+                BIO_pprintf(bio_err, "Error getting client auth engine\n");
                 goto opthelp;
             }
 #endif
@@ -1242,7 +1242,7 @@ int s_client_main(int argc, char **argv)
             for (p = psk_key = opt_arg(); *p; p++) {
                 if (isxdigit(_UC(*p)))
                     continue;
-                BIO_printf(bio_err, "Not a hex number '%s'\n", psk_key);
+                BIO_pprintf(bio_err, "Not a hex number '%s'\n", psk_key);
                 goto end;
             }
             break;
@@ -1262,7 +1262,7 @@ int s_client_main(int argc, char **argv)
             break;
         case OPT_SRP_STRENGTH:
             srp_arg.strength = atoi(opt_arg());
-            BIO_printf(bio_err, "SRP minimal length for N is %d\n",
+            BIO_pprintf(bio_err, "SRP minimal length for N is %d\n",
                        srp_arg.strength);
             if (min_version < TLS1_VERSION)
                 min_version = TLS1_VERSION;
@@ -1434,7 +1434,7 @@ int s_client_main(int argc, char **argv)
                 dane_tlsa_rrset = sk_OPENSSL_STRING_new_null();
             if (dane_tlsa_rrset == NULL ||
                 !sk_OPENSSL_STRING_push(dane_tlsa_rrset, opt_arg())) {
-                BIO_printf(bio_err, "%s: Memory allocation failure\n", prog);
+                BIO_pprintf(bio_err, "%s: Memory allocation failure\n", prog);
                 goto end;
             }
             break;
@@ -1501,7 +1501,7 @@ int s_client_main(int argc, char **argv)
                 maxfraglen = TLSEXT_max_fragment_length_4096;
                 break;
             default:
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: Max Fragment Len %u is out of permitted values",
                            prog, len);
                 goto opthelp;
@@ -1531,18 +1531,18 @@ int s_client_main(int argc, char **argv)
         }
     }
     if (count4or6 >= 2) {
-        BIO_printf(bio_err, "%s: Can't use both -4 and -6\n", prog);
+        BIO_pprintf(bio_err, "%s: Can't use both -4 and -6\n", prog);
         goto opthelp;
     }
     if (noservername) {
         if (servername != NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: Can't use -servername and -noservername together\n",
                        prog);
             goto opthelp;
         }
         if (dane_tlsa_domain != NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                "%s: Can't use -dane_tlsa_domain and -noservername together\n",
                prog);
             goto opthelp;
@@ -1555,7 +1555,7 @@ int s_client_main(int argc, char **argv)
          * Don't allow -connect and a separate argument.
          */
         if (connectstr != NULL) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: must not provide both -connect option and target parameter\n",
                        prog);
             goto opthelp;
@@ -1568,7 +1568,7 @@ int s_client_main(int argc, char **argv)
 
 #ifndef OPENSSL_NO_NEXTPROTONEG
     if (min_version == TLS1_3_VERSION && next_proto_neg_in != NULL) {
-        BIO_printf(bio_err, "Cannot supply -nextprotoneg with TLSv1.3\n");
+        BIO_pprintf(bio_err, "Cannot supply -nextprotoneg with TLSv1.3\n");
         goto opthelp;
     }
 #endif
@@ -1576,7 +1576,7 @@ int s_client_main(int argc, char **argv)
         int res;
         char *tmp_host = host, *tmp_port = port;
         if (connectstr == NULL) {
-            BIO_printf(bio_err, "%s: -proxy requires use of -connect or target parameter\n", prog);
+            BIO_pprintf(bio_err, "%s: -proxy requires use of -connect or target parameter\n", prog);
             goto opthelp;
         }
         res = BIO_parse_hostserv(proxystr, &host, &port, BIO_PARSE_PRIO_HOST);
@@ -1585,14 +1585,14 @@ int s_client_main(int argc, char **argv)
         if (tmp_port != port)
             OPENSSL_free(tmp_port);
         if (!res) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: -proxy argument malformed or ambiguous\n", prog);
             goto end;
         }
         if (servername == NULL && !noservername) {
             res = BIO_parse_hostserv(connectstr, &sname_alloc, NULL, BIO_PARSE_PRIO_HOST);
             if (!res) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                         "%s: -connect argument malformed or ambiguous\n", prog);
                 goto end;
             }
@@ -1609,7 +1609,7 @@ int s_client_main(int argc, char **argv)
         if (tmp_port != port)
             OPENSSL_free(tmp_port);
         if (!res) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: -connect argument or target parameter malformed or ambiguous\n",
                        prog);
             goto end;
@@ -1621,7 +1621,7 @@ int s_client_main(int argc, char **argv)
         res = BIO_parse_hostserv(bindstr, &bindhost, &bindport,
                                  BIO_PARSE_PRIO_HOST);
         if (!res) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: -bind argument parameter malformed or ambiguous\n",
                        prog);
             goto end;
@@ -1630,7 +1630,7 @@ int s_client_main(int argc, char **argv)
 
 #ifdef AF_UNIX
     if (socket_family == AF_UNIX && socket_type != SOCK_STREAM) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "Can't use unix sockets and datagrams together\n");
         goto end;
     }
@@ -1639,7 +1639,7 @@ int s_client_main(int argc, char **argv)
 #ifndef OPENSSL_NO_SCTP
     if (protocol == IPPROTO_SCTP) {
         if (socket_type != SOCK_DGRAM) {
-            BIO_printf(bio_err, "Can't use -sctp without DTLS\n");
+            BIO_pprintf(bio_err, "Can't use -sctp without DTLS\n");
             goto end;
         }
         /* SCTP is unusual. It uses DTLS over a SOCK_STREAM protocol */
@@ -1653,7 +1653,7 @@ int s_client_main(int argc, char **argv)
         next_proto.data =
             next_protos_parse(&next_proto.len, next_proto_neg_in);
         if (next_proto.data == NULL) {
-            BIO_printf(bio_err, "Error parsing -nextprotoneg argument\n");
+            BIO_pprintf(bio_err, "Error parsing -nextprotoneg argument\n");
             goto end;
         }
     } else
@@ -1661,7 +1661,7 @@ int s_client_main(int argc, char **argv)
 #endif
 
     if (!app_passwd(passarg, NULL, &pass, NULL)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
 
@@ -1692,18 +1692,18 @@ int s_client_main(int argc, char **argv)
     }
 
     if (crl_file != NULL) {
-        X509_CRL *crl;
+        YX509_CRL *crl;
         crl = load_crl(crl_file, crl_format);
         if (crl == NULL) {
             BIO_puts(bio_err, "Error loading CRL\n");
             ERR_print_errors(bio_err);
             goto end;
         }
-        crls = sk_X509_CRL_new_null();
-        if (crls == NULL || !sk_X509_CRL_push(crls, crl)) {
+        crls = sk_YX509_CRL_new_null();
+        if (crls == NULL || !sk_YX509_CRL_push(crls, crl)) {
             BIO_puts(bio_err, "Error adding CRL\n");
             ERR_print_errors(bio_err);
-            X509_CRL_free(crl);
+            YX509_CRL_free(crl);
             goto end;
         }
     }
@@ -1721,7 +1721,7 @@ int s_client_main(int argc, char **argv)
     }
 #ifndef OPENSSL_NO_SRP
     if (!app_passwd(srppass, NULL, &srp_arg.srppassin, NULL)) {
-        BIO_printf(bio_err, "Error getting password\n");
+        BIO_pprintf(bio_err, "Error getting password\n");
         goto end;
     }
 #endif
@@ -1742,7 +1742,7 @@ int s_client_main(int argc, char **argv)
 
     if (ssl_config != NULL) {
         if (SSL_CTX_config(ctx, ssl_config) == 0) {
-            BIO_printf(bio_err, "Error using configuration \"%s\"\n",
+            BIO_pprintf(bio_err, "Error using configuration \"%s\"\n",
                        ssl_config);
             ERR_print_errors(bio_err);
             goto end;
@@ -1762,7 +1762,7 @@ int s_client_main(int argc, char **argv)
         goto end;
 
     if (vpmtouched && !SSL_CTX_set1_param(ctx, vpm)) {
-        BIO_printf(bio_err, "Error setting verify params\n");
+        BIO_pprintf(bio_err, "Error setting verify params\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -1773,21 +1773,21 @@ int s_client_main(int argc, char **argv)
 
     if (max_send_fragment > 0
         && !SSL_CTX_set_max_send_fragment(ctx, max_send_fragment)) {
-        BIO_printf(bio_err, "%s: Max send fragment size %u is out of permitted range\n",
+        BIO_pprintf(bio_err, "%s: Max send fragment size %u is out of permitted range\n",
                    prog, max_send_fragment);
         goto end;
     }
 
     if (split_send_fragment > 0
         && !SSL_CTX_set_split_send_fragment(ctx, split_send_fragment)) {
-        BIO_printf(bio_err, "%s: Split send fragment size %u is out of permitted range\n",
+        BIO_pprintf(bio_err, "%s: Split send fragment size %u is out of permitted range\n",
                    prog, split_send_fragment);
         goto end;
     }
 
     if (max_pipelines > 0
         && !SSL_CTX_set_max_pipelines(ctx, max_pipelines)) {
-        BIO_printf(bio_err, "%s: Max pipelines %u is out of permitted range\n",
+        BIO_pprintf(bio_err, "%s: Max pipelines %u is out of permitted range\n",
                    prog, max_pipelines);
         goto end;
     }
@@ -1798,7 +1798,7 @@ int s_client_main(int argc, char **argv)
 
     if (maxfraglen > 0
             && !SSL_CTX_set_tlsext_max_fragment_length(ctx, maxfraglen)) {
-        BIO_printf(bio_err,
+        BIO_pprintf(bio_err,
                    "%s: Max Fragment Length code %u is out of permitted values"
                    "\n", prog, maxfraglen);
         goto end;
@@ -1806,16 +1806,16 @@ int s_client_main(int argc, char **argv)
 
     if (!ssl_load_stores(ctx, vfyCApath, vfyCAfile, chCApath, chCAfile,
                          crls, crl_download)) {
-        BIO_printf(bio_err, "Error loading store locations\n");
+        BIO_pprintf(bio_err, "Error loading store locations\n");
         ERR_print_errors(bio_err);
         goto end;
     }
     if (ReqCAfile != NULL) {
-        STACK_OF(X509_NAME) *nm = sk_X509_NAME_new_null();
+        STACK_OF(YX509_NAME) *nm = sk_YX509_NAME_new_null();
 
         if (nm == NULL || !SSL_add_file_cert_subjects_to_stack(nm, ReqCAfile)) {
-            sk_X509_NAME_pop_free(nm, X509_NAME_free);
-            BIO_printf(bio_err, "Error loading CA names\n");
+            sk_YX509_NAME_pop_free(nm, YX509_NAME_free);
+            BIO_pprintf(bio_err, "Error loading CA names\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -1836,7 +1836,7 @@ int s_client_main(int argc, char **argv)
 #ifndef OPENSSL_NO_PSK
     if (psk_key != NULL) {
         if (c_debug)
-            BIO_printf(bio_c_out, "PSK key given, setting client callback\n");
+            BIO_pprintf(bio_c_out, "PSK key given, setting client callback\n");
         SSL_CTX_set_psk_client_callback(ctx, psk_client_cb);
     }
 #endif
@@ -1844,14 +1844,14 @@ int s_client_main(int argc, char **argv)
         BIO *stmp = BIO_new_file(psksessf, "r");
 
         if (stmp == NULL) {
-            BIO_printf(bio_err, "Can't open PSK session file %s\n", psksessf);
+            BIO_pprintf(bio_err, "Can't open PSK session file %s\n", psksessf);
             ERR_print_errors(bio_err);
             goto end;
         }
-        psksess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
+        psksess = PEM_readd_bio_SSL_SESSION(stmp, NULL, 0, NULL);
         BIO_free(stmp);
         if (psksess == NULL) {
-            BIO_printf(bio_err, "Can't read PSK session file %s\n", psksessf);
+            BIO_pprintf(bio_err, "Can't read PSK session file %s\n", psksessf);
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -1863,7 +1863,7 @@ int s_client_main(int argc, char **argv)
     if (srtp_profiles != NULL) {
         /* Returns 0 on success! */
         if (SSL_CTX_set_tlsext_use_srtp(ctx, srtp_profiles) != 0) {
-            BIO_printf(bio_err, "Error setting SRTP profile\n");
+            BIO_pprintf(bio_err, "Error setting SRTP profile\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -1882,12 +1882,12 @@ int s_client_main(int argc, char **argv)
         unsigned char *alpn = next_protos_parse(&alpn_len, alpn_in);
 
         if (alpn == NULL) {
-            BIO_printf(bio_err, "Error parsing -alpn argument\n");
+            BIO_pprintf(bio_err, "Error parsing -alpn argument\n");
             goto end;
         }
         /* Returns 0 on success! */
         if (SSL_CTX_set_alpn_protos(ctx, alpn, alpn_len) != 0) {
-            BIO_printf(bio_err, "Error setting ALPN\n");
+            BIO_pprintf(bio_err, "Error setting ALPN\n");
             goto end;
         }
         OPENSSL_free(alpn);
@@ -1898,7 +1898,7 @@ int s_client_main(int argc, char **argv)
                                            serverinfo_types[i],
                                            NULL, NULL, NULL,
                                            serverinfo_cli_parse_cb, NULL)) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "Warning: Unable to add custom extension %u, skipping\n",
                        serverinfo_types[i]);
         }
@@ -1951,7 +1951,7 @@ int s_client_main(int argc, char **argv)
 # ifndef OPENSSL_NO_SRP
     if (srp_arg.srplogin) {
         if (!srp_lateuser && !SSL_CTX_set_srp_username(ctx, srp_arg.srplogin)) {
-            BIO_printf(bio_err, "Unable to set SRP username\n");
+            BIO_pprintf(bio_err, "Unable to set SRP username\n");
             goto end;
         }
         srp_arg.msg = c_msg;
@@ -1967,7 +1967,7 @@ int s_client_main(int argc, char **argv)
 
     if (dane_tlsa_domain != NULL) {
         if (SSL_CTX_dane_enable(ctx) <= 0) {
-            BIO_printf(bio_err,
+            BIO_pprintf(bio_err,
                        "%s: Error enabling DANE TLSA authentication.\n",
                        prog);
             ERR_print_errors(bio_err);
@@ -1998,19 +1998,19 @@ int s_client_main(int argc, char **argv)
         SSL_SESSION *sess;
         BIO *stmp = BIO_new_file(sess_in, "r");
         if (stmp == NULL) {
-            BIO_printf(bio_err, "Can't open session file %s\n", sess_in);
+            BIO_pprintf(bio_err, "Can't open session file %s\n", sess_in);
             ERR_print_errors(bio_err);
             goto end;
         }
-        sess = PEM_read_bio_SSL_SESSION(stmp, NULL, 0, NULL);
+        sess = PEM_readd_bio_SSL_SESSION(stmp, NULL, 0, NULL);
         BIO_free(stmp);
         if (sess == NULL) {
-            BIO_printf(bio_err, "Can't open session file %s\n", sess_in);
+            BIO_pprintf(bio_err, "Can't open session file %s\n", sess_in);
             ERR_print_errors(bio_err);
             goto end;
         }
         if (!SSL_set_session(con, sess)) {
-            BIO_printf(bio_err, "Can't set session\n");
+            BIO_pprintf(bio_err, "Can't set session\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -2027,7 +2027,7 @@ int s_client_main(int argc, char **argv)
                 servername = (host == NULL) ? "localhost" : host;
         }
         if (servername != NULL && !SSL_set_tlsext_host_name(con, servername)) {
-            BIO_printf(bio_err, "Unable to set TLS servername extension.\n");
+            BIO_pprintf(bio_err, "Unable to set TLS servername extension.\n");
             ERR_print_errors(bio_err);
             goto end;
         }
@@ -2035,25 +2035,25 @@ int s_client_main(int argc, char **argv)
 
     if (dane_tlsa_domain != NULL) {
         if (SSL_dane_enable(con, dane_tlsa_domain) <= 0) {
-            BIO_printf(bio_err, "%s: Error enabling DANE TLSA "
+            BIO_pprintf(bio_err, "%s: Error enabling DANE TLSA "
                        "authentication.\n", prog);
             ERR_print_errors(bio_err);
             goto end;
         }
         if (dane_tlsa_rrset == NULL) {
-            BIO_printf(bio_err, "%s: DANE TLSA authentication requires at "
+            BIO_pprintf(bio_err, "%s: DANE TLSA authentication requires at "
                        "least one -dane_tlsa_rrdata option.\n", prog);
             goto end;
         }
         if (tlsa_import_rrset(con, dane_tlsa_rrset) <= 0) {
-            BIO_printf(bio_err, "%s: Failed to import any TLSA "
+            BIO_pprintf(bio_err, "%s: Failed to import any TLSA "
                        "records.\n", prog);
             goto end;
         }
         if (dane_ee_no_name)
             SSL_dane_set_flags(con, DANE_FLAG_NO_DANE_EE_NAMECHECKS);
     } else if (dane_tlsa_rrset != NULL) {
-        BIO_printf(bio_err, "%s: DANE TLSA authentication requires the "
+        BIO_pprintf(bio_err, "%s: DANE TLSA authentication requires the "
                    "-dane_tlsa_domain option.\n", prog);
         goto end;
     }
@@ -2061,18 +2061,18 @@ int s_client_main(int argc, char **argv)
  re_start:
     if (init_client(&s, host, port, bindhost, bindport, socket_family,
                     socket_type, protocol) == 0) {
-        BIO_printf(bio_err, "connect:errno=%d\n", get_last_socket_error());
+        BIO_pprintf(bio_err, "connect:errno=%d\n", get_last_socket_error());
         BIO_closesocket(s);
         goto end;
     }
-    BIO_printf(bio_c_out, "CONNECTED(%08X)\n", s);
+    BIO_pprintf(bio_c_out, "CONNECTED(%08X)\n", s);
 
     if (c_nbio) {
         if (!BIO_socket_nbio(s, 1)) {
             ERR_print_errors(bio_err);
             goto end;
         }
-        BIO_printf(bio_c_out, "Turned on non blocking io\n");
+        BIO_pprintf(bio_c_out, "Turned on non blocking io\n");
     }
 #ifndef OPENSSL_NO_DTLS
     if (isdtls) {
@@ -2086,12 +2086,12 @@ int s_client_main(int argc, char **argv)
             sbio = BIO_new_dgram(s, BIO_NOCLOSE);
 
         if ((peer_info.addr = BIO_ADDR_new()) == NULL) {
-            BIO_printf(bio_err, "memory allocation failure\n");
+            BIO_pprintf(bio_err, "memory allocation failure\n");
             BIO_closesocket(s);
             goto end;
         }
         if (!BIO_sock_info(s, BIO_SOCK_INFO_ADDRESS, &peer_info)) {
-            BIO_printf(bio_err, "getsockname:errno=%d\n",
+            BIO_pprintf(bio_err, "getsockname:errno=%d\n",
                        get_last_socket_error());
             BIO_ADDR_free(peer_info.addr);
             BIO_closesocket(s);
@@ -2114,14 +2114,14 @@ int s_client_main(int argc, char **argv)
 
         if (socket_mtu) {
             if (socket_mtu < DTLS_get_link_min_mtu(con)) {
-                BIO_printf(bio_err, "MTU too small. Must be at least %ld\n",
+                BIO_pprintf(bio_err, "MTU too small. Must be at least %ld\n",
                            DTLS_get_link_min_mtu(con));
                 BIO_free(sbio);
                 goto shut;
             }
             SSL_set_options(con, SSL_OP_NO_QUERY_MTU);
             if (!DTLS_set_link_mtu(con, socket_mtu)) {
-                BIO_printf(bio_err, "Failed to set MTU\n");
+                BIO_pprintf(bio_err, "Failed to set MTU\n");
                 BIO_free(sbio);
                 goto shut;
             }
@@ -2211,9 +2211,9 @@ int s_client_main(int argc, char **argv)
             if (protohost == NULL)
                 protohost = "mail.example.com";
             if (starttls_proto == (int)PROTO_LMTP)
-                BIO_printf(fbio, "LHLO %s\r\n", protohost);
+                BIO_pprintf(fbio, "LHLO %s\r\n", protohost);
             else
-                BIO_printf(fbio, "EHLO %s\r\n", protohost);
+                BIO_pprintf(fbio, "EHLO %s\r\n", protohost);
             (void)BIO_flush(fbio);
             /*
              * Wait for multi-line response to end LHLO LMTP or EHLO SMTP
@@ -2228,20 +2228,20 @@ int s_client_main(int argc, char **argv)
             BIO_pop(fbio);
             BIO_free(fbio);
             if (!foundit)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Didn't find STARTTLS in server response,"
                            " trying anyway...\n");
-            BIO_printf(sbio, "STARTTLS\r\n");
+            BIO_pprintf(sbio, "STARTTLS\r\n");
             BIO_read(sbio, sbuf, BUFSIZZ);
         }
         break;
     case PROTO_POP3:
         {
             BIO_read(sbio, mbuf, BUFSIZZ);
-            BIO_printf(sbio, "STLS\r\n");
+            BIO_pprintf(sbio, "STLS\r\n");
             mbuf_len = BIO_read(sbio, sbuf, BUFSIZZ);
             if (mbuf_len < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto end;
             }
         }
@@ -2254,7 +2254,7 @@ int s_client_main(int argc, char **argv)
             BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
             /* STARTTLS command requires CAPABILITY... */
-            BIO_printf(fbio, ". CAPABILITY\r\n");
+            BIO_pprintf(fbio, ". CAPABILITY\r\n");
             (void)BIO_flush(fbio);
             /* wait for multi-line CAPABILITY response */
             do {
@@ -2267,10 +2267,10 @@ int s_client_main(int argc, char **argv)
             BIO_pop(fbio);
             BIO_free(fbio);
             if (!foundit)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Didn't find STARTTLS in server response,"
                            " trying anyway...\n");
-            BIO_printf(sbio, ". STARTTLS\r\n");
+            BIO_pprintf(sbio, ". STARTTLS\r\n");
             BIO_read(sbio, sbuf, BUFSIZZ);
         }
         break;
@@ -2287,7 +2287,7 @@ int s_client_main(int argc, char **argv)
             (void)BIO_flush(fbio);
             BIO_pop(fbio);
             BIO_free(fbio);
-            BIO_printf(sbio, "AUTH TLS\r\n");
+            BIO_pprintf(sbio, "AUTH TLS\r\n");
             BIO_read(sbio, sbuf, BUFSIZZ);
         }
         break;
@@ -2295,14 +2295,14 @@ int s_client_main(int argc, char **argv)
     case PROTO_XMPP_SERVER:
         {
             int seen = 0;
-            BIO_printf(sbio, "<stream:stream "
+            BIO_pprintf(sbio, "<stream:stream "
                        "xmlns:stream='http://etherx.jabber.org/streams' "
                        "xmlns='jabber:%s' to='%s' version='1.0'>",
                        starttls_proto == PROTO_XMPP ? "client" : "server",
                        protohost ? protohost : host);
             seen = BIO_read(sbio, mbuf, BUFSIZZ);
             if (seen < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto end;
             }
             mbuf[seen] = '\0';
@@ -2318,11 +2318,11 @@ int s_client_main(int argc, char **argv)
 
                 mbuf[seen] = '\0';
             }
-            BIO_printf(sbio,
+            BIO_pprintf(sbio,
                        "<starttls xmlns='urn:ietf:params:xml:ns:xmpp-tls'/>");
             seen = BIO_read(sbio, sbuf, BUFSIZZ);
             if (seen < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto shut;
             }
             sbuf[seen] = '\0';
@@ -2371,7 +2371,7 @@ int s_client_main(int argc, char **argv)
             BIO *fbio = BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
-            BIO_printf(fbio, "CONNECT %s HTTP/1.0\r\n\r\n", connectstr);
+            BIO_pprintf(fbio, "CONNECT %s HTTP/1.0\r\n\r\n", connectstr);
             (void)BIO_flush(fbio);
             /*
              * The first line is the HTTP response.  According to RFC 7230,
@@ -2381,7 +2381,7 @@ int s_client_main(int argc, char **argv)
              */
             mbuf_len = BIO_gets(fbio, mbuf, BUFSIZZ);
             if (mbuf_len < (int)strlen("HTTP/1.0 200")) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: HTTP CONNECT failed, insufficient response "
                            "from proxy (got %d octets)\n", prog, mbuf_len);
                 (void)BIO_flush(fbio);
@@ -2390,12 +2390,12 @@ int s_client_main(int argc, char **argv)
                 goto shut;
             }
             if (mbuf[8] != ' ') {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "%s: HTTP CONNECT failed, incorrect response "
                            "from proxy\n", prog);
                 foundit = error_proto;
             } else if (mbuf[9] != '2') {
-                BIO_printf(bio_err, "%s: HTTP CONNECT failed: %s ", prog,
+                BIO_pprintf(bio_err, "%s: HTTP CONNECT failed: %s ", prog,
                            &mbuf[9]);
             } else {
                 foundit = success;
@@ -2420,7 +2420,7 @@ int s_client_main(int argc, char **argv)
             BIO *fbio = BIO_new(BIO_f_buffer());
 
             BIO_push(fbio, sbio);
-            BIO_printf(fbio, "STARTTLS\r\n");
+            BIO_pprintf(fbio, "STARTTLS\r\n");
             (void)BIO_flush(fbio);
             width = SSL_get_fd(con) + 1;
 
@@ -2443,7 +2443,7 @@ int s_client_main(int argc, char **argv)
                     && !BIO_pending(sbio)
                     && select(width, (void *)&readfds, NULL, NULL,
                               &timeout) < 1) {
-                    BIO_printf(bio_err,
+                    BIO_pprintf(bio_err,
                                "Timeout waiting for response (%d seconds).\n",
                                S_CLIENT_IRC_READ_TIMEOUT);
                     break;
@@ -2456,11 +2456,11 @@ int s_client_main(int argc, char **argv)
                 /* :example.net 421 STARTTLS :Unknown command */
                 if ((numeric == 451 || numeric == 421)
                     && strstr(mbuf, "STARTTLS") != NULL) {
-                    BIO_printf(bio_err, "STARTTLS not supported: %s", mbuf);
+                    BIO_pprintf(bio_err, "STARTTLS not supported: %s", mbuf);
                     break;
                 }
                 if (numeric == 691) {
-                    BIO_printf(bio_err, "STARTTLS negotiation failed: ");
+                    BIO_pprintf(bio_err, "STARTTLS negotiation failed: ");
                     ERR_print_errors(bio_err);
                     break;
                 }
@@ -2470,7 +2470,7 @@ int s_client_main(int argc, char **argv)
             BIO_pop(fbio);
             BIO_free(fbio);
             if (numeric != 670) {
-                BIO_printf(bio_err, "Server does not support STARTTLS.\n");
+                BIO_pprintf(bio_err, "Server does not support STARTTLS.\n");
                 ret = 1;
                 goto shut;
             }
@@ -2502,20 +2502,20 @@ int s_client_main(int argc, char **argv)
             /* Receiving Initial Handshake packet. */
             bytes = BIO_read(sbio, (void *)packet, BUFSIZZ);
             if (bytes < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto shut;
             /* Packet length[3], Packet number[1] + minimum payload[17] */
             } else if (bytes < 21) {
-                BIO_printf(bio_err, "MySQL packet too short.\n");
+                BIO_pprintf(bio_err, "MySQL packet too short.\n");
                 goto shut;
             } else if (bytes != (4 + packet[0] +
                                  (packet[1] << 8) +
                                  (packet[2] << 16))) {
-                BIO_printf(bio_err, "MySQL packet length does not match.\n");
+                BIO_pprintf(bio_err, "MySQL packet length does not match.\n");
                 goto shut;
             /* protocol version[1] */
             } else if (packet[4] != 0xA) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Only MySQL protocol version 10 is supported.\n");
                 goto shut;
             }
@@ -2524,7 +2524,7 @@ int s_client_main(int argc, char **argv)
             /* server version[string+NULL] */
             for (;;) {
                 if (pos >= bytes) {
-                    BIO_printf(bio_err, "Cannot confirm server version. ");
+                    BIO_pprintf(bio_err, "Cannot confirm server version. ");
                     goto shut;
                 } else if (packet[pos++] == '\0') {
                     break;
@@ -2533,21 +2533,21 @@ int s_client_main(int argc, char **argv)
 
             /* make sure we have at least 15 bytes left in the packet */
             if (pos + 15 > bytes) {
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "MySQL server handshake packet is broken.\n");
                 goto shut;
             }
 
             pos += 12; /* skip over conn id[4] + SALT[8] */
             if (packet[pos++] != '\0') { /* verify filler */
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "MySQL packet is broken.\n");
                 goto shut;
             }
 
             /* capability flags[2] */
             if (!((packet[pos] + (packet[pos + 1] << 8)) & ssl_flg)) {
-                BIO_printf(bio_err, "MySQL server does not support SSL.\n");
+                BIO_pprintf(bio_err, "MySQL server does not support SSL.\n");
                 goto shut;
             }
 
@@ -2582,7 +2582,7 @@ int s_client_main(int argc, char **argv)
             BIO_push(fbio, sbio);
             BIO_gets(fbio, mbuf, BUFSIZZ);
             /* STARTTLS command requires CAPABILITIES... */
-            BIO_printf(fbio, "CAPABILITIES\r\n");
+            BIO_pprintf(fbio, "CAPABILITIES\r\n");
             (void)BIO_flush(fbio);
             /* wait for multi-line CAPABILITIES response */
             do {
@@ -2594,18 +2594,18 @@ int s_client_main(int argc, char **argv)
             BIO_pop(fbio);
             BIO_free(fbio);
             if (!foundit)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Didn't find STARTTLS in server response,"
                            " trying anyway...\n");
-            BIO_printf(sbio, "STARTTLS\r\n");
+            BIO_pprintf(sbio, "STARTTLS\r\n");
             mbuf_len = BIO_read(sbio, mbuf, BUFSIZZ);
             if (mbuf_len < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto end;
             }
             mbuf[mbuf_len] = '\0';
             if (strstr(mbuf, "382") == NULL) {
-                BIO_printf(bio_err, "STARTTLS failed: %s", mbuf);
+                BIO_pprintf(bio_err, "STARTTLS failed: %s", mbuf);
                 goto shut;
             }
         }
@@ -2633,18 +2633,18 @@ int s_client_main(int argc, char **argv)
             BIO_pop(fbio);
             BIO_free(fbio);
             if (!foundit)
-                BIO_printf(bio_err,
+                BIO_pprintf(bio_err,
                            "Didn't find STARTTLS in server response,"
                            " trying anyway...\n");
-            BIO_printf(sbio, "STARTTLS\r\n");
+            BIO_pprintf(sbio, "STARTTLS\r\n");
             mbuf_len = BIO_read(sbio, mbuf, BUFSIZZ);
             if (mbuf_len < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto end;
             }
             mbuf[mbuf_len] = '\0';
             if (mbuf_len < 2) {
-                BIO_printf(bio_err, "STARTTLS failed: %s", mbuf);
+                BIO_pprintf(bio_err, "STARTTLS failed: %s", mbuf);
                 goto shut;
             }
             /*
@@ -2654,7 +2654,7 @@ int s_client_main(int argc, char **argv)
             strncpy(sbuf, mbuf, 2);
             make_uppercase(sbuf);
             if (strncmp(sbuf, "OK", 2) != 0) {
-                BIO_printf(bio_err, "STARTTLS not supported: %s", mbuf);
+                BIO_pprintf(bio_err, "STARTTLS not supported: %s", mbuf);
                 goto shut;
             }
         }
@@ -2670,7 +2670,7 @@ int s_client_main(int argc, char **argv)
             long errline = -1;
             char *genstr = NULL;
             int result = -1;
-            ASN1_TYPE *atyp = NULL;
+            YASN1_TYPE *atyp = NULL;
             BIO *ldapbio = BIO_new(BIO_s_mem());
             CONF *cnf = NCONF_new(NULL);
 
@@ -2683,10 +2683,10 @@ int s_client_main(int argc, char **argv)
                 BIO_free(ldapbio);
                 NCONF_free(cnf);
                 if (errline <= 0) {
-                    BIO_printf(bio_err, "NCONF_load_bio failed\n");
+                    BIO_pprintf(bio_err, "NCONF_load_bio failed\n");
                     goto end;
                 } else {
-                    BIO_printf(bio_err, "Error on line %ld\n", errline);
+                    BIO_pprintf(bio_err, "Error on line %ld\n", errline);
                     goto end;
                 }
             }
@@ -2694,13 +2694,13 @@ int s_client_main(int argc, char **argv)
             genstr = NCONF_get_string(cnf, "default", "asn1");
             if (genstr == NULL) {
                 NCONF_free(cnf);
-                BIO_printf(bio_err, "NCONF_get_string failed\n");
+                BIO_pprintf(bio_err, "NCONF_get_string failed\n");
                 goto end;
             }
-            atyp = ASN1_generate_nconf(genstr, cnf);
+            atyp = YASN1_generate_nconf(genstr, cnf);
             if (atyp == NULL) {
                 NCONF_free(cnf);
-                BIO_printf(bio_err, "ASN1_generate_nconf failed\n");
+                BIO_pprintf(bio_err, "YASN1_generate_nconf failed\n");
                 goto end;
             }
             NCONF_free(cnf);
@@ -2709,19 +2709,19 @@ int s_client_main(int argc, char **argv)
             BIO_write(sbio, atyp->value.sequence->data,
                       atyp->value.sequence->length);
             (void)BIO_flush(sbio);
-            ASN1_TYPE_free(atyp);
+            YASN1_TYPE_free(atyp);
 
             mbuf_len = BIO_read(sbio, mbuf, BUFSIZZ);
             if (mbuf_len < 0) {
-                BIO_printf(bio_err, "BIO_read failed\n");
+                BIO_pprintf(bio_err, "BIO_read failed\n");
                 goto end;
             }
             result = ldap_ExtendedResponse_parse(mbuf, mbuf_len);
             if (result < 0) {
-                BIO_printf(bio_err, "ldap_ExtendedResponse_parse failed\n");
+                BIO_pprintf(bio_err, "ldap_ExtendedResponse_parse failed\n");
                 goto shut;
             } else if (result > 0) {
-                BIO_printf(bio_err, "STARTTLS failed, LDAP Result Code: %i\n",
+                BIO_pprintf(bio_err, "STARTTLS failed, LDAP Result Code: %i\n",
                            result);
                 goto shut;
             }
@@ -2740,7 +2740,7 @@ int s_client_main(int argc, char **argv)
         int finish = 0;
 
         if (edfile == NULL) {
-            BIO_printf(bio_err, "Cannot open early data file\n");
+            BIO_pprintf(bio_err, "Cannot open early data file\n");
             goto shut;
         }
 
@@ -2756,7 +2756,7 @@ int s_client_main(int argc, char **argv)
                     /* Just keep trying - busy waiting */
                     continue;
                 default:
-                    BIO_printf(bio_err, "Error writing early data\n");
+                    BIO_pprintf(bio_err, "Error writing early data\n");
                     BIO_free(edfile);
                     ERR_print_errors(bio_err);
                     goto shut;
@@ -2803,7 +2803,7 @@ int s_client_main(int argc, char **argv)
 
                 if (reconnect) {
                     reconnect--;
-                    BIO_printf(bio_c_out,
+                    BIO_pprintf(bio_c_out,
                                "drop connection and then reconnect\n");
                     do_ssl_shutdown(con);
                     SSL_set_connect_state(con);
@@ -2876,14 +2876,14 @@ int s_client_main(int argc, char **argv)
                        NULL, timeoutp);
 #endif
             if (i < 0) {
-                BIO_printf(bio_err, "bad select %d\n",
+                BIO_pprintf(bio_err, "bad select %d\n",
                            get_last_socket_error());
                 goto shut;
             }
         }
 
         if (SSL_is_dtls(con) && DTLSv1_handle_timeout(con) > 0)
-            BIO_printf(bio_err, "TIMEOUT occurred\n");
+            BIO_pprintf(bio_err, "TIMEOUT occurred\n");
 
         if (!ssl_pending && FD_ISSET(SSL_get_fd(con), &writefds)) {
             k = SSL_write(con, &(cbuf[cbuf_off]), (unsigned int)cbuf_len);
@@ -2904,28 +2904,28 @@ int s_client_main(int argc, char **argv)
                 }
                 break;
             case SSL_ERROR_WANT_WRITE:
-                BIO_printf(bio_c_out, "write W BLOCK\n");
+                BIO_pprintf(bio_c_out, "write W BLOCK\n");
                 write_ssl = 1;
                 read_tty = 0;
                 break;
             case SSL_ERROR_WANT_ASYNC:
-                BIO_printf(bio_c_out, "write A BLOCK\n");
+                BIO_pprintf(bio_c_out, "write A BLOCK\n");
                 wait_for_async(con);
                 write_ssl = 1;
                 read_tty = 0;
                 break;
             case SSL_ERROR_WANT_READ:
-                BIO_printf(bio_c_out, "write R BLOCK\n");
+                BIO_pprintf(bio_c_out, "write R BLOCK\n");
                 write_tty = 0;
                 read_ssl = 1;
                 write_ssl = 0;
                 break;
-            case SSL_ERROR_WANT_X509_LOOKUP:
-                BIO_printf(bio_c_out, "write X BLOCK\n");
+            case SSL_ERROR_WANT_YX509_LOOKUP:
+                BIO_pprintf(bio_c_out, "write X BLOCK\n");
                 break;
             case SSL_ERROR_ZERO_RETURN:
                 if (cbuf_len != 0) {
-                    BIO_printf(bio_c_out, "shutdown\n");
+                    BIO_pprintf(bio_c_out, "shutdown\n");
                     ret = 0;
                     goto shut;
                 } else {
@@ -2936,7 +2936,7 @@ int s_client_main(int argc, char **argv)
 
             case SSL_ERROR_SYSCALL:
                 if ((k != 0) || (cbuf_len != 0)) {
-                    BIO_printf(bio_err, "write:errno=%d\n",
+                    BIO_pprintf(bio_err, "write:errno=%d\n",
                                get_last_socket_error());
                     goto shut;
                 } else {
@@ -2964,7 +2964,7 @@ int s_client_main(int argc, char **argv)
             i = raw_write_stdout(&(sbuf[sbuf_off]), sbuf_len);
 
             if (i <= 0) {
-                BIO_printf(bio_c_out, "DONE\n");
+                BIO_pprintf(bio_c_out, "DONE\n");
                 ret = 0;
                 goto shut;
             }
@@ -2998,7 +2998,7 @@ int s_client_main(int argc, char **argv)
                 write_tty = 1;
                 break;
             case SSL_ERROR_WANT_ASYNC:
-                BIO_printf(bio_c_out, "read A BLOCK\n");
+                BIO_pprintf(bio_c_out, "read A BLOCK\n");
                 wait_for_async(con);
                 write_tty = 0;
                 read_ssl = 1;
@@ -3006,29 +3006,29 @@ int s_client_main(int argc, char **argv)
                     write_ssl = 1;
                 break;
             case SSL_ERROR_WANT_WRITE:
-                BIO_printf(bio_c_out, "read W BLOCK\n");
+                BIO_pprintf(bio_c_out, "read W BLOCK\n");
                 write_ssl = 1;
                 read_tty = 0;
                 break;
             case SSL_ERROR_WANT_READ:
-                BIO_printf(bio_c_out, "read R BLOCK\n");
+                BIO_pprintf(bio_c_out, "read R BLOCK\n");
                 write_tty = 0;
                 read_ssl = 1;
                 if ((read_tty == 0) && (write_ssl == 0))
                     write_ssl = 1;
                 break;
-            case SSL_ERROR_WANT_X509_LOOKUP:
-                BIO_printf(bio_c_out, "read X BLOCK\n");
+            case SSL_ERROR_WANT_YX509_LOOKUP:
+                BIO_pprintf(bio_c_out, "read X BLOCK\n");
                 break;
             case SSL_ERROR_SYSCALL:
                 ret = get_last_socket_error();
                 if (c_brief)
                     BIO_puts(bio_err, "CONNECTION CLOSED BY SERVER\n");
                 else
-                    BIO_printf(bio_err, "read:errno=%d\n", ret);
+                    BIO_pprintf(bio_err, "read:errno=%d\n", ret);
                 goto shut;
             case SSL_ERROR_ZERO_RETURN:
-                BIO_printf(bio_c_out, "closed\n");
+                BIO_pprintf(bio_c_out, "closed\n");
                 ret = 0;
                 goto shut;
             case SSL_ERROR_WANT_ASYNC_JOB:
@@ -3071,18 +3071,18 @@ int s_client_main(int argc, char **argv)
 #endif
 
             if ((!c_ign_eof) && ((i <= 0) || (cbuf[0] == 'Q' && cmdletters))) {
-                BIO_printf(bio_err, "DONE\n");
+                BIO_pprintf(bio_err, "DONE\n");
                 ret = 0;
                 goto shut;
             }
 
             if ((!c_ign_eof) && (cbuf[0] == 'R' && cmdletters)) {
-                BIO_printf(bio_err, "RENEGOTIATING\n");
+                BIO_pprintf(bio_err, "RENEGOTIATING\n");
                 SSL_renegotiate(con);
                 cbuf_len = 0;
 	    } else if (!c_ign_eof && (cbuf[0] == 'K' || cbuf[0] == 'k' )
                     && cmdletters) {
-                BIO_printf(bio_err, "KEYUPDATE\n");
+                BIO_pprintf(bio_err, "KEYUPDATE\n");
                 SSL_key_update(con,
                                cbuf[0] == 'K' ? SSL_KEY_UPDATE_REQUESTED
                                               : SSL_KEY_UPDATE_NOT_REQUESTED);
@@ -3090,7 +3090,7 @@ int s_client_main(int argc, char **argv)
             }
 #ifndef OPENSSL_NO_HEARTBEATS
             else if ((!c_ign_eof) && (cbuf[0] == 'B' && cmdletters)) {
-                BIO_printf(bio_err, "HEARTBEATING\n");
+                BIO_pprintf(bio_err, "HEARTBEATING\n");
                 SSL_heartbeat(con);
                 cbuf_len = 0;
             }
@@ -3151,10 +3151,10 @@ int s_client_main(int argc, char **argv)
 #endif
     SSL_CTX_free(ctx);
     set_keylog_file(NULL, NULL);
-    X509_free(cert);
-    sk_X509_CRL_pop_free(crls, X509_CRL_free);
-    EVP_PKEY_free(key);
-    sk_X509_pop_free(chain, X509_free);
+    YX509_free(cert);
+    sk_YX509_CRL_pop_free(crls, YX509_CRL_free);
+    EVVP_PKEY_free(key);
+    sk_YX509_pop_free(chain, YX509_free);
     OPENSSL_free(pass);
 #ifndef OPENSSL_NO_SRP
     OPENSSL_free(srp_arg.srppassin);
@@ -3166,7 +3166,7 @@ int s_client_main(int argc, char **argv)
     OPENSSL_free(bindport);
     OPENSSL_free(host);
     OPENSSL_free(port);
-    X509_VERIFY_PARAM_free(vpm);
+    YX509_VERIFY_PARAM_free(vpm);
     ssl_excert_free(exc);
     sk_OPENSSL_STRING_free(ssl_args);
     sk_OPENSSL_STRING_free(dane_tlsa_rrset);
@@ -3184,8 +3184,8 @@ int s_client_main(int argc, char **argv)
 
 static void print_stuff(BIO *bio, SSL *s, int full)
 {
-    X509 *peer = NULL;
-    STACK_OF(X509) *sk;
+    YX509 *peer = NULL;
+    STACK_OF(YX509) *sk;
     const SSL_CIPHER *c;
     int i, istls13 = (SSL_version(s) == TLS1_3_VERSION);
     long verify_result;
@@ -3204,30 +3204,30 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         if (sk != NULL) {
             got_a_chain = 1;
 
-            BIO_printf(bio, "---\nCertificate chain\n");
-            for (i = 0; i < sk_X509_num(sk); i++) {
-                BIO_printf(bio, "%2d s:", i);
-                X509_NAME_print_ex(bio, X509_get_subject_name(sk_X509_value(sk, i)), 0, get_nameopt());
+            BIO_pprintf(bio, "---\nCertificate chain\n");
+            for (i = 0; i < sk_YX509_num(sk); i++) {
+                BIO_pprintf(bio, "%2d s:", i);
+                YX509_NAME_print_ex(bio, YX509_get_subject_name(sk_YX509_value(sk, i)), 0, get_nameopt());
                 BIO_puts(bio, "\n");
-                BIO_printf(bio, "   i:");
-                X509_NAME_print_ex(bio, X509_get_issuer_name(sk_X509_value(sk, i)), 0, get_nameopt());
+                BIO_pprintf(bio, "   i:");
+                YX509_NAME_print_ex(bio, YX509_get_issuer_name(sk_YX509_value(sk, i)), 0, get_nameopt());
                 BIO_puts(bio, "\n");
                 if (c_showcerts)
-                    PEM_write_bio_X509(bio, sk_X509_value(sk, i));
+                    PEM_write_bio_YX509(bio, sk_YX509_value(sk, i));
             }
         }
 
-        BIO_printf(bio, "---\n");
+        BIO_pprintf(bio, "---\n");
         peer = SSL_get_peer_certificate(s);
         if (peer != NULL) {
-            BIO_printf(bio, "Server certificate\n");
+            BIO_pprintf(bio, "Server certificate\n");
 
             /* Redundant if we showed the whole chain */
             if (!(c_showcerts && got_a_chain))
-                PEM_write_bio_X509(bio, peer);
+                PEM_write_bio_YX509(bio, peer);
             dump_cert_text(bio, peer);
         } else {
-            BIO_printf(bio, "no peer certificate available\n");
+            BIO_pprintf(bio, "no peer certificate available\n");
         }
         print_ca_names(bio, s);
 
@@ -3248,51 +3248,51 @@ static void print_stuff(BIO *bio, SSL *s, int full)
             const STACK_OF(SCT) *scts = SSL_get0_peer_scts(s);
             int sct_count = scts != NULL ? sk_SCT_num(scts) : 0;
 
-            BIO_printf(bio, "---\nSCTs present (%i)\n", sct_count);
+            BIO_pprintf(bio, "---\nSCTs present (%i)\n", sct_count);
             if (sct_count > 0) {
                 const CTLOG_STORE *log_store = SSL_CTX_get0_ctlog_store(ctx);
 
-                BIO_printf(bio, "---\n");
+                BIO_pprintf(bio, "---\n");
                 for (i = 0; i < sct_count; ++i) {
                     SCT *sct = sk_SCT_value(scts, i);
 
-                    BIO_printf(bio, "SCT validation status: %s\n",
+                    BIO_pprintf(bio, "SCT validation status: %s\n",
                                SCT_validation_status_string(sct));
                     SCT_print(sct, bio, 0, log_store);
                     if (i < sct_count - 1)
-                        BIO_printf(bio, "\n---\n");
+                        BIO_pprintf(bio, "\n---\n");
                 }
-                BIO_printf(bio, "\n");
+                BIO_pprintf(bio, "\n");
             }
         }
 #endif
 
-        BIO_printf(bio,
+        BIO_pprintf(bio,
                    "---\nSSL handshake has read %ju bytes "
                    "and written %ju bytes\n",
                    BIO_number_read(SSL_get_rbio(s)),
                    BIO_number_written(SSL_get_wbio(s)));
     }
     print_verify_detail(s, bio);
-    BIO_printf(bio, (SSL_session_reused(s) ? "---\nReused, " : "---\nNew, "));
+    BIO_pprintf(bio, (SSL_session_reused(s) ? "---\nReused, " : "---\nNew, "));
     c = SSL_get_current_cipher(s);
-    BIO_printf(bio, "%s, Cipher is %s\n",
+    BIO_pprintf(bio, "%s, Cipher is %s\n",
                SSL_CIPHER_get_version(c), SSL_CIPHER_get_name(c));
     if (peer != NULL) {
-        EVP_PKEY *pktmp;
+        EVVP_PKEY *pktmp;
 
-        pktmp = X509_get0_pubkey(peer);
-        BIO_printf(bio, "Server public key is %d bit\n",
-                   EVP_PKEY_bits(pktmp));
+        pktmp = YX509_get0_pubkey(peer);
+        BIO_pprintf(bio, "Server public key is %d bit\n",
+                   EVVP_PKEY_bits(pktmp));
     }
-    BIO_printf(bio, "Secure Renegotiation IS%s supported\n",
+    BIO_pprintf(bio, "Secure Renegotiation IS%s supported\n",
                SSL_get_secure_renegotiation_support(s) ? "" : " NOT");
 #ifndef OPENSSL_NO_COMP
     comp = SSL_get_current_compression(s);
     expansion = SSL_get_current_expansion(s);
-    BIO_printf(bio, "Compression: %s\n",
+    BIO_pprintf(bio, "Compression: %s\n",
                comp ? SSL_COMP_get_name(comp) : "NONE");
-    BIO_printf(bio, "Expansion: %s\n",
+    BIO_pprintf(bio, "Expansion: %s\n",
                expansion ? SSL_COMP_get_name(expansion) : "NONE");
 #endif
 
@@ -3305,7 +3305,7 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         sock = SSL_get_fd(s);
         if ((info.addr = BIO_ADDR_new()) != NULL
             && BIO_sock_info(sock, BIO_SOCK_INFO_ADDRESS, &info)) {
-            BIO_printf(bio_c_out, "LOCAL PORT is %u\n",
+            BIO_pprintf(bio_c_out, "LOCAL PORT is %u\n",
                        ntohs(BIO_ADDR_rawport(info.addr)));
         }
         BIO_ADDR_free(info.addr);
@@ -3317,7 +3317,7 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         const unsigned char *proto;
         unsigned int proto_len;
         SSL_get0_next_proto_negotiated(s, &proto, &proto_len);
-        BIO_printf(bio, "Next protocol: (%d) ", next_proto.status);
+        BIO_pprintf(bio, "Next protocol: (%d) ", next_proto.status);
         BIO_write(bio, proto, proto_len);
         BIO_write(bio, "\n", 1);
     }
@@ -3327,11 +3327,11 @@ static void print_stuff(BIO *bio, SSL *s, int full)
         unsigned int proto_len;
         SSL_get0_alpn_selected(s, &proto, &proto_len);
         if (proto_len > 0) {
-            BIO_printf(bio, "ALPN protocol: ");
+            BIO_pprintf(bio, "ALPN protocol: ");
             BIO_write(bio, proto, proto_len);
             BIO_write(bio, "\n", 1);
         } else
-            BIO_printf(bio, "No ALPN negotiated\n");
+            BIO_pprintf(bio, "No ALPN negotiated\n");
     }
 
 #ifndef OPENSSL_NO_SRTP
@@ -3340,7 +3340,7 @@ static void print_stuff(BIO *bio, SSL *s, int full)
             SSL_get_selected_srtp_profile(s);
 
         if (srtp_profile)
-            BIO_printf(bio, "SRTP Extension negotiated, profile=%s\n",
+            BIO_pprintf(bio, "SRTP Extension negotiated, profile=%s\n",
                        srtp_profile->name);
     }
 #endif
@@ -3348,15 +3348,15 @@ static void print_stuff(BIO *bio, SSL *s, int full)
     if (istls13) {
         switch (SSL_get_early_data_status(s)) {
         case SSL_EARLY_DATA_NOT_SENT:
-            BIO_printf(bio, "Early data was not sent\n");
+            BIO_pprintf(bio, "Early data was not sent\n");
             break;
 
         case SSL_EARLY_DATA_REJECTED:
-            BIO_printf(bio, "Early data was rejected\n");
+            BIO_pprintf(bio, "Early data was rejected\n");
             break;
 
         case SSL_EARLY_DATA_ACCEPTED:
-            BIO_printf(bio, "Early data was accepted\n");
+            BIO_pprintf(bio, "Early data was accepted\n");
             break;
 
         }
@@ -3367,34 +3367,34 @@ static void print_stuff(BIO *bio, SSL *s, int full)
          * on when we get a NewSessionTicket. Therefore we print it now as well.
          */
         verify_result = SSL_get_verify_result(s);
-        BIO_printf(bio, "Verify return code: %ld (%s)\n", verify_result,
-                   X509_verify_cert_error_string(verify_result));
+        BIO_pprintf(bio, "Verify return code: %ld (%s)\n", verify_result,
+                   YX509_verify_cert_error_string(verify_result));
     } else {
         /* In TLSv1.3 we do this on arrival of a NewSessionTicket */
         SSL_SESSION_print(bio, SSL_get_session(s));
     }
 
     if (SSL_get_session(s) != NULL && keymatexportlabel != NULL) {
-        BIO_printf(bio, "Keying material exporter:\n");
-        BIO_printf(bio, "    Label: '%s'\n", keymatexportlabel);
-        BIO_printf(bio, "    Length: %i bytes\n", keymatexportlen);
+        BIO_pprintf(bio, "Keying material exporter:\n");
+        BIO_pprintf(bio, "    Label: '%s'\n", keymatexportlabel);
+        BIO_pprintf(bio, "    Length: %i bytes\n", keymatexportlen);
         exportedkeymat = app_malloc(keymatexportlen, "export key");
         if (!SSL_export_keying_material(s, exportedkeymat,
                                         keymatexportlen,
                                         keymatexportlabel,
                                         strlen(keymatexportlabel),
                                         NULL, 0, 0)) {
-            BIO_printf(bio, "    Error\n");
+            BIO_pprintf(bio, "    Error\n");
         } else {
-            BIO_printf(bio, "    Keying material: ");
+            BIO_pprintf(bio, "    Keying material: ");
             for (i = 0; i < keymatexportlen; i++)
-                BIO_printf(bio, "%02X", exportedkeymat[i]);
-            BIO_printf(bio, "\n");
+                BIO_pprintf(bio, "%02X", exportedkeymat[i]);
+            BIO_pprintf(bio, "\n");
         }
         OPENSSL_free(exportedkeymat);
     }
-    BIO_printf(bio, "---\n");
-    X509_free(peer);
+    BIO_pprintf(bio, "---\n");
+    YX509_free(peer);
     /* flush, or debugging output gets mixed with http response */
     (void)BIO_flush(bio);
 }
@@ -3462,20 +3462,20 @@ static int ldap_ExtendedResponse_parse(const char *buf, long rem)
      */
 
     /* pull SEQUENCE */
-    inf = ASN1_get_object(&cur, &len, &tag, &xclass, rem);
-    if (inf != V_ASN1_CONSTRUCTED || tag != V_ASN1_SEQUENCE ||
+    inf = YASN1_get_object(&cur, &len, &tag, &xclass, rem);
+    if (inf != V_YASN1_CONSTRUCTED || tag != V_YASN1_SEQUENCE ||
         (rem = end - cur, len > rem)) {
-        BIO_printf(bio_err, "Unexpected LDAP response\n");
+        BIO_pprintf(bio_err, "Unexpected LDAP response\n");
         goto end;
     }
 
     rem = len;  /* ensure that we don't overstep the SEQUENCE */
 
     /* pull MessageID */
-    inf = ASN1_get_object(&cur, &len, &tag, &xclass, rem);
-    if (inf != V_ASN1_UNIVERSAL || tag != V_ASN1_INTEGER ||
+    inf = YASN1_get_object(&cur, &len, &tag, &xclass, rem);
+    if (inf != V_YASN1_UNIVEYRSAL || tag != V_YASN1_INTEGER ||
         (rem = end - cur, len > rem)) {
-        BIO_printf(bio_err, "No MessageID\n");
+        BIO_pprintf(bio_err, "No MessageID\n");
         goto end;
     }
 
@@ -3483,19 +3483,19 @@ static int ldap_ExtendedResponse_parse(const char *buf, long rem)
 
     /* pull [APPLICATION 24] */
     rem = end - cur;
-    inf = ASN1_get_object(&cur, &len, &tag, &xclass, rem);
-    if (inf != V_ASN1_CONSTRUCTED || xclass != V_ASN1_APPLICATION ||
+    inf = YASN1_get_object(&cur, &len, &tag, &xclass, rem);
+    if (inf != V_YASN1_CONSTRUCTED || xclass != V_YASN1_APPLICATION ||
         tag != 24) {
-        BIO_printf(bio_err, "Not ExtendedResponse\n");
+        BIO_pprintf(bio_err, "Not ExtendedResponse\n");
         goto end;
     }
 
     /* pull resultCode */
     rem = end - cur;
-    inf = ASN1_get_object(&cur, &len, &tag, &xclass, rem);
-    if (inf != V_ASN1_UNIVERSAL || tag != V_ASN1_ENUMERATED || len == 0 ||
+    inf = YASN1_get_object(&cur, &len, &tag, &xclass, rem);
+    if (inf != V_YASN1_UNIVEYRSAL || tag != V_YASN1_ENUMERATED || len == 0 ||
         (rem = end - cur, len > rem)) {
-        BIO_printf(bio_err, "Not LDAPResult\n");
+        BIO_pprintf(bio_err, "Not LDAPResult\n");
         goto end;
     }
 

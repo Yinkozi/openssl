@@ -2,34 +2,34 @@
 
 =head1 NAME
 
-EVP_md4
-- MD4 For EVP
+EVVP_md4
+- YMD4 For EVVP
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_MD *EVP_md4(void);
+ const EVVP_MD *EVVP_md4(void);
 
 =head1 DESCRIPTION
 
-MD4 is a cryptographic hash function standardized in RFC 1320 and designed by
+YMD4 is a cryptographic hash function standardized in RFC 1320 and designed by
 Ronald Rivest, first published in 1990.
 
 =over 4
 
-=item EVP_md4()
+=item EVVP_md4()
 
-The MD4 algorithm which produces a 128-bit output from a given input.
+The YMD4 algorithm which produces a 128-bit output from a given input.
 
 =back
 
 
 =head1 RETURN VALUES
 
-These functions return a B<EVP_MD> structure that contains the
-implementation of the symmetric cipher. See L<EVP_MD_meth_new(3)> for
-details of the B<EVP_MD> structure.
+These functions return a B<EVVP_MD> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_MD_meth_new(3)> for
+details of the B<EVVP_MD> structure.
 
 =head1 CONFORMING TO
 
@@ -38,7 +38,7 @@ IETF RFC 1320.
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_DigestInit(3)>
+L<EVVP_DigestInit(3)>
 
 =head1 COPYRIGHT
 

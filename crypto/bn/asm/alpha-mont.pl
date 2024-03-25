@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# On 21264 RSA sign performance improves by 70/35/20/15 percent for
+# On 21264 YRSA sign performance improves by 70/35/20/15 percent for
 # 512/1024/2048/4096 bit key lengths. This is against vendor compiler
 # instructed to '-tune host' code with in-line assembler. Other
 # benchmarks improve by 15-20%. To anchor it to something else, the

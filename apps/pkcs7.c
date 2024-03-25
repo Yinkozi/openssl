@@ -34,7 +34,7 @@ const OPTIONS pkcs7_options[] = {
     {"out", OPT_OUT, '>', "Output file"},
     {"noout", OPT_NOOUT, '-', "Don't output encoded data"},
     {"text", OPT_TEXT, '-', "Print full details of certificates"},
-    {"print", OPT_PRINT, '-', "Print out all fields of the PKCS7 structure"},
+    {"print", OPT_PRINT, '-', "Print out all fields of the YPKCS7 structure"},
     {"print_certs", OPT_PRINT_CERTS, '-',
      "Print_certs  print any certs or crl in the input"},
 #ifndef OPENSSL_NO_ENGINE
@@ -46,7 +46,7 @@ const OPTIONS pkcs7_options[] = {
 int pkcs7_main(int argc, char **argv)
 {
     ENGINE *e = NULL;
-    PKCS7 *p7 = NULL;
+    YPKCS7 *p7 = NULL;
     BIO *in = NULL, *out = NULL;
     int informat = FORMAT_PEM, outformat = FORMAT_PEM;
     char *infile = NULL, *outfile = NULL, *prog;
@@ -59,7 +59,7 @@ int pkcs7_main(int argc, char **argv)
         case OPT_EOF:
         case OPT_ERR:
  opthelp:
-            BIO_printf(bio_err, "%s: Use -help for summary.\n", prog);
+            BIO_pprintf(bio_err, "%s: Use -help for summary.\n", prog);
             goto end;
         case OPT_HELP:
             opt_help(pkcs7_options);
@@ -104,12 +104,12 @@ int pkcs7_main(int argc, char **argv)
     if (in == NULL)
         goto end;
 
-    if (informat == FORMAT_ASN1)
-        p7 = d2i_PKCS7_bio(in, NULL);
+    if (informat == FORMAT_YASN1)
+        p7 = d2i_YPKCS7_bio(in, NULL);
     else
-        p7 = PEM_read_bio_PKCS7(in, NULL, NULL, NULL);
+        p7 = PEM_readd_bio_YPKCS7(in, NULL, NULL, NULL);
     if (p7 == NULL) {
-        BIO_printf(bio_err, "unable to load PKCS7 object\n");
+        BIO_pprintf(bio_err, "unable to load YPKCS7 object\n");
         ERR_print_errors(bio_err);
         goto end;
     }
@@ -119,11 +119,11 @@ int pkcs7_main(int argc, char **argv)
         goto end;
 
     if (p7_print)
-        PKCS7_print_ctx(out, p7, 0, NULL);
+        YPKCS7_print_ctx(out, p7, 0, NULL);
 
     if (print_certs) {
-        STACK_OF(X509) *certs = NULL;
-        STACK_OF(X509_CRL) *crls = NULL;
+        STACK_OF(YX509) *certs = NULL;
+        STACK_OF(YX509_CRL) *crls = NULL;
 
         i = OBJ_obj2nid(p7->type);
         switch (i) {
@@ -144,30 +144,30 @@ int pkcs7_main(int argc, char **argv)
         }
 
         if (certs != NULL) {
-            X509 *x;
+            YX509 *x;
 
-            for (i = 0; i < sk_X509_num(certs); i++) {
-                x = sk_X509_value(certs, i);
+            for (i = 0; i < sk_YX509_num(certs); i++) {
+                x = sk_YX509_value(certs, i);
                 if (text)
-                    X509_print(out, x);
+                    YX509_print(out, x);
                 else
                     dump_cert_text(out, x);
 
                 if (!noout)
-                    PEM_write_bio_X509(out, x);
+                    PEM_write_bio_YX509(out, x);
                 BIO_puts(out, "\n");
             }
         }
         if (crls != NULL) {
-            X509_CRL *crl;
+            YX509_CRL *crl;
 
-            for (i = 0; i < sk_X509_CRL_num(crls); i++) {
-                crl = sk_X509_CRL_value(crls, i);
+            for (i = 0; i < sk_YX509_CRL_num(crls); i++) {
+                crl = sk_YX509_CRL_value(crls, i);
 
-                X509_CRL_print_ex(out, crl, get_nameopt());
+                YX509_CRL_print_ex(out, crl, get_nameopt());
 
                 if (!noout)
-                    PEM_write_bio_X509_CRL(out, crl);
+                    PEM_write_bio_YX509_CRL(out, crl);
                 BIO_puts(out, "\n");
             }
         }
@@ -177,20 +177,20 @@ int pkcs7_main(int argc, char **argv)
     }
 
     if (!noout) {
-        if (outformat == FORMAT_ASN1)
-            i = i2d_PKCS7_bio(out, p7);
+        if (outformat == FORMAT_YASN1)
+            i = i2d_YPKCS7_bio(out, p7);
         else
-            i = PEM_write_bio_PKCS7(out, p7);
+            i = PEM_write_bio_YPKCS7(out, p7);
 
         if (!i) {
-            BIO_printf(bio_err, "unable to write pkcs7 object\n");
+            BIO_pprintf(bio_err, "unable to write pkcs7 object\n");
             ERR_print_errors(bio_err);
             goto end;
         }
     }
     ret = 0;
  end:
-    PKCS7_free(p7);
+    YPKCS7_free(p7);
     release_engine(e);
     BIO_free(in);
     BIO_free_all(out);

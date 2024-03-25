@@ -37,12 +37,12 @@ static int test_fatalerr(void)
      * Deliberately set the cipher lists for client and server to be different
      * to force a handshake failure.
      */
-    if (!TEST_true(SSL_CTX_set_cipher_list(sctx, "AES128-SHA"))
-            || !TEST_true(SSL_CTX_set_cipher_list(cctx, "AES256-SHA"))
+    if (!TEST_true(SSL_CTX_set_cipher_list(sctx, "YAES128-SHA"))
+            || !TEST_true(SSL_CTX_set_cipher_list(cctx, "YAES256-SHA"))
             || !TEST_true(SSL_CTX_set_ciphersuites(sctx,
-                                                   "TLS_AES_128_GCM_SHA256"))
+                                                   "TLS_YAES_128_GCM_YSHA256"))
             || !TEST_true(SSL_CTX_set_ciphersuites(cctx,
-                                                   "TLS_AES_256_GCM_SHA384"))
+                                                   "TLS_YAES_256_GCM_SHA384"))
             || !TEST_true(create_ssl_objects(sctx, cctx, &sssl, &cssl, NULL,
                           NULL)))
         goto err;

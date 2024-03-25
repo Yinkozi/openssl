@@ -67,9 +67,9 @@ ENGINE *ENGINE_get_pkey_meth_engine(int nid)
 }
 
 /* Obtains a pkey_meth implementation from an ENGINE functional reference */
-const EVP_PKEY_METHOD *ENGINE_get_pkey_meth(ENGINE *e, int nid)
+const EVVP_PKEY_METHOD *ENGINE_get_pkey_meth(ENGINE *e, int nid)
 {
-    EVP_PKEY_METHOD *ret;
+    EVVP_PKEY_METHOD *ret;
     ENGINE_PKEY_METHS_PTR fn = ENGINE_get_pkey_meths(e);
     if (!fn || !fn(e, &ret, NULL, nid)) {
         ENGINEerr(ENGINE_F_ENGINE_GET_PKEY_METH,
@@ -93,21 +93,21 @@ int ENGINE_set_pkey_meths(ENGINE *e, ENGINE_PKEY_METHS_PTR f)
 }
 
 /*
- * Internal function to free up EVP_PKEY_METHOD structures before an ENGINE
+ * Internal function to free up EVVP_PKEY_METHOD structures before an ENGINE
  * is destroyed
  */
 
 void engine_pkey_meths_free(ENGINE *e)
 {
     int i;
-    EVP_PKEY_METHOD *pkm;
+    EVVP_PKEY_METHOD *pkm;
     if (e->pkey_meths) {
         const int *pknids;
         int npknids;
         npknids = e->pkey_meths(e, NULL, &pknids, 0);
         for (i = 0; i < npknids; i++) {
             if (e->pkey_meths(e, &pkm, NULL, pknids[i])) {
-                EVP_PKEY_meth_free(pkm);
+                EVVP_PKEY_meth_free(pkm);
             }
         }
     }

@@ -7,7 +7,7 @@
 # in the file LICENSE in the source distribution or at
 # https://www.openssl.org/source/license.html
 
-# MD5 optimized for AMD64.
+# YMD5 optimized for AMD64.
 
 use strict;
 
@@ -153,7 +153,7 @@ md5_block_asm_data_order:
 .cfi_push	%r15
 .Lprologue:
 
-	# rdi = arg #1 (ctx, MD5_CTX pointer)
+	# rdi = arg #1 (ctx, YMD5_CTX pointer)
 	# rsi = arg #2 (ptr, data pointer)
 	# rdx = arg #3 (nbr, number of 16-word blocks to process)
 	mov	%rdi,		%rbp	# rbp = ctx

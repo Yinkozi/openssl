@@ -53,7 +53,7 @@ static int atou64(const char *nptr, uint64_t *result)
     return 1;
 }
 
-static int pkey_scrypt_init(EVP_PKEY_CTX *ctx)
+static int pkey_scrypt_init(EVVP_PKEY_CTX *ctx)
 {
     SCRYPT_PKEY_CTX *kctx;
 
@@ -77,7 +77,7 @@ static int pkey_scrypt_init(EVP_PKEY_CTX *ctx)
     return 1;
 }
 
-static void pkey_scrypt_cleanup(EVP_PKEY_CTX *ctx)
+static void pkey_scrypt_cleanup(EVVP_PKEY_CTX *ctx)
 {
     SCRYPT_PKEY_CTX *kctx = ctx->data;
 
@@ -118,40 +118,40 @@ static int is_power_of_two(uint64_t value)
     return (value != 0) && ((value & (value - 1)) == 0);
 }
 
-static int pkey_scrypt_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
+static int pkey_scrypt_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
     SCRYPT_PKEY_CTX *kctx = ctx->data;
     uint64_t u64_value;
 
     switch (type) {
-    case EVP_PKEY_CTRL_PASS:
+    case EVVP_PKEY_CTRL_PASS:
         return pkey_scrypt_set_membuf(&kctx->pass, &kctx->pass_len, p2, p1);
 
-    case EVP_PKEY_CTRL_SCRYPT_SALT:
+    case EVVP_PKEY_CTRL_SCRYPT_SALT:
         return pkey_scrypt_set_membuf(&kctx->salt, &kctx->salt_len, p2, p1);
 
-    case EVP_PKEY_CTRL_SCRYPT_N:
+    case EVVP_PKEY_CTRL_SCRYPT_N:
         u64_value = *((uint64_t *)p2);
         if ((u64_value <= 1) || !is_power_of_two(u64_value))
             return 0;
         kctx->N = u64_value;
         return 1;
 
-    case EVP_PKEY_CTRL_SCRYPT_R:
+    case EVVP_PKEY_CTRL_SCRYPT_R:
         u64_value = *((uint64_t *)p2);
         if (u64_value < 1)
             return 0;
         kctx->r = u64_value;
         return 1;
 
-    case EVP_PKEY_CTRL_SCRYPT_P:
+    case EVVP_PKEY_CTRL_SCRYPT_P:
         u64_value = *((uint64_t *)p2);
         if (u64_value < 1)
             return 0;
         kctx->p = u64_value;
         return 1;
 
-    case EVP_PKEY_CTRL_SCRYPT_MAXMEM_BYTES:
+    case EVVP_PKEY_CTRL_SCRYPT_MAXMEM_BYTES:
         u64_value = *((uint64_t *)p2);
         if (u64_value < 1)
             return 0;
@@ -164,7 +164,7 @@ static int pkey_scrypt_ctrl(EVP_PKEY_CTX *ctx, int type, int p1, void *p2)
     }
 }
 
-static int pkey_scrypt_ctrl_uint64(EVP_PKEY_CTX *ctx, int type,
+static int pkey_scrypt_ctrl_uint64(EVVP_PKEY_CTX *ctx, int type,
                                    const char *value)
 {
     uint64_t int_value;
@@ -176,7 +176,7 @@ static int pkey_scrypt_ctrl_uint64(EVP_PKEY_CTX *ctx, int type,
     return pkey_scrypt_ctrl(ctx, type, 0, &int_value);
 }
 
-static int pkey_scrypt_ctrl_str(EVP_PKEY_CTX *ctx, const char *type,
+static int pkey_scrypt_ctrl_str(EVVP_PKEY_CTX *ctx, const char *type,
                                 const char *value)
 {
     if (value == NULL) {
@@ -185,35 +185,35 @@ static int pkey_scrypt_ctrl_str(EVP_PKEY_CTX *ctx, const char *type,
     }
 
     if (strcmp(type, "pass") == 0)
-        return EVP_PKEY_CTX_str2ctrl(ctx, EVP_PKEY_CTRL_PASS, value);
+        return EVVP_PKEY_CTX_str2ctrl(ctx, EVVP_PKEY_CTRL_PASS, value);
 
     if (strcmp(type, "hexpass") == 0)
-        return EVP_PKEY_CTX_hex2ctrl(ctx, EVP_PKEY_CTRL_PASS, value);
+        return EVVP_PKEY_CTX_hex2ctrl(ctx, EVVP_PKEY_CTRL_PASS, value);
 
     if (strcmp(type, "salt") == 0)
-        return EVP_PKEY_CTX_str2ctrl(ctx, EVP_PKEY_CTRL_SCRYPT_SALT, value);
+        return EVVP_PKEY_CTX_str2ctrl(ctx, EVVP_PKEY_CTRL_SCRYPT_SALT, value);
 
     if (strcmp(type, "hexsalt") == 0)
-        return EVP_PKEY_CTX_hex2ctrl(ctx, EVP_PKEY_CTRL_SCRYPT_SALT, value);
+        return EVVP_PKEY_CTX_hex2ctrl(ctx, EVVP_PKEY_CTRL_SCRYPT_SALT, value);
 
     if (strcmp(type, "N") == 0)
-        return pkey_scrypt_ctrl_uint64(ctx, EVP_PKEY_CTRL_SCRYPT_N, value);
+        return pkey_scrypt_ctrl_uint64(ctx, EVVP_PKEY_CTRL_SCRYPT_N, value);
 
     if (strcmp(type, "r") == 0)
-        return pkey_scrypt_ctrl_uint64(ctx, EVP_PKEY_CTRL_SCRYPT_R, value);
+        return pkey_scrypt_ctrl_uint64(ctx, EVVP_PKEY_CTRL_SCRYPT_R, value);
 
     if (strcmp(type, "p") == 0)
-        return pkey_scrypt_ctrl_uint64(ctx, EVP_PKEY_CTRL_SCRYPT_P, value);
+        return pkey_scrypt_ctrl_uint64(ctx, EVVP_PKEY_CTRL_SCRYPT_P, value);
 
     if (strcmp(type, "maxmem_bytes") == 0)
-        return pkey_scrypt_ctrl_uint64(ctx, EVP_PKEY_CTRL_SCRYPT_MAXMEM_BYTES,
+        return pkey_scrypt_ctrl_uint64(ctx, EVVP_PKEY_CTRL_SCRYPT_MAXMEM_BYTES,
                                        value);
 
     KDFerr(KDF_F_PKEY_SCRYPT_CTRL_STR, KDF_R_UNKNOWN_PARAMETER_TYPE);
     return -2;
 }
 
-static int pkey_scrypt_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
+static int pkey_scrypt_derive(EVVP_PKEY_CTX *ctx, unsigned char *key,
                               size_t *keylen)
 {
     SCRYPT_PKEY_CTX *kctx = ctx->data;
@@ -228,13 +228,13 @@ static int pkey_scrypt_derive(EVP_PKEY_CTX *ctx, unsigned char *key,
         return 0;
     }
 
-    return EVP_PBE_scrypt((char *)kctx->pass, kctx->pass_len, kctx->salt,
+    return EVVP_YPBE_scrypt((char *)kctx->pass, kctx->pass_len, kctx->salt,
                           kctx->salt_len, kctx->N, kctx->r, kctx->p,
                           kctx->maxmem_bytes, key, *keylen);
 }
 
-const EVP_PKEY_METHOD scrypt_pkey_meth = {
-    EVP_PKEY_SCRYPT,
+const EVVP_PKEY_METHOD scrypt_pkey_meth = {
+    EVVP_PKEY_SCRYPT,
     0,
     pkey_scrypt_init,
     0,

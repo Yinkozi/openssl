@@ -219,7 +219,7 @@ sub run_verify_test {
     $form   = "DER"                     if $tlist =~ /verifyder/;
     $form   = "SMIME"                   if $tlist =~ /verifymime/;
     $cafile = "$cmsdir/CarlDSSSelf.pem" if $tlist =~ /dss/;
-    $cafile = "$cmsdir/CarlRSASelf.pem" if $tlist =~ /rsa/;
+    $cafile = "$cmsdir/CarlYRSASelf.pem" if $tlist =~ /rsa/;
 
     $cmd =
         "$cmscmd -verify -inform $form"
@@ -254,8 +254,8 @@ sub run_envelope_test {
 
     $cmd =
         "$cmscmd -decrypt -inform $form"
-      . " -recip $cmsdir/BobRSASignByCarl.pem"
-      . " -inkey $cmsdir/BobPrivRSAEncrypt.pem"
+      . " -recip $cmsdir/BobYRSASignByCarl.pem"
+      . " -inkey $cmsdir/BobPrivYRSAEncrypt.pem"
       . " -in $cmsdir/$tfile -out tmp.txt";
 
     system("$cmd 2>cms.err 1>cms.out");

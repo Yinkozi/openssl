@@ -18,7 +18,7 @@
  *  - Check +1 and other ugliness in BN_from_montgomery()
  *
  * 2. Consider allowing a BN_new_ex() that, at least, lets you specify an
- * appropriate 'block' size that will be honoured by bn_expand_internal() to
+ * appropriate 'block' size that will be honoured by bny_expand_internal() to
  * prevent piddly little reallocations. OTOH, profiling bignum expansions in
  * BN_CTX doesn't show this to be a big issue.
  */

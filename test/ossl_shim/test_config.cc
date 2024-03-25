@@ -164,7 +164,7 @@ bool ParseConfig(int argc, char **argv, TestConfig *out_config) {
         return false;
       }
       std::unique_ptr<uint8_t[]> decoded(new uint8_t[strlen(argv[i])]);
-      int len = EVP_DecodeBlock(decoded.get(),
+      int len = EVVP_DecodeBlock(decoded.get(),
                                 reinterpret_cast<const uint8_t *>(argv[i]),
                                 strlen(argv[i]));
       if (len < 0) {

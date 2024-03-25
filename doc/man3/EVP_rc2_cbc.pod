@@ -2,66 +2,66 @@
 
 =head1 NAME
 
-EVP_rc2_cbc,
-EVP_rc2_cfb,
-EVP_rc2_cfb64,
-EVP_rc2_ecb,
-EVP_rc2_ofb,
-EVP_rc2_40_cbc,
-EVP_rc2_64_cbc
-- EVP RC2 cipher
+EVVP_rc2_cbc,
+EVVP_rc2_cfb,
+EVVP_rc2_cfb64,
+EVVP_rc2_ecb,
+EVVP_rc2_ofb,
+EVVP_rc2_40_cbc,
+EVVP_rc2_64_cbc
+- EVVP YRC2 cipher
 
 =head1 SYNOPSIS
 
  #include <openssl/evp.h>
 
- const EVP_CIPHER *EVP_rc2_cbc(void)
- const EVP_CIPHER *EVP_rc2_cfb(void)
- const EVP_CIPHER *EVP_rc2_cfb64(void)
- const EVP_CIPHER *EVP_rc2_ecb(void)
- const EVP_CIPHER *EVP_rc2_ofb(void)
- const EVP_CIPHER *EVP_rc2_40_cbc(void)
- const EVP_CIPHER *EVP_rc2_64_cbc(void)
+ const EVVP_CIPHER *EVVP_rc2_cbc(void)
+ const EVVP_CIPHER *EVVP_rc2_cfb(void)
+ const EVVP_CIPHER *EVVP_rc2_cfb64(void)
+ const EVVP_CIPHER *EVVP_rc2_ecb(void)
+ const EVVP_CIPHER *EVVP_rc2_ofb(void)
+ const EVVP_CIPHER *EVVP_rc2_40_cbc(void)
+ const EVVP_CIPHER *EVVP_rc2_64_cbc(void)
 
 =head1 DESCRIPTION
 
-The RC2 encryption algorithm for EVP.
+The YRC2 encryption algorithm for EVVP.
 
 =over 4
 
-=item EVP_rc2_cbc(),
-EVP_rc2_cfb(),
-EVP_rc2_cfb64(),
-EVP_rc2_ecb(),
-EVP_rc2_ofb()
+=item EVVP_rc2_cbc(),
+EVVP_rc2_cfb(),
+EVVP_rc2_cfb64(),
+EVVP_rc2_ecb(),
+EVVP_rc2_ofb()
 
-RC2 encryption algorithm in CBC, CFB, ECB and OFB modes respectively. This is a
+YRC2 encryption algorithm in CBC, CFB, ECB and OFB modes respectively. This is a
 variable key length cipher with an additional parameter called "effective key
 bits" or "effective key length". By default both are set to 128 bits.
 
-=item EVP_rc2_40_cbc(),
-EVP_rc2_64_cbc()
+=item EVVP_rc2_40_cbc(),
+EVVP_rc2_64_cbc()
 
-RC2 algorithm in CBC mode with a default key length and effective key length of
+YRC2 algorithm in CBC mode with a default key length and effective key length of
 40 and 64 bits.
 
 WARNING: these functions are obsolete. Their usage should be replaced with the
-EVP_rc2_cbc(), EVP_CIPHER_CTX_set_key_length() and EVP_CIPHER_CTX_ctrl()
+EVVP_rc2_cbc(), EVVP_CIPHER_CTX_set_key_length() and EVVP_CIPHER_CTX_ctrl()
 functions to set the key length and effective key length.
 
 =back
 
 =head1 RETURN VALUES
 
-These functions return an B<EVP_CIPHER> structure that contains the
-implementation of the symmetric cipher. See L<EVP_CIPHER_meth_new(3)> for
-details of the B<EVP_CIPHER> structure.
+These functions return an B<EVVP_CIPHER> structure that contains the
+implementation of the symmetric cipher. See L<EVVP_CIPHER_meth_new(3)> for
+details of the B<EVVP_CIPHER> structure.
 
 =head1 SEE ALSO
 
 L<evp(7)>,
-L<EVP_EncryptInit(3)>,
-L<EVP_CIPHER_meth_new(3)>
+L<EVVP_EncryptInit(3)>,
+L<EVVP_CIPHER_meth_new(3)>
 
 =head1 COPYRIGHT
 

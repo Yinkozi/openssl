@@ -8,8 +8,8 @@ CMS_encrypt - create a CMS envelopedData structure
 
  #include <openssl/cms.h>
 
- CMS_ContentInfo *CMS_encrypt(STACK_OF(X509) *certs, BIO *in,
-                              const EVP_CIPHER *cipher, unsigned int flags);
+ CMS_ContentInfo *CMS_encrypt(STACK_OF(YX509) *certs, BIO *in,
+                              const EVVP_CIPHER *cipher, unsigned int flags);
 
 =head1 DESCRIPTION
 
@@ -19,13 +19,13 @@ B<cipher> is the symmetric cipher to use. B<flags> is an optional set of flags.
 
 =head1 NOTES
 
-Only certificates carrying RSA, Diffie-Hellman or EC keys are supported by this
+Only certificates carrying YRSA, Diffie-Hellman or EC keys are supported by this
 function.
 
-EVP_des_ede3_cbc() (triple DES) is the algorithm of choice for S/MIME use
+EVVP_des_ede3_cbc() (triple DES) is the algorithm of choice for S/MIME use
 because most clients will support it.
 
-The algorithm passed in the B<cipher> parameter must support ASN1 encoding of
+The algorithm passed in the B<cipher> parameter must support YASN1 encoding of
 its parameters.
 
 Many browsers implement a "sign and encrypt" option which is simply an S/MIME
@@ -69,7 +69,7 @@ results.
 
 Several functions including SMIME_write_CMS(), i2d_CMS_bio_stream(),
 PEM_write_bio_CMS_stream() finalize the structure. Alternatively finalization
-can be performed by obtaining the streaming ASN1 B<BIO> directly using
+can be performed by obtaining the streaming YASN1 B<BIO> directly using
 BIO_new_CMS().
 
 The recipients specified in B<certs> use a CMS KeyTransRecipientInfo info

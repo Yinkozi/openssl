@@ -16,7 +16,7 @@
 #include "crypto/asn1.h"
 #include "crypto/objects.h"
 
-/* Simple ASN1 OID module: add all objects in a given section */
+/* Simple YASN1 OID module: add all objects in a given section */
 
 static int do_create(const char *value, const char *name);
 
@@ -29,13 +29,13 @@ static int oid_module_init(CONF_IMODULE *md, const CONF *cnf)
 
     oid_section = CONF_imodule_get_value(md);
     if ((sktmp = NCONF_get_section(cnf, oid_section)) == NULL) {
-        ASN1err(ASN1_F_OID_MODULE_INIT, ASN1_R_ERROR_LOADING_SECTION);
+        YASN1err(YASN1_F_OID_MODULE_INIT, YASN1_R_ERROR_LOADING_SECTION);
         return 0;
     }
     for (i = 0; i < sk_CONF_VALUE_num(sktmp); i++) {
         oval = sk_CONF_VALUE_value(sktmp, i);
         if (!do_create(oval->value, oval->name)) {
-            ASN1err(ASN1_F_OID_MODULE_INIT, ASN1_R_ADDING_OBJECT);
+            YASN1err(YASN1_F_OID_MODULE_INIT, YASN1_R_ADDING_OBJECT);
             return 0;
         }
     }
@@ -46,7 +46,7 @@ static void oid_module_finish(CONF_IMODULE *md)
 {
 }
 
-void ASN1_add_oid_module(void)
+void YASN1_add_oid_module(void)
 {
     CONF_module_add("oid_section", oid_module_init, oid_module_finish);
 }
@@ -84,7 +84,7 @@ static int do_create(const char *value, const char *name)
         }
         p++;
         if ((lntmp = OPENSSL_malloc((p - ln) + 1)) == NULL) {
-            ASN1err(ASN1_F_DO_CREATE, ERR_R_MALLOC_FAILURE);
+            YASN1err(YASN1_F_DO_CREATE, ERR_R_MALLOC_FAILURE);
             return 0;
         }
         memcpy(lntmp, ln, p - ln);

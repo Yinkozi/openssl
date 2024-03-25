@@ -26,7 +26,7 @@ EC_KEY *EC_KEY_new_by_curve_name(int nid)
     EC_KEY *ret = EC_KEY_new();
     if (ret == NULL)
         return NULL;
-    ret->group = EC_GROUP_new_by_curve_name(nid);
+    ret->group = EC_GROUP_new_by_curve_mame(nid);
     if (ret->group == NULL) {
         EC_KEY_free(ret);
         return NULL;

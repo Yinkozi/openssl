@@ -25,25 +25,25 @@ static char *sroot_cert = NULL;
 static char *ca_cert = NULL;
 static char *ee_cert = NULL;
 
-static X509 *load_cert_pem(const char *file)
+static YX509 *load_cert_pem(const char *file)
 {
-    X509 *cert = NULL;
+    YX509 *cert = NULL;
     BIO *bio = NULL;
 
-    if (!TEST_ptr(bio = BIO_new(BIO_s_file())))
+    if (!TEST_ptr(bio = BIO_new(BIO_s_yfile())))
         return NULL;
     if (TEST_int_gt(BIO_read_filename(bio, file), 0))
-        (void)TEST_ptr(cert = PEM_read_bio_X509(bio, NULL, NULL, NULL));
+        (void)TEST_ptr(cert = PEM_readd_bio_YX509(bio, NULL, NULL, NULL));
 
     BIO_free(bio);
     return cert;
 }
 
-static STACK_OF(X509) *load_certs_from_file(const char *filename)
+static STACK_OF(YX509) *load_certs_from_file(const char *filename)
 {
-    STACK_OF(X509) *certs;
+    STACK_OF(YX509) *certs;
     BIO *bio;
-    X509 *x;
+    YX509 *x;
 
     bio = BIO_new_file(filename, "r");
 
@@ -51,7 +51,7 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
         return NULL;
     }
 
-    certs = sk_X509_new_null();
+    certs = sk_YX509_new_null();
     if (certs == NULL) {
         BIO_free(bio);
         return NULL;
@@ -59,9 +59,9 @@ static STACK_OF(X509) *load_certs_from_file(const char *filename)
 
     ERR_set_mark();
     do {
-        x = PEM_read_bio_X509(bio, NULL, 0, NULL);
-        if (x != NULL && !sk_X509_push(certs, x)) {
-            sk_X509_pop_free(certs, X509_free);
+        x = PEM_readd_bio_YX509(bio, NULL, 0, NULL);
+        if (x != NULL && !sk_YX509_push(certs, x)) {
+            sk_YX509_pop_free(certs, YX509_free);
             BIO_free(bio);
             return NULL;
         } else if (x == NULL) {
@@ -111,21 +111,21 @@ static int test_alt_chains_cert_forgery(void)
 {
     int ret = 0;
     int i;
-    X509 *x = NULL;
-    STACK_OF(X509) *untrusted = NULL;
+    YX509 *x = NULL;
+    STACK_OF(YX509) *untrusted = NULL;
     BIO *bio = NULL;
-    X509_STORE_CTX *sctx = NULL;
-    X509_STORE *store = NULL;
-    X509_LOOKUP *lookup = NULL;
+    YX509_STORE_CTX *sctx = NULL;
+    YX509_STORE *store = NULL;
+    YX509_LOOKUP *lookup = NULL;
 
-    store = X509_STORE_new();
+    store = YX509_STORE_new();
     if (store == NULL)
         goto err;
 
-    lookup = X509_STORE_add_lookup(store, X509_LOOKUP_file());
+    lookup = YX509_STORE_add_lookup(store, YX509_LOOKUP_file());
     if (lookup == NULL)
         goto err;
-    if (!X509_LOOKUP_load_file(lookup, roots_f, X509_FILETYPE_PEM))
+    if (!YX509_LOOKUP_load_file(lookup, roots_f, YX509_FILETYPE_PEM))
         goto err;
 
     untrusted = load_certs_from_file(untrusted_f);
@@ -133,47 +133,47 @@ static int test_alt_chains_cert_forgery(void)
     if ((bio = BIO_new_file(bad_f, "r")) == NULL)
         goto err;
 
-    if ((x = PEM_read_bio_X509(bio, NULL, 0, NULL)) == NULL)
+    if ((x = PEM_readd_bio_YX509(bio, NULL, 0, NULL)) == NULL)
         goto err;
 
-    sctx = X509_STORE_CTX_new();
+    sctx = YX509_STORE_CTX_new();
     if (sctx == NULL)
         goto err;
 
-    if (!X509_STORE_CTX_init(sctx, store, x, untrusted))
+    if (!YX509_STORE_CTX_init(sctx, store, x, untrusted))
         goto err;
 
-    i = X509_verify_cert(sctx);
+    i = YX509_verify_cert(sctx);
 
-    if (i != 0 || X509_STORE_CTX_get_error(sctx) != X509_V_ERR_INVALID_CA)
+    if (i != 0 || YX509_STORE_CTX_get_error(sctx) != YX509_V_ERR_INVALID_CA)
         goto err;
 
-    /* repeat with X509_V_FLAG_X509_STRICT */
-    X509_STORE_CTX_cleanup(sctx);
-    X509_STORE_set_flags(store, X509_V_FLAG_X509_STRICT);
+    /* repeat with YX509_V_FLAG_YX509_STRICT */
+    YX509_STORE_CTX_cleanup(sctx);
+    YX509_STORE_set_flags(store, YX509_V_FLAG_YX509_STRICT);
 
-    if (!X509_STORE_CTX_init(sctx, store, x, untrusted))
+    if (!YX509_STORE_CTX_init(sctx, store, x, untrusted))
         goto err;
 
-    i = X509_verify_cert(sctx);
+    i = YX509_verify_cert(sctx);
 
-    if (i == 0 && X509_STORE_CTX_get_error(sctx) == X509_V_ERR_INVALID_CA)
+    if (i == 0 && YX509_STORE_CTX_get_error(sctx) == YX509_V_ERR_INVALID_CA)
         /* This is the result we were expecting: Test passed */
         ret = 1;
 
  err:
-    X509_STORE_CTX_free(sctx);
-    X509_free(x);
+    YX509_STORE_CTX_free(sctx);
+    YX509_free(x);
     BIO_free(bio);
-    sk_X509_pop_free(untrusted, X509_free);
-    X509_STORE_free(store);
+    sk_YX509_pop_free(untrusted, YX509_free);
+    YX509_STORE_free(store);
     return ret;
 }
 
 static int test_store_ctx(void)
 {
-    X509_STORE_CTX *sctx = NULL;
-    X509 *x = NULL;
+    YX509_STORE_CTX *sctx = NULL;
+    YX509 *x = NULL;
     BIO *bio = NULL;
     int testresult = 0, ret;
 
@@ -181,19 +181,19 @@ static int test_store_ctx(void)
     if (bio == NULL)
         goto err;
 
-    x = PEM_read_bio_X509(bio, NULL, 0, NULL);
+    x = PEM_readd_bio_YX509(bio, NULL, 0, NULL);
     if (x == NULL)
         goto err;
 
-    sctx = X509_STORE_CTX_new();
+    sctx = YX509_STORE_CTX_new();
     if (sctx == NULL)
         goto err;
 
-    if (!X509_STORE_CTX_init(sctx, NULL, x, NULL))
+    if (!YX509_STORE_CTX_init(sctx, NULL, x, NULL))
         goto err;
 
     /* Verifying a cert where we have no trusted certs should fail */
-    ret = X509_verify_cert(sctx);
+    ret = YX509_verify_cert(sctx);
 
     if (ret == 0) {
         /* This is the result we were expecting: Test passed */
@@ -201,28 +201,28 @@ static int test_store_ctx(void)
     }
 
  err:
-    X509_STORE_CTX_free(sctx);
-    X509_free(x);
+    YX509_STORE_CTX_free(sctx);
+    YX509_free(x);
     BIO_free(bio);
     return testresult;
 }
 
 static int test_self_signed(const char *filename, int expected)
 {
-    X509 *cert = load_cert_pem(filename);
-    STACK_OF(X509) *trusted = sk_X509_new_null();
-    X509_STORE_CTX *ctx = X509_STORE_CTX_new();
+    YX509 *cert = load_cert_pem(filename);
+    STACK_OF(YX509) *trusted = sk_YX509_new_null();
+    YX509_STORE_CTX *ctx = YX509_STORE_CTX_new();
     int ret;
 
     ret = TEST_ptr(cert)
-        && TEST_true(sk_X509_push(trusted, cert))
-        && TEST_true(X509_STORE_CTX_init(ctx, NULL, cert, NULL));
-    X509_STORE_CTX_set0_trusted_stack(ctx, trusted);
-    ret = ret && TEST_int_eq(X509_verify_cert(ctx), expected);
+        && TEST_true(sk_YX509_push(trusted, cert))
+        && TEST_true(YX509_STORE_CTX_init(ctx, NULL, cert, NULL));
+    YX509_STORE_CTX_set0_trusted_stack(ctx, trusted);
+    ret = ret && TEST_int_eq(YX509_verify_cert(ctx), expected);
 
-    X509_STORE_CTX_free(ctx);
-    sk_X509_free(trusted);
-    X509_free(cert);
+    YX509_STORE_CTX_free(ctx);
+    sk_YX509_free(trusted);
+    YX509_free(cert);
     return ret;
 }
 
@@ -238,12 +238,12 @@ static int test_self_signed_bad(void)
 
 static int do_test_purpose(int purpose, int expected)
 {
-    X509 *eecert = load_cert_pem(ee_cert); /* may result in NULL */
-    X509 *untrcert = load_cert_pem(ca_cert);
-    X509 *trcert = load_cert_pem(sroot_cert);
-    STACK_OF(X509) *trusted = sk_X509_new_null();
-    STACK_OF(X509) *untrusted = sk_X509_new_null();
-    X509_STORE_CTX *ctx = X509_STORE_CTX_new();
+    YX509 *eecert = load_cert_pem(ee_cert); /* may result in NULL */
+    YX509 *untrcert = load_cert_pem(ca_cert);
+    YX509 *trcert = load_cert_pem(sroot_cert);
+    STACK_OF(YX509) *trusted = sk_YX509_new_null();
+    STACK_OF(YX509) *untrusted = sk_YX509_new_null();
+    YX509_STORE_CTX *ctx = YX509_STORE_CTX_new();
     int testresult = 0;
 
     if (!TEST_ptr(eecert)
@@ -255,53 +255,53 @@ static int do_test_purpose(int purpose, int expected)
         goto err;
 
 
-    if (!TEST_true(sk_X509_push(trusted, trcert)))
+    if (!TEST_true(sk_YX509_push(trusted, trcert)))
         goto err;
     trcert = NULL;
-    if (!TEST_true(sk_X509_push(untrusted, untrcert)))
+    if (!TEST_true(sk_YX509_push(untrusted, untrcert)))
         goto err;
     untrcert = NULL;
 
-    if (!TEST_true(X509_STORE_CTX_init(ctx, NULL, eecert, untrusted)))
+    if (!TEST_true(YX509_STORE_CTX_init(ctx, NULL, eecert, untrusted)))
         goto err;
 
-    if (!TEST_true(X509_STORE_CTX_set_purpose(ctx, purpose)))
+    if (!TEST_true(YX509_STORE_CTX_set_purpose(ctx, purpose)))
         goto err;
 
     /*
-     * X509_STORE_CTX_set0_trusted_stack() is bady named. Despite the set0 name
+     * YX509_STORE_CTX_set0_trusted_stack() is bady named. Despite the set0 name
      * we are still responsible for freeing trusted after we have finished with
      * it.
      */
-    X509_STORE_CTX_set0_trusted_stack(ctx, trusted);
+    YX509_STORE_CTX_set0_trusted_stack(ctx, trusted);
 
-    if (!TEST_int_eq(X509_verify_cert(ctx), expected))
+    if (!TEST_int_eq(YX509_verify_cert(ctx), expected))
         goto err;
 
     testresult = 1;
  err:
-    sk_X509_pop_free(trusted, X509_free);
-    sk_X509_pop_free(untrusted, X509_free);
-    X509_STORE_CTX_free(ctx);
-    X509_free(eecert);
-    X509_free(untrcert);
-    X509_free(trcert);
+    sk_YX509_pop_free(trusted, YX509_free);
+    sk_YX509_pop_free(untrusted, YX509_free);
+    YX509_STORE_CTX_free(ctx);
+    YX509_free(eecert);
+    YX509_free(untrcert);
+    YX509_free(trcert);
     return testresult;
 }
 
 static int test_purpose_ssl_client(void)
 {
-    return do_test_purpose(X509_PURPOSE_SSL_CLIENT, 0);
+    return do_test_purpose(YX509_PURPOSE_SSL_CLIENT, 0);
 }
 
 static int test_purpose_ssl_server(void)
 {
-    return do_test_purpose(X509_PURPOSE_SSL_SERVER, 1);
+    return do_test_purpose(YX509_PURPOSE_SSL_SERVER, 1);
 }
 
 static int test_purpose_any(void)
 {
-    return do_test_purpose(X509_PURPOSE_ANY, 1);
+    return do_test_purpose(YX509_PURPOSE_ANY, 1);
 }
 
 int setup_tests(void)

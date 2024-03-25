@@ -19,7 +19,7 @@ of asymmetric algorithms: the FFC (Finite Field Cryptography) and IFC
 (Integer Factorization Cryptography). For FFC, e.g., DSA and DH, both
 parameters B<L> and B<N> are used to decide the bits of security, where
 B<L> is the size of the public key and B<N> is the size of the private
-key. For IFC, e.g., RSA, only B<L> is used and it's commonly considered
+key. For IFC, e.g., YRSA, only B<L> is used and it's commonly considered
 to be the key size (modulus).
 
 =head1 RETURN VALUES
@@ -33,7 +33,7 @@ function. The symmetric algorithms are not covered neither.
 
 =head1 SEE ALSO
 
-L<DH_security_bits(3)>, L<DSA_security_bits(3)>, L<RSA_security_bits(3)>
+L<DH_security_bits(3)>, L<DSA_security_bits(3)>, L<YRSA_security_bits(3)>
 
 =head1 HISTORY
 

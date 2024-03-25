@@ -15,17 +15,17 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL;
-    X509 *scert = NULL;
-    EVP_PKEY *skey = NULL;
-    PKCS7 *p7 = NULL;
+    YX509 *scert = NULL;
+    EVVP_PKEY *skey = NULL;
+    YPKCS7 *p7 = NULL;
     int ret = 1;
 
     /*
-     * For simple S/MIME signing use PKCS7_DETACHED. On OpenSSL 0.9.9 only:
-     * for streaming detached set PKCS7_DETACHED|PKCS7_STREAM for streaming
-     * non-detached set PKCS7_STREAM
+     * For simple S/MIME signing use YPKCS7_DETACHED. On OpenSSL 0.9.9 only:
+     * for streaming detached set YPKCS7_DETACHED|YPKCS7_STREAM for streaming
+     * non-detached set YPKCS7_STREAM
      */
-    int flags = PKCS7_DETACHED | PKCS7_STREAM;
+    int flags = YPKCS7_DETACHED | YPKCS7_STREAM;
 
     OpenSSL_add_all_algorithms();
     ERR_load_crypto_strings();
@@ -36,11 +36,11 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    scert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    scert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     BIO_reset(tbio);
 
-    skey = PEM_read_bio_PrivateKey(tbio, NULL, 0, NULL);
+    skey = PEM_readd_bio_PrivateKey(tbio, NULL, 0, NULL);
 
     if (!scert || !skey)
         goto err;
@@ -53,7 +53,7 @@ int main(int argc, char **argv)
         goto err;
 
     /* Sign content */
-    p7 = PKCS7_sign(scert, skey, NULL, in, flags);
+    p7 = YPKCS7_sign(scert, skey, NULL, in, flags);
 
     if (!p7)
         goto err;
@@ -62,11 +62,11 @@ int main(int argc, char **argv)
     if (!out)
         goto err;
 
-    if (!(flags & PKCS7_STREAM))
+    if (!(flags & YPKCS7_STREAM))
         BIO_reset(in);
 
     /* Write out S/MIME message */
-    if (!SMIME_write_PKCS7(out, p7, in, flags))
+    if (!SMIME_write_YPKCS7(out, p7, in, flags))
         goto err;
 
     ret = 0;
@@ -74,11 +74,11 @@ int main(int argc, char **argv)
  err:
     if (ret) {
         fprintf(stderr, "Error Signing Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
-    PKCS7_free(p7);
-    X509_free(scert);
-    EVP_PKEY_free(skey);
+    YPKCS7_free(p7);
+    YX509_free(scert);
+    EVVP_PKEY_free(skey);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

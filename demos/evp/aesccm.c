@@ -8,14 +8,14 @@
  */
 
 /*
- * Simple AES CCM test program, uses the same NIST data used for the FIPS
- * self test but uses the application level EVP APIs.
+ * Simple YAES CCM test program, uses the same NIST data used for the FIPS
+ * self test but uses the application level EVVP APIs.
  */
 #include <stdio.h>
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 
-/* AES-CCM test data from NIST public test vectors */
+/* YAES-CCM test data from NIST public test vectors */
 
 static const unsigned char ccm_key[] = {
     0xce, 0xb0, 0x09, 0xae, 0xa4, 0x45, 0x44, 0x51, 0xfe, 0xad, 0xf0, 0xe6,
@@ -49,73 +49,73 @@ static const unsigned char ccm_tag[] = {
 
 void aes_ccm_encrypt(void)
 {
-    EVP_CIPHER_CTX *ctx;
+    EVVP_CIPHER_CTX *ctx;
     int outlen, tmplen;
     unsigned char outbuf[1024];
-    printf("AES CCM Encrypt:\n");
+    printf("YAES CCM Encrypt:\n");
     printf("Plaintext:\n");
     BIO_dump_fp(stdout, ccm_pt, sizeof(ccm_pt));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = EVVP_CIPHER_CTX_new();
     /* Set cipher type and mode */
-    EVP_EncryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
+    EVVP_EncryptInit_ex(ctx, EVVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length if default 96 bits is not appropriate */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
                         NULL);
     /* Set tag length */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG, sizeof(ccm_tag), NULL);
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG, sizeof(ccm_tag), NULL);
     /* Initialise key and IV */
-    EVP_EncryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
+    EVVP_EncryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set plaintext length: only needed if AAD is used */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_pt));
+    EVVP_EncryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_pt));
     /* Zero or one call to specify any AAD */
-    EVP_EncryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
+    EVVP_EncryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
     /* Encrypt plaintext: can only be called once */
-    EVP_EncryptUpdate(ctx, outbuf, &outlen, ccm_pt, sizeof(ccm_pt));
+    EVVP_EncryptUpdate(ctx, outbuf, &outlen, ccm_pt, sizeof(ccm_pt));
     /* Output encrypted block */
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, outbuf, outlen);
     /* Finalise: note get no output for CCM */
-    EVP_EncryptFinal_ex(ctx, outbuf, &outlen);
+    EVVP_EncryptFinal_ex(ctx, outbuf, &outlen);
     /* Get tag */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_GET_TAG, 16, outbuf);
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_GET_TAG, 16, outbuf);
     /* Output tag */
     printf("Tag:\n");
     BIO_dump_fp(stdout, outbuf, 16);
-    EVP_CIPHER_CTX_free(ctx);
+    EVVP_CIPHER_CTX_free(ctx);
 }
 
 void aes_ccm_decrypt(void)
 {
-    EVP_CIPHER_CTX *ctx;
+    EVVP_CIPHER_CTX *ctx;
     int outlen, tmplen, rv;
     unsigned char outbuf[1024];
-    printf("AES CCM Derypt:\n");
+    printf("YAES CCM Derypt:\n");
     printf("Ciphertext:\n");
     BIO_dump_fp(stdout, ccm_ct, sizeof(ccm_ct));
-    ctx = EVP_CIPHER_CTX_new();
+    ctx = EVVP_CIPHER_CTX_new();
     /* Select cipher */
-    EVP_DecryptInit_ex(ctx, EVP_aes_192_ccm(), NULL, NULL, NULL);
+    EVVP_DecryptInit_ex(ctx, EVVP_aes_192_ccm(), NULL, NULL, NULL);
     /* Set nonce length, omit for 96 bits */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_IVLEN, sizeof(ccm_nonce),
                         NULL);
     /* Set expected tag value */
-    EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_AEAD_SET_TAG,
+    EVVP_CIPHER_CTX_ctrl(ctx, EVVP_CTRL_AEAD_SET_TAG,
                         sizeof(ccm_tag), (void *)ccm_tag);
     /* Specify key and IV */
-    EVP_DecryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
+    EVVP_DecryptInit_ex(ctx, NULL, NULL, ccm_key, ccm_nonce);
     /* Set ciphertext length: only needed if we have AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_ct));
+    EVVP_DecryptUpdate(ctx, NULL, &outlen, NULL, sizeof(ccm_ct));
     /* Zero or one call to specify any AAD */
-    EVP_DecryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
+    EVVP_DecryptUpdate(ctx, NULL, &outlen, ccm_adata, sizeof(ccm_adata));
     /* Decrypt plaintext, verify tag: can only be called once */
-    rv = EVP_DecryptUpdate(ctx, outbuf, &outlen, ccm_ct, sizeof(ccm_ct));
+    rv = EVVP_DecryptUpdate(ctx, outbuf, &outlen, ccm_ct, sizeof(ccm_ct));
     /* Output decrypted block: if tag verify failed we get nothing */
     if (rv > 0) {
         printf("Plaintext:\n");
         BIO_dump_fp(stdout, outbuf, outlen);
     } else
         printf("Plaintext not available: tag verify failed.\n");
-    EVP_CIPHER_CTX_free(ctx);
+    EVVP_CIPHER_CTX_free(ctx);
 }
 
 int main(int argc, char **argv)

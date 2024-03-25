@@ -808,7 +808,7 @@ $code.=<<___;
 .ent	bn_div_3_words
 bn_div_3_words:
 	.set	noreorder
-	move	$a3,$a0		# we know that bn_div_words does not
+	move	$a3,$a0		# we know that bn_div_wordss does not
 				# touch $a3, $ta2, $ta3 and preserves $a2
 				# so that we can save two arguments
 				# and return address in registers
@@ -842,7 +842,7 @@ ___
 $code.=<<___;
 	.set	reorder
 	move	$ta3,$ra
-	bal	bn_div_words_internal
+	bal	bn_div_wordss_internal
 	move	$ra,$ta3
 	$MULTU	($ta2,$v0)
 	$LD	$t2,-2*$BNSZ($a3)
@@ -885,20 +885,20 @@ $code.=<<___;
 #endif
 
 .align	5
-.globl	bn_div_words
-.ent	bn_div_words
-bn_div_words:
+.globl	bn_div_wordss
+.ent	bn_div_wordss
+bn_div_wordss:
 	.set	noreorder
-	bnez	$a2,bn_div_words_internal
+	bnez	$a2,bn_div_wordss_internal
 	li	$v0,-1		# I would rather signal div-by-zero
 				# which can be done with 'break 7'
 	jr	$ra
 	move	$a0,$v0
-.end	bn_div_words
+.end	bn_div_wordss
 
 .align	5
-.ent	bn_div_words_internal
-bn_div_words_internal:
+.ent	bn_div_wordss_internal
+bn_div_wordss_internal:
 ___
 $code.=<<___ if ($flavour =~ /nubi/i);
 	.frame	$sp,6*$SZREG,$ra
@@ -914,7 +914,7 @@ $code.=<<___ if ($flavour =~ /nubi/i);
 ___
 $code.=<<___;
 	move	$v1,$zero
-	bltz	$a2,.L_bn_div_words_body
+	bltz	$a2,.L_bn_div_wordss_body
 	move	$t9,$v1
 	$SLL	$a2,1
 	bgtz	$a2,.-4
@@ -939,7 +939,7 @@ $QT=$ta0;
 $HH=$ta1;
 $DH=$v1;
 $code.=<<___;
-.L_bn_div_words_body:
+.L_bn_div_wordss_body:
 	$SRL	$DH,$a2,4*$BNSZ	# bits
 	sgeu	$at,$a0,$a2
 	.set	noreorder
@@ -951,17 +951,17 @@ $code.=<<___;
 	li	$QT,-1
 	$SRL	$HH,$a0,4*$BNSZ	# bits
 	$SRL	$QT,4*$BNSZ	# q=0xffffffff
-	beq	$DH,$HH,.L_bn_div_words_skip_div1
+	beq	$DH,$HH,.L_bn_div_wordss_skip_div1
 	$DIVU	($a0,$DH)
 	mfqt	($QT,$a0,$DH)
-.L_bn_div_words_skip_div1:
+.L_bn_div_wordss_skip_div1:
 	$MULTU	($a2,$QT)
 	$SLL	$t3,$a0,4*$BNSZ	# bits
 	$SRL	$at,$a1,4*$BNSZ	# bits
 	or	$t3,$at
 	mflo	($t0,$a2,$QT)
 	mfhi	($t1,$a2,$QT)
-.L_bn_div_words_inner_loop1:
+.L_bn_div_wordss_inner_loop1:
 	sltu	$t2,$t3,$t0
 	seq	$t8,$HH,$t1
 	sltu	$at,$HH,$t1
@@ -969,13 +969,13 @@ $code.=<<___;
 	sltu	$v0,$t0,$a2
 	or	$at,$t2
 	.set	noreorder
-	beqz	$at,.L_bn_div_words_inner_loop1_done
+	beqz	$at,.L_bn_div_wordss_inner_loop1_done
 	$SUBU	$t1,$v0
 	$SUBU	$t0,$a2
-	b	.L_bn_div_words_inner_loop1
+	b	.L_bn_div_wordss_inner_loop1
 	$SUBU	$QT,1
 	.set	reorder
-.L_bn_div_words_inner_loop1_done:
+.L_bn_div_wordss_inner_loop1_done:
 
 	$SLL	$a1,4*$BNSZ	# bits
 	$SUBU	$a0,$t3,$t0
@@ -984,17 +984,17 @@ $code.=<<___;
 	li	$QT,-1
 	$SRL	$HH,$a0,4*$BNSZ	# bits
 	$SRL	$QT,4*$BNSZ	# q=0xffffffff
-	beq	$DH,$HH,.L_bn_div_words_skip_div2
+	beq	$DH,$HH,.L_bn_div_wordss_skip_div2
 	$DIVU	($a0,$DH)
 	mfqt	($QT,$a0,$DH)
-.L_bn_div_words_skip_div2:
+.L_bn_div_wordss_skip_div2:
 	$MULTU	($a2,$QT)
 	$SLL	$t3,$a0,4*$BNSZ	# bits
 	$SRL	$at,$a1,4*$BNSZ	# bits
 	or	$t3,$at
 	mflo	($t0,$a2,$QT)
 	mfhi	($t1,$a2,$QT)
-.L_bn_div_words_inner_loop2:
+.L_bn_div_wordss_inner_loop2:
 	sltu	$t2,$t3,$t0
 	seq	$t8,$HH,$t1
 	sltu	$at,$HH,$t1
@@ -1002,13 +1002,13 @@ $code.=<<___;
 	sltu	$v1,$t0,$a2
 	or	$at,$t2
 	.set	noreorder
-	beqz	$at,.L_bn_div_words_inner_loop2_done
+	beqz	$at,.L_bn_div_wordss_inner_loop2_done
 	$SUBU	$t1,$v1
 	$SUBU	$t0,$a2
-	b	.L_bn_div_words_inner_loop2
+	b	.L_bn_div_wordss_inner_loop2
 	$SUBU	$QT,1
 	.set	reorder
-.L_bn_div_words_inner_loop2_done:
+.L_bn_div_wordss_inner_loop2_done:
 
 	$SUBU	$a0,$t3,$t0
 	or	$v0,$QT
@@ -1029,7 +1029,7 @@ ___
 $code.=<<___;
 	jr	$ra
 	move	$a0,$v0
-.end	bn_div_words_internal
+.end	bn_div_wordss_internal
 ___
 undef $HH; undef $QT; undef $DH;
 
@@ -1939,9 +1939,9 @@ ___
 $code.=<<___;
 
 .align	5
-.globl	bn_sqr_comba8
-.ent	bn_sqr_comba8
-bn_sqr_comba8:
+.globl	bny_sqr_comba8
+.ent	bny_sqr_comba8
+bny_sqr_comba8:
 ___
 $code.=<<___ if ($flavour =~ /nubi/i);
 	.frame	$sp,6*$SZREG,$ra
@@ -2153,7 +2153,7 @@ ___
 $code.=<<___;
 	jr	$ra
 	nop
-.end	bn_sqr_comba8
+.end	bny_sqr_comba8
 
 .align	5
 .globl	bn_sqr_comba4

@@ -15,15 +15,15 @@
 #include <openssl/asn1t.h>
 
 /* Override the default free and new methods */
-static int dh_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
+static int dh_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
                  void *exarg)
 {
-    if (operation == ASN1_OP_NEW_PRE) {
-        *pval = (ASN1_VALUE *)DH_new();
+    if (operation == YASN1_OP_NEW_PRE) {
+        *pval = (YASN1_VALUE *)DH_new();
         if (*pval != NULL)
             return 2;
         return 0;
-    } else if (operation == ASN1_OP_FREE_PRE) {
+    } else if (operation == YASN1_OP_FREE_PRE) {
         DH_free((DH *)*pval);
         *pval = NULL;
         return 2;
@@ -31,13 +31,13 @@ static int dh_cb(int operation, ASN1_VALUE **pval, const ASN1_ITEM *it,
     return 1;
 }
 
-ASN1_SEQUENCE_cb(DHparams, dh_cb) = {
-        ASN1_SIMPLE(DH, p, BIGNUM),
-        ASN1_SIMPLE(DH, g, BIGNUM),
-        ASN1_OPT_EMBED(DH, length, ZINT32),
-} ASN1_SEQUENCE_END_cb(DH, DHparams)
+YASN1_SEQUENCE_cb(DHparams, dh_cb) = {
+        YASN1_SIMPLE(DH, p, BIGNUM),
+        YASN1_SIMPLE(DH, g, BIGNUM),
+        YASN1_OPT_EMBED(DH, length, ZINT32),
+} YASN1_SEQUENCE_END_cb(DH, DHparams)
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DH, DHparams, DHparams)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DH, DHparams, DHparams)
 
 /*
  * Internal only structures for handling X9.42 DH: this gets translated to or
@@ -45,7 +45,7 @@ IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(DH, DHparams, DHparams)
  */
 
 typedef struct {
-    ASN1_BIT_STRING *seed;
+    YASN1_BIT_STRING *seed;
     BIGNUM *counter;
 } int_dhvparams;
 
@@ -57,24 +57,24 @@ typedef struct {
     int_dhvparams *vparams;
 } int_dhx942_dh;
 
-ASN1_SEQUENCE(DHvparams) = {
-        ASN1_SIMPLE(int_dhvparams, seed, ASN1_BIT_STRING),
-        ASN1_SIMPLE(int_dhvparams, counter, BIGNUM)
-} static_ASN1_SEQUENCE_END_name(int_dhvparams, DHvparams)
+YASN1_SEQUENCE(DHvparams) = {
+        YASN1_SIMPLE(int_dhvparams, seed, YASN1_BIT_STRING),
+        YASN1_SIMPLE(int_dhvparams, counter, BIGNUM)
+} static_YASN1_SEQUENCE_END_name(int_dhvparams, DHvparams)
 
-ASN1_SEQUENCE(DHxparams) = {
-        ASN1_SIMPLE(int_dhx942_dh, p, BIGNUM),
-        ASN1_SIMPLE(int_dhx942_dh, g, BIGNUM),
-        ASN1_SIMPLE(int_dhx942_dh, q, BIGNUM),
-        ASN1_OPT(int_dhx942_dh, j, BIGNUM),
-        ASN1_OPT(int_dhx942_dh, vparams, DHvparams),
-} static_ASN1_SEQUENCE_END_name(int_dhx942_dh, DHxparams)
+YASN1_SEQUENCE(DHxparams) = {
+        YASN1_SIMPLE(int_dhx942_dh, p, BIGNUM),
+        YASN1_SIMPLE(int_dhx942_dh, g, BIGNUM),
+        YASN1_SIMPLE(int_dhx942_dh, q, BIGNUM),
+        YASN1_OPT(int_dhx942_dh, j, BIGNUM),
+        YASN1_OPT(int_dhx942_dh, vparams, DHvparams),
+} static_YASN1_SEQUENCE_END_name(int_dhx942_dh, DHxparams)
 
 int_dhx942_dh *d2i_int_dhx(int_dhx942_dh **a,
                            const unsigned char **pp, long length);
 int i2d_int_dhx(const int_dhx942_dh *a, unsigned char **pp);
 
-IMPLEMENT_ASN1_ENCODE_FUNCTIONS_const_fname(int_dhx942_dh, DHxparams, int_dhx)
+IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(int_dhx942_dh, DHxparams, int_dhx)
 
 /* Application public function: read in X9.42 DH parameters into DH structure */
 
@@ -106,7 +106,7 @@ DH *d2i_DHxparams(DH **a, const unsigned char **pp, long length)
         dh->seedlen = dhx->vparams->seed->length;
         dh->counter = dhx->vparams->counter;
         dhx->vparams->seed->data = NULL;
-        ASN1_BIT_STRING_free(dhx->vparams->seed);
+        YASN1_BIT_STRING_free(dhx->vparams->seed);
         OPENSSL_free(dhx->vparams);
         dhx->vparams = NULL;
     }
@@ -119,13 +119,13 @@ int i2d_DHxparams(const DH *dh, unsigned char **pp)
 {
     int_dhx942_dh dhx;
     int_dhvparams dhv;
-    ASN1_BIT_STRING bs;
+    YASN1_BIT_STRING bs;
     dhx.p = dh->p;
     dhx.g = dh->g;
     dhx.q = dh->q;
     dhx.j = dh->j;
     if (dh->counter && dh->seed && dh->seedlen > 0) {
-        bs.flags = ASN1_STRING_FLAG_BITS_LEFT;
+        bs.flags = YASN1_STRING_FLAG_BITS_LEFT;
         bs.data = dh->seed;
         bs.length = dh->seedlen;
         dhv.seed = &bs;

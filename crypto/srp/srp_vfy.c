@@ -40,7 +40,7 @@
  */
 static int t_fromb64(unsigned char *a, size_t alen, const char *src)
 {
-    EVP_ENCODE_CTX *ctx;
+    EVVP_ENCODE_CTX *ctx;
     int outl = 0, outl2 = 0;
     size_t size, padsize;
     const unsigned char *pad = (const unsigned char *)"00";
@@ -55,7 +55,7 @@ static int t_fromb64(unsigned char *a, size_t alen, const char *src)
     if (size > INT_MAX || ((size + padsize) / 4) * 3 > alen)
         return -1;
 
-    ctx = EVP_ENCODE_CTX_new();
+    ctx = EVVP_ENCODE_CTX_new();
     if (ctx == NULL)
         return -1;
 
@@ -76,21 +76,21 @@ static int t_fromb64(unsigned char *a, size_t alen, const char *src)
 
     /* Valid padsize values are now 0, 1 or 2 */
 
-    EVP_DecodeInit(ctx);
-    evp_encode_ctx_set_flags(ctx, EVP_ENCODE_CTX_USE_SRP_ALPHABET);
+    EVVP_DecodeInit(ctx);
+    evp_encode_ctx_set_flags(ctx, EVVP_ENCODE_CTX_USE_SRP_ALPHABET);
 
     /* Add any encoded padding that is required */
     if (padsize != 0
-            && EVP_DecodeUpdate(ctx, a, &outl, pad, padsize) < 0) {
+            && EVVP_DecodeUpdate(ctx, a, &outl, pad, padsize) < 0) {
         outl = -1;
         goto err;
     }
-    if (EVP_DecodeUpdate(ctx, a, &outl2, (const unsigned char *)src, size) < 0) {
+    if (EVVP_DecodeUpdate(ctx, a, &outl2, (const unsigned char *)src, size) < 0) {
         outl = -1;
         goto err;
     }
     outl += outl2;
-    EVP_DecodeFinal(ctx, a + outl, &outl2);
+    EVVP_DecodeFinal(ctx, a + outl, &outl2);
     outl += outl2;
 
     /* Strip off the leading padding */
@@ -118,7 +118,7 @@ static int t_fromb64(unsigned char *a, size_t alen, const char *src)
     }
 
  err:
-    EVP_ENCODE_CTX_free(ctx);
+    EVVP_ENCODE_CTX_free(ctx);
 
     return outl;
 }
@@ -129,7 +129,7 @@ static int t_fromb64(unsigned char *a, size_t alen, const char *src)
  */
 static int t_tob64(char *dst, const unsigned char *src, int size)
 {
-    EVP_ENCODE_CTX *ctx = EVP_ENCODE_CTX_new();
+    EVVP_ENCODE_CTX *ctx = EVVP_ENCODE_CTX_new();
     int outl = 0, outl2 = 0;
     unsigned char pad[2] = {0, 0};
     size_t leadz = 0;
@@ -137,30 +137,30 @@ static int t_tob64(char *dst, const unsigned char *src, int size)
     if (ctx == NULL)
         return 0;
 
-    EVP_EncodeInit(ctx);
-    evp_encode_ctx_set_flags(ctx, EVP_ENCODE_CTX_NO_NEWLINES
-                                  | EVP_ENCODE_CTX_USE_SRP_ALPHABET);
+    EVVP_EncodeInit(ctx);
+    evp_encode_ctx_set_flags(ctx, EVVP_ENCODE_CTX_NO_NEWLINES
+                                  | EVVP_ENCODE_CTX_USE_SRP_ALPHABET);
 
     /*
      * We pad at the front with zero bytes until the length is a multiple of 3
-     * so that EVP_EncodeUpdate/EVP_EncodeFinal does not add any of its own "="
+     * so that EVVP_EncodeUpdate/EVVP_EncodeFinal does not add any of its own "="
      * padding
      */
     leadz = 3 - (size % 3);
     if (leadz != 3
-            && !EVP_EncodeUpdate(ctx, (unsigned char *)dst, &outl, pad,
+            && !EVVP_EncodeUpdate(ctx, (unsigned char *)dst, &outl, pad,
                                  leadz)) {
-        EVP_ENCODE_CTX_free(ctx);
+        EVVP_ENCODE_CTX_free(ctx);
         return 0;
     }
 
-    if (!EVP_EncodeUpdate(ctx, (unsigned char *)dst + outl, &outl2, src,
+    if (!EVVP_EncodeUpdate(ctx, (unsigned char *)dst + outl, &outl2, src,
                           size)) {
-        EVP_ENCODE_CTX_free(ctx);
+        EVVP_ENCODE_CTX_free(ctx);
         return 0;
     }
     outl += outl2;
-    EVP_EncodeFinal(ctx, (unsigned char *)dst + outl, &outl2);
+    EVVP_EncodeFinal(ctx, (unsigned char *)dst + outl, &outl2);
     outl += outl2;
 
     /* Strip the encoded padding at the front */
@@ -169,7 +169,7 @@ static int t_tob64(char *dst, const unsigned char *src, int size)
         dst[outl - leadz] = '\0';
     }
 
-    EVP_ENCODE_CTX_free(ctx);
+    EVVP_ENCODE_CTX_free(ctx);
     return 1;
 }
 
@@ -391,7 +391,7 @@ int SRP_VBASE_init(SRP_VBASE *vb, char *verifier_file)
     SRP_user_pwd *user_pwd = NULL;
 
     TXT_DB *tmpdb = NULL;
-    BIO *in = BIO_new(BIO_s_file());
+    BIO *in = BIO_new(BIO_s_yfile());
 
     error_code = SRP_ERR_OPEN_FILE;
 
@@ -531,7 +531,7 @@ SRP_user_pwd *SRP_VBASE_get1_by_user(SRP_VBASE *vb, char *username)
     SRP_user_pwd *user;
     unsigned char digv[SHA_DIGEST_LENGTH];
     unsigned char digs[SHA_DIGEST_LENGTH];
-    EVP_MD_CTX *ctxt = NULL;
+    EVVP_MD_CTX *ctxt = NULL;
 
     if (vb == NULL)
         return NULL;
@@ -555,14 +555,14 @@ SRP_user_pwd *SRP_VBASE_get1_by_user(SRP_VBASE *vb, char *username)
 
     if (RAND_priv_bytes(digv, SHA_DIGEST_LENGTH) <= 0)
         goto err;
-    ctxt = EVP_MD_CTX_new();
+    ctxt = EVVP_MD_CTX_new();
     if (ctxt == NULL
-        || !EVP_DigestInit_ex(ctxt, EVP_sha1(), NULL)
-        || !EVP_DigestUpdate(ctxt, vb->seed_key, strlen(vb->seed_key))
-        || !EVP_DigestUpdate(ctxt, username, strlen(username))
-        || !EVP_DigestFinal_ex(ctxt, digs, NULL))
+        || !EVVP_DigestInit_ex(ctxt, EVVP_sha1(), NULL)
+        || !EVVP_DigestUpdate(ctxt, vb->seed_key, strlen(vb->seed_key))
+        || !EVVP_DigestUpdate(ctxt, username, strlen(username))
+        || !EVVP_DigestFinal_ex(ctxt, digs, NULL))
         goto err;
-    EVP_MD_CTX_free(ctxt);
+    EVVP_MD_CTX_free(ctxt);
     ctxt = NULL;
     if (SRP_user_pwd_set_sv_BN(user,
                                BN_bin2bn(digs, SHA_DIGEST_LENGTH, NULL),
@@ -570,7 +570,7 @@ SRP_user_pwd *SRP_VBASE_get1_by_user(SRP_VBASE *vb, char *username)
         return user;
 
  err:
-    EVP_MD_CTX_free(ctxt);
+    EVVP_MD_CTX_free(ctxt);
     SRP_user_pwd_free(user);
     return NULL;
 }

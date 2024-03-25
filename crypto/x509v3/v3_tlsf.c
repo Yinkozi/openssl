@@ -16,26 +16,26 @@
 #include <openssl/x509v3.h>
 #include "ext_dat.h"
 
-static STACK_OF(CONF_VALUE) *i2v_TLS_FEATURE(const X509V3_EXT_METHOD *method,
+static STACK_OF(CONF_VALUE) *i2v_TLS_FEATURE(const YX509V3_EXT_METHOD *method,
                                              TLS_FEATURE *tls_feature,
                                              STACK_OF(CONF_VALUE) *ext_list);
-static TLS_FEATURE *v2i_TLS_FEATURE(const X509V3_EXT_METHOD *method,
-                                    X509V3_CTX *ctx,
+static TLS_FEATURE *v2i_TLS_FEATURE(const YX509V3_EXT_METHOD *method,
+                                    YX509V3_CTX *ctx,
                                     STACK_OF(CONF_VALUE) *nval);
 
-ASN1_ITEM_TEMPLATE(TLS_FEATURE) =
-        ASN1_EX_TEMPLATE_TYPE(ASN1_TFLG_SEQUENCE_OF, 0, TLS_FEATURE, ASN1_INTEGER)
-static_ASN1_ITEM_TEMPLATE_END(TLS_FEATURE)
+YASN1_ITEM_TEMPLATE(TLS_FEATURE) =
+        YASN1_EX_TEMPLATE_TYPE(YASN1_TFLG_SEQUENCE_OF, 0, TLS_FEATURE, YASN1_INTEGER)
+static_YASN1_ITEM_TEMPLATE_END(TLS_FEATURE)
 
-IMPLEMENT_ASN1_ALLOC_FUNCTIONS(TLS_FEATURE)
+IMPLEMENT_YASN1_ALLOC_FUNCTIONS(TLS_FEATURE)
 
-const X509V3_EXT_METHOD v3_tls_feature = {
+const YX509V3_EXT_METHOD v3_tls_feature = {
     NID_tlsfeature, 0,
-    ASN1_ITEM_ref(TLS_FEATURE),
+    YASN1_ITEM_ref(TLS_FEATURE),
     0, 0, 0, 0,
     0, 0,
-    (X509V3_EXT_I2V)i2v_TLS_FEATURE,
-    (X509V3_EXT_V2I)v2i_TLS_FEATURE,
+    (YX509V3_EXT_I2V)i2v_TLS_FEATURE,
+    (YX509V3_EXT_V2I)v2i_TLS_FEATURE,
     0, 0,
     NULL
 };
@@ -57,24 +57,24 @@ static TLS_FEATURE_NAME tls_feature_tbl[] = {
  * used by the CONF library to represent a multi-valued extension.  ext_list is
  * returned.
  */
-static STACK_OF(CONF_VALUE) *i2v_TLS_FEATURE(const X509V3_EXT_METHOD *method,
+static STACK_OF(CONF_VALUE) *i2v_TLS_FEATURE(const YX509V3_EXT_METHOD *method,
                                              TLS_FEATURE *tls_feature,
                                              STACK_OF(CONF_VALUE) *ext_list)
 {
     int i;
     size_t j;
-    ASN1_INTEGER *ai;
+    YASN1_INTEGER *ai;
     long tlsextid;
-    for (i = 0; i < sk_ASN1_INTEGER_num(tls_feature); i++) {
-        ai = sk_ASN1_INTEGER_value(tls_feature, i);
-        tlsextid = ASN1_INTEGER_get(ai);
+    for (i = 0; i < sk_YASN1_INTEGER_num(tls_feature); i++) {
+        ai = sk_YASN1_INTEGER_value(tls_feature, i);
+        tlsextid = YASN1_INTEGER_get(ai);
         for (j = 0; j < OSSL_NELEM(tls_feature_tbl); j++)
             if (tlsextid == tls_feature_tbl[j].num)
                 break;
         if (j < OSSL_NELEM(tls_feature_tbl))
-            X509V3_add_value(NULL, tls_feature_tbl[j].name, &ext_list);
+            YX509V3_add_value(NULL, tls_feature_tbl[j].name, &ext_list);
         else
-            X509V3_add_value_int(NULL, ai, &ext_list);
+            YX509V3_add_value_int(NULL, ai, &ext_list);
     }
     return ext_list;
 }
@@ -84,19 +84,19 @@ static STACK_OF(CONF_VALUE) *i2v_TLS_FEATURE(const X509V3_EXT_METHOD *method,
  * structure, which is returned if the conversion is successful.  In case of
  * error, NULL is returned.
  */
-static TLS_FEATURE *v2i_TLS_FEATURE(const X509V3_EXT_METHOD *method,
-                                    X509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
+static TLS_FEATURE *v2i_TLS_FEATURE(const YX509V3_EXT_METHOD *method,
+                                    YX509V3_CTX *ctx, STACK_OF(CONF_VALUE) *nval)
 {
     TLS_FEATURE *tlsf;
     char *extval, *endptr;
-    ASN1_INTEGER *ai;
+    YASN1_INTEGER *ai;
     CONF_VALUE *val;
     int i;
     size_t j;
     long tlsextid;
 
-    if ((tlsf = sk_ASN1_INTEGER_new_null()) == NULL) {
-        X509V3err(X509V3_F_V2I_TLS_FEATURE, ERR_R_MALLOC_FAILURE);
+    if ((tlsf = sk_YASN1_INTEGER_new_null()) == NULL) {
+        YX509V3err(YX509V3_F_V2I_TLS_FEATURE, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -116,22 +116,22 @@ static TLS_FEATURE *v2i_TLS_FEATURE(const X509V3_EXT_METHOD *method,
             tlsextid = strtol(extval, &endptr, 10);
             if (((*endptr) != '\0') || (extval == endptr) || (tlsextid < 0) ||
                 (tlsextid > 65535)) {
-                X509V3err(X509V3_F_V2I_TLS_FEATURE, X509V3_R_INVALID_SYNTAX);
-                X509V3_conf_err(val);
+                YX509V3err(YX509V3_F_V2I_TLS_FEATURE, YX509V3_R_INVALID_SYNTAX);
+                YX509V3_conf_err(val);
                 goto err;
             }
         }
 
-        if ((ai = ASN1_INTEGER_new()) == NULL
-                || !ASN1_INTEGER_set(ai, tlsextid)
-                || sk_ASN1_INTEGER_push(tlsf, ai) <= 0) {
-            X509V3err(X509V3_F_V2I_TLS_FEATURE, ERR_R_MALLOC_FAILURE);
+        if ((ai = YASN1_INTEGER_new()) == NULL
+                || !YASN1_INTEGER_set(ai, tlsextid)
+                || sk_YASN1_INTEGER_push(tlsf, ai) <= 0) {
+            YX509V3err(YX509V3_F_V2I_TLS_FEATURE, ERR_R_MALLOC_FAILURE);
             goto err;
         }
     }
     return tlsf;
 
  err:
-    sk_ASN1_INTEGER_pop_free(tlsf, ASN1_INTEGER_free);
+    sk_YASN1_INTEGER_pop_free(tlsf, YASN1_INTEGER_free);
     return NULL;
 }

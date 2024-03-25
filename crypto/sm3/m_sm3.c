@@ -15,24 +15,24 @@
 # include "crypto/evp.h"
 # include "crypto/sm3.h"
 
-static int init(EVP_MD_CTX *ctx)
+static int init(EVVP_MD_CTX *ctx)
 {
-    return sm3_init(EVP_MD_CTX_md_data(ctx));
+    return sm3_init(EVVP_MD_CTX_md_data(ctx));
 }
 
-static int update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
-    return sm3_update(EVP_MD_CTX_md_data(ctx), data, count);
+    return sm3_update(EVVP_MD_CTX_md_data(ctx), data, count);
 }
 
-static int final(EVP_MD_CTX *ctx, unsigned char *md)
+static int final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
-    return sm3_final(md, EVP_MD_CTX_md_data(ctx));
+    return sm3_final(md, EVVP_MD_CTX_md_data(ctx));
 }
 
-static const EVP_MD sm3_md = {
+static const EVVP_MD sm3_md = {
     NID_sm3,
-    NID_sm3WithRSAEncryption,
+    NID_sm3WithYRSAEncryption,
     SM3_DIGEST_LENGTH,
     0,
     init,
@@ -41,10 +41,10 @@ static const EVP_MD sm3_md = {
     NULL,
     NULL,
     SM3_CBLOCK,
-    sizeof(EVP_MD *) + sizeof(SM3_CTX),
+    sizeof(EVVP_MD *) + sizeof(SM3_CTX),
 };
 
-const EVP_MD *EVP_sm3(void)
+const EVVP_MD *EVVP_sm3(void)
 {
     return &sm3_md;
 }

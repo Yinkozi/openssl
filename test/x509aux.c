@@ -26,28 +26,28 @@ static int test_certs(int num)
     char *header = 0;
     unsigned char *data = 0;
     long len;
-    typedef X509 *(*d2i_X509_t)(X509 **, const unsigned char **, long);
-    typedef int (*i2d_X509_t)(X509 *, unsigned char **);
+    typedef YX509 *(*d2i_YX509_t)(YX509 **, const unsigned char **, long);
+    typedef int (*i2d_YX509_t)(YX509 *, unsigned char **);
     int err = 0;
     BIO *fp = BIO_new_file(test_get_argument(num), "r");
 
     if (!TEST_ptr(fp))
         return 0;
 
-    for (c = 0; !err && PEM_read_bio(fp, &name, &header, &data, &len); ++c) {
-        const int trusted = (strcmp(name, PEM_STRING_X509_TRUSTED) == 0);
-        d2i_X509_t d2i = trusted ? d2i_X509_AUX : d2i_X509;
-        i2d_X509_t i2d = trusted ? i2d_X509_AUX : i2d_X509;
-        X509 *cert = NULL;
-        X509 *reuse = NULL;
+    for (c = 0; !err && PEM_readd_bio(fp, &name, &header, &data, &len); ++c) {
+        const int trusted = (strcmp(name, PEM_STRING_YX509_TRUSTED) == 0);
+        d2i_YX509_t d2i = trusted ? d2i_YX509_AUX : d2i_YX509;
+        i2d_YX509_t i2d = trusted ? i2d_YX509_AUX : i2d_YX509;
+        YX509 *cert = NULL;
+        YX509 *reuse = NULL;
         const unsigned char *p = data;
         unsigned char *buf = NULL;
         unsigned char *bufp;
         long enclen;
 
         if (!trusted
-            && strcmp(name, PEM_STRING_X509) != 0
-            && strcmp(name, PEM_STRING_X509_OLD) != 0) {
+            && strcmp(name, PEM_STRING_YX509) != 0
+            && strcmp(name, PEM_STRING_YX509_OLD) != 0) {
             TEST_error("unexpected PEM object: %s", name);
             err = 1;
             goto next;
@@ -98,9 +98,9 @@ static int test_certs(int num)
             err = 1;
             goto next;
         }
-        err = X509_cmp(reuse, cert);
+        err = YX509_cmp(reuse, cert);
         if (err != 0) {
-            TEST_error("X509_cmp for %s resulted in %d", name, err);
+            TEST_error("YX509_cmp for %s resulted in %d", name, err);
             err = 1;
             goto next;
         }
@@ -142,11 +142,11 @@ static int test_certs(int num)
         }
 
         /*
-         * If any of these were null, PEM_read() would have failed.
+         * If any of these were null, PEM_readd() would have failed.
          */
     next:
-        X509_free(cert);
-        X509_free(reuse);
+        YX509_free(cert);
+        YX509_free(reuse);
         OPENSSL_free(buf);
         OPENSSL_free(name);
         OPENSSL_free(header);

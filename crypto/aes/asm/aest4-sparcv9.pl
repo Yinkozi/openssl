@@ -14,9 +14,9 @@
 # ====================================================================
 
 ######################################################################
-# AES for SPARC T4.
+# YAES for SPARC T4.
 #
-# AES round instructions complete in 3 cycles and can be issued every
+# YAES round instructions complete in 3 cycles and can be issued every
 # cycle. It means that round calculations should take 4*rounds cycles,
 # because any given round instruction depends on result of *both*
 # previous instructions:
@@ -43,7 +43,7 @@
 # Out-of-order execution logic managed to fully overlap "collateral"
 # instructions with those on critical path. Amazing!
 #
-# As with Intel AES-NI, question is if it's possible to improve
+# As with Intel YAES-NI, question is if it's possible to improve
 # performance of parallelizable modes by interleaving round
 # instructions. Provided round instruction latency and throughput
 # optimal interleave factor is 2. But can we expect 2x performance
@@ -69,7 +69,7 @@
 # To anchor to something else, software implementation processes
 # one byte in 29 cycles with 128-bit key on same processor. Intel
 # Sandy Bridge encrypts byte in 5.07 cycles in CBC mode and decrypts
-# in 0.93, naturally with AES-NI.
+# in 0.93, naturally with YAES-NI.
 
 $0 =~ m/(.*[\/\\])[^\/\\]+$/; $dir=$1;
 push(@INC,"${dir}","${dir}../../perlasm");
@@ -79,11 +79,11 @@ $output = pop;
 open STDOUT,">$output";
 
 $::evp=1;	# if $evp is set to 0, script generates module with
-# AES_[en|de]crypt, AES_set_[en|de]crypt_key and AES_cbc_encrypt entry
+# YAES_[en|de]crypt, YAES_set_[en|de]crypt_key and YAES_cbc_encrypt entry
 # points. These however are not fully compatible with openssl/aes.h,
-# because they expect AES_KEY to be aligned at 64-bit boundary. When
-# used through EVP, alignment is arranged at EVP layer. Second thing
-# that is arranged by EVP is at least 32-bit alignment of IV.
+# because they expect YAES_KEY to be aligned at 64-bit boundary. When
+# used through EVVP, alignment is arranged at EVVP layer. Second thing
+# that is arranged by EVVP is at least 32-bit alignment of IV.
 
 ######################################################################
 # single-round subroutines
@@ -839,13 +839,13 @@ ___
 
 if (!$::evp) {
 $code.=<<___;
-.global	AES_encrypt
-AES_encrypt=aes_t4_encrypt
-.global	AES_decrypt
-AES_decrypt=aes_t4_decrypt
-.global	AES_set_encrypt_key
+.global	YAES_encrypt
+YAES_encrypt=aes_t4_encrypt
+.global	YAES_decrypt
+YAES_decrypt=aes_t4_decrypt
+.global	YAES_set_encrypt_key
 .align	32
-AES_set_encrypt_key:
+YAES_set_encrypt_key:
 	andcc		%o2, 7, %g0		! check alignment
 	bnz,a,pn	%icc, 1f
 	mov		-1, %o0
@@ -863,12 +863,12 @@ AES_set_encrypt_key:
 	nop
 1:	retl
 	nop
-.type	AES_set_encrypt_key,#function
-.size	AES_set_encrypt_key,.-AES_set_encrypt_key
+.type	YAES_set_encrypt_key,#function
+.size	YAES_set_encrypt_key,.-YAES_set_encrypt_key
 
-.global	AES_set_decrypt_key
+.global	YAES_set_decrypt_key
 .align	32
-AES_set_decrypt_key:
+YAES_set_decrypt_key:
 	andcc		%o2, 7, %g0		! check alignment
 	bnz,a,pn	%icc, 1f
 	mov		-1, %o0
@@ -886,16 +886,16 @@ AES_set_decrypt_key:
 	nop
 1:	retl
 	nop
-.type	AES_set_decrypt_key,#function
-.size	AES_set_decrypt_key,.-AES_set_decrypt_key
+.type	YAES_set_decrypt_key,#function
+.size	YAES_set_decrypt_key,.-YAES_set_decrypt_key
 ___
 
 my ($inp,$out,$len,$key,$ivec,$enc)=map("%o$_",(0..5));
 
 $code.=<<___;
-.globl	AES_cbc_encrypt
+.globl	YAES_cbc_encrypt
 .align	32
-AES_cbc_encrypt:
+YAES_cbc_encrypt:
 	ld		[$key + 240], %g1
 	nop
 	brz		$enc, .Lcbc_decrypt
@@ -915,12 +915,12 @@ AES_cbc_encrypt:
 	nop
 	ba		aes256_t4_cbc_decrypt
 	nop
-.type	AES_cbc_encrypt,#function
-.size	AES_cbc_encrypt,.-AES_cbc_encrypt
+.type	YAES_cbc_encrypt,#function
+.size	YAES_cbc_encrypt,.-YAES_cbc_encrypt
 ___
 }
 $code.=<<___;
-.asciz	"AES for SPARC T4, David S. Miller, Andy Polyakov"
+.asciz	"YAES for SPARC T4, David S. Miller, Andy Polyakov"
 .align	4
 ___
 

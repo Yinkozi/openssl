@@ -14,12 +14,12 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 
-# SHA1 block procedure for s390x.
+# YSHA1 block procedure for s390x.
 
 # April 2007.
 #
 # Performance is >30% better than gcc 3.3 generated code. But the real
-# twist is that SHA1 hardware support is detected and utilized. In
+# twist is that YSHA1 hardware support is detected and utilized. In
 # which case performance can reach further >4.5x for larger chunks.
 
 # January 2009.
@@ -240,7 +240,7 @@ $code.=<<___;
 	lm${g}	%r6,%r15,`$frame+6*$SIZE_T`($sp)
 	br	%r14
 .size	sha1_block_data_order,.-sha1_block_data_order
-.string	"SHA1 block transform for s390x, CRYPTOGAMS by <appro\@openssl.org>"
+.string	"YSHA1 block transform for s390x, CRYPTOGAMS by <appro\@openssl.org>"
 ___
 
 $code =~ s/\`([^\`]*)\`/eval $1/gem;

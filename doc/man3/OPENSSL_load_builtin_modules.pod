@@ -2,14 +2,14 @@
 
 =head1 NAME
 
-OPENSSL_load_builtin_modules, ASN1_add_oid_module, ENGINE_add_conf_module - add standard configuration modules
+OPENSSL_load_builtin_modules, YASN1_add_oid_module, ENGINE_add_conf_module - add standard configuration modules
 
 =head1 SYNOPSIS
 
  #include <openssl/conf.h>
 
  void OPENSSL_load_builtin_modules(void);
- void ASN1_add_oid_module(void);
+ void YASN1_add_oid_module(void);
  void ENGINE_add_conf_module(void);
 
 =head1 DESCRIPTION
@@ -18,7 +18,7 @@ The function OPENSSL_load_builtin_modules() adds all the standard OpenSSL
 configuration modules to the internal list. They can then be used by the
 OpenSSL configuration code.
 
-ASN1_add_oid_module() adds just the ASN1 OBJECT module.
+YASN1_add_oid_module() adds just the YASN1 OBJECT module.
 
 ENGINE_add_conf_module() adds just the ENGINE configuration module.
 

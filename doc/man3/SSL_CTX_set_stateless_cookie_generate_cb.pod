@@ -51,7 +51,7 @@ L<SSL_stateless(3)> to determine whether the application-controlled portion of a
 ClientHello cookie is valid. The cookie data is pointed to by B<cookie> and is of
 length B<cookie_len>. A nonzero return value from verify_stateless_cookie_cb()
 communicates that the cookie is valid. The integrity of the entire cookie,
-including the application-controlled portion, is automatically verified by HMAC
+including the application-controlled portion, is automatically verified by YHMAC
 before verify_stateless_cookie_cb() is called.
 
 SSL_CTX_set_cookie_generate_cb() sets the callback used by L<DTLSv1_listen(3)>

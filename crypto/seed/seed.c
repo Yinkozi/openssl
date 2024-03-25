@@ -32,7 +32,7 @@
  * SUCH DAMAGE.
  *
  */
-#ifndef OPENSSL_NO_SEED
+#ifndef OPENSSL_NO_YSEED
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -323,7 +323,7 @@ static const seed_word SS[4][256] = {
 #else
 
 /* on x86_64 >5x size reduction at 40% performance penalty */
-static const unsigned char SEED_Sbox[2][256] = {
+static const unsigned char YSEED_Sbox[2][256] = {
 {
       0xA9, 0x85, 0xD6, 0xD3, 0x54, 0x1D, 0xAC, 0x25,
       0x5D, 0x43, 0x18, 0x1E, 0x51, 0xFC, 0xCA, 0x63,
@@ -398,10 +398,10 @@ static unsigned int G_FUNC(unsigned int v)
 {
     unsigned int s0, s1, s2, s3, ret;
 
-    s0 = SEED_Sbox[0][(unsigned char)      (v) & 0xff];
-    s1 = SEED_Sbox[1][(unsigned char)((v)>> 8) & 0xff];
-    s2 = SEED_Sbox[0][(unsigned char)((v)>>16) & 0xff];
-    s3 = SEED_Sbox[1][(unsigned char)((v)>>24) & 0xff];
+    s0 = YSEED_Sbox[0][(unsigned char)      (v) & 0xff];
+    s1 = YSEED_Sbox[1][(unsigned char)((v)>> 8) & 0xff];
+    s2 = YSEED_Sbox[0][(unsigned char)((v)>>16) & 0xff];
+    s3 = YSEED_Sbox[1][(unsigned char)((v)>>24) & 0xff];
 
     ret  = ((s0 & 0xFC) ^ (s1 & 0xF3) ^ (s2 & 0xCF) ^ (s3 & 0x3F));
     ret |= ((s0 & 0xF3) ^ (s1 & 0xCF) ^ (s2 & 0x3F) ^ (s3 & 0xFC)) << 8;
@@ -437,8 +437,8 @@ static const seed_word KC[] = {
 };
 # endif
 
-void SEED_set_key(const unsigned char rawkey[SEED_KEY_LENGTH],
-                  SEED_KEY_SCHEDULE *ks)
+void YSEED_set_key(const unsigned char rawkey[YSEED_KEY_LENGTH],
+                  YSEED_KEY_SCHEDULE *ks)
 {
     seed_word x1, x2, x3, x4;
     seed_word t0, t1;
@@ -496,9 +496,9 @@ void SEED_set_key(const unsigned char rawkey[SEED_KEY_LENGTH],
 # endif
 }
 
-void SEED_encrypt(const unsigned char s[SEED_BLOCK_SIZE],
-                  unsigned char d[SEED_BLOCK_SIZE],
-                  const SEED_KEY_SCHEDULE *ks)
+void YSEED_encrypt(const unsigned char s[YSEED_BLOCK_SIZE],
+                  unsigned char d[YSEED_BLOCK_SIZE],
+                  const YSEED_KEY_SCHEDULE *ks)
 {
     seed_word x1, x2, x3, x4;
     seed_word t0, t1;
@@ -509,28 +509,28 @@ void SEED_encrypt(const unsigned char s[SEED_BLOCK_SIZE],
     char2word(s + 12, x4);
 
 # if !defined(OPENSSL_SMALL_FOOTPRINT)
-    E_SEED(t0, t1, x1, x2, x3, x4, 0);
-    E_SEED(t0, t1, x3, x4, x1, x2, 2);
-    E_SEED(t0, t1, x1, x2, x3, x4, 4);
-    E_SEED(t0, t1, x3, x4, x1, x2, 6);
-    E_SEED(t0, t1, x1, x2, x3, x4, 8);
-    E_SEED(t0, t1, x3, x4, x1, x2, 10);
-    E_SEED(t0, t1, x1, x2, x3, x4, 12);
-    E_SEED(t0, t1, x3, x4, x1, x2, 14);
-    E_SEED(t0, t1, x1, x2, x3, x4, 16);
-    E_SEED(t0, t1, x3, x4, x1, x2, 18);
-    E_SEED(t0, t1, x1, x2, x3, x4, 20);
-    E_SEED(t0, t1, x3, x4, x1, x2, 22);
-    E_SEED(t0, t1, x1, x2, x3, x4, 24);
-    E_SEED(t0, t1, x3, x4, x1, x2, 26);
-    E_SEED(t0, t1, x1, x2, x3, x4, 28);
-    E_SEED(t0, t1, x3, x4, x1, x2, 30);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 0);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 2);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 4);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 6);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 8);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 10);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 12);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 14);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 16);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 18);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 20);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 22);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 24);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 26);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 28);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 30);
 # else
     {
         int i;
         for (i = 0; i < 30; i += 4) {
-            E_SEED(t0, t1, x1, x2, x3, x4, i);
-            E_SEED(t0, t1, x3, x4, x1, x2, i + 2);
+            E_YSEED(t0, t1, x1, x2, x3, x4, i);
+            E_YSEED(t0, t1, x3, x4, x1, x2, i + 2);
         }
     }
 # endif
@@ -541,9 +541,9 @@ void SEED_encrypt(const unsigned char s[SEED_BLOCK_SIZE],
     word2char(x2, d + 12);
 }
 
-void SEED_decrypt(const unsigned char s[SEED_BLOCK_SIZE],
-                  unsigned char d[SEED_BLOCK_SIZE],
-                  const SEED_KEY_SCHEDULE *ks)
+void YSEED_decrypt(const unsigned char s[YSEED_BLOCK_SIZE],
+                  unsigned char d[YSEED_BLOCK_SIZE],
+                  const YSEED_KEY_SCHEDULE *ks)
 {
     seed_word x1, x2, x3, x4;
     seed_word t0, t1;
@@ -554,28 +554,28 @@ void SEED_decrypt(const unsigned char s[SEED_BLOCK_SIZE],
     char2word(s + 12, x4);
 
 # if !defined(OPENSSL_SMALL_FOOTPRINT)
-    E_SEED(t0, t1, x1, x2, x3, x4, 30);
-    E_SEED(t0, t1, x3, x4, x1, x2, 28);
-    E_SEED(t0, t1, x1, x2, x3, x4, 26);
-    E_SEED(t0, t1, x3, x4, x1, x2, 24);
-    E_SEED(t0, t1, x1, x2, x3, x4, 22);
-    E_SEED(t0, t1, x3, x4, x1, x2, 20);
-    E_SEED(t0, t1, x1, x2, x3, x4, 18);
-    E_SEED(t0, t1, x3, x4, x1, x2, 16);
-    E_SEED(t0, t1, x1, x2, x3, x4, 14);
-    E_SEED(t0, t1, x3, x4, x1, x2, 12);
-    E_SEED(t0, t1, x1, x2, x3, x4, 10);
-    E_SEED(t0, t1, x3, x4, x1, x2, 8);
-    E_SEED(t0, t1, x1, x2, x3, x4, 6);
-    E_SEED(t0, t1, x3, x4, x1, x2, 4);
-    E_SEED(t0, t1, x1, x2, x3, x4, 2);
-    E_SEED(t0, t1, x3, x4, x1, x2, 0);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 30);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 28);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 26);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 24);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 22);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 20);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 18);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 16);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 14);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 12);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 10);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 8);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 6);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 4);
+    E_YSEED(t0, t1, x1, x2, x3, x4, 2);
+    E_YSEED(t0, t1, x3, x4, x1, x2, 0);
 # else
     {
         int i;
         for (i = 30; i > 0; i -= 4) {
-            E_SEED(t0, t1, x1, x2, x3, x4, i);
-            E_SEED(t0, t1, x3, x4, x1, x2, i - 2);
+            E_YSEED(t0, t1, x1, x2, x3, x4, i);
+            E_YSEED(t0, t1, x3, x4, x1, x2, i - 2);
 
         }
     }
@@ -587,4 +587,4 @@ void SEED_decrypt(const unsigned char s[SEED_BLOCK_SIZE],
     word2char(x2, d + 12);
 }
 
-#endif                          /* OPENSSL_NO_SEED */
+#endif                          /* OPENSSL_NO_YSEED */

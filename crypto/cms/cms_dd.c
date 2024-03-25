@@ -17,7 +17,7 @@
 
 /* CMS DigestedData Utilities */
 
-CMS_ContentInfo *cms_DigestedData_create(const EVP_MD *md)
+CMS_ContentInfo *cms_DigestedData_create(const EVVP_MD *md)
 {
     CMS_ContentInfo *cms;
     CMS_DigestedData *dd;
@@ -25,7 +25,7 @@ CMS_ContentInfo *cms_DigestedData_create(const EVP_MD *md)
     if (cms == NULL)
         return NULL;
 
-    dd = M_ASN1_new_of(CMS_DigestedData);
+    dd = M_YASN1_new_of(CMS_DigestedData);
 
     if (dd == NULL)
         goto err;
@@ -36,7 +36,7 @@ CMS_ContentInfo *cms_DigestedData_create(const EVP_MD *md)
     dd->version = 0;
     dd->encapContentInfo->eContentType = OBJ_nid2obj(NID_pkcs7_data);
 
-    X509_ALGOR_set_md(dd->digestAlgorithm, md);
+    YX509_ALGOR_set_md(dd->digestAlgorithm, md);
 
     return cms;
 
@@ -54,8 +54,8 @@ BIO *cms_DigestedData_init_bio(CMS_ContentInfo *cms)
 
 int cms_DigestedData_do_final(CMS_ContentInfo *cms, BIO *chain, int verify)
 {
-    EVP_MD_CTX *mctx = EVP_MD_CTX_new();
-    unsigned char md[EVP_MAX_MD_SIZE];
+    EVVP_MD_CTX *mctx = EVVP_MD_CTX_new();
+    unsigned char md[EVVP_MAX_MD_SIZE];
     unsigned int mdlen;
     int r = 0;
     CMS_DigestedData *dd;
@@ -70,7 +70,7 @@ int cms_DigestedData_do_final(CMS_ContentInfo *cms, BIO *chain, int verify)
     if (!cms_DigestAlgorithm_find_ctx(mctx, chain, dd->digestAlgorithm))
         goto err;
 
-    if (EVP_DigestFinal_ex(mctx, md, &mdlen) <= 0)
+    if (EVVP_DigestFinal_ex(mctx, md, &mdlen) <= 0)
         goto err;
 
     if (verify) {
@@ -86,13 +86,13 @@ int cms_DigestedData_do_final(CMS_ContentInfo *cms, BIO *chain, int verify)
         else
             r = 1;
     } else {
-        if (!ASN1_STRING_set(dd->digest, md, mdlen))
+        if (!YASN1_STRING_set(dd->digest, md, mdlen))
             goto err;
         r = 1;
     }
 
  err:
-    EVP_MD_CTX_free(mctx);
+    EVVP_MD_CTX_free(mctx);
 
     return r;
 

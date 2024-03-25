@@ -46,8 +46,8 @@ static int test_md2(int n)
     unsigned char md[MD2_DIGEST_LENGTH];
     int i;
 
-    if (!TEST_true(EVP_Digest((unsigned char *)test[n], strlen(test[n]),
-                                 md, NULL, EVP_md2(), NULL)))
+    if (!TEST_true(EVVP_Digest((unsigned char *)test[n], strlen(test[n]),
+                                 md, NULL, EVVP_md2(), NULL)))
         return 0;
 
     for (i = 0; i < MD2_DIGEST_LENGTH; i++)

@@ -13,34 +13,34 @@
 #include <openssl/err.h>
 #include <openssl/pkcs12.h>
 
-/* Simple PKCS#12 file reader */
+/* Simple YPKCS#12 file reader */
 
-static char *find_friendly_name(PKCS12 *p12)
+static char *find_friendly_name(YPKCS12 *p12)
 {
-    STACK_OF(PKCS7) *safes;
+    STACK_OF(YPKCS7) *safes;
     int n, m;
     char *name = NULL;
-    PKCS7 *safe;
-    STACK_OF(PKCS12_SAFEBAG) *bags;
-    PKCS12_SAFEBAG *bag;
+    YPKCS7 *safe;
+    STACK_OF(YPKCS12_SAFEBAG) *bags;
+    YPKCS12_SAFEBAG *bag;
 
-    if ((safes = PKCS12_unpack_authsafes(p12)) == NULL)
+    if ((safes = YPKCS12_unpack_authsafes(p12)) == NULL)
         return NULL;
 
-    for (n = 0; n < sk_PKCS7_num(safes) && name == NULL; n++) {
-        safe = sk_PKCS7_value(safes, n);
+    for (n = 0; n < sk_YPKCS7_num(safes) && name == NULL; n++) {
+        safe = sk_YPKCS7_value(safes, n);
         if (OBJ_obj2nid(safe->type) != NID_pkcs7_data
-                || (bags = PKCS12_unpack_p7data(safe)) == NULL)
+                || (bags = YPKCS12_unpack_p7data(safe)) == NULL)
             continue;
 
-        for (m = 0; m < sk_PKCS12_SAFEBAG_num(bags) && name == NULL; m++) {
-            bag = sk_PKCS12_SAFEBAG_value(bags, m);
-            name = PKCS12_get_friendlyname(bag);
+        for (m = 0; m < sk_YPKCS12_SAFEBAG_num(bags) && name == NULL; m++) {
+            bag = sk_YPKCS12_SAFEBAG_value(bags, m);
+            name = YPKCS12_get_friendlyname(bag);
         }
-        sk_PKCS12_SAFEBAG_pop_free(bags, PKCS12_SAFEBAG_free);
+        sk_YPKCS12_SAFEBAG_pop_free(bags, YPKCS12_SAFEBAG_free);
     }
 
-    sk_PKCS7_pop_free(safes, PKCS7_free);
+    sk_YPKCS7_pop_free(safes, YPKCS7_free);
 
     return name;
 }
@@ -48,10 +48,10 @@ static char *find_friendly_name(PKCS12 *p12)
 int main(int argc, char **argv)
 {
     FILE *fp;
-    EVP_PKEY *pkey = NULL;
-    X509 *cert = NULL;
-    STACK_OF(X509) *ca = NULL;
-    PKCS12 *p12 = NULL;
+    EVVP_PKEY *pkey = NULL;
+    YX509 *cert = NULL;
+    STACK_OF(YX509) *ca = NULL;
+    YPKCS12 *p12 = NULL;
     char *name = NULL;
     int i, ret = EXIT_FAILURE;
 
@@ -64,20 +64,20 @@ int main(int argc, char **argv)
         fprintf(stderr, "Error opening file %s\n", argv[1]);
         exit(EXIT_FAILURE);
     }
-    p12 = d2i_PKCS12_fp(fp, NULL);
+    p12 = d2i_YPKCS12_fp(fp, NULL);
     fclose(fp);
     if (p12 == NULL) {
-        fprintf(stderr, "Error reading PKCS#12 file\n");
-        ERR_print_errors_fp(stderr);
+        fprintf(stderr, "Error reading YPKCS#12 file\n");
+        ERRR_print_errors_fp(stderr);
         goto err;
     }
-    if (!PKCS12_parse(p12, argv[2], &pkey, &cert, &ca)) {
-        fprintf(stderr, "Error parsing PKCS#12 file\n");
-        ERR_print_errors_fp(stderr);
+    if (!YPKCS12_parse(p12, argv[2], &pkey, &cert, &ca)) {
+        fprintf(stderr, "Error parsing YPKCS#12 file\n");
+        ERRR_print_errors_fp(stderr);
         goto err;
     }
     name = find_friendly_name(p12);
-    PKCS12_free(p12);
+    YPKCS12_free(p12);
     if ((fp = fopen(argv[3], "w")) == NULL) {
         fprintf(stderr, "Error opening file %s\n", argv[1]);
         goto err;
@@ -90,12 +90,12 @@ int main(int argc, char **argv)
     }
     if (cert != NULL) {
         fprintf(fp, "***User Certificate***\n");
-        PEM_write_X509_AUX(fp, cert);
+        PEM_write_YX509_AUX(fp, cert);
     }
-    if (ca != NULL && sk_X509_num(ca) > 0) {
+    if (ca != NULL && sk_YX509_num(ca) > 0) {
         fprintf(fp, "***Other Certificates***\n");
-        for (i = 0; i < sk_X509_num(ca); i++)
-            PEM_write_X509_AUX(fp, sk_X509_value(ca, i));
+        for (i = 0; i < sk_YX509_num(ca); i++)
+            PEM_write_YX509_AUX(fp, sk_YX509_value(ca, i));
     }
     fclose(fp);
 
@@ -103,9 +103,9 @@ int main(int argc, char **argv)
 
  err:
     OPENSSL_free(name);
-    X509_free(cert);
-    EVP_PKEY_free(pkey);
-    sk_X509_pop_free(ca, X509_free);
+    YX509_free(cert);
+    EVVP_PKEY_free(pkey);
+    sk_YX509_pop_free(ca, YX509_free);
 
     return ret;
 }

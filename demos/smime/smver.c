@@ -15,9 +15,9 @@
 int main(int argc, char **argv)
 {
     BIO *in = NULL, *out = NULL, *tbio = NULL, *cont = NULL;
-    X509_STORE *st = NULL;
-    X509 *cacert = NULL;
-    PKCS7 *p7 = NULL;
+    YX509_STORE *st = NULL;
+    YX509 *cacert = NULL;
+    YPKCS7 *p7 = NULL;
 
     int ret = 1;
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv)
 
     /* Set up trusted CA certificate store */
 
-    st = X509_STORE_new();
+    st = YX509_STORE_new();
 
     /* Read in signer certificate and private key */
     tbio = BIO_new_file("cacert.pem", "r");
@@ -34,12 +34,12 @@ int main(int argc, char **argv)
     if (!tbio)
         goto err;
 
-    cacert = PEM_read_bio_X509(tbio, NULL, 0, NULL);
+    cacert = PEM_readd_bio_YX509(tbio, NULL, 0, NULL);
 
     if (!cacert)
         goto err;
 
-    if (!X509_STORE_add_cert(st, cacert))
+    if (!YX509_STORE_add_cert(st, cacert))
         goto err;
 
     /* Open content being signed */
@@ -50,7 +50,7 @@ int main(int argc, char **argv)
         goto err;
 
     /* Sign content */
-    p7 = SMIME_read_PKCS7(in, &cont);
+    p7 = SMIME_read_YPKCS7(in, &cont);
 
     if (!p7)
         goto err;
@@ -60,7 +60,7 @@ int main(int argc, char **argv)
     if (!out)
         goto err;
 
-    if (!PKCS7_verify(p7, NULL, st, cont, out, 0)) {
+    if (!YPKCS7_verify(p7, NULL, st, cont, out, 0)) {
         fprintf(stderr, "Verification Failure\n");
         goto err;
     }
@@ -72,10 +72,10 @@ int main(int argc, char **argv)
  err:
     if (ret) {
         fprintf(stderr, "Error Verifying Data\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     }
-    PKCS7_free(p7);
-    X509_free(cacert);
+    YPKCS7_free(p7);
+    YX509_free(cacert);
     BIO_free(in);
     BIO_free(out);
     BIO_free(tbio);

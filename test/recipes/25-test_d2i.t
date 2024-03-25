@@ -18,7 +18,7 @@ setup("test_d2i");
 
 plan tests => 14;
 
-ok(run(test(["d2i_test", "X509", "decode",
+ok(run(test(["d2i_test", "YX509", "decode",
              srctop_file('test','d2i-tests','bad_cert.der')])),
    "Running d2i_test bad_cert.der");
 
@@ -26,58 +26,58 @@ ok(run(test(["d2i_test", "GENERAL_NAME", "decode",
              srctop_file('test','d2i-tests','bad_generalname.der')])),
    "Running d2i_test bad_generalname.der");
 
-ok(run(test(["d2i_test", "ASN1_ANY", "BIO",
+ok(run(test(["d2i_test", "YASN1_ANY", "BIO",
              srctop_file('test','d2i-tests','bad_bio.der')])),
    "Running d2i_test bad_bio.der");
 # This test checks CVE-2016-2108. The data consists of an tag 258 and
-# two zero content octets. This is parsed as an ASN1_ANY type. If the
+# two zero content octets. This is parsed as an YASN1_ANY type. If the
 # type is incorrectly interpreted as an ASN.1 INTEGER the two zero content
 # octets will be reject as invalid padding and this test will fail.
-# If the type is correctly interpreted it will by treated as an ASN1_STRING
+# If the type is correctly interpreted it will by treated as an YASN1_STRING
 # type and the content octets copied verbatim.
-ok(run(test(["d2i_test", "ASN1_ANY", "OK",
+ok(run(test(["d2i_test", "YASN1_ANY", "OK",
              srctop_file('test','d2i-tests','high_tag.der')])),
    "Running d2i_test high_tag.der");
 
 # Above test data but interpreted as ASN.1 INTEGER: this will be rejected
 # because the tag is invalid.
-ok(run(test(["d2i_test", "ASN1_INTEGER", "decode",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "decode",
              srctop_file('test','d2i-tests','high_tag.der')])),
    "Running d2i_test high_tag.der INTEGER");
 
 # Parse valid 0, 1 and -1 ASN.1 INTEGER as INTEGER or ANY.
 
-ok(run(test(["d2i_test", "ASN1_INTEGER", "OK",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "OK",
              srctop_file('test','d2i-tests','int0.der')])),
    "Running d2i_test int0.der INTEGER");
 
-ok(run(test(["d2i_test", "ASN1_INTEGER", "OK",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "OK",
              srctop_file('test','d2i-tests','int1.der')])),
    "Running d2i_test int1.der INTEGER");
 
-ok(run(test(["d2i_test", "ASN1_INTEGER", "OK",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "OK",
              srctop_file('test','d2i-tests','intminus1.der')])),
    "Running d2i_test intminus1.der INTEGER");
 
-ok(run(test(["d2i_test", "ASN1_ANY", "OK",
+ok(run(test(["d2i_test", "YASN1_ANY", "OK",
              srctop_file('test','d2i-tests','int0.der')])),
    "Running d2i_test int0.der ANY");
 
-ok(run(test(["d2i_test", "ASN1_ANY", "OK",
+ok(run(test(["d2i_test", "YASN1_ANY", "OK",
              srctop_file('test','d2i-tests','int1.der')])),
    "Running d2i_test int1.der ANY");
 
-ok(run(test(["d2i_test", "ASN1_ANY", "OK",
+ok(run(test(["d2i_test", "YASN1_ANY", "OK",
              srctop_file('test','d2i-tests','intminus1.der')])),
    "Running d2i_test intminus1.der ANY");
 
 # Integers with illegal additional padding.
 
-ok(run(test(["d2i_test", "ASN1_INTEGER", "decode",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "decode",
              srctop_file('test','d2i-tests','bad-int-pad0.der')])),
    "Running d2i_test bad-int-pad0.der INTEGER");
 
-ok(run(test(["d2i_test", "ASN1_INTEGER", "decode",
+ok(run(test(["d2i_test", "YASN1_INTEGER", "decode",
              srctop_file('test','d2i-tests','bad-int-padminus1.der')])),
    "Running d2i_test bad-int-padminus1.der INTEGER");
 

@@ -7,12 +7,12 @@
  * https://www.openssl.org/source/license.html
  */
 
-#ifndef HEADER_RSA_H
-# define HEADER_RSA_H
+#ifndef HEADER_YRSA_H
+# define HEADER_YRSA_H
 
 # include <openssl/opensslconf.h>
 
-# ifndef OPENSSL_NO_RSA
+# ifndef OPENSSL_NO_YRSA
 # include <openssl/asn1.h>
 # include <openssl/bio.h>
 # include <openssl/crypto.h>
@@ -25,386 +25,386 @@
 extern "C" {
 # endif
 
-/* The types RSA and RSA_METHOD are defined in ossl_typ.h */
+/* The types YRSA and YRSA_METHOD are defined in ossl_typ.h */
 
-# ifndef OPENSSL_RSA_MAX_MODULUS_BITS
-#  define OPENSSL_RSA_MAX_MODULUS_BITS   16384
+# ifndef OPENSSL_YRSA_MAX_MODULUS_BITS
+#  define OPENSSL_YRSA_MAX_MODULUS_BITS   16384
 # endif
 
-# define OPENSSL_RSA_FIPS_MIN_MODULUS_BITS 1024
+# define OPENSSL_YRSA_FIPS_MIN_MODULUS_BITS 1024
 
-# ifndef OPENSSL_RSA_SMALL_MODULUS_BITS
-#  define OPENSSL_RSA_SMALL_MODULUS_BITS 3072
+# ifndef OPENSSL_YRSA_SMALL_MODULUS_BITS
+#  define OPENSSL_YRSA_SMALL_MODULUS_BITS 3072
 # endif
-# ifndef OPENSSL_RSA_MAX_PUBEXP_BITS
+# ifndef OPENSSL_YRSA_MAX_PUBEXP_BITS
 
 /* exponent limit enforced for "large" modulus only */
-#  define OPENSSL_RSA_MAX_PUBEXP_BITS    64
+#  define OPENSSL_YRSA_MAX_PUBEXP_BITS    64
 # endif
 
-# define RSA_3   0x3L
-# define RSA_F4  0x10001L
+# define YRSA_3   0x3L
+# define YRSA_F4  0x10001L
 
 /* based on RFC 8017 appendix A.1.2 */
-# define RSA_ASN1_VERSION_DEFAULT        0
-# define RSA_ASN1_VERSION_MULTI          1
+# define YRSA_YASN1_VERSION_DEFAULT        0
+# define YRSA_YASN1_VERSION_MULTI          1
 
-# define RSA_DEFAULT_PRIME_NUM           2
+# define YRSA_DEFAULT_PRIME_NUM           2
 
-# define RSA_METHOD_FLAG_NO_CHECK        0x0001/* don't check pub/private
+# define YRSA_METHOD_FLAG_NO_CHECK        0x0001/* don't check pub/private
                                                 * match */
 
-# define RSA_FLAG_CACHE_PUBLIC           0x0002
-# define RSA_FLAG_CACHE_PRIVATE          0x0004
-# define RSA_FLAG_BLINDING               0x0008
-# define RSA_FLAG_THREAD_SAFE            0x0010
+# define YRSA_FLAG_CACHE_PUBLIC           0x0002
+# define YRSA_FLAG_CACHE_PRIVATE          0x0004
+# define YRSA_FLAG_BLINDING               0x0008
+# define YRSA_FLAG_THREAD_SAFE            0x0010
 /*
  * This flag means the private key operations will be handled by rsa_mod_exp
  * and that they do not depend on the private key components being present:
  * for example a key stored in external hardware. Without this flag
  * bn_mod_exp gets called when private key components are absent.
  */
-# define RSA_FLAG_EXT_PKEY               0x0020
+# define YRSA_FLAG_EXT_PKEY               0x0020
 
 /*
  * new with 0.9.6j and 0.9.7b; the built-in
- * RSA implementation now uses blinding by
- * default (ignoring RSA_FLAG_BLINDING),
+ * YRSA implementation now uses blinding by
+ * default (ignoring YRSA_FLAG_BLINDING),
  * but other engines might not need it
  */
-# define RSA_FLAG_NO_BLINDING            0x0080
+# define YRSA_FLAG_NO_BLINDING            0x0080
 # if OPENSSL_API_COMPAT < 0x10100000L
 /*
  * Does nothing. Previously this switched off constant time behaviour.
  */
-#  define RSA_FLAG_NO_CONSTTIME           0x0000
+#  define YRSA_FLAG_NO_CONSTTIME           0x0000
 # endif
 # if OPENSSL_API_COMPAT < 0x00908000L
 /* deprecated name for the flag*/
 /*
- * new with 0.9.7h; the built-in RSA
+ * new with 0.9.7h; the built-in YRSA
  * implementation now uses constant time
  * modular exponentiation for secret exponents
  * by default. This flag causes the
  * faster variable sliding window method to
  * be used for all exponents.
  */
-#  define RSA_FLAG_NO_EXP_CONSTTIME RSA_FLAG_NO_CONSTTIME
+#  define YRSA_FLAG_NO_EXP_CONSTTIME YRSA_FLAG_NO_CONSTTIME
 # endif
 
-# define EVP_PKEY_CTX_set_rsa_padding(ctx, pad) \
-        RSA_pkey_ctx_ctrl(ctx, -1, EVP_PKEY_CTRL_RSA_PADDING, pad, NULL)
+# define EVVP_PKEY_CTX_set_rsa_padding(ctx, pad) \
+        YRSA_pkey_ctx_ctrl(ctx, -1, EVVP_PKEY_CTRL_YRSA_PADDING, pad, NULL)
 
-# define EVP_PKEY_CTX_get_rsa_padding(ctx, ppad) \
-        RSA_pkey_ctx_ctrl(ctx, -1, EVP_PKEY_CTRL_GET_RSA_PADDING, 0, ppad)
+# define EVVP_PKEY_CTX_get_rsa_padding(ctx, ppad) \
+        YRSA_pkey_ctx_ctrl(ctx, -1, EVVP_PKEY_CTRL_GET_YRSA_PADDING, 0, ppad)
 
-# define EVP_PKEY_CTX_set_rsa_pss_saltlen(ctx, len) \
-        RSA_pkey_ctx_ctrl(ctx, (EVP_PKEY_OP_SIGN|EVP_PKEY_OP_VERIFY), \
-                          EVP_PKEY_CTRL_RSA_PSS_SALTLEN, len, NULL)
+# define EVVP_PKEY_CTX_set_rsa_pss_saltlen(ctx, len) \
+        YRSA_pkey_ctx_ctrl(ctx, (EVVP_PKEY_OP_SIGN|EVVP_PKEY_OP_VERIFY), \
+                          EVVP_PKEY_CTRL_YRSA_PSS_SALTLEN, len, NULL)
 /* Salt length matches digest */
-# define RSA_PSS_SALTLEN_DIGEST -1
+# define YRSA_PSS_SALTLEN_DIGEST -1
 /* Verify only: auto detect salt length */
-# define RSA_PSS_SALTLEN_AUTO   -2
+# define YRSA_PSS_SALTLEN_AUTO   -2
 /* Set salt length to maximum possible */
-# define RSA_PSS_SALTLEN_MAX    -3
+# define YRSA_PSS_SALTLEN_MAX    -3
 /* Old compatible max salt length for sign only */
-# define RSA_PSS_SALTLEN_MAX_SIGN    -2
+# define YRSA_PSS_SALTLEN_MAX_SIGN    -2
 
-# define EVP_PKEY_CTX_set_rsa_pss_keygen_saltlen(ctx, len) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA_PSS, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_PSS_SALTLEN, len, NULL)
+# define EVVP_PKEY_CTX_set_rsa_pss_keygen_saltlen(ctx, len) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA_PSS, EVVP_PKEY_OP_KEYGEN, \
+                          EVVP_PKEY_CTRL_YRSA_PSS_SALTLEN, len, NULL)
 
-# define EVP_PKEY_CTX_get_rsa_pss_saltlen(ctx, plen) \
-        RSA_pkey_ctx_ctrl(ctx, (EVP_PKEY_OP_SIGN|EVP_PKEY_OP_VERIFY), \
-                          EVP_PKEY_CTRL_GET_RSA_PSS_SALTLEN, 0, plen)
+# define EVVP_PKEY_CTX_get_rsa_pss_saltlen(ctx, plen) \
+        YRSA_pkey_ctx_ctrl(ctx, (EVVP_PKEY_OP_SIGN|EVVP_PKEY_OP_VERIFY), \
+                          EVVP_PKEY_CTRL_GET_YRSA_PSS_SALTLEN, 0, plen)
 
-# define EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_BITS, bits, NULL)
+# define EVVP_PKEY_CTX_set_rsa_keygen_bits(ctx, bits) \
+        YRSA_pkey_ctx_ctrl(ctx, EVVP_PKEY_OP_KEYGEN, \
+                          EVVP_PKEY_CTRL_YRSA_KEYGEN_BITS, bits, NULL)
 
-# define EVP_PKEY_CTX_set_rsa_keygen_pubexp(ctx, pubexp) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_PUBEXP, 0, pubexp)
+# define EVVP_PKEY_CTX_set_rsa_keygen_pubexp(ctx, pubexp) \
+        YRSA_pkey_ctx_ctrl(ctx, EVVP_PKEY_OP_KEYGEN, \
+                          EVVP_PKEY_CTRL_YRSA_KEYGEN_PUBEXP, 0, pubexp)
 
-# define EVP_PKEY_CTX_set_rsa_keygen_primes(ctx, primes) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_KEYGEN_PRIMES, primes, NULL)
+# define EVVP_PKEY_CTX_set_rsa_keygen_primes(ctx, primes) \
+        YRSA_pkey_ctx_ctrl(ctx, EVVP_PKEY_OP_KEYGEN, \
+                          EVVP_PKEY_CTRL_YRSA_KEYGEN_PRIMES, primes, NULL)
 
-# define  EVP_PKEY_CTX_set_rsa_mgf1_md(ctx, md) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_TYPE_SIG | EVP_PKEY_OP_TYPE_CRYPT, \
-                          EVP_PKEY_CTRL_RSA_MGF1_MD, 0, (void *)(md))
+# define  EVVP_PKEY_CTX_set_rsa_mgf1_md(ctx, md) \
+        YRSA_pkey_ctx_ctrl(ctx, EVVP_PKEY_OP_TYPE_SIG | EVVP_PKEY_OP_TYPE_CRYPT, \
+                          EVVP_PKEY_CTRL_YRSA_MGF1_MD, 0, (void *)(md))
 
-# define  EVP_PKEY_CTX_set_rsa_pss_keygen_mgf1_md(ctx, md) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA_PSS, EVP_PKEY_OP_KEYGEN, \
-                          EVP_PKEY_CTRL_RSA_MGF1_MD, 0, (void *)(md))
+# define  EVVP_PKEY_CTX_set_rsa_pss_keygen_mgf1_md(ctx, md) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA_PSS, EVVP_PKEY_OP_KEYGEN, \
+                          EVVP_PKEY_CTRL_YRSA_MGF1_MD, 0, (void *)(md))
 
-# define  EVP_PKEY_CTX_set_rsa_oaep_md(ctx, md) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA, EVP_PKEY_OP_TYPE_CRYPT,  \
-                          EVP_PKEY_CTRL_RSA_OAEP_MD, 0, (void *)(md))
+# define  EVVP_PKEY_CTX_set_rsa_oaep_md(ctx, md) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA, EVVP_PKEY_OP_TYPE_CRYPT,  \
+                          EVVP_PKEY_CTRL_YRSA_OAEP_MD, 0, (void *)(md))
 
-# define  EVP_PKEY_CTX_get_rsa_mgf1_md(ctx, pmd) \
-        RSA_pkey_ctx_ctrl(ctx, EVP_PKEY_OP_TYPE_SIG | EVP_PKEY_OP_TYPE_CRYPT, \
-                          EVP_PKEY_CTRL_GET_RSA_MGF1_MD, 0, (void *)(pmd))
+# define  EVVP_PKEY_CTX_get_rsa_mgf1_md(ctx, pmd) \
+        YRSA_pkey_ctx_ctrl(ctx, EVVP_PKEY_OP_TYPE_SIG | EVVP_PKEY_OP_TYPE_CRYPT, \
+                          EVVP_PKEY_CTRL_GET_YRSA_MGF1_MD, 0, (void *)(pmd))
 
-# define  EVP_PKEY_CTX_get_rsa_oaep_md(ctx, pmd) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA, EVP_PKEY_OP_TYPE_CRYPT,  \
-                          EVP_PKEY_CTRL_GET_RSA_OAEP_MD, 0, (void *)(pmd))
+# define  EVVP_PKEY_CTX_get_rsa_oaep_md(ctx, pmd) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA, EVVP_PKEY_OP_TYPE_CRYPT,  \
+                          EVVP_PKEY_CTRL_GET_YRSA_OAEP_MD, 0, (void *)(pmd))
 
-# define  EVP_PKEY_CTX_set0_rsa_oaep_label(ctx, l, llen) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA, EVP_PKEY_OP_TYPE_CRYPT,  \
-                          EVP_PKEY_CTRL_RSA_OAEP_LABEL, llen, (void *)(l))
+# define  EVVP_PKEY_CTX_set0_rsa_oaep_label(ctx, l, llen) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA, EVVP_PKEY_OP_TYPE_CRYPT,  \
+                          EVVP_PKEY_CTRL_YRSA_OAEP_LABEL, llen, (void *)(l))
 
-# define  EVP_PKEY_CTX_get0_rsa_oaep_label(ctx, l) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA, EVP_PKEY_OP_TYPE_CRYPT,  \
-                          EVP_PKEY_CTRL_GET_RSA_OAEP_LABEL, 0, (void *)(l))
+# define  EVVP_PKEY_CTX_get0_rsa_oaep_label(ctx, l) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA, EVVP_PKEY_OP_TYPE_CRYPT,  \
+                          EVVP_PKEY_CTRL_GET_YRSA_OAEP_LABEL, 0, (void *)(l))
 
-# define  EVP_PKEY_CTX_set_rsa_pss_keygen_md(ctx, md) \
-        EVP_PKEY_CTX_ctrl(ctx, EVP_PKEY_RSA_PSS,  \
-                          EVP_PKEY_OP_KEYGEN, EVP_PKEY_CTRL_MD,  \
+# define  EVVP_PKEY_CTX_set_rsa_pss_keygen_md(ctx, md) \
+        EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA_PSS,  \
+                          EVVP_PKEY_OP_KEYGEN, EVVP_PKEY_CTRL_MD,  \
                           0, (void *)(md))
 
-# define EVP_PKEY_CTRL_RSA_PADDING       (EVP_PKEY_ALG_CTRL + 1)
-# define EVP_PKEY_CTRL_RSA_PSS_SALTLEN   (EVP_PKEY_ALG_CTRL + 2)
+# define EVVP_PKEY_CTRL_YRSA_PADDING       (EVVP_PKEY_ALG_CTRL + 1)
+# define EVVP_PKEY_CTRL_YRSA_PSS_SALTLEN   (EVVP_PKEY_ALG_CTRL + 2)
 
-# define EVP_PKEY_CTRL_RSA_KEYGEN_BITS   (EVP_PKEY_ALG_CTRL + 3)
-# define EVP_PKEY_CTRL_RSA_KEYGEN_PUBEXP (EVP_PKEY_ALG_CTRL + 4)
-# define EVP_PKEY_CTRL_RSA_MGF1_MD       (EVP_PKEY_ALG_CTRL + 5)
+# define EVVP_PKEY_CTRL_YRSA_KEYGEN_BITS   (EVVP_PKEY_ALG_CTRL + 3)
+# define EVVP_PKEY_CTRL_YRSA_KEYGEN_PUBEXP (EVVP_PKEY_ALG_CTRL + 4)
+# define EVVP_PKEY_CTRL_YRSA_MGF1_MD       (EVVP_PKEY_ALG_CTRL + 5)
 
-# define EVP_PKEY_CTRL_GET_RSA_PADDING           (EVP_PKEY_ALG_CTRL + 6)
-# define EVP_PKEY_CTRL_GET_RSA_PSS_SALTLEN       (EVP_PKEY_ALG_CTRL + 7)
-# define EVP_PKEY_CTRL_GET_RSA_MGF1_MD           (EVP_PKEY_ALG_CTRL + 8)
+# define EVVP_PKEY_CTRL_GET_YRSA_PADDING           (EVVP_PKEY_ALG_CTRL + 6)
+# define EVVP_PKEY_CTRL_GET_YRSA_PSS_SALTLEN       (EVVP_PKEY_ALG_CTRL + 7)
+# define EVVP_PKEY_CTRL_GET_YRSA_MGF1_MD           (EVVP_PKEY_ALG_CTRL + 8)
 
-# define EVP_PKEY_CTRL_RSA_OAEP_MD       (EVP_PKEY_ALG_CTRL + 9)
-# define EVP_PKEY_CTRL_RSA_OAEP_LABEL    (EVP_PKEY_ALG_CTRL + 10)
+# define EVVP_PKEY_CTRL_YRSA_OAEP_MD       (EVVP_PKEY_ALG_CTRL + 9)
+# define EVVP_PKEY_CTRL_YRSA_OAEP_LABEL    (EVVP_PKEY_ALG_CTRL + 10)
 
-# define EVP_PKEY_CTRL_GET_RSA_OAEP_MD   (EVP_PKEY_ALG_CTRL + 11)
-# define EVP_PKEY_CTRL_GET_RSA_OAEP_LABEL (EVP_PKEY_ALG_CTRL + 12)
+# define EVVP_PKEY_CTRL_GET_YRSA_OAEP_MD   (EVVP_PKEY_ALG_CTRL + 11)
+# define EVVP_PKEY_CTRL_GET_YRSA_OAEP_LABEL (EVVP_PKEY_ALG_CTRL + 12)
 
-# define EVP_PKEY_CTRL_RSA_KEYGEN_PRIMES  (EVP_PKEY_ALG_CTRL + 13)
+# define EVVP_PKEY_CTRL_YRSA_KEYGEN_PRIMES  (EVVP_PKEY_ALG_CTRL + 13)
 
-# define RSA_PKCS1_PADDING       1
-# define RSA_SSLV23_PADDING      2
-# define RSA_NO_PADDING          3
-# define RSA_PKCS1_OAEP_PADDING  4
-# define RSA_X931_PADDING        5
-/* EVP_PKEY_ only */
-# define RSA_PKCS1_PSS_PADDING   6
+# define YRSA_YPKCS1_PADDING       1
+# define YRSA_SSLV23_PADDING      2
+# define YRSA_NO_PADDING          3
+# define YRSA_YPKCS1_OAEP_PADDING  4
+# define YRSA_X931_PADDING        5
+/* EVVP_PKEY_ only */
+# define YRSA_YPKCS1_PSS_PADDING   6
 
-# define RSA_PKCS1_PADDING_SIZE  11
+# define YRSA_YPKCS1_PADDING_SIZE  11
 
-# define RSA_set_app_data(s,arg)         RSA_set_ex_data(s,0,arg)
-# define RSA_get_app_data(s)             RSA_get_ex_data(s,0)
+# define YRSA_set_app_data(s,arg)         YRSA_set_ex_data(s,0,arg)
+# define YRSA_get_app_data(s)             YRSA_get_ex_data(s,0)
 
-RSA *RSA_new(void);
-RSA *RSA_new_method(ENGINE *engine);
-int RSA_bits(const RSA *rsa);
-int RSA_size(const RSA *rsa);
-int RSA_security_bits(const RSA *rsa);
+YRSA *YRSA_new(void);
+YRSA *YRSA_new_method(ENGINE *engine);
+int YRSA_bits(const YRSA *rsa);
+int YRSA_size(const YRSA *rsa);
+int YRSA_security_bits(const YRSA *rsa);
 
-int RSA_set0_key(RSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
-int RSA_set0_factors(RSA *r, BIGNUM *p, BIGNUM *q);
-int RSA_set0_crt_params(RSA *r,BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp);
-int RSA_set0_multi_prime_params(RSA *r, BIGNUM *primes[], BIGNUM *exps[],
+int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
+int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q);
+int YRSA_set0_crt_params(YRSA *r,BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp);
+int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
                                 BIGNUM *coeffs[], int pnum);
-void RSA_get0_key(const RSA *r,
+void YRSA_get0_key(const YRSA *r,
                   const BIGNUM **n, const BIGNUM **e, const BIGNUM **d);
-void RSA_get0_factors(const RSA *r, const BIGNUM **p, const BIGNUM **q);
-int RSA_get_multi_prime_extra_count(const RSA *r);
-int RSA_get0_multi_prime_factors(const RSA *r, const BIGNUM *primes[]);
-void RSA_get0_crt_params(const RSA *r,
+void YRSA_get0_factors(const YRSA *r, const BIGNUM **p, const BIGNUM **q);
+int YRSA_get_multi_prime_extra_count(const YRSA *r);
+int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUM *primes[]);
+void YRSA_get0_crt_params(const YRSA *r,
                          const BIGNUM **dmp1, const BIGNUM **dmq1,
                          const BIGNUM **iqmp);
-int RSA_get0_multi_prime_crt_params(const RSA *r, const BIGNUM *exps[],
+int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUM *exps[],
                                     const BIGNUM *coeffs[]);
-const BIGNUM *RSA_get0_n(const RSA *d);
-const BIGNUM *RSA_get0_e(const RSA *d);
-const BIGNUM *RSA_get0_d(const RSA *d);
-const BIGNUM *RSA_get0_p(const RSA *d);
-const BIGNUM *RSA_get0_q(const RSA *d);
-const BIGNUM *RSA_get0_dmp1(const RSA *r);
-const BIGNUM *RSA_get0_dmq1(const RSA *r);
-const BIGNUM *RSA_get0_iqmp(const RSA *r);
-const RSA_PSS_PARAMS *RSA_get0_pss_params(const RSA *r);
-void RSA_clear_flags(RSA *r, int flags);
-int RSA_test_flags(const RSA *r, int flags);
-void RSA_set_flags(RSA *r, int flags);
-int RSA_get_version(RSA *r);
-ENGINE *RSA_get0_engine(const RSA *r);
+const BIGNUM *YRSA_get0_n(const YRSA *d);
+const BIGNUM *YRSA_get0_e(const YRSA *d);
+const BIGNUM *YRSA_get0_d(const YRSA *d);
+const BIGNUM *YRSA_get0_p(const YRSA *d);
+const BIGNUM *YRSA_get0_q(const YRSA *d);
+const BIGNUM *YRSA_get0_dmp1(const YRSA *r);
+const BIGNUM *YRSA_get0_dmq1(const YRSA *r);
+const BIGNUM *YRSA_get0_iqmp(const YRSA *r);
+const YRSA_PSS_PARAMS *YRSA_get0_pss_params(const YRSA *r);
+void YRSA_clear_flags(YRSA *r, int flags);
+int YRSA_test_flags(const YRSA *r, int flags);
+void YRSA_set_flags(YRSA *r, int flags);
+int YRSA_get_version(YRSA *r);
+ENGINE *YRSA_get0_engine(const YRSA *r);
 
 /* Deprecated version */
-DEPRECATEDIN_0_9_8(RSA *RSA_generate_key(int bits, unsigned long e, void
+DEPRECATEDIN_0_9_8(YRSA *YRSA_generate_key(int bits, unsigned long e, void
                                          (*callback) (int, int, void *),
                                          void *cb_arg))
 
 /* New version */
-int RSA_generate_key_ex(RSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
 /* Multi-prime version */
-int RSA_generate_multi_prime_key(RSA *rsa, int bits, int primes,
+int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes,
                                  BIGNUM *e, BN_GENCB *cb);
 
-int RSA_X931_derive_ex(RSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
+int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
                        BIGNUM *q2, const BIGNUM *Xp1, const BIGNUM *Xp2,
                        const BIGNUM *Xp, const BIGNUM *Xq1, const BIGNUM *Xq2,
                        const BIGNUM *Xq, const BIGNUM *e, BN_GENCB *cb);
-int RSA_X931_generate_key_ex(RSA *rsa, int bits, const BIGNUM *e,
+int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
                              BN_GENCB *cb);
 
-int RSA_check_key(const RSA *);
-int RSA_check_key_ex(const RSA *, BN_GENCB *cb);
+int YRSA_check_key(const YRSA *);
+int YRSA_check_key_ex(const YRSA *, BN_GENCB *cb);
         /* next 4 return -1 on error */
-int RSA_public_encrypt(int flen, const unsigned char *from,
-                       unsigned char *to, RSA *rsa, int padding);
-int RSA_private_encrypt(int flen, const unsigned char *from,
-                        unsigned char *to, RSA *rsa, int padding);
-int RSA_public_decrypt(int flen, const unsigned char *from,
-                       unsigned char *to, RSA *rsa, int padding);
-int RSA_private_decrypt(int flen, const unsigned char *from,
-                        unsigned char *to, RSA *rsa, int padding);
-void RSA_free(RSA *r);
-/* "up" the RSA object's reference count */
-int RSA_up_ref(RSA *r);
+int YRSA_public_encrypt(int flen, const unsigned char *from,
+                       unsigned char *to, YRSA *rsa, int padding);
+int YRSA_private_encrypt(int flen, const unsigned char *from,
+                        unsigned char *to, YRSA *rsa, int padding);
+int YRSA_public_decrypt(int flen, const unsigned char *from,
+                       unsigned char *to, YRSA *rsa, int padding);
+int YRSA_private_decrypt(int flen, const unsigned char *from,
+                        unsigned char *to, YRSA *rsa, int padding);
+void YRSA_free(YRSA *r);
+/* "up" the YRSA object's reference count */
+int YRSA_up_ref(YRSA *r);
 
-int RSA_flags(const RSA *r);
+int YRSA_flags(const YRSA *r);
 
-void RSA_set_default_method(const RSA_METHOD *meth);
-const RSA_METHOD *RSA_get_default_method(void);
-const RSA_METHOD *RSA_null_method(void);
-const RSA_METHOD *RSA_get_method(const RSA *rsa);
-int RSA_set_method(RSA *rsa, const RSA_METHOD *meth);
+void YRSA_set_default_method(const YRSA_METHOD *meth);
+const YRSA_METHOD *YRSA_get_default_method(void);
+const YRSA_METHOD *YRSA_null_method(void);
+const YRSA_METHOD *YRSA_get_method(const YRSA *rsa);
+int YRSA_set_method(YRSA *rsa, const YRSA_METHOD *meth);
 
-/* these are the actual RSA functions */
-const RSA_METHOD *RSA_PKCS1_OpenSSL(void);
+/* these are the actual YRSA functions */
+const YRSA_METHOD *YRSA_YPKCS1_OpenSSL(void);
 
-int RSA_pkey_ctx_ctrl(EVP_PKEY_CTX *ctx, int optype, int cmd, int p1, void *p2);
+int YRSA_pkey_ctx_ctrl(EVVP_PKEY_CTX *ctx, int optype, int cmd, int p1, void *p2);
 
-DECLARE_ASN1_ENCODE_FUNCTIONS_const(RSA, RSAPublicKey)
-DECLARE_ASN1_ENCODE_FUNCTIONS_const(RSA, RSAPrivateKey)
+DECLARE_YASN1_ENCODE_FUNCTIONS_const(YRSA, YRSAPublicKey)
+DECLARE_YASN1_ENCODE_FUNCTIONS_const(YRSA, YRSAPrivateKey)
 
 struct rsa_pss_params_st {
-    X509_ALGOR *hashAlgorithm;
-    X509_ALGOR *maskGenAlgorithm;
-    ASN1_INTEGER *saltLength;
-    ASN1_INTEGER *trailerField;
+    YX509_ALGOR *hashAlgorithm;
+    YX509_ALGOR *maskGenAlgorithm;
+    YASN1_INTEGER *saltLength;
+    YASN1_INTEGER *trailerField;
     /* Decoded hash algorithm from maskGenAlgorithm */
-    X509_ALGOR *maskHash;
+    YX509_ALGOR *maskHash;
 };
 
-DECLARE_ASN1_FUNCTIONS(RSA_PSS_PARAMS)
+DECLARE_YASN1_FUNCTIONS(YRSA_PSS_PARAMS)
 
 typedef struct rsa_oaep_params_st {
-    X509_ALGOR *hashFunc;
-    X509_ALGOR *maskGenFunc;
-    X509_ALGOR *pSourceFunc;
+    YX509_ALGOR *hashFunc;
+    YX509_ALGOR *maskGenFunc;
+    YX509_ALGOR *pSourceFunc;
     /* Decoded hash algorithm from maskGenFunc */
-    X509_ALGOR *maskHash;
-} RSA_OAEP_PARAMS;
+    YX509_ALGOR *maskHash;
+} YRSA_OAEP_PARAMS;
 
-DECLARE_ASN1_FUNCTIONS(RSA_OAEP_PARAMS)
+DECLARE_YASN1_FUNCTIONS(YRSA_OAEP_PARAMS)
 
 # ifndef OPENSSL_NO_STDIO
-int RSA_print_fp(FILE *fp, const RSA *r, int offset);
+int YRSA_print_fp(FILE *fp, const YRSA *r, int offset);
 # endif
 
-int RSA_print(BIO *bp, const RSA *r, int offset);
+int YRSA_print(BIO *bp, const YRSA *r, int offset);
 
 /*
- * The following 2 functions sign and verify a X509_SIG ASN1 object inside
- * PKCS#1 padded RSA encryption
+ * The following 2 functions sign and verify a YX509_SIG YASN1 object inside
+ * YPKCS#1 padded YRSA encryption
  */
-int RSA_sign(int type, const unsigned char *m, unsigned int m_length,
-             unsigned char *sigret, unsigned int *siglen, RSA *rsa);
-int RSA_verify(int type, const unsigned char *m, unsigned int m_length,
-               const unsigned char *sigbuf, unsigned int siglen, RSA *rsa);
+int YRSA_sign(int type, const unsigned char *m, unsigned int m_length,
+             unsigned char *sigret, unsigned int *siglen, YRSA *rsa);
+int YRSA_verify(int type, const unsigned char *m, unsigned int m_length,
+               const unsigned char *sigbuf, unsigned int siglen, YRSA *rsa);
 
 /*
- * The following 2 function sign and verify a ASN1_OCTET_STRING object inside
- * PKCS#1 padded RSA encryption
+ * The following 2 function sign and verify a YASN1_OCTET_STRING object inside
+ * YPKCS#1 padded YRSA encryption
  */
-int RSA_sign_ASN1_OCTET_STRING(int type,
+int YRSA_sign_YASN1_OCTET_STRING(int type,
                                const unsigned char *m, unsigned int m_length,
                                unsigned char *sigret, unsigned int *siglen,
-                               RSA *rsa);
-int RSA_verify_ASN1_OCTET_STRING(int type, const unsigned char *m,
+                               YRSA *rsa);
+int YRSA_verify_YASN1_OCTET_STRING(int type, const unsigned char *m,
                                  unsigned int m_length, unsigned char *sigbuf,
-                                 unsigned int siglen, RSA *rsa);
+                                 unsigned int siglen, YRSA *rsa);
 
-int RSA_blinding_on(RSA *rsa, BN_CTX *ctx);
-void RSA_blinding_off(RSA *rsa);
-BN_BLINDING *RSA_setup_blinding(RSA *rsa, BN_CTX *ctx);
+int YRSA_blinding_on(YRSA *rsa, BN_CTX *ctx);
+void YRSA_blinding_off(YRSA *rsa);
+BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *ctx);
 
-int RSA_padding_add_PKCS1_type_1(unsigned char *to, int tlen,
+int YRSA_padding_add_YPKCS1_type_1(unsigned char *to, int tlen,
                                  const unsigned char *f, int fl);
-int RSA_padding_check_PKCS1_type_1(unsigned char *to, int tlen,
+int YRSA_padding_check_YPKCS1_type_1(unsigned char *to, int tlen,
                                    const unsigned char *f, int fl,
                                    int rsa_len);
-int RSA_padding_add_PKCS1_type_2(unsigned char *to, int tlen,
+int YRSA_padding_add_YPKCS1_type_2(unsigned char *to, int tlen,
                                  const unsigned char *f, int fl);
-int RSA_padding_check_PKCS1_type_2(unsigned char *to, int tlen,
+int YRSA_padding_check_YPKCS1_type_2(unsigned char *to, int tlen,
                                    const unsigned char *f, int fl,
                                    int rsa_len);
-int PKCS1_MGF1(unsigned char *mask, long len, const unsigned char *seed,
-               long seedlen, const EVP_MD *dgst);
-int RSA_padding_add_PKCS1_OAEP(unsigned char *to, int tlen,
+int YPKCS1_MGF1(unsigned char *mask, long len, const unsigned char *seed,
+               long seedlen, const EVVP_MD *dgst);
+int YRSA_padding_add_YPKCS1_OAEP(unsigned char *to, int tlen,
                                const unsigned char *f, int fl,
                                const unsigned char *p, int pl);
-int RSA_padding_check_PKCS1_OAEP(unsigned char *to, int tlen,
+int YRSA_padding_check_YPKCS1_OAEP(unsigned char *to, int tlen,
                                  const unsigned char *f, int fl, int rsa_len,
                                  const unsigned char *p, int pl);
-int RSA_padding_add_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
+int YRSA_padding_add_YPKCS1_OAEP_mgf1(unsigned char *to, int tlen,
                                     const unsigned char *from, int flen,
                                     const unsigned char *param, int plen,
-                                    const EVP_MD *md, const EVP_MD *mgf1md);
-int RSA_padding_check_PKCS1_OAEP_mgf1(unsigned char *to, int tlen,
+                                    const EVVP_MD *md, const EVVP_MD *mgf1md);
+int YRSA_padding_check_YPKCS1_OAEP_mgf1(unsigned char *to, int tlen,
                                       const unsigned char *from, int flen,
                                       int num, const unsigned char *param,
-                                      int plen, const EVP_MD *md,
-                                      const EVP_MD *mgf1md);
-int RSA_padding_add_SSLv23(unsigned char *to, int tlen,
+                                      int plen, const EVVP_MD *md,
+                                      const EVVP_MD *mgf1md);
+int YRSA_padding_add_SSLv23(unsigned char *to, int tlen,
                            const unsigned char *f, int fl);
-int RSA_padding_check_SSLv23(unsigned char *to, int tlen,
+int YRSA_padding_check_SSLv23(unsigned char *to, int tlen,
                              const unsigned char *f, int fl, int rsa_len);
-int RSA_padding_add_none(unsigned char *to, int tlen, const unsigned char *f,
+int YRSA_padding_add_none(unsigned char *to, int tlen, const unsigned char *f,
                          int fl);
-int RSA_padding_check_none(unsigned char *to, int tlen,
+int YRSA_padding_check_none(unsigned char *to, int tlen,
                            const unsigned char *f, int fl, int rsa_len);
-int RSA_padding_add_X931(unsigned char *to, int tlen, const unsigned char *f,
+int YRSA_padding_add_X931(unsigned char *to, int tlen, const unsigned char *f,
                          int fl);
-int RSA_padding_check_X931(unsigned char *to, int tlen,
+int YRSA_padding_check_X931(unsigned char *to, int tlen,
                            const unsigned char *f, int fl, int rsa_len);
-int RSA_X931_hash_id(int nid);
+int YRSA_X931_hash_id(int nid);
 
-int RSA_verify_PKCS1_PSS(RSA *rsa, const unsigned char *mHash,
-                         const EVP_MD *Hash, const unsigned char *EM,
+int YRSA_verify_YPKCS1_PSS(YRSA *rsa, const unsigned char *mHash,
+                         const EVVP_MD *Hash, const unsigned char *EM,
                          int sLen);
-int RSA_padding_add_PKCS1_PSS(RSA *rsa, unsigned char *EM,
-                              const unsigned char *mHash, const EVP_MD *Hash,
+int YRSA_padding_add_YPKCS1_PSS(YRSA *rsa, unsigned char *EM,
+                              const unsigned char *mHash, const EVVP_MD *Hash,
                               int sLen);
 
-int RSA_verify_PKCS1_PSS_mgf1(RSA *rsa, const unsigned char *mHash,
-                              const EVP_MD *Hash, const EVP_MD *mgf1Hash,
+int YRSA_verify_YPKCS1_PSS_mgf1(YRSA *rsa, const unsigned char *mHash,
+                              const EVVP_MD *Hash, const EVVP_MD *mgf1Hash,
                               const unsigned char *EM, int sLen);
 
-int RSA_padding_add_PKCS1_PSS_mgf1(RSA *rsa, unsigned char *EM,
+int YRSA_padding_add_YPKCS1_PSS_mgf1(YRSA *rsa, unsigned char *EM,
                                    const unsigned char *mHash,
-                                   const EVP_MD *Hash, const EVP_MD *mgf1Hash,
+                                   const EVVP_MD *Hash, const EVVP_MD *mgf1Hash,
                                    int sLen);
 
-#define RSA_get_ex_new_index(l, p, newf, dupf, freef) \
-    CRYPTO_get_ex_new_index(CRYPTO_EX_INDEX_RSA, l, p, newf, dupf, freef)
-int RSA_set_ex_data(RSA *r, int idx, void *arg);
-void *RSA_get_ex_data(const RSA *r, int idx);
+#define YRSA_get_ex_new_index(l, p, newf, dupf, freef) \
+    CRYPTO_get_ex_new_index(CRYPTO_EX_INDEX_YRSA, l, p, newf, dupf, freef)
+int YRSA_set_ex_data(YRSA *r, int idx, void *arg);
+void *YRSA_get_ex_data(const YRSA *r, int idx);
 
-RSA *RSAPublicKey_dup(RSA *rsa);
-RSA *RSAPrivateKey_dup(RSA *rsa);
+YRSA *YRSAPublicKey_dup(YRSA *rsa);
+YRSA *YRSAPrivateKey_dup(YRSA *rsa);
 
 /*
- * If this flag is set the RSA method is FIPS compliant and can be used in
+ * If this flag is set the YRSA method is FIPS compliant and can be used in
  * FIPS mode. This is set in the validated module method. If an application
  * sets this flag in its own methods it is its responsibility to ensure the
  * result is compliant.
  */
 
-# define RSA_FLAG_FIPS_METHOD                    0x0400
+# define YRSA_FLAG_FIPS_METHOD                    0x0400
 
 /*
  * If this flag is set the operations normally disabled in FIPS mode are
@@ -412,97 +412,97 @@ RSA *RSAPrivateKey_dup(RSA *rsa);
  * usage is compliant.
  */
 
-# define RSA_FLAG_NON_FIPS_ALLOW                 0x0400
+# define YRSA_FLAG_NON_FIPS_ALLOW                 0x0400
 /*
  * Application has decided PRNG is good enough to generate a key: don't
  * check.
  */
-# define RSA_FLAG_CHECKED                        0x0800
+# define YRSA_FLAG_CHECKED                        0x0800
 
-RSA_METHOD *RSA_meth_new(const char *name, int flags);
-void RSA_meth_free(RSA_METHOD *meth);
-RSA_METHOD *RSA_meth_dup(const RSA_METHOD *meth);
-const char *RSA_meth_get0_name(const RSA_METHOD *meth);
-int RSA_meth_set1_name(RSA_METHOD *meth, const char *name);
-int RSA_meth_get_flags(const RSA_METHOD *meth);
-int RSA_meth_set_flags(RSA_METHOD *meth, int flags);
-void *RSA_meth_get0_app_data(const RSA_METHOD *meth);
-int RSA_meth_set0_app_data(RSA_METHOD *meth, void *app_data);
-int (*RSA_meth_get_pub_enc(const RSA_METHOD *meth))
+YRSA_METHOD *YRSA_meth_new(const char *name, int flags);
+void YRSA_meth_free(YRSA_METHOD *meth);
+YRSA_METHOD *YRSA_meth_dup(const YRSA_METHOD *meth);
+const char *YRSA_meth_get0_name(const YRSA_METHOD *meth);
+int YRSA_meth_set1_name(YRSA_METHOD *meth, const char *name);
+int YRSA_meth_get_flags(const YRSA_METHOD *meth);
+int YRSA_meth_set_flags(YRSA_METHOD *meth, int flags);
+void *YRSA_meth_get0_app_data(const YRSA_METHOD *meth);
+int YRSA_meth_set0_app_data(YRSA_METHOD *meth, void *app_data);
+int (*YRSA_meth_get_pub_enc(const YRSA_METHOD *meth))
     (int flen, const unsigned char *from,
-     unsigned char *to, RSA *rsa, int padding);
-int RSA_meth_set_pub_enc(RSA_METHOD *rsa,
+     unsigned char *to, YRSA *rsa, int padding);
+int YRSA_meth_set_pub_enc(YRSA_METHOD *rsa,
                          int (*pub_enc) (int flen, const unsigned char *from,
-                                         unsigned char *to, RSA *rsa,
+                                         unsigned char *to, YRSA *rsa,
                                          int padding));
-int (*RSA_meth_get_pub_dec(const RSA_METHOD *meth))
+int (*YRSA_meth_get_pub_dec(const YRSA_METHOD *meth))
     (int flen, const unsigned char *from,
-     unsigned char *to, RSA *rsa, int padding);
-int RSA_meth_set_pub_dec(RSA_METHOD *rsa,
+     unsigned char *to, YRSA *rsa, int padding);
+int YRSA_meth_set_pub_dec(YRSA_METHOD *rsa,
                          int (*pub_dec) (int flen, const unsigned char *from,
-                                         unsigned char *to, RSA *rsa,
+                                         unsigned char *to, YRSA *rsa,
                                          int padding));
-int (*RSA_meth_get_priv_enc(const RSA_METHOD *meth))
+int (*YRSA_meth_get_priv_enc(const YRSA_METHOD *meth))
     (int flen, const unsigned char *from,
-     unsigned char *to, RSA *rsa, int padding);
-int RSA_meth_set_priv_enc(RSA_METHOD *rsa,
+     unsigned char *to, YRSA *rsa, int padding);
+int YRSA_meth_set_priv_enc(YRSA_METHOD *rsa,
                           int (*priv_enc) (int flen, const unsigned char *from,
-                                           unsigned char *to, RSA *rsa,
+                                           unsigned char *to, YRSA *rsa,
                                            int padding));
-int (*RSA_meth_get_priv_dec(const RSA_METHOD *meth))
+int (*YRSA_meth_get_priv_dec(const YRSA_METHOD *meth))
     (int flen, const unsigned char *from,
-     unsigned char *to, RSA *rsa, int padding);
-int RSA_meth_set_priv_dec(RSA_METHOD *rsa,
+     unsigned char *to, YRSA *rsa, int padding);
+int YRSA_meth_set_priv_dec(YRSA_METHOD *rsa,
                           int (*priv_dec) (int flen, const unsigned char *from,
-                                           unsigned char *to, RSA *rsa,
+                                           unsigned char *to, YRSA *rsa,
                                            int padding));
-int (*RSA_meth_get_mod_exp(const RSA_METHOD *meth))
-    (BIGNUM *r0, const BIGNUM *i, RSA *rsa, BN_CTX *ctx);
-int RSA_meth_set_mod_exp(RSA_METHOD *rsa,
-                         int (*mod_exp) (BIGNUM *r0, const BIGNUM *i, RSA *rsa,
+int (*YRSA_meth_get_mod_exp(const YRSA_METHOD *meth))
+    (BIGNUM *r0, const BIGNUM *i, YRSA *rsa, BN_CTX *ctx);
+int YRSA_meth_set_mod_exp(YRSA_METHOD *rsa,
+                         int (*mod_exp) (BIGNUM *r0, const BIGNUM *i, YRSA *rsa,
                                          BN_CTX *ctx));
-int (*RSA_meth_get_bn_mod_exp(const RSA_METHOD *meth))
+int (*YRSA_meth_get_bn_mod_exp(const YRSA_METHOD *meth))
     (BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
      const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
-int RSA_meth_set_bn_mod_exp(RSA_METHOD *rsa,
+int YRSA_meth_set_bn_mod_exp(YRSA_METHOD *rsa,
                             int (*bn_mod_exp) (BIGNUM *r,
                                                const BIGNUM *a,
                                                const BIGNUM *p,
                                                const BIGNUM *m,
                                                BN_CTX *ctx,
                                                BN_MONT_CTX *m_ctx));
-int (*RSA_meth_get_init(const RSA_METHOD *meth)) (RSA *rsa);
-int RSA_meth_set_init(RSA_METHOD *rsa, int (*init) (RSA *rsa));
-int (*RSA_meth_get_finish(const RSA_METHOD *meth)) (RSA *rsa);
-int RSA_meth_set_finish(RSA_METHOD *rsa, int (*finish) (RSA *rsa));
-int (*RSA_meth_get_sign(const RSA_METHOD *meth))
+int (*YRSA_meth_get_init(const YRSA_METHOD *meth)) (YRSA *rsa);
+int YRSA_meth_set_init(YRSA_METHOD *rsa, int (*init) (YRSA *rsa));
+int (*YRSA_meth_get_finish(const YRSA_METHOD *meth)) (YRSA *rsa);
+int YRSA_meth_set_finish(YRSA_METHOD *rsa, int (*finish) (YRSA *rsa));
+int (*YRSA_meth_get_sign(const YRSA_METHOD *meth))
     (int type,
      const unsigned char *m, unsigned int m_length,
      unsigned char *sigret, unsigned int *siglen,
-     const RSA *rsa);
-int RSA_meth_set_sign(RSA_METHOD *rsa,
+     const YRSA *rsa);
+int YRSA_meth_set_sign(YRSA_METHOD *rsa,
                       int (*sign) (int type, const unsigned char *m,
                                    unsigned int m_length,
                                    unsigned char *sigret, unsigned int *siglen,
-                                   const RSA *rsa));
-int (*RSA_meth_get_verify(const RSA_METHOD *meth))
+                                   const YRSA *rsa));
+int (*YRSA_meth_get_verify(const YRSA_METHOD *meth))
     (int dtype, const unsigned char *m,
      unsigned int m_length, const unsigned char *sigbuf,
-     unsigned int siglen, const RSA *rsa);
-int RSA_meth_set_verify(RSA_METHOD *rsa,
+     unsigned int siglen, const YRSA *rsa);
+int YRSA_meth_set_verify(YRSA_METHOD *rsa,
                         int (*verify) (int dtype, const unsigned char *m,
                                        unsigned int m_length,
                                        const unsigned char *sigbuf,
-                                       unsigned int siglen, const RSA *rsa));
-int (*RSA_meth_get_keygen(const RSA_METHOD *meth))
-    (RSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
-int RSA_meth_set_keygen(RSA_METHOD *rsa,
-                        int (*keygen) (RSA *rsa, int bits, BIGNUM *e,
+                                       unsigned int siglen, const YRSA *rsa));
+int (*YRSA_meth_get_keygen(const YRSA_METHOD *meth))
+    (YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+int YRSA_meth_set_keygen(YRSA_METHOD *rsa,
+                        int (*keygen) (YRSA *rsa, int bits, BIGNUM *e,
                                        BN_GENCB *cb));
-int (*RSA_meth_get_multi_prime_keygen(const RSA_METHOD *meth))
-    (RSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
-int RSA_meth_set_multi_prime_keygen(RSA_METHOD *meth,
-                                    int (*keygen) (RSA *rsa, int bits,
+int (*YRSA_meth_get_multi_prime_keygen(const YRSA_METHOD *meth))
+    (YRSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
+int YRSA_meth_set_multi_prime_keygen(YRSA_METHOD *meth,
+                                    int (*keygen) (YRSA *rsa, int bits,
                                                    int primes, BIGNUM *e,
                                                    BN_GENCB *cb));
 

@@ -16,18 +16,18 @@
 #
 # June 2011
 #
-# This is AESNI-CBC+SHA1 "stitch" implementation. The idea, as spelled
+# This is YAESNI-CBC+YSHA1 "stitch" implementation. The idea, as spelled
 # in http://download.intel.com/design/intarch/papers/323686.pdf, is
-# that since AESNI-CBC encrypt exhibit *very* low instruction-level
+# that since YAESNI-CBC encrypt exhibit *very* low instruction-level
 # parallelism, interleaving it with another algorithm would allow to
 # utilize processor resources better and achieve better performance.
-# SHA1 instruction sequences(*) are taken from sha1-x86_64.pl and
-# AESNI code is weaved into it. Below are performance numbers in
-# cycles per processed byte, less is better, for standalone AESNI-CBC
-# encrypt, sum of the latter and standalone SHA1, and "stitched"
+# YSHA1 instruction sequences(*) are taken from sha1-x86_64.pl and
+# YAESNI code is weaved into it. Below are performance numbers in
+# cycles per processed byte, less is better, for standalone YAESNI-CBC
+# encrypt, sum of the latter and standalone YSHA1, and "stitched"
 # subroutine:
 #
-#		AES-128-CBC	+SHA1		stitch      gain
+#		YAES-128-CBC	+YSHA1		stitch      gain
 # Westmere	3.77[+5.3]	9.07		6.55	    +38%
 # Sandy Bridge	5.05[+5.0(6.1)]	10.06(11.15)	5.98(7.05)  +68%(+58%)
 # Ivy Bridge	5.05[+4.6]	9.65		5.54        +74%
@@ -37,14 +37,14 @@
 # Ryzen(**)	2.71[+1.93]	4.64		2.74        +69%
 # Goldmont(**)	3.82[+1.70]	5.52		4.20        +31%
 #
-#		AES-192-CBC
+#		YAES-192-CBC
 # Westmere	4.51		9.81		6.80	    +44%
 # Sandy Bridge	6.05		11.06(12.15)	6.11(7.19)  +81%(+69%)
 # Ivy Bridge	6.05		10.65		6.07        +75%
 # Haswell	5.29		8.86(9.44)	5.32(5.32)  +67%(+77%)
 # Bulldozer	6.89		12.84		6.96        +84%
 #
-#		AES-256-CBC
+#		YAES-256-CBC
 # Westmere	5.25		10.55		7.21	    +46%
 # Sandy Bridge	7.05		12.06(13.15)	7.12(7.72)  +69%(+70%)
 # Ivy Bridge	7.05		11.65		7.12        +64%
@@ -61,13 +61,13 @@
 # (**)	SHAEXT results.
 #
 # Needless to mention that it makes no sense to implement "stitched"
-# *decrypt* subroutine. Because *both* AESNI-CBC decrypt and SHA1
+# *decrypt* subroutine. Because *both* YAESNI-CBC decrypt and YSHA1
 # fully utilize parallelism, so stitching would not give any gain
 # anyway. Well, there might be some, e.g. because of better cache
 # locality... For reference, here are performance results for
-# standalone AESNI-CBC decrypt:
+# standalone YAESNI-CBC decrypt:
 #
-#		AES-128-CBC	AES-192-CBC	AES-256-CBC
+#		YAES-128-CBC	YAES-192-CBC	YAES-256-CBC
 # Westmere	1.25		1.50		1.75
 # Sandy Bridge	0.74		0.91		1.09
 # Ivy Bridge	0.74		0.90		1.11
@@ -76,7 +76,7 @@
 
 # And indeed:
 #
-#		AES-256-CBC	+SHA1		stitch      gain
+#		YAES-256-CBC	+YSHA1		stitch      gain
 # Westmere	1.75		7.20		6.68        +7.8%
 # Sandy Bridge	1.09		6.09(7.22)	5.82(6.95)  +4.6%(+3.9%)
 # Ivy Bridge	1.11		5.70		5.45        +4.6%
@@ -84,7 +84,7 @@
 # Bulldozer	0.99		6.95		5.95        +17%(**)
 #
 # (*)	Tiny improvement coefficient on Haswell is because we compare
-#	AVX1 stitch to sum with AVX2 SHA1.
+#	AVX1 stitch to sum with AVX2 YSHA1.
 # (**)	Execution is fully dominated by integer code sequence and
 #	SIMD still hardly shows [in single-process benchmark;-]
 
@@ -120,7 +120,7 @@ open OUT,"| \"$^X\" \"$xlate\" $flavour \"$output\"";
 # void aesni_cbc_sha1_enc(const void *inp,
 #			void *out,
 #			size_t length,
-#			const AES_KEY *key,
+#			const YAES_KEY *key,
 #			unsigned char *iv,
 #			SHA_CTX *ctx,
 #			const void *in0);
@@ -134,7 +134,7 @@ $code.=<<___;
 .align	32
 aesni_cbc_sha1_enc:
 .cfi_startproc
-	# caller should check for SSSE3 and AES-NI bits
+	# caller should check for SSSE3 and YAES-NI bits
 	mov	OPENSSL_ia32cap_P+0(%rip),%r10d
 	mov	OPENSSL_ia32cap_P+4(%rip),%r11
 ___
@@ -171,7 +171,7 @@ my ($inout0,$inout1,$inout2,$inout3)=map("%xmm$_",(12..15));	# for dec
 
 if (1) {	# reassign for Atom Silvermont
     # The goal is to minimize amount of instructions with more than
-    # 3 prefix bytes. Or in more practical terms to keep AES-NI *and*
+    # 3 prefix bytes. Or in more practical terms to keep YAES-NI *and*
     # SSSE3 instructions to upper half of the register bank.
     @X=map("%xmm$_",(8..11,4..7));
     @Tx=map("%xmm$_",(12,13,3));
@@ -843,7 +843,7 @@ $code.=<<___;
 .align	32
 aesni256_cbc_sha1_dec:
 .cfi_startproc
-	# caller should check for SSSE3 and AES-NI bits
+	# caller should check for SSSE3 and YAES-NI bits
 	mov	OPENSSL_ia32cap_P+0(%rip),%r10d
 	mov	OPENSSL_ia32cap_P+4(%rip),%r11d
 ___
@@ -1745,7 +1745,7 @@ K_XX_XX:
 .long	0x00010203,0x04050607,0x08090a0b,0x0c0d0e0f	# pbswap mask
 .byte	0xf,0xe,0xd,0xc,0xb,0xa,0x9,0x8,0x7,0x6,0x5,0x4,0x3,0x2,0x1,0x0
 
-.asciz	"AESNI-CBC+SHA1 stitch for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
+.asciz	"YAESNI-CBC+YSHA1 stitch for x86_64, CRYPTOGAMS by <appro\@openssl.org>"
 .align	64
 ___
 						if ($shaext) {{{

@@ -243,15 +243,15 @@ bn_sqr_words:
 	br	%r14
 .size	bn_sqr_words,.-bn_sqr_words
 
-// BN_ULONG bn_div_words(BN_ULONG h,BN_ULONG l,BN_ULONG d);
-.globl	bn_div_words
-.type	bn_div_words,@function
+// BN_ULONG bn_div_wordss(BN_ULONG h,BN_ULONG l,BN_ULONG d);
+.globl	bn_div_wordss
+.type	bn_div_wordss,@function
 .align	4
-bn_div_words:
+bn_div_wordss:
 	dlgr	%r2,%r4
 	lgr	%r2,%r3
 	br	%r14
-.size	bn_div_words,.-bn_div_words
+.size	bn_div_wordss,.-bn_div_wordss
 
 // BN_ULONG bn_add_words(BN_ULONG *r2,BN_ULONG *r3,BN_ULONG *r4,int r5);
 .globl	bn_add_words
@@ -568,11 +568,11 @@ bn_mul_comba4:
 	alcgr	c2,%r6;			\
 	alcgr	c3,zero
 
-// void bn_sqr_comba8(BN_ULONG *r2,BN_ULONG *r3);
-.globl	bn_sqr_comba8
-.type	bn_sqr_comba8,@function
+// void bny_sqr_comba8(BN_ULONG *r2,BN_ULONG *r3);
+.globl	bny_sqr_comba8
+.type	bny_sqr_comba8,@function
 .align	4
-bn_sqr_comba8:
+bny_sqr_comba8:
 	stmg	%r6,%r8,48(%r15)
 
 	lghi	c1,0
@@ -663,7 +663,7 @@ bn_sqr_comba8:
 
 	lmg	%r6,%r8,48(%r15)
 	br	%r14
-.size	bn_sqr_comba8,.-bn_sqr_comba8
+.size	bny_sqr_comba8,.-bny_sqr_comba8
 
 // void bn_sqr_comba4(BN_ULONG *r2,BN_ULONG *r3);
 .globl bn_sqr_comba4

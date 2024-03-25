@@ -22,16 +22,16 @@
 #include <openssl/x509v3.h>
 #include "internal/nelem.h"
 
-static const ASN1_ITEM *item_type;
+static const YASN1_ITEM *item_type;
 static const char *test_file;
 
 typedef enum {
-    ASN1_UNKNOWN,
-    ASN1_OK,
-    ASN1_BIO,
-    ASN1_DECODE,
-    ASN1_ENCODE,
-    ASN1_COMPARE
+    YASN1_UNKNOWN,
+    YASN1_OK,
+    YASN1_BIO,
+    YASN1_DECODE,
+    YASN1_ENCODE,
+    YASN1_COMPARE
 } expected_error_t;
 
 typedef struct {
@@ -39,12 +39,12 @@ typedef struct {
     expected_error_t code;
 } error_enum;
 
-static expected_error_t expected_error = ASN1_UNKNOWN;
+static expected_error_t expected_error = YASN1_UNKNOWN;
 
 static int test_bad_asn1(void)
 {
     BIO *bio = NULL;
-    ASN1_VALUE *value = NULL;
+    YASN1_VALUE *value = NULL;
     int ret = 0;
     unsigned char buf[2048];
     const unsigned char *buf_ptr = buf;
@@ -56,14 +56,14 @@ static int test_bad_asn1(void)
     if (!TEST_ptr(bio))
         return 0;
 
-    if (expected_error == ASN1_BIO) {
-        if (TEST_ptr_null(ASN1_item_d2i_bio(item_type, bio, NULL)))
+    if (expected_error == YASN1_BIO) {
+        if (TEST_ptr_null(YASN1_item_d2i_bio(item_type, bio, NULL)))
             ret = 1;
         goto err;
     }
 
     /*
-     * Unless we are testing it we don't use ASN1_item_d2i_bio because it
+     * Unless we are testing it we don't use YASN1_item_d2i_bio because it
      * performs sanity checks on the input and can reject it before the
      * decoder is called.
      */
@@ -71,28 +71,28 @@ static int test_bad_asn1(void)
     if (!TEST_int_ge(len, 0))
         goto err;
 
-    value = ASN1_item_d2i(NULL, &buf_ptr, len, item_type);
+    value = YASN1_item_d2i(NULL, &buf_ptr, len, item_type);
     if (value == NULL) {
-        if (TEST_int_eq(expected_error, ASN1_DECODE))
+        if (TEST_int_eq(expected_error, YASN1_DECODE))
             ret = 1;
         goto err;
     }
 
-    derlen = ASN1_item_i2d(value, &der, item_type);
+    derlen = YASN1_item_i2d(value, &der, item_type);
 
     if (der == NULL || derlen < 0) {
-        if (TEST_int_eq(expected_error, ASN1_ENCODE))
+        if (TEST_int_eq(expected_error, YASN1_ENCODE))
             ret = 1;
         goto err;
     }
 
     if (derlen != len || memcmp(der, buf, derlen) != 0) {
-        if (TEST_int_eq(expected_error, ASN1_COMPARE))
+        if (TEST_int_eq(expected_error, YASN1_COMPARE))
             ret = 1;
         goto err;
     }
 
-    if (TEST_int_eq(expected_error, ASN1_OK))
+    if (TEST_int_eq(expected_error, YASN1_OK))
         ret = 1;
 
  err:
@@ -102,7 +102,7 @@ static int test_bad_asn1(void)
         ret = 0;
     BIO_free(bio);
     OPENSSL_free(der);
-    ASN1_item_free(value, item_type);
+    YASN1_item_free(value, item_type);
     return ret;
 }
 
@@ -118,11 +118,11 @@ int setup_tests(void)
     size_t i;
 
     static error_enum expected_errors[] = {
-        {"OK", ASN1_OK},
-        {"BIO", ASN1_BIO},
-        {"decode", ASN1_DECODE},
-        {"encode", ASN1_ENCODE},
-        {"compare", ASN1_COMPARE}
+        {"OK", YASN1_OK},
+        {"BIO", YASN1_BIO},
+        {"decode", YASN1_DECODE},
+        {"encode", YASN1_ENCODE},
+        {"compare", YASN1_COMPARE}
     };
 
     if (!TEST_ptr(test_type_name = test_get_argument(0))
@@ -132,13 +132,13 @@ int setup_tests(void)
         return 0;
     }
 
-    item_type = ASN1_ITEM_lookup(test_type_name);
+    item_type = YASN1_ITEM_lookup(test_type_name);
 
     if (item_type == NULL) {
         TEST_error("Unknown type %s", test_type_name);
         TEST_note("Supported types:");
         for (i = 0;; i++) {
-            const ASN1_ITEM *it = ASN1_ITEM_get(i);
+            const YASN1_ITEM *it = YASN1_ITEM_get(i);
 
             if (it == NULL)
                 break;
@@ -154,7 +154,7 @@ int setup_tests(void)
         }
     }
 
-    if (expected_error == ASN1_UNKNOWN) {
+    if (expected_error == YASN1_UNKNOWN) {
         TEST_error("Unknown expected error %s\n", expected_error_string);
         return 0;
     }

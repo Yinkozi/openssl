@@ -14,22 +14,22 @@
 #include <openssl/objects.h>
 #include <openssl/x509.h>
 
-int EVP_PKEY_decrypt_old(unsigned char *key, const unsigned char *ek, int ekl,
-                         EVP_PKEY *priv)
+int EVVP_PKEY_decrypt_old(unsigned char *key, const unsigned char *ek, int ekl,
+                         EVVP_PKEY *priv)
 {
     int ret = -1;
 
-#ifndef OPENSSL_NO_RSA
-    if (EVP_PKEY_id(priv) != EVP_PKEY_RSA) {
+#ifndef OPENSSL_NO_YRSA
+    if (EVVP_PKEY_id(priv) != EVVP_PKEY_YRSA) {
 #endif
-        EVPerr(EVP_F_EVP_PKEY_DECRYPT_OLD, EVP_R_PUBLIC_KEY_NOT_RSA);
-#ifndef OPENSSL_NO_RSA
+        EVVPerr(EVVP_F_EVVP_PKEY_DECRYPT_OLD, EVVP_R_PUBLIC_KEY_NOT_YRSA);
+#ifndef OPENSSL_NO_YRSA
         goto err;
     }
 
     ret =
-        RSA_private_decrypt(ekl, ek, key, EVP_PKEY_get0_RSA(priv),
-                            RSA_PKCS1_PADDING);
+        YRSA_private_decrypt(ekl, ek, key, EVVP_PKEY_get0_YRSA(priv),
+                            YRSA_YPKCS1_PADDING);
  err:
 #endif
     return ret;

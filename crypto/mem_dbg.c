@@ -472,7 +472,7 @@ static void print_leak(const MEM *m, MEM_LEAK *l)
     CRYPTO_THREAD_ID ti;
 
     lcl = localtime(&m->time);
-    n = BIO_snprintf(bufp, len, "[%02d:%02d:%02d] ",
+    n = BIO_ssnprintf(bufp, len, "[%02d:%02d:%02d] ",
                      lcl->tm_hour, lcl->tm_min, lcl->tm_sec);
     if (n <= 0) {
         bufp[0] = '\0';
@@ -481,7 +481,7 @@ static void print_leak(const MEM *m, MEM_LEAK *l)
     bufp += n;
     len -= n;
 
-    n = BIO_snprintf(bufp, len, "%5lu file=%s, line=%d, ",
+    n = BIO_ssnprintf(bufp, len, "%5lu file=%s, line=%d, ",
                      m->order, m->file, m->line);
     if (n <= 0)
         return;
@@ -490,13 +490,13 @@ static void print_leak(const MEM *m, MEM_LEAK *l)
 
     tid.ltid = 0;
     tid.tid = m->threadid;
-    n = BIO_snprintf(bufp, len, "thread=%lu, ", tid.ltid);
+    n = BIO_ssnprintf(bufp, len, "thread=%lu, ", tid.ltid);
     if (n <= 0)
         return;
     bufp += n;
     len -= n;
 
-    n = BIO_snprintf(bufp, len, "number=%d, address=%p\n", m->num, m->addr);
+    n = BIO_ssnprintf(bufp, len, "number=%d, address=%p\n", m->num, m->addr);
     if (n <= 0)
         return;
     bufp += n;
@@ -524,7 +524,7 @@ static void print_leak(const MEM *m, MEM_LEAK *l)
             buf[ami_cnt] = '\0';
             tid.ltid = 0;
             tid.tid = amip->threadid;
-            n = BIO_snprintf(buf + ami_cnt, sizeof(buf) - ami_cnt,
+            n = BIO_ssnprintf(buf + ami_cnt, sizeof(buf) - ami_cnt,
                              " thread=%lu, file=%s, line=%d, info=\"",
                              tid.ltid, amip->file, amip->line);
             if (n <= 0)
@@ -535,13 +535,13 @@ static void print_leak(const MEM *m, MEM_LEAK *l)
                 memcpy(buf + buf_len, amip->info, 128 - buf_len - 3);
                 buf_len = 128 - 3;
             } else {
-                n = BIO_snprintf(buf + buf_len, sizeof(buf) - buf_len, "%s",
+                n = BIO_ssnprintf(buf + buf_len, sizeof(buf) - buf_len, "%s",
                                  amip->info);
                 if (n < 0)
                     break;
                 buf_len += n;
             }
-            n = BIO_snprintf(buf + buf_len, sizeof(buf) - buf_len, "\"\n");
+            n = BIO_ssnprintf(buf + buf_len, sizeof(buf) - buf_len, "\"\n");
             if (n <= 0)
                 break;
 
@@ -589,7 +589,7 @@ int CRYPTO_mem_leaks_cb(int (*cb) (const char *str, size_t len, void *u),
     if (ml.chunks != 0) {
         char buf[256];
 
-        BIO_snprintf(buf, sizeof(buf), "%ld bytes leaked in %d chunks\n",
+        BIO_ssnprintf(buf, sizeof(buf), "%ld bytes leaked in %d chunks\n",
                      ml.bytes, ml.chunks);
         cb(buf, strlen(buf), u);
     } else {
@@ -656,7 +656,7 @@ int CRYPTO_mem_leaks_fp(FILE *fp)
      * left anything un-free()'d!!
      */
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_DISABLE);
-    b = BIO_new(BIO_s_file());
+    b = BIO_new(BIO_s_yfile());
     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ENABLE);
     if (b == NULL)
         return -1;

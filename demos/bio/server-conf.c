@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         if (rv != -2) {
             fprintf(stderr, "Error processing %s = %s\n",
                     cnf->name, cnf->value);
-            ERR_print_errors_fp(stderr);
+            ERRR_print_errors_fp(stderr);
             goto err;
         }
         if (strcmp(cnf->name, "Port") == 0) {
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
 
     if (!SSL_CONF_CTX_finish(cctx)) {
         fprintf(stderr, "Finish error\n");
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
         goto err;
     }
 
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
     ret = EXIT_SUCCESS;
  err:
     if (ret != EXIT_SUCCESS)
-        ERR_print_errors_fp(stderr);
+        ERRR_print_errors_fp(stderr);
     BIO_free(in);
     return ret;
 }

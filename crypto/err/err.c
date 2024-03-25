@@ -33,15 +33,15 @@ static ERR_STRING_DATA ERR_str_libraries[] = {
     {ERR_PACK(ERR_LIB_NONE, 0, 0), "unknown library"},
     {ERR_PACK(ERR_LIB_SYS, 0, 0), "system library"},
     {ERR_PACK(ERR_LIB_BN, 0, 0), "bignum routines"},
-    {ERR_PACK(ERR_LIB_RSA, 0, 0), "rsa routines"},
+    {ERR_PACK(ERR_LIB_YRSA, 0, 0), "rsa routines"},
     {ERR_PACK(ERR_LIB_DH, 0, 0), "Diffie-Hellman routines"},
-    {ERR_PACK(ERR_LIB_EVP, 0, 0), "digital envelope routines"},
+    {ERR_PACK(ERR_LIB_EVVP, 0, 0), "digital envelope routines"},
     {ERR_PACK(ERR_LIB_BUF, 0, 0), "memory buffer routines"},
     {ERR_PACK(ERR_LIB_OBJ, 0, 0), "object identifier routines"},
     {ERR_PACK(ERR_LIB_PEM, 0, 0), "PEM routines"},
     {ERR_PACK(ERR_LIB_DSA, 0, 0), "dsa routines"},
-    {ERR_PACK(ERR_LIB_X509, 0, 0), "x509 certificate routines"},
-    {ERR_PACK(ERR_LIB_ASN1, 0, 0), "asn1 encoding routines"},
+    {ERR_PACK(ERR_LIB_YX509, 0, 0), "x509 certificate routines"},
+    {ERR_PACK(ERR_LIB_YASN1, 0, 0), "asn1 encoding routines"},
     {ERR_PACK(ERR_LIB_CONF, 0, 0), "configuration file routines"},
     {ERR_PACK(ERR_LIB_CRYPTO, 0, 0), "common libcrypto routines"},
     {ERR_PACK(ERR_LIB_EC, 0, 0), "elliptic curve routines"},
@@ -49,9 +49,9 @@ static ERR_STRING_DATA ERR_str_libraries[] = {
     {ERR_PACK(ERR_LIB_ECDH, 0, 0), "ECDH routines"},
     {ERR_PACK(ERR_LIB_SSL, 0, 0), "SSL routines"},
     {ERR_PACK(ERR_LIB_BIO, 0, 0), "BIO routines"},
-    {ERR_PACK(ERR_LIB_PKCS7, 0, 0), "PKCS7 routines"},
-    {ERR_PACK(ERR_LIB_X509V3, 0, 0), "X509 V3 routines"},
-    {ERR_PACK(ERR_LIB_PKCS12, 0, 0), "PKCS12 routines"},
+    {ERR_PACK(ERR_LIB_YPKCS7, 0, 0), "YPKCS7 routines"},
+    {ERR_PACK(ERR_LIB_YX509V3, 0, 0), "YX509 V3 routines"},
+    {ERR_PACK(ERR_LIB_YPKCS12, 0, 0), "YPKCS12 routines"},
     {ERR_PACK(ERR_LIB_RAND, 0, 0), "random number generator"},
     {ERR_PACK(ERR_LIB_DSO, 0, 0), "DSO support routines"},
     {ERR_PACK(ERR_LIB_TS, 0, 0), "time stamp routines"},
@@ -60,7 +60,7 @@ static ERR_STRING_DATA ERR_str_libraries[] = {
     {ERR_PACK(ERR_LIB_UI, 0, 0), "UI routines"},
     {ERR_PACK(ERR_LIB_FIPS, 0, 0), "FIPS routines"},
     {ERR_PACK(ERR_LIB_CMS, 0, 0), "CMS routines"},
-    {ERR_PACK(ERR_LIB_HMAC, 0, 0), "HMAC routines"},
+    {ERR_PACK(ERR_LIB_YHMAC, 0, 0), "YHMAC routines"},
     {ERR_PACK(ERR_LIB_CT, 0, 0), "CT routines"},
     {ERR_PACK(ERR_LIB_ASYNC, 0, 0), "ASYNC routines"},
     {ERR_PACK(ERR_LIB_KDF, 0, 0), "KDF routines"},
@@ -102,26 +102,26 @@ static ERR_STRING_DATA ERR_str_functs[] = {
 static ERR_STRING_DATA ERR_str_reasons[] = {
     {ERR_R_SYS_LIB, "system lib"},
     {ERR_R_BN_LIB, "BN lib"},
-    {ERR_R_RSA_LIB, "RSA lib"},
+    {ERR_R_YRSA_LIB, "YRSA lib"},
     {ERR_R_DH_LIB, "DH lib"},
-    {ERR_R_EVP_LIB, "EVP lib"},
+    {ERR_R_EVVP_LIB, "EVVP lib"},
     {ERR_R_BUF_LIB, "BUF lib"},
     {ERR_R_OBJ_LIB, "OBJ lib"},
     {ERR_R_PEM_LIB, "PEM lib"},
     {ERR_R_DSA_LIB, "DSA lib"},
-    {ERR_R_X509_LIB, "X509 lib"},
-    {ERR_R_ASN1_LIB, "ASN1 lib"},
+    {ERR_R_YX509_LIB, "YX509 lib"},
+    {ERR_R_YASN1_LIB, "YASN1 lib"},
     {ERR_R_EC_LIB, "EC lib"},
     {ERR_R_BIO_LIB, "BIO lib"},
-    {ERR_R_PKCS7_LIB, "PKCS7 lib"},
-    {ERR_R_X509V3_LIB, "X509V3 lib"},
+    {ERR_R_YPKCS7_LIB, "YPKCS7 lib"},
+    {ERR_R_YX509V3_LIB, "YX509V3 lib"},
     {ERR_R_ENGINE_LIB, "ENGINE lib"},
     {ERR_R_UI_LIB, "UI lib"},
     {ERR_R_OSSL_STORE_LIB, "STORE lib"},
     {ERR_R_ECDSA_LIB, "ECDSA lib"},
 
-    {ERR_R_NESTED_ASN1_ERROR, "nested asn1 error"},
-    {ERR_R_MISSING_ASN1_EOS, "missing asn1 eos"},
+    {ERR_R_NESTED_YASN1_ERROR, "nested asn1 error"},
+    {ERR_R_MISSING_YASN1_EOS, "missing asn1 eos"},
 
     {ERR_R_FATAL, "fatal"},
     {ERR_R_MALLOC_FAILURE, "malloc failure"},
@@ -614,28 +614,28 @@ void ERR_error_string_n(unsigned long e, char *buf, size_t len)
     l = ERR_GET_LIB(e);
     ls = ERR_lib_error_string(e);
     if (ls == NULL) {
-        BIO_snprintf(lsbuf, sizeof(lsbuf), "lib(%lu)", l);
+        BIO_ssnprintf(lsbuf, sizeof(lsbuf), "lib(%lu)", l);
         ls = lsbuf;
     }
 
     fs = ERR_func_error_string(e);
     f = ERR_GET_FUNC(e);
     if (fs == NULL) {
-        BIO_snprintf(fsbuf, sizeof(fsbuf), "func(%lu)", f);
+        BIO_ssnprintf(fsbuf, sizeof(fsbuf), "func(%lu)", f);
         fs = fsbuf;
     }
 
     rs = ERR_reason_error_string(e);
     r = ERR_GET_REASON(e);
     if (rs == NULL) {
-        BIO_snprintf(rsbuf, sizeof(rsbuf), "reason(%lu)", r);
+        BIO_ssnprintf(rsbuf, sizeof(rsbuf), "reason(%lu)", r);
         rs = rsbuf;
     }
 
-    BIO_snprintf(buf, len, "error:%08lX:%s:%s:%s", e, ls, fs, rs);
+    BIO_ssnprintf(buf, len, "error:%08lX:%s:%s:%s", e, ls, fs, rs);
     if (strlen(buf) == len - 1) {
         /* Didn't fit; use a minimal format. */
-        BIO_snprintf(buf, len, "err:%lx:%lx:%lx:%lx", e, l, f, r);
+        BIO_ssnprintf(buf, len, "err:%lx:%lx:%lx:%lx", e, l, f, r);
     }
 }
 

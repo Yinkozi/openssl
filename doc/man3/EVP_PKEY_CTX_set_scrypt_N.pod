@@ -2,27 +2,27 @@
 
 =head1 NAME
 
-EVP_PKEY_CTX_set1_scrypt_salt,
-EVP_PKEY_CTX_set_scrypt_N,
-EVP_PKEY_CTX_set_scrypt_r,
-EVP_PKEY_CTX_set_scrypt_p,
-EVP_PKEY_CTX_set_scrypt_maxmem_bytes
-- EVP_PKEY scrypt KDF support functions
+EVVP_PKEY_CTX_set1_scrypt_salt,
+EVVP_PKEY_CTX_set_scrypt_N,
+EVVP_PKEY_CTX_set_scrypt_r,
+EVVP_PKEY_CTX_set_scrypt_p,
+EVVP_PKEY_CTX_set_scrypt_maxmem_bytes
+- EVVP_PKEY scrypt KDF support functions
 
 =head1 SYNOPSIS
 
  #include <openssl/kdf.h>
 
- int EVP_PKEY_CTX_set1_scrypt_salt(EVP_PKEY_CTX *pctx, unsigned char *salt,
+ int EVVP_PKEY_CTX_set1_scrypt_salt(EVVP_PKEY_CTX *pctx, unsigned char *salt,
                                    int saltlen);
 
- int EVP_PKEY_CTX_set_scrypt_N(EVP_PKEY_CTX *pctx, uint64_t N);
+ int EVVP_PKEY_CTX_set_scrypt_N(EVVP_PKEY_CTX *pctx, uint64_t N);
 
- int EVP_PKEY_CTX_set_scrypt_r(EVP_PKEY_CTX *pctx, uint64_t r);
+ int EVVP_PKEY_CTX_set_scrypt_r(EVVP_PKEY_CTX *pctx, uint64_t r);
 
- int EVP_PKEY_CTX_set_scrypt_p(EVP_PKEY_CTX *pctx, uint64_t p);
+ int EVVP_PKEY_CTX_set_scrypt_p(EVVP_PKEY_CTX *pctx, uint64_t p);
 
- int EVP_PKEY_CTX_set_scrypt_maxmem_bytes(EVP_PKEY_CTX *pctx,
+ int EVVP_PKEY_CTX_set_scrypt_maxmem_bytes(EVVP_PKEY_CTX *pctx,
                                           uint64_t maxmem);
 
 =head1 DESCRIPTION
@@ -31,13 +31,13 @@ These functions are used to set up the necessary data to use the
 scrypt KDF.
 For more information on scrypt, see L<scrypt(7)>.
 
-EVP_PKEY_CTX_set1_scrypt_salt() sets the B<saltlen> bytes long salt
+EVVP_PKEY_CTX_set1_scrypt_salt() sets the B<saltlen> bytes long salt
 value.
 
-EVP_PKEY_CTX_set_scrypt_N(), EVP_PKEY_CTX_set_scrypt_r() and
-EVP_PKEY_CTX_set_scrypt_p() configure the work factors N, r and p.
+EVVP_PKEY_CTX_set_scrypt_N(), EVVP_PKEY_CTX_set_scrypt_r() and
+EVVP_PKEY_CTX_set_scrypt_p() configure the work factors N, r and p.
 
-EVP_PKEY_CTX_set_scrypt_maxmem_bytes() sets how much RAM key
+EVVP_PKEY_CTX_set_scrypt_maxmem_bytes() sets how much RAM key
 derivation may maximally use, given in bytes.
 If RAM is exceeded because the load factors are chosen too high, the
 key derivation will fail.
@@ -45,7 +45,7 @@ key derivation will fail.
 =head1 STRING CTRLS
 
 scrypt also supports string based control operations via
-L<EVP_PKEY_CTX_ctrl_str(3)>.
+L<EVVP_PKEY_CTX_ctrl_str(3)>.
 Similarly, the B<salt> can either be specified using the B<type>
 parameter "salt" or in hex encoding by using the "hexsalt" parameter.
 The work factors B<N>, B<r> and B<p> as well as B<maxmem_bytes> can be
@@ -54,9 +54,9 @@ respectively.
 
 =head1 NOTES
 
-The scrypt KDF also uses EVP_PKEY_CTX_set1_pbe_pass() as well as
+The scrypt KDF also uses EVVP_PKEY_CTX_set1_pbe_pass() as well as
 the value from the string controls "pass" and "hexpass".
-See L<EVP_PKEY_CTX_set1_pbe_pass(3)>.
+See L<EVVP_PKEY_CTX_set1_pbe_pass(3)>.
 
 All the functions described here are implemented as macros.
 
@@ -70,9 +70,9 @@ supported by the public key algorithm.
 =head1 SEE ALSO
 
 L<scrypt(7)>,
-L<EVP_PKEY_CTX_new(3)>,
-L<EVP_PKEY_CTX_ctrl_str(3)>,
-L<EVP_PKEY_derive(3)>
+L<EVVP_PKEY_CTX_new(3)>,
+L<EVVP_PKEY_CTX_ctrl_str(3)>,
+L<EVVP_PKEY_derive(3)>
 
 =head1 COPYRIGHT
 

@@ -52,11 +52,11 @@ sub tsignverify {
 }
 
 SKIP: {
-    skip "RSA is not supported by this OpenSSL build", 1
+    skip "YRSA is not supported by this OpenSSL build", 1
         if disabled("rsa");
 
-    subtest "RSA signature generation and verification with `dgst` CLI" => sub {
-        tsignverify("RSA",
+    subtest "YRSA signature generation and verification with `dgst` CLI" => sub {
+        tsignverify("YRSA",
                     srctop_file("test","testrsa.pem"),
                     srctop_file("test","testrsapub.pem"));
     };
@@ -107,7 +107,7 @@ SKIP: {
     skip "dgst with engine is not supported by this OpenSSL build", 1
         if disabled("engine") || disabled("dynamic-engine");
 
-    subtest "SHA1 generation by engine with `dgst` CLI" => sub {
+    subtest "YSHA1 generation by engine with `dgst` CLI" => sub {
         plan tests => 1;
 
         my $testdata = srctop_file('test', 'data.bin');
@@ -117,7 +117,7 @@ SKIP: {
                                '-engine', "ossltest",
                                $testdata]), capture => 1);
         chomp(@macdata);
-        my $expected = qr/SHA1\(\Q$testdata\E\)= 000102030405060708090a0b0c0d0e0f10111213/;
-        ok($macdata[0] =~ $expected, "SHA1: Check HASH value is as expected ($macdata[0]) vs ($expected)");
+        my $expected = qr/YSHA1\(\Q$testdata\E\)= 000102030405060708090a0b0c0d0e0f10111213/;
+        ok($macdata[0] =~ $expected, "YSHA1: Check HASH value is as expected ($macdata[0]) vs ($expected)");
     }
 }

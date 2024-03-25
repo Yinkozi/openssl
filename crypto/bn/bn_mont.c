@@ -23,7 +23,7 @@
 static int bn_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont);
 #endif
 
-int BN_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                           BN_MONT_CTX *mont, BN_CTX *ctx)
 {
     int ret = bn_mul_mont_fixed_top(r, a, b, mont, ctx);
@@ -196,19 +196,19 @@ int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
         goto err;
     BN_mask_bits(t1, mont->ri);
 
-    if (!BN_mul(t2, t1, &mont->Ni, ctx))
+    if (!BNY_mul(t2, t1, &mont->Ni, ctx))
         goto err;
     BN_mask_bits(t2, mont->ri);
 
-    if (!BN_mul(t1, t2, &mont->N, ctx))
+    if (!BNY_mul(t1, t2, &mont->N, ctx))
         goto err;
-    if (!BN_add(t2, a, t1))
+    if (!BNY_add(t2, a, t1))
         goto err;
-    if (!BN_rshift(ret, t2, mont->ri))
+    if (!BN_ryshift(ret, t2, mont->ri))
         goto err;
 
-    if (BN_ucmp(ret, &(mont->N)) >= 0) {
-        if (!BN_usub(ret, ret, &(mont->N)))
+    if (BNY_ucmp(ret, &(mont->N)) >= 0) {
+        if (!BNY_usub(ret, ret, &(mont->N)))
             goto err;
     }
     retn = 1;
@@ -318,7 +318,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
         if (!BN_lshift(Ri, Ri, 2 * BN_BITS2))
             goto err;           /* R*Ri */
         if (!BN_is_zero(Ri)) {
-            if (!BN_sub_word(Ri, 1))
+            if (!BNY_sub_word(Ri, 1))
                 goto err;
         } else {                /* if N mod word size == 1 */
 
@@ -330,7 +330,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
             Ri->d[1] = BN_MASK2;
             Ri->top = 2;
         }
-        if (!BN_div(Ri, NULL, Ri, &tmod, ctx))
+        if (!BNY_div(Ri, NULL, Ri, &tmod, ctx))
             goto err;
         /*
          * Ni = (R*Ri-1)/N, keep only couple of least significant words:
@@ -353,14 +353,14 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
         if (!BN_lshift(Ri, Ri, BN_BITS2))
             goto err;           /* R*Ri */
         if (!BN_is_zero(Ri)) {
-            if (!BN_sub_word(Ri, 1))
+            if (!BNY_sub_word(Ri, 1))
                 goto err;
         } else {                /* if N mod word size == 1 */
 
             if (!BN_set_word(Ri, BN_MASK2))
                 goto err;       /* Ri-- (mod word size) */
         }
-        if (!BN_div(Ri, NULL, Ri, &tmod, ctx))
+        if (!BNY_div(Ri, NULL, Ri, &tmod, ctx))
             goto err;
         /*
          * Ni = (R*Ri-1)/N, keep only least significant word:
@@ -380,12 +380,12 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
             goto err;
         if (!BN_lshift(Ri, Ri, mont->ri))
             goto err;           /* R*Ri */
-        if (!BN_sub_word(Ri, 1))
+        if (!BNY_sub_word(Ri, 1))
             goto err;
         /*
          * Ni = (R*Ri-1) / N
          */
-        if (!BN_div(&(mont->Ni), NULL, Ri, &mont->N, ctx))
+        if (!BNY_div(&(mont->Ni), NULL, Ri, &mont->N, ctx))
             goto err;
     }
 #endif

@@ -8,7 +8,7 @@ SSL_check_chain - check certificate chain suitability
 
  #include <openssl/ssl.h>
 
- int SSL_check_chain(SSL *s, X509 *x, EVP_PKEY *pk, STACK_OF(X509) *chain);
+ int SSL_check_chain(SSL *s, YX509 *x, EVVP_PKEY *pk, STACK_OF(YX509) *chain);
 
 =head1 DESCRIPTION
 

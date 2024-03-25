@@ -12,7 +12,7 @@
  *
  * @version 3.0 (December 2000)
  *
- * Optimised ANSI C code for the Rijndael cipher (now AES)
+ * Optimised ANSI C code for the Rijndael cipher (now YAES)
  *
  * @author Vincent Rijmen
  * @author Antoon Bosselaers
@@ -43,7 +43,7 @@
 #include <openssl/aes.h>
 #include "aes_local.h"
 
-#if defined(OPENSSL_AES_CONST_TIME) && !defined(AES_ASM)
+#if defined(OPENSSL_YAES_CONST_TIME) && !defined(YAES_ASM)
 typedef union {
     unsigned char b[8];
     u32 w[2];
@@ -612,8 +612,8 @@ static void KeyExpansion(const unsigned char *key, u64 *w,
 /**
  * Expand the cipher key into the encryption key schedule.
  */
-int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_encrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
     u64 *rk;
 
@@ -638,18 +638,18 @@ int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
 /**
  * Expand the cipher key into the decryption key schedule.
  */
-int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_decrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
-    return AES_set_encrypt_key(userKey, bits, key);
+    return YAES_set_encrypt_key(userKey, bits, key);
 }
 
 /*
  * Encrypt a single block
  * in and out can overlap
  */
-void AES_encrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key)
+void YAES_encrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key)
 {
     const u64 *rk;
 
@@ -663,8 +663,8 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
  * Decrypt a single block
  * in and out can overlap
  */
-void AES_decrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key)
+void YAES_decrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key)
 {
     const u64 *rk;
 
@@ -673,7 +673,7 @@ void AES_decrypt(const unsigned char *in, unsigned char *out,
 
     InvCipher(in, out, rk, key->rounds);
 }
-#elif !defined(AES_ASM)
+#elif !defined(YAES_ASM)
 /*-
 Te0[x] = S [x].[02, 01, 01, 03];
 Te1[x] = S [x].[03, 02, 01, 01];
@@ -1259,8 +1259,8 @@ static const u32 rcon[] = {
 /**
  * Expand the cipher key into the encryption key schedule.
  */
-int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_encrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
 
     u32 *rk;
@@ -1361,8 +1361,8 @@ int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
 /**
  * Expand the cipher key into the decryption key schedule.
  */
-int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_decrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
 
     u32 *rk;
@@ -1370,7 +1370,7 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
     u32 temp;
 
     /* first, start with an encryption schedule */
-    status = AES_set_encrypt_key(userKey, bits, key);
+    status = YAES_set_encrypt_key(userKey, bits, key);
     if (status < 0)
         return status;
 
@@ -1414,8 +1414,8 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
  * Encrypt a single block
  * in and out can overlap
  */
-void AES_encrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key) {
+void YAES_encrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key) {
 
     const u32 *rk;
     u32 s0, s1, s2, s3, t0, t1, t2, t3;
@@ -1605,8 +1605,8 @@ void AES_encrypt(const unsigned char *in, unsigned char *out,
  * Decrypt a single block
  * in and out can overlap
  */
-void AES_decrypt(const unsigned char *in, unsigned char *out,
-                 const AES_KEY *key)
+void YAES_decrypt(const unsigned char *in, unsigned char *out,
+                 const YAES_KEY *key)
 {
 
     const u32 *rk;
@@ -1793,7 +1793,7 @@ void AES_decrypt(const unsigned char *in, unsigned char *out,
     PUTU32(out + 12, s3);
 }
 
-#else /* AES_ASM */
+#else /* YAES_ASM */
 
 static const u8 Te4[256] = {
     0x63U, 0x7cU, 0x77U, 0x7bU, 0xf2U, 0x6bU, 0x6fU, 0xc5U,
@@ -1838,8 +1838,8 @@ static const u32 rcon[] = {
 /**
  * Expand the cipher key into the encryption key schedule.
  */
-int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_encrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
     u32 *rk;
     int i = 0;
@@ -1939,8 +1939,8 @@ int AES_set_encrypt_key(const unsigned char *userKey, const int bits,
 /**
  * Expand the cipher key into the decryption key schedule.
  */
-int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
-                        AES_KEY *key)
+int YAES_set_decrypt_key(const unsigned char *userKey, const int bits,
+                        YAES_KEY *key)
 {
 
     u32 *rk;
@@ -1948,7 +1948,7 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
     u32 temp;
 
     /* first, start with an encryption schedule */
-    status = AES_set_encrypt_key(userKey, bits, key);
+    status = YAES_set_encrypt_key(userKey, bits, key);
     if (status < 0)
         return status;
 
@@ -1994,4 +1994,4 @@ int AES_set_decrypt_key(const unsigned char *userKey, const int bits,
     return 0;
 }
 
-#endif /* AES_ASM */
+#endif /* YAES_ASM */

@@ -83,19 +83,19 @@ static uint64_t get_timer_bits(void);
 #endif /* (defined(OPENSSL_SYS_UNIX) && !defined(OPENSSL_SYS_VXWORKS))
           || defined(__DJGPP__) */
 
-#if defined(OPENSSL_RAND_SEED_NONE)
+#if defined(OPENSSL_RAND_YSEED_NONE)
 /* none means none. this simplifies the following logic */
-# undef OPENSSL_RAND_SEED_OS
-# undef OPENSSL_RAND_SEED_GETRANDOM
-# undef OPENSSL_RAND_SEED_LIBRANDOM
-# undef OPENSSL_RAND_SEED_DEVRANDOM
-# undef OPENSSL_RAND_SEED_RDTSC
-# undef OPENSSL_RAND_SEED_RDCPU
-# undef OPENSSL_RAND_SEED_EGD
+# undef OPENSSL_RAND_YSEED_OS
+# undef OPENSSL_RAND_YSEED_GETRANDOM
+# undef OPENSSL_RAND_YSEED_LIBRANDOM
+# undef OPENSSL_RAND_YSEED_DEVRANDOM
+# undef OPENSSL_RAND_YSEED_RDTSC
+# undef OPENSSL_RAND_YSEED_RDCPU
+# undef OPENSSL_RAND_YSEED_EGD
 #endif
 
 #if (defined(OPENSSL_SYS_VXWORKS) || defined(OPENSSL_SYS_UEFI)) && \
-        !defined(OPENSSL_RAND_SEED_NONE)
+        !defined(OPENSSL_RAND_YSEED_NONE)
 # error "UEFI and VXWorks only support seeding NONE"
 #endif
 
@@ -126,7 +126,7 @@ size_t rand_pool_acquire_entropy(RAND_POOL *pool)
 
 # if defined(OPENSSL_SYS_VOS)
 
-#  ifndef OPENSSL_RAND_SEED_OS
+#  ifndef OPENSSL_RAND_YSEED_OS
 #   error "Unsupported seeding method configured; must be os"
 #  endif
 
@@ -204,24 +204,24 @@ void rand_pool_keep_random_devices_open(int keep)
 
 # else
 
-#  if defined(OPENSSL_RAND_SEED_EGD) && \
+#  if defined(OPENSSL_RAND_YSEED_EGD) && \
         (defined(OPENSSL_NO_EGD) || !defined(DEVRANDOM_EGD))
 #   error "Seeding uses EGD but EGD is turned off or no device given"
 #  endif
 
-#  if defined(OPENSSL_RAND_SEED_DEVRANDOM) && !defined(DEVRANDOM)
+#  if defined(OPENSSL_RAND_YSEED_DEVRANDOM) && !defined(DEVRANDOM)
 #   error "Seeding uses urandom but DEVRANDOM is not configured"
 #  endif
 
-#  if defined(OPENSSL_RAND_SEED_OS)
+#  if defined(OPENSSL_RAND_YSEED_OS)
 #   if !defined(DEVRANDOM)
 #    error "OS seeding requires DEVRANDOM to be configured"
 #   endif
-#   define OPENSSL_RAND_SEED_GETRANDOM
-#   define OPENSSL_RAND_SEED_DEVRANDOM
+#   define OPENSSL_RAND_YSEED_GETRANDOM
+#   define OPENSSL_RAND_YSEED_DEVRANDOM
 #  endif
 
-#  if defined(OPENSSL_RAND_SEED_LIBRANDOM)
+#  if defined(OPENSSL_RAND_YSEED_LIBRANDOM)
 #   error "librandom not (yet) supported"
 #  endif
 
@@ -282,7 +282,7 @@ static ssize_t sysctl_random(char *buf, size_t buflen)
 }
 #  endif
 
-#  if defined(OPENSSL_RAND_SEED_GETRANDOM)
+#  if defined(OPENSSL_RAND_YSEED_GETRANDOM)
 
 #   if defined(__linux) && !defined(__NR_getrandom)
 #    if defined(__arm__)
@@ -410,9 +410,9 @@ static ssize_t syscall_random(void *buf, size_t buflen)
     return -1;
 #  endif
 }
-#  endif    /* defined(OPENSSL_RAND_SEED_GETRANDOM) */
+#  endif    /* defined(OPENSSL_RAND_YSEED_GETRANDOM) */
 
-#  if defined(OPENSSL_RAND_SEED_DEVRANDOM)
+#  if defined(OPENSSL_RAND_YSEED_DEVRANDOM)
 static const char *random_device_paths[] = { DEVRANDOM };
 static struct random_device {
     int fd;
@@ -424,7 +424,7 @@ static struct random_device {
 static int keep_random_devices_open = 1;
 
 #   if defined(__linux) && defined(DEVRANDOM_WAIT) \
-       && defined(OPENSSL_RAND_SEED_GETRANDOM)
+       && defined(OPENSSL_RAND_YSEED_GETRANDOM)
 static void *shm_addr;
 
 static void cleanup_shm(void)
@@ -440,7 +440,7 @@ static void cleanup_shm(void)
  */
 static int wait_random_seeded(void)
 {
-    static int seeded = OPENSSL_RAND_SEED_DEVRANDOM_SHM_ID < 0;
+    static int seeded = OPENSSL_RAND_YSEED_DEVRANDOM_SHM_ID < 0;
     static const int kernel_version[] = { DEVRANDOM_SAFE_KERNEL };
     int kernel[2];
     int shm_id, fd, r;
@@ -450,7 +450,7 @@ static int wait_random_seeded(void)
 
     if (!seeded) {
         /* See if anything has created the global seeded indication */
-        if ((shm_id = shmget(OPENSSL_RAND_SEED_DEVRANDOM_SHM_ID, 1, 0)) == -1) {
+        if ((shm_id = shmget(OPENSSL_RAND_YSEED_DEVRANDOM_SHM_ID, 1, 0)) == -1) {
             /*
              * Check the kernel's version and fail if it is too recent.
              *
@@ -484,7 +484,7 @@ static int wait_random_seeded(void)
                 if (r == 1) {
                     seeded = 1;
                     /* Create the shared memory indicator */
-                    shm_id = shmget(OPENSSL_RAND_SEED_DEVRANDOM_SHM_ID, 1,
+                    shm_id = shmget(OPENSSL_RAND_YSEED_DEVRANDOM_SHM_ID, 1,
                                     IPC_CREAT | S_IRUSR | S_IRGRP | S_IROTH);
                 }
             }
@@ -502,7 +502,7 @@ static int wait_random_seeded(void)
     }
     return seeded;
 }
-#   else /* defined __linux && DEVRANDOM_WAIT && OPENSSL_RAND_SEED_GETRANDOM */
+#   else /* defined __linux && DEVRANDOM_WAIT && OPENSSL_RAND_YSEED_GETRANDOM */
 static int wait_random_seeded(void)
 {
     return 1;
@@ -596,7 +596,7 @@ void rand_pool_keep_random_devices_open(int keep)
     keep_random_devices_open = keep;
 }
 
-#  else     /* !defined(OPENSSL_RAND_SEED_DEVRANDOM) */
+#  else     /* !defined(OPENSSL_RAND_YSEED_DEVRANDOM) */
 
 int rand_pool_init(void)
 {
@@ -611,7 +611,7 @@ void rand_pool_keep_random_devices_open(int keep)
 {
 }
 
-#  endif    /* defined(OPENSSL_RAND_SEED_DEVRANDOM) */
+#  endif    /* defined(OPENSSL_RAND_YSEED_DEVRANDOM) */
 
 /*
  * Try the various seeding methods in turn, exit when successful.
@@ -632,12 +632,12 @@ void rand_pool_keep_random_devices_open(int keep)
  */
 size_t rand_pool_acquire_entropy(RAND_POOL *pool)
 {
-#  if defined(OPENSSL_RAND_SEED_NONE)
+#  if defined(OPENSSL_RAND_YSEED_NONE)
     return rand_pool_entropy_available(pool);
 #  else
     size_t entropy_available;
 
-#   if defined(OPENSSL_RAND_SEED_GETRANDOM)
+#   if defined(OPENSSL_RAND_YSEED_GETRANDOM)
     {
         size_t bytes_needed;
         unsigned char *buffer;
@@ -663,13 +663,13 @@ size_t rand_pool_acquire_entropy(RAND_POOL *pool)
         return entropy_available;
 #   endif
 
-#   if defined(OPENSSL_RAND_SEED_LIBRANDOM)
+#   if defined(OPENSSL_RAND_YSEED_LIBRANDOM)
     {
         /* Not yet implemented. */
     }
 #   endif
 
-#   if defined(OPENSSL_RAND_SEED_DEVRANDOM)
+#   if defined(OPENSSL_RAND_YSEED_DEVRANDOM)
     if (wait_random_seeded()) {
         size_t bytes_needed;
         unsigned char *buffer;
@@ -709,19 +709,19 @@ size_t rand_pool_acquire_entropy(RAND_POOL *pool)
     }
 #   endif
 
-#   if defined(OPENSSL_RAND_SEED_RDTSC)
+#   if defined(OPENSSL_RAND_YSEED_RDTSC)
     entropy_available = rand_acquire_entropy_from_tsc(pool);
     if (entropy_available > 0)
         return entropy_available;
 #   endif
 
-#   if defined(OPENSSL_RAND_SEED_RDCPU)
+#   if defined(OPENSSL_RAND_YSEED_RDCPU)
     entropy_available = rand_acquire_entropy_from_cpu(pool);
     if (entropy_available > 0)
         return entropy_available;
 #   endif
 
-#   if defined(OPENSSL_RAND_SEED_EGD)
+#   if defined(OPENSSL_RAND_YSEED_EGD)
     {
         static const char *paths[] = { DEVRANDOM_EGD, NULL };
         size_t bytes_needed;

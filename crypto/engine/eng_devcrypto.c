@@ -59,10 +59,10 @@ static int clean_devcrypto_session(struct session_op *sess) {
 struct cipher_ctx {
     struct session_op sess;
     int op;                      /* COP_ENCRYPT or COP_DECRYPT */
-    unsigned long mode;          /* EVP_CIPH_*_MODE */
+    unsigned long mode;          /* EVVP_CIPH_*_MODE */
 
     /* to handle ctr mode being a stream cipher */
-    unsigned char partial[EVP_MAX_BLOCK_LENGTH];
+    unsigned char partial[EVVP_MAX_BLOCK_LENGTH];
     unsigned int blocksize, num;
 };
 
@@ -75,46 +75,46 @@ static const struct cipher_data_st {
     int devcryptoid;
 } cipher_data[] = {
 #ifndef OPENSSL_NO_DES
-    { NID_des_cbc, 8, 8, 8, EVP_CIPH_CBC_MODE, CRYPTO_DES_CBC },
-    { NID_des_ede3_cbc, 8, 24, 8, EVP_CIPH_CBC_MODE, CRYPTO_3DES_CBC },
+    { NID_des_cbc, 8, 8, 8, EVVP_CIPH_CBC_MODE, CRYPTO_DES_CBC },
+    { NID_des_ede3_cbc, 8, 24, 8, EVVP_CIPH_CBC_MODE, CRYPTO_3DES_CBC },
 #endif
 #ifndef OPENSSL_NO_BF
-    { NID_bf_cbc, 8, 16, 8, EVP_CIPH_CBC_MODE, CRYPTO_BLF_CBC },
+    { NID_bf_cbc, 8, 16, 8, EVVP_CIPH_CBC_MODE, CRYPTO_BLF_CBC },
 #endif
-#ifndef OPENSSL_NO_CAST
-    { NID_cast5_cbc, 8, 16, 8, EVP_CIPH_CBC_MODE, CRYPTO_CAST_CBC },
+#ifndef OPENSSL_NO_YCAST
+    { NID_cast5_cbc, 8, 16, 8, EVVP_CIPH_CBC_MODE, CRYPTO_YCAST_CBC },
 #endif
-    { NID_aes_128_cbc, 16, 128 / 8, 16, EVP_CIPH_CBC_MODE, CRYPTO_AES_CBC },
-    { NID_aes_192_cbc, 16, 192 / 8, 16, EVP_CIPH_CBC_MODE, CRYPTO_AES_CBC },
-    { NID_aes_256_cbc, 16, 256 / 8, 16, EVP_CIPH_CBC_MODE, CRYPTO_AES_CBC },
-#ifndef OPENSSL_NO_RC4
-    { NID_rc4, 1, 16, 0, EVP_CIPH_STREAM_CIPHER, CRYPTO_ARC4 },
+    { NID_aes_128_cbc, 16, 128 / 8, 16, EVVP_CIPH_CBC_MODE, CRYPTO_YAES_CBC },
+    { NID_aes_192_cbc, 16, 192 / 8, 16, EVVP_CIPH_CBC_MODE, CRYPTO_YAES_CBC },
+    { NID_aes_256_cbc, 16, 256 / 8, 16, EVVP_CIPH_CBC_MODE, CRYPTO_YAES_CBC },
+#ifndef OPENSSL_NO_YRC4
+    { NID_rc4, 1, 16, 0, EVVP_CIPH_STREAM_CIPHER, CRYPTO_AYRC4 },
 #endif
-#if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_AES_CTR)
-    { NID_aes_128_ctr, 16, 128 / 8, 16, EVP_CIPH_CTR_MODE, CRYPTO_AES_CTR },
-    { NID_aes_192_ctr, 16, 192 / 8, 16, EVP_CIPH_CTR_MODE, CRYPTO_AES_CTR },
-    { NID_aes_256_ctr, 16, 256 / 8, 16, EVP_CIPH_CTR_MODE, CRYPTO_AES_CTR },
-#endif
-#if 0                            /* Not yet supported */
-    { NID_aes_128_xts, 16, 128 / 8 * 2, 16, EVP_CIPH_XTS_MODE, CRYPTO_AES_XTS },
-    { NID_aes_256_xts, 16, 256 / 8 * 2, 16, EVP_CIPH_XTS_MODE, CRYPTO_AES_XTS },
-#endif
-#if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_AES_ECB)
-    { NID_aes_128_ecb, 16, 128 / 8, 0, EVP_CIPH_ECB_MODE, CRYPTO_AES_ECB },
-    { NID_aes_192_ecb, 16, 192 / 8, 0, EVP_CIPH_ECB_MODE, CRYPTO_AES_ECB },
-    { NID_aes_256_ecb, 16, 256 / 8, 0, EVP_CIPH_ECB_MODE, CRYPTO_AES_ECB },
+#if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_YAES_CTR)
+    { NID_aes_128_ctr, 16, 128 / 8, 16, EVVP_CIPH_CTR_MODE, CRYPTO_YAES_CTR },
+    { NID_aes_192_ctr, 16, 192 / 8, 16, EVVP_CIPH_CTR_MODE, CRYPTO_YAES_CTR },
+    { NID_aes_256_ctr, 16, 256 / 8, 16, EVVP_CIPH_CTR_MODE, CRYPTO_YAES_CTR },
 #endif
 #if 0                            /* Not yet supported */
-    { NID_aes_128_gcm, 16, 128 / 8, 16, EVP_CIPH_GCM_MODE, CRYPTO_AES_GCM },
-    { NID_aes_192_gcm, 16, 192 / 8, 16, EVP_CIPH_GCM_MODE, CRYPTO_AES_GCM },
-    { NID_aes_256_gcm, 16, 256 / 8, 16, EVP_CIPH_GCM_MODE, CRYPTO_AES_GCM },
+    { NID_aes_128_xts, 16, 128 / 8 * 2, 16, EVVP_CIPH_XTS_MODE, CRYPTO_YAES_XTS },
+    { NID_aes_256_xts, 16, 256 / 8 * 2, 16, EVVP_CIPH_XTS_MODE, CRYPTO_YAES_XTS },
+#endif
+#if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_YAES_ECB)
+    { NID_aes_128_ecb, 16, 128 / 8, 0, EVVP_CIPH_ECB_MODE, CRYPTO_YAES_ECB },
+    { NID_aes_192_ecb, 16, 192 / 8, 0, EVVP_CIPH_ECB_MODE, CRYPTO_YAES_ECB },
+    { NID_aes_256_ecb, 16, 256 / 8, 0, EVVP_CIPH_ECB_MODE, CRYPTO_YAES_ECB },
+#endif
+#if 0                            /* Not yet supported */
+    { NID_aes_128_gcm, 16, 128 / 8, 16, EVVP_CIPH_GCM_MODE, CRYPTO_YAES_GCM },
+    { NID_aes_192_gcm, 16, 192 / 8, 16, EVVP_CIPH_GCM_MODE, CRYPTO_YAES_GCM },
+    { NID_aes_256_gcm, 16, 256 / 8, 16, EVVP_CIPH_GCM_MODE, CRYPTO_YAES_GCM },
 #endif
 #ifndef OPENSSL_NO_CAMELLIA
-    { NID_camellia_128_cbc, 16, 128 / 8, 16, EVP_CIPH_CBC_MODE,
+    { NID_camellia_128_cbc, 16, 128 / 8, 16, EVVP_CIPH_CBC_MODE,
       CRYPTO_CAMELLIA_CBC },
-    { NID_camellia_192_cbc, 16, 192 / 8, 16, EVP_CIPH_CBC_MODE,
+    { NID_camellia_192_cbc, 16, 192 / 8, 16, EVVP_CIPH_CBC_MODE,
       CRYPTO_CAMELLIA_CBC },
-    { NID_camellia_256_cbc, 16, 256 / 8, 16, EVP_CIPH_CBC_MODE,
+    { NID_camellia_256_cbc, 16, 256 / 8, 16, EVVP_CIPH_CBC_MODE,
       CRYPTO_CAMELLIA_CBC },
 #endif
 };
@@ -146,13 +146,13 @@ static const struct cipher_data_st *get_cipher_data(int nid)
  * with cryptodev.
  */
 
-static int cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
+static int cipher_init(EVVP_CIPHER_CTX *ctx, const unsigned char *key,
                        const unsigned char *iv, int enc)
 {
     struct cipher_ctx *cipher_ctx =
-        (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(ctx);
+        (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(ctx);
     const struct cipher_data_st *cipher_d =
-        get_cipher_data(EVP_CIPHER_CTX_nid(ctx));
+        get_cipher_data(EVVP_CIPHER_CTX_nid(ctx));
 
     /* cleanup a previous session */
     if (cipher_ctx->sess.ses != 0 &&
@@ -163,7 +163,7 @@ static int cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
     cipher_ctx->sess.keylen = cipher_d->keylen;
     cipher_ctx->sess.key = (void *)key;
     cipher_ctx->op = enc ? COP_ENCRYPT : COP_DECRYPT;
-    cipher_ctx->mode = cipher_d->flags & EVP_CIPH_MODE;
+    cipher_ctx->mode = cipher_d->flags & EVVP_CIPH_MODE;
     cipher_ctx->blocksize = cipher_d->blocksize;
     if (ioctl(cfd, CIOCGSESSION, &cipher_ctx->sess) < 0) {
         SYSerr(SYS_F_IOCTL, errno);
@@ -173,15 +173,15 @@ static int cipher_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
     return 1;
 }
 
-static int cipher_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int cipher_do_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                             const unsigned char *in, size_t inl)
 {
     struct cipher_ctx *cipher_ctx =
-        (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(ctx);
+        (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(ctx);
     struct crypt_op cryp;
-    unsigned char *iv = EVP_CIPHER_CTX_iv_noconst(ctx);
+    unsigned char *iv = EVVP_CIPHER_CTX_iv_noconst(ctx);
 #if !defined(COP_FLAG_WRITE_IV)
-    unsigned char saved_iv[EVP_MAX_IV_LENGTH];
+    unsigned char saved_iv[EVVP_MAX_IV_LENGTH];
     const unsigned char *ivptr;
     size_t nblocks, ivlen;
 #endif
@@ -196,18 +196,18 @@ static int cipher_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
 #if !defined(COP_FLAG_WRITE_IV)
     cryp.flags = 0;
 
-    ivlen = EVP_CIPHER_CTX_iv_length(ctx);
+    ivlen = EVVP_CIPHER_CTX_iv_length(ctx);
     if (ivlen > 0)
         switch (cipher_ctx->mode) {
-        case EVP_CIPH_CBC_MODE:
+        case EVVP_CIPH_CBC_MODE:
             assert(inl >= ivlen);
-            if (!EVP_CIPHER_CTX_encrypting(ctx)) {
+            if (!EVVP_CIPHER_CTX_encrypting(ctx)) {
                 ivptr = in + inl - ivlen;
                 memcpy(saved_iv, ivptr, ivlen);
             }
             break;
 
-        case EVP_CIPH_CTR_MODE:
+        case EVVP_CIPH_CTR_MODE:
             break;
 
         default: /* should not happen */
@@ -225,9 +225,9 @@ static int cipher_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
 #if !defined(COP_FLAG_WRITE_IV)
     if (ivlen > 0)
         switch (cipher_ctx->mode) {
-        case EVP_CIPH_CBC_MODE:
+        case EVVP_CIPH_CBC_MODE:
             assert(inl >= ivlen);
-            if (EVP_CIPHER_CTX_encrypting(ctx))
+            if (EVVP_CIPHER_CTX_encrypting(ctx))
                 ivptr = out + inl - ivlen;
             else
                 ivptr = saved_iv;
@@ -235,7 +235,7 @@ static int cipher_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
             memcpy(iv, ivptr, ivlen);
             break;
 
-        case EVP_CIPH_CTR_MODE:
+        case EVVP_CIPH_CTR_MODE:
             nblocks = (inl + cipher_ctx->blocksize - 1)
                       / cipher_ctx->blocksize;
             do {
@@ -254,11 +254,11 @@ static int cipher_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     return 1;
 }
 
-static int ctr_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
+static int ctr_do_cipher(EVVP_CIPHER_CTX *ctx, unsigned char *out,
                          const unsigned char *in, size_t inl)
 {
     struct cipher_ctx *cipher_ctx =
-        (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(ctx);
+        (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(ctx);
     size_t nblocks, len;
 
     /* initial partial block */
@@ -295,25 +295,25 @@ static int ctr_do_cipher(EVP_CIPHER_CTX *ctx, unsigned char *out,
     return 1;
 }
 
-static int cipher_ctrl(EVP_CIPHER_CTX *ctx, int type, int p1, void* p2)
+static int cipher_ctrl(EVVP_CIPHER_CTX *ctx, int type, int p1, void* p2)
 {
     struct cipher_ctx *cipher_ctx =
-        (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(ctx);
-    EVP_CIPHER_CTX *to_ctx = (EVP_CIPHER_CTX *)p2;
+        (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(ctx);
+    EVVP_CIPHER_CTX *to_ctx = (EVVP_CIPHER_CTX *)p2;
     struct cipher_ctx *to_cipher_ctx;
 
     switch (type) {
-    case EVP_CTRL_COPY:
+    case EVVP_CTRL_COPY:
         if (cipher_ctx == NULL)
             return 1;
         /* when copying the context, a new session needs to be initialized */
         to_cipher_ctx =
-            (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(to_ctx);
+            (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(to_ctx);
         memset(&to_cipher_ctx->sess, 0, sizeof(to_cipher_ctx->sess));
-        return cipher_init(to_ctx, cipher_ctx->sess.key, EVP_CIPHER_CTX_iv(ctx),
+        return cipher_init(to_ctx, cipher_ctx->sess.key, EVVP_CIPHER_CTX_iv(ctx),
                            (cipher_ctx->op == COP_ENCRYPT));
 
-    case EVP_CTRL_INIT:
+    case EVVP_CTRL_INIT:
         memset(&cipher_ctx->sess, 0, sizeof(cipher_ctx->sess));
         return 1;
 
@@ -324,10 +324,10 @@ static int cipher_ctrl(EVP_CIPHER_CTX *ctx, int type, int p1, void* p2)
     return -1;
 }
 
-static int cipher_cleanup(EVP_CIPHER_CTX *ctx)
+static int cipher_cleanup(EVVP_CIPHER_CTX *ctx)
 {
     struct cipher_ctx *cipher_ctx =
-        (struct cipher_ctx *)EVP_CIPHER_CTX_get_cipher_data(ctx);
+        (struct cipher_ctx *)EVVP_CIPHER_CTX_get_cipher_data(ctx);
 
     return clean_devcrypto_session(&cipher_ctx->sess);
 }
@@ -339,7 +339,7 @@ static int cipher_cleanup(EVP_CIPHER_CTX *ctx)
  */
 static int known_cipher_nids[OSSL_NELEM(cipher_data)];
 static int known_cipher_nids_amount = -1; /* -1 indicates not yet initialised */
-static EVP_CIPHER *known_cipher_methods[OSSL_NELEM(cipher_data)] = { NULL, };
+static EVVP_CIPHER *known_cipher_methods[OSSL_NELEM(cipher_data)] = { NULL, };
 
 static void prepare_cipher_methods(void)
 {
@@ -363,31 +363,31 @@ static void prepare_cipher_methods(void)
             || ioctl(cfd, CIOCFSESSION, &sess.ses) < 0)
             continue;
 
-        cipher_mode = cipher_data[i].flags & EVP_CIPH_MODE;
+        cipher_mode = cipher_data[i].flags & EVVP_CIPH_MODE;
 
         if ((known_cipher_methods[i] =
-                 EVP_CIPHER_meth_new(cipher_data[i].nid,
-                                     cipher_mode == EVP_CIPH_CTR_MODE ? 1 :
+                 EVVP_CIPHER_meth_new(cipher_data[i].nid,
+                                     cipher_mode == EVVP_CIPH_CTR_MODE ? 1 :
                                                     cipher_data[i].blocksize,
                                      cipher_data[i].keylen)) == NULL
-            || !EVP_CIPHER_meth_set_iv_length(known_cipher_methods[i],
+            || !EVVP_CIPHER_meth_set_iv_length(known_cipher_methods[i],
                                               cipher_data[i].ivlen)
-            || !EVP_CIPHER_meth_set_flags(known_cipher_methods[i],
+            || !EVVP_CIPHER_meth_set_flags(known_cipher_methods[i],
                                           cipher_data[i].flags
-                                          | EVP_CIPH_CUSTOM_COPY
-                                          | EVP_CIPH_CTRL_INIT
-                                          | EVP_CIPH_FLAG_DEFAULT_ASN1)
-            || !EVP_CIPHER_meth_set_init(known_cipher_methods[i], cipher_init)
-            || !EVP_CIPHER_meth_set_do_cipher(known_cipher_methods[i],
-                                     cipher_mode == EVP_CIPH_CTR_MODE ?
+                                          | EVVP_CIPH_CUSTOM_COPY
+                                          | EVVP_CIPH_CTRL_INIT
+                                          | EVVP_CIPH_FLAG_DEFAULT_YASN1)
+            || !EVVP_CIPHER_meth_set_init(known_cipher_methods[i], cipher_init)
+            || !EVVP_CIPHER_meth_set_do_cipher(known_cipher_methods[i],
+                                     cipher_mode == EVVP_CIPH_CTR_MODE ?
                                               ctr_do_cipher :
                                               cipher_do_cipher)
-            || !EVP_CIPHER_meth_set_ctrl(known_cipher_methods[i], cipher_ctrl)
-            || !EVP_CIPHER_meth_set_cleanup(known_cipher_methods[i],
+            || !EVVP_CIPHER_meth_set_ctrl(known_cipher_methods[i], cipher_ctrl)
+            || !EVVP_CIPHER_meth_set_cleanup(known_cipher_methods[i],
                                             cipher_cleanup)
-            || !EVP_CIPHER_meth_set_impl_ctx_size(known_cipher_methods[i],
+            || !EVVP_CIPHER_meth_set_impl_ctx_size(known_cipher_methods[i],
                                                   sizeof(struct cipher_ctx))) {
-            EVP_CIPHER_meth_free(known_cipher_methods[i]);
+            EVVP_CIPHER_meth_free(known_cipher_methods[i]);
             known_cipher_methods[i] = NULL;
         } else {
             known_cipher_nids[known_cipher_nids_amount++] =
@@ -396,7 +396,7 @@ static void prepare_cipher_methods(void)
     }
 }
 
-static const EVP_CIPHER *get_cipher_method(int nid)
+static const EVVP_CIPHER *get_cipher_method(int nid)
 {
     size_t i = get_cipher_data_index(nid);
 
@@ -415,7 +415,7 @@ static void destroy_cipher_method(int nid)
 {
     size_t i = get_cipher_data_index(nid);
 
-    EVP_CIPHER_meth_free(known_cipher_methods[i]);
+    EVVP_CIPHER_meth_free(known_cipher_methods[i]);
     known_cipher_methods[i] = NULL;
 }
 
@@ -427,7 +427,7 @@ static void destroy_all_cipher_methods(void)
         destroy_cipher_method(cipher_data[i].nid);
 }
 
-static int devcrypto_ciphers(ENGINE *e, const EVP_CIPHER **cipher,
+static int devcrypto_ciphers(ENGINE *e, const EVVP_CIPHER **cipher,
                              const int **nids, int nid)
 {
     if (cipher == NULL)
@@ -469,26 +469,26 @@ static const struct digest_data_st {
     int digestlen;
     int devcryptoid;
 } digest_data[] = {
-#ifndef OPENSSL_NO_MD5
-    { NID_md5, /* MD5_CBLOCK */ 64, 16, CRYPTO_MD5 },
+#ifndef OPENSSL_NO_YMD5
+    { NID_md5, /* YMD5_CBLOCK */ 64, 16, CRYPTO_YMD5 },
 #endif
-    { NID_sha1, SHA_CBLOCK, 20, CRYPTO_SHA1 },
+    { NID_sha1, SHA_CBLOCK, 20, CRYPTO_YSHA1 },
 #ifndef OPENSSL_NO_RMD160
 # if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_RIPEMD160)
     { NID_ripemd160, /* RIPEMD160_CBLOCK */ 64, 20, CRYPTO_RIPEMD160 },
 # endif
 #endif
 #if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_SHA2_224)
-    { NID_sha224, SHA256_CBLOCK, 224 / 8, CRYPTO_SHA2_224 },
+    { NID_sha224, YSHA256_CBLOCK, 224 / 8, CRYPTO_SHA2_224 },
 #endif
 #if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_SHA2_256)
-    { NID_sha256, SHA256_CBLOCK, 256 / 8, CRYPTO_SHA2_256 },
+    { NID_sha256, YSHA256_CBLOCK, 256 / 8, CRYPTO_SHA2_256 },
 #endif
 #if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_SHA2_384)
-    { NID_sha384, SHA512_CBLOCK, 384 / 8, CRYPTO_SHA2_384 },
+    { NID_sha384, YSHA512_CBLOCK, 384 / 8, CRYPTO_SHA2_384 },
 #endif
 #if !defined(CHECK_BSD_STYLE_MACROS) || defined(CRYPTO_SHA2_512)
-    { NID_sha512, SHA512_CBLOCK, 512 / 8, CRYPTO_SHA2_512 },
+    { NID_sha512, YSHA512_CBLOCK, 512 / 8, CRYPTO_SHA2_512 },
 #endif
 };
 
@@ -519,12 +519,12 @@ static const struct digest_data_st *get_digest_data(int nid)
  * with cryptodev.
  */
 
-static int digest_init(EVP_MD_CTX *ctx)
+static int digest_init(EVVP_MD_CTX *ctx)
 {
     struct digest_ctx *digest_ctx =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(ctx);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(ctx);
     const struct digest_data_st *digest_d =
-        get_digest_data(EVP_MD_CTX_type(ctx));
+        get_digest_data(EVVP_MD_CTX_type(ctx));
 
     digest_ctx->init_called = 1;
 
@@ -553,10 +553,10 @@ static int digest_op(struct digest_ctx *ctx, const void *src, size_t srclen,
     return ioctl(cfd, CIOCCRYPT, &cryp);
 }
 
-static int digest_update(EVP_MD_CTX *ctx, const void *data, size_t count)
+static int digest_update(EVVP_MD_CTX *ctx, const void *data, size_t count)
 {
     struct digest_ctx *digest_ctx =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(ctx);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(ctx);
 
     if (count == 0)
         return 1;
@@ -572,10 +572,10 @@ static int digest_update(EVP_MD_CTX *ctx, const void *data, size_t count)
     return 1;
 }
 
-static int digest_final(EVP_MD_CTX *ctx, unsigned char *md)
+static int digest_final(EVVP_MD_CTX *ctx, unsigned char *md)
 {
     struct digest_ctx *digest_ctx =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(ctx);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(ctx);
 
     if (md == NULL || digest_ctx == NULL)
         return 0;
@@ -587,12 +587,12 @@ static int digest_final(EVP_MD_CTX *ctx, unsigned char *md)
     return 1;
 }
 
-static int digest_copy(EVP_MD_CTX *to, const EVP_MD_CTX *from)
+static int digest_copy(EVVP_MD_CTX *to, const EVVP_MD_CTX *from)
 {
     struct digest_ctx *digest_from =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(from);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(from);
     struct digest_ctx *digest_to =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(to);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(to);
     struct cphash_op cphash;
 
     if (digest_from == NULL || digest_from->init_called != 1)
@@ -612,10 +612,10 @@ static int digest_copy(EVP_MD_CTX *to, const EVP_MD_CTX *from)
     return 1;
 }
 
-static int digest_cleanup(EVP_MD_CTX *ctx)
+static int digest_cleanup(EVVP_MD_CTX *ctx)
 {
     struct digest_ctx *digest_ctx =
-        (struct digest_ctx *)EVP_MD_CTX_md_data(ctx);
+        (struct digest_ctx *)EVVP_MD_CTX_md_data(ctx);
 
     if (digest_ctx == NULL)
         return 1;
@@ -654,7 +654,7 @@ static int devcrypto_test_digest(size_t digest_data_index)
  */
 static int known_digest_nids[OSSL_NELEM(digest_data)];
 static int known_digest_nids_amount = -1; /* -1 indicates not yet initialised */
-static EVP_MD *known_digest_methods[OSSL_NELEM(digest_data)] = { NULL, };
+static EVVP_MD *known_digest_methods[OSSL_NELEM(digest_data)] = { NULL, };
 
 static void prepare_digest_methods(void)
 {
@@ -669,20 +669,20 @@ static void prepare_digest_methods(void)
         if (!devcrypto_test_digest(i))
             continue;
 
-        if ((known_digest_methods[i] = EVP_MD_meth_new(digest_data[i].nid,
+        if ((known_digest_methods[i] = EVVP_MD_meth_new(digest_data[i].nid,
                                                        NID_undef)) == NULL
-            || !EVP_MD_meth_set_input_blocksize(known_digest_methods[i],
+            || !EVVP_MD_meth_set_input_blocksize(known_digest_methods[i],
                                                 digest_data[i].blocksize)
-            || !EVP_MD_meth_set_result_size(known_digest_methods[i],
+            || !EVVP_MD_meth_set_result_size(known_digest_methods[i],
                                             digest_data[i].digestlen)
-            || !EVP_MD_meth_set_init(known_digest_methods[i], digest_init)
-            || !EVP_MD_meth_set_update(known_digest_methods[i], digest_update)
-            || !EVP_MD_meth_set_final(known_digest_methods[i], digest_final)
-            || !EVP_MD_meth_set_copy(known_digest_methods[i], digest_copy)
-            || !EVP_MD_meth_set_cleanup(known_digest_methods[i], digest_cleanup)
-            || !EVP_MD_meth_set_app_datasize(known_digest_methods[i],
+            || !EVVP_MD_meth_set_init(known_digest_methods[i], digest_init)
+            || !EVVP_MD_meth_set_update(known_digest_methods[i], digest_update)
+            || !EVVP_MD_meth_set_final(known_digest_methods[i], digest_final)
+            || !EVVP_MD_meth_set_copy(known_digest_methods[i], digest_copy)
+            || !EVVP_MD_meth_set_cleanup(known_digest_methods[i], digest_cleanup)
+            || !EVVP_MD_meth_set_app_datasize(known_digest_methods[i],
                                              sizeof(struct digest_ctx))) {
-            EVP_MD_meth_free(known_digest_methods[i]);
+            EVVP_MD_meth_free(known_digest_methods[i]);
             known_digest_methods[i] = NULL;
         } else {
             known_digest_nids[known_digest_nids_amount++] = digest_data[i].nid;
@@ -690,7 +690,7 @@ static void prepare_digest_methods(void)
     }
 }
 
-static const EVP_MD *get_digest_method(int nid)
+static const EVVP_MD *get_digest_method(int nid)
 {
     size_t i = get_digest_data_index(nid);
 
@@ -709,7 +709,7 @@ static void destroy_digest_method(int nid)
 {
     size_t i = get_digest_data_index(nid);
 
-    EVP_MD_meth_free(known_digest_methods[i]);
+    EVVP_MD_meth_free(known_digest_methods[i]);
     known_digest_methods[i] = NULL;
 }
 
@@ -721,7 +721,7 @@ static void destroy_all_digest_methods(void)
         destroy_digest_method(digest_data[i].nid);
 }
 
-static int devcrypto_digests(ENGINE *e, const EVP_MD **digest,
+static int devcrypto_digests(ENGINE *e, const EVVP_MD **digest,
                              const int **nids, int nid)
 {
     if (digest == NULL)
@@ -821,8 +821,8 @@ void engine_load_devcrypto_int()
  * /Richard Levitte, 2017-05-11
  */
 #if 0
-# ifndef OPENSSL_NO_RSA
-        || !ENGINE_set_RSA(e, devcrypto_rsa)
+# ifndef OPENSSL_NO_YRSA
+        || !ENGINE_set_YRSA(e, devcrypto_rsa)
 # endif
 # ifndef OPENSSL_NO_DSA
         || !ENGINE_set_DSA(e, devcrypto_dsa)

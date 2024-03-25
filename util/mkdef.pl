@@ -137,7 +137,7 @@ my @known_ossl_platforms = ( "UNIX", "VMS", "WIN32", "WINNT", "OS2" );
 my @known_algorithms = ( # These are algorithms we know are guarded in relevant
 			 # header files, but aren't actually disablable.
 			 # Without these, this script will warn a lot.
-			 "RSA", "MD5",
+			 "YRSA", "YMD5",
 			 # @disablables comes from configdata.pm
 			 map { (my $x = uc $_) =~ s|-|_|g; $x; } @disablables,
 			 # Deprecated functions.  Not really algorithmss, but
@@ -621,7 +621,7 @@ sub do_defs
 				if (/^\s*DEFINE_STACK_OF\s*\(\s*(\w*)\s*\)/
 						|| /^\s*DEFINE_STACK_OF_CONST\s*\(\s*(\w*)\s*\)/) {
 					next;
-				} elsif (/^\s*DECLARE_ASN1_ENCODE_FUNCTIONS\s*\(\s*(\w*)\s*,\s*(\w*)\s*,\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_ENCODE_FUNCTIONS\s*\(\s*(\w*)\s*,\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					$def .= "int d2i_$3(void);";
 					$def .= "int i2d_$3(void);";
 					# Variant for platforms that do not
@@ -643,7 +643,7 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_FUNCTIONS_fname\s*\(\s*(\w*)\s*,\s*(\w*)\s*,\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_FUNCTIONS_fname\s*\(\s*(\w*)\s*,\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					$def .= "int d2i_$3(void);";
 					$def .= "int i2d_$3(void);";
 					$def .= "int $3_free(void);";
@@ -667,8 +667,8 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_FUNCTIONS\s*\(\s*(\w*)\s*\)/ ||
-					 /^\s*DECLARE_ASN1_FUNCTIONS_const\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_FUNCTIONS\s*\(\s*(\w*)\s*\)/ ||
+					 /^\s*DECLARE_YASN1_FUNCTIONS_const\s*\(\s*(\w*)\s*\)/) {
 					$def .= "int d2i_$1(void);";
 					$def .= "int i2d_$1(void);";
 					$def .= "int $1_free(void);";
@@ -692,7 +692,7 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_ENCODE_FUNCTIONS_const\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_ENCODE_FUNCTIONS_const\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					$def .= "int d2i_$2(void);";
 					$def .= "int i2d_$2(void);";
 					# Variant for platforms that do not
@@ -714,11 +714,11 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_ALLOC_FUNCTIONS\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_ALLOC_FUNCTIONS\s*\(\s*(\w*)\s*\)/) {
 					$def .= "int $1_free(void);";
 					$def .= "int $1_new(void);";
 					next;
-				} elsif (/^\s*DECLARE_ASN1_FUNCTIONS_name\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_FUNCTIONS_name\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					$def .= "int d2i_$2(void);";
 					$def .= "int i2d_$2(void);";
 					$def .= "int $2_free(void);";
@@ -742,7 +742,7 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_ITEM\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_ITEM\s*\(\s*(\w*)\s*\)/) {
 					# Variant for platforms that do not
 					# have to access global variables
 					# in shared libraries through functions
@@ -762,17 +762,17 @@ sub do_defs
 						      "EXPORT_VAR_AS_FUNCTION",
 						      "FUNCTION");
 					next;
-				} elsif (/^\s*DECLARE_ASN1_NDEF_FUNCTION\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_NDEF_FUNCTION\s*\(\s*(\w*)\s*\)/) {
 					$def .= "int i2d_$1_NDEF(void);";
-				} elsif (/^\s*DECLARE_ASN1_SET_OF\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_SET_OF\s*\(\s*(\w*)\s*\)/) {
 					next;
-				} elsif (/^\s*DECLARE_ASN1_PRINT_FUNCTION\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_PRINT_FUNCTION\s*\(\s*(\w*)\s*\)/) {
 					$def .= "int $1_print_ctx(void);";
 					next;
-				} elsif (/^\s*DECLARE_ASN1_PRINT_FUNCTION_name\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YASN1_PRINT_FUNCTION_name\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					$def .= "int $2_print_ctx(void);";
 					next;
-				} elsif (/^\s*DECLARE_PKCS12_STACK_OF\s*\(\s*(\w*)\s*\)/) {
+				} elsif (/^\s*DECLARE_YPKCS12_STACK_OF\s*\(\s*(\w*)\s*\)/) {
 					next;
 				} elsif (/^DECLARE_PEM_rw\s*\(\s*(\w*)\s*,/ ||
 					 /^DECLARE_PEM_rw_cb\s*\(\s*(\w*)\s*,/ ||
@@ -781,14 +781,14 @@ sub do_defs
 					    "#INFO:"
 						.join(',',@current_platforms).":"
 						    .join(',',"STDIO",@current_algorithms).";";
-					$def .= "int PEM_read_$1(void);";
+					$def .= "int PEM_readd_$1(void);";
 					$def .= "int PEM_write_$1(void);";
 					$def .=
 					    "#INFO:"
 						.join(',',@current_platforms).":"
 						    .join(',',@current_algorithms).";";
 					# Things that are everywhere
-					$def .= "int PEM_read_bio_$1(void);";
+					$def .= "int PEM_readd_bio_$1(void);";
 					$def .= "int PEM_write_bio_$1(void);";
 					next;
 				} elsif (/^DECLARE_PEM_write\s*\(\s*(\w*)\s*,/ ||
@@ -806,19 +806,19 @@ sub do_defs
 					# Things that are everywhere
 					$def .= "int PEM_write_bio_$1(void);";
 					next;
-				} elsif (/^DECLARE_PEM_read\s*\(\s*(\w*)\s*,/ ||
-					 /^DECLARE_PEM_read_cb\s*\(\s*(\w*)\s*,/ ) {
+				} elsif (/^DECLARE_PEM_readd\s*\(\s*(\w*)\s*,/ ||
+					 /^DECLARE_PEM_readd_cb\s*\(\s*(\w*)\s*,/ ) {
 					$def .=
 					    "#INFO:"
 						.join(',',@current_platforms).":"
 						    .join(',',"STDIO",@current_algorithms).";";
-					$def .= "int PEM_read_$1(void);";
+					$def .= "int PEM_readd_$1(void);";
 					$def .=
 					    "#INFO:"
 						.join(',',@current_platforms).":"
 						    .join(',',"STDIO",@current_algorithms).";";
 					# Things that are everywhere
-					$def .= "int PEM_read_bio_$1(void);";
+					$def .= "int PEM_readd_bio_$1(void);";
 					next;
 				} elsif (/^OPENSSL_DECLARE_GLOBAL\s*\(\s*(\w*)\s*,\s*(\w*)\s*\)/) {
 					# Variant for platforms that do not

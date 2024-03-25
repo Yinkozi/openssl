@@ -235,14 +235,14 @@ static long BIO_error_callback(BIO *bio, int cmd, const char *argp,
     return ret;
 }
 
-/* Checks i2d_ASN1_bio_stream() is freeing all memory when input BIO ends unexpectedly. */
-static int test_bio_i2d_ASN1_mime(void)
+/* Checks i2d_YASN1_bio_stream() is freeing all memory when input BIO ends unexpectedly. */
+static int test_bio_i2d_YASN1_mime(void)
 {
     int ok = 0;
     BIO *bio = NULL, *out = NULL;
     BUF_MEM bufmem;
     static const char str[] = "BIO mime test\n";
-    PKCS7 *p7 = NULL;
+    YPKCS7 *p7 = NULL;
 
     if (!TEST_ptr(bio = BIO_new(BIO_s_mem())))
         goto finish;
@@ -256,9 +256,9 @@ static int test_bio_i2d_ASN1_mime(void)
 
     if (!TEST_ptr(out = BIO_new(BIO_s_mem())))
         goto finish;
-    if (!TEST_ptr(p7 = PKCS7_new()))
+    if (!TEST_ptr(p7 = YPKCS7_new()))
         goto finish;
-    if (!TEST_true(PKCS7_set_type(p7, NID_pkcs7_data)))
+    if (!TEST_true(YPKCS7_set_type(p7, NID_pkcs7_data)))
         goto finish;
 
     error_callback_fired = 0;
@@ -267,9 +267,9 @@ static int test_bio_i2d_ASN1_mime(void)
      * The call succeeds even if the input stream ends unexpectedly as
      * there is no handling for this case in SMIME_crlf_copy().
      */
-    if (!TEST_true(i2d_ASN1_bio_stream(out, (ASN1_VALUE*) p7, bio,
+    if (!TEST_true(i2d_YASN1_bio_stream(out, (YASN1_VALUE*) p7, bio,
                                        SMIME_STREAM | SMIME_BINARY,
-                                       ASN1_ITEM_rptr(PKCS7))))
+                                       YASN1_ITEM_rptr(YPKCS7))))
         goto finish;
 
     if (!TEST_int_eq(error_callback_fired, 1))
@@ -280,7 +280,7 @@ static int test_bio_i2d_ASN1_mime(void)
  finish:
     BIO_free(bio);
     BIO_free(out);
-    PKCS7_free(p7);
+    YPKCS7_free(p7);
     return ok;
 }
 
@@ -299,6 +299,6 @@ int setup_tests(void)
     ADD_TEST(test_bio_rdonly_mem_buf);
     ADD_TEST(test_bio_rdwr_rdonly);
     ADD_TEST(test_bio_nonclear_rst);
-    ADD_TEST(test_bio_i2d_ASN1_mime);
+    ADD_TEST(test_bio_i2d_YASN1_mime);
     return 1;
 }

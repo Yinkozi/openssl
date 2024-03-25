@@ -16,144 +16,144 @@
 #include "crypto/x509.h"
 #include <openssl/x509v3.h>
 
-int X509_CRL_get_ext_count(const X509_CRL *x)
+int YX509_CRL_get_ext_count(const YX509_CRL *x)
 {
-    return X509v3_get_ext_count(x->crl.extensions);
+    return YX509v3_get_ext_count(x->crl.extensions);
 }
 
-int X509_CRL_get_ext_by_NID(const X509_CRL *x, int nid, int lastpos)
+int YX509_CRL_get_ext_by_NID(const YX509_CRL *x, int nid, int lastpos)
 {
-    return X509v3_get_ext_by_NID(x->crl.extensions, nid, lastpos);
+    return YX509v3_get_ext_by_NID(x->crl.extensions, nid, lastpos);
 }
 
-int X509_CRL_get_ext_by_OBJ(const X509_CRL *x, const ASN1_OBJECT *obj,
+int YX509_CRL_get_ext_by_OBJ(const YX509_CRL *x, const YASN1_OBJECT *obj,
                             int lastpos)
 {
-    return X509v3_get_ext_by_OBJ(x->crl.extensions, obj, lastpos);
+    return YX509v3_get_ext_by_OBJ(x->crl.extensions, obj, lastpos);
 }
 
-int X509_CRL_get_ext_by_critical(const X509_CRL *x, int crit, int lastpos)
+int YX509_CRL_get_ext_by_critical(const YX509_CRL *x, int crit, int lastpos)
 {
-    return X509v3_get_ext_by_critical(x->crl.extensions, crit, lastpos);
+    return YX509v3_get_ext_by_critical(x->crl.extensions, crit, lastpos);
 }
 
-X509_EXTENSION *X509_CRL_get_ext(const X509_CRL *x, int loc)
+YX509_EXTENSION *YX509_CRL_get_ext(const YX509_CRL *x, int loc)
 {
-    return X509v3_get_ext(x->crl.extensions, loc);
+    return YX509v3_get_ext(x->crl.extensions, loc);
 }
 
-X509_EXTENSION *X509_CRL_delete_ext(X509_CRL *x, int loc)
+YX509_EXTENSION *YX509_CRL_delete_ext(YX509_CRL *x, int loc)
 {
-    return X509v3_delete_ext(x->crl.extensions, loc);
+    return YX509v3_delete_ext(x->crl.extensions, loc);
 }
 
-void *X509_CRL_get_ext_d2i(const X509_CRL *x, int nid, int *crit, int *idx)
+void *YX509_CRL_get_ext_d2i(const YX509_CRL *x, int nid, int *crit, int *idx)
 {
-    return X509V3_get_d2i(x->crl.extensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->crl.extensions, nid, crit, idx);
 }
 
-int X509_CRL_add1_ext_i2d(X509_CRL *x, int nid, void *value, int crit,
+int YX509_CRL_add1_ext_i2d(YX509_CRL *x, int nid, void *value, int crit,
                           unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->crl.extensions, nid, value, crit, flags);
+    return YX509V3_add1_i2d(&x->crl.extensions, nid, value, crit, flags);
 }
 
-int X509_CRL_add_ext(X509_CRL *x, X509_EXTENSION *ex, int loc)
+int YX509_CRL_add_ext(YX509_CRL *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->crl.extensions), ex, loc) != NULL);
+    return (YX509v3_add_ext(&(x->crl.extensions), ex, loc) != NULL);
 }
 
-int X509_get_ext_count(const X509 *x)
+int YX509_get_ext_count(const YX509 *x)
 {
-    return X509v3_get_ext_count(x->cert_info.extensions);
+    return YX509v3_get_ext_count(x->cert_info.extensions);
 }
 
-int X509_get_ext_by_NID(const X509 *x, int nid, int lastpos)
+int YX509_get_ext_by_NID(const YX509 *x, int nid, int lastpos)
 {
-    return X509v3_get_ext_by_NID(x->cert_info.extensions, nid, lastpos);
+    return YX509v3_get_ext_by_NID(x->cert_info.extensions, nid, lastpos);
 }
 
-int X509_get_ext_by_OBJ(const X509 *x, const ASN1_OBJECT *obj, int lastpos)
+int YX509_get_ext_by_OBJ(const YX509 *x, const YASN1_OBJECT *obj, int lastpos)
 {
-    return X509v3_get_ext_by_OBJ(x->cert_info.extensions, obj, lastpos);
+    return YX509v3_get_ext_by_OBJ(x->cert_info.extensions, obj, lastpos);
 }
 
-int X509_get_ext_by_critical(const X509 *x, int crit, int lastpos)
+int YX509_get_ext_by_critical(const YX509 *x, int crit, int lastpos)
 {
-    return (X509v3_get_ext_by_critical
+    return (YX509v3_get_ext_by_critical
             (x->cert_info.extensions, crit, lastpos));
 }
 
-X509_EXTENSION *X509_get_ext(const X509 *x, int loc)
+YX509_EXTENSION *YX509_get_ext(const YX509 *x, int loc)
 {
-    return X509v3_get_ext(x->cert_info.extensions, loc);
+    return YX509v3_get_ext(x->cert_info.extensions, loc);
 }
 
-X509_EXTENSION *X509_delete_ext(X509 *x, int loc)
+YX509_EXTENSION *YX509_delete_ext(YX509 *x, int loc)
 {
-    return X509v3_delete_ext(x->cert_info.extensions, loc);
+    return YX509v3_delete_ext(x->cert_info.extensions, loc);
 }
 
-int X509_add_ext(X509 *x, X509_EXTENSION *ex, int loc)
+int YX509_add_ext(YX509 *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->cert_info.extensions), ex, loc) != NULL);
+    return (YX509v3_add_ext(&(x->cert_info.extensions), ex, loc) != NULL);
 }
 
-void *X509_get_ext_d2i(const X509 *x, int nid, int *crit, int *idx)
+void *YX509_get_ext_d2i(const YX509 *x, int nid, int *crit, int *idx)
 {
-    return X509V3_get_d2i(x->cert_info.extensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->cert_info.extensions, nid, crit, idx);
 }
 
-int X509_add1_ext_i2d(X509 *x, int nid, void *value, int crit,
+int YX509_add1_ext_i2d(YX509 *x, int nid, void *value, int crit,
                       unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->cert_info.extensions, nid, value, crit,
+    return YX509V3_add1_i2d(&x->cert_info.extensions, nid, value, crit,
                            flags);
 }
 
-int X509_REVOKED_get_ext_count(const X509_REVOKED *x)
+int YX509_REVOKED_get_ext_count(const YX509_REVOKED *x)
 {
-    return X509v3_get_ext_count(x->extensions);
+    return YX509v3_get_ext_count(x->extensions);
 }
 
-int X509_REVOKED_get_ext_by_NID(const X509_REVOKED *x, int nid, int lastpos)
+int YX509_REVOKED_get_ext_by_NID(const YX509_REVOKED *x, int nid, int lastpos)
 {
-    return X509v3_get_ext_by_NID(x->extensions, nid, lastpos);
+    return YX509v3_get_ext_by_NID(x->extensions, nid, lastpos);
 }
 
-int X509_REVOKED_get_ext_by_OBJ(const X509_REVOKED *x, const ASN1_OBJECT *obj,
+int YX509_REVOKED_get_ext_by_OBJ(const YX509_REVOKED *x, const YASN1_OBJECT *obj,
                                 int lastpos)
 {
-    return X509v3_get_ext_by_OBJ(x->extensions, obj, lastpos);
+    return YX509v3_get_ext_by_OBJ(x->extensions, obj, lastpos);
 }
 
-int X509_REVOKED_get_ext_by_critical(const X509_REVOKED *x, int crit, int lastpos)
+int YX509_REVOKED_get_ext_by_critical(const YX509_REVOKED *x, int crit, int lastpos)
 {
-    return X509v3_get_ext_by_critical(x->extensions, crit, lastpos);
+    return YX509v3_get_ext_by_critical(x->extensions, crit, lastpos);
 }
 
-X509_EXTENSION *X509_REVOKED_get_ext(const X509_REVOKED *x, int loc)
+YX509_EXTENSION *YX509_REVOKED_get_ext(const YX509_REVOKED *x, int loc)
 {
-    return X509v3_get_ext(x->extensions, loc);
+    return YX509v3_get_ext(x->extensions, loc);
 }
 
-X509_EXTENSION *X509_REVOKED_delete_ext(X509_REVOKED *x, int loc)
+YX509_EXTENSION *YX509_REVOKED_delete_ext(YX509_REVOKED *x, int loc)
 {
-    return X509v3_delete_ext(x->extensions, loc);
+    return YX509v3_delete_ext(x->extensions, loc);
 }
 
-int X509_REVOKED_add_ext(X509_REVOKED *x, X509_EXTENSION *ex, int loc)
+int YX509_REVOKED_add_ext(YX509_REVOKED *x, YX509_EXTENSION *ex, int loc)
 {
-    return (X509v3_add_ext(&(x->extensions), ex, loc) != NULL);
+    return (YX509v3_add_ext(&(x->extensions), ex, loc) != NULL);
 }
 
-void *X509_REVOKED_get_ext_d2i(const X509_REVOKED *x, int nid, int *crit, int *idx)
+void *YX509_REVOKED_get_ext_d2i(const YX509_REVOKED *x, int nid, int *crit, int *idx)
 {
-    return X509V3_get_d2i(x->extensions, nid, crit, idx);
+    return YX509V3_get_d2i(x->extensions, nid, crit, idx);
 }
 
-int X509_REVOKED_add1_ext_i2d(X509_REVOKED *x, int nid, void *value, int crit,
+int YX509_REVOKED_add1_ext_i2d(YX509_REVOKED *x, int nid, void *value, int crit,
                               unsigned long flags)
 {
-    return X509V3_add1_i2d(&x->extensions, nid, value, crit, flags);
+    return YX509V3_add1_i2d(&x->extensions, nid, value, crit, flags);
 }

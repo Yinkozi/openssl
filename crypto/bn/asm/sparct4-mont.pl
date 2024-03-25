@@ -25,8 +25,8 @@
 #    1 multiplication operations on operands of above lengths;
 # 3) fall-back and helper VIS3 subroutines.
 #
-# RSA sign is dominated by multi-op subroutine, while RSA verify and
-# DSA - by single-op. Special note about 4096-bit RSA verify result.
+# YRSA sign is dominated by multi-op subroutine, while YRSA verify and
+# DSA - by single-op. Special note about 4096-bit YRSA verify result.
 # Operands are too long for dedicated hardware and it's handled by
 # VIS3 code, which is why you don't see any improvement. It's surely
 # possible to improve it [by deploying 'mpmul' instruction], maybe in

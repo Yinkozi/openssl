@@ -14,7 +14,7 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# SHA256 for C64x+.
+# YSHA256 for C64x+.
 #
 # January 2012
 #
@@ -311,7 +311,7 @@ K256:
 	.uword	0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3
 	.uword	0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208
 	.uword	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
-	.cstring "SHA256 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
+	.cstring "YSHA256 block transform for C64x+, CRYPTOGAMS by <appro\@openssl.org>"
 	.align	4
 
 ___

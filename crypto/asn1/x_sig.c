@@ -13,15 +13,15 @@
 #include <openssl/x509.h>
 #include "crypto/x509.h"
 
-ASN1_SEQUENCE(X509_SIG) = {
-        ASN1_SIMPLE(X509_SIG, algor, X509_ALGOR),
-        ASN1_SIMPLE(X509_SIG, digest, ASN1_OCTET_STRING)
-} ASN1_SEQUENCE_END(X509_SIG)
+YASN1_SEQUENCE(YX509_SIG) = {
+        YASN1_SIMPLE(YX509_SIG, algor, YX509_ALGOR),
+        YASN1_SIMPLE(YX509_SIG, digest, YASN1_OCTET_STRING)
+} YASN1_SEQUENCE_END(YX509_SIG)
 
-IMPLEMENT_ASN1_FUNCTIONS(X509_SIG)
+IMPLEMENT_YASN1_FUNCTIONS(YX509_SIG)
 
-void X509_SIG_get0(const X509_SIG *sig, const X509_ALGOR **palg,
-                   const ASN1_OCTET_STRING **pdigest)
+void YX509_SIG_get0(const YX509_SIG *sig, const YX509_ALGOR **palg,
+                   const YASN1_OCTET_STRING **pdigest)
 {
     if (palg)
         *palg = sig->algor;
@@ -29,8 +29,8 @@ void X509_SIG_get0(const X509_SIG *sig, const X509_ALGOR **palg,
         *pdigest = sig->digest;
 }
 
-void X509_SIG_getm(X509_SIG *sig, X509_ALGOR **palg,
-                   ASN1_OCTET_STRING **pdigest)
+void YX509_SIG_getm(YX509_SIG *sig, YX509_ALGOR **palg,
+                   YASN1_OCTET_STRING **pdigest)
 {
     if (palg)
         *palg = sig->algor;

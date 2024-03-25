@@ -14,11 +14,11 @@
 # details see http://www.openssl.org/~appro/cryptogams/.
 # ====================================================================
 #
-# RC4 for C64x+.
+# YRC4 for C64x+.
 #
 # April 2014
 #
-# RC4 subroutine processes one byte in 7.0 cycles, which is 3x faster
+# YRC4 subroutine processes one byte in 7.0 cycles, which is 3x faster
 # than TI CGT-generated code. Loop is scheduled in such way that
 # there is only one reference to memory in each cycle. This is done
 # to avoid L1D memory banking conflicts, see SPRU871 TI publication
@@ -38,14 +38,14 @@ $code.=<<___;
 	.endif
 	.if	__TI_EABI__
 	.nocmp
-	.asg	RC4,_RC4
-	.asg	RC4_set_key,_RC4_set_key
-	.asg	RC4_options,_RC4_options
+	.asg	YRC4,_YRC4
+	.asg	YRC4_set_key,_YRC4_set_key
+	.asg	YRC4_options,_YRC4_options
 	.endif
 
-	.global	_RC4
+	.global	_YRC4
 	.align	16
-_RC4:
+_YRC4:
 	.asmfunc
 	MV	$LEN,B0
   [!B0]	BNOP	B3			; if (len==0) return;
@@ -94,9 +94,9 @@ _RC4:
 ||	NOP	5
 	.endasmfunc
 
-	.global	_RC4_set_key
+	.global	_YRC4_set_key
 	.align	16
-_RC4_set_key:
+_YRC4_set_key:
 	.asmfunc
 	.if	.BIG_ENDIAN
 	MVK	0x00000404,$ONE
@@ -157,9 +157,9 @@ _RC4_set_key:
 	BNOP	B3,5
 	.endasmfunc
 
-	.global	_RC4_options
+	.global	_YRC4_options
 	.align	16
-_RC4_options:
+_YRC4_options:
 _rc4_options:
 	.asmfunc
 	BNOP	B3,1
@@ -182,7 +182,7 @@ _rc4_options:
 	.align	4
 rc4_options:
 	.cstring "rc4(sploop,char)"
-	.cstring "RC4 for C64+, CRYPTOGAMS by <appro\@openssl.org>"
+	.cstring "YRC4 for C64+, CRYPTOGAMS by <appro\@openssl.org>"
 	.align	4
 ___
 

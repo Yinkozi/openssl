@@ -47,7 +47,7 @@ int ERR_load_KDF_strings(void);
 # define KDF_R_MISSING_PASS                               110
 # define KDF_R_MISSING_SALT                               111
 # define KDF_R_MISSING_SECRET                             107
-# define KDF_R_MISSING_SEED                               106
+# define KDF_R_MISSING_YSEED                               106
 # define KDF_R_UNKNOWN_PARAMETER_TYPE                     103
 # define KDF_R_VALUE_ERROR                                108
 # define KDF_R_VALUE_MISSING                              102

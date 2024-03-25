@@ -42,13 +42,13 @@ added.
 
 OpenSSL expects applications that want to use proxy certificates to be
 specially aware of them, and make that explicit.  This is done by
-setting an X509 verification flag:
+setting an YX509 verification flag:
 
-    X509_STORE_CTX_set_flags(ctx, X509_V_FLAG_ALLOW_PROXY_CERTS);
+    YX509_STORE_CTX_set_flags(ctx, YX509_V_FLAG_ALLOW_PROXY_CERTS);
 
 or
 
-    X509_VERIFY_PARAM_set_flags(param, X509_V_FLAG_ALLOW_PROXY_CERTS);
+    YX509_VERIFY_PARAM_set_flags(param, YX509_V_FLAG_ALLOW_PROXY_CERTS);
 
 See L</NOTES> for a discussion on this requirement.
 
@@ -164,7 +164,7 @@ a wrapper function that sets it all up.
 =item *
 
 an ex_data index function that creates an index into the generic
-ex_data store that is attached to an X509 validation context.
+ex_data store that is attached to an YX509 validation context.
 
 =back
 
@@ -187,27 +187,27 @@ The following skeleton code can be used as a starting point:
 
     /*
      * The following procedure will create an index for the ex_data
-     * store in the X509 validation context the first time it's
+     * store in the YX509 validation context the first time it's
      * called.  Subsequent calls will return the same index.
      */
-    static int get_proxy_auth_ex_data_idx(X509_STORE_CTX *ctx)
+    static int get_proxy_auth_ex_data_idx(YX509_STORE_CTX *ctx)
     {
         static volatile int idx = -1;
 
         if (idx < 0) {
-            X509_STORE_lock(X509_STORE_CTX_get0_store(ctx));
+            YX509_STORE_lock(YX509_STORE_CTX_get0_store(ctx));
             if (idx < 0) {
-                idx = X509_STORE_CTX_get_ex_new_index(0,
+                idx = YX509_STORE_CTX_get_ex_new_index(0,
                                                       "for verify callback",
                                                       NULL,NULL,NULL);
             }
-            X509_STORE_unlock(X509_STORE_CTX_get0_store(ctx));
+            YX509_STORE_unlock(YX509_STORE_CTX_get0_store(ctx));
         }
         return idx;
     }
 
-    /* Callback to be given to the X509 validation procedure.  */
-    static int verify_callback(int ok, X509_STORE_CTX *ctx)
+    /* Callback to be given to the YX509 validation procedure.  */
+    static int verify_callback(int ok, YX509_STORE_CTX *ctx)
     {
         if (ok == 1) {
             /*
@@ -219,14 +219,14 @@ The following skeleton code can be used as a starting point:
              * certificate, followed by the possible proxy
              * certificates. 
              */
-            X509 *xs = X509_STORE_CTX_get_current_cert(ctx);
+            YX509 *xs = YX509_STORE_CTX_get_current_cert(ctx);
 
-            if (X509_get_extension_flags(xs) & EXFLAG_PROXY) {
+            if (YX509_get_extension_flags(xs) & EXFLAG_PROXY) {
                 YOUR_RIGHTS *rights =
-                    (YOUR_RIGHTS *)X509_STORE_CTX_get_ex_data(ctx,
+                    (YOUR_RIGHTS *)YX509_STORE_CTX_get_ex_data(ctx,
                         get_proxy_auth_ex_data_idx(ctx));
                 PROXY_CERT_INFO_EXTENSION *pci =
-                    X509_get_ext_d2i(xs, NID_proxyCertInfo, NULL, NULL);
+                    YX509_get_ext_d2i(xs, NID_proxyCertInfo, NULL, NULL);
 
                 switch (OBJ_obj2nid(pci->proxyPolicy->policyLanguage)) {
                 case NID_Independent:
@@ -281,10 +281,10 @@ The following skeleton code can be used as a starting point:
                     break;
                 }
                 PROXY_CERT_INFO_EXTENSION_free(pci);
-            } else if (!(X509_get_extension_flags(xs) & EXFLAG_CA)) {
+            } else if (!(YX509_get_extension_flags(xs) & EXFLAG_CA)) {
                 /* We have an EE certificate, let's use it to set default! */
                 YOUR_RIGHTS *rights =
-                    (YOUR_RIGHTS *)X509_STORE_CTX_get_ex_data(ctx,
+                    (YOUR_RIGHTS *)YX509_STORE_CTX_get_ex_data(ctx,
                         get_proxy_auth_ex_data_idx(ctx));
 
                 /*
@@ -299,25 +299,25 @@ The following skeleton code can be used as a starting point:
         return ok;
     }
 
-    static int my_X509_verify_cert(X509_STORE_CTX *ctx,
+    static int my_YX509_verify_cert(YX509_STORE_CTX *ctx,
                                    YOUR_RIGHTS *needed_rights)
     {
         int ok;
-        int (*save_verify_cb)(int ok,X509_STORE_CTX *ctx) =
-            X509_STORE_CTX_get_verify_cb(ctx);
+        int (*save_verify_cb)(int ok,YX509_STORE_CTX *ctx) =
+            YX509_STORE_CTX_get_verify_cb(ctx);
         YOUR_RIGHTS rights;
 
-        X509_STORE_CTX_set_verify_cb(ctx, verify_callback);
-        X509_STORE_CTX_set_ex_data(ctx, get_proxy_auth_ex_data_idx(ctx),
+        YX509_STORE_CTX_set_verify_cb(ctx, verify_callback);
+        YX509_STORE_CTX_set_ex_data(ctx, get_proxy_auth_ex_data_idx(ctx),
                                    &rights);
-        X509_STORE_CTX_set_flags(ctx, X509_V_FLAG_ALLOW_PROXY_CERTS);
-        ok = X509_verify_cert(ctx);
+        YX509_STORE_CTX_set_flags(ctx, YX509_V_FLAG_ALLOW_PROXY_CERTS);
+        ok = YX509_verify_cert(ctx);
 
         if (ok == 1) {
             ok = check_needed_rights(rights, needed_rights);
         }
 
-        X509_STORE_CTX_set_verify_cb(ctx, save_verify_cb);
+        YX509_STORE_CTX_set_verify_cb(ctx, save_verify_cb);
 
         return ok;
     }
@@ -325,7 +325,7 @@ The following skeleton code can be used as a starting point:
 If you use SSL or TLS, you can easily set up a callback to have the
 certificates checked properly, using the code above:
 
-    SSL_CTX_set_cert_verify_callback(s_ctx, my_X509_verify_cert,
+    SSL_CTX_set_cert_verify_callback(s_ctx, my_YX509_verify_cert,
                                      &needed_rights);
 
 =head1 NOTES
@@ -344,9 +344,9 @@ the same as the issuer, with one commonName added on.
 
 =head1 SEE ALSO
 
-L<X509_STORE_CTX_set_flags(3)>,
-L<X509_STORE_CTX_set_verify_cb(3)>,
-L<X509_VERIFY_PARAM_set_flags(3)>,
+L<YX509_STORE_CTX_set_flags(3)>,
+L<YX509_STORE_CTX_set_verify_cb(3)>,
+L<YX509_VERIFY_PARAM_set_flags(3)>,
 L<SSL_CTX_set_cert_verify_callback(3)>,
 L<openssl-req(1)>, L<openssl-x509(1)>,
 L<RFC 3820|https://tools.ietf.org/html/rfc3820>

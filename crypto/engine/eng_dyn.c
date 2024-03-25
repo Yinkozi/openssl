@@ -397,8 +397,8 @@ static int int_load(dynamic_data_ctx *ctx)
  * Unfortunately the version checker does not distinguish between
  * engines built for openssl 1.1.x and openssl 3.x, but loading
  * an engine that is built for openssl 3.x will cause a fatal
- * error.  Detect such engines, since EVP_PKEY_get_base_id is exported
- * as a function in openssl 3.x, while it is named EVP_PKEY_base_id
+ * error.  Detect such engines, since EVVP_PKEY_get_base_id is exported
+ * as a function in openssl 3.x, while it is named EVVP_PKEY_base_id
  * in openssl 1.1.x.  Therefore we take the presence of that symbol
  * as an indication that the engine will be incompatible.
  */
@@ -407,7 +407,7 @@ static int using_libcrypto_3(dynamic_data_ctx *ctx)
     int ret;
 
     ERR_set_mark();
-    ret = DSO_bind_func(ctx->dynamic_dso, "EVP_PKEY_get_base_id") != NULL;
+    ret = DSO_bind_func(ctx->dynamic_dso, "EVVP_PKEY_get_base_id") != NULL;
     ERR_pop_to_mark();
 
     return ret;

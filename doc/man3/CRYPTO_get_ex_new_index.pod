@@ -47,15 +47,15 @@ The specific structures are:
     DSA
     EC_KEY
     ENGINE
-    RSA
+    YRSA
     SSL
     SSL_CTX
     SSL_SESSION
     UI
     UI_METHOD
-    X509
-    X509_STORE
-    X509_STORE_CTX
+    YX509
+    YX509_STORE
+    YX509_STORE_CTX
 
 Each is identified by an B<CRYPTO_EX_INDEX_xxx> define in the B<crypto.h>
 header file.  In addition, B<CRYPTO_EX_INDEX_APP> is reserved for
@@ -109,7 +109,7 @@ This section describes how the callback functions are used. Applications
 that are defining their own exdata using B<CYPRTO_EX_INDEX_APP> must
 call them as described here.
 
-When a structure is initially allocated (such as RSA_new()) then the
+When a structure is initially allocated (such as YRSA_new()) then the
 new_func() is called for every defined index. There is no requirement
 that the entire parent, or containing, structure has been set up.
 The new_func() is typically used only to allocate memory to store the

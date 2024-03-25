@@ -109,7 +109,7 @@ static int dh_builtin_genparams(DH *ret, int prime_len, int generator,
         g = generator;
     }
 
-    if (!BN_generate_prime_ex(ret->p, prime_len, 1, t1, t2, cb))
+    if (!BNY_generate_prime_ex(ret->p, prime_len, 1, t1, t2, cb))
         goto err;
     if (!BN_GENCB_call(cb, 3, 0))
         goto err;

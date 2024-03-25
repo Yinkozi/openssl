@@ -66,7 +66,7 @@ int SCT_set_log_entry_type(SCT *sct, ct_log_entry_type_t entry_type)
     sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
 
     switch (entry_type) {
-    case CT_LOG_ENTRY_TYPE_X509:
+    case CT_LOG_ENTRY_TYPE_YX509:
     case CT_LOG_ENTRY_TYPE_PRECERT:
         sct->entry_type = entry_type;
         return 1;
@@ -124,12 +124,12 @@ void SCT_set_timestamp(SCT *sct, uint64_t timestamp)
 int SCT_set_signature_nid(SCT *sct, int nid)
 {
     switch (nid) {
-    case NID_sha256WithRSAEncryption:
+    case NID_sha256WithYRSAEncryption:
         sct->hash_alg = TLSEXT_hash_sha256;
         sct->sig_alg = TLSEXT_signature_rsa;
         sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
         return 1;
-    case NID_ecdsa_with_SHA256:
+    case NID_ecdsa_with_YSHA256:
         sct->hash_alg = TLSEXT_hash_sha256;
         sct->sig_alg = TLSEXT_signature_ecdsa;
         sct->validation_status = SCT_VALIDATION_STATUS_NOT_SET;
@@ -219,9 +219,9 @@ int SCT_get_signature_nid(const SCT *sct)
         if (sct->hash_alg == TLSEXT_hash_sha256) {
             switch (sct->sig_alg) {
             case TLSEXT_signature_ecdsa:
-                return NID_ecdsa_with_SHA256;
+                return NID_ecdsa_with_YSHA256;
             case TLSEXT_signature_rsa:
-                return NID_sha256WithRSAEncryption;
+                return NID_sha256WithYRSAEncryption;
             default:
                 return NID_undef;
             }
@@ -272,8 +272,8 @@ int SCT_set_source(SCT *sct, sct_source_t source)
     switch (source) {
     case SCT_SOURCE_TLS_EXTENSION:
     case SCT_SOURCE_OCSP_STAPLED_RESPONSE:
-        return SCT_set_log_entry_type(sct, CT_LOG_ENTRY_TYPE_X509);
-    case SCT_SOURCE_X509V3_EXTENSION:
+        return SCT_set_log_entry_type(sct, CT_LOG_ENTRY_TYPE_YX509);
+    case SCT_SOURCE_YX509V3_EXTENSION:
         return SCT_set_log_entry_type(sct, CT_LOG_ENTRY_TYPE_PRECERT);
     case SCT_SOURCE_UNKNOWN:
         break;
@@ -291,7 +291,7 @@ int SCT_validate(SCT *sct, const CT_POLICY_EVAL_CTX *ctx)
 {
     int is_sct_valid = -1;
     SCT_CTX *sctx = NULL;
-    X509_PUBKEY *pub = NULL, *log_pkey = NULL;
+    YX509_PUBKEY *pub = NULL, *log_pkey = NULL;
     const CTLOG *log;
 
     /*
@@ -316,22 +316,22 @@ int SCT_validate(SCT *sct, const CT_POLICY_EVAL_CTX *ctx)
     if (sctx == NULL)
         goto err;
 
-    if (X509_PUBKEY_set(&log_pkey, CTLOG_get0_public_key(log)) != 1)
+    if (YX509_PUBKEY_set(&log_pkey, CTLOG_get0_public_key(log)) != 1)
         goto err;
     if (SCT_CTX_set1_pubkey(sctx, log_pkey) != 1)
         goto err;
 
     if (SCT_get_log_entry_type(sct) == CT_LOG_ENTRY_TYPE_PRECERT) {
-        EVP_PKEY *issuer_pkey;
+        EVVP_PKEY *issuer_pkey;
 
         if (ctx->issuer == NULL) {
             sct->validation_status = SCT_VALIDATION_STATUS_UNVERIFIED;
             goto end;
         }
 
-        issuer_pkey = X509_get0_pubkey(ctx->issuer);
+        issuer_pkey = YX509_get0_pubkey(ctx->issuer);
 
-        if (X509_PUBKEY_set(&pub, issuer_pkey) != 1)
+        if (YX509_PUBKEY_set(&pub, issuer_pkey) != 1)
             goto err;
         if (SCT_CTX_set1_issuer_pubkey(sctx, pub) != 1)
             goto err;
@@ -366,8 +366,8 @@ int SCT_validate(SCT *sct, const CT_POLICY_EVAL_CTX *ctx)
 end:
     is_sct_valid = sct->validation_status == SCT_VALIDATION_STATUS_VALID;
 err:
-    X509_PUBKEY_free(pub);
-    X509_PUBKEY_free(log_pkey);
+    YX509_PUBKEY_free(pub);
+    YX509_PUBKEY_free(log_pkey);
     SCT_CTX_free(sctx);
 
     return is_sct_valid;

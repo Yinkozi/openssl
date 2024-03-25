@@ -15,12 +15,12 @@
 # Permission to use under GPLv2 terms is granted.
 # ====================================================================
 #
-# SHA256/512 for ARMv8.
+# YSHA256/512 for ARMv8.
 #
 # Performance in cycles per processed byte and improvement coefficient
 # over code generated with "default" compiler:
 #
-#		SHA256-hw	SHA256(*)	SHA512
+#		YSHA256-hw	YSHA256(*)	YSHA512
 # Apple A7	1.97		10.5 (+33%)	6.73 (-1%(**))
 # Cortex-A53	2.38		15.5 (+115%)	10.0 (+150%(***))
 # Cortex-A57	2.31		11.6 (+86%)	7.51 (+260%(***))
@@ -29,7 +29,7 @@
 # Mongoose	2.36		13.0 (+50%)	8.36 (+33%)
 # Kryo		1.92		17.4 (+30%)	11.2 (+8%)
 #
-# (*)	Software SHA256 results are of lesser relevance, presented
+# (*)	Software YSHA256 results are of lesser relevance, presented
 #	mostly for informational purposes.
 # (**)	The result is a trade-off: it's possible to improve it by
 #	10% (or by 1 cycle per round), but at the cost of 20% loss
@@ -42,16 +42,16 @@
 # October 2016.
 #
 # Originally it was reckoned that it makes no sense to implement NEON
-# version of SHA256 for 64-bit processors. This is because performance
+# version of YSHA256 for 64-bit processors. This is because performance
 # improvement on most wide-spread Cortex-A5x processors was observed
 # to be marginal, same on Cortex-A53 and ~10% on A57. But then it was
-# observed that 32-bit NEON SHA256 performs significantly better than
+# observed that 32-bit NEON YSHA256 performs significantly better than
 # 64-bit scalar version on *some* of the more recent processors. As
-# result 64-bit NEON version of SHA256 was added to provide best
+# result 64-bit NEON version of YSHA256 was added to provide best
 # all-round performance. For example it executes ~30% faster on X-Gene
-# and Mongoose. [For reference, NEON version of SHA512 is bound to
+# and Mongoose. [For reference, NEON version of YSHA512 is bound to
 # deliver much less improvement, likely *negative* on Cortex-A5x.
-# Which is why NEON support is limited to SHA256.]
+# Which is why NEON support is limited to YSHA256.]
 
 $output=pop;
 $flavour=pop;
@@ -209,13 +209,13 @@ $func:
 	ldr	w16,[x16]
 ___
 $code.=<<___	if ($SZ==4);
-	tst	w16,#ARMV8_SHA256
+	tst	w16,#ARMV8_YSHA256
 	b.ne	.Lv8_entry
 	tst	w16,#ARMV7_NEON
 	b.ne	.Lneon_entry
 ___
 $code.=<<___	if ($SZ==8);
-	tst	w16,#ARMV8_SHA512
+	tst	w16,#ARMV8_YSHA512
 	b.ne	.Lv8_entry
 ___
 $code.=<<___;
