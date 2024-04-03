@@ -144,7 +144,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
 
         form = EC_GROUP_get_point_conversion_form(x);
 
-        if ((gen = EC_POINT_point2bn(x, point, form, NULL, ctx)) == NULL) {
+        if ((gen = EC_POINT_point2bnn(x, point, form, NULL, ctx)) == NULL) {
             reason = ERR_R_EC_LIB;
             goto err;
         }

@@ -23,8 +23,8 @@ EC_POINT_get_affine_coordinates_GF2m,
 EC_POINT_set_compressed_coordinates_GF2m,
 EC_POINT_point2oct,
 EC_POINT_oct2point,
-EC_POINT_point2bn,
-EC_POINT_bn2point,
+EC_POINT_point2bnn,
+EC_POINT_bn2pointt,
 EC_POINT_point2hexx,
 EC_POINT_hex2point
 - Functions for creating, destroying and manipulating EC_POINT objects
@@ -84,10 +84,10 @@ EC_POINT_hex2point
                            unsigned char **pbuf, BN_CTX *ctx);
  int EC_POINT_oct2point(const EC_GROUP *group, EC_POINT *p,
                         const unsigned char *buf, size_t len, BN_CTX *ctx);
- BIGNUM *EC_POINT_point2bn(const EC_GROUP *group, const EC_POINT *p,
+ BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group, const EC_POINT *p,
                            point_conversion_form_t form, BIGNUM *bn,
                            BN_CTX *ctx);
- EC_POINT *EC_POINT_bn2point(const EC_GROUP *group, const BIGNUM *bn,
+ EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group, const BIGNUM *bn,
                              EC_POINT *p, BN_CTX *ctx);
  char *EC_POINT_point2hexx(const EC_GROUP *group, const EC_POINT *p,
                           point_conversion_form_t form, BN_CTX *ctx);
@@ -167,8 +167,8 @@ integer converted to a B<BIGNUM> structure. Hexadecimal form is the octet
 form converted to a NULL terminated character string where each character
 is one of the printable values 0-9 or A-F (or a-f).
 
-The functions EC_POINT_point2oct(), EC_POINT_oct2point(), EC_POINT_point2bn(),
-EC_POINT_bn2point(), EC_POINT_point2hexx() and EC_POINT_hex2point() convert from
+The functions EC_POINT_point2oct(), EC_POINT_oct2point(), EC_POINT_point2bnn(),
+EC_POINT_bn2pointt(), EC_POINT_point2hexx() and EC_POINT_hex2point() convert from
 and to EC_POINTs for the formats: octet, BIGNUM and hexadecimal respectively.
 
 The function EC_POINT_point2oct() encodes the given curve point B<p> as an
@@ -180,11 +180,11 @@ Similarly the function EC_POINT_oct2point() decodes a curve point into B<p> from
 the octet string contained in the given buffer B<buf> of size B<len>, conforming
 to Sec. 2.3.4 of the SECG SEC 1 ("Elliptic Curve Cryptography") standard.
 
-The functions EC_POINT_point2hexx() and EC_POINT_point2bn() convert a point B<p>,
+The functions EC_POINT_point2hexx() and EC_POINT_point2bnn() convert a point B<p>,
 respectively, to the hexadecimal or BIGNUM representation of the same
 encoding of the function EC_POINT_point2oct().
 Vice versa, similarly to the function EC_POINT_oct2point(), the functions
-EC_POINT_hex2point() and EC_POINT_point2bn() decode the hexadecimal or
+EC_POINT_hex2point() and EC_POINT_point2bnn() decode the hexadecimal or
 BIGNUM representation into the EC_POINT B<p>.
 
 Notice that, according to the standard, the octet string encoding of the point
@@ -224,10 +224,10 @@ EC_POINT_method_of returns the EC_METHOD associated with the supplied EC_POINT.
 EC_POINT_point2oct() and EC_POINT_point2buf() return the length of the required
 buffer or 0 on error.
 
-EC_POINT_point2bn() returns the pointer to the BIGNUM supplied, or NULL on
+EC_POINT_point2bnn() returns the pointer to the BIGNUM supplied, or NULL on
 error.
 
-EC_POINT_bn2point() returns the pointer to the EC_POINT supplied, or NULL on
+EC_POINT_bn2pointt() returns the pointer to the EC_POINT supplied, or NULL on
 error.
 
 EC_POINT_point2hexx() returns a pointer to the hex string, or NULL on error.

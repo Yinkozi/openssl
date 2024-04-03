@@ -11,7 +11,7 @@
 #include <openssl/err.h>
 #include "ec_local.h"
 
-BIGNUM *EC_POINT_point2bn(const EC_GROUP *group,
+BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
                           const EC_POINT *point,
                           point_conversion_form_t form,
                           BIGNUM *ret, BN_CTX *ctx)
@@ -31,7 +31,7 @@ BIGNUM *EC_POINT_point2bn(const EC_GROUP *group,
     return ret;
 }
 
-EC_POINT *EC_POINT_bn2point(const EC_GROUP *group,
+EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
                             const BIGNUM *bn, EC_POINT *point, BN_CTX *ctx)
 {
     size_t buf_len = 0;
@@ -113,7 +113,7 @@ EC_POINT *EC_POINT_hex2point(const EC_GROUP *group,
     if (!BN_hex2bn(&tmp_bn, buf))
         return NULL;
 
-    ret = EC_POINT_bn2point(group, tmp_bn, point, ctx);
+    ret = EC_POINT_bn2pointt(group, tmp_bn, point, ctx);
 
     BN_clear_free(tmp_bn);
 

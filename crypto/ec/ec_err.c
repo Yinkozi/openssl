@@ -207,7 +207,7 @@ static const ERR_STRING_DATA EC_str_functs[] = {
      "EC_POINTs_make_affine"},
     {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINTS_MUL, 0), "EC_POINTs_mul"},
     {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_ADD, 0), "EC_POINT_add"},
-    {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_BN2POINT, 0), "EC_POINT_bn2point"},
+    {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_BN2POINT, 0), "EC_POINT_bn2pointt"},
     {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_CMP, 0), "EC_POINT_cmp"},
     {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_COPY, 0), "EC_POINT_copy"},
     {ERR_PACK(ERR_LIB_EC, EC_F_EC_POINT_DBL, 0), "EC_POINT_dbl"},

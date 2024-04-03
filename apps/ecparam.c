@@ -300,7 +300,7 @@ int ecparam_main(int argc, char **argv)
 
         if ((point = EC_GROUP_get0_generator(group)) == NULL)
             goto end;
-        if (!EC_POINT_point2bn(group, point,
+        if (!EC_POINT_point2bnn(group, point,
                                EC_GROUP_get_point_conversion_form(group),
                                ec_gen, NULL))
             goto end;
@@ -356,7 +356,7 @@ int ecparam_main(int argc, char **argv)
         BIO_pprintf(out, "    /* build generator */\n");
         BIO_pprintf(out, "    if ((tmp_1 = BN_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    point = EC_POINT_bn2point(group, tmp_1, NULL, NULL);\n");
+        BIO_pprintf(out, "    point = EC_POINT_bn2pointt(group, tmp_1, NULL, NULL);\n");
         BIO_pprintf(out, "    if (point == NULL)\n"
                         "        goto err;\n");
         BIO_pprintf(out, "    if ((tmp_2 = BN_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"

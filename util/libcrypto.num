@@ -3062,7 +3062,7 @@ BIO_dgram_non_fatal_error               3016	1_1_0	EXIST::FUNCTION:DGRAM
 OCSP_request_is_signed                  3017	1_1_0	EXIST::FUNCTION:OCSP
 i2d_BASIC_CONSTRAINTS                   3018	1_1_0	EXIST::FUNCTION:
 EC_KEY_get_method                       3019	1_1_0	EXIST::FUNCTION:EC
-EC_POINT_bn2point                       3021	1_1_0	EXIST::FUNCTION:EC
+EC_POINT_bn2pointt                       3021	1_1_0	EXIST::FUNCTION:EC
 YPBE2PARAM_it                            3022	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 YPBE2PARAM_it                            3022	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 BN_rand                                 3023	1_1_0	EXIST::FUNCTION:
@@ -3499,7 +3499,7 @@ BIO_method_type                         3451	1_1_0	EXIST::FUNCTION:
 ECPKParameters_prints                    3452	1_1_0	EXIST::FUNCTION:EC
 EVVP_rc4                                 3453	1_1_0	EXIST::FUNCTION:YRC4
 CMS_data_create                         3454	1_1_0	EXIST::FUNCTION:CMS
-EC_POINT_point2bn                       3455	1_1_0	EXIST::FUNCTION:EC
+EC_POINT_point2bnn                       3455	1_1_0	EXIST::FUNCTION:EC
 CMS_unsigned_get0_data_by_OBJ           3456	1_1_0	EXIST::FUNCTION:CMS
 YASN1_OCTET_STRING_cmp                   3457	1_1_0	EXIST::FUNCTION:
 YX509_NAME_print_ex                      3458	1_1_0	EXIST::FUNCTION:

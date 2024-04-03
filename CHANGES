@@ -7122,8 +7122,8 @@
      [Nils Larsch <nla@trustcenter.de>]
 
   *) Add functions
-          EC_POINT_point2bn()
-          EC_POINT_bn2point()
+          EC_POINT_point2bnn()
+          EC_POINT_bn2pointt()
           EC_POINT_point2hexx()
           EC_POINT_hex2point()
      providing useful interfaces to EC_POINT_point2oct() and

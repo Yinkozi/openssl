@@ -656,9 +656,9 @@ size_t EC_POINT_point2buf(const EC_GROUP *group, const EC_POINT *point,
                           unsigned char **pbuf, BN_CTX *ctx);
 
 /* other interfaces to point2oct/oct2point: */
-BIGNUM *EC_POINT_point2bn(const EC_GROUP *, const EC_POINT *,
+BIGNUM *EC_POINT_point2bnn(const EC_GROUP *, const EC_POINT *,
                           point_conversion_form_t form, BIGNUM *, BN_CTX *);
-EC_POINT *EC_POINT_bn2point(const EC_GROUP *, const BIGNUM *,
+EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *, const BIGNUM *,
                             EC_POINT *, BN_CTX *);
 char *EC_POINT_point2hexx(const EC_GROUP *, const EC_POINT *,
                          point_conversion_form_t form, BN_CTX *);
