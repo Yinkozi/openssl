@@ -370,12 +370,12 @@ int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe, const BIGNUM *add,
     return 0;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
-  t = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t = BNY_CTX_get(ctx);
   if (!t) {
     goto err;
   }
@@ -444,8 +444,8 @@ loop:
 
 err:
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
 
   return found;
@@ -480,12 +480,12 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
   BN_MONT_CTX *mont = NULL;
   const BIGNUM *A = NULL;
 
-  if (BN_cmp(a, BN_value_one()) <= 0) {
+  if (BN_cmp(a, BNY_value_one()) <= 0) {
     return 0;
   }
 
   if (checks == BN_prime_checks) {
-    checks = BN_prime_checks_for_size(BN_num_bits(a));
+    checks = BN_prime_checks_for_size(BNY_num_bits(a));
   }
 
   /* first look for small factors */
@@ -512,15 +512,15 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
 
   if (ctx_passed != NULL) {
     ctx = ctx_passed;
-  } else if ((ctx = BN_CTX_new()) == NULL) {
+  } else if ((ctx = BNY_CTX_new()) == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
 
   /* A := abs(a) */
   if (a->neg) {
-    BIGNUM *t = BN_CTX_get(ctx);
-    if (t == NULL || !BN_copy(t, a)) {
+    BIGNUM *t = BNY_CTX_get(ctx);
+    if (t == NULL || !BNY_copy(t, a)) {
       goto err;
     }
     t->neg = 0;
@@ -529,15 +529,15 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
     A = a;
   }
 
-  A1 = BN_CTX_get(ctx);
-  A1_odd = BN_CTX_get(ctx);
-  check = BN_CTX_get(ctx);
+  A1 = BNY_CTX_get(ctx);
+  A1_odd = BNY_CTX_get(ctx);
+  check = BNY_CTX_get(ctx);
   if (check == NULL) {
     goto err;
   }
 
   /* compute A1 := A - 1 */
-  if (!BN_copy(A1, A)) {
+  if (!BNY_copy(A1, A)) {
     goto err;
   }
   if (!BNY_sub_word(A1, 1)) {
@@ -567,7 +567,7 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
   }
 
   for (i = 0; i < checks; i++) {
-    if (!BN_pseudo_rand_range(check, A1)) {
+    if (!BNY_pseudo_rand_range(check, A1)) {
       goto err;
     }
     if (!BNY_add_word(check, 1)) {
@@ -591,9 +591,9 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
 
 err:
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     if (ctx_passed == NULL) {
-      BN_CTX_free(ctx);
+      BNY_CTX_free(ctx);
     }
   }
   if (mont != NULL) {
@@ -651,7 +651,7 @@ static int probable_prime(BIGNUM *rnd, int bits) {
   char is_single_word = bits <= BN_BITS2;
 
 again:
-  if (!BN_rand(rnd, bits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ODD)) {
+  if (!BNY_rand(rnd, bits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ODD)) {
     return 0;
   }
 
@@ -718,7 +718,7 @@ loop:
   if (!BNY_add_word(rnd, delta)) {
     return 0;
   }
-  if (BN_num_bits(rnd) != (unsigned)bits) {
+  if (BNY_num_bits(rnd) != (unsigned)bits) {
     goto again;
   }
 
@@ -730,12 +730,12 @@ static int probable_prime_dh(BIGNUM *rnd, int bits, const BIGNUM *add,
   int i, ret = 0;
   BIGNUM *t1;
 
-  BN_CTX_start(ctx);
-  if ((t1 = BN_CTX_get(ctx)) == NULL) {
+  BNY_CTX_start(ctx);
+  if ((t1 = BNY_CTX_get(ctx)) == NULL) {
     goto err;
   }
 
-  if (!BN_rand(rnd, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD)) {
+  if (!BNY_rand(rnd, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD)) {
     goto err;
   }
 
@@ -776,7 +776,7 @@ loop:
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -786,10 +786,10 @@ static int probable_prime_dh_safe(BIGNUM *p, int bits, const BIGNUM *padd,
   BIGNUM *t1, *qadd, *q;
 
   bits--;
-  BN_CTX_start(ctx);
-  t1 = BN_CTX_get(ctx);
-  q = BN_CTX_get(ctx);
-  qadd = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t1 = BNY_CTX_get(ctx);
+  q = BNY_CTX_get(ctx);
+  qadd = BNY_CTX_get(ctx);
   if (qadd == NULL) {
     goto err;
   }
@@ -798,7 +798,7 @@ static int probable_prime_dh_safe(BIGNUM *p, int bits, const BIGNUM *padd,
     goto err;
   }
 
-  if (!BN_rand(q, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD)) {
+  if (!BNY_rand(q, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD)) {
     goto err;
   }
 
@@ -856,6 +856,6 @@ loop:
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }

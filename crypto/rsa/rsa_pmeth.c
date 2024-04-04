@@ -723,7 +723,7 @@ static int pkey_rsa_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
     int ret;
 
     if (rctx->pub_exp == NULL) {
-        rctx->pub_exp = BN_new();
+        rctx->pub_exp = BNY_new();
         if (rctx->pub_exp == NULL || !BN_set_word(rctx->pub_exp, YRSA_F4))
             return 0;
     }

@@ -1232,8 +1232,8 @@ static int ssl3_get_server_key_exchange(SSL_HANDSHAKE *hs) {
       goto err;
     }
 
-    dh->p = BN_bin2bn(CBS_data(&dh_p), CBS_len(&dh_p), NULL);
-    dh->g = BN_bin2bn(CBS_data(&dh_g), CBS_len(&dh_g), NULL);
+    dh->p = BNY_bin2bn(CBS_data(&dh_p), CBS_len(&dh_p), NULL);
+    dh->g = BNY_bin2bn(CBS_data(&dh_g), CBS_len(&dh_g), NULL);
     if (dh->p == NULL || dh->g == NULL) {
       goto err;
     }

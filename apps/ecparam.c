@@ -279,12 +279,12 @@ int ecparam_main(int argc, char **argv)
         int is_prime, len = 0;
         const EC_METHOD *meth = EC_GROUP_method_of(group);
 
-        if ((ec_p = BN_new()) == NULL
-                || (ec_a = BN_new()) == NULL
-                || (ec_b = BN_new()) == NULL
-                || (ec_gen = BN_new()) == NULL
-                || (ec_order = BN_new()) == NULL
-                || (ec_cofactor = BN_new()) == NULL) {
+        if ((ec_p = BNY_new()) == NULL
+                || (ec_a = BNY_new()) == NULL
+                || (ec_b = BNY_new()) == NULL
+                || (ec_gen = BNY_new()) == NULL
+                || (ec_order = BNY_new()) == NULL
+                || (ec_cofactor = BNY_new()) == NULL) {
             perror("Can't allocate BN");
             goto end;
         }
@@ -312,7 +312,7 @@ int ecparam_main(int argc, char **argv)
         if (!ec_p || !ec_a || !ec_b || !ec_gen || !ec_order || !ec_cofactor)
             goto end;
 
-        len = BN_num_bits(ec_order);
+        len = BNY_num_bits(ec_order);
 
         if ((tmp_len = (size_t)BN_num_bytes(ec_p)) > buf_len)
             buf_len = tmp_len;
@@ -344,24 +344,24 @@ int ecparam_main(int argc, char **argv)
                         "    BIGNUM *tmp_3 = NULL;\n"
                         "\n");
 
-        BIO_pprintf(out, "    if ((tmp_1 = BN_bin2bn(ec_p_%d, sizeof(ec_p_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_1 = BNY_bin2bn(ec_p_%d, sizeof(ec_p_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    if ((tmp_2 = BN_bin2bn(ec_a_%d, sizeof(ec_a_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_2 = BNY_bin2bn(ec_a_%d, sizeof(ec_a_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    if ((tmp_3 = BN_bin2bn(ec_b_%d, sizeof(ec_b_%d), NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_3 = BNY_bin2bn(ec_b_%d, sizeof(ec_b_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
         BIO_pprintf(out, "    if ((group = EC_GROUP_new_curves_GFp(tmp_1, tmp_2, tmp_3, NULL)) == NULL)\n"
                         "        goto err;\n"
                         "\n");
         BIO_pprintf(out, "    /* build generator */\n");
-        BIO_pprintf(out, "    if ((tmp_1 = BN_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_1 = BNY_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
                         "        goto err;\n", len, len);
         BIO_pprintf(out, "    point = EC_POINT_bn2pointt(group, tmp_1, NULL, NULL);\n");
         BIO_pprintf(out, "    if (point == NULL)\n"
                         "        goto err;\n");
-        BIO_pprintf(out, "    if ((tmp_2 = BN_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_2 = BNY_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    if ((tmp_3 = BN_bin2bn(ec_cofactor_%d, sizeof(ec_cofactor_%d), tmp_3)) == NULL)\n"
+        BIO_pprintf(out, "    if ((tmp_3 = BNY_bin2bn(ec_cofactor_%d, sizeof(ec_cofactor_%d), tmp_3)) == NULL)\n"
                         "        goto err;\n", len, len);
         BIO_pprintf(out, "    if (!EC_GROUP_set_generator(group, point, tmp_2, tmp_3))\n"
                         "        goto err;\n"
@@ -397,12 +397,12 @@ int ecparam_main(int argc, char **argv)
     }
 
     if (genkey) {
-        EC_KEY *eckey = EC_KEY_new();
+        EC_KEY *eckey = ECC_KEY_new();
 
         if (eckey == NULL)
             goto end;
 
-        if (EC_KEY_set_group(eckey, group) == 0) {
+        if (ECC_KEY_set_group(eckey, group) == 0) {
             BIO_pprintf(bio_err, "unable to set group when generating key\n");
             EC_KEY_free(eckey);
             ERR_print_errors(bio_err);
@@ -410,9 +410,9 @@ int ecparam_main(int argc, char **argv)
         }
 
         if (new_form)
-            EC_KEY_set_conv_form(eckey, form);
+            ECC_KEY_set_conv_form(eckey, form);
 
-        if (!EC_KEY_generate_key(eckey)) {
+        if (!ECC_KEY_generate_key(eckey)) {
             BIO_pprintf(bio_err, "unable to generate key\n");
             EC_KEY_free(eckey);
             ERR_print_errors(bio_err);

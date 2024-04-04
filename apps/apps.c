@@ -1205,7 +1205,7 @@ void print_bignum_var(BIO *out, const BIGNUM *in, const char *var,
     } else {
         int i, l;
 
-        l = BN_bn2bin(in, buffer);
+        l = BNY_bn2bin(in, buffer);
         for (i = 0; i < l; i++) {
             BIO_pprintf(out, (i % 10) == 0 ? "\n        " : " ");
             if (i < l - 1)
@@ -1397,7 +1397,7 @@ BIGNUM *load_serial(const char *serialfile, int *exists, int create,
             goto err;
         }
         ERR_clear_error();
-        ret = BN_new();
+        ret = BNY_new();
         if (ret == NULL) {
             BIO_pprintf(bio_err, "Out of memory\n");
         } else if (!rand_serial(ret, ai)) {
@@ -1530,11 +1530,11 @@ int rand_serial(BIGNUM *b, YASN1_INTEGER *ai)
     BIGNUM *btmp;
     int ret = 0;
 
-    btmp = b == NULL ? BN_new() : b;
+    btmp = b == NULL ? BNY_new() : b;
     if (btmp == NULL)
         return 0;
 
-    if (!BN_rand(btmp, SERIAL_RAND_BITS, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
+    if (!BNY_rand(btmp, SERIAL_RAND_BITS, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
         goto error;
     if (ai && !BN_to_YASN1_INTEGER(btmp, ai))
         goto error;

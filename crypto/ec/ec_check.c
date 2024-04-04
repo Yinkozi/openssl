@@ -22,7 +22,7 @@ int EC_GROUP_check(const EC_GROUP *group, BN_CTX *ctx)
         return 1;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL) {
             ECerr(EC_F_EC_GROUP_CHECK, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -66,7 +66,7 @@ int EC_GROUP_check(const EC_GROUP *group, BN_CTX *ctx)
     ret = 1;
 
  err:
-    BN_CTX_free(new_ctx);
+    BNY_CTX_free(new_ctx);
     EC_POINT_free(point);
     return ret;
 }

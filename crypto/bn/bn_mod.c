@@ -200,8 +200,8 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
     bn_check_top(b);
     bn_check_top(m);
 
-    BN_CTX_start(ctx);
-    if ((t = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((t = BNY_CTX_get(ctx)) == NULL)
         goto err;
     if (a == b) {
         if (!BNY_sqr(t, a, ctx))
@@ -215,7 +215,7 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
     bn_check_top(r);
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -279,7 +279,7 @@ int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
 int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m)
 {
     if (r != a) {
-        if (BN_copy(r, a) == NULL)
+        if (BNY_copy(r, a) == NULL)
             return 0;
     }
 
@@ -287,7 +287,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m)
         int max_shift;
 
         /* 0 < r < m */
-        max_shift = BN_num_bits(m) - BN_num_bits(r);
+        max_shift = BNY_num_bits(m) - BNY_num_bits(r);
         /* max_shift >= 0 */
 
         if (max_shift < 0) {
@@ -308,7 +308,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m)
             --n;
         }
 
-        /* BN_num_bits(r) <= BN_num_bits(m) */
+        /* BNY_num_bits(r) <= BNY_num_bits(m) */
 
         if (BN_cmp(r, m) >= 0) {
             if (!BNY_sub(r, r, m))

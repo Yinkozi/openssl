@@ -103,7 +103,7 @@ B<BIGNUM> variables during their execution.  Since dynamic memory
 allocation to create B<BIGNUM>s is rather expensive when used in
 conjunction with repeated subroutine calls, the B<BN_CTX> structure is
 used.  This structure contains B<BN_CTX_NUM> B<BIGNUM>s, see
-L<BN_CTX_start(3)>.
+L<BNY_CTX_start(3)>.
 
 =head2 Low-level arithmetic operations
 

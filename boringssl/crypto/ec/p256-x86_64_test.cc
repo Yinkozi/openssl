@@ -144,8 +144,8 @@ static bool PointToAffine(P256_POINT_AFFINE *out, const P256_POINT *in) {
       0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   };
 
-  bssl::UniquePtr<BIGNUM> x(BN_new()), y(BN_new()), z(BN_new());
-  bssl::UniquePtr<BIGNUM> p(BN_bin2bn(kP, sizeof(kP), nullptr));
+  bssl::UniquePtr<BIGNUM> x(BNY_new()), y(BNY_new()), z(BNY_new());
+  bssl::UniquePtr<BIGNUM> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
   if (!x || !y || !z || !p ||
       !bn_set_words(x.get(), in->X, P256_LIMBS) ||
       !bn_set_words(y.get(), in->Y, P256_LIMBS) ||
@@ -167,7 +167,7 @@ static bool PointToAffine(P256_POINT_AFFINE *out, const P256_POINT *in) {
     return true;
   }
 
-  bssl::UniquePtr<BN_CTX> ctx(BN_CTX_new());
+  bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
   bssl::UniquePtr<BN_MONT_CTX> mont(BN_MONT_CTX_new());
   if (!ctx || !mont ||
       !BN_MONT_CTX_set(mont.get(), p.get(), ctx.get()) ||

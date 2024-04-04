@@ -89,17 +89,17 @@ static int dsa_test(void)
         goto end;
 
     DSA_get0_pqg(dsa, &p, &q, &g);
-    i = BN_bn2bin(q, buf);
+    i = BNY_bn2bin(q, buf);
     j = sizeof(out_q);
     if (!TEST_int_eq(i, j) || !TEST_mem_eq(buf, i, out_q, i))
         goto end;
 
-    i = BN_bn2bin(p, buf);
+    i = BNY_bn2bin(p, buf);
     j = sizeof(out_p);
     if (!TEST_int_eq(i, j) || !TEST_mem_eq(buf, i, out_p, i))
         goto end;
 
-    i = BN_bn2bin(g, buf);
+    i = BNY_bn2bin(g, buf);
     j = sizeof(out_g);
     if (!TEST_int_eq(i, j) || !TEST_mem_eq(buf, i, out_g, i))
         goto end;

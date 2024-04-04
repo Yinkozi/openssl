@@ -1751,7 +1751,7 @@ int SSL_enable_tls_channel_id(SSL *ssl) {
 static int is_p256_key(EVVP_PKEY *private_key) {
   const EC_KEY *ec_key = EVVP_PKEY_get0_EC_KEY(private_key);
   return ec_key != NULL &&
-         EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key)) ==
+         EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key)) ==
              NID_X9_62_prime256v1;
 }
 
@@ -2625,20 +2625,20 @@ void SSL_load_error_strings(void) {}
 int SSL_cache_hit(SSL *ssl) { return SSL_session_reused(ssl); }
 
 int SSL_CTX_set_tmp_ecdh(SSL_CTX *ctx, const EC_KEY *ec_key) {
-  if (ec_key == NULL || EC_KEY_get0_group(ec_key) == NULL) {
+  if (ec_key == NULL || ECC_KEY_get0_group(ec_key) == NULL) {
     OPENSSL_PUT_ERROR(SSL, ERR_R_PASSED_NULL_PARAMETER);
     return 0;
   }
-  int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key));
+  int nid = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key));
   return SSL_CTX_set1_curves(ctx, &nid, 1);
 }
 
 int SSL_set_tmp_ecdh(SSL *ssl, const EC_KEY *ec_key) {
-  if (ec_key == NULL || EC_KEY_get0_group(ec_key) == NULL) {
+  if (ec_key == NULL || ECC_KEY_get0_group(ec_key) == NULL) {
     OPENSSL_PUT_ERROR(SSL, ERR_R_PASSED_NULL_PARAMETER);
     return 0;
   }
-  int nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key));
+  int nid = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key));
   return SSL_set1_curves(ssl, &nid, 1);
 }
 

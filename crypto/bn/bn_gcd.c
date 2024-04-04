@@ -29,19 +29,19 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
     bn_check_top(a);
     bn_check_top(n);
 
-    BN_CTX_start(ctx);
-    A = BN_CTX_get(ctx);
-    B = BN_CTX_get(ctx);
-    X = BN_CTX_get(ctx);
-    D = BN_CTX_get(ctx);
-    M = BN_CTX_get(ctx);
-    Y = BN_CTX_get(ctx);
-    T = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    A = BNY_CTX_get(ctx);
+    B = BNY_CTX_get(ctx);
+    X = BNY_CTX_get(ctx);
+    D = BNY_CTX_get(ctx);
+    M = BNY_CTX_get(ctx);
+    Y = BNY_CTX_get(ctx);
+    T = BNY_CTX_get(ctx);
     if (T == NULL)
         goto err;
 
     if (in == NULL)
-        R = BN_new();
+        R = BNY_new();
     else
         R = in;
     if (R == NULL)
@@ -50,9 +50,9 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
     if (!BN_one(X))
         goto err;
     BN_zero(Y);
-    if (BN_copy(B, a) == NULL)
+    if (BNY_copy(B, a) == NULL)
         goto err;
-    if (BN_copy(A, n) == NULL)
+    if (BNY_copy(A, n) == NULL)
         goto err;
     A->neg = 0;
 
@@ -167,7 +167,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
     if (BN_is_one(A)) {
         /* Y*a == 1  (mod |n|) */
         if (!Y->neg && BNY_ucmp(Y, n) < 0) {
-            if (!BN_copy(R, Y))
+            if (!BNY_copy(R, Y))
                 goto err;
         } else {
             if (!BNY_nnmod(R, Y, n, ctx))
@@ -185,7 +185,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
  err:
     if ((ret == NULL) && (in == NULL))
         BN_free(R);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(ret);
     return ret;
 }
@@ -218,19 +218,19 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
     bn_check_top(a);
     bn_check_top(n);
 
-    BN_CTX_start(ctx);
-    A = BN_CTX_get(ctx);
-    B = BN_CTX_get(ctx);
-    X = BN_CTX_get(ctx);
-    D = BN_CTX_get(ctx);
-    M = BN_CTX_get(ctx);
-    Y = BN_CTX_get(ctx);
-    T = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    A = BNY_CTX_get(ctx);
+    B = BNY_CTX_get(ctx);
+    X = BNY_CTX_get(ctx);
+    D = BNY_CTX_get(ctx);
+    M = BNY_CTX_get(ctx);
+    Y = BNY_CTX_get(ctx);
+    T = BNY_CTX_get(ctx);
     if (T == NULL)
         goto err;
 
     if (in == NULL)
-        R = BN_new();
+        R = BNY_new();
     else
         R = in;
     if (R == NULL)
@@ -239,9 +239,9 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
     if (!BN_one(X))
         goto err;
     BN_zero(Y);
-    if (BN_copy(B, a) == NULL)
+    if (BNY_copy(B, a) == NULL)
         goto err;
-    if (BN_copy(A, n) == NULL)
+    if (BNY_copy(A, n) == NULL)
         goto err;
     A->neg = 0;
     if (B->neg || (BNY_ucmp(B, A) >= 0)) {
@@ -257,7 +257,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
      *      sign*Y*a  ==  A   (mod |n|).
      */
 
-    if (BN_is_odd(n) && (BN_num_bits(n) <= 2048)) {
+    if (BN_is_odd(n) && (BNY_num_bits(n) <= 2048)) {
         /*
          * Binary inversion algorithm; requires odd modulus. This is faster
          * than the general algorithm if the modulus is sufficiently small
@@ -364,12 +364,12 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
              */
 
             /* (D, M) := (A/B, A%B) ... */
-            if (BN_num_bits(A) == BN_num_bits(B)) {
+            if (BNY_num_bits(A) == BNY_num_bits(B)) {
                 if (!BN_one(D))
                     goto err;
                 if (!BNY_sub(M, A, B))
                     goto err;
-            } else if (BN_num_bits(A) == BN_num_bits(B) + 1) {
+            } else if (BNY_num_bits(A) == BNY_num_bits(B) + 1) {
                 /* A/B is 1, 2, or 3 */
                 if (!BN_lshift1(T, B))
                     goto err;
@@ -456,7 +456,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
                     if (!BN_lshift(tmp, X, 2))
                         goto err;
                 } else if (D->top == 1) {
-                    if (!BN_copy(tmp, X))
+                    if (!BNY_copy(tmp, X))
                         goto err;
                     if (!BNY_mul_word(tmp, D->d[0]))
                         goto err;
@@ -492,7 +492,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
     if (BN_is_one(A)) {
         /* Y*a == 1  (mod |n|) */
         if (!Y->neg && BNY_ucmp(Y, n) < 0) {
-            if (!BN_copy(R, Y))
+            if (!BNY_copy(R, Y))
                 goto err;
         } else {
             if (!BNY_nnmod(R, Y, n, ctx))
@@ -506,7 +506,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
  err:
     if ((ret == NULL) && (in == NULL))
         BN_free(R);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(ret);
     return ret;
 }
@@ -520,7 +520,7 @@ BIGNUM *BN_mod_inverse(BIGNUM *in,
     int noinv = 0;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL) {
             BNerr(BN_F_BN_MOD_INVERSE, ERR_R_MALLOC_FAILURE);
             return NULL;
@@ -530,7 +530,7 @@ BIGNUM *BN_mod_inverse(BIGNUM *in,
     rv = int_bn_mod_inverse(in, a, n, ctx, &noinv);
     if (noinv)
         BNerr(BN_F_BN_MOD_INVERSE, BN_R_NO_INVERSE);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_free(new_ctx);
     return rv;
 }
 
@@ -556,12 +556,12 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx)
      * handled immediately. An attacker can run an attack under this
      * assumption without the need of side-channel information. */
     if (BN_is_zero(in_b)) {
-        ret = BN_copy(r, in_a) != NULL;
+        ret = BNY_copy(r, in_a) != NULL;
         r->neg = 0;
         return ret;
     }
     if (BN_is_zero(in_a)) {
-        ret = BN_copy(r, in_b) != NULL;
+        ret = BNY_copy(r, in_b) != NULL;
         r->neg = 0;
         return ret;
     }
@@ -569,9 +569,9 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx)
     bn_check_top(in_a);
     bn_check_top(in_b);
 
-    BN_CTX_start(ctx);
-    temp = BN_CTX_get(ctx);
-    g = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    temp = BNY_CTX_get(ctx);
+    g = BNY_CTX_get(ctx);
 
     /* make r != 0, g != 0 even, so BN_ryshift is not a potential nop */
     if (g == NULL
@@ -605,8 +605,8 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx)
     BN_consttime_swap((~r->d[0]) & 1, r, g, top);
 
     /* compute the number of iterations */
-    rlen = BN_num_bits(r);
-    glen = BN_num_bits(g);
+    rlen = BNY_num_bits(r);
+    glen = BNY_num_bits(g);
     m = 4 + 3 * ((rlen >= glen) ? rlen : glen);
 
     for (i = 0; i < m; i++) {
@@ -641,7 +641,7 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx)
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(r);
     return ret;
 }

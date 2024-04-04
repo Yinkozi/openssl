@@ -29,17 +29,17 @@ static const EC_KEY_METHOD openssl_ec_key_method = {
 
 static const EC_KEY_METHOD *default_ec_key_meth = &openssl_ec_key_method;
 
-const EC_KEY_METHOD *EC_KEY_OpenSSL(void)
+const EC_KEY_METHOD *ECC_KEY_OpenSSL(void)
 {
     return &openssl_ec_key_method;
 }
 
-const EC_KEY_METHOD *EC_KEY_get_default_method(void)
+const EC_KEY_METHOD *ECC_KEY_get_default_method(void)
 {
     return default_ec_key_meth;
 }
 
-void EC_KEY_set_default_method(const EC_KEY_METHOD *meth)
+void ECC_KEY_set_default_method(const EC_KEY_METHOD *meth)
 {
     if (meth == NULL)
         default_ec_key_meth = &openssl_ec_key_method;
@@ -47,12 +47,12 @@ void EC_KEY_set_default_method(const EC_KEY_METHOD *meth)
         default_ec_key_meth = meth;
 }
 
-const EC_KEY_METHOD *EC_KEY_get_method(const EC_KEY *key)
+const EC_KEY_METHOD *ECC_KEY_get_method(const EC_KEY *key)
 {
     return key->meth;
 }
 
-int EC_KEY_set_method(EC_KEY *key, const EC_KEY_METHOD *meth)
+int ECC_KEY_set_method(EC_KEY *key, const EC_KEY_METHOD *meth)
 {
     void (*finish)(EC_KEY *key) = key->meth->finish;
 
@@ -70,7 +70,7 @@ int EC_KEY_set_method(EC_KEY *key, const EC_KEY_METHOD *meth)
     return 1;
 }
 
-EC_KEY *EC_KEY_new_method(ENGINE *engine)
+EC_KEY *ECC_KEY_new_method(ENGINE *engine)
 {
     EC_KEY *ret = OPENSSL_zalloc(sizeof(*ret));
 
@@ -87,7 +87,7 @@ EC_KEY *EC_KEY_new_method(ENGINE *engine)
         return NULL;
     }
 
-    ret->meth = EC_KEY_get_default_method();
+    ret->meth = ECC_KEY_get_default_method();
 #ifndef OPENSSL_NO_ENGINE
     if (engine != NULL) {
         if (!ENGINE_init(engine)) {
@@ -124,7 +124,7 @@ EC_KEY *EC_KEY_new_method(ENGINE *engine)
     return NULL;
 }
 
-int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
+int ECCDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
                      const EC_KEY *eckey,
                      void *(*KDF) (const void *in, size_t inlen, void *out,
                                    size_t *outlen))
@@ -152,7 +152,7 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
     return outlen;
 }
 
-EC_KEY_METHOD *EC_KEY_METHOD_new(const EC_KEY_METHOD *meth)
+EC_KEY_METHOD *ECC_KEY_METHOD_new(const EC_KEY_METHOD *meth)
 {
     EC_KEY_METHOD *ret = OPENSSL_zalloc(sizeof(*meth));
 
@@ -164,13 +164,13 @@ EC_KEY_METHOD *EC_KEY_METHOD_new(const EC_KEY_METHOD *meth)
     return ret;
 }
 
-void EC_KEY_METHOD_free(EC_KEY_METHOD *meth)
+void ECC_KEY_METHOD_free(EC_KEY_METHOD *meth)
 {
     if (meth->flags & EC_KEY_METHOD_DYNAMIC)
         OPENSSL_free(meth);
 }
 
-void EC_KEY_METHOD_set_init(EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_set_init(EC_KEY_METHOD *meth,
                             int (*init)(EC_KEY *key),
                             void (*finish)(EC_KEY *key),
                             int (*copy)(EC_KEY *dest, const EC_KEY *src),
@@ -188,13 +188,13 @@ void EC_KEY_METHOD_set_init(EC_KEY_METHOD *meth,
     meth->set_public = set_public;
 }
 
-void EC_KEY_METHOD_set_keygen(EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_set_keygen(EC_KEY_METHOD *meth,
                               int (*keygen)(EC_KEY *key))
 {
     meth->keygen = keygen;
 }
 
-void EC_KEY_METHOD_set_compute_key(EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_set_compute_key(EC_KEY_METHOD *meth,
                                    int (*ckey)(unsigned char **psec,
                                                size_t *pseclen,
                                                const EC_POINT *pub_key,
@@ -203,7 +203,7 @@ void EC_KEY_METHOD_set_compute_key(EC_KEY_METHOD *meth,
     meth->compute_key = ckey;
 }
 
-void EC_KEY_METHOD_set_sign(EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_set_sign(EC_KEY_METHOD *meth,
                             int (*sign)(int type, const unsigned char *dgst,
                                         int dlen, unsigned char *sig,
                                         unsigned int *siglen,
@@ -222,7 +222,7 @@ void EC_KEY_METHOD_set_sign(EC_KEY_METHOD *meth,
     meth->sign_sig = sign_sig;
 }
 
-void EC_KEY_METHOD_set_verify(EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_set_verify(EC_KEY_METHOD *meth,
                               int (*verify)(int type, const unsigned
                                             char *dgst, int dgst_len,
                                             const unsigned char *sigbuf,
@@ -236,7 +236,7 @@ void EC_KEY_METHOD_set_verify(EC_KEY_METHOD *meth,
     meth->verify_sig = verify_sig;
 }
 
-void EC_KEY_METHOD_get_init(const EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_get_init(const EC_KEY_METHOD *meth,
                             int (**pinit)(EC_KEY *key),
                             void (**pfinish)(EC_KEY *key),
                             int (**pcopy)(EC_KEY *dest, const EC_KEY *src),
@@ -261,14 +261,14 @@ void EC_KEY_METHOD_get_init(const EC_KEY_METHOD *meth,
         *pset_public = meth->set_public;
 }
 
-void EC_KEY_METHOD_get_keygen(const EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_get_keygen(const EC_KEY_METHOD *meth,
                               int (**pkeygen)(EC_KEY *key))
 {
     if (pkeygen != NULL)
         *pkeygen = meth->keygen;
 }
 
-void EC_KEY_METHOD_get_compute_key(const EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_get_compute_key(const EC_KEY_METHOD *meth,
                                    int (**pck)(unsigned char **pout,
                                                size_t *poutlen,
                                                const EC_POINT *pub_key,
@@ -278,7 +278,7 @@ void EC_KEY_METHOD_get_compute_key(const EC_KEY_METHOD *meth,
         *pck = meth->compute_key;
 }
 
-void EC_KEY_METHOD_get_sign(const EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_get_sign(const EC_KEY_METHOD *meth,
                             int (**psign)(int type, const unsigned char *dgst,
                                           int dlen, unsigned char *sig,
                                           unsigned int *siglen,
@@ -300,7 +300,7 @@ void EC_KEY_METHOD_get_sign(const EC_KEY_METHOD *meth,
         *psign_sig = meth->sign_sig;
 }
 
-void EC_KEY_METHOD_get_verify(const EC_KEY_METHOD *meth,
+void ECC_KEY_METHOD_get_verify(const EC_KEY_METHOD *meth,
                               int (**pverify)(int type, const unsigned
                                               char *dgst, int dgst_len,
                                               const unsigned char *sigbuf,

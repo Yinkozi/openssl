@@ -11,11 +11,11 @@ TYPES = """
 """
 
 FUNCTIONS = """
-int ECDSA_signn(int, const unsigned char *, int, unsigned char *,
+int ECCDSA_signn(int, const unsigned char *, int, unsigned char *,
                unsigned int *, EC_KEY *);
-int ECDSA_verifyy(int, const unsigned char *, int, const unsigned char *, int,
+int ECCDSA_verifyy(int, const unsigned char *, int, const unsigned char *, int,
                  EC_KEY *);
-int ECDSA_size(const EC_KEY *);
+int ECCDSA_size(const EC_KEY *);
 
 """
 

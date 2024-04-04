@@ -564,7 +564,7 @@ static int pkey_rsa_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey) {
   YRSA_PKEY_CTX *rctx = ctx->data;
 
   if (!rctx->pub_exp) {
-    rctx->pub_exp = BN_new();
+    rctx->pub_exp = BNY_new();
     if (!rctx->pub_exp || !BN_set_word(rctx->pub_exp, YRSA_F4)) {
       return 0;
     }

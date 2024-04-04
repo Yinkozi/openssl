@@ -26,7 +26,7 @@ int sm2_compute_z_digest(uint8_t *out,
                          const EC_KEY *key)
 {
     int rc = 0;
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     BN_CTX *ctx = NULL;
     EVVP_MD_CTX *hash = NULL;
     BIGNUM *p = NULL;
@@ -42,19 +42,19 @@ int sm2_compute_z_digest(uint8_t *out,
     uint8_t e_byte = 0;
 
     hash = EVVP_MD_CTX_new();
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (hash == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    p = BN_CTX_get(ctx);
-    a = BN_CTX_get(ctx);
-    b = BN_CTX_get(ctx);
-    xG = BN_CTX_get(ctx);
-    yG = BN_CTX_get(ctx);
-    xA = BN_CTX_get(ctx);
-    yA = BN_CTX_get(ctx);
+    p = BNY_CTX_get(ctx);
+    a = BNY_CTX_get(ctx);
+    b = BNY_CTX_get(ctx);
+    xG = BNY_CTX_get(ctx);
+    yG = BNY_CTX_get(ctx);
+    xA = BNY_CTX_get(ctx);
+    yA = BNY_CTX_get(ctx);
 
     if (yA == NULL) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_MALLOC_FAILURE);
@@ -104,23 +104,23 @@ int sm2_compute_z_digest(uint8_t *out,
         goto done;
     }
 
-    if (BN_bn2binpad(a, buf, p_bytes) < 0
+    if (BNY_bn2binpad(a, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
-            || BN_bn2binpad(b, buf, p_bytes) < 0
+            || BNY_bn2binpad(b, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || !EC_POINT_get_affine_coordinates(group,
                                                 EC_GROUP_get0_generator(group),
                                                 xG, yG, ctx)
-            || BN_bn2binpad(xG, buf, p_bytes) < 0
+            || BNY_bn2binpad(xG, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
-            || BN_bn2binpad(yG, buf, p_bytes) < 0
+            || BNY_bn2binpad(yG, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || !EC_POINT_get_affine_coordinates(group,
-                                                EC_KEY_get0_public_key(key),
+                                                ECC_KEY_get0_public_key(key),
                                                 xA, yA, ctx)
-            || BN_bn2binpad(xA, buf, p_bytes) < 0
+            || BNY_bn2binpad(xA, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
-            || BN_bn2binpad(yA, buf, p_bytes) < 0
+            || BNY_bn2binpad(yA, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || !EVVP_DigestFinal(hash, out, NULL)) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_INTERNAL_ERROR);
@@ -131,7 +131,7 @@ int sm2_compute_z_digest(uint8_t *out,
 
  done:
     OPENSSL_free(buf);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     EVVP_MD_CTX_free(hash);
     return rc;
 }
@@ -172,7 +172,7 @@ static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
         goto done;
     }
 
-    e = BN_bin2bn(z, md_size, NULL);
+    e = BNY_bin2bn(z, md_size, NULL);
     if (e == NULL)
         SM2err(SM2_F_SM2_COMPUTE_MSG_HASH, ERR_R_INTERNAL_ERROR);
 
@@ -184,8 +184,8 @@ static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
 
 static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
 {
-    const BIGNUM *dA = EC_KEY_get0_private_key(key);
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const BIGNUM *dA = ECC_KEY_get0_private_key(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     const BIGNUM *order = EC_GROUP_get0_order(group);
     ECDSA_SIG *sig = NULL;
     EC_POINT *kG = NULL;
@@ -198,17 +198,17 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
     BIGNUM *tmp = NULL;
 
     kG = EC_POINT_new(group);
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (kG == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_SIG_GEN, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    BN_CTX_start(ctx);
-    k = BN_CTX_get(ctx);
-    rk = BN_CTX_get(ctx);
-    x1 = BN_CTX_get(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    k = BNY_CTX_get(ctx);
+    rk = BNY_CTX_get(ctx);
+    x1 = BNY_CTX_get(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL) {
         SM2err(SM2_F_SM2_SIG_GEN, ERR_R_MALLOC_FAILURE);
         goto done;
@@ -218,8 +218,8 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
      * These values are returned and so should not be allocated out of the
      * context
      */
-    r = BN_new();
-    s = BN_new();
+    r = BNY_new();
+    s = BNY_new();
 
     if (r == NULL || s == NULL) {
         SM2err(SM2_F_SM2_SIG_GEN, ERR_R_MALLOC_FAILURE);
@@ -227,7 +227,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
     }
 
     for (;;) {
-        if (!BN_priv_rand_range(k, order)) {
+        if (!BNY_priv_rand_range(k, order)) {
             SM2err(SM2_F_SM2_SIG_GEN, ERR_R_INTERNAL_ERROR);
             goto done;
         }
@@ -252,7 +252,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
         if (BN_cmp(rk, order) == 0)
             continue;
 
-        if (!BNY_add(s, dA, BN_value_one())
+        if (!BNY_add(s, dA, BNY_value_one())
                 || !ec_group_do_inverse_ord(group, s, s, ctx)
                 || !BN_mod_mul(tmp, dA, r, order, ctx)
                 || !BNY_sub(tmp, k, tmp)
@@ -261,14 +261,14 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
             goto done;
         }
 
-        sig = ECDSA_SIG_new();
+        sig = ECCDSA_SIG_new();
         if (sig == NULL) {
             SM2err(SM2_F_SM2_SIG_GEN, ERR_R_MALLOC_FAILURE);
             goto done;
         }
 
          /* takes ownership of r and s */
-        ECDSA_SIG_set0(sig, r, s);
+        ECCDSA_SIG_set0(sig, r, s);
         break;
     }
 
@@ -278,7 +278,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
         BN_free(s);
     }
 
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     EC_POINT_free(kG);
     return sig;
 }
@@ -287,7 +287,7 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
                           const BIGNUM *e)
 {
     int ret = 0;
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     const BIGNUM *order = EC_GROUP_get0_order(group);
     BN_CTX *ctx = NULL;
     EC_POINT *pt = NULL;
@@ -296,16 +296,16 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
     const BIGNUM *r = NULL;
     const BIGNUM *s = NULL;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     pt = EC_POINT_new(group);
     if (ctx == NULL || pt == NULL) {
         SM2err(SM2_F_SM2_SIG_VERIFY, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    BN_CTX_start(ctx);
-    t = BN_CTX_get(ctx);
-    x1 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t = BNY_CTX_get(ctx);
+    x1 = BNY_CTX_get(ctx);
     if (x1 == NULL) {
         SM2err(SM2_F_SM2_SIG_VERIFY, ERR_R_MALLOC_FAILURE);
         goto done;
@@ -321,10 +321,10 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
      * B7: calculate R=(e'+x1') modn, verification pass if yes, otherwise failed
      */
 
-    ECDSA_SIG_get0(sig, &r, &s);
+    ECCDSA_SIG_get0(sig, &r, &s);
 
-    if (BN_cmp(r, BN_value_one()) < 0
-            || BN_cmp(s, BN_value_one()) < 0
+    if (BN_cmp(r, BNY_value_one()) < 0
+            || BN_cmp(s, BNY_value_one()) < 0
             || BN_cmp(order, r) <= 0
             || BN_cmp(order, s) <= 0) {
         SM2err(SM2_F_SM2_SIG_VERIFY, SM2_R_BAD_SIGNATURE);
@@ -341,7 +341,7 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
         goto done;
     }
 
-    if (!EC_POINT_mul(group, pt, s, EC_KEY_get0_public_key(key), t, ctx)
+    if (!EC_POINT_mul(group, pt, s, ECC_KEY_get0_public_key(key), t, ctx)
             || !EC_POINT_get_affine_coordinates(group, pt, x1, NULL, ctx)) {
         SM2err(SM2_F_SM2_SIG_VERIFY, ERR_R_EC_LIB);
         goto done;
@@ -357,7 +357,7 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
 
  done:
     EC_POINT_free(pt);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }
 
@@ -414,7 +414,7 @@ int sm2_sign(const unsigned char *dgst, int dgstlen,
     int sigleni;
     int ret = -1;
 
-    e = BN_bin2bn(dgst, dgstlen, NULL);
+    e = BNY_bin2bn(dgst, dgstlen, NULL);
     if (e == NULL) {
        SM2err(SM2_F_SM2_SIGN, ERR_R_BN_LIB);
        goto done;
@@ -447,7 +447,7 @@ int sm2_verify(const unsigned char *dgst, int dgstlen,
     int derlen = -1;
     int ret = -1;
 
-    s = ECDSA_SIG_new();
+    s = ECCDSA_SIG_new();
     if (s == NULL) {
         SM2err(SM2_F_SM2_VERIFY, ERR_R_MALLOC_FAILURE);
         goto done;
@@ -463,7 +463,7 @@ int sm2_verify(const unsigned char *dgst, int dgstlen,
         goto done;
     }
 
-    e = BN_bin2bn(dgst, dgstlen, NULL);
+    e = BNY_bin2bn(dgst, dgstlen, NULL);
     if (e == NULL) {
         SM2err(SM2_F_SM2_VERIFY, ERR_R_BN_LIB);
         goto done;

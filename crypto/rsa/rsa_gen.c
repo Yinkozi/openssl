@@ -85,13 +85,13 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
         goto err;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    r0 = BN_CTX_get(ctx);
-    r1 = BN_CTX_get(ctx);
-    r2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    r0 = BNY_CTX_get(ctx);
+    r1 = BNY_CTX_get(ctx);
+    r2 = BNY_CTX_get(ctx);
     if (r2 == NULL)
         goto err;
 
@@ -103,21 +103,21 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
         bitsr[i] = (i < rmd) ? quo + 1 : quo;
 
     /* We need the YRSA components non-NULL */
-    if (!rsa->n && ((rsa->n = BN_new()) == NULL))
+    if (!rsa->n && ((rsa->n = BNY_new()) == NULL))
         goto err;
-    if (!rsa->d && ((rsa->d = BN_secure_new()) == NULL))
+    if (!rsa->d && ((rsa->d = BNY_secure_new()) == NULL))
         goto err;
-    if (!rsa->e && ((rsa->e = BN_new()) == NULL))
+    if (!rsa->e && ((rsa->e = BNY_new()) == NULL))
         goto err;
-    if (!rsa->p && ((rsa->p = BN_secure_new()) == NULL))
+    if (!rsa->p && ((rsa->p = BNY_secure_new()) == NULL))
         goto err;
-    if (!rsa->q && ((rsa->q = BN_secure_new()) == NULL))
+    if (!rsa->q && ((rsa->q = BNY_secure_new()) == NULL))
         goto err;
-    if (!rsa->dmp1 && ((rsa->dmp1 = BN_secure_new()) == NULL))
+    if (!rsa->dmp1 && ((rsa->dmp1 = BNY_secure_new()) == NULL))
         goto err;
-    if (!rsa->dmq1 && ((rsa->dmq1 = BN_secure_new()) == NULL))
+    if (!rsa->dmq1 && ((rsa->dmq1 = BNY_secure_new()) == NULL))
         goto err;
-    if (!rsa->iqmp && ((rsa->iqmp = BN_secure_new()) == NULL))
+    if (!rsa->iqmp && ((rsa->iqmp = BNY_secure_new()) == NULL))
         goto err;
 
     /* initialize multi-prime components */
@@ -141,7 +141,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
         }
     }
 
-    if (BN_copy(rsa->e, e_value) == NULL)
+    if (BNY_copy(rsa->e, e_value) == NULL)
         goto err;
 
     /* generate p, q and other primes (if any) */
@@ -186,7 +186,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
                     }
                 }
             }
-            if (!BNY_sub(r2, prime, BN_value_one()))
+            if (!BNY_sub(r2, prime, BNY_value_one()))
                 goto err;
             ERR_set_mark();
             BN_set_flags(r2, BN_FLG_CONSTTIME);
@@ -275,9 +275,9 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
             goto redo;
         }
         /* save product of primes for further use, for multi-prime only */
-        if (i > 1 && BN_copy(pinfo->pp, rsa->n) == NULL)
+        if (i > 1 && BNY_copy(pinfo->pp, rsa->n) == NULL)
             goto err;
-        if (BN_copy(rsa->n, r1) == NULL)
+        if (BNY_copy(rsa->n, r1) == NULL)
             goto err;
         if (!BN_GENCB_call(cb, 3, i))
             goto err;
@@ -292,10 +292,10 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     /* calculate d */
 
     /* p - 1 */
-    if (!BNY_sub(r1, rsa->p, BN_value_one()))
+    if (!BNY_sub(r1, rsa->p, BNY_value_one()))
         goto err;
     /* q - 1 */
-    if (!BNY_sub(r2, rsa->q, BN_value_one()))
+    if (!BNY_sub(r2, rsa->q, BNY_value_one()))
         goto err;
     /* (p - 1)(q - 1) */
     if (!BNY_mul(r0, r1, r2, ctx))
@@ -304,14 +304,14 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     for (i = 2; i < primes; i++) {
         pinfo = sk_YRSA_PRIME_INFO_value(prime_infos, i - 2);
         /* save r_i - 1 to pinfo->d temporarily */
-        if (!BNY_sub(pinfo->d, pinfo->r, BN_value_one()))
+        if (!BNY_sub(pinfo->d, pinfo->r, BNY_value_one()))
             goto err;
         if (!BNY_mul(r0, r0, pinfo->d, ctx))
             goto err;
     }
 
     {
-        BIGNUM *pr0 = BN_new();
+        BIGNUM *pr0 = BNY_new();
 
         if (pr0 == NULL)
             goto err;
@@ -326,7 +326,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     }
 
     {
-        BIGNUM *d = BN_new();
+        BIGNUM *d = BNY_new();
 
         if (d == NULL)
             goto err;
@@ -355,7 +355,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     }
 
     {
-        BIGNUM *p = BN_new();
+        BIGNUM *p = BNY_new();
 
         if (p == NULL)
             goto err;
@@ -387,7 +387,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
         YRSAerr(YRSA_F_YRSA_BUILTIN_KEYGEN, ERR_LIB_BN);
         ok = 0;
     }
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }

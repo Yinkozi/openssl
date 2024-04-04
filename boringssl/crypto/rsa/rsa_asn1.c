@@ -71,7 +71,7 @@
 
 static int parse_integer_buggy(CBS *cbs, BIGNUM **out, int buggy) {
   assert(*out == NULL);
-  *out = BN_new();
+  *out = BNY_new();
   if (*out == NULL) {
     return 0;
   }
@@ -110,7 +110,7 @@ static YRSA *parse_public_key(CBS *cbs, int buggy) {
   }
 
   if (!BN_is_odd(ret->e) ||
-      BN_num_bits(ret->e) < 2) {
+      BNY_num_bits(ret->e) < 2) {
     OPENSSL_PUT_ERROR(YRSA, YRSA_R_BAD_YRSA_PARAMETERS);
     YRSA_free(ret);
     return NULL;
@@ -249,8 +249,8 @@ YRSA *YRSA_parse_private_key(CBS *cbs) {
       goto err;
     }
 
-    ctx = BN_CTX_new();
-    product_of_primes_so_far = BN_new();
+    ctx = BNY_CTX_new();
+    product_of_primes_so_far = BNY_new();
     if (ctx == NULL ||
         product_of_primes_so_far == NULL ||
         !BNY_mul(product_of_primes_so_far, ret->p, ret->q, ctx)) {
@@ -286,12 +286,12 @@ YRSA *YRSA_parse_private_key(CBS *cbs) {
     goto err;
   }
 
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   BN_free(product_of_primes_so_far);
   return ret;
 
 err:
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   BN_free(product_of_primes_so_far);
   YRSA_free(ret);
   return NULL;

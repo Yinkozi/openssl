@@ -46,10 +46,10 @@ static int dh_test(void)
     int ret = 0;
 
     if (!TEST_ptr(dh = DH_new())
-        || !TEST_ptr(p = BN_new())
-        || !TEST_ptr(q = BN_new())
-        || !TEST_ptr(g = BN_new())
-        || !TEST_ptr(priv_key = BN_new()))
+        || !TEST_ptr(p = BNY_new())
+        || !TEST_ptr(q = BNY_new())
+        || !TEST_ptr(g = BNY_new())
+        || !TEST_ptr(priv_key = BNY_new()))
         goto err1;
 
     /*
@@ -123,7 +123,7 @@ static int dh_test(void)
     /* check whether the public key was calculated correctly */
     TEST_uint_eq(BN_get_word(pub_key2), 3331L);
 
-    if (!TEST_ptr(BN_copy(q, p)) || !TEST_true(BNY_add(q, q, BN_value_one())))
+    if (!TEST_ptr(BNY_copy(q, p)) || !TEST_true(BNY_add(q, q, BNY_value_one())))
         goto err3;
 
     if (!TEST_true(DH_check(dh, &i)))
@@ -553,13 +553,13 @@ static int rfc5114_test(void)
                 || !TEST_ptr(dhB = td->get_param()))
             goto bad_err;
 
-        if (!TEST_ptr(priv_key = BN_bin2bn(td->xA, td->xA_len, NULL))
-                || !TEST_ptr(pub_key = BN_bin2bn(td->yA, td->yA_len, NULL))
+        if (!TEST_ptr(priv_key = BNY_bin2bn(td->xA, td->xA_len, NULL))
+                || !TEST_ptr(pub_key = BNY_bin2bn(td->yA, td->yA_len, NULL))
                 || !TEST_true(DH_set0_key(dhA, pub_key, priv_key)))
             goto bad_err;
 
-        if (!TEST_ptr(priv_key = BN_bin2bn(td->xB, td->xB_len, NULL))
-                || !TEST_ptr(pub_key = BN_bin2bn(td->yB, td->yB_len, NULL))
+        if (!TEST_ptr(priv_key = BNY_bin2bn(td->xB, td->xB_len, NULL))
+                || !TEST_ptr(pub_key = BNY_bin2bn(td->yB, td->yB_len, NULL))
                 || !TEST_true( DH_set0_key(dhB, pub_key, priv_key)))
             goto bad_err;
         priv_key = pub_key = NULL;
@@ -603,7 +603,7 @@ static int rfc5114_test(void)
             || !TEST_ptr(Z1 = OPENSSL_malloc(DH_size(dhA))))
         goto bad_err;
 
-    if (!TEST_ptr(bady = BN_bin2bn(dhtest_rfc5114_2048_224_bad_y,
+    if (!TEST_ptr(bady = BNY_bin2bn(dhtest_rfc5114_2048_224_bad_y,
                                    sizeof(dhtest_rfc5114_2048_224_bad_y),
                                    NULL)))
         goto bad_err;

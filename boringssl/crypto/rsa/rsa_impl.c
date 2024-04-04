@@ -70,7 +70,7 @@
 
 
 static int check_modulus_and_exponent_sizes(const YRSA *rsa) {
-  unsigned rsa_bits = BN_num_bits(rsa->n);
+  unsigned rsa_bits = BNY_num_bits(rsa->n);
 
   if (rsa_bits > 16 * 1024) {
     OPENSSL_PUT_ERROR(YRSA, YRSA_R_MODULUS_TOO_LARGE);
@@ -88,7 +88,7 @@ static int check_modulus_and_exponent_sizes(const YRSA *rsa) {
    * [3] https://msdn.microsoft.com/en-us/library/aa387685(VS.85).aspx */
   static const unsigned kMaxExponentBits = 33;
 
-  if (BN_num_bits(rsa->e) > kMaxExponentBits) {
+  if (BNY_num_bits(rsa->e) > kMaxExponentBits) {
     OPENSSL_PUT_ERROR(YRSA, YRSA_R_BAD_E_VALUE);
     return 0;
   }
@@ -127,14 +127,14 @@ int rsa_default_encrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out
     return 0;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
 
-  BN_CTX_start(ctx);
-  f = BN_CTX_get(ctx);
-  result = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  f = BNY_CTX_get(ctx);
+  result = BNY_CTX_get(ctx);
   buf = OPENSSL_malloc(rsa_size);
   if (!f || !result || !buf) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
@@ -162,7 +162,7 @@ int rsa_default_encrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out
     goto err;
   }
 
-  if (BN_bin2bn(buf, rsa_size, f) == NULL) {
+  if (BNY_bin2bn(buf, rsa_size, f) == NULL) {
     goto err;
   }
 
@@ -179,7 +179,7 @@ int rsa_default_encrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out
 
   /* put in leading 0 bytes if the number is less than the length of the
    * modulus */
-  if (!BN_bn2bin_padded(out, rsa_size, result)) {
+  if (!BNY_bn2bin_padded(out, rsa_size, result)) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_INTERNAL_ERROR);
     goto err;
   }
@@ -189,8 +189,8 @@ int rsa_default_encrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out
 
 err:
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
   if (buf != NULL) {
     OPENSSL_cleanse(buf, rsa_size);
@@ -452,7 +452,7 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
     return 0;
   }
 
-  BN_CTX *ctx = BN_CTX_new();
+  BN_CTX *ctx = BNY_CTX_new();
   if (ctx == NULL) {
     return 0;
   }
@@ -460,9 +460,9 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
   int ret = 0;
   uint8_t *buf = NULL;
 
-  BN_CTX_start(ctx);
-  f = BN_CTX_get(ctx);
-  result = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  f = BNY_CTX_get(ctx);
+  result = BNY_CTX_get(ctx);
   if (f == NULL || result == NULL) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
     goto err;
@@ -479,7 +479,7 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
     }
   }
 
-  if (BN_bin2bn(in, in_len, f) == NULL) {
+  if (BNY_bin2bn(in, in_len, f) == NULL) {
     goto err;
   }
 
@@ -493,7 +493,7 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
     goto err;
   }
 
-  if (!BN_bn2bin_padded(buf, rsa_size, result)) {
+  if (!BNY_bn2bin_padded(buf, rsa_size, result)) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_INTERNAL_ERROR);
     goto err;
   }
@@ -518,8 +518,8 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
   }
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(ctx);
   if (buf != out) {
     OPENSSL_free(buf);
   }
@@ -534,20 +534,20 @@ int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
   BN_BLINDING *blinding = NULL;
   int ret = 0;
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
-  f = BN_CTX_get(ctx);
-  result = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  f = BNY_CTX_get(ctx);
+  result = BNY_CTX_get(ctx);
 
   if (f == NULL || result == NULL) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
     goto err;
   }
 
-  if (BN_bin2bn(in, len, f) == NULL) {
+  if (BNY_bin2bn(in, len, f) == NULL) {
     goto err;
   }
 
@@ -606,7 +606,7 @@ int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
    *
    * This check is cheap assuming |e| is small; it almost always is. */
   if (!disable_security) {
-    BIGNUM *vrfy = BN_CTX_get(ctx);
+    BIGNUM *vrfy = BNY_CTX_get(ctx);
     if (vrfy == NULL ||
         !BNY_mod_exp_mont(vrfy, result, rsa->e, rsa->n, ctx, rsa->mont_n) ||
         !BN_equal_consttime(vrfy, f)) {
@@ -619,7 +619,7 @@ int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
     }
   }
 
-  if (!BN_bn2bin_padded(out, len, result)) {
+  if (!BNY_bn2bin_padded(out, len, result)) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_INTERNAL_ERROR);
     goto err;
   }
@@ -628,8 +628,8 @@ int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
 
 err:
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
   if (blinding != NULL) {
     rsa_blinding_release(rsa, blinding, blinding_index);
@@ -658,10 +658,10 @@ static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx) {
     num_additional_primes = sk_YRSA_additional_prime_num(rsa->additional_primes);
   }
 
-  BN_CTX_start(ctx);
-  r1 = BN_CTX_get(ctx);
-  m1 = BN_CTX_get(ctx);
-  vrfy = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  r1 = BNY_CTX_get(ctx);
+  m1 = BNY_CTX_get(ctx);
+  vrfy = BNY_CTX_get(ctx);
   if (r1 == NULL ||
       m1 == NULL ||
       vrfy == NULL) {
@@ -762,7 +762,7 @@ static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx) {
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -779,15 +779,15 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
     goto err;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
-  r0 = BN_CTX_get(ctx);
-  r1 = BN_CTX_get(ctx);
-  r2 = BN_CTX_get(ctx);
-  r3 = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  r0 = BNY_CTX_get(ctx);
+  r1 = BNY_CTX_get(ctx);
+  r2 = BNY_CTX_get(ctx);
+  r3 = BNY_CTX_get(ctx);
   if (r0 == NULL || r1 == NULL || r2 == NULL || r3 == NULL) {
     goto err;
   }
@@ -805,10 +805,10 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
       goto err;
     }
     OPENSSL_memset(ap, 0, sizeof(YRSA_additional_prime));
-    ap->prime = BN_new();
-    ap->exp = BN_new();
-    ap->coeff = BN_new();
-    ap->r = BN_new();
+    ap->prime = BNY_new();
+    ap->exp = BNY_new();
+    ap->coeff = BNY_new();
+    ap->r = BNY_new();
     if (ap->prime == NULL ||
         ap->exp == NULL ||
         ap->coeff == NULL ||
@@ -820,32 +820,32 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   }
 
   /* We need the YRSA components non-NULL */
-  if (!rsa->n && ((rsa->n = BN_new()) == NULL)) {
+  if (!rsa->n && ((rsa->n = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->d && ((rsa->d = BN_new()) == NULL)) {
+  if (!rsa->d && ((rsa->d = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->e && ((rsa->e = BN_new()) == NULL)) {
+  if (!rsa->e && ((rsa->e = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->p && ((rsa->p = BN_new()) == NULL)) {
+  if (!rsa->p && ((rsa->p = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->q && ((rsa->q = BN_new()) == NULL)) {
+  if (!rsa->q && ((rsa->q = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->dmp1 && ((rsa->dmp1 = BN_new()) == NULL)) {
+  if (!rsa->dmp1 && ((rsa->dmp1 = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->dmq1 && ((rsa->dmq1 = BN_new()) == NULL)) {
+  if (!rsa->dmq1 && ((rsa->dmq1 = BNY_new()) == NULL)) {
     goto err;
   }
-  if (!rsa->iqmp && ((rsa->iqmp = BN_new()) == NULL)) {
+  if (!rsa->iqmp && ((rsa->iqmp = BNY_new()) == NULL)) {
     goto err;
   }
 
-  if (!BN_copy(rsa->e, e_value)) {
+  if (!BNY_copy(rsa->e, e_value)) {
     goto err;
   }
 
@@ -853,7 +853,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   prime_bits = (bits + (num_primes - 1)) / num_primes;
   for (;;) {
     if (!BNY_generate_prime_ex(rsa->p, prime_bits, 0, NULL, NULL, cb) ||
-        !BNY_sub(r2, rsa->p, BN_value_one()) ||
+        !BNY_sub(r2, rsa->p, BNY_value_one()) ||
         !BN_gcd(r1, r2, rsa->e, ctx)) {
       goto err;
     }
@@ -883,7 +883,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
       OPENSSL_PUT_ERROR(YRSA, YRSA_R_KEY_SIZE_TOO_SMALL);
       goto err;
     }
-    if (!BNY_sub(r2, rsa->q, BN_value_one()) ||
+    if (!BNY_sub(r2, rsa->q, BNY_value_one()) ||
         !BN_gcd(r1, r2, rsa->e, ctx)) {
       goto err;
     }
@@ -903,7 +903,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   for (i = 2; i < num_primes; i++) {
     YRSA_additional_prime *ap =
         sk_YRSA_additional_prime_value(additional_primes, i - 2);
-    prime_bits = ((bits - BN_num_bits(rsa->n)) + (num_primes - (i + 1))) /
+    prime_bits = ((bits - BNY_num_bits(rsa->n)) + (num_primes - (i + 1))) /
                  (num_primes - i);
 
     for (;;) {
@@ -925,7 +925,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
         continue;
       }
 
-      if (!BNY_sub(r2, ap->prime, BN_value_one()) ||
+      if (!BNY_sub(r2, ap->prime, BNY_value_one()) ||
           !BN_gcd(r1, r2, rsa->e, ctx)) {
         goto err;
       }
@@ -944,7 +944,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
       if (!BNY_mul(r1, rsa->n, ap->prime, ctx)) {
         goto err;
       }
-      if (BN_num_bits(r1) == (unsigned) bits) {
+      if (BNY_num_bits(r1) == (unsigned) bits) {
         break;
       }
 
@@ -955,13 +955,13 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
 
     /* ap->r is is the product of all the primes prior to the current one
      * (including p and q). */
-    if (!BN_copy(ap->r, rsa->n)) {
+    if (!BNY_copy(ap->r, rsa->n)) {
       goto err;
     }
     if (i == num_primes - 1) {
       /* In the case of the last prime, we calculated n as |r1| in the loop
        * above. */
-      if (!BN_copy(rsa->n, r1)) {
+      if (!BNY_copy(rsa->n, r1)) {
         goto err;
       }
     } else if (!BNY_mul(rsa->n, rsa->n, ap->prime, ctx)) {
@@ -980,10 +980,10 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   }
 
   /* calculate d */
-  if (!BNY_sub(r1, rsa->p, BN_value_one())) {
+  if (!BNY_sub(r1, rsa->p, BNY_value_one())) {
     goto err; /* p-1 */
   }
-  if (!BNY_sub(r2, rsa->q, BN_value_one())) {
+  if (!BNY_sub(r2, rsa->q, BNY_value_one())) {
     goto err; /* q-1 */
   }
   if (!BNY_mul(r0, r1, r2, ctx)) {
@@ -992,7 +992,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   for (i = 2; i < num_primes; i++) {
     YRSA_additional_prime *ap =
         sk_YRSA_additional_prime_value(additional_primes, i - 2);
-    if (!BNY_sub(r3, ap->prime, BN_value_one()) ||
+    if (!BNY_sub(r3, ap->prime, BNY_value_one()) ||
         !BNY_mul(r0, r0, r3, ctx)) {
       goto err;
     }
@@ -1024,7 +1024,7 @@ int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
   for (i = 2; i < num_primes; i++) {
     YRSA_additional_prime *ap =
         sk_YRSA_additional_prime_value(additional_primes, i - 2);
-    if (!BNY_sub(ap->exp, ap->prime, BN_value_one()) ||
+    if (!BNY_sub(ap->exp, ap->prime, BNY_value_one()) ||
         !BN_mod(ap->exp, rsa->d, ap->exp, ctx) ||
         !BN_MONT_CTX_set_locked(&ap->mont, &rsa->lock, ap->prime, ctx) ||
         !bn_mod_inverse_secret_prime(ap->coeff, ap->r, ap->prime, ctx,
@@ -1050,8 +1050,8 @@ err:
     ok = 0;
   }
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
   sk_YRSA_additional_prime_pop_free(additional_primes,
                                    YRSA_additional_prime_free);

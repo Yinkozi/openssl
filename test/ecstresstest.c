@@ -44,7 +44,7 @@ static BIGNUM *walk_curve(const EC_GROUP *group, EC_POINT *point, int64_t num)
     BIGNUM *scalar = NULL;
     int64_t i;
 
-    if (!TEST_ptr(scalar = BN_new())
+    if (!TEST_ptr(scalar = BNY_new())
             || !TEST_true(EC_POINT_get_affine_coordinates(group, point, scalar,
                                                           NULL, NULL)))
         goto err;

@@ -48,21 +48,21 @@ static int test_mod_exp_zero(void)
     BIGNUM *a = NULL, *p = NULL, *m = NULL;
     BIGNUM *r = NULL;
     BN_ULONG one_word = 1;
-    BN_CTX *ctx = BN_CTX_new();
+    BN_CTX *ctx = BNY_CTX_new();
     int ret = 0, failed = 0;
     BN_MONT_CTX *mont = NULL;
 
-    if (!TEST_ptr(m = BN_new())
-        || !TEST_ptr(a = BN_new())
-        || !TEST_ptr(p = BN_new())
-        || !TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(m = BNY_new())
+        || !TEST_ptr(a = BNY_new())
+        || !TEST_ptr(p = BNY_new())
+        || !TEST_ptr(r = BNY_new()))
         goto err;
 
     BN_one(m);
     BN_one(a);
     BN_zero(p);
 
-    if (!TEST_true(BN_rand(a, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY)))
+    if (!TEST_true(BNY_rand(a, 1024, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY)))
         goto err;
 
     if (!TEST_true(BN_mod_exp(r, a, p, m, ctx)))
@@ -143,7 +143,7 @@ static int test_mod_exp_zero(void)
     BN_free(p);
     BN_free(m);
     BN_MONT_CTX_free(mont);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
 
     return ret;
 }
@@ -161,29 +161,29 @@ static int test_mod_exp(int round)
     BIGNUM *b = NULL;
     BIGNUM *m = NULL;
 
-    if (!TEST_ptr(ctx = BN_CTX_new()))
+    if (!TEST_ptr(ctx = BNY_CTX_new()))
         goto err;
 
-    if (!TEST_ptr(r_mont = BN_new())
-        || !TEST_ptr(r_mont_const = BN_new())
-        || !TEST_ptr(r_recp = BN_new())
-        || !TEST_ptr(r_simple = BN_new())
-        || !TEST_ptr(a = BN_new())
-        || !TEST_ptr(b = BN_new())
-        || !TEST_ptr(m = BN_new()))
+    if (!TEST_ptr(r_mont = BNY_new())
+        || !TEST_ptr(r_mont_const = BNY_new())
+        || !TEST_ptr(r_recp = BNY_new())
+        || !TEST_ptr(r_simple = BNY_new())
+        || !TEST_ptr(a = BNY_new())
+        || !TEST_ptr(b = BNY_new())
+        || !TEST_ptr(m = BNY_new()))
         goto err;
 
     RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
-    BN_rand(a, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
+    BNY_rand(a, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
 
     RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
-    BN_rand(b, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
+    BNY_rand(b, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY);
 
     RAND_bytes(&c, 1);
     c = (c % BN_BITS) - BN_BITS2;
-    BN_rand(m, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
+    BNY_rand(m, NUM_BITS + c, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD);
 
     if (!TEST_true(BN_mod(a, a, m, ctx))
         || !TEST_true(BN_mod(b, b, m, ctx))
@@ -222,7 +222,7 @@ static int test_mod_exp(int round)
     BN_free(a);
     BN_free(b);
     BN_free(m);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
 
     return ret;
 }

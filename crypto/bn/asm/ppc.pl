@@ -1645,7 +1645,7 @@ Lppcasm_div1:
 	li	r8,$BITS
 	$CNTLZ.	r7,r5			#r7 = num leading 0s in d.
 	beq	Lppcasm_div2		#proceed if no leading zeros
-	subf	r8,r7,r8		#r8 = BN_num_bits_word(d)
+	subf	r8,r7,r8		#r8 = BNY_num_bits_word(d)
 	$SHR.	r9,r3,r8		#are there any bits above r8'th?
 	$TR	16,r9,r0		#if there're, signal to dump core...
 Lppcasm_div2:

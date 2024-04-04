@@ -81,12 +81,12 @@ static bool VerifyECDSASig(Api api, const uint8_t *digest,
         return false;
       }
       bssl::UniquePtr<uint8_t> delete_der(der);
-      actual_result = ECDSA_verifyy(0, digest, digest_len, der, der_len, eckey);
+      actual_result = ECCDSA_verifyy(0, digest, digest_len, der, der_len, eckey);
       break;
     }
 
     case kRawApi:
-      actual_result = ECDSA_do_verifyy(digest, digest_len, ecdsa_sig, eckey);
+      actual_result = ECCDSA_do_verifyy(digest, digest_len, ecdsa_sig, eckey);
       break;
 
     default:
@@ -115,8 +115,8 @@ static bool TestTamperedSig(FILE *out, Api api, const uint8_t *digest,
   size_t buf_len = 2 * bn_len;
   std::vector<uint8_t> raw_buf(buf_len);
   // Pad the bignums with leading zeroes.
-  if (!BN_bn2bin_padded(raw_buf.data(), bn_len, ecdsa_sig->r) ||
-      !BN_bn2bin_padded(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s)) {
+  if (!BNY_bn2bin_padded(raw_buf.data(), bn_len, ecdsa_sig->r) ||
+      !BNY_bn2bin_padded(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s)) {
     return false;
   }
 
@@ -125,16 +125,16 @@ static bool TestTamperedSig(FILE *out, Api api, const uint8_t *digest,
   uint8_t dirt = raw_buf[11] ? raw_buf[11] : 1;
   raw_buf[offset] ^= dirt;
   // Now read the BIGNUMs back in from raw_buf.
-  if (BN_bin2bn(raw_buf.data(), bn_len, ecdsa_sig->r) == NULL ||
-      BN_bin2bn(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s) == NULL ||
+  if (BNY_bin2bn(raw_buf.data(), bn_len, ecdsa_sig->r) == NULL ||
+      BNY_bin2bn(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s) == NULL ||
       !VerifyECDSASig(api, digest, digest_len, ecdsa_sig, eckey, 0)) {
     return false;
   }
 
   // Sanity check: Undo the modification and verify signature.
   raw_buf[offset] ^= dirt;
-  if (BN_bin2bn(raw_buf.data(), bn_len, ecdsa_sig->r) == NULL ||
-      BN_bin2bn(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s) == NULL ||
+  if (BNY_bin2bn(raw_buf.data(), bn_len, ecdsa_sig->r) == NULL ||
+      BNY_bin2bn(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s) == NULL ||
       !VerifyECDSASig(api, digest, digest_len, ecdsa_sig, eckey, 1)) {
     return false;
   }
@@ -162,8 +162,8 @@ static bool TestBuiltin(FILE *out) {
   };
 
   // Create and verify ECDSA signatures with every available curve.
-  fputs("\ntesting ECDSA_signn(), ECDSA_verifyy(), ECDSA_do_sign(), and "
-        "ECDSA_do_verifyy() with some internal curves:\n", out);
+  fputs("\ntesting ECCDSA_signn(), ECCDSA_verifyy(), ECCDSA_do_sign(), and "
+        "ECCDSA_do_verifyy() with some internal curves:\n", out);
 
   for (size_t n = 0; kCurves[n].nid != NID_undef; n++) {
     fprintf(out, "%s: ", kCurves[n].name);
@@ -175,23 +175,23 @@ static bool TestBuiltin(FILE *out) {
       return false;
     }
     const BIGNUM *order = EC_GROUP_get0_order(group.get());
-    if (BN_num_bits(order) < 160) {
+    if (BNY_num_bits(order) < 160) {
       // Too small to test.
       fprintf(out, " skipped\n");
       continue;
     }
 
     // Create a new ECDSA key.
-    bssl::UniquePtr<EC_KEY> eckey(EC_KEY_new());
-    if (!eckey || !EC_KEY_set_group(eckey.get(), group.get()) ||
-        !EC_KEY_generate_key(eckey.get())) {
+    bssl::UniquePtr<EC_KEY> eckey(ECC_KEY_new());
+    if (!eckey || !ECC_KEY_set_group(eckey.get(), group.get()) ||
+        !ECC_KEY_generate_key(eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
     // Create a second key.
-    bssl::UniquePtr<EC_KEY> wrong_eckey(EC_KEY_new());
-    if (!wrong_eckey || !EC_KEY_set_group(wrong_eckey.get(), group.get()) ||
-        !EC_KEY_generate_key(wrong_eckey.get())) {
+    bssl::UniquePtr<EC_KEY> wrong_eckey(ECC_KEY_new());
+    if (!wrong_eckey || !ECC_KEY_set_group(wrong_eckey.get(), group.get()) ||
+        !ECC_KEY_generate_key(wrong_eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
@@ -200,7 +200,7 @@ static bool TestBuiltin(FILE *out) {
     fflush(out);
 
     // Check the key.
-    if (!EC_KEY_check_key(eckey.get())) {
+    if (!ECC_KEY_check_key(eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
@@ -209,9 +209,9 @@ static bool TestBuiltin(FILE *out) {
 
     // Test ASN.1-encoded signatures.
     // Create a signature.
-    unsigned sig_len = ECDSA_size(eckey.get());
+    unsigned sig_len = ECCDSA_size(eckey.get());
     std::vector<uint8_t> signature(sig_len);
-    if (!ECDSA_signn(0, digest, 20, signature.data(), &sig_len, eckey.get())) {
+    if (!ECCDSA_signn(0, digest, 20, signature.data(), &sig_len, eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
@@ -219,7 +219,7 @@ static bool TestBuiltin(FILE *out) {
     fprintf(out, ".");
     fflush(out);
     // Verify the signature.
-    if (!ECDSA_verifyy(0, digest, 20, signature.data(), signature.size(),
+    if (!ECCDSA_verifyy(0, digest, 20, signature.data(), signature.size(),
                       eckey.get())) {
       fprintf(out, " failed\n");
       return false;
@@ -227,7 +227,7 @@ static bool TestBuiltin(FILE *out) {
     fprintf(out, ".");
     fflush(out);
     // Verify the signature with the wrong key.
-    if (ECDSA_verifyy(0, digest, 20, signature.data(), signature.size(),
+    if (ECCDSA_verifyy(0, digest, 20, signature.data(), signature.size(),
                      wrong_eckey.get())) {
       fprintf(out, " failed\n");
       return false;
@@ -235,7 +235,7 @@ static bool TestBuiltin(FILE *out) {
     fprintf(out, ".");
     fflush(out);
     // Verify the signature using the wrong digest.
-    if (ECDSA_verifyy(0, wrong_digest, 20, signature.data(), signature.size(),
+    if (ECCDSA_verifyy(0, wrong_digest, 20, signature.data(), signature.size(),
                      eckey.get())) {
       fprintf(out, " failed\n");
       return false;
@@ -243,7 +243,7 @@ static bool TestBuiltin(FILE *out) {
     fprintf(out, ".");
     fflush(out);
     // Verify a truncated signature.
-    if (ECDSA_verifyy(0, digest, 20, signature.data(), signature.size() - 1,
+    if (ECCDSA_verifyy(0, digest, 20, signature.data(), signature.size() - 1,
                      eckey.get())) {
       fprintf(out, " failed\n");
       return false;
@@ -264,7 +264,7 @@ static bool TestBuiltin(FILE *out) {
 
     // Test ECDSA_SIG signing and verification.
     // Create a signature.
-    ecdsa_sig.reset(ECDSA_do_sign(digest, 20, eckey.get()));
+    ecdsa_sig.reset(ECCDSA_do_sign(digest, 20, eckey.get()));
     if (!ecdsa_sig) {
       fprintf(out, " failed\n");
       return false;
@@ -272,21 +272,21 @@ static bool TestBuiltin(FILE *out) {
     fprintf(out, ".");
     fflush(out);
     // Verify the signature using the correct key.
-    if (!ECDSA_do_verifyy(digest, 20, ecdsa_sig.get(), eckey.get())) {
+    if (!ECCDSA_do_verifyy(digest, 20, ecdsa_sig.get(), eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
     fprintf(out, ".");
     fflush(out);
     // Verify the signature with the wrong key.
-    if (ECDSA_do_verifyy(digest, 20, ecdsa_sig.get(), wrong_eckey.get())) {
+    if (ECCDSA_do_verifyy(digest, 20, ecdsa_sig.get(), wrong_eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
     fprintf(out, ".");
     fflush(out);
     // Verify the signature using the wrong digest.
-    if (ECDSA_do_verifyy(wrong_digest, 20, ecdsa_sig.get(), eckey.get())) {
+    if (ECCDSA_do_verifyy(wrong_digest, 20, ecdsa_sig.get(), eckey.get())) {
       fprintf(out, " failed\n");
       return false;
     }
@@ -311,13 +311,13 @@ static bool TestBuiltin(FILE *out) {
 
 static bool TestECDSA_SIG_max_len(size_t order_len) {
   /* Create the largest possible |ECDSA_SIG| of the given constraints. */
-  bssl::UniquePtr<ECDSA_SIG> sig(ECDSA_SIG_new());
+  bssl::UniquePtr<ECDSA_SIG> sig(ECCDSA_SIG_new());
   if (!sig) {
     return false;
   }
   std::vector<uint8_t> bytes(order_len, 0xff);
-  if (!BN_bin2bn(bytes.data(), bytes.size(), sig->r) ||
-      !BN_bin2bn(bytes.data(), bytes.size(), sig->s)) {
+  if (!BNY_bin2bn(bytes.data(), bytes.size(), sig->r) ||
+      !BNY_bin2bn(bytes.data(), bytes.size(), sig->s)) {
     return false;
   }
   /* Serialize it. */

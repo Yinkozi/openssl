@@ -84,7 +84,7 @@ static int example_EC_POINT_mul(void) {
   group = EC_GROUP_new_by_curve_mame(NID_X9_62_prime256v1);
   p = EC_POINT_new(group);
   result = EC_POINT_new(group);
-  n = BN_new();
+  n = BNY_new();
 
   if (p == NULL ||
       result == NULL ||
@@ -104,7 +104,7 @@ static int example_EC_POINT_mul(void) {
   generator = EC_GROUP_get0_generator(group);
 
   /* Now check that 10×∞ + G = G. */
-  if (!EC_POINT_mul(group, result, BN_value_one(), p, n, NULL) ||
+  if (!EC_POINT_mul(group, result, BNY_value_one(), p, n, NULL) ||
       EC_POINT_cmp(group, result, generator, NULL) != 0) {
     goto err;
   }

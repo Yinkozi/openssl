@@ -57,8 +57,8 @@ int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
     if ((a->top + b->top) > 2 * num)
         return 0;
 
-    BN_CTX_start(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL)
         goto err;
 
@@ -80,7 +80,7 @@ int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 #endif
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -178,21 +178,21 @@ int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
 #ifdef MONT_WORD
     BIGNUM *t;
 
-    BN_CTX_start(ctx);
-    if ((t = BN_CTX_get(ctx)) && BN_copy(t, a)) {
+    BNY_CTX_start(ctx);
+    if ((t = BNY_CTX_get(ctx)) && BNY_copy(t, a)) {
         retn = bn_from_montgomery_word(ret, t, mont);
     }
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 #else                           /* !MONT_WORD */
     BIGNUM *t1, *t2;
 
-    BN_CTX_start(ctx);
-    t1 = BN_CTX_get(ctx);
-    t2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t1 = BNY_CTX_get(ctx);
+    t2 = BNY_CTX_get(ctx);
     if (t2 == NULL)
         goto err;
 
-    if (!BN_copy(t1, a))
+    if (!BNY_copy(t1, a))
         goto err;
     BN_mask_bits(t1, mont->ri);
 
@@ -214,7 +214,7 @@ int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
     retn = 1;
     bn_check_top(ret);
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 #endif                          /* MONT_WORD */
     return retn;
 }
@@ -253,9 +253,9 @@ void BN_MONT_CTX_free(BN_MONT_CTX *mont)
 {
     if (mont == NULL)
         return;
-    BN_clear_free(&mont->RR);
-    BN_clear_free(&mont->N);
-    BN_clear_free(&mont->Ni);
+    BNY_clear_free(&mont->RR);
+    BNY_clear_free(&mont->N);
+    BNY_clear_free(&mont->Ni);
     if (mont->flags & BN_FLG_MALLOCED)
         OPENSSL_free(mont);
 }
@@ -268,11 +268,11 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
     if (BN_is_zero(mod))
         return 0;
 
-    BN_CTX_start(ctx);
-    if ((Ri = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((Ri = BNY_CTX_get(ctx)) == NULL)
         goto err;
     R = &(mont->RR);            /* grab RR as a temp */
-    if (!BN_copy(&(mont->N), mod))
+    if (!BNY_copy(&(mont->N), mod))
         goto err;               /* Set N */
     if (BN_get_flags(mod, BN_FLG_CONSTTIME) != 0)
         BN_set_flags(&(mont->N), BN_FLG_CONSTTIME);
@@ -291,7 +291,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
         if (BN_get_flags(mod, BN_FLG_CONSTTIME) != 0)
             BN_set_flags(&tmod, BN_FLG_CONSTTIME);
 
-        mont->ri = (BN_num_bits(mod) + (BN_BITS2 - 1)) / BN_BITS2 * BN_BITS2;
+        mont->ri = (BNY_num_bits(mod) + (BN_BITS2 - 1)) / BN_BITS2 * BN_BITS2;
 
 # if defined(OPENSSL_BN_ASM_MONT) && (BN_BITS2<=32)
         /*
@@ -371,7 +371,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
     }
 #else                           /* !MONT_WORD */
     {                           /* bignum version */
-        mont->ri = BN_num_bits(&mont->N);
+        mont->ri = BNY_num_bits(&mont->N);
         BN_zero(R);
         if (!BN_set_bit(R, mont->ri))
             goto err;           /* R = 2^ri */
@@ -404,7 +404,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
 
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -413,11 +413,11 @@ BN_MONT_CTX *BN_MONT_CTX_copy(BN_MONT_CTX *to, BN_MONT_CTX *from)
     if (to == from)
         return to;
 
-    if (!BN_copy(&(to->RR), &(from->RR)))
+    if (!BNY_copy(&(to->RR), &(from->RR)))
         return NULL;
-    if (!BN_copy(&(to->N), &(from->N)))
+    if (!BNY_copy(&(to->N), &(from->N)))
         return NULL;
-    if (!BN_copy(&(to->Ni), &(from->Ni)))
+    if (!BNY_copy(&(to->Ni), &(from->Ni)))
         return NULL;
     to->ri = from->ri;
     to->n0[0] = from->n0[0];

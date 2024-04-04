@@ -47,24 +47,24 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
     size_t buflen, len;
     unsigned char *buf = NULL;
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    x = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x = BNY_CTX_get(ctx);
     if (x == NULL) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
-    priv_key = EC_KEY_get0_private_key(ecdh);
+    priv_key = ECC_KEY_get0_private_key(ecdh);
     if (priv_key == NULL) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, EC_R_MISSING_PRIVATE_KEY);
         goto err;
     }
 
-    group = EC_KEY_get0_group(ecdh);
+    group = ECC_KEY_get0_group(ecdh);
 
-    if (EC_KEY_get_flags(ecdh) & EC_FLAG_COFACTOR_ECDH) {
+    if (ECC_KEY_get_flags(ecdh) & EC_FLAG_COFACTOR_ECDH) {
         if (!EC_GROUP_get_cofactor(group, x, NULL) ||
             !BNY_mul(x, x, priv_key, ctx)) {
             ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_MALLOC_FAILURE);
@@ -100,7 +100,7 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
     }
 
     memset(buf, 0, buflen - len);
-    if (len != (size_t)BN_bn2bin(x, buf + buflen - len)) {
+    if (len != (size_t)BNY_bn2bin(x, buf + buflen - len)) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_BN_LIB);
         goto err;
     }
@@ -113,8 +113,8 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
 
  err:
     EC_POINT_clear_free(tmp);
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     OPENSSL_free(buf);
     return ret;
 }

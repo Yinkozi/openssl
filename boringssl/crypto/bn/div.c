@@ -75,7 +75,7 @@ static BN_ULONG bn_div_wordss(BN_ULONG h, BN_ULONG l, BN_ULONG d) {
     return BN_MASK2;
   }
 
-  i = BN_num_bits_word(d);
+  i = BNY_num_bits_word(d);
   assert((i == BN_BITS2) || (h <= (BN_ULONG)1 << i));
 
   i = BN_BITS2 - i;
@@ -210,12 +210,12 @@ int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
     return 0;
   }
 
-  BN_CTX_start(ctx);
-  tmp = BN_CTX_get(ctx);
-  snum = BN_CTX_get(ctx);
-  sdiv = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  tmp = BNY_CTX_get(ctx);
+  snum = BNY_CTX_get(ctx);
+  sdiv = BNY_CTX_get(ctx);
   if (dv == NULL) {
-    res = BN_CTX_get(ctx);
+    res = BNY_CTX_get(ctx);
   } else {
     res = dv;
   }
@@ -224,7 +224,7 @@ int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
   }
 
   /* First we normalise the numbers */
-  norm_shift = BN_BITS2 - ((BN_num_bits(divisor)) % BN_BITS2);
+  norm_shift = BN_BITS2 - ((BNY_num_bits(divisor)) % BN_BITS2);
   if (!(BN_lshift(sdiv, divisor, norm_shift))) {
     goto err;
   }
@@ -378,11 +378,11 @@ int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
     }
   }
   bn_correct_top(res);
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return 0;
 }
 
@@ -443,8 +443,8 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
   BIGNUM *t;
   int ret = 0;
 
-  BN_CTX_start(ctx);
-  t = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t = BNY_CTX_get(ctx);
   if (t == NULL) {
     goto err;
   }
@@ -466,7 +466,7 @@ int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -504,7 +504,7 @@ int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
 
 int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m) {
   if (r != a) {
-    if (BN_copy(r, a) == NULL) {
+    if (BNY_copy(r, a) == NULL) {
       return 0;
     }
   }
@@ -513,7 +513,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m) {
     int max_shift;
 
     /* 0 < r < m */
-    max_shift = BN_num_bits(m) - BN_num_bits(r);
+    max_shift = BNY_num_bits(m) - BNY_num_bits(r);
     /* max_shift >= 0 */
 
     if (max_shift < 0) {
@@ -537,7 +537,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m) {
       --n;
     }
 
-    /* BN_num_bits(r) <= BN_num_bits(m) */
+    /* BNY_num_bits(r) <= BNY_num_bits(m) */
     if (BN_cmp(r, m) >= 0) {
       if (!BNY_sub(r, r, m)) {
         return 0;
@@ -583,7 +583,7 @@ BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w) {
   }
 
   /* normalize input for |bn_div_rem_words|. */
-  j = BN_BITS2 - BN_num_bits_word(w);
+  j = BN_BITS2 - BNY_num_bits_word(w);
   w <<= j;
   if (!BN_lshift(a, a, j)) {
     return (BN_ULONG) - 1;
@@ -656,9 +656,9 @@ int BN_mod_pow2(BIGNUM *r, const BIGNUM *a, size_t e) {
 
   size_t num_words = 1 + ((e - 1) / BN_BITS2);
 
-  /* If |a| definitely has less than |e| bits, just BN_copy. */
+  /* If |a| definitely has less than |e| bits, just BNY_copy. */
   if ((size_t) a->top < num_words) {
-    return BN_copy(r, a) != NULL;
+    return BNY_copy(r, a) != NULL;
   }
 
   /* Otherwise, first make sure we have enough space in |r|.
@@ -724,5 +724,5 @@ int BNY_nnmod_pow2(BIGNUM *r, const BIGNUM *a, size_t e) {
   bn_correct_top(r);
 
   /* Finally, add one, for the reason described above. */
-  return BNY_add(r, r, BN_value_one());
+  return BNY_add(r, r, BNY_value_one());
 }

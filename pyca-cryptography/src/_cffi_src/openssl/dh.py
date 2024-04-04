@@ -69,19 +69,19 @@ int Cryptography_DH_check(const DH *dh, int *ret)
     BIGNUM *t1 = NULL, *t2 = NULL;
 
     *ret = 0;
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    t1 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t1 = BNY_CTX_get(ctx);
     if (t1 == NULL)
         goto err;
-    t2 = BN_CTX_get(ctx);
+    t2 = BNY_CTX_get(ctx);
     if (t2 == NULL)
         goto err;
 
     if (dh->q) {
-        if (BN_cmp(dh->g, BN_value_one()) <= 0)
+        if (BN_cmp(dh->g, BNY_value_one()) <= 0)
             *ret |= DH_NOT_SUITABLE_GENERATOR;
         else if (BN_cmp(dh->g, dh->p) >= 0)
             *ret |= DH_NOT_SUITABLE_GENERATOR;
@@ -137,8 +137,8 @@ int Cryptography_DH_check(const DH *dh, int *ret)
     ok = 1;
  err:
     if (ctx != NULL) {
-        BN_CTX_end(ctx);
-        BN_CTX_free(ctx);
+        BNY_CTX_end(ctx);
+        BNY_CTX_free(ctx);
     }
     return (ok);
 }

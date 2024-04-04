@@ -41,9 +41,9 @@ IMPLEMENT_YASN1_FUNCTIONS(SM2_Ciphertext)
 static size_t ec_field_size(const EC_GROUP *group)
 {
     /* Is there some simpler way to do this? */
-    BIGNUM *p = BN_new();
-    BIGNUM *a = BN_new();
-    BIGNUM *b = BN_new();
+    BIGNUM *p = BNY_new();
+    BIGNUM *a = BNY_new();
+    BIGNUM *b = BNY_new();
     size_t field_size = 0;
 
     if (p == NULL || a == NULL || b == NULL)
@@ -51,7 +51,7 @@ static size_t ec_field_size(const EC_GROUP *group)
 
     if (!EC_GROUP_get_curve(group, p, a, b, NULL))
         goto done;
-    field_size = (BN_num_bits(p) + 7) / 8;
+    field_size = (BNY_num_bits(p) + 7) / 8;
 
  done:
     BN_free(p);
@@ -81,7 +81,7 @@ int sm2_plaintext_size(const unsigned char *ct, size_t ct_size, size_t *pt_size)
 int sm2_ciphertext_size(const EC_KEY *key, const EVVP_MD *digest, size_t msg_len,
                         size_t *ct_size)
 {
-    const size_t field_size = ec_field_size(EC_KEY_get0_group(key));
+    const size_t field_size = ec_field_size(ECC_KEY_get0_group(key));
     const int md_size = EVVP_MD_size(digest);
     size_t sz;
 
@@ -113,9 +113,9 @@ int sm2_encrypt(const EC_KEY *key,
     BIGNUM *y2 = NULL;
     EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
     struct SM2_Ciphertext_st ctext_struct;
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     const BIGNUM *order = EC_GROUP_get0_order(group);
-    const EC_POINT *P = EC_KEY_get0_public_key(key);
+    const EC_POINT *P = ECC_KEY_get0_public_key(key);
     EC_POINT *kG = NULL;
     EC_POINT *kP = NULL;
     uint8_t *msg_mask = NULL;
@@ -141,18 +141,18 @@ int sm2_encrypt(const EC_KEY *key,
 
     kG = EC_POINT_new(group);
     kP = EC_POINT_new(group);
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (kG == NULL || kP == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    BN_CTX_start(ctx);
-    k = BN_CTX_get(ctx);
-    x1 = BN_CTX_get(ctx);
-    x2 = BN_CTX_get(ctx);
-    y1 = BN_CTX_get(ctx);
-    y2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    k = BNY_CTX_get(ctx);
+    x1 = BNY_CTX_get(ctx);
+    x2 = BNY_CTX_get(ctx);
+    y1 = BNY_CTX_get(ctx);
+    y2 = BNY_CTX_get(ctx);
 
     if (y2 == NULL) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_BN_LIB);
@@ -169,7 +169,7 @@ int sm2_encrypt(const EC_KEY *key,
 
     memset(ciphertext_buf, 0, *ciphertext_len);
 
-    if (!BN_priv_rand_range(k, order)) {
+    if (!BNY_priv_rand_range(k, order)) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_INTERNAL_ERROR);
         goto done;
     }
@@ -182,8 +182,8 @@ int sm2_encrypt(const EC_KEY *key,
         goto done;
     }
 
-    if (BN_bn2binpad(x2, x2y2, field_size) < 0
-            || BN_bn2binpad(y2, x2y2 + field_size, field_size) < 0) {
+    if (BNY_bn2binpad(x2, x2y2, field_size) < 0
+            || BNY_bn2binpad(y2, x2y2 + field_size, field_size) < 0) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_INTERNAL_ERROR);
         goto done;
     }
@@ -245,7 +245,7 @@ int sm2_encrypt(const EC_KEY *key,
     OPENSSL_free(x2y2);
     OPENSSL_free(C3);
     EVVP_MD_CTX_free(hash);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     EC_POINT_free(kG);
     EC_POINT_free(kP);
     return rc;
@@ -259,7 +259,7 @@ int sm2_decrypt(const EC_KEY *key,
     int rc = 0;
     int i;
     BN_CTX *ctx = NULL;
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     EC_POINT *C1 = NULL;
     struct SM2_Ciphertext_st *sm2_ctext = NULL;
     BIGNUM *x2 = NULL;
@@ -299,15 +299,15 @@ int sm2_decrypt(const EC_KEY *key,
         goto done;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    BN_CTX_start(ctx);
-    x2 = BN_CTX_get(ctx);
-    y2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x2 = BNY_CTX_get(ctx);
+    y2 = BNY_CTX_get(ctx);
 
     if (y2 == NULL) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_BN_LIB);
@@ -331,15 +331,15 @@ int sm2_decrypt(const EC_KEY *key,
 
     if (!EC_POINT_set_affine_coordinates(group, C1, sm2_ctext->C1x,
                                          sm2_ctext->C1y, ctx)
-            || !EC_POINT_mul(group, C1, NULL, C1, EC_KEY_get0_private_key(key),
+            || !EC_POINT_mul(group, C1, NULL, C1, ECC_KEY_get0_private_key(key),
                              ctx)
             || !EC_POINT_get_affine_coordinates(group, C1, x2, y2, ctx)) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_EC_LIB);
         goto done;
     }
 
-    if (BN_bn2binpad(x2, x2y2, field_size) < 0
-            || BN_bn2binpad(y2, x2y2 + field_size, field_size) < 0
+    if (BNY_bn2binpad(x2, x2y2, field_size) < 0
+            || BNY_bn2binpad(y2, x2y2 + field_size, field_size) < 0
             || !ecdh_KDF_X9_63(msg_mask, msg_len, x2y2, 2 * field_size, NULL, 0,
                                digest)) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_INTERNAL_ERROR);
@@ -380,7 +380,7 @@ int sm2_decrypt(const EC_KEY *key,
     OPENSSL_free(x2y2);
     OPENSSL_free(computed_C3);
     EC_POINT_free(C1);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     SM2_Ciphertext_free(sm2_ctext);
     EVVP_MD_CTX_free(hash);
 

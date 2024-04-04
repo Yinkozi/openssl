@@ -69,14 +69,14 @@
 
 #include "internal.h"
 
-BIGNUM *BN_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
+BIGNUM *BNY_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
   size_t num_words;
   unsigned m;
   BN_ULONG word = 0;
   BIGNUM *bn = NULL;
 
   if (ret == NULL) {
-    ret = bn = BN_new();
+    ret = bn = BNY_new();
   }
 
   if (ret == NULL) {
@@ -121,7 +121,7 @@ BIGNUM *BN_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
 BIGNUM *BN_le2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
   BIGNUM *bn = NULL;
   if (ret == NULL) {
-    bn = BN_new();
+    bn = BNY_new();
     ret = bn;
   }
 
@@ -154,7 +154,7 @@ BIGNUM *BN_le2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
   return ret;
 }
 
-size_t BN_bn2bin(const BIGNUM *in, uint8_t *out) {
+size_t BNY_bn2bin(const BIGNUM *in, uint8_t *out) {
   size_t n, i;
   BN_ULONG l;
 
@@ -212,7 +212,7 @@ static BN_ULONG read_word_padded(const BIGNUM *in, size_t i) {
   return constant_time_select_ulong(constant_time_le_size_t(in->top, i), 0, l);
 }
 
-int BN_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in) {
+int BNY_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in) {
   /* Special case for |in| = 0. Just branch as the probability is negligible. */
   if (BN_is_zero(in)) {
     OPENSSL_memset(out, 0, len);
@@ -248,7 +248,7 @@ int BN_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in) {
 
 int BN_bn2cbb_padded(CBB *out, size_t len, const BIGNUM *in) {
   uint8_t *ptr;
-  return CBB_add_space(out, &ptr, len) && BN_bn2bin_padded(ptr, len, in);
+  return CBB_add_space(out, &ptr, len) && BNY_bn2bin_padded(ptr, len, in);
 }
 
 static const char hextable[] = "0123456789abcdef";
@@ -386,7 +386,7 @@ static int bn_x2bn(BIGNUM **outp, const char *in, decode_func decode, char_test_
 
   /* in is the start of the hex digits, and it is 'i' long */
   if (*outp == NULL) {
-    ret = BN_new();
+    ret = BNY_new();
     if (ret == NULL) {
       return 0;
     }
@@ -586,8 +586,8 @@ int BN_get_u64(const BIGNUM *bn, uint64_t *out) {
   }
 }
 
-size_t BN_bn2mpi(const BIGNUM *in, uint8_t *out) {
-  const size_t bits = BN_num_bits(in);
+size_t BNY_bn2mpi(const BIGNUM *in, uint8_t *out) {
+  const size_t bits = BNY_num_bits(in);
   const size_t bytes = (bits + 7) / 8;
   /* If the number of bits is a multiple of 8, i.e. if the MSB is set,
    * prefix with a zero byte. */
@@ -619,14 +619,14 @@ size_t BN_bn2mpi(const BIGNUM *in, uint8_t *out) {
   if (extend) {
     out[4] = 0;
   }
-  BN_bn2bin(in, out + 4 + extend);
+  BNY_bn2bin(in, out + 4 + extend);
   if (in->neg && len > 0) {
     out[4] |= 0x80;
   }
   return len + 4;
 }
 
-BIGNUM *BN_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
+BIGNUM *BNY_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
   if (len < 4) {
     OPENSSL_PUT_ERROR(BN, BN_R_BAD_ENCODING);
     return NULL;
@@ -642,7 +642,7 @@ BIGNUM *BN_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
 
   int out_is_alloced = 0;
   if (out == NULL) {
-    out = BN_new();
+    out = BNY_new();
     if (out == NULL) {
       OPENSSL_PUT_ERROR(BN, ERR_R_MALLOC_FAILURE);
       return NULL;
@@ -656,7 +656,7 @@ BIGNUM *BN_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
   }
 
   in += 4;
-  if (BN_bin2bn(in, in_len, out) == NULL) {
+  if (BNY_bin2bn(in, in_len, out) == NULL) {
     if (out_is_alloced) {
       BN_free(out);
     }
@@ -664,7 +664,7 @@ BIGNUM *BN_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
   }
   out->neg = ((*in) & 0x80) != 0;
   if (out->neg) {
-    BN_clear_bit(out, BN_num_bits(out) - 1);
+    BN_clear_bit(out, BNY_num_bits(out) - 1);
   }
   return out;
 }

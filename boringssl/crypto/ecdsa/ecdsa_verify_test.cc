@@ -56,7 +56,7 @@ static bssl::UniquePtr<BIGNUM> GetBIGNUM(FileTest *t, const char *key) {
     return nullptr;
   }
 
-  return bssl::UniquePtr<BIGNUM>(BN_bin2bn(bytes.data(), bytes.size(), nullptr));
+  return bssl::UniquePtr<BIGNUM>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
 }
 
 static bool TestECDSASign(FileTest *t, void *arg) {
@@ -71,20 +71,20 @@ static bool TestECDSASign(FileTest *t, void *arg) {
     return false;
   }
 
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new());
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new());
   bssl::UniquePtr<EC_POINT> pub_key(EC_POINT_new(group.get()));
-  bssl::UniquePtr<ECDSA_SIG> sig(ECDSA_SIG_new());
+  bssl::UniquePtr<ECDSA_SIG> sig(ECCDSA_SIG_new());
   if (!key || !pub_key || !sig ||
-      !EC_KEY_set_group(key.get(), group.get()) ||
+      !ECC_KEY_set_group(key.get(), group.get()) ||
       !EC_POINT_set_affine_coordinates_GFp(group.get(), pub_key.get(), x.get(),
                                            y.get(), nullptr) ||
-      !EC_KEY_set_public_key(key.get(), pub_key.get()) ||
-      !BN_copy(sig->r, r.get()) ||
-      !BN_copy(sig->s, s.get())) {
+      !ECC_KEY_set_public_key(key.get(), pub_key.get()) ||
+      !BNY_copy(sig->r, r.get()) ||
+      !BNY_copy(sig->s, s.get())) {
     return false;
   }
 
-  int ok = ECDSA_do_verifyy(digest.data(), digest.size(), sig.get(), key.get());
+  int ok = ECCDSA_do_verifyy(digest.data(), digest.size(), sig.get(), key.get());
   if (t->HasAttribute("Invalid")) {
     if (ok) {
       t->PrintLine("Signature was incorrectly accepted.");

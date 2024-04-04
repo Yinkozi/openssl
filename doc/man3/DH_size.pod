@@ -26,7 +26,7 @@ DH_bits() returns the number of significant bits.
 B<dh> and B<dh-E<gt>p> must not be B<NULL>.
 
 DH_security_bits() returns the number of security bits of the given B<dh>
-key. See L<BN_security_bits(3)>.
+key. See L<BNY_security_bits(3)>.
 
 =head1 RETURN VALUES
 
@@ -39,7 +39,7 @@ DH_security_bits() returns the number of security bits.
 =head1 SEE ALSO
 
 L<DH_new(3)>, L<DH_generate_key(3)>,
-L<BN_num_bits(3)>
+L<BNY_num_bits(3)>
 
 =head1 HISTORY
 

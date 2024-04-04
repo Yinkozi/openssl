@@ -441,14 +441,14 @@ static bool RunRFC5114Tests() {
       return false;
     }
 
-    dhA->priv_key = BN_bin2bn(td->xA, td->xA_len, nullptr);
-    dhA->pub_key = BN_bin2bn(td->yA, td->yA_len, nullptr);
+    dhA->priv_key = BNY_bin2bn(td->xA, td->xA_len, nullptr);
+    dhA->pub_key = BNY_bin2bn(td->yA, td->yA_len, nullptr);
 
-    dhB->priv_key = BN_bin2bn(td->xB, td->xB_len, nullptr);
-    dhB->pub_key = BN_bin2bn(td->yB, td->yB_len, nullptr);
+    dhB->priv_key = BNY_bin2bn(td->xB, td->xB_len, nullptr);
+    dhB->pub_key = BNY_bin2bn(td->yB, td->yB_len, nullptr);
 
     if (!dhA->priv_key || !dhA->pub_key || !dhB->priv_key || !dhB->pub_key) {
-      fprintf(stderr, "BN_bin2bn error RFC5114 set %u\n", i + 1);
+      fprintf(stderr, "BNY_bin2bn error RFC5114 set %u\n", i + 1);
       return false;
     }
 
@@ -512,7 +512,7 @@ static const uint8_t kRFC5114_2048_224BadY[] = {
 static bool TestBadY() {
   bssl::UniquePtr<DH> dh(DH_get_2048_224(nullptr));
   bssl::UniquePtr<BIGNUM> pub_key(
-      BN_bin2bn(kRFC5114_2048_224BadY, sizeof(kRFC5114_2048_224BadY), nullptr));
+      BNY_bin2bn(kRFC5114_2048_224BadY, sizeof(kRFC5114_2048_224BadY), nullptr));
   if (!dh || !pub_key || !DH_generate_key(dh.get())) {
     return false;
   }
@@ -653,7 +653,7 @@ static bool TestRFC3526() {
 
   uint8_t buffer[sizeof(kPrime1536)];
   if (BN_num_bytes(bn.get()) != sizeof(kPrime1536) ||
-      BN_bn2bin(bn.get(), buffer) != sizeof(kPrime1536) ||
+      BNY_bn2bin(bn.get(), buffer) != sizeof(kPrime1536) ||
       OPENSSL_memcmp(buffer, kPrime1536, sizeof(kPrime1536)) != 0) {
     fprintf(stderr, "1536-bit MODP prime did not match.\n");
     return false;

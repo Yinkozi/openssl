@@ -2739,7 +2739,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
             goto err;
         }
 
-        BN_bn2bin(r[i], binval);
+        BNY_bn2bin(r[i], binval);
     }
 
 #ifndef OPENSSL_NO_EC
@@ -3207,7 +3207,7 @@ static int tls_process_cke_dhe(SSL *s, PACKET *pkt)
     }
 
     cdh = EVVP_PKEY_get0_DH(ckey);
-    pub_key = BN_bin2bn(data, i, NULL);
+    pub_key = BNY_bin2bn(data, i, NULL);
     if (pub_key == NULL || cdh == NULL || !DH_set0_key(cdh, pub_key, NULL)) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CKE_DHE,
                  ERR_R_INTERNAL_ERROR);
@@ -3313,7 +3313,7 @@ static int tls_process_cke_srp(SSL *s, PACKET *pkt)
                  SSL_R_BAD_SRP_A_LENGTH);
         return 0;
     }
-    if ((s->srp_ctx.A = BN_bin2bn(data, i, NULL)) == NULL) {
+    if ((s->srp_ctx.A = BNY_bin2bn(data, i, NULL)) == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_CKE_SRP,
                  ERR_R_BN_LIB);
         return 0;

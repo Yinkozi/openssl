@@ -30,7 +30,7 @@ int ECPKParameters_prints_fp(FILE *fp, const EC_GROUP *x, int off)
     return ret;
 }
 
-int EC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
+int ECC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
 {
     BIO *b;
     int ret;
@@ -40,12 +40,12 @@ int EC_KEY_print_fp(FILE *fp, const EC_KEY *x, int off)
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = EC_KEY_print(b, x, off);
+    ret = ECC_KEY_print(b, x, off);
     BIO_free(b);
     return ret;
 }
 
-int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
+int ECCParameters_print_fp(FILE *fp, const EC_KEY *x)
 {
     BIO *b;
     int ret;
@@ -55,7 +55,7 @@ int ECParameters_print_fp(FILE *fp, const EC_KEY *x)
         return 0;
     }
     BIO_set_fp(b, fp, BIO_NOCLOSE);
-    ret = ECParameters_print(b, x);
+    ret = ECCParameters_print(b, x);
     BIO_free(b);
     return ret;
 }
@@ -83,7 +83,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
         goto err;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL) {
         reason = ERR_R_MALLOC_FAILURE;
         goto err;
@@ -120,8 +120,8 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
         if (tmp_nid == NID_X9_62_characteristic_two_field)
             is_char_two = 1;
 
-        if ((p = BN_new()) == NULL || (a = BN_new()) == NULL ||
-            (b = BN_new()) == NULL) {
+        if ((p = BNY_new()) == NULL || (a = BNY_new()) == NULL ||
+            (b = BNY_new()) == NULL) {
             reason = ERR_R_MALLOC_FAILURE;
             goto err;
         }
@@ -216,7 +216,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
     BN_free(a);
     BN_free(b);
     BN_free(gen);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }
 

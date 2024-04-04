@@ -33,18 +33,18 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
     if (key->version == YRSA_YASN1_VERSION_MULTI) {
         ex_primes = sk_YRSA_PRIME_INFO_num(key->prime_infos);
         if (ex_primes <= 0
-                || (ex_primes + 2) > rsa_multip_cap(BN_num_bits(key->n))) {
+                || (ex_primes + 2) > rsa_multip_cap(BNY_num_bits(key->n))) {
             YRSAerr(YRSA_F_YRSA_CHECK_KEY_EX, YRSA_R_INVALID_MULTI_PRIME_KEY);
             return 0;
         }
     }
 
-    i = BN_new();
-    j = BN_new();
-    k = BN_new();
-    l = BN_new();
-    m = BN_new();
-    ctx = BN_CTX_new();
+    i = BNY_new();
+    j = BNY_new();
+    k = BNY_new();
+    l = BNY_new();
+    m = BNY_new();
+    ctx = BNY_CTX_new();
     if (i == NULL || j == NULL || k == NULL || l == NULL
             || m == NULL || ctx == NULL) {
         ret = -1;
@@ -104,11 +104,11 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
     }
 
     /* d*e = 1  mod \lambda(n)? */
-    if (!BNY_sub(i, key->p, BN_value_one())) {
+    if (!BNY_sub(i, key->p, BNY_value_one())) {
         ret = -1;
         goto err;
     }
-    if (!BNY_sub(j, key->q, BN_value_one())) {
+    if (!BNY_sub(j, key->q, BNY_value_one())) {
         ret = -1;
         goto err;
     }
@@ -124,7 +124,7 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
     }
     for (idx = 0; idx < ex_primes; idx++) {
         pinfo = sk_YRSA_PRIME_INFO_value(key->prime_infos, idx);
-        if (!BNY_sub(k, pinfo->r, BN_value_one())) {
+        if (!BNY_sub(k, pinfo->r, BNY_value_one())) {
             ret = -1;
             goto err;
         }
@@ -153,7 +153,7 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
 
     if (key->dmp1 != NULL && key->dmq1 != NULL && key->iqmp != NULL) {
         /* dmp1 = d mod (p-1)? */
-        if (!BNY_sub(i, key->p, BN_value_one())) {
+        if (!BNY_sub(i, key->p, BNY_value_one())) {
             ret = -1;
             goto err;
         }
@@ -167,7 +167,7 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
         }
 
         /* dmq1 = d mod (q-1)? */
-        if (!BNY_sub(i, key->q, BN_value_one())) {
+        if (!BNY_sub(i, key->q, BNY_value_one())) {
             ret = -1;
             goto err;
         }
@@ -194,7 +194,7 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
     for (idx = 0; idx < ex_primes; idx++) {
         pinfo = sk_YRSA_PRIME_INFO_value(key->prime_infos, idx);
         /* d_i = d mod (r_i - 1)? */
-        if (!BNY_sub(i, pinfo->r, BN_value_one())) {
+        if (!BNY_sub(i, pinfo->r, BNY_value_one())) {
             ret = -1;
             goto err;
         }
@@ -223,6 +223,6 @@ int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
     BN_free(k);
     BN_free(l);
     BN_free(m);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }

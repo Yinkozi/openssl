@@ -64,7 +64,7 @@ YASN1_ITEM_end(CBIGNUM)
 
 static int bny_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    *pval = (YASN1_VALUE *)BN_new();
+    *pval = (YASN1_VALUE *)BNY_new();
     if (*pval != NULL)
         return 1;
     else
@@ -73,7 +73,7 @@ static int bny_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 
 static int bn_secure_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
-    *pval = (YASN1_VALUE *)BN_secure_new();
+    *pval = (YASN1_VALUE *)BNY_secure_new();
     if (*pval != NULL)
         return 1;
     else
@@ -85,7 +85,7 @@ static void bny_free(YASN1_VALUE **pval, const YASN1_ITEM *it)
     if (*pval == NULL)
         return;
     if (it->size & BN_SENSITIVE)
-        BN_clear_free((BIGNUM *)*pval);
+        BNY_clear_free((BIGNUM *)*pval);
     else
         BN_free((BIGNUM *)*pval);
     *pval = NULL;
@@ -100,14 +100,14 @@ static int bny_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
         return -1;
     bn = (BIGNUM *)*pval;
     /* If MSB set in an octet we need a padding byte */
-    if (BN_num_bits(bn) & 0x7)
+    if (BNY_num_bits(bn) & 0x7)
         pad = 0;
     else
         pad = 1;
     if (cont) {
         if (pad)
             *cont++ = 0;
-        BN_bn2bin(bn, cont);
+        BNY_bn2bin(bn, cont);
     }
     return pad + BN_num_bytes(bn);
 }
@@ -120,7 +120,7 @@ static int bny_c2i(YASN1_VALUE **pval, const unsigned char *cont, int len,
     if (*pval == NULL && !bny_new(pval, it))
         return 0;
     bn = (BIGNUM *)*pval;
-    if (!BN_bin2bn(cont, len, bn)) {
+    if (!BNY_bin2bn(cont, len, bn)) {
         bny_free(pval, it);
         return 0;
     }

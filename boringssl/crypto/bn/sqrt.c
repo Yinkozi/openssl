@@ -71,7 +71,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
   if (!BN_is_odd(p) || BN_abs_is_word(p, 1)) {
     if (BN_abs_is_word(p, 2)) {
       if (ret == NULL) {
-        ret = BN_new();
+        ret = BNY_new();
       }
       if (ret == NULL) {
         goto end;
@@ -91,7 +91,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
 
   if (BN_is_zero(a) || BN_is_one(a)) {
     if (ret == NULL) {
-      ret = BN_new();
+      ret = BNY_new();
     }
     if (ret == NULL) {
       goto end;
@@ -105,19 +105,19 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
     return ret;
   }
 
-  BN_CTX_start(ctx);
-  A = BN_CTX_get(ctx);
-  b = BN_CTX_get(ctx);
-  q = BN_CTX_get(ctx);
-  t = BN_CTX_get(ctx);
-  x = BN_CTX_get(ctx);
-  y = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  A = BNY_CTX_get(ctx);
+  b = BNY_CTX_get(ctx);
+  q = BNY_CTX_get(ctx);
+  t = BNY_CTX_get(ctx);
+  x = BNY_CTX_get(ctx);
+  y = BNY_CTX_get(ctx);
   if (y == NULL) {
     goto end;
   }
 
   if (ret == NULL) {
-    ret = BN_new();
+    ret = BNY_new();
   }
   if (ret == NULL) {
     goto end;
@@ -214,7 +214,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
       goto end;
     }
 
-    if (!BN_copy(ret, x)) {
+    if (!BNY_copy(ret, x)) {
       goto end;
     }
     err = 0;
@@ -223,7 +223,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
 
   /* e > 2, so we really have to use the Tonelli/Shanks algorithm.
    * First, find some  y  that is not a square. */
-  if (!BN_copy(q, p)) {
+  if (!BNY_copy(q, p)) {
     goto end; /* use 'q' as temp */
   }
   q->neg = 0;
@@ -237,7 +237,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
         goto end;
       }
     } else {
-      if (!BN_pseudo_rand(y, BN_num_bits(p), 0, 0)) {
+      if (!BNY_pseudo_rand(y, BNY_num_bits(p), 0, 0)) {
         goto end;
       }
       if (BNY_ucmp(y, p) >= 0) {
@@ -360,7 +360,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
      */
 
     if (BN_is_one(b)) {
-      if (!BN_copy(ret, x)) {
+      if (!BNY_copy(ret, x)) {
         goto end;
       }
       err = 0;
@@ -386,7 +386,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
 
 
     /* t := y^2^(e - i - 1) */
-    if (!BN_copy(t, y)) {
+    if (!BNY_copy(t, y)) {
       goto end;
     }
     for (j = e - i - 1; j > 0; j--) {
@@ -420,11 +420,11 @@ vrfy:
 end:
   if (err) {
     if (ret != in) {
-      BN_clear_free(ret);
+      BNY_clear_free(ret);
     }
     ret = NULL;
   }
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -441,22 +441,22 @@ int BNY_sqrt(BIGNUM *out_sqrt, const BIGNUM *in, BN_CTX *ctx) {
     return 1;
   }
 
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
   if (out_sqrt == in) {
-    estimate = BN_CTX_get(ctx);
+    estimate = BNY_CTX_get(ctx);
   } else {
     estimate = out_sqrt;
   }
-  tmp = BN_CTX_get(ctx);
-  last_delta = BN_CTX_get(ctx);
-  delta = BN_CTX_get(ctx);
+  tmp = BNY_CTX_get(ctx);
+  last_delta = BNY_CTX_get(ctx);
+  delta = BNY_CTX_get(ctx);
   if (estimate == NULL || tmp == NULL || last_delta == NULL || delta == NULL) {
     OPENSSL_PUT_ERROR(BN, ERR_R_MALLOC_FAILURE);
     goto err;
   }
 
   /* We estimate that the square root of an n-bit number is 2^{n/2}. */
-  if (!BN_lshift(estimate, BN_value_one(), BN_num_bits(in)/2)) {
+  if (!BN_lshift(estimate, BNY_value_one(), BNY_num_bits(in)/2)) {
     goto err;
   }
 
@@ -498,9 +498,9 @@ int BNY_sqrt(BIGNUM *out_sqrt, const BIGNUM *in, BN_CTX *ctx) {
   ok = 1;
 
 err:
-  if (ok && out_sqrt == in && !BN_copy(out_sqrt, estimate)) {
+  if (ok && out_sqrt == in && !BNY_copy(out_sqrt, estimate)) {
     ok = 0;
   }
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ok;
 }

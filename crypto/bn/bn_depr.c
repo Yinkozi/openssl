@@ -32,7 +32,7 @@ BIGNUM *BN_generate_prime(BIGNUM *ret, int bits, int safe,
     BN_GENCB_set_old(&cb, callback, cb_arg);
 
     if (ret == NULL) {
-        if ((rnd = BN_new()) == NULL)
+        if ((rnd = BNY_new()) == NULL)
             goto err;
     } else
         rnd = ret;

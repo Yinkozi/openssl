@@ -38,10 +38,10 @@ EC_GROUP *EC_GROUP_new(const EC_METHOD *meth)
 
     ret->meth = meth;
     if ((ret->meth->flags & EC_FLAGS_CUSTOM_CURVE) == 0) {
-        ret->order = BN_new();
+        ret->order = BNY_new();
         if (ret->order == NULL)
             goto err;
-        ret->cofactor = BN_new();
+        ret->cofactor = BNY_new();
         if (ret->cofactor == NULL)
             goto err;
     }
@@ -121,8 +121,8 @@ void EC_GROUP_clear_free(EC_GROUP *group)
     EC_pre_comp_free(group);
     BN_MONT_CTX_free(group->mont_data);
     EC_POINT_clear_free(group->generator);
-    BN_clear_free(group->order);
-    BN_clear_free(group->cofactor);
+    BNY_clear_free(group->order);
+    BNY_clear_free(group->cofactor);
     OPENSSL_clear_free(group->seed, group->seed_len);
     OPENSSL_clear_free(group, sizeof(*group));
 }
@@ -203,9 +203,9 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
     }
 
     if ((src->meth->flags & EC_FLAGS_CUSTOM_CURVE) == 0) {
-        if (!BN_copy(dest->order, src->order))
+        if (!BNY_copy(dest->order, src->order))
             return 0;
-        if (!BN_copy(dest->cofactor, src->cofactor))
+        if (!BNY_copy(dest->cofactor, src->cofactor))
             return 0;
     }
 
@@ -288,27 +288,27 @@ static int ec_guess_cofactor(EC_GROUP *group) {
      * If the cofactor is too large, we cannot guess it.
      * The RHS of below is a strict overestimate of lg(4 * sqrt(q))
      */
-    if (BN_num_bits(group->order) <= (BN_num_bits(group->field) + 1) / 2 + 3) {
+    if (BNY_num_bits(group->order) <= (BNY_num_bits(group->field) + 1) / 2 + 3) {
         /* default to 0 */
         BN_zero(group->cofactor);
         /* return success */
         return 1;
     }
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         return 0;
 
-    BN_CTX_start(ctx);
-    if ((q = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((q = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     /* set q = 2**m for binary fields; q = p otherwise */
     if (group->meth->field_type == NID_X9_62_characteristic_two_field) {
         BN_zero(q);
-        if (!BN_set_bit(q, BN_num_bits(group->field) - 1))
+        if (!BN_set_bit(q, BNY_num_bits(group->field) - 1))
             goto err;
     } else {
-        if (!BN_copy(q, group->field))
+        if (!BNY_copy(q, group->field))
             goto err;
     }
 
@@ -316,14 +316,14 @@ static int ec_guess_cofactor(EC_GROUP *group) {
     if (!BN_ryshift1(group->cofactor, group->order) /* n/2 */
         || !BNY_add(group->cofactor, group->cofactor, q) /* q + n/2 */
         /* q + 1 + n/2 */
-        || !BNY_add(group->cofactor, group->cofactor, BN_value_one())
+        || !BNY_add(group->cofactor, group->cofactor, BNY_value_one())
         /* (q + 1 + n/2)/n */
         || !BNY_div(group->cofactor, NULL, group->cofactor, group->order, ctx))
         goto err;
     ret = 1;
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }
 
@@ -348,7 +348,7 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
      *   longer than field cardinality
      */
     if (order == NULL || BN_is_zero(order) || BN_is_negative(order)
-        || BN_num_bits(order) > BN_num_bits(group->field) + 1) {
+        || BNY_num_bits(order) > BNY_num_bits(group->field) + 1) {
         ECerr(EC_F_EC_GROUP_SET_GENERATOR, EC_R_INVALID_GROUP_ORDER);
         return 0;
     }
@@ -371,12 +371,12 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
     if (!EC_POINT_copy(group->generator, generator))
         return 0;
 
-    if (!BN_copy(group->order, order))
+    if (!BNY_copy(group->order, order))
         return 0;
 
     /* Either take the provided positive cofactor, or try to compute it */
     if (cofactor != NULL && !BN_is_zero(cofactor)) {
-        if (!BN_copy(group->cofactor, cofactor))
+        if (!BNY_copy(group->cofactor, cofactor))
             return 0;
     } else if (!ec_guess_cofactor(group)) {
         BN_zero(group->cofactor);
@@ -411,7 +411,7 @@ int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
 {
     if (group->order == NULL)
         return 0;
-    if (!BN_copy(order, group->order))
+    if (!BNY_copy(order, group->order))
         return 0;
 
     return !BN_is_zero(order);
@@ -433,7 +433,7 @@ int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
 
     if (group->cofactor == NULL)
         return 0;
-    if (!BN_copy(cofactor, group->cofactor))
+    if (!BNY_copy(cofactor, group->cofactor))
         return 0;
 
     return !BN_is_zero(group->cofactor);
@@ -590,20 +590,20 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
         return 0;
 
     if (ctx == NULL)
-        ctx_new = ctx = BN_CTX_new();
+        ctx_new = ctx = BNY_CTX_new();
     if (ctx == NULL)
         return -1;
 
-    BN_CTX_start(ctx);
-    a1 = BN_CTX_get(ctx);
-    a2 = BN_CTX_get(ctx);
-    a3 = BN_CTX_get(ctx);
-    b1 = BN_CTX_get(ctx);
-    b2 = BN_CTX_get(ctx);
-    b3 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    a1 = BNY_CTX_get(ctx);
+    a2 = BNY_CTX_get(ctx);
+    a3 = BNY_CTX_get(ctx);
+    b1 = BNY_CTX_get(ctx);
+    b2 = BNY_CTX_get(ctx);
+    b3 = BNY_CTX_get(ctx);
     if (b3 == NULL) {
-        BN_CTX_end(ctx);
-        BN_CTX_free(ctx_new);
+        BNY_CTX_end(ctx);
+        BNY_CTX_free(ctx_new);
         return -1;
     }
 
@@ -631,16 +631,16 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
         ac = EC_GROUP_get0_cofactor(a);
         bc = EC_GROUP_get0_cofactor(b);
         if (ao == NULL || bo == NULL) {
-            BN_CTX_end(ctx);
-            BN_CTX_free(ctx_new);
+            BNY_CTX_end(ctx);
+            BNY_CTX_free(ctx_new);
             return -1;
         }
         if (BN_cmp(ao, bo) || BN_cmp(ac, bc))
             r = 1;
     }
 
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx_new);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx_new);
 
     return r;
 }
@@ -1023,7 +1023,7 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
         }
     }
 
-    if (ctx == NULL && (ctx = new_ctx = BN_CTX_secure_new()) == NULL) {
+    if (ctx == NULL && (ctx = new_ctx = BNY_CTX_secure_new()) == NULL) {
         ECerr(EC_F_EC_POINTS_MUL, ERR_R_INTERNAL_ERROR);
         return 0;
     }
@@ -1034,7 +1034,7 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
         /* use default */
         ret = ec_wNAF_mul(group, r, scalar, num, points, scalars, ctx);
 
-    BN_CTX_free(new_ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -1085,7 +1085,7 @@ int EC_GROUP_have_precompute_mult(const EC_GROUP *group)
  */
 static int ec_precompute_mont_data(EC_GROUP *group)
 {
-    BN_CTX *ctx = BN_CTX_new();
+    BN_CTX *ctx = BNY_CTX_new();
     int ret = 0;
 
     BN_MONT_CTX_free(group->mont_data);
@@ -1108,16 +1108,16 @@ static int ec_precompute_mont_data(EC_GROUP *group)
 
  err:
 
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }
 
-int EC_KEY_set_ex_data(EC_KEY *key, int idx, void *arg)
+int ECC_KEY_set_ex_data(EC_KEY *key, int idx, void *arg)
 {
     return CRYPTO_set_ex_data(&key->ex_data, idx, arg);
 }
 
-void *EC_KEY_get_ex_data(const EC_KEY *key, int idx)
+void *ECC_KEY_get_ex_data(const EC_KEY *key, int idx)
 {
     return CRYPTO_get_ex_data(&key->ex_data, idx);
 }
@@ -1126,7 +1126,7 @@ int ec_group_simple_order_bits(const EC_GROUP *group)
 {
     if (group->order == NULL)
         return 0;
-    return BN_num_bits(group->order);
+    return BNY_num_bits(group->order);
 }
 
 static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
@@ -1139,11 +1139,11 @@ static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
     if (group->mont_data == NULL)
         return 0;
 
-    if (ctx == NULL && (ctx = new_ctx = BN_CTX_secure_new()) == NULL)
+    if (ctx == NULL && (ctx = new_ctx = BNY_CTX_secure_new()) == NULL)
         return 0;
 
-    BN_CTX_start(ctx);
-    if ((e = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((e = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     /*-
@@ -1164,8 +1164,8 @@ static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 

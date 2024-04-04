@@ -234,18 +234,18 @@ static int ecp_nistz256_windowed_mul(const EC_GROUP *group, P256_POINT *r,
   BN_CTX *new_ctx = NULL;
   int ctx_started = 0;
 
-  if (BN_num_bits(p_scalar) > 256 || BN_is_negative(p_scalar)) {
+  if (BNY_num_bits(p_scalar) > 256 || BN_is_negative(p_scalar)) {
     if (ctx == NULL) {
-      new_ctx = BN_CTX_new();
+      new_ctx = BNY_CTX_new();
       if (new_ctx == NULL) {
         OPENSSL_PUT_ERROR(EC, ERR_R_MALLOC_FAILURE);
         goto err;
       }
       ctx = new_ctx;
     }
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
     ctx_started = 1;
-    BIGNUM *mod = BN_CTX_get(ctx);
+    BIGNUM *mod = BNY_CTX_get(ctx);
     if (mod == NULL) {
       OPENSSL_PUT_ERROR(EC, ERR_R_MALLOC_FAILURE);
       goto err;
@@ -357,9 +357,9 @@ static int ecp_nistz256_windowed_mul(const EC_GROUP *group, P256_POINT *r,
 
 err:
   if (ctx_started) {
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
   }
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 
@@ -381,17 +381,17 @@ static int ecp_nistz256_points_mul(
   int ctx_started = 0;
 
   if (g_scalar != NULL) {
-    if (BN_num_bits(g_scalar) > 256 || BN_is_negative(g_scalar)) {
+    if (BNY_num_bits(g_scalar) > 256 || BN_is_negative(g_scalar)) {
       if (ctx == NULL) {
-        new_ctx = BN_CTX_new();
+        new_ctx = BNY_CTX_new();
         if (new_ctx == NULL) {
           goto err;
         }
         ctx = new_ctx;
       }
-      BN_CTX_start(ctx);
+      BNY_CTX_start(ctx);
       ctx_started = 1;
-      BIGNUM *tmp_scalar = BN_CTX_get(ctx);
+      BIGNUM *tmp_scalar = BNY_CTX_get(ctx);
       if (tmp_scalar == NULL) {
         goto err;
       }
@@ -488,9 +488,9 @@ static int ecp_nistz256_points_mul(
 
 err:
   if (ctx_started) {
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
   }
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 

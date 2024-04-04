@@ -69,7 +69,7 @@ int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe,
         /*
          * The smallest safe prime (7) is three bits.
          * But the following two safe primes with less than 6 bits (11, 23)
-         * are unreachable for BN_rand with BN_RAND_TOP_TWO.
+         * are unreachable for BNY_rand with BN_RAND_TOP_TWO.
          */
         BNerr(BN_F_BN_GENERATE_PRIME_EX, BN_R_BITS_TOO_SMALL);
         return 0;
@@ -79,11 +79,11 @@ int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe,
     if (mods == NULL)
         goto err;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    t = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t = BNY_CTX_get(ctx);
     if (t == NULL)
         goto err;
  loop:
@@ -136,8 +136,8 @@ int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe,
     found = 1;
  err:
     OPENSSL_free(mods);
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     bn_check_top(ret);
     return found;
 }
@@ -162,11 +162,11 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
         return 1;
 
     /* Check odd and bigger than 1 */
-    if (!BN_is_odd(a) || BN_cmp(a, BN_value_one()) <= 0)
+    if (!BN_is_odd(a) || BN_cmp(a, BNY_value_one()) <= 0)
         return 0;
 
     if (checks == BN_prime_checks)
-        checks = BN_prime_checks_for_size(BN_num_bits(a));
+        checks = BN_prime_checks_for_size(BNY_num_bits(a));
 
     /* first look for small factors */
     if (do_trial_division) {
@@ -183,22 +183,22 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
 
     if (ctx_passed != NULL)
         ctx = ctx_passed;
-    else if ((ctx = BN_CTX_new()) == NULL)
+    else if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
-    A1 = BN_CTX_get(ctx);
-    A3 = BN_CTX_get(ctx);
-    A1_odd = BN_CTX_get(ctx);
-    check = BN_CTX_get(ctx);
+    A1 = BNY_CTX_get(ctx);
+    A3 = BNY_CTX_get(ctx);
+    A1_odd = BNY_CTX_get(ctx);
+    check = BNY_CTX_get(ctx);
     if (check == NULL)
         goto err;
 
     /* compute A1 := a - 1 */
-    if (!BN_copy(A1, a) || !BNY_sub_word(A1, 1))
+    if (!BNY_copy(A1, a) || !BNY_sub_word(A1, 1))
         goto err;
     /* compute A3 := a - 3 */
-    if (!BN_copy(A3, a) || !BNY_sub_word(A3, 3))
+    if (!BNY_copy(A3, a) || !BNY_sub_word(A3, 3))
         goto err;
 
     /* write  A1  as  A1_odd * 2^k */
@@ -217,7 +217,7 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
 
     for (i = 0; i < checks; i++) {
         /* 1 < check < a-1 */
-        if (!BN_priv_rand_range(check, A3) || !BNY_add_word(check, 2))
+        if (!BNY_priv_rand_range(check, A3) || !BNY_add_word(check, 2))
             goto err;
 
         j = witness(check, a, A1, A1_odd, k, ctx, mont);
@@ -233,9 +233,9 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
     ret = 1;
  err:
     if (ctx != NULL) {
-        BN_CTX_end(ctx);
+        BNY_CTX_end(ctx);
         if (ctx_passed == NULL)
-            BN_CTX_free(ctx);
+            BNY_CTX_free(ctx);
     }
     BN_MONT_CTX_free(mont);
 
@@ -277,7 +277,7 @@ static int probable_prime(BIGNUM *rnd, int bits, int safe, prime_t *mods)
 
  again:
     /* TODO: Not all primes are private */
-    if (!BN_priv_rand(rnd, bits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ODD))
+    if (!BNY_priv_rand(rnd, bits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ODD))
         return 0;
     if (safe && !BN_set_bit(rnd, 1))
         return 0;
@@ -311,7 +311,7 @@ static int probable_prime(BIGNUM *rnd, int bits, int safe, prime_t *mods)
     }
     if (!BNY_add_word(rnd, delta))
         return 0;
-    if (BN_num_bits(rnd) != bits)
+    if (BNY_num_bits(rnd) != bits)
         goto again;
     bn_check_top(rnd);
     return 1;
@@ -326,15 +326,15 @@ static int probable_prime_dh(BIGNUM *rnd, int bits, int safe, prime_t *mods,
     BN_ULONG delta;
     BN_ULONG maxdelta = BN_MASK2 - primes[NUMPRIMES - 1];
 
-    BN_CTX_start(ctx);
-    if ((t1 = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((t1 = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     if (maxdelta > BN_MASK2 - BN_get_word(add))
         maxdelta = BN_MASK2 - BN_get_word(add);
 
  again:
-    if (!BN_rand(rnd, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD))
+    if (!BNY_rand(rnd, bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ODD))
         goto err;
 
     /* we need ((rnd-rem) % add) == 0 */
@@ -351,7 +351,7 @@ static int probable_prime_dh(BIGNUM *rnd, int bits, int safe, prime_t *mods,
             goto err;
     }
 
-    if (BN_num_bits(rnd) < bits
+    if (BNY_num_bits(rnd) < bits
             || BN_get_word(rnd) < (safe ? 5u : 3u)) {
         if (!BNY_add(rnd, rnd, add))
             goto err;
@@ -385,7 +385,7 @@ static int probable_prime_dh(BIGNUM *rnd, int bits, int safe, prime_t *mods,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(rnd);
     return ret;
 }

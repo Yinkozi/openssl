@@ -77,27 +77,27 @@
 #include "../internal.h"
 
 
-int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
+int ECCDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
                      const EC_KEY *priv_key,
                      void *(*kdf)(const void *in, size_t inlen, void *out,
                                   size_t *outlen)) {
-  const BIGNUM *const priv = EC_KEY_get0_private_key(priv_key);
+  const BIGNUM *const priv = ECC_KEY_get0_private_key(priv_key);
   if (priv == NULL) {
     OPENSSL_PUT_ERROR(ECDH, ECDH_R_NO_PRIVATE_VALUE);
     return -1;
   }
 
-  BN_CTX *ctx = BN_CTX_new();
+  BN_CTX *ctx = BNY_CTX_new();
   if (ctx == NULL) {
     return -1;
   }
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
 
   int ret = -1;
   size_t buflen = 0;
   uint8_t *buf = NULL;
 
-  const EC_GROUP *const group = EC_KEY_get0_group(priv_key);
+  const EC_GROUP *const group = ECC_KEY_get0_group(priv_key);
   EC_POINT *tmp = EC_POINT_new(group);
   if (tmp == NULL) {
     OPENSSL_PUT_ERROR(ECDH, ERR_R_MALLOC_FAILURE);
@@ -109,7 +109,7 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
     goto err;
   }
 
-  BIGNUM *x = BN_CTX_get(ctx);
+  BIGNUM *x = BNY_CTX_get(ctx);
   if (!x) {
     OPENSSL_PUT_ERROR(ECDH, ERR_R_MALLOC_FAILURE);
     goto err;
@@ -127,7 +127,7 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
     goto err;
   }
 
-  if (!BN_bn2bin_padded(buf, buflen, x)) {
+  if (!BNY_bn2bin_padded(buf, buflen, x)) {
     OPENSSL_PUT_ERROR(ECDH, ERR_R_INTERNAL_ERROR);
     goto err;
   }
@@ -155,7 +155,7 @@ int ECDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
 err:
   OPENSSL_free(buf);
   EC_POINT_free(tmp);
-  BN_CTX_end(ctx);
-  BN_CTX_free(ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(ctx);
   return ret;
 }

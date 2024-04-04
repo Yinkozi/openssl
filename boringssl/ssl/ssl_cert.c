@@ -848,9 +848,9 @@ int ssl_check_leaf_certificate(SSL_HANDSHAKE *hs, EVVP_PKEY *pkey,
     /* Check the key's group and point format are acceptable. */
     uint16_t group_id;
     if (!ssl_nid_to_group_id(
-            &group_id, EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key))) ||
+            &group_id, EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key))) ||
         !tls1_check_group_id(ssl, group_id) ||
-        EC_KEY_get_conv_form(ec_key) != POINT_CONVERSION_UNCOMPRESSED) {
+        ECC_KEY_get_conv_form(ec_key) != POINT_CONVERSION_UNCOMPRESSED) {
       OPENSSL_PUT_ERROR(SSL, SSL_R_BAD_ECC_CERT);
       return 0;
     }

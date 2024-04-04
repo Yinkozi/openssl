@@ -127,10 +127,10 @@ static int8_t *compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len) {
     goto err;
   }
 
-  len = BN_num_bits(scalar);
+  len = BNY_num_bits(scalar);
   /* The modified wNAF may be one digit longer than binary representation
    * (*ret_len will be set to the actual length, i.e. at most
-   * BN_num_bits(scalar) + 1). */
+   * BNY_num_bits(scalar) + 1). */
   r = OPENSSL_malloc(len + 1);
   if (r == NULL) {
     OPENSSL_PUT_ERROR(EC, ERR_R_MALLOC_FAILURE);
@@ -258,7 +258,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
   int ret = 0;
 
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       goto err;
     }
@@ -305,7 +305,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
   for (i = 0; i < total_num; i++) {
     size_t bits;
 
-    bits = i < num ? BN_num_bits(scalars[i]) : BN_num_bits(g_scalar);
+    bits = i < num ? BNY_num_bits(scalars[i]) : BNY_num_bits(g_scalar);
     wsize[i] = window_bits_for_scalar_size(bits);
     num_val += (size_t)1 << (wsize[i] - 1);
     wNAF[i] =
@@ -435,7 +435,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
   ret = 1;
 
 err:
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   EC_POINT_free(tmp);
   OPENSSL_free(wsize);
   OPENSSL_free(wNAF_len);

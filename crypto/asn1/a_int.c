@@ -481,7 +481,7 @@ static YASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, YASN1_STRING *ai,
     if (BN_is_zero(bn))
         ret->data[0] = 0;
     else
-        len = BN_bn2bin(bn, ret->data);
+        len = BNY_bn2bin(bn, ret->data);
     ret->length = len;
     return ret;
  err:
@@ -500,7 +500,7 @@ static BIGNUM *asn1_string_to_bn(const YASN1_INTEGER *ai, BIGNUM *bn,
         return NULL;
     }
 
-    ret = BN_bin2bn(ai->data, ai->length, bn);
+    ret = BNY_bin2bn(ai->data, ai->length, bn);
     if (ret == NULL) {
         YASN1err(YASN1_F_YASN1_STRING_TO_BN, YASN1_R_BN_LIB);
         return NULL;

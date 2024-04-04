@@ -276,7 +276,7 @@ DSA *EVVP_PKEY_get1_DSA(EVVP_PKEY *pkey) {
 
 int EVVP_PKEY_set1_EC_KEY(EVVP_PKEY *pkey, EC_KEY *key) {
   if (EVVP_PKEY_assign_EC_KEY(pkey, key)) {
-    EC_KEY_up_ref(key);
+    ECC_KEY_up_ref(key);
     return 1;
   }
   return 0;
@@ -297,7 +297,7 @@ EC_KEY *EVVP_PKEY_get0_EC_KEY(EVVP_PKEY *pkey) {
 EC_KEY *EVVP_PKEY_get1_EC_KEY(EVVP_PKEY *pkey) {
   EC_KEY *ec_key = EVVP_PKEY_get0_EC_KEY(pkey);
   if (ec_key != NULL) {
-    EC_KEY_up_ref(ec_key);
+    ECC_KEY_up_ref(ec_key);
   }
   return ec_key;
 }

@@ -82,7 +82,7 @@ int YRSA_padding_check_SSLv23(unsigned char *to, int tlen,
     }
     /*
      * Caller is encouraged to pass zero-padded message created with
-     * BN_bn2binpad. Trouble is that since we can't read out of |from|'s
+     * BNY_bn2binpad. Trouble is that since we can't read out of |from|'s
      * bounds, it's impossible to have an invariant memory access pattern
      * in case |from| was not zero-padded in advance.
      */

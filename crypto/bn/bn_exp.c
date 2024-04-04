@@ -59,18 +59,18 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         return 0;
     }
 
-    BN_CTX_start(ctx);
-    rr = ((r == a) || (r == p)) ? BN_CTX_get(ctx) : r;
-    v = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    rr = ((r == a) || (r == p)) ? BNY_CTX_get(ctx) : r;
+    v = BNY_CTX_get(ctx);
     if (rr == NULL || v == NULL)
         goto err;
 
-    if (BN_copy(v, a) == NULL)
+    if (BNY_copy(v, a) == NULL)
         goto err;
-    bits = BN_num_bits(p);
+    bits = BNY_num_bits(p);
 
     if (BN_is_odd(p)) {
-        if (BN_copy(rr, a) == NULL)
+        if (BNY_copy(rr, a) == NULL)
             goto err;
     } else {
         if (!BN_one(rr))
@@ -85,12 +85,12 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
                 goto err;
         }
     }
-    if (r != rr && BN_copy(r, rr) == NULL)
+    if (r != rr && BNY_copy(r, rr) == NULL)
         goto err;
 
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(r);
     return ret;
 }
@@ -185,7 +185,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         return 0;
     }
 
-    bits = BN_num_bits(p);
+    bits = BNY_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
         if (BN_abs_is_word(m, 1)) {
@@ -199,15 +199,15 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
 
     BN_RECP_CTX_init(&recp);
 
-    BN_CTX_start(ctx);
-    aa = BN_CTX_get(ctx);
-    val[0] = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    aa = BNY_CTX_get(ctx);
+    val[0] = BNY_CTX_get(ctx);
     if (val[0] == NULL)
         goto err;
 
     if (m->neg) {
         /* ignore sign of 'm' */
-        if (!BN_copy(aa, m))
+        if (!BNY_copy(aa, m))
             goto err;
         aa->neg = 0;
         if (BN_RECP_CTX_set(&recp, aa, ctx) <= 0)
@@ -231,7 +231,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+            if (((val[i] = BNY_CTX_get(ctx)) == NULL) ||
                 !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx))
                 goto err;
         }
@@ -297,7 +297,7 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     }
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     BN_RECP_CTX_free(&recp);
     bn_check_top(r);
     return ret;
@@ -330,7 +330,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         return BNY_mod_exp_mont_consttime(rr, a, p, m, ctx, in_mont);
     }
 
-    bits = BN_num_bits(p);
+    bits = BNY_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
         if (BN_abs_is_word(m, 1)) {
@@ -342,10 +342,10 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         return ret;
     }
 
-    BN_CTX_start(ctx);
-    d = BN_CTX_get(ctx);
-    r = BN_CTX_get(ctx);
-    val[0] = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    d = BNY_CTX_get(ctx);
+    r = BNY_CTX_get(ctx);
+    val[0] = BNY_CTX_get(ctx);
     if (val[0] == NULL)
         goto err;
 
@@ -377,7 +377,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+            if (((val[i] = BNY_CTX_get(ctx)) == NULL) ||
                 !bn_mul_mont_fixed_top(val[i], val[i - 1], d, mont, ctx))
                 goto err;
         }
@@ -403,7 +403,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         r->flags |= BN_FLG_FIXED_TOP;
     } else
 #endif
-    if (!bn_to_mont_fixed_top(r, BN_value_one(), mont, ctx))
+    if (!bn_to_mont_fixed_top(r, BNY_value_one(), mont, ctx))
         goto err;
     for (;;) {
         if (BN_is_bit_set(p, wstart) == 0) {
@@ -476,7 +476,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
  err:
     if (in_mont == NULL)
         BN_MONT_CTX_free(mont);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(rr);
     return ret;
 }
@@ -635,7 +635,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     /*
-     * Use all bits stored in |p|, rather than |BN_num_bits|, so we do not leak
+     * Use all bits stored in |p|, rather than |BNY_num_bits|, so we do not leak
      * whether the top bits are zero.
      */
     bits = p->top * BN_BITS2;
@@ -650,7 +650,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         return ret;
     }
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     /*
      * Allocate a montgomery context if it was not supplied by the caller. If
@@ -666,7 +666,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     if (a->neg || BNY_ucmp(a, m) >= 0) {
-        BIGNUM *reduced = BN_CTX_get(ctx);
+        BIGNUM *reduced = BNY_CTX_get(ctx);
         if (reduced == NULL
             || !BNY_nnmod(reduced, a, m, ctx)) {
             goto err;
@@ -680,7 +680,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
      * YRSAZ exponentiation. For further information see
      * crypto/bn/rsaz_exp.c and accompanying assembly modules.
      */
-    if ((16 == a->top) && (16 == p->top) && (BN_num_bits(m) == 1024)
+    if ((16 == a->top) && (16 == p->top) && (BNY_num_bits(m) == 1024)
         && rsaz_avx2_eligible()) {
         if (NULL == bn_wexpand(rr, 16))
             goto err;
@@ -691,7 +691,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         bn_correct_top(rr);
         ret = 1;
         goto err;
-    } else if ((8 == a->top) && (8 == p->top) && (BN_num_bits(m) == 512)) {
+    } else if ((8 == a->top) && (8 == p->top) && (BNY_num_bits(m) == 512)) {
         if (NULL == bn_wexpand(rr, 8))
             goto err;
         YRSAZ_512_mod_exp(rr->d, a->d, p->d, m->d, mont->n0[0], mont->RR.d);
@@ -767,7 +767,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         tmp.top = top;
     } else
 #endif
-    if (!bn_to_mont_fixed_top(&tmp, BN_value_one(), mont, ctx))
+    if (!bn_to_mont_fixed_top(&tmp, BNY_value_one(), mont, ctx))
         goto err;
 
     /* prepare a^1 in Montgomery domain */
@@ -1151,7 +1151,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
         OPENSSL_cleanse(powerbuf, powerbufLen);
         OPENSSL_free(powerbufFree);
     }
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -1170,7 +1170,7 @@ int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
                         (BN_mod(t, r, m, ctx) && (swap_tmp = r, r = t, t = swap_tmp, 1))))
     /*
      * BN_MOD_MUL_WORD is only used with 'w' large, so the BNY_ucmp test is
-     * probably more overhead than always using BN_mod (which uses BN_copy if
+     * probably more overhead than always using BN_mod (which uses BNY_copy if
      * a similar test returns true).
      */
     /*
@@ -1198,7 +1198,7 @@ int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
     if (m->top == 1)
         a %= m->d[0];           /* make sure that 'a' is reduced */
 
-    bits = BN_num_bits(p);
+    bits = BNY_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
         if (BN_abs_is_word(m, 1)) {
@@ -1215,9 +1215,9 @@ int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
         return ret;
     }
 
-    BN_CTX_start(ctx);
-    r = BN_CTX_get(ctx);
-    t = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    r = BNY_CTX_get(ctx);
+    t = BNY_CTX_get(ctx);
     if (t == NULL)
         goto err;
 
@@ -1297,7 +1297,7 @@ int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
  err:
     if (in_mont == NULL)
         BN_MONT_CTX_free(mont);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(rr);
     return ret;
 }
@@ -1320,7 +1320,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         return 0;
     }
 
-    bits = BN_num_bits(p);
+    bits = BNY_num_bits(p);
     if (bits == 0) {
         /* x**0 mod 1, or x**0 mod -1 is still zero. */
         if (BN_abs_is_word(m, 1)) {
@@ -1332,9 +1332,9 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
         return ret;
     }
 
-    BN_CTX_start(ctx);
-    d = BN_CTX_get(ctx);
-    val[0] = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    d = BNY_CTX_get(ctx);
+    val[0] = BNY_CTX_get(ctx);
     if (val[0] == NULL)
         goto err;
 
@@ -1352,7 +1352,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
             goto err;           /* 2 */
         j = 1 << (window - 1);
         for (i = 1; i < j; i++) {
-            if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+            if (((val[i] = BNY_CTX_get(ctx)) == NULL) ||
                 !BN_mod_mul(val[i], val[i - 1], d, m, ctx))
                 goto err;
         }
@@ -1418,7 +1418,7 @@ int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     }
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(r);
     return ret;
 }

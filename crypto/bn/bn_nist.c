@@ -356,7 +356,7 @@ int BN_nist_mod_192(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         BN_zero(r);
         return 1;
     } else if (i > 0)
-        return (r == a) ? 1 : (BN_copy(r, a) != NULL);
+        return (r == a) ? 1 : (BNY_copy(r, a) != NULL);
 
     if (r != a) {
         if (!bn_wexpand(r, BN_NIST_192_TOP))
@@ -501,7 +501,7 @@ int BN_nist_mod_224(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         BN_zero(r);
         return 1;
     } else if (i > 0)
-        return (r == a) ? 1 : (BN_copy(r, a) != NULL);
+        return (r == a) ? 1 : (BNY_copy(r, a) != NULL);
 
     if (r != a) {
         if (!bn_wexpand(r, BN_NIST_224_TOP))
@@ -682,7 +682,7 @@ int BN_nist_mod_256(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         BN_zero(r);
         return 1;
     } else if (i > 0)
-        return (r == a) ? 1 : (BN_copy(r, a) != NULL);
+        return (r == a) ? 1 : (BNY_copy(r, a) != NULL);
 
     if (r != a) {
         if (!bn_wexpand(r, BN_NIST_256_TOP))
@@ -928,7 +928,7 @@ int BN_nist_mod_384(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         BN_zero(r);
         return 1;
     } else if (i > 0)
-        return (r == a) ? 1 : (BN_copy(r, a) != NULL);
+        return (r == a) ? 1 : (BNY_copy(r, a) != NULL);
 
     if (r != a) {
         if (!bn_wexpand(r, BN_NIST_384_TOP))
@@ -1186,7 +1186,7 @@ int BN_nist_mod_521(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         BN_zero(r);
         return 1;
     } else if (i > 0)
-        return (r == a) ? 1 : (BN_copy(r, a) != NULL);
+        return (r == a) ? 1 : (BNY_copy(r, a) != NULL);
 
     if (r != a) {
         if (!bn_wexpand(r, BN_NIST_521_TOP))

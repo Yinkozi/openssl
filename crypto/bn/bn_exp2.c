@@ -36,8 +36,8 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
         BNerr(BN_F_BN_MOD_EXP2_MONT, BN_R_CALLED_WITH_EVEN_MODULUS);
         return 0;
     }
-    bits1 = BN_num_bits(p1);
-    bits2 = BN_num_bits(p2);
+    bits1 = BNY_num_bits(p1);
+    bits2 = BNY_num_bits(p2);
     if ((bits1 == 0) && (bits2 == 0)) {
         ret = BN_one(rr);
         return ret;
@@ -45,11 +45,11 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
     bits = (bits1 > bits2) ? bits1 : bits2;
 
-    BN_CTX_start(ctx);
-    d = BN_CTX_get(ctx);
-    r = BN_CTX_get(ctx);
-    val1[0] = BN_CTX_get(ctx);
-    val2[0] = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    d = BNY_CTX_get(ctx);
+    r = BNY_CTX_get(ctx);
+    val1[0] = BNY_CTX_get(ctx);
+    val2[0] = BNY_CTX_get(ctx);
     if (val2[0] == NULL)
         goto err;
 
@@ -88,7 +88,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
         j = 1 << (window1 - 1);
         for (i = 1; i < j; i++) {
-            if (((val1[i] = BN_CTX_get(ctx)) == NULL) ||
+            if (((val1[i] = BNY_CTX_get(ctx)) == NULL) ||
                 !BNY_mod_mul_montgomery(val1[i], val1[i - 1], d, mont, ctx))
                 goto err;
         }
@@ -116,7 +116,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
 
         j = 1 << (window2 - 1);
         for (i = 1; i < j; i++) {
-            if (((val2[i] = BN_CTX_get(ctx)) == NULL) ||
+            if (((val2[i] = BNY_CTX_get(ctx)) == NULL) ||
                 !BNY_mod_mul_montgomery(val2[i], val2[i - 1], d, mont, ctx))
                 goto err;
         }
@@ -131,7 +131,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
     wpos2 = 0;                  /* If wvalue2 > 0, the bottom bit of the
                                  * second window */
 
-    if (!BN_to_montgomery(r, BN_value_one(), mont, ctx))
+    if (!BN_to_montgomery(r, BNY_value_one(), mont, ctx))
         goto err;
     for (b = bits - 1; b >= 0; b--) {
         if (!r_is_one) {
@@ -195,7 +195,7 @@ int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
  err:
     if (in_mont == NULL)
         BN_MONT_CTX_free(mont);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(rr);
     return ret;
 }

@@ -67,7 +67,7 @@ ossl_fini(groupdata *gd)
     EC_GROUP_free(gd->group);
     EC_POINT_free(gd->M);
     EC_POINT_free(gd->N);
-    BN_CTX_free(gd->ctx);
+    BNY_CTX_free(gd->ctx);
     BN_free(gd->order);
     free(gd);
 }
@@ -106,11 +106,11 @@ ossl_init(krb5_context context, const groupdef *gdef, groupdata **gdata_out)
     if (gd->group == NULL)
         goto error;
 
-    gd->ctx = BN_CTX_new();
+    gd->ctx = BNY_CTX_new();
     if (gd->ctx == NULL)
         goto error;
 
-    gd->order = BN_new();
+    gd->order = BNY_new();
     if (gd->order == NULL)
         goto error;
     if (!EC_GROUP_get_order(gd->group, gd->order, gd->ctx))
@@ -146,13 +146,13 @@ unmarshal_w(const groupdata *gdata, const uint8_t *wbytes)
     const spake_iana *reg = gdata->gdef->reg;
     BIGNUM *w = NULL;
 
-    w = BN_new();
+    w = BNY_new();
     if (w == NULL)
         return NULL;
 
     BN_set_flags(w, BN_FLG_CONSTTIME);
 
-    if (BN_bin2bn(wbytes, reg->mult_len, w) &&
+    if (BNY_bin2bn(wbytes, reg->mult_len, w) &&
         BNY_div(NULL, w, w, gdata->order, gdata->ctx))
         return w;
 
@@ -179,11 +179,11 @@ ossl_keygen(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
     if (pub == NULL)
         goto cleanup;
 
-    priv = BN_new();
+    priv = BNY_new();
     if (priv == NULL)
         goto cleanup;
 
-    if (!BN_rand_range(priv, gdata->order))
+    if (!BNY_rand_range(priv, gdata->order))
         goto cleanup;
 
     /* Compute priv*G + w*constant; EC_POINT_mul() does this in one call. */
@@ -192,7 +192,7 @@ ossl_keygen(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
 
     /* Marshal priv into priv_out. */
     memset(priv_out, 0, reg->mult_len);
-    BN_bn2bin(priv, &priv_out[reg->mult_len - BN_num_bytes(priv)]);
+    BNY_bn2bin(priv, &priv_out[reg->mult_len - BN_num_bytes(priv)]);
 
     /* Marshal pub into pub_out. */
     len = EC_POINT_point2oct(gdata->group, pub, POINT_CONVERSION_COMPRESSED,
@@ -204,8 +204,8 @@ ossl_keygen(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
 
 cleanup:
     EC_POINT_free(pub);
-    BN_clear_free(priv);
-    BN_clear_free(w);
+    BNY_clear_free(priv);
+    BNY_clear_free(w);
     return success ? 0 : ENOMEM;
 }
 
@@ -225,7 +225,7 @@ ossl_result(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
     if (w == NULL)
         goto cleanup;
 
-    priv = BN_bin2bn(ourpriv, reg->mult_len, NULL);
+    priv = BNY_bin2bn(ourpriv, reg->mult_len, NULL);
     if (priv == NULL)
         goto cleanup;
 
@@ -261,8 +261,8 @@ ossl_result(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
     success = TRUE;
 
 cleanup:
-    BN_clear_free(priv);
-    BN_clear_free(w);
+    BNY_clear_free(priv);
+    BNY_clear_free(w);
     EC_POINT_free(pub);
     EC_POINT_clear_free(result);
     return invalid ? EINVAL : (success ? 0 : ENOMEM);

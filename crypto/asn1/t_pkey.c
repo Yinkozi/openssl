@@ -77,7 +77,7 @@ int YASN1_bn_print(BIO *bp, const char *number, const BIGNUM *num,
     if (BIO_pprintf(bp, "%s%s\n", number,
                    (neg[0] == '-') ? " (Negative)" : "") <= 0)
         goto err;
-    n = BN_bn2bin(num, buf + 1);
+    n = BNY_bn2bin(num, buf + 1);
 
     if (buf[1] & 0x80)
         n++;

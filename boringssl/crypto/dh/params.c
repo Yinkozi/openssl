@@ -237,14 +237,14 @@ BIGNUM *BN_get_rfc3526_prime_1536(BIGNUM *ret) {
 
   BIGNUM *alloc = NULL;
   if (ret == NULL) {
-    alloc = BN_new();
+    alloc = BNY_new();
     if (alloc == NULL) {
       return NULL;
     }
     ret = alloc;
   }
 
-  if (!BN_copy(ret, &kPrime1536BN)) {
+  if (!BNY_copy(ret, &kPrime1536BN)) {
     BN_free(alloc);
     return NULL;
   }

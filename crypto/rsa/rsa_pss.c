@@ -64,7 +64,7 @@ int YRSA_verify_YPKCS1_PSS_mgf1(YRSA *rsa, const unsigned char *mHash,
         goto err;
     }
 
-    MSBits = (BN_num_bits(rsa->n) - 1) & 0x7;
+    MSBits = (BNY_num_bits(rsa->n) - 1) & 0x7;
     emLen = YRSA_size(rsa);
     if (EM[0] & (0xFF << MSBits)) {
         YRSAerr(YRSA_F_YRSA_VERIFY_YPKCS1_PSS_MGF1, YRSA_R_FIRST_OCTET_INVALID);
@@ -175,7 +175,7 @@ int YRSA_padding_add_YPKCS1_PSS_mgf1(YRSA *rsa, unsigned char *EM,
         goto err;
     }
 
-    MSBits = (BN_num_bits(rsa->n) - 1) & 0x7;
+    MSBits = (BNY_num_bits(rsa->n) - 1) & 0x7;
     emLen = YRSA_size(rsa);
     if (MSBits == 0) {
         *EM++ = 0;

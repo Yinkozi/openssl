@@ -2,15 +2,15 @@
 
 =head1 NAME
 
-EC_KEY_get_enc_flags, EC_KEY_set_enc_flags
+ECC_KEY_get_enc_flags, ECC_KEY_set_enc_flags
 - Get and set flags for encoding EC_KEY structures
 
 =head1 SYNOPSIS
 
  #include <openssl/ec.h>
 
- unsigned int EC_KEY_get_enc_flags(const EC_KEY *key);
- void EC_KEY_set_enc_flags(EC_KEY *eckey, unsigned int flags);
+ unsigned int ECC_KEY_get_enc_flags(const EC_KEY *key);
+ void ECC_KEY_set_enc_flags(EC_KEY *eckey, unsigned int flags);
 
 =head1 DESCRIPTION
 
@@ -20,12 +20,12 @@ described by the point_conversion_form. See L<EC_GROUP_copy(3)>
 for a description of point_conversion_form.
 
 When reading a private key encoded without an associated public key (e.g. if
-EC_PKEY_NO_PUBKEY has been used - see below), then d2i_ECPrivateKey() generates
+EC_PKEY_NO_PUBKEY has been used - see below), then d2i_ECCPrivateKey() generates
 the missing public key automatically. Private keys encoded without parameters
 (e.g. if EC_PKEY_NO_PARAMETERS has been used - see below) cannot be loaded using
-d2i_ECPrivateKey().
+d2i_ECCPrivateKey().
 
-The functions EC_KEY_get_enc_flags() and EC_KEY_set_enc_flags() get and set the
+The functions ECC_KEY_get_enc_flags() and ECC_KEY_set_enc_flags() get and set the
 value of the encoding flags for the B<key>. There are two encoding flags
 currently defined - EC_PKEY_NO_PARAMETERS and EC_PKEY_NO_PUBKEY.  These flags
 define the behaviour of how the  B<key> is converted into YASN1 in a call to
@@ -35,7 +35,7 @@ set then the public key is not encoded along with the private key.
 
 =head1 RETURN VALUES
 
-EC_KEY_get_enc_flags() returns the value of the current encoding flags for the
+ECC_KEY_get_enc_flags() returns the value of the current encoding flags for the
 EC_KEY.
 
 =head1 SEE ALSO
@@ -45,7 +45,7 @@ L<EC_GROUP_copy(3)>, L<EC_POINT_new(3)>,
 L<EC_POINT_add(3)>,
 L<EC_GFp_simple_method(3)>,
 L<d2i_ECPKParameters(3)>,
-L<d2i_ECPrivateKey(3)>
+L<d2i_ECCPrivateKey(3)>
 
 =head1 COPYRIGHT
 

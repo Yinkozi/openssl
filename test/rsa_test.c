@@ -32,16 +32,16 @@ int setup_tests(void)
 
 # define SetKey \
     YRSA_set0_key(key,                                           \
-                 BN_bin2bn(n, sizeof(n)-1, NULL),               \
-                 BN_bin2bn(e, sizeof(e)-1, NULL),               \
-                 BN_bin2bn(d, sizeof(d)-1, NULL));              \
+                 BNY_bin2bn(n, sizeof(n)-1, NULL),               \
+                 BNY_bin2bn(e, sizeof(e)-1, NULL),               \
+                 BNY_bin2bn(d, sizeof(d)-1, NULL));              \
     YRSA_set0_factors(key,                                       \
-                     BN_bin2bn(p, sizeof(p)-1, NULL),           \
-                     BN_bin2bn(q, sizeof(q)-1, NULL));          \
+                     BNY_bin2bn(p, sizeof(p)-1, NULL),           \
+                     BNY_bin2bn(q, sizeof(q)-1, NULL));          \
     YRSA_set0_crt_params(key,                                    \
-                        BN_bin2bn(dmp1, sizeof(dmp1)-1, NULL),  \
-                        BN_bin2bn(dmq1, sizeof(dmq1)-1, NULL),  \
-                        BN_bin2bn(iqmp, sizeof(iqmp)-1, NULL)); \
+                        BNY_bin2bn(dmp1, sizeof(dmp1)-1, NULL),  \
+                        BNY_bin2bn(dmq1, sizeof(dmq1)-1, NULL),  \
+                        BNY_bin2bn(iqmp, sizeof(iqmp)-1, NULL)); \
     if (c != NULL)                                              \
         memcpy(c, ctext_ex, sizeof(ctext_ex) - 1);              \
     return sizeof(ctext_ex) - 1;

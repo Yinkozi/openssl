@@ -20,7 +20,7 @@ int ossl_ecdsa_sign(int type, const unsigned char *dgst, int dlen,
 {
     ECDSA_SIG *s;
 
-    s = ECDSA_do_sign_ex(dgst, dlen, kinv, r, eckey);
+    s = ECCDSA_do_sign_ex(dgst, dlen, kinv, r, eckey);
     if (s == NULL) {
         *siglen = 0;
         return 0;
@@ -43,30 +43,30 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     int order_bits;
     const BIGNUM *priv_key;
 
-    if (eckey == NULL || (group = EC_KEY_get0_group(eckey)) == NULL) {
+    if (eckey == NULL || (group = ECC_KEY_get0_group(eckey)) == NULL) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
-    if ((priv_key = EC_KEY_get0_private_key(eckey)) == NULL) {
+    if ((priv_key = ECC_KEY_get0_private_key(eckey)) == NULL) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, EC_R_MISSING_PRIVATE_KEY);
         return 0;
     }
 
-    if (!EC_KEY_can_sign(eckey)) {
+    if (!ECC_KEY_can_sign(eckey)) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, EC_R_CURVE_DOES_NOT_SUPPORT_SIGNING);
         return 0;
     }
 
     if ((ctx = ctx_in) == NULL) {
-        if ((ctx = BN_CTX_new()) == NULL) {
+        if ((ctx = BNY_CTX_new()) == NULL) {
             ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_MALLOC_FAILURE);
             return 0;
         }
     }
 
-    k = BN_new();               /* this value is later returned in *kinvp */
-    r = BN_new();               /* this value is later returned in *rp */
-    X = BN_new();
+    k = BNY_new();               /* this value is later returned in *kinvp */
+    r = BNY_new();               /* this value is later returned in *rp */
+    X = BNY_new();
     if (k == NULL || r == NULL || X == NULL) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -78,7 +78,7 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     order = EC_GROUP_get0_order(group);
 
     /* Preallocate space */
-    order_bits = BN_num_bits(order);
+    order_bits = BNY_num_bits(order);
     if (!BN_set_bit(k, order_bits)
         || !BN_set_bit(r, order_bits)
         || !BN_set_bit(X, order_bits))
@@ -95,7 +95,7 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
                     goto err;
                 }
             } else {
-                if (!BN_priv_rand_range(k, order)) {
+                if (!BNY_priv_rand_range(k, order)) {
                     ECerr(EC_F_ECDSA_SIGN_SETUP,
                           EC_R_RANDOM_NUMBER_GENERATION_FAILED);
                     goto err;
@@ -127,21 +127,21 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     }
 
     /* clear old values if necessary */
-    BN_clear_free(*rp);
-    BN_clear_free(*kinvp);
+    BNY_clear_free(*rp);
+    BNY_clear_free(*kinvp);
     /* save the pre-computed values  */
     *rp = r;
     *kinvp = k;
     ret = 1;
  err:
     if (!ret) {
-        BN_clear_free(k);
-        BN_clear_free(r);
+        BNY_clear_free(k);
+        BNY_clear_free(r);
     }
     if (ctx != ctx_in)
-        BN_CTX_free(ctx);
+        BNY_CTX_free(ctx);
     EC_POINT_free(tmp_point);
-    BN_clear_free(X);
+    BNY_clear_free(X);
     return ret;
 }
 
@@ -163,8 +163,8 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
     ECDSA_SIG *ret;
     const BIGNUM *priv_key;
 
-    group = EC_KEY_get0_group(eckey);
-    priv_key = EC_KEY_get0_private_key(eckey);
+    group = ECC_KEY_get0_group(eckey);
+    priv_key = ECC_KEY_get0_private_key(eckey);
 
     if (group == NULL) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_PASSED_NULL_PARAMETER);
@@ -175,38 +175,38 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
         return NULL;
     }
 
-    if (!EC_KEY_can_sign(eckey)) {
+    if (!ECC_KEY_can_sign(eckey)) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, EC_R_CURVE_DOES_NOT_SUPPORT_SIGNING);
         return NULL;
     }
 
-    ret = ECDSA_SIG_new();
+    ret = ECCDSA_SIG_new();
     if (ret == NULL) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
-    ret->r = BN_new();
-    ret->s = BN_new();
+    ret->r = BNY_new();
+    ret->s = BNY_new();
     if (ret->r == NULL || ret->s == NULL) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     s = ret->s;
 
-    if ((ctx = BN_CTX_new()) == NULL
-        || (m = BN_new()) == NULL) {
+    if ((ctx = BNY_CTX_new()) == NULL
+        || (m = BNY_new()) == NULL) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
     order = EC_GROUP_get0_order(group);
-    i = BN_num_bits(order);
+    i = BNY_num_bits(order);
     /*
      * Need to truncate digest if it is too long: first truncate whole bytes.
      */
     if (8 * dgst_len > i)
         dgst_len = (i + 7) / 8;
-    if (!BN_bin2bn(dgst, dgst_len, m)) {
+    if (!BNY_bin2bn(dgst, dgst_len, m)) {
         ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_BN_LIB);
         goto err;
     }
@@ -224,7 +224,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
             ckinv = kinv;
         } else {
             ckinv = in_kinv;
-            if (BN_copy(ret->r, in_r) == NULL) {
+            if (BNY_copy(ret->r, in_r) == NULL) {
                 ECerr(EC_F_OSSL_ECDSA_SIGN_SIG, ERR_R_MALLOC_FAILURE);
                 goto err;
             }
@@ -277,9 +277,9 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
         ECDSA_SIG_free(ret);
         ret = NULL;
     }
-    BN_CTX_free(ctx);
-    BN_clear_free(m);
-    BN_clear_free(kinv);
+    BNY_CTX_free(ctx);
+    BNY_clear_free(m);
+    BNY_clear_free(kinv);
     return ret;
 }
 
@@ -298,7 +298,7 @@ int ossl_ecdsa_verify(int type, const unsigned char *dgst, int dgst_len,
     int derlen = -1;
     int ret = -1;
 
-    s = ECDSA_SIG_new();
+    s = ECCDSA_SIG_new();
     if (s == NULL)
         return ret;
     if (d2i_ECDSA_SIG(&s, &p, sig_len) == NULL)
@@ -307,7 +307,7 @@ int ossl_ecdsa_verify(int type, const unsigned char *dgst, int dgst_len,
     derlen = i2d_ECDSA_SIG(s, &der);
     if (derlen != sig_len || memcmp(sigbuf, der, derlen) != 0)
         goto err;
-    ret = ECDSA_do_verifyy(dgst, dgst_len, s, eckey);
+    ret = ECCDSA_do_verifyy(dgst, dgst_len, s, eckey);
  err:
     OPENSSL_free(der);
     ECDSA_SIG_free(s);
@@ -326,27 +326,27 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
     const EC_POINT *pub_key;
 
     /* check input values */
-    if (eckey == NULL || (group = EC_KEY_get0_group(eckey)) == NULL ||
-        (pub_key = EC_KEY_get0_public_key(eckey)) == NULL || sig == NULL) {
+    if (eckey == NULL || (group = ECC_KEY_get0_group(eckey)) == NULL ||
+        (pub_key = ECC_KEY_get0_public_key(eckey)) == NULL || sig == NULL) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, EC_R_MISSING_PARAMETERS);
         return -1;
     }
 
-    if (!EC_KEY_can_sign(eckey)) {
+    if (!ECC_KEY_can_sign(eckey)) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, EC_R_CURVE_DOES_NOT_SUPPORT_SIGNING);
         return -1;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_MALLOC_FAILURE);
         return -1;
     }
-    BN_CTX_start(ctx);
-    u1 = BN_CTX_get(ctx);
-    u2 = BN_CTX_get(ctx);
-    m = BN_CTX_get(ctx);
-    X = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    u1 = BNY_CTX_get(ctx);
+    u2 = BNY_CTX_get(ctx);
+    m = BNY_CTX_get(ctx);
+    X = BNY_CTX_get(ctx);
     if (X == NULL) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_BN_LIB);
         goto err;
@@ -371,13 +371,13 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
     /* digest -> m */
-    i = BN_num_bits(order);
+    i = BNY_num_bits(order);
     /*
      * Need to truncate digest if it is too long: first truncate whole bytes.
      */
     if (8 * dgst_len > i)
         dgst_len = (i + 7) / 8;
-    if (!BN_bin2bn(dgst, dgst_len, m)) {
+    if (!BNY_bin2bn(dgst, dgst_len, m)) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_BN_LIB);
         goto err;
     }
@@ -418,8 +418,8 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
     /*  if the signature is correct u1 is equal to sig->r */
     ret = (BNY_ucmp(u1, sig->r) == 0);
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     EC_POINT_free(point);
     return ret;
 }

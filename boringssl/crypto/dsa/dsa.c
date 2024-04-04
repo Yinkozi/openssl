@@ -112,13 +112,13 @@ void DSA_free(DSA *dsa) {
 
   CRYPTO_free_ex_data(&g_ex_data_class, dsa, &dsa->ex_data);
 
-  BN_clear_free(dsa->p);
-  BN_clear_free(dsa->q);
-  BN_clear_free(dsa->g);
-  BN_clear_free(dsa->pub_key);
-  BN_clear_free(dsa->priv_key);
-  BN_clear_free(dsa->kinv);
-  BN_clear_free(dsa->r);
+  BNY_clear_free(dsa->p);
+  BNY_clear_free(dsa->q);
+  BNY_clear_free(dsa->g);
+  BNY_clear_free(dsa->pub_key);
+  BNY_clear_free(dsa->priv_key);
+  BNY_clear_free(dsa->kinv);
+  BNY_clear_free(dsa->r);
   BN_MONT_CTX_free(dsa->method_mont_p);
   BN_MONT_CTX_free(dsa->method_mont_q);
   CRYPTO_MUTEX_cleanup(&dsa->method_mont_lock);
@@ -192,27 +192,27 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
     OPENSSL_memcpy(seed, seed_in, seed_len);
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
 
   mont = BN_MONT_CTX_new();
   if (mont == NULL) {
     goto err;
   }
 
-  r0 = BN_CTX_get(ctx);
-  g = BN_CTX_get(ctx);
-  W = BN_CTX_get(ctx);
-  q = BN_CTX_get(ctx);
-  X = BN_CTX_get(ctx);
-  c = BN_CTX_get(ctx);
-  p = BN_CTX_get(ctx);
-  test = BN_CTX_get(ctx);
+  r0 = BNY_CTX_get(ctx);
+  g = BNY_CTX_get(ctx);
+  W = BNY_CTX_get(ctx);
+  q = BNY_CTX_get(ctx);
+  X = BNY_CTX_get(ctx);
+  c = BNY_CTX_get(ctx);
+  p = BNY_CTX_get(ctx);
+  test = BNY_CTX_get(ctx);
 
-  if (test == NULL || !BN_lshift(test, BN_value_one(), bits - 1)) {
+  if (test == NULL || !BN_lshift(test, BNY_value_one(), bits - 1)) {
     goto err;
   }
 
@@ -255,7 +255,7 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
       /* step 3 */
       md[0] |= 0x80;
       md[qsize - 1] |= 0x01;
-      if (!BN_bin2bn(md, qsize, q)) {
+      if (!BNY_bin2bn(md, qsize, q)) {
         goto err;
       }
 
@@ -304,7 +304,7 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
         }
 
         /* step 8 */
-        if (!BN_bin2bn(md, qsize, r0) ||
+        if (!BNY_bin2bn(md, qsize, r0) ||
             !BN_lshift(r0, r0, (qsize << 3) * k) ||
             !BNY_add(W, W, r0)) {
           goto err;
@@ -313,7 +313,7 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
 
       /* more of step 8 */
       if (!BN_mask_bits(W, bits - 1) ||
-          !BN_copy(X, W) ||
+          !BNY_copy(X, W) ||
           !BNY_add(X, X, test)) {
         goto err;
       }
@@ -321,7 +321,7 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
       /* step 9 */
       if (!BN_lshift1(r0, q) ||
           !BN_mod(c, X, r0, ctx) ||
-          !BNY_sub(r0, c, BN_value_one()) ||
+          !BNY_sub(r0, c, BNY_value_one()) ||
           !BNY_sub(p, X, r0)) {
         goto err;
       }
@@ -355,7 +355,7 @@ end:
 
   /* We now need to generate g */
   /* Set r0=(p-1)/q */
-  if (!BNY_sub(test, p, BN_value_one()) ||
+  if (!BNY_sub(test, p, BNY_value_one()) ||
       !BNY_div(r0, NULL, test, q, ctx)) {
     goto err;
   }
@@ -373,7 +373,7 @@ end:
     if (!BN_is_one(g)) {
       break;
     }
-    if (!BNY_add(test, test, BN_value_one())) {
+    if (!BNY_add(test, test, BNY_value_one())) {
       goto err;
     }
     h++;
@@ -406,8 +406,8 @@ err:
   }
 
   if (ctx) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
 
   BN_MONT_CTX_free(mont);
@@ -435,26 +435,26 @@ int DSA_generate_key(DSA *dsa) {
   BN_CTX *ctx = NULL;
   BIGNUM *pub_key = NULL, *priv_key = NULL;
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
 
   priv_key = dsa->priv_key;
   if (priv_key == NULL) {
-    priv_key = BN_new();
+    priv_key = BNY_new();
     if (priv_key == NULL) {
       goto err;
     }
   }
 
-  if (!BN_rand_range_ex(priv_key, 1, dsa->q)) {
+  if (!BNY_rand_range_ex(priv_key, 1, dsa->q)) {
     goto err;
   }
 
   pub_key = dsa->pub_key;
   if (pub_key == NULL) {
-    pub_key = BN_new();
+    pub_key = BNY_new();
     if (pub_key == NULL) {
       goto err;
     }
@@ -478,7 +478,7 @@ err:
   if (dsa->priv_key == NULL) {
     BN_free(priv_key);
   }
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
 
   return ok;
 }
@@ -521,11 +521,11 @@ DSA_SIG *DSA_do_sign(const uint8_t *digest, size_t digest_len, DSA *dsa) {
     goto err;
   }
 
-  s = BN_new();
+  s = BNY_new();
   if (s == NULL) {
     goto err;
   }
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
@@ -545,12 +545,12 @@ redo:
 
   if (digest_len > BN_num_bytes(dsa->q)) {
     /* if the digest length is greater than the size of q use the
-     * BN_num_bits(dsa->q) leftmost bits of the digest, see
+     * BNY_num_bits(dsa->q) leftmost bits of the digest, see
      * fips 186-3, 4.2 */
     digest_len = BN_num_bytes(dsa->q);
   }
 
-  if (BN_bin2bn(digest, digest_len, &m) == NULL) {
+  if (BNY_bin2bn(digest, digest_len, &m) == NULL) {
     goto err;
   }
 
@@ -592,10 +592,10 @@ err:
     BN_free(r);
     BN_free(s);
   }
-  BN_CTX_free(ctx);
-  BN_clear_free(&m);
-  BN_clear_free(&xr);
-  BN_clear_free(kinv);
+  BNY_CTX_free(ctx);
+  BNY_clear_free(&m);
+  BNY_clear_free(&xr);
+  BNY_clear_free(kinv);
 
   return ret;
 }
@@ -623,14 +623,14 @@ int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
     return 0;
   }
 
-  i = BN_num_bits(dsa->q);
+  i = BNY_num_bits(dsa->q);
   /* fips 186-3 allows only different sizes for q */
   if (i != 160 && i != 224 && i != 256) {
     OPENSSL_PUT_ERROR(DSA, DSA_R_BAD_Q_VALUE);
     return 0;
   }
 
-  if (BN_num_bits(dsa->p) > OPENSSL_DSA_MAX_MODULUS_BITS) {
+  if (BNY_num_bits(dsa->p) > OPENSSL_DSA_MAX_MODULUS_BITS) {
     OPENSSL_PUT_ERROR(DSA, DSA_R_MODULUS_TOO_LARGE);
     return 0;
   }
@@ -639,7 +639,7 @@ int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
   BN_init(&u2);
   BN_init(&t1);
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
@@ -664,12 +664,12 @@ int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
   /* save M in u1 */
   if (digest_len > (i >> 3)) {
     /* if the digest length is greater than the size of q use the
-     * BN_num_bits(dsa->q) leftmost bits of the digest, see
+     * BNY_num_bits(dsa->q) leftmost bits of the digest, see
      * fips 186-3, 4.2 */
     digest_len = (i >> 3);
   }
 
-  if (BN_bin2bn(digest, digest_len, &u1) == NULL) {
+  if (BNY_bin2bn(digest, digest_len, &u1) == NULL) {
     goto err;
   }
 
@@ -694,7 +694,7 @@ int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
     goto err;
   }
 
-  /* BN_copy(&u1,&t1); */
+  /* BNY_copy(&u1,&t1); */
   /* let u1 = u1 mod q */
   if (!BN_mod(&u1, &t1, dsa->q, ctx)) {
     goto err;
@@ -709,7 +709,7 @@ err:
   if (ret != 1) {
     OPENSSL_PUT_ERROR(DSA, ERR_R_BN_LIB);
   }
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   BN_free(&u1);
   BN_free(&u2);
   BN_free(&t1);
@@ -824,19 +824,19 @@ int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUM **out_kinv,
 
   ctx = ctx_in;
   if (ctx == NULL) {
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL) {
       goto err;
     }
   }
 
-  r = BN_new();
+  r = BNY_new();
   if (r == NULL) {
     goto err;
   }
 
   /* Get random k */
-  if (!BN_rand_range_ex(&k, 1, dsa->q)) {
+  if (!BNY_rand_range_ex(&k, 1, dsa->q)) {
     goto err;
   }
 
@@ -850,7 +850,7 @@ int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUM **out_kinv,
   }
 
   /* Compute r = (g^k mod p) mod q */
-  if (!BN_copy(&kq, &k)) {
+  if (!BNY_copy(&kq, &k)) {
     goto err;
   }
 
@@ -863,7 +863,7 @@ int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUM **out_kinv,
   if (!BNY_add(&kq, &kq, dsa->q)) {
     goto err;
   }
-  if (BN_num_bits(&kq) <= BN_num_bits(dsa->q) && !BNY_add(&kq, &kq, dsa->q)) {
+  if (BNY_num_bits(&kq) <= BNY_num_bits(dsa->q) && !BNY_add(&kq, &kq, dsa->q)) {
     goto err;
   }
 
@@ -877,16 +877,16 @@ int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUM **out_kinv,
 
   /* Compute part of 's = inv(k) (m + xr) mod q' using Fermat's Little
    * Theorem. */
-  kinv = BN_new();
+  kinv = BNY_new();
   if (kinv == NULL ||
       !bn_mod_inverse_prime(kinv, &k, dsa->q, ctx, dsa->method_mont_q)) {
     goto err;
   }
 
-  BN_clear_free(*out_kinv);
+  BNY_clear_free(*out_kinv);
   *out_kinv = kinv;
   kinv = NULL;
-  BN_clear_free(*out_r);
+  BNY_clear_free(*out_r);
   *out_r = r;
   ret = 1;
 
@@ -894,16 +894,16 @@ err:
   if (!ret) {
     OPENSSL_PUT_ERROR(DSA, ERR_R_BN_LIB);
     if (r != NULL) {
-      BN_clear_free(r);
+      BNY_clear_free(r);
     }
   }
 
   if (ctx_in == NULL) {
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
   }
-  BN_clear_free(&k);
-  BN_clear_free(&kq);
-  BN_clear_free(kinv);
+  BNY_clear_free(&k);
+  BNY_clear_free(&kq);
+  BNY_clear_free(kinv);
   return ret;
 }
 
@@ -936,7 +936,7 @@ DH *DSA_dup_DH(const DSA *r) {
     goto err;
   }
   if (r->q != NULL) {
-    ret->priv_length = BN_num_bits(r->q);
+    ret->priv_length = BNY_num_bits(r->q);
     if ((ret->q = BN_dup(r->q)) == NULL) {
       goto err;
     }

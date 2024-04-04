@@ -82,7 +82,7 @@ static int dsa_pub_decode(EVVP_PKEY *out, CBS *params, CBS *key) {
     }
   }
 
-  dsa->pub_key = BN_new();
+  dsa->pub_key = BNY_new();
   if (dsa->pub_key == NULL) {
     goto err;
   }
@@ -135,8 +135,8 @@ static int dsa_priv_decode(EVVP_PKEY *out, CBS *params, CBS *key) {
     goto err;
   }
 
-  dsa->priv_key = BN_new();
-  dsa->pub_key = BN_new();
+  dsa->priv_key = BNY_new();
+  dsa->pub_key = BNY_new();
   if (dsa->priv_key == NULL || dsa->pub_key == NULL) {
     goto err;
   }
@@ -149,19 +149,19 @@ static int dsa_priv_decode(EVVP_PKEY *out, CBS *params, CBS *key) {
   }
 
   /* Calculate the public key. */
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL ||
       !BNY_mod_exp_mont(dsa->pub_key, dsa->g, dsa->priv_key, dsa->p, ctx,
                        NULL)) {
     goto err;
   }
 
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   EVVP_PKEY_assign_DSA(out, dsa);
   return 1;
 
 err:
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   DSA_free(dsa);
   return 0;
 }
@@ -196,7 +196,7 @@ static int int_dsa_size(const EVVP_PKEY *pkey) {
 }
 
 static int dsa_bits(const EVVP_PKEY *pkey) {
-  return BN_num_bits(pkey->pkey.dsa->p);
+  return BNY_num_bits(pkey->pkey.dsa->p);
 }
 
 static int dsa_missing_parameters(const EVVP_PKEY *pkey) {

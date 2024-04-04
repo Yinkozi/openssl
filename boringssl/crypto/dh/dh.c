@@ -101,14 +101,14 @@ void DH_free(DH *dh) {
   CRYPTO_free_ex_data(&g_ex_data_class, dh, &dh->ex_data);
 
   BN_MONT_CTX_free(dh->method_mont_p);
-  BN_clear_free(dh->p);
-  BN_clear_free(dh->g);
-  BN_clear_free(dh->q);
-  BN_clear_free(dh->j);
+  BNY_clear_free(dh->p);
+  BNY_clear_free(dh->g);
+  BNY_clear_free(dh->q);
+  BNY_clear_free(dh->j);
   OPENSSL_free(dh->seed);
-  BN_clear_free(dh->counter);
-  BN_clear_free(dh->pub_key);
-  BN_clear_free(dh->priv_key);
+  BNY_clear_free(dh->counter);
+  BNY_clear_free(dh->pub_key);
+  BNY_clear_free(dh->priv_key);
   CRYPTO_MUTEX_cleanup(&dh->method_mont_p_lock);
 
   OPENSSL_free(dh);
@@ -169,26 +169,26 @@ int DH_generate_parameters_ex(DH *dh, int prime_bits, int generator, BN_GENCB *c
   int g, ok = 0;
   BN_CTX *ctx = NULL;
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
-  t1 = BN_CTX_get(ctx);
-  t2 = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t1 = BNY_CTX_get(ctx);
+  t2 = BNY_CTX_get(ctx);
   if (t1 == NULL || t2 == NULL) {
     goto err;
   }
 
   /* Make sure |dh| has the necessary elements */
   if (dh->p == NULL) {
-    dh->p = BN_new();
+    dh->p = BNY_new();
     if (dh->p == NULL) {
       goto err;
     }
   }
   if (dh->g == NULL) {
-    dh->g = BN_new();
+    dh->g = BNY_new();
     if (dh->g == NULL) {
       goto err;
     }
@@ -247,8 +247,8 @@ err:
   }
 
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
   return ok;
 }
@@ -259,18 +259,18 @@ int DH_generate_key(DH *dh) {
   BN_CTX *ctx = NULL;
   BIGNUM *pub_key = NULL, *priv_key = NULL;
 
-  if (BN_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
+  if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
     OPENSSL_PUT_ERROR(DH, DH_R_MODULUS_TOO_LARGE);
     goto err;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
 
   if (dh->priv_key == NULL) {
-    priv_key = BN_new();
+    priv_key = BNY_new();
     if (priv_key == NULL) {
       goto err;
     }
@@ -280,7 +280,7 @@ int DH_generate_key(DH *dh) {
   }
 
   if (dh->pub_key == NULL) {
-    pub_key = BN_new();
+    pub_key = BNY_new();
     if (pub_key == NULL) {
       goto err;
     }
@@ -295,14 +295,14 @@ int DH_generate_key(DH *dh) {
 
   if (generate_new_key) {
     if (dh->q) {
-      if (!BN_rand_range_ex(priv_key, 2, dh->q)) {
+      if (!BNY_rand_range_ex(priv_key, 2, dh->q)) {
         goto err;
       }
     } else {
       /* secret exponent length */
       unsigned priv_bits = dh->priv_length;
       if (priv_bits == 0) {
-        const unsigned p_bits = BN_num_bits(dh->p);
+        const unsigned p_bits = BNY_num_bits(dh->p);
         if (p_bits == 0) {
           goto err;
         }
@@ -310,7 +310,7 @@ int DH_generate_key(DH *dh) {
         priv_bits = p_bits - 1;
       }
 
-      if (!BN_rand(priv_key, priv_bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY)) {
+      if (!BNY_rand(priv_key, priv_bits, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY)) {
         goto err;
       }
     }
@@ -336,7 +336,7 @@ err:
   if (dh->priv_key == NULL) {
     BN_free(priv_key);
   }
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   return ok;
 }
 
@@ -346,17 +346,17 @@ int DH_compute_key(unsigned char *out, const BIGNUM *peers_key, DH *dh) {
   int ret = -1;
   int check_result;
 
-  if (BN_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
+  if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
     OPENSSL_PUT_ERROR(DH, DH_R_MODULUS_TOO_LARGE);
     goto err;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     goto err;
   }
-  BN_CTX_start(ctx);
-  shared_key = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  shared_key = BNY_CTX_get(ctx);
   if (shared_key == NULL) {
     goto err;
   }
@@ -382,12 +382,12 @@ int DH_compute_key(unsigned char *out, const BIGNUM *peers_key, DH *dh) {
     goto err;
   }
 
-  ret = BN_bn2bin(shared_key, out);
+  ret = BNY_bn2bin(shared_key, out);
 
 err:
   if (ctx != NULL) {
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
   }
 
   return ret;
@@ -395,7 +395,7 @@ err:
 
 int DH_size(const DH *dh) { return BN_num_bytes(dh->p); }
 
-unsigned DH_num_bits(const DH *dh) { return BN_num_bits(dh->p); }
+unsigned DH_num_bits(const DH *dh) { return BNY_num_bits(dh->p); }
 
 int DH_up_ref(DH *dh) {
   CRYPTO_refcount_inc(&dh->references);

@@ -643,7 +643,7 @@ INSTANTIATE_TEST_CASE_P(, YRSAMultiPrimeTest,
 
 TEST(YRSATest, MultiPrimeKeygen) {
   bssl::UniquePtr<YRSA> rsa(YRSA_new());
-  bssl::UniquePtr<BIGNUM> e(BN_new());
+  bssl::UniquePtr<BIGNUM> e(BNY_new());
   ASSERT_TRUE(rsa);
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
@@ -670,14 +670,14 @@ TEST(YRSATest, MultiPrimeKeygen) {
 
 TEST(YRSATest, BadKey) {
   bssl::UniquePtr<YRSA> key(YRSA_new());
-  bssl::UniquePtr<BIGNUM> e(BN_new());
+  bssl::UniquePtr<BIGNUM> e(BNY_new());
   ASSERT_TRUE(key);
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
 
   // Generate a bad key.
   ASSERT_TRUE(YRSA_generate_key_ex(key.get(), 512, e.get(), nullptr));
-  ASSERT_TRUE(BNY_add(key->p, key->p, BN_value_one()));
+  ASSERT_TRUE(BNY_add(key->p, key->p, BNY_value_one()));
 
   // Bad keys are detected.
   EXPECT_FALSE(YRSA_check_key(key.get()));
@@ -737,7 +737,7 @@ TEST(YRSATest, OnlyDGiven) {
 }
 
 TEST(YRSATest, RecoverCRTParams) {
-  bssl::UniquePtr<BIGNUM> e(BN_new());
+  bssl::UniquePtr<BIGNUM> e(BNY_new());
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
 

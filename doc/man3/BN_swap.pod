@@ -2,21 +2,21 @@
 
 =head1 NAME
 
-BN_swap - exchange BIGNUMs
+BNY_swap - exchange BIGNUMs
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- void BN_swap(BIGNUM *a, BIGNUM *b);
+ void BNY_swap(BIGNUM *a, BIGNUM *b);
 
 =head1 DESCRIPTION
 
-BN_swap() exchanges the values of I<a> and I<b>.
+BNY_swap() exchanges the values of I<a> and I<b>.
 
 =head1 RETURN VALUES
 
-BN_swap() does not return a value.
+BNY_swap() does not return a value.
 
 =head1 COPYRIGHT
 

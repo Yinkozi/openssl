@@ -741,7 +741,7 @@ static void print_key_details(BIO *out, EVVP_PKEY *key)
         EC_KEY *ec = EVVP_PKEY_get1_EC_KEY(key);
         int nid;
         const char *cname;
-        nid = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+        nid = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
         EC_KEY_free(ec);
         cname = EC_curve_nid2nist(nid);
         if (!cname)
@@ -2943,8 +2943,8 @@ static DH *get_dh512(void)
 
     if ((dh = DH_new()) == NULL)
         return NULL;
-    p = BN_bin2bn(dh512_p, sizeof(dh512_p), NULL);
-    g = BN_bin2bn(dh512_g, sizeof(dh512_g), NULL);
+    p = BNY_bin2bn(dh512_p, sizeof(dh512_p), NULL);
+    g = BNY_bin2bn(dh512_g, sizeof(dh512_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
         DH_free(dh);
         BN_free(p);
@@ -2987,8 +2987,8 @@ static DH *get_dh1024(void)
 
     if ((dh = DH_new()) == NULL)
         return NULL;
-    p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
-    g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
+    p = BNY_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
+    g = BNY_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
         DH_free(dh);
         BN_free(p);
@@ -3051,8 +3051,8 @@ static DH *get_dh1024dsa(void)
 
     if ((dh = DH_new()) == NULL)
         return NULL;
-    p = BN_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
-    g = BN_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
+    p = BNY_bin2bn(dh1024_p, sizeof(dh1024_p), NULL);
+    g = BNY_bin2bn(dh1024_g, sizeof(dh1024_g), NULL);
     if ((p == NULL) || (g == NULL) || !DH_set0_pqg(dh, p, NULL, g)) {
         DH_free(dh);
         BN_free(p);
@@ -3071,7 +3071,7 @@ static DH *get_dh2048(void)
     if ((dh = DH_new()) == NULL)
         return NULL;
 
-    g = BN_new();
+    g = BNY_new();
     if (g == NULL || !BN_set_word(g, 2))
         goto err;
 
@@ -3099,7 +3099,7 @@ static DH *get_dh4096(void)
     if ((dh = DH_new()) == NULL)
         return NULL;
 
-    g = BN_new();
+    g = BNY_new();
     if (g == NULL || !BN_set_word(g, 2))
         goto err;
 
@@ -3142,7 +3142,7 @@ static int psk_key2bn(const char *pskkey, unsigned char *psk,
         BN_free(bn);
         return 0;
     }
-    ret = BN_bn2bin(bn, psk);
+    ret = BNY_bn2bin(bn, psk);
     BN_free(bn);
     return ret;
 }

@@ -2048,18 +2048,18 @@ static int tls_process_ske_srp(SSL *s, PACKET *pkt, EVVP_PKEY **pkey)
         return 0;
     }
 
-    /* TODO(size_t): Convert BN_bin2bn() calls */
+    /* TODO(size_t): Convert BNY_bin2bn() calls */
     if ((s->srp_ctx.N =
-         BN_bin2bn(PACKET_data(&prime),
+         BNY_bin2bn(PACKET_data(&prime),
                    (int)PACKET_remaining(&prime), NULL)) == NULL
         || (s->srp_ctx.g =
-            BN_bin2bn(PACKET_data(&generator),
+            BNY_bin2bn(PACKET_data(&generator),
                       (int)PACKET_remaining(&generator), NULL)) == NULL
         || (s->srp_ctx.s =
-            BN_bin2bn(PACKET_data(&salt),
+            BNY_bin2bn(PACKET_data(&salt),
                       (int)PACKET_remaining(&salt), NULL)) == NULL
         || (s->srp_ctx.B =
-            BN_bin2bn(PACKET_data(&server_pub),
+            BNY_bin2bn(PACKET_data(&server_pub),
                       (int)PACKET_remaining(&server_pub), NULL)) == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_SKE_SRP,
                  ERR_R_BN_LIB);
@@ -2112,10 +2112,10 @@ static int tls_process_ske_dhe(SSL *s, PACKET *pkt, EVVP_PKEY **pkey)
     }
 
     /* TODO(size_t): Convert these calls */
-    p = BN_bin2bn(PACKET_data(&prime), (int)PACKET_remaining(&prime), NULL);
-    g = BN_bin2bn(PACKET_data(&generator), (int)PACKET_remaining(&generator),
+    p = BNY_bin2bn(PACKET_data(&prime), (int)PACKET_remaining(&prime), NULL);
+    g = BNY_bin2bn(PACKET_data(&generator), (int)PACKET_remaining(&generator),
                   NULL);
-    bnpub_key = BN_bin2bn(PACKET_data(&pub_key),
+    bnpub_key = BNY_bin2bn(PACKET_data(&pub_key),
                           (int)PACKET_remaining(&pub_key), NULL);
     if (p == NULL || g == NULL || bnpub_key == NULL) {
         SSLfatal(s, SSL_AD_INTERNAL_ERROR, SSL_F_TLS_PROCESS_SKE_DHE,
@@ -3105,7 +3105,7 @@ static int tls_construct_cke_dhe(SSL *s, WPACKET *pkt)
         goto err;
     }
 
-    BN_bn2bin(pub_key, keybytes);
+    BNY_bn2bin(pub_key, keybytes);
     EVVP_PKEY_free(ckey);
 
     return 1;
@@ -3302,7 +3302,7 @@ static int tls_construct_cke_srp(SSL *s, WPACKET *pkt)
                  ERR_R_INTERNAL_ERROR);
         return 0;
     }
-    BN_bn2bin(s->srp_ctx.A, abytes);
+    BNY_bn2bin(s->srp_ctx.A, abytes);
 
     OPENSSL_free(s->session->srp_username);
     s->session->srp_username = OPENSSL_strdup(s->srp_ctx.login);

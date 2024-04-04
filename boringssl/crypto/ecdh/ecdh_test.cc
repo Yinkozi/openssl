@@ -56,7 +56,7 @@ static bssl::UniquePtr<BIGNUM> GetBIGNUM(FileTest *t, const char *key) {
     return nullptr;
   }
 
-  return bssl::UniquePtr<BIGNUM>(BN_bin2bn(bytes.data(), bytes.size(), nullptr));
+  return bssl::UniquePtr<BIGNUM>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
 }
 
 static bool TestECDH(FileTest *t, void *arg) {
@@ -72,27 +72,27 @@ static bool TestECDH(FileTest *t, void *arg) {
     return false;
   }
 
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new());
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new());
   bssl::UniquePtr<EC_POINT> pub_key(EC_POINT_new(group.get()));
   bssl::UniquePtr<EC_POINT> peer_pub_key(EC_POINT_new(group.get()));
   if (!key || !pub_key || !peer_pub_key ||
-      !EC_KEY_set_group(key.get(), group.get()) ||
-      !EC_KEY_set_private_key(key.get(), priv_key.get()) ||
+      !ECC_KEY_set_group(key.get(), group.get()) ||
+      !ECC_KEY_set_private_key(key.get(), priv_key.get()) ||
       !EC_POINT_set_affine_coordinates_GFp(group.get(), pub_key.get(), x.get(),
                                            y.get(), nullptr) ||
       !EC_POINT_set_affine_coordinates_GFp(group.get(), peer_pub_key.get(),
                                            peer_x.get(), peer_y.get(),
                                            nullptr) ||
-      !EC_KEY_set_public_key(key.get(), pub_key.get()) ||
-      !EC_KEY_check_key(key.get())) {
+      !ECC_KEY_set_public_key(key.get(), pub_key.get()) ||
+      !ECC_KEY_check_key(key.get())) {
     return false;
   }
 
   std::vector<uint8_t> actual_z;
-  // Make |actual_z| larger than expected to ensure |ECDH_compute_key| returns
+  // Make |actual_z| larger than expected to ensure |ECCDH_compute_key| returns
   // the right amount of data.
   actual_z.resize(z.size() + 1);
-  int ret = ECDH_compute_key(actual_z.data(), actual_z.size(),
+  int ret = ECCDH_compute_key(actual_z.data(), actual_z.size(),
                              peer_pub_key.get(), key.get(), nullptr);
   if (ret < 0 ||
       !t->ExpectBytesEqual(z.data(), z.size(), actual_z.data(),
@@ -100,9 +100,9 @@ static bool TestECDH(FileTest *t, void *arg) {
     return false;
   }
 
-  // Test |ECDH_compute_key| truncates.
+  // Test |ECCDH_compute_key| truncates.
   actual_z.resize(z.size() - 1);
-  ret = ECDH_compute_key(actual_z.data(), actual_z.size(), peer_pub_key.get(),
+  ret = ECCDH_compute_key(actual_z.data(), actual_z.size(), peer_pub_key.get(),
                          key.get(), nullptr);
   if (ret < 0 ||
       !t->ExpectBytesEqual(z.data(), z.size() - 1, actual_z.data(),

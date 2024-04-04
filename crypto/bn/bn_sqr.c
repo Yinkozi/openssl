@@ -39,9 +39,9 @@ int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
         return 1;
     }
 
-    BN_CTX_start(ctx);
-    rr = (a != r) ? r : BN_CTX_get(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    rr = (a != r) ? r : BNY_CTX_get(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (rr == NULL || tmp == NULL)
         goto err;
 
@@ -71,7 +71,7 @@ int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
         } else {
             int j, k;
 
-            j = BN_num_bits_word((BN_ULONG)al);
+            j = BNY_num_bits_word((BN_ULONG)al);
             j = 1 << (j - 1);
             k = j + j;
             if (al == j) {
@@ -94,14 +94,14 @@ int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
     rr->neg = 0;
     rr->top = max;
     rr->flags |= BN_FLG_FIXED_TOP;
-    if (r != rr && BN_copy(r, rr) == NULL)
+    if (r != rr && BNY_copy(r, rr) == NULL)
         goto err;
 
     ret = 1;
  err:
     bn_check_top(rr);
     bn_check_top(tmp);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 

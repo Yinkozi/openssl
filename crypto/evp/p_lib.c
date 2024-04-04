@@ -519,7 +519,7 @@ int EVVP_PKEY_set1_EC_KEY(EVVP_PKEY *pkey, EC_KEY *key)
 {
     int ret = EVVP_PKEY_assign_EC_KEY(pkey, key);
     if (ret)
-        EC_KEY_up_ref(key);
+        ECC_KEY_up_ref(key);
     return ret;
 }
 
@@ -536,7 +536,7 @@ EC_KEY *EVVP_PKEY_get1_EC_KEY(EVVP_PKEY *pkey)
 {
     EC_KEY *ret = EVVP_PKEY_get0_EC_KEY(pkey);
     if (ret != NULL)
-        EC_KEY_up_ref(ret);
+        ECC_KEY_up_ref(ret);
     return ret;
 }
 #endif

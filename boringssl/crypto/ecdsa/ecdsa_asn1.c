@@ -65,7 +65,7 @@
 #include "../ec/internal.h"
 
 
-size_t ECDSA_size(const EC_KEY *key) {
+size_t ECCDSA_size(const EC_KEY *key) {
   if (key == NULL) {
     return 0;
   }
@@ -74,7 +74,7 @@ size_t ECDSA_size(const EC_KEY *key) {
   if (key->ecdsa_meth && key->ecdsa_meth->group_order_size) {
     group_order_size = key->ecdsa_meth->group_order_size(key);
   } else {
-    const EC_GROUP *group = EC_KEY_get0_group(key);
+    const EC_GROUP *group = ECC_KEY_get0_group(key);
     if (group == NULL) {
       return 0;
     }
@@ -85,13 +85,13 @@ size_t ECDSA_size(const EC_KEY *key) {
   return ECDSA_SIG_max_len(group_order_size);
 }
 
-ECDSA_SIG *ECDSA_SIG_new(void) {
+ECDSA_SIG *ECCDSA_SIG_new(void) {
   ECDSA_SIG *sig = OPENSSL_malloc(sizeof(ECDSA_SIG));
   if (sig == NULL) {
     return NULL;
   }
-  sig->r = BN_new();
-  sig->s = BN_new();
+  sig->r = BNY_new();
+  sig->s = BNY_new();
   if (sig->r == NULL || sig->s == NULL) {
     ECDSA_SIG_free(sig);
     return NULL;
@@ -110,7 +110,7 @@ void ECDSA_SIG_free(ECDSA_SIG *sig) {
 }
 
 ECDSA_SIG *ECDSA_SIG_parse(CBS *cbs) {
-  ECDSA_SIG *ret = ECDSA_SIG_new();
+  ECDSA_SIG *ret = ECCDSA_SIG_new();
   if (ret == NULL) {
     return NULL;
   }

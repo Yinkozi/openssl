@@ -118,8 +118,8 @@ EC_KEY *EC_KEY_parse_private_key(CBS *cbs, const EC_GROUP *group) {
     goto err;
   }
 
-  ret = EC_KEY_new();
-  if (ret == NULL || !EC_KEY_set_group(ret, group)) {
+  ret = ECC_KEY_new();
+  if (ret == NULL || !ECC_KEY_set_group(ret, group)) {
     goto err;
   }
 
@@ -127,7 +127,7 @@ EC_KEY *EC_KEY_parse_private_key(CBS *cbs, const EC_GROUP *group) {
    * got this wrong, so accept any length. See upstream's
    * 30cd4ff294252c4b6a4b69cbef6a5b4117705d22. */
   ret->priv_key =
-      BN_bin2bn(CBS_data(&private_key), CBS_len(&private_key), NULL);
+      BNY_bin2bn(CBS_data(&private_key), CBS_len(&private_key), NULL);
   ret->pub_key = EC_POINT_new(group);
   if (ret->priv_key == NULL || ret->pub_key == NULL) {
     goto err;
@@ -176,7 +176,7 @@ EC_KEY *EC_KEY_parse_private_key(CBS *cbs, const EC_GROUP *group) {
   }
 
   /* Ensure the resulting key is valid. */
-  if (!EC_KEY_check_key(ret)) {
+  if (!ECC_KEY_check_key(ret)) {
     goto err;
   }
 
@@ -406,12 +406,12 @@ EC_GROUP *EC_KEY_parse_parameters(CBS *cbs) {
   return NULL;
 }
 
-EC_KEY *d2i_ECPrivateKey(EC_KEY **out, const uint8_t **inp, long len) {
+EC_KEY *d2i_ECCPrivateKey(EC_KEY **out, const uint8_t **inp, long len) {
   /* This function treats its |out| parameter differently from other |d2i|
    * functions. If supplied, take the group from |*out|. */
   const EC_GROUP *group = NULL;
   if (out != NULL && *out != NULL) {
-    group = EC_KEY_get0_group(*out);
+    group = ECC_KEY_get0_group(*out);
   }
 
   if (len < 0) {
@@ -435,14 +435,14 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **out, const uint8_t **inp, long len) {
 int i2d_ECPrivateKey(const EC_KEY *key, uint8_t **outp) {
   CBB cbb;
   if (!CBB_init(&cbb, 0) ||
-      !EC_KEY_marshal_private_key(&cbb, key, EC_KEY_get_enc_flags(key))) {
+      !EC_KEY_marshal_private_key(&cbb, key, ECC_KEY_get_enc_flags(key))) {
     CBB_cleanup(&cbb);
     return -1;
   }
   return CBB_finish_i2d(&cbb, outp);
 }
 
-EC_KEY *d2i_ECParameters(EC_KEY **out_key, const uint8_t **inp, long len) {
+EC_KEY *d2i_ECCParameters(EC_KEY **out_key, const uint8_t **inp, long len) {
   if (len < 0) {
     return NULL;
   }
@@ -454,8 +454,8 @@ EC_KEY *d2i_ECParameters(EC_KEY **out_key, const uint8_t **inp, long len) {
     return NULL;
   }
 
-  EC_KEY *ret = EC_KEY_new();
-  if (ret == NULL || !EC_KEY_set_group(ret, group)) {
+  EC_KEY *ret = ECC_KEY_new();
+  if (ret == NULL || !ECC_KEY_set_group(ret, group)) {
     EC_GROUP_free(group);
     EC_KEY_free(ret);
     return NULL;
@@ -470,7 +470,7 @@ EC_KEY *d2i_ECParameters(EC_KEY **out_key, const uint8_t **inp, long len) {
   return ret;
 }
 
-int i2d_ECParameters(const EC_KEY *key, uint8_t **outp) {
+int i2d_ECCParameters(const EC_KEY *key, uint8_t **outp) {
   if (key == NULL || key->group == NULL) {
     OPENSSL_PUT_ERROR(EC, ERR_R_PASSED_NULL_PARAMETER);
     return -1;
@@ -485,7 +485,7 @@ int i2d_ECParameters(const EC_KEY *key, uint8_t **outp) {
   return CBB_finish_i2d(&cbb, outp);
 }
 
-EC_KEY *o2i_ECPublicKey(EC_KEY **keyp, const uint8_t **inp, long len) {
+EC_KEY *o2i_ECCPublicKey(EC_KEY **keyp, const uint8_t **inp, long len) {
   EC_KEY *ret = NULL;
 
   if (keyp == NULL || *keyp == NULL || (*keyp)->group == NULL) {
@@ -508,7 +508,7 @@ EC_KEY *o2i_ECPublicKey(EC_KEY **keyp, const uint8_t **inp, long len) {
   return ret;
 }
 
-int i2o_ECPublicKey(const EC_KEY *key, uint8_t **outp) {
+int i2o_ECCPublicKey(const EC_KEY *key, uint8_t **outp) {
   size_t buf_len = 0;
   int new_buffer = 0;
 

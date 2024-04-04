@@ -865,15 +865,15 @@ make_oakley_dh(uint8_t *prime, size_t len)
     DH *dh = NULL;
     BIGNUM *p = NULL, *q = NULL, *g = NULL;
 
-    p = BN_bin2bn(prime, len, NULL);
+    p = BNY_bin2bn(prime, len, NULL);
     if (p == NULL)
         goto cleanup;
-    q = BN_new();
+    q = BNY_new();
     if (q == NULL)
         goto cleanup;
     if (!BN_ryshift1(q, p))
         goto cleanup;
-    g = BN_new();
+    g = BNY_new();
     if (g == NULL)
         goto cleanup;
     if (!BN_set_word(g, DH_GENERATOR_2))
@@ -2860,7 +2860,7 @@ server_check_dh(krb5_context context,
 
     /* KDC SHOULD check to see if the key parameters satisfy its policy */
     DH_get0_pqg(dh, &p, NULL, NULL);
-    dh_prime_bits = BN_num_bits(p);
+    dh_prime_bits = BNY_num_bits(p);
     if (minbits && dh_prime_bits < minbits) {
         pkiDebug("client sent dh params with %d bits, we require %d\n",
                  dh_prime_bits, minbits);
@@ -3500,7 +3500,7 @@ pkinit_check_dh_params(DH *dh1, DH *dh2)
         pkiDebug("bad g dhparameter\n");
         return -1;
     }
-    pkiDebug("good %d dhparams\n", BN_num_bits(p1));
+    pkiDebug("good %d dhparams\n", BNY_num_bits(p1));
     return 0;
 }
 
@@ -3531,7 +3531,7 @@ pkinit_process_td_dh_params(krb5_context context,
         if (dh == NULL)
             goto cleanup;
         DH_get0_pqg(dh, &p, NULL, NULL);
-        dh_prime_bits = BN_num_bits(p);
+        dh_prime_bits = BNY_num_bits(p);
         pkiDebug("client sent %d DH bits server prefers %d DH bits\n",
                  *new_dh_size, dh_prime_bits);
         ok = check_dh_wellknown(cryptoctx, dh, dh_prime_bits);

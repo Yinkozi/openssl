@@ -25,15 +25,15 @@ static int group_field_tests(const EC_GROUP *group, BN_CTX *ctx)
     if (group->meth->field_inv == NULL || group->meth->field_mul == NULL)
         return 1;
 
-    BN_CTX_start(ctx);
-    a = BN_CTX_get(ctx);
-    b = BN_CTX_get(ctx);
-    if (!TEST_ptr(c = BN_CTX_get(ctx))
+    BNY_CTX_start(ctx);
+    a = BNY_CTX_get(ctx);
+    b = BNY_CTX_get(ctx);
+    if (!TEST_ptr(c = BNY_CTX_get(ctx))
         /* 1/1 = 1 */
-        || !TEST_true(group->meth->field_inv(group, b, BN_value_one(), ctx))
+        || !TEST_true(group->meth->field_inv(group, b, BNY_value_one(), ctx))
         || !TEST_true(BN_is_one(b))
         /* (1/a)*a = 1 */
-        || !TEST_true(BN_pseudo_rand(a, BN_num_bits(group->field) - 1,
+        || !TEST_true(BNY_pseudo_rand(a, BNY_num_bits(group->field) - 1,
                                      BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
         || !TEST_true(group->meth->field_inv(group, b, a, ctx))
         || (group->meth->field_encode &&
@@ -62,7 +62,7 @@ static int group_field_tests(const EC_GROUP *group, BN_CTX *ctx)
     ERR_clear_error();
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -75,25 +75,25 @@ static int field_tests(const EC_METHOD *meth, const unsigned char *params,
     EC_GROUP *group = NULL;
     int ret = 0;
 
-    if (!TEST_ptr(ctx = BN_CTX_new()))
+    if (!TEST_ptr(ctx = BNY_CTX_new()))
         return 0;
 
-    BN_CTX_start(ctx);
-    p = BN_CTX_get(ctx);
-    a = BN_CTX_get(ctx);
-    if (!TEST_ptr(b = BN_CTX_get(ctx))
+    BNY_CTX_start(ctx);
+    p = BNY_CTX_get(ctx);
+    a = BNY_CTX_get(ctx);
+    if (!TEST_ptr(b = BNY_CTX_get(ctx))
         || !TEST_ptr(group = EC_GROUP_new(meth))
-        || !TEST_true(BN_bin2bn(params, len, p))
-        || !TEST_true(BN_bin2bn(params + len, len, a))
-        || !TEST_true(BN_bin2bn(params + 2 * len, len, b))
+        || !TEST_true(BNY_bin2bn(params, len, p))
+        || !TEST_true(BNY_bin2bn(params + len, len, a))
+        || !TEST_true(BNY_bin2bn(params + 2 * len, len, b))
         || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
         || !group_field_tests(group, ctx))
         goto err;
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     if (group != NULL)
         EC_GROUP_free(group);
     return ret;
@@ -170,7 +170,7 @@ static int field_tests_default(int n)
     TEST_info("Testing curve %s\n", OBJ_nid2sn(nid));
 
     if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
-        || !TEST_ptr(ctx = BN_CTX_new())
+        || !TEST_ptr(ctx = BNY_CTX_new())
         || !group_field_tests(group, ctx))
         goto err;
 
@@ -179,32 +179,32 @@ static int field_tests_default(int n)
     if (group != NULL)
         EC_GROUP_free(group);
     if (ctx != NULL)
-        BN_CTX_free(ctx);
+        BNY_CTX_free(ctx);
     return ret;
 }
 
 /*
- * Tests behavior of the EC_KEY_set_private_key
+ * Tests behavior of the ECC_KEY_set_private_key
  */
 static int set_private_key(void)
 {
     EC_KEY *key = NULL, *aux_key = NULL;
     int testresult = 0;
 
-    key = EC_KEY_new_by_curve_name(NID_secp224r1);
-    aux_key = EC_KEY_new_by_curve_name(NID_secp224r1);
+    key = ECC_KEY_new_by_curve_name(NID_secp224r1);
+    aux_key = ECC_KEY_new_by_curve_name(NID_secp224r1);
     if (!TEST_ptr(key)
         || !TEST_ptr(aux_key)
-        || !TEST_int_eq(EC_KEY_generate_key(key), 1)
-        || !TEST_int_eq(EC_KEY_generate_key(aux_key), 1))
+        || !TEST_int_eq(ECC_KEY_generate_key(key), 1)
+        || !TEST_int_eq(ECC_KEY_generate_key(aux_key), 1))
         goto err;
 
     /* Test setting a valid private key */
-    if (!TEST_int_eq(EC_KEY_set_private_key(key, aux_key->priv_key), 1))
+    if (!TEST_int_eq(ECC_KEY_set_private_key(key, aux_key->priv_key), 1))
         goto err;
 
     /* Test compliance with legacy behavior for NULL private keys */
-    if (!TEST_int_eq(EC_KEY_set_private_key(key, NULL), 0)
+    if (!TEST_int_eq(ECC_KEY_set_private_key(key, NULL), 0)
         || !TEST_ptr_null(key->priv_key))
         goto err;
 
@@ -259,12 +259,12 @@ static int decoded_flag_test(void)
         || !TEST_ptr(ecpkparams = EC_GROUP_get_ecpkparameters(grp, NULL))
         || !TEST_ptr(grp_copy = EC_GROUP_new_from_ecpkparameters(ecpkparams))
         || !TEST_int_eq(grp_copy->decoded_from_explicit_params, 0)
-        || !TEST_ptr(key = EC_KEY_new())
-    /* Test EC_KEY_decoded_from_explicit_params on key without a group */
-        || !TEST_int_eq(EC_KEY_decoded_from_explicit_params(key), -1)
-        || !TEST_int_eq(EC_KEY_set_group(key, grp_copy), 1)
-    /* Test EC_KEY_decoded_from_explicit_params negative case */
-        || !TEST_int_eq(EC_KEY_decoded_from_explicit_params(key), 0))
+        || !TEST_ptr(key = ECC_KEY_new())
+    /* Test ECC_KEY_decoded_from_explicit_params on key without a group */
+        || !TEST_int_eq(ECC_KEY_decoded_from_explicit_params(key), -1)
+        || !TEST_int_eq(ECC_KEY_set_group(key, grp_copy), 1)
+    /* Test ECC_KEY_decoded_from_explicit_params negative case */
+        || !TEST_int_eq(ECC_KEY_decoded_from_explicit_params(key), 0))
         goto err;
     EC_GROUP_free(grp_copy);
     grp_copy = NULL;
@@ -298,9 +298,9 @@ static int decoded_flag_test(void)
         || !TEST_ptr(grp_copy = d2i_ECPKParameters(NULL, &encp, encodedlen))
         || !TEST_int_eq(EC_GROUP_get_asn1_flag(grp_copy), OPENSSL_EC_EXPLICIT_CURVE)
         || !TEST_int_eq(grp_copy->decoded_from_explicit_params, 1)
-        || !TEST_int_eq(EC_KEY_set_group(key, grp_copy), 1)
-    /* Test EC_KEY_decoded_from_explicit_params positive case */
-        || !TEST_int_eq(EC_KEY_decoded_from_explicit_params(key), 1))
+        || !TEST_int_eq(ECC_KEY_set_group(key, grp_copy), 1)
+    /* Test ECC_KEY_decoded_from_explicit_params positive case */
+        || !TEST_int_eq(ECC_KEY_decoded_from_explicit_params(key), 1))
         goto err;
 
     testresult = 1;

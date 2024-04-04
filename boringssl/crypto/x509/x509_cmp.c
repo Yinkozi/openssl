@@ -357,7 +357,7 @@ static int check_suite_b(EVVP_PKEY *pkey, int sign_nid, unsigned long *pflags)
     const EC_GROUP *grp = NULL;
     int curve_nid;
     if (pkey && pkey->type == EVVP_PKEY_EC)
-        grp = EC_KEY_get0_group(pkey->pkey.ec);
+        grp = ECC_KEY_get0_group(pkey->pkey.ec);
     if (!grp)
         return YX509_V_ERR_SUITE_B_INVALID_ALGORITHM;
     curve_nid = EC_GROUP_get_curve_name(grp);

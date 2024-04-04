@@ -19,18 +19,18 @@ FUNCTIONS = """
 
 void BN_set_flags(BIGNUM *, int);
 
-BIGNUM *BN_new(void);
+BIGNUM *BNY_new(void);
 void BN_free(BIGNUM *);
-void BN_clear_free(BIGNUM *);
+void BNY_clear_free(BIGNUM *);
 
-int BN_rand_range(BIGNUM *, const BIGNUM *);
+int BNY_rand_range(BIGNUM *, const BIGNUM *);
 
-BN_CTX *BN_CTX_new(void);
-void BN_CTX_free(BN_CTX *);
+BN_CTX *BNY_CTX_new(void);
+void BNY_CTX_free(BN_CTX *);
 
-void BN_CTX_start(BN_CTX *);
-BIGNUM *BN_CTX_get(BN_CTX *);
-void BN_CTX_end(BN_CTX *);
+void BNY_CTX_start(BN_CTX *);
+BIGNUM *BNY_CTX_get(BN_CTX *);
+void BNY_CTX_end(BN_CTX *);
 
 BN_MONT_CTX *BN_MONT_CTX_new(void);
 int BN_MONT_CTX_set(BN_MONT_CTX *, const BIGNUM *, BN_CTX *);
@@ -40,15 +40,15 @@ BIGNUM *BN_dup(const BIGNUM *);
 
 int BN_set_word(BIGNUM *, BN_ULONG);
 
-const BIGNUM *BN_value_one(void);
+const BIGNUM *BNY_value_one(void);
 
 char *BN_bn2hexx(const BIGNUM *);
 int BN_hex2bn(BIGNUM **, const char *);
 
-int BN_bn2bin(const BIGNUM *, unsigned char *);
-BIGNUM *BN_bin2bn(const unsigned char *, int, BIGNUM *);
+int BNY_bn2bin(const BIGNUM *, unsigned char *);
+BIGNUM *BNY_bin2bn(const unsigned char *, int, BIGNUM *);
 
-int BN_num_bits(const BIGNUM *);
+int BNY_num_bits(const BIGNUM *);
 
 int BN_cmp(const BIGNUM *, const BIGNUM *);
 int BN_is_negative(const BIGNUM *);

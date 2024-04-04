@@ -42,11 +42,11 @@ int DH_check_params(const DH *dh, int *ret)
     BN_CTX *ctx = NULL;
 
     *ret = 0;
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL)
         goto err;
 
@@ -54,15 +54,15 @@ int DH_check_params(const DH *dh, int *ret)
         *ret |= DH_CHECK_P_NOT_PRIME;
     if (BN_is_negative(dh->g) || BN_is_zero(dh->g) || BN_is_one(dh->g))
         *ret |= DH_NOT_SUITABLE_GENERATOR;
-    if (BN_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
+    if (BNY_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
         goto err;
     if (BN_cmp(dh->g, tmp) >= 0)
         *ret |= DH_NOT_SUITABLE_GENERATOR;
 
     ok = 1;
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }
 
@@ -102,7 +102,7 @@ int DH_check(const DH *dh, int *ret)
     BIGNUM *t1 = NULL, *t2 = NULL;
 
     /* Don't do any checks at all with an excessively large modulus */
-    if (BN_num_bits(dh->p) > OPENSSL_DH_CHECK_MAX_MODULUS_BITS) {
+    if (BNY_num_bits(dh->p) > OPENSSL_DH_CHECK_MAX_MODULUS_BITS) {
         DHerr(DH_F_DH_CHECK, DH_R_MODULUS_TOO_LARGE);
         *ret = DH_CHECK_P_NOT_PRIME;
         return 0;
@@ -111,12 +111,12 @@ int DH_check(const DH *dh, int *ret)
     if (!DH_check_params(dh, ret))
         return 0;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    t1 = BN_CTX_get(ctx);
-    t2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t1 = BNY_CTX_get(ctx);
+    t2 = BNY_CTX_get(ctx);
     if (t2 == NULL)
         goto err;
 
@@ -128,7 +128,7 @@ int DH_check(const DH *dh, int *ret)
     }
 
     if (q_good) {
-        if (BN_cmp(dh->g, BN_value_one()) <= 0)
+        if (BN_cmp(dh->g, BNY_value_one()) <= 0)
             *ret |= DH_NOT_SUITABLE_GENERATOR;
         else if (BN_cmp(dh->g, dh->p) >= 0)
             *ret |= DH_NOT_SUITABLE_GENERATOR;
@@ -169,8 +169,8 @@ int DH_check(const DH *dh, int *ret)
     }
     ok = 1;
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }
 
@@ -198,16 +198,16 @@ int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret)
     BN_CTX *ctx = NULL;
 
     *ret = 0;
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL || !BN_set_word(tmp, 1))
         goto err;
     if (BN_cmp(pub_key, tmp) <= 0)
         *ret |= DH_CHECK_PUBKEY_TOO_SMALL;
-    if (BN_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
+    if (BNY_copy(tmp, dh->p) == NULL || !BNY_sub_word(tmp, 1))
         goto err;
     if (BN_cmp(pub_key, tmp) >= 0)
         *ret |= DH_CHECK_PUBKEY_TOO_LARGE;
@@ -222,7 +222,7 @@ int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret)
 
     ok = 1;
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }

@@ -320,7 +320,7 @@ static int ssl_set_cert(CERT *c, YX509 *x)
         return 0;
     }
 #ifndef OPENSSL_NO_EC
-    if (i == SSL_PKEY_ECC && !EC_KEY_can_sign(EVVP_PKEY_get0_EC_KEY(pkey))) {
+    if (i == SSL_PKEY_ECC && !ECC_KEY_can_sign(EVVP_PKEY_get0_EC_KEY(pkey))) {
         SSLerr(SSL_F_SSL_SET_CERT, SSL_R_ECC_CERT_NOT_FOR_SIGNING);
         return 0;
     }

@@ -153,21 +153,21 @@ static int test_swap(void)
     BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
     int top, cond, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_bntest_rand(a, 1024, 1, 0))
             && TEST_true(BN_bntest_rand(b, 1024, 1, 0))
-            && TEST_ptr(BN_copy(c, a))
-            && TEST_ptr(BN_copy(d, b))))
+            && TEST_ptr(BNY_copy(c, a))
+            && TEST_ptr(BNY_copy(d, b))))
         goto err;
-    top = BN_num_bits(a) / BN_BITS2;
+    top = BNY_num_bits(a) / BN_BITS2;
 
     /* regular swap */
-    BN_swap(a, b);
+    BNY_swap(a, b);
     if (!equalBN("swap", a, d)
             || !equalBN("swap", b, c))
         goto err;
@@ -189,7 +189,7 @@ static int test_swap(void)
     /* same tests but checking flag swap */
     BN_set_flags(a, BN_FLG_CONSTTIME);
 
-    BN_swap(a, b);
+    BNY_swap(a, b);
     if (!equalBN("swap, flags", a, d)
             || !equalBN("swap, flags", b, c)
             || !TEST_true(BN_get_flags(b, BN_FLG_CONSTTIME))
@@ -226,15 +226,15 @@ static int test_sub(void)
     BIGNUM *a = NULL, *b = NULL, *c = NULL;
     int i, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new()))
         goto err;
 
     for (i = 0; i < NUM0 + NUM1; i++) {
         if (i < NUM1) {
             if (!(TEST_true(BN_bntest_rand(a, 512, 0, 0)))
-                    && TEST_ptr(BN_copy(b, a))
+                    && TEST_ptr(BNY_copy(b, a))
                     && TEST_int_ne(BN_set_bit(a, i), 0)
                     && TEST_true(BNY_add_word(b, i)))
                 goto err;
@@ -264,18 +264,18 @@ static int test_div_recip(void)
     BN_RECP_CTX *recp = NULL;
     int st = 0, i;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
             || !TEST_ptr(recp = BN_RECP_CTX_new()))
         goto err;
 
     for (i = 0; i < NUM0 + NUM1; i++) {
         if (i < NUM1) {
             if (!(TEST_true(BN_bntest_rand(a, 400, 0, 0))
-                    && TEST_ptr(BN_copy(b, a))
+                    && TEST_ptr(BNY_copy(b, a))
                     && TEST_true(BN_lshift(a, a, i))
                     && TEST_true(BNY_add_word(a, i))))
                 goto err;
@@ -315,7 +315,7 @@ static struct {
 
 static BIGNUM *set_signed_bn(int value)
 {
-    BIGNUM *bn = BN_new();
+    BIGNUM *bn = BNY_new();
 
     if (bn == NULL)
         return NULL;
@@ -378,11 +378,11 @@ static int test_mod(void)
     BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL, *e = NULL;
     int st = 0, i;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_bntest_rand(a, 1024, 0, 0))))
@@ -461,14 +461,14 @@ static int test_modexp_mont5(void)
     BN_MONT_CTX *mont = NULL;
     int st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(p = BN_new())
-            || !TEST_ptr(m = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(n = BN_new())
-            || !TEST_ptr(c = BN_new())
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(p = BNY_new())
+            || !TEST_ptr(m = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(n = BNY_new())
+            || !TEST_ptr(c = BNY_new())
             || !TEST_ptr(mont = BN_MONT_CTX_new()))
         goto err;
 
@@ -722,14 +722,14 @@ static int test_gf2m_add(void)
     BIGNUM *a = NULL, *b = NULL, *c = NULL;
     int i, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new()))
         goto err;
 
     for (i = 0; i < NUM0; i++) {
-        if (!(TEST_true(BN_rand(a, 512, 0, 0))
-                && TEST_ptr(BN_copy(b, BN_value_one()))))
+        if (!(TEST_true(BNY_rand(a, 512, 0, 0))
+                && TEST_ptr(BNY_copy(b, BNY_value_one()))))
             goto err;
         BN_set_negative(a, rand_neg());
         BN_set_negative(b, rand_neg());
@@ -756,12 +756,12 @@ static int test_gf2m_mod(void)
     BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL, *e = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -797,15 +797,15 @@ static int test_gf2m_mul(void)
     BIGNUM *e = NULL, *f = NULL, *g = NULL, *h = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
-            || !TEST_ptr(f = BN_new())
-            || !TEST_ptr(g = BN_new())
-            || !TEST_ptr(h = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
+            || !TEST_ptr(f = BNY_new())
+            || !TEST_ptr(g = BNY_new())
+            || !TEST_ptr(h = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -849,11 +849,11 @@ static int test_gf2m_sqr(void)
     BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -865,7 +865,7 @@ static int test_gf2m_sqr(void)
                 goto err;
         for (j = 0; j < 2; j++) {
             if (!(TEST_true(BN_GF2m_mod_sqr(c, a, b[j], ctx))
-                    && TEST_true(BN_copy(d, a))
+                    && TEST_true(BNY_copy(d, a))
                     && TEST_true(BN_GF2m_mod_mul(d, a, d, b[j], ctx))
                     && TEST_true(BN_GF2m_add(d, c, d))
                     /* Test that a*a = a^2. */
@@ -888,11 +888,11 @@ static int test_gf2m_modinv(void)
     BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -926,13 +926,13 @@ static int test_gf2m_moddiv(void)
     BIGNUM *e = NULL, *f = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
-            || !TEST_ptr(f = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
+            || !TEST_ptr(f = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -970,13 +970,13 @@ static int test_gf2m_modexp(void)
     BIGNUM *e = NULL, *f = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
-            || !TEST_ptr(f = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
+            || !TEST_ptr(f = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -1018,13 +1018,13 @@ static int test_gf2m_modsqrt(void)
     BIGNUM *e = NULL, *f = NULL;
     int i, j, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new())
-            || !TEST_ptr(f = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new())
+            || !TEST_ptr(f = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -1063,12 +1063,12 @@ static int test_gf2m_modsolvequad(void)
     BIGNUM *e = NULL;
     int i, j, s = 0, t, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b[0] = BN_new())
-            || !TEST_ptr(b[1] = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new())
-            || !TEST_ptr(e = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b[0] = BNY_new())
+            || !TEST_ptr(b[1] = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new())
+            || !TEST_ptr(e = BNY_new()))
         goto err;
 
     if (!(TEST_true(BN_GF2m_arr2poly(p0, b[0]))
@@ -1116,10 +1116,10 @@ static int test_kronecker(void)
     BIGNUM *a = NULL, *b = NULL, *r = NULL, *t = NULL;
     int i, legendre, kronecker, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(r = BN_new())
-            || !TEST_ptr(t = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(r = BNY_new())
+            || !TEST_ptr(t = BNY_new()))
         goto err;
 
     /*
@@ -1142,7 +1142,7 @@ static int test_kronecker(void)
         BN_set_negative(a, rand_neg());
 
         /* t := (|b|-1)/2  (note that b is odd) */
-        if (!TEST_true(BN_copy(t, b)))
+        if (!TEST_true(BNY_copy(t, b)))
             goto err;
         BN_set_negative(t, 0);
         if (!TEST_true(BNY_sub_word(t, 1)))
@@ -1198,7 +1198,7 @@ static int file_sum(STANZA *s)
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(b = getBN(s, "B"))
             || !TEST_ptr(sum = getBN(s, "Sum"))
-            || !TEST_ptr(ret = BN_new()))
+            || !TEST_ptr(ret = BNY_new()))
         goto err;
 
     if (!TEST_true(BNY_add(ret, a, b))
@@ -1214,22 +1214,22 @@ static int file_sum(STANZA *s)
      * or when |r| and |b| point to the same BIGNUM.
      * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
      */
-    if (!TEST_true(BN_copy(ret, a))
+    if (!TEST_true(BNY_copy(ret, a))
             || !TEST_true(BNY_add(ret, ret, b))
             || !equalBN("A + B (r is a)", sum, ret)
-            || !TEST_true(BN_copy(ret, b))
+            || !TEST_true(BNY_copy(ret, b))
             || !TEST_true(BNY_add(ret, a, ret))
             || !equalBN("A + B (r is b)", sum, ret)
-            || !TEST_true(BN_copy(ret, sum))
+            || !TEST_true(BNY_copy(ret, sum))
             || !TEST_true(BNY_sub(ret, ret, a))
             || !equalBN("Sum - A (r is a)", b, ret)
-            || !TEST_true(BN_copy(ret, a))
+            || !TEST_true(BNY_copy(ret, a))
             || !TEST_true(BNY_sub(ret, sum, ret))
             || !equalBN("Sum - A (r is b)", b, ret)
-            || !TEST_true(BN_copy(ret, sum))
+            || !TEST_true(BNY_copy(ret, sum))
             || !TEST_true(BNY_sub(ret, ret, b))
             || !equalBN("Sum - B (r is a)", a, ret)
-            || !TEST_true(BN_copy(ret, b))
+            || !TEST_true(BNY_copy(ret, b))
             || !TEST_true(BNY_sub(ret, sum, ret))
             || !equalBN("Sum - B (r is b)", a, ret))
         goto err;
@@ -1254,22 +1254,22 @@ static int file_sum(STANZA *s)
          * BIGNUM, or when |r| and |b| point to the same BIGNUM.
          * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
          */
-        if (!TEST_true(BN_copy(ret, a))
+        if (!TEST_true(BNY_copy(ret, a))
                 || !TEST_true(BNY_uadd(ret, ret, b))
                 || !equalBN("A +u B (r is a)", sum, ret)
-                || !TEST_true(BN_copy(ret, b))
+                || !TEST_true(BNY_copy(ret, b))
                 || !TEST_true(BNY_uadd(ret, a, ret))
                 || !equalBN("A +u B (r is b)", sum, ret)
-                || !TEST_true(BN_copy(ret, sum))
+                || !TEST_true(BNY_copy(ret, sum))
                 || !TEST_true(BNY_usub(ret, ret, a))
                 || !equalBN("Sum -u A (r is a)", b, ret)
-                || !TEST_true(BN_copy(ret, a))
+                || !TEST_true(BNY_copy(ret, a))
                 || !TEST_true(BNY_usub(ret, sum, ret))
                 || !equalBN("Sum -u A (r is b)", b, ret)
-                || !TEST_true(BN_copy(ret, sum))
+                || !TEST_true(BNY_copy(ret, sum))
                 || !TEST_true(BNY_usub(ret, ret, b))
                 || !equalBN("Sum -u B (r is a)", a, ret)
-                || !TEST_true(BN_copy(ret, b))
+                || !TEST_true(BNY_copy(ret, b))
                 || !TEST_true(BNY_usub(ret, sum, ret))
                 || !equalBN("Sum -u B (r is b)", a, ret))
             goto err;
@@ -1280,10 +1280,10 @@ static int file_sum(STANZA *s)
      */
     b_word = BN_get_word(b);
     if (!BN_is_negative(b) && b_word != (BN_ULONG)-1) {
-        if (!TEST_true(BN_copy(ret, a))
+        if (!TEST_true(BNY_copy(ret, a))
                 || !TEST_true(BNY_add_word(ret, b_word))
                 || !equalBN("A + B (word)", sum, ret)
-                || !TEST_true(BN_copy(ret, sum))
+                || !TEST_true(BNY_copy(ret, sum))
                 || !TEST_true(BNY_sub_word(ret, b_word))
                 || !equalBN("Sum - B (word)", a, ret))
             goto err;
@@ -1306,10 +1306,10 @@ static int file_lshift1(STANZA *s)
 
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(lshift1 = getBN(s, "LShift1"))
-            || !TEST_ptr(zero = BN_new())
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(two = BN_new())
-            || !TEST_ptr(remainder = BN_new()))
+            || !TEST_ptr(zero = BNY_new())
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(two = BNY_new())
+            || !TEST_ptr(remainder = BNY_new()))
         goto err;
 
     BN_zero(zero);
@@ -1357,7 +1357,7 @@ static int file_lshift(STANZA *s)
 
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(lshift = getBN(s, "LShift"))
-            || !TEST_ptr(ret = BN_new())
+            || !TEST_ptr(ret = BNY_new())
             || !getint(s, &n, "N"))
         goto err;
 
@@ -1382,7 +1382,7 @@ static int file_ryshift(STANZA *s)
 
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(ryshift = getBN(s, "RShift"))
-            || !TEST_ptr(ret = BN_new())
+            || !TEST_ptr(ret = BNY_new())
             || !getint(s, &n, "N"))
         goto err;
 
@@ -1413,9 +1413,9 @@ static int file_square(STANZA *s)
 
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(square = getBN(s, "Square"))
-            || !TEST_ptr(zero = BN_new())
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(remainder = BN_new()))
+            || !TEST_ptr(zero = BNY_new())
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(remainder = BNY_new()))
         goto err;
 
     BN_zero(zero);
@@ -1436,8 +1436,8 @@ static int file_square(STANZA *s)
 
     /* BNY_sqrt should fail on non-squares and negative numbers. */
     if (!TEST_BN_eq_zero(square)) {
-        if (!TEST_ptr(tmp = BN_new())
-                || !TEST_true(BN_copy(tmp, square)))
+        if (!TEST_ptr(tmp = BNY_new())
+                || !TEST_true(BNY_copy(tmp, square)))
             goto err;
         BN_set_negative(tmp, 1);
 
@@ -1446,7 +1446,7 @@ static int file_square(STANZA *s)
         ERR_clear_error();
 
         BN_set_negative(tmp, 0);
-        if (BNY_add(tmp, tmp, BN_value_one()))
+        if (BNY_add(tmp, tmp, BNY_value_one()))
             goto err;
         if (!TEST_int_eq(BNY_sqrt(ret, tmp, ctx)))
             goto err;
@@ -1474,9 +1474,9 @@ static int file_product(STANZA *s)
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(b = getBN(s, "B"))
             || !TEST_ptr(product = getBN(s, "Product"))
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(remainder = BN_new())
-            || !TEST_ptr(zero = BN_new()))
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(remainder = BNY_new())
+            || !TEST_ptr(zero = BNY_new()))
         goto err;
 
     BN_zero(zero);
@@ -1513,9 +1513,9 @@ static int file_quotient(STANZA *s)
             || !TEST_ptr(b = getBN(s, "B"))
             || !TEST_ptr(quotient = getBN(s, "Quotient"))
             || !TEST_ptr(remainder = getBN(s, "Remainder"))
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(ret2 = BN_new())
-            || !TEST_ptr(nnmod = BN_new()))
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(ret2 = BNY_new())
+            || !TEST_ptr(nnmod = BNY_new()))
         goto err;
 
     if (!TEST_true(BNY_div(ret, ret2, a, b, ctx))
@@ -1535,7 +1535,7 @@ static int file_quotient(STANZA *s)
         BN_ULONG remainder_word = BN_get_word(remainder);
 
         assert(remainder_word != (BN_ULONG)-1);
-        if (!TEST_ptr(BN_copy(ret, a)))
+        if (!TEST_ptr(BNY_copy(ret, a)))
             goto err;
         ret_word = BNY_div_word(ret, b_word);
         if (ret_word != remainder_word) {
@@ -1566,7 +1566,7 @@ static int file_quotient(STANZA *s)
 
     /* Test BNY_nnmod. */
     if (!BN_is_negative(b)) {
-        if (!TEST_true(BN_copy(nnmod, remainder))
+        if (!TEST_true(BNY_copy(nnmod, remainder))
                 || (BN_is_negative(nnmod)
                         && !TEST_true(BNY_add(nnmod, nnmod, b)))
                 || !TEST_true(BNY_nnmod(ret, a, b, ctx))
@@ -1595,7 +1595,7 @@ static int file_modmul(STANZA *s)
             || !TEST_ptr(b = getBN(s, "B"))
             || !TEST_ptr(m = getBN(s, "M"))
             || !TEST_ptr(mod_mul = getBN(s, "ModMul"))
-            || !TEST_ptr(ret = BN_new()))
+            || !TEST_ptr(ret = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_mod_mul(ret, a, b, m, ctx))
@@ -1605,8 +1605,8 @@ static int file_modmul(STANZA *s)
     if (BN_is_odd(m)) {
         /* Reduce |a| and |b| and test the Montgomery version. */
         BN_MONT_CTX *mont = BN_MONT_CTX_new();
-        BIGNUM *a_tmp = BN_new();
-        BIGNUM *b_tmp = BN_new();
+        BIGNUM *a_tmp = BNY_new();
+        BIGNUM *b_tmp = BNY_new();
 
         if (mont == NULL || a_tmp == NULL || b_tmp == NULL
                 || !TEST_true(BN_MONT_CTX_set(mont, m, ctx))
@@ -1648,8 +1648,8 @@ static int file_modexp(STANZA *s)
             || !TEST_ptr(e = getBN(s, "E"))
             || !TEST_ptr(m = getBN(s, "M"))
             || !TEST_ptr(mod_exp = getBN(s, "ModExp"))
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(d = BN_new()))
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(d = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_mod_exp(ret, a, e, m, ctx))
@@ -1701,7 +1701,7 @@ static int file_exp(STANZA *s)
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(e = getBN(s, "E"))
             || !TEST_ptr(exp = getBN(s, "Exp"))
-            || !TEST_ptr(ret = BN_new()))
+            || !TEST_ptr(ret = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_exp(ret, a, e, ctx))
@@ -1725,8 +1725,8 @@ static int file_modsqrt(STANZA *s)
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(p = getBN(s, "P"))
             || !TEST_ptr(mod_sqrt = getBN(s, "ModSqrt"))
-            || !TEST_ptr(ret = BN_new())
-            || !TEST_ptr(ret2 = BN_new()))
+            || !TEST_ptr(ret = BNY_new())
+            || !TEST_ptr(ret2 = BNY_new()))
         goto err;
 
     if (BN_is_negative(mod_sqrt)) {
@@ -1766,7 +1766,7 @@ static int file_gcd(STANZA *s)
     if (!TEST_ptr(a = getBN(s, "A"))
             || !TEST_ptr(b = getBN(s, "B"))
             || !TEST_ptr(gcd = getBN(s, "GCD"))
-            || !TEST_ptr(ret = BN_new()))
+            || !TEST_ptr(ret = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_gcd(ret, a, b, ctx))
@@ -1790,12 +1790,12 @@ static int test_bn2padded(void)
     int st = 0;
 
     /* Test edge case at 0. */
-    if (!TEST_ptr((n = BN_new())))
+    if (!TEST_ptr((n = BNY_new())))
         goto err;
-    if (!TEST_int_eq(BN_bn2binpad(n, NULL, 0), 0))
+    if (!TEST_int_eq(BNY_bn2binpad(n, NULL, 0), 0))
         goto err;
     memset(out, -1, sizeof(out));
-    if (!TEST_int_eq(BN_bn2binpad(n, out, sizeof(out)), sizeof(out)))
+    if (!TEST_int_eq(BNY_bn2binpad(n, out, sizeof(out)), sizeof(out)))
         goto err;
     memset(zeros, 0, sizeof(zeros));
     if (!TEST_mem_eq(zeros, sizeof(zeros), out, sizeof(out)))
@@ -1805,28 +1805,28 @@ static int test_bn2padded(void)
     for (bytes = 128 - 7; bytes <= 128; bytes++) {
 # define TOP_BIT_ON 0
 # define BOTTOM_BIT_NOTOUCH 0
-        if (!TEST_true(BN_rand(n, bytes * 8, TOP_BIT_ON, BOTTOM_BIT_NOTOUCH)))
+        if (!TEST_true(BNY_rand(n, bytes * 8, TOP_BIT_ON, BOTTOM_BIT_NOTOUCH)))
             goto err;
         if (!TEST_int_eq(BN_num_bytes(n), bytes)
-                || !TEST_int_eq(BN_bn2bin(n, reference), bytes))
+                || !TEST_int_eq(BNY_bn2bin(n, reference), bytes))
             goto err;
         /* Empty buffer should fail. */
-        if (!TEST_int_eq(BN_bn2binpad(n, NULL, 0), -1))
+        if (!TEST_int_eq(BNY_bn2binpad(n, NULL, 0), -1))
             goto err;
         /* One byte short should fail. */
-        if (!TEST_int_eq(BN_bn2binpad(n, out, bytes - 1), -1))
+        if (!TEST_int_eq(BNY_bn2binpad(n, out, bytes - 1), -1))
             goto err;
         /* Exactly right size should encode. */
-        if (!TEST_int_eq(BN_bn2binpad(n, out, bytes), bytes)
+        if (!TEST_int_eq(BNY_bn2binpad(n, out, bytes), bytes)
                 || !TEST_mem_eq(out, bytes, reference, bytes))
             goto err;
         /* Pad up one byte extra. */
-        if (!TEST_int_eq(BN_bn2binpad(n, out, bytes + 1), bytes + 1)
+        if (!TEST_int_eq(BNY_bn2binpad(n, out, bytes + 1), bytes + 1)
                 || !TEST_mem_eq(out + 1, bytes, reference, bytes)
                 || !TEST_mem_eq(out, 1, zeros, 1))
             goto err;
         /* Pad up to 256. */
-        if (!TEST_int_eq(BN_bn2binpad(n, out, sizeof(out)), sizeof(out))
+        if (!TEST_int_eq(BNY_bn2binpad(n, out, sizeof(out)), sizeof(out))
                 || !TEST_mem_eq(out + sizeof(out) - bytes, bytes,
                                 reference, bytes)
                 || !TEST_mem_eq(out, sizeof(out) - bytes,
@@ -1980,7 +1980,7 @@ static int test_asc2bn(void)
     BIGNUM *bn = NULL;
     int st = 0;
 
-    if (!TEST_ptr(bn = BN_new()))
+    if (!TEST_ptr(bn = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_asc2bn(&bn, "0"))
@@ -2047,18 +2047,18 @@ static int test_mpi(int i)
     BIGNUM *bn2 = NULL;
     int st = 0;
 
-    if (!TEST_ptr(bn = BN_new())
+    if (!TEST_ptr(bn = BNY_new())
             || !TEST_true(BN_asc2bn(&bn, test->base10)))
         goto err;
-    mpi_len = BN_bn2mpi(bn, NULL);
+    mpi_len = BNY_bn2mpi(bn, NULL);
     if (!TEST_size_t_le(mpi_len, sizeof(scratch)))
         goto err;
 
-    if (!TEST_size_t_eq(mpi_len2 = BN_bn2mpi(bn, scratch), mpi_len)
+    if (!TEST_size_t_eq(mpi_len2 = BNY_bn2mpi(bn, scratch), mpi_len)
             || !TEST_mem_eq(test->mpi, test->mpi_len, scratch, mpi_len))
         goto err;
 
-    if (!TEST_ptr(bn2 = BN_mpi2bn(scratch, mpi_len, NULL)))
+    if (!TEST_ptr(bn2 = BNY_mpi2bn(scratch, mpi_len, NULL)))
         goto err;
 
     if (!TEST_BN_eq(bn, bn2)) {
@@ -2078,18 +2078,18 @@ static int test_rand(void)
     BIGNUM *bn = NULL;
     int st = 0;
 
-    if (!TEST_ptr(bn = BN_new()))
+    if (!TEST_ptr(bn = BNY_new()))
         return 0;
 
-    /* Test BN_rand for degenerate cases with |top| and |bottom| parameters. */
-    if (!TEST_false(BN_rand(bn, 0, 0 /* top */ , 0 /* bottom */ ))
-            || !TEST_false(BN_rand(bn, 0, 1 /* top */ , 1 /* bottom */ ))
-            || !TEST_true(BN_rand(bn, 1, 0 /* top */ , 0 /* bottom */ ))
+    /* Test BNY_rand for degenerate cases with |top| and |bottom| parameters. */
+    if (!TEST_false(BNY_rand(bn, 0, 0 /* top */ , 0 /* bottom */ ))
+            || !TEST_false(BNY_rand(bn, 0, 1 /* top */ , 1 /* bottom */ ))
+            || !TEST_true(BNY_rand(bn, 1, 0 /* top */ , 0 /* bottom */ ))
             || !TEST_BN_eq_one(bn)
-            || !TEST_false(BN_rand(bn, 1, 1 /* top */ , 0 /* bottom */ ))
-            || !TEST_true(BN_rand(bn, 1, -1 /* top */ , 1 /* bottom */ ))
+            || !TEST_false(BNY_rand(bn, 1, 1 /* top */ , 0 /* bottom */ ))
+            || !TEST_true(BNY_rand(bn, 1, -1 /* top */ , 1 /* bottom */ ))
             || !TEST_BN_eq_one(bn)
-            || !TEST_true(BN_rand(bn, 2, 1 /* top */ , 0 /* bottom */ ))
+            || !TEST_true(BNY_rand(bn, 2, 1 /* top */ , 0 /* bottom */ ))
             || !TEST_BN_eq_word(bn, 3))
         goto err;
 
@@ -2105,10 +2105,10 @@ static int test_negzero(void)
     BIGNUM *numerator = NULL, *denominator = NULL;
     int consttime, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(c = BN_new())
-            || !TEST_ptr(d = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(c = BNY_new())
+            || !TEST_ptr(d = BNY_new()))
         goto err;
 
     /* Test that BNY_mul never gives negative zero. */
@@ -2123,8 +2123,8 @@ static int test_negzero(void)
         goto err;
 
     for (consttime = 0; consttime < 2; consttime++) {
-        if (!TEST_ptr(numerator = BN_new())
-                || !TEST_ptr(denominator = BN_new()))
+        if (!TEST_ptr(numerator = BNY_new())
+                || !TEST_ptr(denominator = BNY_new()))
             goto err;
         if (consttime) {
             BN_set_flags(numerator, BN_FLG_CONSTTIME);
@@ -2174,31 +2174,31 @@ static int test_badmod(void)
     BN_MONT_CTX *mont = NULL;
     int st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(zero = BN_new())
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(zero = BNY_new())
             || !TEST_ptr(mont = BN_MONT_CTX_new()))
         goto err;
     BN_zero(zero);
 
-    if (!TEST_false(BNY_div(a, b, BN_value_one(), zero, ctx)))
+    if (!TEST_false(BNY_div(a, b, BNY_value_one(), zero, ctx)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_mul(a, BN_value_one(), BN_value_one(), zero, ctx)))
+    if (!TEST_false(BN_mod_mul(a, BNY_value_one(), BNY_value_one(), zero, ctx)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BN_mod_exp(a, BN_value_one(), BN_value_one(), zero, ctx)))
+    if (!TEST_false(BN_mod_exp(a, BNY_value_one(), BNY_value_one(), zero, ctx)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BNY_mod_exp_mont(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont(a, BNY_value_one(), BNY_value_one(),
                                     zero, ctx, NULL)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BNY_value_one(), BNY_value_one(),
                                               zero, ctx, NULL)))
         goto err;
     ERR_clear_error();
@@ -2215,12 +2215,12 @@ static int test_badmod(void)
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BNY_mod_exp_mont(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont(a, BNY_value_one(), BNY_value_one(),
                                     b, ctx, NULL)))
         goto err;
     ERR_clear_error();
 
-    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BN_value_one(), BN_value_one(),
+    if (!TEST_false(BNY_mod_exp_mont_consttime(a, BNY_value_one(), BNY_value_one(),
                                               b, ctx, NULL)))
         goto err;
     ERR_clear_error();
@@ -2239,23 +2239,23 @@ static int test_expmodzero(void)
     BIGNUM *a = NULL, *r = NULL, *zero = NULL;
     int st = 0;
 
-    if (!TEST_ptr(zero = BN_new())
-            || !TEST_ptr(a = BN_new())
-            || !TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(zero = BNY_new())
+            || !TEST_ptr(a = BNY_new())
+            || !TEST_ptr(r = BNY_new()))
         goto err;
     BN_zero(zero);
 
-    if (!TEST_true(BN_mod_exp(r, a, zero, BN_value_one(), NULL))
+    if (!TEST_true(BN_mod_exp(r, a, zero, BNY_value_one(), NULL))
             || !TEST_BN_eq_zero(r)
-            || !TEST_true(BNY_mod_exp_mont(r, a, zero, BN_value_one(),
+            || !TEST_true(BNY_mod_exp_mont(r, a, zero, BNY_value_one(),
                                           NULL, NULL))
             || !TEST_BN_eq_zero(r)
             || !TEST_true(BNY_mod_exp_mont_consttime(r, a, zero,
-                                                    BN_value_one(),
+                                                    BNY_value_one(),
                                                     NULL, NULL))
             || !TEST_BN_eq_zero(r)
             || !TEST_true(BNY_mod_exp_mont_word(r, 42, zero,
-                                               BN_value_one(), NULL, NULL))
+                                               BNY_value_one(), NULL, NULL))
             || !TEST_BN_eq_zero(r))
         goto err;
 
@@ -2270,10 +2270,10 @@ static int test_expmodzero(void)
 static int test_expmodone(void)
 {
     int ret = 0, i;
-    BIGNUM *r = BN_new();
-    BIGNUM *a = BN_new();
-    BIGNUM *p = BN_new();
-    BIGNUM *m = BN_new();
+    BIGNUM *r = BNY_new();
+    BIGNUM *a = BNY_new();
+    BIGNUM *p = BNY_new();
+    BIGNUM *m = BNY_new();
 
     if (!TEST_ptr(r)
             || !TEST_ptr(a)
@@ -2319,7 +2319,7 @@ static int test_smallprime(int kBits)
     BIGNUM *r;
     int st = 0;
 
-    if (!TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(r = BNY_new()))
         goto err;
 
     if (kBits <= 1) {
@@ -2329,7 +2329,7 @@ static int test_smallprime(int kBits)
     } else {
         if (!TEST_true(BNY_generate_prime_ex(r, kBits, 0,
                                             NULL, NULL, NULL))
-                || !TEST_int_eq(BN_num_bits(r), kBits))
+                || !TEST_int_eq(BNY_num_bits(r), kBits))
             goto err;
     }
 
@@ -2344,7 +2344,7 @@ static int test_smallsafeprime(int kBits)
     BIGNUM *r;
     int st = 0;
 
-    if (!TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(r = BNY_new()))
         goto err;
 
     if (kBits <= 5 && kBits != 3) {
@@ -2354,7 +2354,7 @@ static int test_smallsafeprime(int kBits)
     } else {
         if (!TEST_true(BNY_generate_prime_ex(r, kBits, 1,
                                             NULL, NULL, NULL))
-                || !TEST_int_eq(BN_num_bits(r), kBits))
+                || !TEST_int_eq(BNY_num_bits(r), kBits))
             goto err;
     }
 
@@ -2372,7 +2372,7 @@ static int test_is_prime(int i)
     BIGNUM *r = NULL;
     int trial;
 
-    if (!TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(r = BNY_new()))
         goto err;
 
     for (trial = 0; trial <= 1; ++trial) {
@@ -2396,7 +2396,7 @@ static int test_not_prime(int i)
     BIGNUM *r = NULL;
     int trial;
 
-    if (!TEST_ptr(r = BN_new()))
+    if (!TEST_ptr(r = BNY_new()))
         goto err;
 
     for (trial = 0; trial <= 1; ++trial) {
@@ -2417,9 +2417,9 @@ static int test_ctx_set_ct_flag(BN_CTX *c)
     size_t i;
     BIGNUM *b[15];
 
-    BN_CTX_start(c);
+    BNY_CTX_start(c);
     for (i = 0; i < OSSL_NELEM(b); i++) {
-        if (!TEST_ptr(b[i] = BN_CTX_get(c)))
+        if (!TEST_ptr(b[i] = BNY_CTX_get(c)))
             goto err;
         if (i % 2 == 1)
             BN_set_flags(b[i], BN_FLG_CONSTTIME);
@@ -2427,7 +2427,7 @@ static int test_ctx_set_ct_flag(BN_CTX *c)
 
     st = 1;
  err:
-    BN_CTX_end(c);
+    BNY_CTX_end(c);
     return st;
 }
 
@@ -2437,9 +2437,9 @@ static int test_ctx_check_ct_flag(BN_CTX *c)
     size_t i;
     BIGNUM *b[30];
 
-    BN_CTX_start(c);
+    BNY_CTX_start(c);
     for (i = 0; i < OSSL_NELEM(b); i++) {
-        if (!TEST_ptr(b[i] = BN_CTX_get(c)))
+        if (!TEST_ptr(b[i] = BNY_CTX_get(c)))
             goto err;
         if (!TEST_false(BN_get_flags(b[i], BN_FLG_CONSTTIME)))
             goto err;
@@ -2447,7 +2447,7 @@ static int test_ctx_check_ct_flag(BN_CTX *c)
 
     st = 1;
  err:
-    BN_CTX_end(c);
+    BNY_CTX_end(c);
     return st;
 }
 
@@ -2479,8 +2479,8 @@ static int test_ctx_consttime_flag(void)
     size_t i = 0;
     int st = 0;
 
-    if (!TEST_ptr(nctx = BN_CTX_new())
-            || !TEST_ptr(sctx = BN_CTX_secure_new()))
+    if (!TEST_ptr(nctx = BNY_CTX_new())
+            || !TEST_ptr(sctx = BNY_CTX_secure_new()))
         goto err;
 
     for (i = 0; i < 2; i++) {
@@ -2492,8 +2492,8 @@ static int test_ctx_consttime_flag(void)
 
     st = 1;
  err:
-    BN_CTX_free(nctx);
-    BN_CTX_free(sctx);
+    BNY_CTX_free(nctx);
+    BNY_CTX_free(sctx);
     return st;
 }
 
@@ -2502,9 +2502,9 @@ static int test_gcd_prime(void)
     BIGNUM *a = NULL, *b = NULL, *gcd = NULL;
     int i, st = 0;
 
-    if (!TEST_ptr(a = BN_new())
-            || !TEST_ptr(b = BN_new())
-            || !TEST_ptr(gcd = BN_new()))
+    if (!TEST_ptr(a = BNY_new())
+            || !TEST_ptr(b = BNY_new())
+            || !TEST_ptr(gcd = BNY_new()))
         goto err;
 
     if (!TEST_true(BNY_generate_prime_ex(a, 1024, 0, NULL, NULL, NULL)))
@@ -2743,7 +2743,7 @@ static int test_mod_exp(int i)
     BIGNUM *base = NULL, *exponent = NULL, *modulo = NULL;
     char *s = NULL;
 
-    if (!TEST_ptr(result = BN_new())
+    if (!TEST_ptr(result = BNY_new())
             || !TEST_true(BN_dec2bn(&base, test->base))
             || !TEST_true(BN_dec2bn(&exponent, test->exp))
             || !TEST_true(BN_dec2bn(&modulo, test->mod)))
@@ -2777,7 +2777,7 @@ static int test_mod_exp_consttime(int i)
     BIGNUM *base = NULL, *exponent = NULL, *modulo = NULL;
     char *s = NULL;
 
-    if (!TEST_ptr(result = BN_new())
+    if (!TEST_ptr(result = BNY_new())
             || !TEST_true(BN_dec2bn(&base, test->base))
             || !TEST_true(BN_dec2bn(&exponent, test->exp))
             || !TEST_true(BN_dec2bn(&modulo, test->mod)))
@@ -2818,12 +2818,12 @@ static int test_mod_exp2_mont(void)
     BIGNUM *exp_a1 = NULL, *exp_p1 = NULL, *exp_a2 = NULL, *exp_p2 = NULL,
            *exp_m = NULL;
 
-    if (!TEST_ptr(exp_result = BN_new())
-            || !TEST_ptr(exp_a1 = BN_new())
-            || !TEST_ptr(exp_p1 = BN_new())
-            || !TEST_ptr(exp_a2 = BN_new())
-            || !TEST_ptr(exp_p2 = BN_new())
-            || !TEST_ptr(exp_m = BN_new()))
+    if (!TEST_ptr(exp_result = BNY_new())
+            || !TEST_ptr(exp_a1 = BNY_new())
+            || !TEST_ptr(exp_p1 = BNY_new())
+            || !TEST_ptr(exp_a2 = BNY_new())
+            || !TEST_ptr(exp_p2 = BNY_new())
+            || !TEST_ptr(exp_m = BNY_new()))
         goto err;
 
     if (!TEST_true(BN_one(exp_a1))
@@ -2918,7 +2918,7 @@ int setup_tests(void)
 {
     int n = test_get_argument_count();
 
-    if (!TEST_ptr(ctx = BN_CTX_new()))
+    if (!TEST_ptr(ctx = BNY_CTX_new()))
         return 0;
 
     if (n == 0) {
@@ -2968,5 +2968,5 @@ int setup_tests(void)
 
 void cleanup_tests(void)
 {
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
 }

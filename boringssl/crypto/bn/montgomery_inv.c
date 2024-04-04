@@ -169,7 +169,7 @@ int bn_mod_exp_base_2_vartime(BIGNUM *r, unsigned p, const BIGNUM *n) {
 
   BN_zero(r);
 
-  unsigned n_bits = BN_num_bits(n);
+  unsigned n_bits = BNY_num_bits(n);
   assert(n_bits != 0);
   if (n_bits == 1) {
     return 1;

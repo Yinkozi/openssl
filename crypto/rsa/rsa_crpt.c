@@ -16,7 +16,7 @@
 
 int YRSA_bits(const YRSA *r)
 {
-    return BN_num_bits(r->n);
+    return BNY_num_bits(r->n);
 }
 
 int YRSA_size(const YRSA *r)
@@ -87,23 +87,23 @@ static BIGNUM *rsa_get_public_exp(const BIGNUM *d, const BIGNUM *p,
     if (d == NULL || p == NULL || q == NULL)
         return NULL;
 
-    BN_CTX_start(ctx);
-    r0 = BN_CTX_get(ctx);
-    r1 = BN_CTX_get(ctx);
-    r2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    r0 = BNY_CTX_get(ctx);
+    r1 = BNY_CTX_get(ctx);
+    r2 = BNY_CTX_get(ctx);
     if (r2 == NULL)
         goto err;
 
-    if (!BNY_sub(r1, p, BN_value_one()))
+    if (!BNY_sub(r1, p, BNY_value_one()))
         goto err;
-    if (!BNY_sub(r2, q, BN_value_one()))
+    if (!BNY_sub(r2, q, BNY_value_one()))
         goto err;
     if (!BNY_mul(r0, r1, r2, ctx))
         goto err;
 
     ret = BN_mod_inverse(NULL, d, r0, ctx);
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -114,14 +114,14 @@ BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
     BN_BLINDING *ret = NULL;
 
     if (in_ctx == NULL) {
-        if ((ctx = BN_CTX_new()) == NULL)
+        if ((ctx = BNY_CTX_new()) == NULL)
             return 0;
     } else {
         ctx = in_ctx;
     }
 
-    BN_CTX_start(ctx);
-    e = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    e = BNY_CTX_get(ctx);
     if (e == NULL) {
         YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -138,7 +138,7 @@ BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
     }
 
     {
-        BIGNUM *n = BN_new();
+        BIGNUM *n = BNY_new();
 
         if (n == NULL) {
             YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);
@@ -159,9 +159,9 @@ BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
     BN_BLINDING_set_current_thread(ret);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     if (ctx != in_ctx)
-        BN_CTX_free(ctx);
+        BNY_CTX_free(ctx);
     if (e != rsa->e)
         BN_free(e);
 

@@ -530,9 +530,9 @@ int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
     }
     top = al + bl;
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
     if ((r == a) || (r == b)) {
-        if ((rr = BN_CTX_get(ctx)) == NULL)
+        if ((rr = BNY_CTX_get(ctx)) == NULL)
             goto err;
     } else
         rr = r;
@@ -568,15 +568,15 @@ int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
              * two numbers
              */
             if (i >= 0) {
-                j = BN_num_bits_word((BN_ULONG)al);
+                j = BNY_num_bits_word((BN_ULONG)al);
             }
             if (i == -1) {
-                j = BN_num_bits_word((BN_ULONG)bl);
+                j = BNY_num_bits_word((BN_ULONG)bl);
             }
             j = 1 << (j - 1);
             assert(j <= al || j <= bl);
             k = j + j;
-            t = BN_CTX_get(ctx);
+            t = BNY_CTX_get(ctx);
             if (t == NULL)
                 goto err;
             if (al > j || bl > j) {
@@ -609,13 +609,13 @@ int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
 #endif
     rr->neg = a->neg ^ b->neg;
     rr->flags |= BN_FLG_FIXED_TOP;
-    if (r != rr && BN_copy(r, rr) == NULL)
+    if (r != rr && BNY_copy(r, rr) == NULL)
         goto err;
 
     ret = 1;
  err:
     bn_check_top(r);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 

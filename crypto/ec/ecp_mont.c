@@ -96,7 +96,7 @@ void ec_GFp_mont_group_clear_finish(EC_GROUP *group)
 {
     BN_MONT_CTX_free(group->field_data1);
     group->field_data1 = NULL;
-    BN_clear_free(group->field_data2);
+    BNY_clear_free(group->field_data2);
     group->field_data2 = NULL;
     ec_GFp_simple_group_clear_finish(group);
 }
@@ -105,7 +105,7 @@ int ec_GFp_mont_group_copy(EC_GROUP *dest, const EC_GROUP *src)
 {
     BN_MONT_CTX_free(dest->field_data1);
     dest->field_data1 = NULL;
-    BN_clear_free(dest->field_data2);
+    BNY_clear_free(dest->field_data2);
     dest->field_data2 = NULL;
 
     if (!ec_GFp_simple_group_copy(dest, src))
@@ -146,7 +146,7 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     group->field_data2 = NULL;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             return 0;
     }
@@ -158,10 +158,10 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
         ECerr(EC_F_EC_GFP_MONT_GROUP_SET_CURVE, ERR_R_BN_LIB);
         goto err;
     }
-    one = BN_new();
+    one = BNY_new();
     if (one == NULL)
         goto err;
-    if (!BN_to_montgomery(one, BN_value_one(), mont, ctx))
+    if (!BN_to_montgomery(one, BNY_value_one(), mont, ctx))
         goto err;
 
     group->field_data1 = mont;
@@ -180,7 +180,7 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
 
  err:
     BN_free(one);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_free(new_ctx);
     BN_MONT_CTX_free(mont);
     return ret;
 }
@@ -222,11 +222,11 @@ int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     if (group->field_data1 == NULL)
         return 0;
 
-    if (ctx == NULL && (ctx = new_ctx = BN_CTX_secure_new()) == NULL)
+    if (ctx == NULL && (ctx = new_ctx = BNY_CTX_secure_new()) == NULL)
         return 0;
 
-    BN_CTX_start(ctx);
-    if ((e = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((e = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     /* Inverse in constant time with Fermats Little Theorem */
@@ -250,8 +250,8 @@ int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     ret = 1;
 
   err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -285,7 +285,7 @@ int ec_GFp_mont_field_set_to_one(const EC_GROUP *group, BIGNUM *r,
         return 0;
     }
 
-    if (!BN_copy(r, group->field_data2))
+    if (!BNY_copy(r, group->field_data2))
         return 0;
     return 1;
 }

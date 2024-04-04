@@ -1537,7 +1537,7 @@ static int test_EVVP_PKEY_check(int i)
             goto done;
         break;
     case 2:
-        if (!TEST_ptr(eckey = d2i_ECParameters(NULL, &p, input_len))
+        if (!TEST_ptr(eckey = d2i_ECCParameters(NULL, &p, input_len))
             || !TEST_ptr_eq(p, input + input_len)
             || !TEST_ptr(pkey = EVVP_PKEY_new())
             || !TEST_true(EVVP_PKEY_assign_EC_KEY(pkey, eckey)))

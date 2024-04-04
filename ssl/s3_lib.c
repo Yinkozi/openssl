@@ -3451,7 +3451,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
                 SSLerr(SSL_F_SSL3_CTRL, ERR_R_PASSED_NULL_PARAMETER);
                 return 0;
             }
-            group = EC_KEY_get0_group((const EC_KEY *)parg);
+            group = ECC_KEY_get0_group((const EC_KEY *)parg);
             if (group == NULL) {
                 SSLerr(SSL_F_SSL3_CTRL, EC_R_MISSING_PARAMETERS);
                 return 0;
@@ -3812,7 +3812,7 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
                 SSLerr(SSL_F_SSL3_CTX_CTRL, ERR_R_PASSED_NULL_PARAMETER);
                 return 0;
             }
-            group = EC_KEY_get0_group((const EC_KEY *)parg);
+            group = ECC_KEY_get0_group((const EC_KEY *)parg);
             if (group == NULL) {
                 SSLerr(SSL_F_SSL3_CTX_CTRL, EC_R_MISSING_PARAMETERS);
                 return 0;

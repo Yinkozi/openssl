@@ -452,7 +452,7 @@ class Backend(BackendInterface):
 
         bn_num_bytes = self._lib.BN_num_bytes(bn)
         bin_ptr = self._ffi.new("unsigned char[]", bn_num_bytes)
-        bin_len = self._lib.BN_bn2bin(bn, bin_ptr)
+        bin_len = self._lib.BNY_bn2bin(bn, bin_ptr)
         # A zero length means the BN has value 0
         self.openssl_assert(bin_len >= 0)
         val = int.from_bytes(self._ffi.buffer(bin_ptr)[:bin_len], "big")
@@ -471,7 +471,7 @@ class Backend(BackendInterface):
             bn = self._ffi.NULL
 
         binary = num.to_bytes(int(num.bit_length() / 8.0 + 1), "big")
-        bn_ptr = self._lib.BN_bin2bn(binary, len(binary), bn)
+        bn_ptr = self._lib.BNY_bin2bn(binary, len(binary), bn)
         self.openssl_assert(bn_ptr != self._ffi.NULL)
         return bn_ptr
 
@@ -1512,7 +1512,7 @@ class Backend(BackendInterface):
         if self.elliptic_curve_supported(curve):
             ec_cdata = self._ec_key_new_by_curve(curve)
 
-            res = self._lib.EC_KEY_generate_key(ec_cdata)
+            res = self._lib.ECC_KEY_generate_key(ec_cdata)
             self.openssl_assert(res == 1)
 
             evp_pkey = self._ec_cdata_to_evp_pkey(ec_cdata)
@@ -1530,9 +1530,9 @@ class Backend(BackendInterface):
         ec_cdata = self._ec_key_new_by_curve(public.curve)
 
         private_value = self._ffi.gc(
-            self._int_to_bn(numbers.private_value), self._lib.BN_clear_free
+            self._int_to_bn(numbers.private_value), self._lib.BNY_clear_free
         )
-        res = self._lib.EC_KEY_set_private_key(ec_cdata, private_value)
+        res = self._lib.ECC_KEY_set_private_key(ec_cdata, private_value)
         self.openssl_assert(res == 1)
 
         ec_cdata = self._ec_key_set_public_key_affine_coordinates(
@@ -1554,7 +1554,7 @@ class Backend(BackendInterface):
 
     def load_elliptic_curve_public_bytes(self, curve, point_bytes):
         ec_cdata = self._ec_key_new_by_curve(curve)
-        group = self._lib.EC_KEY_get0_group(ec_cdata)
+        group = self._lib.ECC_KEY_get0_group(ec_cdata)
         self.openssl_assert(group != self._ffi.NULL)
         point = self._lib.EC_POINT_new(group)
         self.openssl_assert(point != self._ffi.NULL)
@@ -1567,7 +1567,7 @@ class Backend(BackendInterface):
                 self._consume_errors()
                 raise ValueError("Invalid public bytes for the given curve")
 
-        res = self._lib.EC_KEY_set_public_key(ec_cdata, point)
+        res = self._lib.ECC_KEY_set_public_key(ec_cdata, point)
         self.openssl_assert(res == 1)
         evp_pkey = self._ec_cdata_to_evp_pkey(ec_cdata)
         return _EllipticCurvePublicKey(self, ec_cdata, evp_pkey)
@@ -1582,7 +1582,7 @@ class Backend(BackendInterface):
         point = self._ffi.gc(point, self._lib.EC_POINT_free)
 
         value = self._int_to_bn(private_value)
-        value = self._ffi.gc(value, self._lib.BN_clear_free)
+        value = self._ffi.gc(value, self._lib.BNY_clear_free)
 
         with self._tmp_bn_ctx() as bn_ctx:
             res = self._lib.EC_POINT_mul(
@@ -1590,17 +1590,17 @@ class Backend(BackendInterface):
             )
             self.openssl_assert(res == 1)
 
-            bn_x = self._lib.BN_CTX_get(bn_ctx)
-            bn_y = self._lib.BN_CTX_get(bn_ctx)
+            bn_x = self._lib.BNY_CTX_get(bn_ctx)
+            bn_y = self._lib.BNY_CTX_get(bn_ctx)
 
             res = get_func(group, point, bn_x, bn_y, bn_ctx)
             self.openssl_assert(res == 1)
 
-        res = self._lib.EC_KEY_set_public_key(ec_cdata, point)
+        res = self._lib.ECC_KEY_set_public_key(ec_cdata, point)
         self.openssl_assert(res == 1)
         private = self._int_to_bn(private_value)
-        private = self._ffi.gc(private, self._lib.BN_clear_free)
-        res = self._lib.EC_KEY_set_private_key(ec_cdata, private)
+        private = self._ffi.gc(private, self._lib.BNY_clear_free)
+        res = self._lib.ECC_KEY_set_private_key(ec_cdata, private)
         self.openssl_assert(res == 1)
 
         evp_pkey = self._ec_cdata_to_evp_pkey(ec_cdata)
@@ -1612,7 +1612,7 @@ class Backend(BackendInterface):
         return self._ec_key_new_by_curve_nid(curve_nid)
 
     def _ec_key_new_by_curve_nid(self, curve_nid):
-        ec_cdata = self._lib.EC_KEY_new_by_curve_name(curve_nid)
+        ec_cdata = self._lib.ECC_KEY_new_by_curve_name(curve_nid)
         self.openssl_assert(ec_cdata != self._ffi.NULL)
         return self._ffi.gc(ec_cdata, self._lib.EC_KEY_free)
 
@@ -1790,14 +1790,14 @@ class Backend(BackendInterface):
 
     @contextmanager
     def _tmp_bn_ctx(self):
-        bn_ctx = self._lib.BN_CTX_new()
+        bn_ctx = self._lib.BNY_CTX_new()
         self.openssl_assert(bn_ctx != self._ffi.NULL)
-        bn_ctx = self._ffi.gc(bn_ctx, self._lib.BN_CTX_free)
-        self._lib.BN_CTX_start(bn_ctx)
+        bn_ctx = self._ffi.gc(bn_ctx, self._lib.BNY_CTX_free)
+        self._lib.BNY_CTX_start(bn_ctx)
         try:
             yield bn_ctx
         finally:
-            self._lib.BN_CTX_end(bn_ctx)
+            self._lib.BNY_CTX_end(bn_ctx)
 
     def _ec_key_determine_group_get_func(self, ctx):
         """
@@ -1809,7 +1809,7 @@ class Backend(BackendInterface):
         nid_two_field = self._lib.OBJ_sn2nid(b"characteristic-two-field")
         self.openssl_assert(nid_two_field != self._lib.NID_undef)
 
-        group = self._lib.EC_KEY_get0_group(ctx)
+        group = self._lib.ECC_KEY_get0_group(ctx)
         self.openssl_assert(group != self._ffi.NULL)
 
         method = self._lib.EC_GROUP_method_of(group)
@@ -1840,7 +1840,7 @@ class Backend(BackendInterface):
 
         x = self._ffi.gc(self._int_to_bn(x), self._lib.BN_free)
         y = self._ffi.gc(self._int_to_bn(y), self._lib.BN_free)
-        res = self._lib.EC_KEY_set_public_key_affine_coordinates(ctx, x, y)
+        res = self._lib.ECC_KEY_set_public_key_affine_coordinates(ctx, x, y)
         if res != 1:
             self._consume_errors()
             raise ValueError("Invalid EC key.")

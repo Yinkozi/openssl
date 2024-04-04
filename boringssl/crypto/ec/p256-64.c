@@ -92,7 +92,7 @@ static void smallfelem_to_bin32(u8 out[32], const smallfelem in) {
   *((u64 *)&out[24]) = in[3];
 }
 
-/* To preserve endianness when using BN_bn2bin and BN_bin2bn. */
+/* To preserve endianness when using BNY_bn2bin and BNY_bin2bn. */
 static void flip_endian(u8 *out, const u8 *in, size_t len) {
   for (size_t i = 0; i < len; ++i) {
     out[i] = in[len - 1 - i];
@@ -107,7 +107,7 @@ static int BN_to_felem(felem out, const BIGNUM *bn) {
   }
 
   felem_bytearray b_out;
-  /* BN_bn2bin eats leading zeroes */
+  /* BNY_bn2bin eats leading zeroes */
   OPENSSL_memset(b_out, 0, sizeof(b_out));
   size_t num_bytes = BN_num_bytes(bn);
   if (num_bytes > sizeof(b_out)) {
@@ -116,7 +116,7 @@ static int BN_to_felem(felem out, const BIGNUM *bn) {
   }
 
   felem_bytearray b_in;
-  num_bytes = BN_bn2bin(bn, b_in);
+  num_bytes = BNY_bn2bin(bn, b_in);
   flip_endian(b_out, b_in, num_bytes);
   bin32_to_felem(out, b_out);
   return 1;
@@ -127,7 +127,7 @@ static BIGNUM *smallfelem_to_BN(BIGNUM *out, const smallfelem in) {
   felem_bytearray b_in, b_out;
   smallfelem_to_bin32(b_in, in);
   flip_endian(b_out, b_in, sizeof(b_out));
-  return BN_bin2bn(b_out, sizeof(b_out), out);
+  return BNY_bin2bn(b_out, sizeof(b_out), out);
 }
 
 /* Field operations. */
@@ -1588,17 +1588,17 @@ static int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
   felem x_out, y_out, z_out;
 
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       return 0;
     }
   }
 
-  BN_CTX_start(ctx);
-  if ((x = BN_CTX_get(ctx)) == NULL ||
-      (y = BN_CTX_get(ctx)) == NULL ||
-      (z = BN_CTX_get(ctx)) == NULL ||
-      (tmp_scalar = BN_CTX_get(ctx)) == NULL) {
+  BNY_CTX_start(ctx);
+  if ((x = BNY_CTX_get(ctx)) == NULL ||
+      (y = BNY_CTX_get(ctx)) == NULL ||
+      (z = BNY_CTX_get(ctx)) == NULL ||
+      (tmp_scalar = BNY_CTX_get(ctx)) == NULL) {
     goto err;
   }
 
@@ -1609,15 +1609,15 @@ static int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
     OPENSSL_memset(&p_pre_comp, 0, sizeof(p_pre_comp));
     size_t num_bytes;
     /* Reduce g_scalar to 0 <= g_scalar < 2^256. */
-    if (BN_num_bits(p_scalar) > 256 || BN_is_negative(p_scalar)) {
+    if (BNY_num_bits(p_scalar) > 256 || BN_is_negative(p_scalar)) {
       /* This is an unusual input, and we don't guarantee constant-timeness. */
       if (!BNY_nnmod(tmp_scalar, p_scalar, &group->order, ctx)) {
         OPENSSL_PUT_ERROR(EC, ERR_R_BN_LIB);
         goto err;
       }
-      num_bytes = BN_bn2bin(tmp_scalar, tmp);
+      num_bytes = BNY_bn2bin(tmp_scalar, tmp);
     } else {
-      num_bytes = BN_bn2bin(p_scalar, tmp);
+      num_bytes = BNY_bn2bin(p_scalar, tmp);
     }
     flip_endian(p_secret, tmp, num_bytes);
     /* Precompute multiples. */
@@ -1649,16 +1649,16 @@ static int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
 
     OPENSSL_memset(g_secret, 0, sizeof(g_secret));
     /* reduce g_scalar to 0 <= g_scalar < 2^256 */
-    if (BN_num_bits(g_scalar) > 256 || BN_is_negative(g_scalar)) {
+    if (BNY_num_bits(g_scalar) > 256 || BN_is_negative(g_scalar)) {
       /* this is an unusual input, and we don't guarantee
        * constant-timeness. */
       if (!BNY_nnmod(tmp_scalar, g_scalar, &group->order, ctx)) {
         OPENSSL_PUT_ERROR(EC, ERR_R_BN_LIB);
         goto err;
       }
-      num_bytes = BN_bn2bin(tmp_scalar, tmp);
+      num_bytes = BNY_bn2bin(tmp_scalar, tmp);
     } else {
-      num_bytes = BN_bn2bin(g_scalar, tmp);
+      num_bytes = BNY_bn2bin(g_scalar, tmp);
     }
     flip_endian(g_secret, tmp, num_bytes);
   }
@@ -1680,8 +1680,8 @@ static int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
   ret = ec_point_set_Jprojective_coordinates_GFp(group, r, x, y, z, ctx);
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(new_ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 

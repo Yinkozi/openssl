@@ -109,17 +109,17 @@ static int generate_key(DH *dh)
     BN_MONT_CTX *mont = NULL;
     BIGNUM *pub_key = NULL, *priv_key = NULL;
 
-    if (BN_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
+    if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
         DHerr(DH_F_GENERATE_KEY, DH_R_MODULUS_TOO_LARGE);
         return 0;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
 
     if (dh->priv_key == NULL) {
-        priv_key = BN_secure_new();
+        priv_key = BNY_secure_new();
         if (priv_key == NULL)
             goto err;
         generate_new_key = 1;
@@ -127,7 +127,7 @@ static int generate_key(DH *dh)
         priv_key = dh->priv_key;
 
     if (dh->pub_key == NULL) {
-        pub_key = BN_new();
+        pub_key = BNY_new();
         if (pub_key == NULL)
             goto err;
     } else
@@ -143,14 +143,14 @@ static int generate_key(DH *dh)
     if (generate_new_key) {
         if (dh->q) {
             do {
-                if (!BN_priv_rand_range(priv_key, dh->q))
+                if (!BNY_priv_rand_range(priv_key, dh->q))
                     goto err;
             }
             while (BN_is_zero(priv_key) || BN_is_one(priv_key));
         } else {
             /* secret exponent length */
-            l = dh->length ? dh->length : BN_num_bits(dh->p) - 1;
-            if (!BN_priv_rand(priv_key, l, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
+            l = dh->length ? dh->length : BNY_num_bits(dh->p) - 1;
+            if (!BNY_priv_rand(priv_key, l, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
                 goto err;
             /*
              * We handle just one known case where g is a quadratic non-residue:
@@ -165,18 +165,18 @@ static int generate_key(DH *dh)
     }
 
     {
-        BIGNUM *prk = BN_new();
+        BIGNUM *prk = BNY_new();
 
         if (prk == NULL)
             goto err;
         BN_with_flags(prk, priv_key, BN_FLG_CONSTTIME);
 
         if (!dh->meth->bn_mod_exp(dh, pub_key, dh->g, prk, dh->p, ctx, mont)) {
-            BN_clear_free(prk);
+            BNY_clear_free(prk);
             goto err;
         }
         /* We MUST free prk before any further use of priv_key */
-        BN_clear_free(prk);
+        BNY_clear_free(prk);
     }
 
     dh->pub_key = pub_key;
@@ -190,7 +190,7 @@ static int generate_key(DH *dh)
         BN_free(pub_key);
     if (priv_key != dh->priv_key)
         BN_free(priv_key);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }
 
@@ -202,16 +202,16 @@ static int compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
     int ret = -1;
     int check_result;
 
-    if (BN_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
+    if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
         DHerr(DH_F_COMPUTE_KEY, DH_R_MODULUS_TOO_LARGE);
         goto err;
     }
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    tmp = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL)
         goto err;
 
@@ -239,10 +239,10 @@ static int compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
         goto err;
     }
 
-    ret = BN_bn2binpad(tmp, key, BN_num_bytes(dh->p));
+    ret = BNY_bn2binpad(tmp, key, BN_num_bytes(dh->p));
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ret;
 }
 

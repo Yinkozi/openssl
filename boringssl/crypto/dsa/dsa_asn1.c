@@ -66,7 +66,7 @@
 
 static int parse_integer(CBS *cbs, BIGNUM **out) {
   assert(*out == NULL);
-  *out = BN_new();
+  *out = BNY_new();
   if (*out == NULL) {
     return 0;
   }

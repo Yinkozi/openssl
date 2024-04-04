@@ -81,7 +81,7 @@ static int bnrand(BNRAND_FLAG flag, BIGNUM *rnd, int bits, int top, int bottom)
     buf[0] &= ~mask;
     if (bottom)                 /* set bottom bit if requested */
         buf[bytes - 1] |= 1;
-    if (!BN_bin2bn(buf, bytes, rnd))
+    if (!BNY_bin2bn(buf, bytes, rnd))
         goto err;
     ret = 1;
  err:
@@ -94,7 +94,7 @@ toosmall:
     return 0;
 }
 
-int BN_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom)
 {
     return bnrand(NORMAL, rnd, bits, top, bottom);
 }
@@ -104,7 +104,7 @@ int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
     return bnrand(TESTING, rnd, bits, top, bottom);
 }
 
-int BN_priv_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_priv_rand(BIGNUM *rnd, int bits, int top, int bottom)
 {
     return bnrand(PRIVATE, rnd, bits, top, bottom);
 }
@@ -120,7 +120,7 @@ static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
         return 0;
     }
 
-    n = BN_num_bits(range);     /* n > 0 */
+    n = BNY_num_bits(range);     /* n > 0 */
 
     /* BN_is_bit_set(range, n - 1) always holds */
 
@@ -174,29 +174,29 @@ static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
     return 1;
 }
 
-int BN_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_rand_range(BIGNUM *r, const BIGNUM *range)
 {
     return bnrand_range(NORMAL, r, range);
 }
 
-int BN_priv_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_priv_rand_range(BIGNUM *r, const BIGNUM *range)
 {
     return bnrand_range(PRIVATE, r, range);
 }
 
-int BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom)
 {
-    return BN_rand(rnd, bits, top, bottom);
+    return BNY_rand(rnd, bits, top, bottom);
 }
 
-int BN_pseudo_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_pseudo_rand_range(BIGNUM *r, const BIGNUM *range)
 {
-    return BN_rand_range(r, range);
+    return BNY_rand_range(r, range);
 }
 
 /*
  * BN_generate_dsa_nonce generates a random number 0 <= out < range. Unlike
- * BN_rand_range, it also includes the contents of |priv| and |message| in
+ * BNY_rand_range, it also includes the contents of |priv| and |message| in
  * the generation so that an RNG failure isn't fatal as long as |priv|
  * remains secret. This is intended for use in DSA and ECDSA where an RNG
  * weakness leads directly to private key exposure unless this function is
@@ -225,7 +225,7 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range,
         goto err;
 
     /* We copy |priv| into a local buffer to avoid exposing its length. */
-    if (BN_bn2binpad(priv, private_bytes, sizeof(private_bytes)) < 0) {
+    if (BNY_bn2binpad(priv, private_bytes, sizeof(private_bytes)) < 0) {
         /*
          * No reasonable DSA or ECDSA key should have a private key this
          * large and we don't handle this case in order to avoid leaking the
@@ -252,7 +252,7 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range,
         done += todo;
     }
 
-    if (!BN_bin2bn(k_bytes, num_k_bytes, out))
+    if (!BNY_bin2bn(k_bytes, num_k_bytes, out))
         goto err;
     if (BN_mod(out, out, range, ctx) != 1)
         goto err;

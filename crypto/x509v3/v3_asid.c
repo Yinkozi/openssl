@@ -297,7 +297,7 @@ static int ASIdentifierChoice_is_canonical(ASIdentifierChoice *choice)
         /*
          * Calculate a_max + 1 to check for adjacency.
          */
-        if ((bn == NULL && (bn = BN_new()) == NULL) ||
+        if ((bn == NULL && (bn = BNY_new()) == NULL) ||
             YASN1_INTEGER_to_BN(a_max, bn) == NULL ||
             !BNY_add_word(bn, 1)) {
             YX509V3err(YX509V3_F_ASIDENTIFIERCHOICE_IS_CANONICAL,
@@ -422,7 +422,7 @@ static int ASIdentifierChoice_canonize(ASIdentifierChoice *choice)
         /*
          * Calculate a_max + 1 to check for adjacency.
          */
-        if ((bn == NULL && (bn = BN_new()) == NULL) ||
+        if ((bn == NULL && (bn = BNY_new()) == NULL) ||
             YASN1_INTEGER_to_BN(a_max, bn) == NULL ||
             !BNY_add_word(bn, 1)) {
             YX509V3err(YX509V3_F_ASIDENTIFIERCHOICE_CANONIZE,

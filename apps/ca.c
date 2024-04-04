@@ -837,7 +837,7 @@ end_of_options:
         }
 
         if (rand_ser) {
-            if ((serial = BN_new()) == NULL || !rand_serial(serial, NULL)) {
+            if ((serial = BNY_new()) == NULL || !rand_serial(serial, NULL)) {
                 BIO_pprintf(bio_err, "error generating serial number\n");
                 goto end;
             }

@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-BN_zero, BN_one, BN_value_one, BN_set_word, BN_get_word - BIGNUM assignment
+BN_zero, BN_one, BNY_value_one, BN_set_word, BN_get_word - BIGNUM assignment
 operations
 
 =head1 SYNOPSIS
@@ -12,7 +12,7 @@ operations
  void BN_zero(BIGNUM *a);
  int BN_one(BIGNUM *a);
 
- const BIGNUM *BN_value_one(void);
+ const BIGNUM *BNY_value_one(void);
 
  int BN_set_word(BIGNUM *a, BN_ULONG w);
  unsigned BN_ULONG BN_get_word(BIGNUM *a);
@@ -25,7 +25,7 @@ for the most efficient implementation on the local platform.
 BN_zero(), BN_one() and BN_set_word() set B<a> to the values 0, 1 and
 B<w> respectively.  BN_zero() and BN_one() are macros.
 
-BN_value_one() returns a B<BIGNUM> constant of value 1. This constant
+BNY_value_one() returns a B<BIGNUM> constant of value 1. This constant
 is useful for use in comparisons and assignment.
 
 BN_get_word() returns B<a>, if it can be represented as a B<BN_ULONG>.
@@ -36,7 +36,7 @@ BN_get_word() returns the value B<a>, or all-bits-set if B<a> cannot
 be represented as a single integer.
 
 BN_one() and BN_set_word() return 1 on success, 0 otherwise.
-BN_value_one() returns the constant.
+BNY_value_one() returns the constant.
 BN_zero() never fails and returns no value.
 
 =head1 BUGS
@@ -49,7 +49,7 @@ B<BN_ULONG> should probably be a typedef.
 
 =head1 SEE ALSO
 
-L<BN_bn2bin(3)>
+L<BNY_bn2bin(3)>
 
 =head1 HISTORY
 

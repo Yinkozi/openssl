@@ -618,7 +618,7 @@ static int lend_tobn(BIGNUM *bn, unsigned char *bin, int binlen)
         bin[binlen - i - 1] = c;
     }
 
-    if (!BN_bin2bn(bin, binlen, bn))
+    if (!BNY_bin2bn(bin, binlen, bn))
         return 0;
     return 1;
 }
@@ -674,8 +674,8 @@ static EVVP_PKEY *capi_get_pkey(ENGINE *eng, CAPI_KEY *key)
         if (!rkey)
             goto memerr;
 
-        e = BN_new();
-        n = BN_new();
+        e = BNY_new();
+        n = BNY_new();
 
         if (e == NULL || n == NULL) {
             BN_free(e);
@@ -720,10 +720,10 @@ static EVVP_PKEY *capi_get_pkey(ENGINE *eng, CAPI_KEY *key)
         dkey = DSA_new_method(eng);
         if (!dkey)
             goto memerr;
-        p = BN_new();
-        q = BN_new();
-        g = BN_new();
-        pub_key = BN_new();
+        p = BNY_new();
+        q = BNY_new();
+        g = BNY_new();
+        pub_key = BNY_new();
         if (p == NULL || q == NULL || g == NULL || pub_key == NULL) {
             BN_free(p);
             BN_free(q);
@@ -1036,7 +1036,7 @@ static DSA_SIG *capi_dsa_do_sign(const unsigned char *digest, int dlen,
         capi_addlasterror();
         goto err;
     } else {
-        BIGNUM *r = BN_new(), *s = BN_new();
+        BIGNUM *r = BNY_new(), *s = BNY_new();
 
         if (r == NULL || s == NULL
             || !lend_tobn(r, csigbuf, 20)

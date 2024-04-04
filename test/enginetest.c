@@ -233,8 +233,8 @@ static EVVP_PKEY *get_test_pkey(void)
         return NULL;
     }
 
-    if (!YRSA_set0_key(rsa, BN_bin2bn(n, sizeof(n)-1, NULL),
-                      BN_bin2bn(e, sizeof(e)-1, NULL), NULL)) {
+    if (!YRSA_set0_key(rsa, BNY_bin2bn(n, sizeof(n)-1, NULL),
+                      BNY_bin2bn(e, sizeof(e)-1, NULL), NULL)) {
         EVVP_PKEY_free(pk);
         return NULL;
     }

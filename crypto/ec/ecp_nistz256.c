@@ -642,10 +642,10 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
         P256_POINT *row = table[i];
 
         /* This is an unusual input, we don't guarantee constant-timeness. */
-        if ((BN_num_bits(scalar[i]) > 256) || BN_is_negative(scalar[i])) {
+        if ((BNY_num_bits(scalar[i]) > 256) || BN_is_negative(scalar[i])) {
             BIGNUM *mod;
 
-            if ((mod = BN_CTX_get(ctx)) == NULL)
+            if ((mod = BNY_CTX_get(ctx)) == NULL)
                 goto err;
             if (!BNY_nnmod(mod, scalar[i], group->order, ctx)) {
                 ECerr(EC_F_ECP_NISTZ256_WINDOWED_MUL, ERR_R_BN_LIB);
@@ -844,12 +844,12 @@ __owur static int ecp_nistz256_mult_precompute(EC_GROUP *group, BN_CTX *ctx)
         return 0;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             goto err;
     }
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     order = EC_GROUP_get0_order(group);
     if (order == NULL)
@@ -919,8 +919,8 @@ __owur static int ecp_nistz256_mult_precompute(EC_GROUP *group, BN_CTX *ctx)
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
 
     EC_nistz256_pre_comp_free(pre_comp);
     OPENSSL_free(precomp_storage);
@@ -974,7 +974,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
     }
 
     memset(&p, 0, sizeof(p));
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     if (scalar) {
         generator = EC_GROUP_get0_generator(group);
@@ -1013,7 +1013,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
              * If there is no precomputed data, but the generator is the
              * default, a hardcoded table of precomputed data is used. This
              * is because applications, such as Apache, do not use
-             * EC_KEY_precompute_mult.
+             * ECC_KEY_precompute_mult.
              */
             preComputedTable = ecp_nistz256_precomputed;
         }
@@ -1021,9 +1021,9 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
         if (preComputedTable) {
             BN_ULONG infty;
 
-            if ((BN_num_bits(scalar) > 256)
+            if ((BNY_num_bits(scalar) > 256)
                 || BN_is_negative(scalar)) {
-                if ((tmp_scalar = BN_CTX_get(ctx)) == NULL)
+                if ((tmp_scalar = BNY_CTX_get(ctx)) == NULL)
                     goto err;
 
                 if (!BNY_nnmod(tmp_scalar, scalar, group->order, ctx)) {
@@ -1162,7 +1162,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
     ret = 1;
 
 err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     OPENSSL_free(new_points);
     OPENSSL_free(new_scalars);
     return ret;
@@ -1325,10 +1325,10 @@ static int ecp_nistz256_inv_mod_ord(const EC_GROUP *group, BIGNUM *r,
         goto err;
     }
 
-    if ((BN_num_bits(x) > 256) || BN_is_negative(x)) {
+    if ((BNY_num_bits(x) > 256) || BN_is_negative(x)) {
         BIGNUM *tmp;
 
-        if ((tmp = BN_CTX_get(ctx)) == NULL
+        if ((tmp = BNY_CTX_get(ctx)) == NULL
             || !BNY_nnmod(tmp, x, group->order, ctx)) {
             ECerr(EC_F_ECP_NISTZ256_INV_MOD_ORD, ERR_R_BN_LIB);
             goto err;

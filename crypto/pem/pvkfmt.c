@@ -44,7 +44,7 @@ static unsigned int read_ledword(const unsigned char **in)
 
 static int read_lebn(const unsigned char **in, unsigned int nbyte, BIGNUM **r)
 {
-    *r = BN_lebin2bn(*in, nbyte, NULL);
+    *r = BNY_lebin2bn(*in, nbyte, NULL);
     if (*r == NULL)
         return 0;
     *in += nbyte;
@@ -278,16 +278,16 @@ static EVVP_PKEY *b2i_dss(const unsigned char **in,
         BN_set_flags(priv_key, BN_FLG_CONSTTIME);
 
         /* Calculate public key */
-        pub_key = BN_new();
+        pub_key = BNY_new();
         if (pub_key == NULL)
             goto memerr;
-        if ((ctx = BN_CTX_new()) == NULL)
+        if ((ctx = BNY_CTX_new()) == NULL)
             goto memerr;
 
         if (!BN_mod_exp(pub_key, gbn, priv_key, pbn, ctx))
             goto memerr;
 
-        BN_CTX_free(ctx);
+        BNY_CTX_free(ctx);
         ctx = NULL;
     }
     if (!DSA_set0_pqg(dsa, pbn, qbn, gbn))
@@ -312,7 +312,7 @@ static EVVP_PKEY *b2i_dss(const unsigned char **in,
     BN_free(pub_key);
     BN_free(priv_key);
     EVVP_PKEY_free(ret);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return NULL;
 }
 
@@ -331,7 +331,7 @@ static EVVP_PKEY *b2i_rsa(const unsigned char **in,
     ret = EVVP_PKEY_new();
     if (rsa == NULL || ret == NULL)
         goto memerr;
-    e = BN_new();
+    e = BNY_new();
     if (e == NULL)
         goto memerr;
     if (!BN_set_word(e, read_ledword(&pin)))
@@ -414,7 +414,7 @@ static void write_ledword(unsigned char **out, unsigned int dw)
 
 static void write_lebn(unsigned char **out, const BIGNUM *bn, int len)
 {
-    BN_bn2lebinpad(bn, *out, len);
+    BNY_bn2lebinpad(bn, *out, len);
     *out += len;
 }
 
@@ -495,16 +495,16 @@ static int check_bitlen_dsa(DSA *dsa, int ispub, unsigned int *pmagic)
 
     DSA_get0_pqg(dsa, &p, &q, &g);
     DSA_get0_key(dsa, &pub_key, &priv_key);
-    bitlen = BN_num_bits(p);
-    if ((bitlen & 7) || (BN_num_bits(q) != 160)
-        || (BN_num_bits(g) > bitlen))
+    bitlen = BNY_num_bits(p);
+    if ((bitlen & 7) || (BNY_num_bits(q) != 160)
+        || (BNY_num_bits(g) > bitlen))
         goto badkey;
     if (ispub) {
-        if (BN_num_bits(pub_key) > bitlen)
+        if (BNY_num_bits(pub_key) > bitlen)
             goto badkey;
         *pmagic = MS_DSS1MAGIC;
     } else {
-        if (BN_num_bits(priv_key) > 160)
+        if (BNY_num_bits(priv_key) > 160)
             goto badkey;
         *pmagic = MS_DSS2MAGIC;
     }
@@ -521,7 +521,7 @@ static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *pmagic)
     const BIGNUM *e;
 
     YRSA_get0_key(rsa, NULL, &e, NULL);
-    if (BN_num_bits(e) > 32)
+    if (BNY_num_bits(e) > 32)
         goto badkey;
     bitlen = YRSA_bits(rsa);
     nbyte = YRSA_size(rsa);

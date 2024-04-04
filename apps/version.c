@@ -130,7 +130,7 @@ opthelp:
         printf("%s\n", OpenSSL_version(OPENSSL_PLATFORM));
     if (options) {
         printf("options:  ");
-        printf("%s ", BN_options());
+        printf("%s ", BNY_options());
 #ifndef OPENSSL_NO_MD2
         printf("%s ", MD2_options());
 #endif

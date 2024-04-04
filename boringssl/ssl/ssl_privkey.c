@@ -319,7 +319,7 @@ int ssl_private_key_type(SSL *ssl) {
       return NID_rsaEncryption;
     case EVVP_PKEY_EC:
       return EC_GROUP_get_curve_name(
-          EC_KEY_get0_group(EVVP_PKEY_get0_EC_KEY(ssl->cert->privatekey)));
+          ECC_KEY_get0_group(EVVP_PKEY_get0_EC_KEY(ssl->cert->privatekey)));
     default:
       return NID_undef;
   }
@@ -423,7 +423,7 @@ static int ssl_sign_ecdsa(SSL *ssl, uint8_t *out, size_t *out_len,
   /* In TLS 1.3, the curve is also specified by the signature algorithm. */
   if (ssl3_protocol_version(ssl) >= TLS1_3_VERSION &&
       (curve == NID_undef ||
-       EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key)) != curve)) {
+       EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key)) != curve)) {
     OPENSSL_PUT_ERROR(SSL, SSL_R_WRONG_SIGNATURE_TYPE);
     return 0;
   }
@@ -450,7 +450,7 @@ static int ssl_verify_ecdsa(SSL *ssl, const uint8_t *signature,
   /* In TLS 1.3, the curve is also specified by the signature algorithm. */
   if (ssl3_protocol_version(ssl) >= TLS1_3_VERSION &&
       (curve == NID_undef ||
-       EC_GROUP_get_curve_name(EC_KEY_get0_group(ec_key)) != curve)) {
+       EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec_key)) != curve)) {
     OPENSSL_PUT_ERROR(SSL, SSL_R_WRONG_SIGNATURE_TYPE);
     return 0;
   }

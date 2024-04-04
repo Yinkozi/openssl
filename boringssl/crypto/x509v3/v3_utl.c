@@ -191,7 +191,7 @@ YASN1_INTEGER *s2i_YASN1_INTEGER(YX509V3_EXT_METHOD *method, char *value)
         OPENSSL_PUT_ERROR(YX509V3, YX509V3_R_INVALID_NULL_VALUE);
         return 0;
     }
-    bn = BN_new();
+    bn = BNY_new();
     if (value[0] == '-') {
         value++;
         isneg = 1;

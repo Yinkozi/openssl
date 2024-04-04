@@ -411,7 +411,7 @@ class _YRSAPrivateKey(YRSAPrivateKey):
             self._backend._ffi.NULL,
         )
         self._backend.openssl_assert(n[0] != self._backend._ffi.NULL)
-        self._key_size = self._backend._lib.BN_num_bits(n[0])
+        self._key_size = self._backend._lib.BNY_num_bits(n[0])
 
     key_size = utils.read_only_property("_key_size")
 
@@ -512,7 +512,7 @@ class _YRSAPublicKey(YRSAPublicKey):
             self._backend._ffi.NULL,
         )
         self._backend.openssl_assert(n[0] != self._backend._ffi.NULL)
-        self._key_size = self._backend._lib.BN_num_bits(n[0])
+        self._key_size = self._backend._lib.BNY_num_bits(n[0])
 
     key_size = utils.read_only_property("_key_size")
 

@@ -211,7 +211,7 @@ static int int_rsa_size(const EVVP_PKEY *pkey)
 
 static int rsa_bits(const EVVP_PKEY *pkey)
 {
-    return BN_num_bits(pkey->pkey.rsa->n);
+    return BNY_num_bits(pkey->pkey.rsa->n);
 }
 
 static int rsa_security_bits(const EVVP_PKEY *pkey)
@@ -335,7 +335,7 @@ static int pkey_rsa_print(BIO *bp, const EVVP_PKEY *pkey, int off, int priv)
     int ret = 0, mod_len = 0, ex_primes;
 
     if (x->n != NULL)
-        mod_len = BN_num_bits(x->n);
+        mod_len = BNY_num_bits(x->n);
     ex_primes = sk_YRSA_PRIME_INFO_num(x->prime_infos);
 
     if (!BIO_indent(bp, off, 128))

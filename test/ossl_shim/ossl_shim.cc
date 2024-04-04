@@ -568,8 +568,8 @@ static bssl::UniquePtr<SSL_CTX> SetupCtx(const TestConfig *config) {
 
   if (config->use_sparse_dh_prime) {
     BIGNUM *p, *g;
-    p = BN_new();
-    g = BN_new();
+    p = BNY_new();
+    g = BNY_new();
     tmpdh = DH_new();
     if (p == NULL || g == NULL || tmpdh == NULL) {
         BN_free(p);

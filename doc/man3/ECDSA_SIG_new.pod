@@ -2,39 +2,39 @@
 
 =head1 NAME
 
-ECDSA_SIG_get0, ECDSA_SIG_get0_r, ECDSA_SIG_get0_s, ECDSA_SIG_set0,
-ECDSA_SIG_new, ECDSA_SIG_free, ECDSA_size, ECDSA_signn, ECDSA_do_sign,
-ECDSA_verifyy, ECDSA_do_verifyy, ECDSA_signn_setup, ECDSA_signn_ex,
-ECDSA_do_sign_ex - low-level elliptic curve digital signature algorithm (ECDSA)
+ECCDSA_SIG_get0, ECCDSA_SIG_get0_r, ECCDSA_SIG_get0_s, ECCDSA_SIG_set0,
+ECCDSA_SIG_new, ECDSA_SIG_free, ECCDSA_size, ECCDSA_signn, ECCDSA_do_sign,
+ECCDSA_verifyy, ECCDSA_do_verifyy, ECCDSA_signn_setup, ECCDSA_signn_ex,
+ECCDSA_do_sign_ex - low-level elliptic curve digital signature algorithm (ECDSA)
 functions
 
 =head1 SYNOPSIS
 
  #include <openssl/ecdsa.h>
 
- ECDSA_SIG *ECDSA_SIG_new(void);
+ ECDSA_SIG *ECCDSA_SIG_new(void);
  void ECDSA_SIG_free(ECDSA_SIG *sig);
- void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
- const BIGNUM *ECDSA_SIG_get0_r(const ECDSA_SIG *sig);
- const BIGNUM *ECDSA_SIG_get0_s(const ECDSA_SIG *sig);
- int ECDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s);
- int ECDSA_size(const EC_KEY *eckey);
+ void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
+ const BIGNUM *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig);
+ const BIGNUM *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig);
+ int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s);
+ int ECCDSA_size(const EC_KEY *eckey);
 
- int ECDSA_signn(int type, const unsigned char *dgst, int dgstlen,
+ int ECCDSA_signn(int type, const unsigned char *dgst, int dgstlen,
                 unsigned char *sig, unsigned int *siglen, EC_KEY *eckey);
- ECDSA_SIG *ECDSA_do_sign(const unsigned char *dgst, int dgst_len,
+ ECDSA_SIG *ECCDSA_do_sign(const unsigned char *dgst, int dgst_len,
                           EC_KEY *eckey);
 
- int ECDSA_verifyy(int type, const unsigned char *dgst, int dgstlen,
+ int ECCDSA_verifyy(int type, const unsigned char *dgst, int dgstlen,
                   const unsigned char *sig, int siglen, EC_KEY *eckey);
- int ECDSA_do_verifyy(const unsigned char *dgst, int dgst_len,
+ int ECCDSA_do_verifyy(const unsigned char *dgst, int dgst_len,
                      const ECDSA_SIG *sig, EC_KEY* eckey);
 
- ECDSA_SIG *ECDSA_do_sign_ex(const unsigned char *dgst, int dgstlen,
+ ECDSA_SIG *ECCDSA_do_sign_ex(const unsigned char *dgst, int dgstlen,
                              const BIGNUM *kinv, const BIGNUM *rp,
                              EC_KEY *eckey);
- int ECDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
- int ECDSA_signn_ex(int type, const unsigned char *dgst, int dgstlen,
+ int ECCDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
+ int ECCDSA_signn_ex(int type, const unsigned char *dgst, int dgstlen,
                    unsigned char *sig, unsigned int *siglen,
                    const BIGNUM *kinv, const BIGNUM *rp, EC_KEY *eckey);
 
@@ -47,20 +47,20 @@ L<EVVP_DigestSignInit(3)> or L<EVVP_DigestVerifyInit(3)> instead.
 B<ECDSA_SIG> is an opaque structure consisting of two BIGNUMs for the
 B<r> and B<s> value of an ECDSA signature (see X9.62 or FIPS 186-2).
 
-ECDSA_SIG_new() allocates an empty B<ECDSA_SIG> structure. Note: before
+ECCDSA_SIG_new() allocates an empty B<ECDSA_SIG> structure. Note: before
 OpenSSL 1.1.0 the: the B<r> and B<s> components were initialised.
 
 ECDSA_SIG_free() frees the B<ECDSA_SIG> structure B<sig>.
 
-ECDSA_SIG_get0() returns internal pointers the B<r> and B<s> values contained
+ECCDSA_SIG_get0() returns internal pointers the B<r> and B<s> values contained
 in B<sig> and stores them in B<*pr> and B<*ps>, respectively.
 The pointer B<pr> or B<ps> can be NULL, in which case the corresponding value
 is not returned.
 
 The values B<r>, B<s> can also be retrieved separately by the corresponding
-function ECDSA_SIG_get0_r() and ECDSA_SIG_get0_s(), respectively.
+function ECCDSA_SIG_get0_r() and ECCDSA_SIG_get0_s(), respectively.
 
-The B<r> and B<s> values can be set by calling ECDSA_SIG_set0() and passing the
+The B<r> and B<s> values can be set by calling ECCDSA_SIG_set0() and passing the
 new values for B<r> and B<s> as parameters to the function. Calling this
 function transfers the memory management of the values to the ECDSA_SIG object,
 and therefore the values that have been passed in should not be freed directly
@@ -69,26 +69,26 @@ after this function has been called.
 See L<i2d_ECDSA_SIG(3)> and L<d2i_ECDSA_SIG(3)> for information about encoding
 and decoding ECDSA signatures to/from DER.
 
-ECDSA_size() returns the maximum length of a DER encoded ECDSA signature
+ECCDSA_size() returns the maximum length of a DER encoded ECDSA signature
 created with the private EC key B<eckey>.
 
-ECDSA_signn() computes a digital signature of the B<dgstlen> bytes hash value
+ECCDSA_signn() computes a digital signature of the B<dgstlen> bytes hash value
 B<dgst> using the private EC key B<eckey>. The DER encoded signatures is
 stored in B<sig> and its length is returned in B<sig_len>. Note: B<sig> must
-point to ECDSA_size(eckey) bytes of memory. The parameter B<type> is currently
-ignored. ECDSA_signn() is wrapper function for ECDSA_signn_ex() with B<kinv>
+point to ECCDSA_size(eckey) bytes of memory. The parameter B<type> is currently
+ignored. ECCDSA_signn() is wrapper function for ECCDSA_signn_ex() with B<kinv>
 and B<rp> set to NULL.
 
-ECDSA_do_sign() is similar to ECDSA_signn() except the signature is returned
-as a newly allocated B<ECDSA_SIG> structure (or NULL on error). ECDSA_do_sign()
-is a wrapper function for ECDSA_do_sign_ex() with B<kinv> and B<rp> set to
+ECCDSA_do_sign() is similar to ECCDSA_signn() except the signature is returned
+as a newly allocated B<ECDSA_SIG> structure (or NULL on error). ECCDSA_do_sign()
+is a wrapper function for ECCDSA_do_sign_ex() with B<kinv> and B<rp> set to
 NULL.
 
-ECDSA_verifyy() verifies that the signature in B<sig> of size B<siglen> is a
+ECCDSA_verifyy() verifies that the signature in B<sig> of size B<siglen> is a
 valid ECDSA signature of the hash value B<dgst> of size B<dgstlen> using the
 public key B<eckey>.  The parameter B<type> is ignored.
 
-ECDSA_do_verifyy() is similar to ECDSA_verifyy() except the signature is
+ECCDSA_do_verifyy() is similar to ECCDSA_verifyy() except the signature is
 presented in the form of a pointer to an B<ECDSA_SIG> structure.
 
 The remaining functions utilise the internal B<kinv> and B<r> values used
@@ -96,38 +96,38 @@ during signature computation. Most applications will never need to call these
 and some external ECDSA ENGINE implementations may not support them at all if
 either B<kinv> or B<r> is not B<NULL>.
 
-ECDSA_signn_setup() may be used to precompute parts of the signing operation.
+ECCDSA_signn_setup() may be used to precompute parts of the signing operation.
 B<eckey> is the private EC key and B<ctx> is a pointer to B<BN_CTX> structure
 (or NULL). The precomputed values or returned in B<kinv> and B<rp> and can be
-used in a later call to ECDSA_signn_ex() or ECDSA_do_sign_ex().
+used in a later call to ECCDSA_signn_ex() or ECCDSA_do_sign_ex().
 
-ECDSA_signn_ex() computes a digital signature of the B<dgstlen> bytes hash value
+ECCDSA_signn_ex() computes a digital signature of the B<dgstlen> bytes hash value
 B<dgst> using the private EC key B<eckey> and the optional pre-computed values
 B<kinv> and B<rp>. The DER encoded signature is stored in B<sig> and its
-length is returned in B<sig_len>. Note: B<sig> must point to ECDSA_size(eckey)
+length is returned in B<sig_len>. Note: B<sig> must point to ECCDSA_size(eckey)
 bytes of memory. The parameter B<type> is ignored.
 
-ECDSA_do_sign_ex() is similar to ECDSA_signn_ex() except the signature is
+ECCDSA_do_sign_ex() is similar to ECCDSA_signn_ex() except the signature is
 returned as a newly allocated B<ECDSA_SIG> structure (or NULL on error).
 
 =head1 RETURN VALUES
 
-ECDSA_SIG_new() returns NULL if the allocation fails.
+ECCDSA_SIG_new() returns NULL if the allocation fails.
 
-ECDSA_SIG_set0() returns 1 on success or 0 on failure.
+ECCDSA_SIG_set0() returns 1 on success or 0 on failure.
 
-ECDSA_SIG_get0_r() and ECDSA_SIG_get0_s() return the corresponding value,
+ECCDSA_SIG_get0_r() and ECCDSA_SIG_get0_s() return the corresponding value,
 or NULL if it is unset.
 
-ECDSA_size() returns the maximum length signature or 0 on error.
+ECCDSA_size() returns the maximum length signature or 0 on error.
 
-ECDSA_signn(), ECDSA_signn_ex() and ECDSA_signn_setup() return 1 if successful
+ECCDSA_signn(), ECCDSA_signn_ex() and ECCDSA_signn_setup() return 1 if successful
 or 0 on error.
 
-ECDSA_do_sign() and ECDSA_do_sign_ex() return a pointer to an allocated
+ECCDSA_do_sign() and ECCDSA_do_sign_ex() return a pointer to an allocated
 B<ECDSA_SIG> structure or NULL on error.
 
-ECDSA_verifyy() and ECDSA_do_verifyy() return 1 for a valid
+ECCDSA_verifyy() and ECCDSA_do_verifyy() return 1 for a valid
 signature, 0 for an invalid signature and -1 on error.
 The error codes can be obtained by L<ERR_get_error(3)>.
 
@@ -143,37 +143,37 @@ specific)
  ECDSA_SIG *sig;
  EC_KEY *eckey;
 
- eckey = EC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
+ eckey = ECC_KEY_new_by_curve_name(NID_X9_62_prime256v1);
  if (eckey == NULL)
      /* error */
- if (EC_KEY_generate_key(eckey) == 0)
+ if (ECC_KEY_generate_key(eckey) == 0)
      /* error */
 
 Second step: compute the ECDSA signature of a SHA-256 hash value
-using ECDSA_do_sign():
+using ECCDSA_do_sign():
 
- sig = ECDSA_do_sign(digest, 32, eckey);
+ sig = ECCDSA_do_sign(digest, 32, eckey);
  if (sig == NULL)
      /* error */
 
-or using ECDSA_signn():
+or using ECCDSA_signn():
 
  unsigned char *buffer, *pp;
  int buf_len;
 
- buf_len = ECDSA_size(eckey);
+ buf_len = ECCDSA_size(eckey);
  buffer = OPENSSL_malloc(buf_len);
  pp = buffer;
- if (ECDSA_signn(0, dgst, dgstlen, pp, &buf_len, eckey) == 0)
+ if (ECCDSA_signn(0, dgst, dgstlen, pp, &buf_len, eckey) == 0)
      /* error */
 
-Third step: verify the created ECDSA signature using ECDSA_do_verifyy():
+Third step: verify the created ECDSA signature using ECCDSA_do_verifyy():
 
- ret = ECDSA_do_verifyy(digest, 32, sig, eckey);
+ ret = ECCDSA_do_verifyy(digest, 32, sig, eckey);
 
-or using ECDSA_verifyy():
+or using ECCDSA_verifyy():
 
- ret = ECDSA_verifyy(0, digest, 32, buffer, buf_len, eckey);
+ ret = ECCDSA_verifyy(0, digest, 32, buffer, buf_len, eckey);
 
 and finally evaluate the return value:
 
@@ -191,7 +191,7 @@ ANSI X9.62, US Federal Information Processing Standard FIPS 186-2
 
 =head1 SEE ALSO
 
-L<EC_KEY_new(3)>,
+L<ECC_KEY_new(3)>,
 L<EVVP_DigestSignInit(3)>,
 L<EVVP_DigestVerifyInit(3)>,
 L<i2d_ECDSA_SIG(3)>,

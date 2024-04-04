@@ -25,7 +25,7 @@ YRSA_bits() returns the number of significant bits.
 B<rsa> and B<rsa-E<gt>n> must not be B<NULL>.
 
 YRSA_security_bits() returns the number of security bits of the given B<rsa>
-key. See L<BN_security_bits(3)>.
+key. See L<BNY_security_bits(3)>.
 
 =head1 RETURN VALUES
 
@@ -37,7 +37,7 @@ YRSA_security_bits() returns the number of security bits.
 
 =head1 SEE ALSO
 
-L<BN_num_bits(3)>
+L<BNY_num_bits(3)>
 
 =head1 HISTORY
 

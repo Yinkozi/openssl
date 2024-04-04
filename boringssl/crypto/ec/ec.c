@@ -291,8 +291,8 @@ static void built_in_curve_scalar_field_monts_init(void) {
     return;
   }
 
-  BIGNUM *order = BN_new();
-  BN_CTX *bn_ctx = BN_CTX_new();
+  BIGNUM *order = BNY_new();
+  BN_CTX *bn_ctx = BNY_CTX_new();
   BN_MONT_CTX *mont_ctx = NULL;
 
   if (bn_ctx == NULL ||
@@ -311,7 +311,7 @@ static void built_in_curve_scalar_field_monts_init(void) {
       goto err;
     }
 
-    if (!BN_bin2bn(params + 5 * param_len, param_len, order) ||
+    if (!BNY_bin2bn(params + 5 * param_len, param_len, order) ||
         !BN_MONT_CTX_set(mont_ctx, order, bn_ctx)) {
       goto err;
     }
@@ -329,7 +329,7 @@ err:
 
 out:
   BN_free(order);
-  BN_CTX_free(bn_ctx);
+  BNY_CTX_free(bn_ctx);
 }
 
 EC_GROUP *ec_group_new(const EC_METHOD *meth) {
@@ -398,7 +398,7 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
   group->generator = EC_POINT_new(group);
   return group->generator != NULL &&
          EC_POINT_copy(group->generator, generator) &&
-         BN_copy(&group->order, order);
+         BNY_copy(&group->order, order);
 }
 
 static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
@@ -408,7 +408,7 @@ static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
   BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
   int ok = 0;
 
-  BN_CTX *ctx = BN_CTX_new();
+  BN_CTX *ctx = BNY_CTX_new();
   if (ctx == NULL) {
     OPENSSL_PUT_ERROR(EC, ERR_R_MALLOC_FAILURE);
     goto err;
@@ -418,9 +418,9 @@ static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
   const unsigned param_len = data->param_len;
   const uint8_t *params = data->data;
 
-  if (!(p = BN_bin2bn(params + 0 * param_len, param_len, NULL)) ||
-      !(a = BN_bin2bn(params + 1 * param_len, param_len, NULL)) ||
-      !(b = BN_bin2bn(params + 2 * param_len, param_len, NULL))) {
+  if (!(p = BNY_bin2bn(params + 0 * param_len, param_len, NULL)) ||
+      !(a = BNY_bin2bn(params + 1 * param_len, param_len, NULL)) ||
+      !(b = BNY_bin2bn(params + 2 * param_len, param_len, NULL))) {
     OPENSSL_PUT_ERROR(EC, ERR_R_BN_LIB);
     goto err;
   }
@@ -437,8 +437,8 @@ static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
     goto err;
   }
 
-  if (!(x = BN_bin2bn(params + 3 * param_len, param_len, NULL)) ||
-      !(y = BN_bin2bn(params + 4 * param_len, param_len, NULL))) {
+  if (!(x = BNY_bin2bn(params + 3 * param_len, param_len, NULL)) ||
+      !(y = BNY_bin2bn(params + 4 * param_len, param_len, NULL))) {
     OPENSSL_PUT_ERROR(EC, ERR_R_BN_LIB);
     goto err;
   }
@@ -447,7 +447,7 @@ static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
     OPENSSL_PUT_ERROR(EC, ERR_R_EC_LIB);
     goto err;
   }
-  if (!BN_bin2bn(params + 5 * param_len, param_len, &group->order)) {
+  if (!BNY_bin2bn(params + 5 * param_len, param_len, &group->order)) {
     OPENSSL_PUT_ERROR(EC, ERR_R_BN_LIB);
     goto err;
   }
@@ -468,7 +468,7 @@ err:
     group = NULL;
   }
   EC_POINT_free(P);
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   BN_free(p);
   BN_free(a);
   BN_free(b);
@@ -543,7 +543,7 @@ EC_GROUP *EC_GROUP_dup(const EC_GROUP *a) {
     }
   }
 
-  if (!BN_copy(&ret->order, &a->order) ||
+  if (!BNY_copy(&ret->order, &a->order) ||
       !ret->meth->group_copy(ret, a)) {
     goto err;
   }
@@ -571,7 +571,7 @@ const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group) {
 }
 
 int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx) {
-  if (BN_copy(order, EC_GROUP_get0_order(group)) == NULL) {
+  if (BNY_copy(order, EC_GROUP_get0_order(group)) == NULL) {
     return 0;
   }
   return 1;

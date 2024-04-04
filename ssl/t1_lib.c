@@ -427,7 +427,7 @@ static uint16_t tls1_get_group_id(EVVP_PKEY *pkey)
 
     if (ec == NULL)
         return 0;
-    grp = EC_KEY_get0_group(ec);
+    grp = ECC_KEY_get0_group(ec);
     return tls1_nid2group_id(EC_GROUP_get_curve_name(grp));
 }
 
@@ -443,10 +443,10 @@ static int tls1_check_pkey_comp(SSL *s, EVVP_PKEY *pkey)
     if (EVVP_PKEY_id(pkey) != EVVP_PKEY_EC)
         return 1;
     ec = EVVP_PKEY_get0_EC_KEY(pkey);
-    grp = EC_KEY_get0_group(ec);
+    grp = ECC_KEY_get0_group(ec);
 
     /* Get required compression id */
-    if (EC_KEY_get_conv_form(ec) == POINT_CONVERSION_UNCOMPRESSED) {
+    if (ECC_KEY_get_conv_form(ec) == POINT_CONVERSION_UNCOMPRESSED) {
             comp_id = TLSEXT_ECPOINTFORMAT_uncompressed;
     } else if (SSL_IS_TLS13(s)) {
             /*
@@ -1080,7 +1080,7 @@ int tls12_check_peer_sigalg(SSL *s, uint16_t sig, EVVP_PKEY *pkey)
         /* For TLS 1.3 or Suite B check curve matches signature algorithm */
         if (SSL_IS_TLS13(s) || tls1_suiteb(s)) {
             EC_KEY *ec = EVVP_PKEY_get0_EC_KEY(pkey);
-            int curve = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+            int curve = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
 
             if (lu->curve != NID_undef && curve != lu->curve) {
                 SSLfatal(s, SSL_AD_ILLEGAL_PARAMETER,
@@ -2457,7 +2457,7 @@ DH *ssl_get_auto_dh(SSL *s)
     dhp = DH_new();
     if (dhp == NULL)
         return NULL;
-    g = BN_new();
+    g = BNY_new();
     if (g == NULL || !BN_set_word(g, 2)) {
         DH_free(dhp);
         BN_free(g);
@@ -2711,7 +2711,7 @@ static const SIGALG_LOOKUP *find_sig_alg(SSL *s, YX509 *x, EVVP_PKEY *pkey)
 #ifndef OPENSSL_NO_EC
             if (curve == -1) {
                 EC_KEY *ec = EVVP_PKEY_get0_EC_KEY(tmppkey);
-                curve = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+                curve = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
             }
             if (lu->curve != NID_undef && curve != lu->curve)
                 continue;
@@ -2776,7 +2776,7 @@ int tls_choose_sigalg(SSL *s, int fatalerrs)
                 /* For Suite B need to match signature algorithm to curve */
                 if (tls1_suiteb(s)) {
                     EC_KEY *ec = EVVP_PKEY_get0_EC_KEY(s->cert->pkeys[SSL_PKEY_ECC].privatekey);
-                    curve = EC_GROUP_get_curve_name(EC_KEY_get0_group(ec));
+                    curve = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
                 } else {
                     curve = -1;
                 }

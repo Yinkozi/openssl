@@ -27,7 +27,7 @@ static int eckey_param2type(int *pptype, void **ppval, const EC_KEY *ec_key)
 {
     const EC_GROUP *group;
     int nid;
-    if (ec_key == NULL || (group = EC_KEY_get0_group(ec_key)) == NULL) {
+    if (ec_key == NULL || (group = ECC_KEY_get0_group(ec_key)) == NULL) {
         ECerr(EC_F_ECKEY_PARAM2TYPE, EC_R_MISSING_PARAMETERS);
         return 0;
     }
@@ -52,14 +52,14 @@ static int eckey_param2type(int *pptype, void **ppval, const EC_KEY *ec_key)
 
         /*
          * The cast in the following line is intentional as the
-         * `i2d_ECParameters` signature can't be constified (see discussion at
+         * `i2d_ECCParameters` signature can't be constified (see discussion at
          * https://github.com/openssl/openssl/pull/9347 where related and
          * required constification backports were rejected).
          *
          * This cast should be safe anyway, because we can expect
-         * `i2d_ECParameters()` to treat the first argument as if it was const.
+         * `i2d_ECCParameters()` to treat the first argument as if it was const.
          */
-        pstr->length = i2d_ECParameters((EC_KEY *)ec_key, &pstr->data);
+        pstr->length = i2d_ECCParameters((EC_KEY *)ec_key, &pstr->data);
         if (pstr->length <= 0) {
             YASN1_STRING_free(pstr);
             ECerr(EC_F_ECKEY_PARAM2TYPE, ERR_R_EC_LIB);
@@ -83,14 +83,14 @@ static int eckey_pub_encode(YX509_PUBKEY *pk, const EVVP_PKEY *pkey)
         ECerr(EC_F_ECKEY_PUB_ENCODE, ERR_R_EC_LIB);
         return 0;
     }
-    penclen = i2o_ECPublicKey(ec_key, NULL);
+    penclen = i2o_ECCPublicKey(ec_key, NULL);
     if (penclen <= 0)
         goto err;
     penc = OPENSSL_malloc(penclen);
     if (penc == NULL)
         goto err;
     p = penc;
-    penclen = i2o_ECPublicKey(ec_key, &p);
+    penclen = i2o_ECCPublicKey(ec_key, &p);
     if (penclen <= 0)
         goto err;
     if (YX509_PUBKEY_set0_param(pk, OBJ_nid2obj(EVVP_PKEY_EC),
@@ -113,7 +113,7 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
         const unsigned char *pm = pstr->data;
         int pmlen = pstr->length;
 
-        if ((eckey = d2i_ECParameters(NULL, &pm, pmlen)) == NULL) {
+        if ((eckey = d2i_ECCParameters(NULL, &pm, pmlen)) == NULL) {
             ECerr(EC_F_ECKEY_TYPE2PARAM, EC_R_DECODE_ERROR);
             goto ecerr;
         }
@@ -123,7 +123,7 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
         /*
          * type == V_YASN1_OBJECT => the parameters are given by an asn1 OID
          */
-        if ((eckey = EC_KEY_new()) == NULL) {
+        if ((eckey = ECC_KEY_new()) == NULL) {
             ECerr(EC_F_ECKEY_TYPE2PARAM, ERR_R_MALLOC_FAILURE);
             goto ecerr;
         }
@@ -131,7 +131,7 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
         if (group == NULL)
             goto ecerr;
         EC_GROUP_set_asn1_flag(group, OPENSSL_EC_NAMED_CURVE);
-        if (EC_KEY_set_group(eckey, group) == 0)
+        if (ECC_KEY_set_group(eckey, group) == 0)
             goto ecerr;
         EC_GROUP_free(group);
     } else {
@@ -167,7 +167,7 @@ static int eckey_pub_decode(EVVP_PKEY *pkey, YX509_PUBKEY *pubkey)
     }
 
     /* We have parameters now set public key */
-    if (!o2i_ECPublicKey(&eckey, &p, pklen)) {
+    if (!o2i_ECCPublicKey(&eckey, &p, pklen)) {
         ECerr(EC_F_ECKEY_PUB_DECODE, EC_R_DECODE_ERROR);
         goto ecerr;
     }
@@ -183,9 +183,9 @@ static int eckey_pub_decode(EVVP_PKEY *pkey, YX509_PUBKEY *pubkey)
 static int eckey_pub_cmp(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
     int r;
-    const EC_GROUP *group = EC_KEY_get0_group(b->pkey.ec);
-    const EC_POINT *pa = EC_KEY_get0_public_key(a->pkey.ec),
-        *pb = EC_KEY_get0_public_key(b->pkey.ec);
+    const EC_GROUP *group = ECC_KEY_get0_group(b->pkey.ec);
+    const EC_POINT *pa = ECC_KEY_get0_public_key(a->pkey.ec),
+        *pb = ECC_KEY_get0_public_key(b->pkey.ec);
     if (group == NULL || pa == NULL || pb == NULL)
         return -2;
     r = EC_POINT_cmp(group, pa, pb, NULL);
@@ -214,7 +214,7 @@ static int eckey_priv_decode(EVVP_PKEY *pkey, const YPKCS8_PRIV_KEY_INFO *p8)
         goto ecliberr;
 
     /* We have parameters now set private key */
-    if (!d2i_ECPrivateKey(&eckey, &p, pklen)) {
+    if (!d2i_ECCPrivateKey(&eckey, &p, pklen)) {
         ECerr(EC_F_ECKEY_PRIV_DECODE, EC_R_DECODE_ERROR);
         goto ecerr;
     }
@@ -248,8 +248,8 @@ static int eckey_priv_encode(YPKCS8_PRIV_KEY_INFO *p8, const EVVP_PKEY *pkey)
      * do not include the parameters in the SEC1 private key see YPKCS#11
      * 12.11
      */
-    old_flags = EC_KEY_get_enc_flags(&ec_key);
-    EC_KEY_set_enc_flags(&ec_key, old_flags | EC_PKEY_NO_PARAMETERS);
+    old_flags = ECC_KEY_get_enc_flags(&ec_key);
+    ECC_KEY_set_enc_flags(&ec_key, old_flags | EC_PKEY_NO_PARAMETERS);
 
     eplen = i2d_ECPrivateKey(&ec_key, NULL);
     if (!eplen) {
@@ -287,12 +287,12 @@ static int eckey_priv_encode(YPKCS8_PRIV_KEY_INFO *p8, const EVVP_PKEY *pkey)
 
 static int int_ec_size(const EVVP_PKEY *pkey)
 {
-    return ECDSA_size(pkey->pkey.ec);
+    return ECCDSA_size(pkey->pkey.ec);
 }
 
 static int ec_bits(const EVVP_PKEY *pkey)
 {
-    return EC_GROUP_order_bits(EC_KEY_get0_group(pkey->pkey.ec));
+    return EC_GROUP_order_bits(ECC_KEY_get0_group(pkey->pkey.ec));
 }
 
 static int ec_security_bits(const EVVP_PKEY *pkey)
@@ -313,23 +313,23 @@ static int ec_security_bits(const EVVP_PKEY *pkey)
 
 static int ec_missing_parameters(const EVVP_PKEY *pkey)
 {
-    if (pkey->pkey.ec == NULL || EC_KEY_get0_group(pkey->pkey.ec) == NULL)
+    if (pkey->pkey.ec == NULL || ECC_KEY_get0_group(pkey->pkey.ec) == NULL)
         return 1;
     return 0;
 }
 
 static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
 {
-    EC_GROUP *group = EC_GROUP_dup(EC_KEY_get0_group(from->pkey.ec));
+    EC_GROUP *group = EC_GROUP_dup(ECC_KEY_get0_group(from->pkey.ec));
 
     if (group == NULL)
         return 0;
     if (to->pkey.ec == NULL) {
-        to->pkey.ec = EC_KEY_new();
+        to->pkey.ec = ECC_KEY_new();
         if (to->pkey.ec == NULL)
             goto err;
     }
-    if (EC_KEY_set_group(to->pkey.ec, group) == 0)
+    if (ECC_KEY_set_group(to->pkey.ec, group) == 0)
         goto err;
     EC_GROUP_free(group);
     return 1;
@@ -340,8 +340,8 @@ static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
 
 static int ec_cmp_parameters(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
-    const EC_GROUP *group_a = EC_KEY_get0_group(a->pkey.ec),
-        *group_b = EC_KEY_get0_group(b->pkey.ec);
+    const EC_GROUP *group_a = ECC_KEY_get0_group(a->pkey.ec),
+        *group_b = ECC_KEY_get0_group(b->pkey.ec);
     if (group_a == NULL || group_b == NULL)
         return -2;
     if (EC_GROUP_cmp(group_a, group_b, NULL))
@@ -361,7 +361,7 @@ typedef enum {
     EC_KEY_PRINT_PARAM
 } ec_print_t;
 
-static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
+static int do_ECC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
 {
     const char *ecstr;
     unsigned char *priv = NULL, *pub = NULL;
@@ -369,19 +369,19 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
     int ret = 0;
     const EC_GROUP *group;
 
-    if (x == NULL || (group = EC_KEY_get0_group(x)) == NULL) {
+    if (x == NULL || (group = ECC_KEY_get0_group(x)) == NULL) {
         ECerr(EC_F_DO_EC_KEY_PRINT, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
 
-    if (ktype != EC_KEY_PRINT_PARAM && EC_KEY_get0_public_key(x) != NULL) {
-        publen = EC_KEY_key2buf(x, EC_KEY_get_conv_form(x), &pub, NULL);
+    if (ktype != EC_KEY_PRINT_PARAM && ECC_KEY_get0_public_key(x) != NULL) {
+        publen = ECC_KEY_key2buf(x, ECC_KEY_get_conv_form(x), &pub, NULL);
         if (publen == 0)
             goto err;
     }
 
-    if (ktype == EC_KEY_PRINT_PRIVATE && EC_KEY_get0_private_key(x) != NULL) {
-        privlen = EC_KEY_priv2buf(x, &priv);
+    if (ktype == EC_KEY_PRINT_PRIVATE && ECC_KEY_get0_private_key(x) != NULL) {
+        privlen = ECC_KEY_priv2buf(x, &priv);
         if (privlen == 0)
             goto err;
     }
@@ -429,7 +429,7 @@ static int eckey_param_decode(EVVP_PKEY *pkey,
 {
     EC_KEY *eckey;
 
-    if ((eckey = d2i_ECParameters(NULL, pder, derlen)) == NULL) {
+    if ((eckey = d2i_ECCParameters(NULL, pder, derlen)) == NULL) {
         ECerr(EC_F_ECKEY_PARAM_DECODE, ERR_R_EC_LIB);
         return 0;
     }
@@ -439,25 +439,25 @@ static int eckey_param_decode(EVVP_PKEY *pkey,
 
 static int eckey_param_encode(const EVVP_PKEY *pkey, unsigned char **pder)
 {
-    return i2d_ECParameters(pkey->pkey.ec, pder);
+    return i2d_ECCParameters(pkey->pkey.ec, pder);
 }
 
 static int eckey_param_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                              YASN1_PCTX *ctx)
 {
-    return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PARAM);
+    return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PARAM);
 }
 
 static int eckey_pub_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                            YASN1_PCTX *ctx)
 {
-    return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PUBLIC);
+    return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PUBLIC);
 }
 
 static int eckey_priv_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                             YASN1_PCTX *ctx)
 {
-    return do_EC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PRIVATE);
+    return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, EC_KEY_PRINT_PRIVATE);
 }
 
 static int old_ec_priv_decode(EVVP_PKEY *pkey,
@@ -465,7 +465,7 @@ static int old_ec_priv_decode(EVVP_PKEY *pkey,
 {
     EC_KEY *ec;
 
-    if ((ec = d2i_ECPrivateKey(NULL, pder, derlen)) == NULL) {
+    if ((ec = d2i_ECCPrivateKey(NULL, pder, derlen)) == NULL) {
         ECerr(EC_F_OLD_EC_PRIV_DECODE, EC_R_DECODE_ERROR);
         return 0;
     }
@@ -535,10 +535,10 @@ static int ec_pkey_ctrl(EVVP_PKEY *pkey, int op, long arg1, void *arg2)
         return 1;
 
     case YASN1_PKEY_CTRL_SET1_TLS_ENCPT:
-        return EC_KEY_oct2key(EVVP_PKEY_get0_EC_KEY(pkey), arg2, arg1, NULL);
+        return ECC_KEY_oct2key(EVVP_PKEY_get0_EC_KEY(pkey), arg2, arg1, NULL);
 
     case YASN1_PKEY_CTRL_GET1_TLS_ENCPT:
-        return EC_KEY_key2buf(EVVP_PKEY_get0_EC_KEY(pkey),
+        return ECC_KEY_key2buf(EVVP_PKEY_get0_EC_KEY(pkey),
                               POINT_CONVERSION_UNCOMPRESSED, arg2, NULL);
 
     default:
@@ -558,7 +558,7 @@ static int ec_pkey_check(const EVVP_PKEY *pkey)
         return 0;
     }
 
-    return EC_KEY_check_key(eckey);
+    return ECC_KEY_check_key(eckey);
 }
 
 static int ec_pkey_public_check(const EVVP_PKEY *pkey)
@@ -567,14 +567,14 @@ static int ec_pkey_public_check(const EVVP_PKEY *pkey)
 
     /*
      * Note: it unnecessary to check eckey->pub_key here since
-     * it will be checked in EC_KEY_check_key(). In fact, the
-     * EC_KEY_check_key() mainly checks the public key, and checks
+     * it will be checked in ECC_KEY_check_key(). In fact, the
+     * ECC_KEY_check_key() mainly checks the public key, and checks
      * the private key optionally (only if there is one). So if
      * someone passes a whole EC key (public + private), this
      * will also work...
      */
 
-    return EC_KEY_check_key(eckey);
+    return ECC_KEY_check_key(eckey);
 }
 
 static int ec_pkey_param_check(const EVVP_PKEY *pkey)
@@ -638,17 +638,17 @@ const EVVP_PKEY_YASN1_METHOD sm2_asn1_meth = {
 };
 #endif
 
-int EC_KEY_print(BIO *bp, const EC_KEY *x, int off)
+int ECC_KEY_print(BIO *bp, const EC_KEY *x, int off)
 {
-    int private = EC_KEY_get0_private_key(x) != NULL;
+    int private = ECC_KEY_get0_private_key(x) != NULL;
 
-    return do_EC_KEY_print(bp, x, off,
+    return do_ECC_KEY_print(bp, x, off,
                 private ? EC_KEY_PRINT_PRIVATE : EC_KEY_PRINT_PUBLIC);
 }
 
-int ECParameters_print(BIO *bp, const EC_KEY *x)
+int ECCParameters_print(BIO *bp, const EC_KEY *x)
 {
-    return do_EC_KEY_print(bp, x, 4, EC_KEY_PRINT_PARAM);
+    return do_ECC_KEY_print(bp, x, 4, EC_KEY_PRINT_PARAM);
 }
 
 #ifndef OPENSSL_NO_CMS
@@ -674,11 +674,11 @@ static int ecdh_cms_set_peerkey(EVVP_PKEY_CTX *pctx,
         pk = EVVP_PKEY_CTX_get0_pkey(pctx);
         if (!pk)
             goto err;
-        grp = EC_KEY_get0_group(pk->pkey.ec);
-        ecpeer = EC_KEY_new();
+        grp = ECC_KEY_get0_group(pk->pkey.ec);
+        ecpeer = ECC_KEY_new();
         if (ecpeer == NULL)
             goto err;
-        if (!EC_KEY_set_group(ecpeer, grp))
+        if (!ECC_KEY_set_group(ecpeer, grp))
             goto err;
     } else {
         ecpeer = eckey_type2param(atype, aval);
@@ -690,7 +690,7 @@ static int ecdh_cms_set_peerkey(EVVP_PKEY_CTX *pctx,
     p = YASN1_STRING_get0_data(pubkey);
     if (!p || !plen)
         goto err;
-    if (!o2i_ECPublicKey(&ecpeer, &p, plen))
+    if (!o2i_ECCPublicKey(&ecpeer, &p, plen))
         goto err;
     pkpeer = EVVP_PKEY_new();
     if (pkpeer == NULL)
@@ -857,14 +857,14 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri)
         /* Set the key */
         unsigned char *p;
 
-        penclen = i2o_ECPublicKey(eckey, NULL);
+        penclen = i2o_ECCPublicKey(eckey, NULL);
         if (penclen <= 0)
             goto err;
         penc = OPENSSL_malloc(penclen);
         if (penc == NULL)
             goto err;
         p = penc;
-        penclen = i2o_ECPublicKey(eckey, &p);
+        penclen = i2o_ECCPublicKey(eckey, &p);
         if (penclen <= 0)
             goto err;
         YASN1_STRING_set0(pubkey, penc, penclen);

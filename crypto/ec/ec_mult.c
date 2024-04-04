@@ -161,7 +161,7 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
         return 0;
     }
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     if (((p = EC_POINT_new(group)) == NULL)
         || ((s = EC_POINT_new(group)) == NULL)) {
@@ -185,9 +185,9 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
     EC_POINT_BN_set_flags(r, BN_FLG_CONSTTIME);
     EC_POINT_BN_set_flags(s, BN_FLG_CONSTTIME);
 
-    cardinality = BN_CTX_get(ctx);
-    lambda = BN_CTX_get(ctx);
-    k = BN_CTX_get(ctx);
+    cardinality = BNY_CTX_get(ctx);
+    lambda = BNY_CTX_get(ctx);
+    k = BNY_CTX_get(ctx);
     if (k == NULL) {
         ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -204,7 +204,7 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
      * pop if it needs to be expanded due to carries.
      * So expand ahead of time.
      */
-    cardinality_bits = BN_num_bits(cardinality);
+    cardinality_bits = BNY_num_bits(cardinality);
     group_top = bn_get_top(cardinality);
     if ((bn_wexpand(k, group_top + 2) == NULL)
         || (bn_wexpand(lambda, group_top + 2) == NULL)) {
@@ -212,14 +212,14 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
         goto err;
     }
 
-    if (!BN_copy(k, scalar)) {
+    if (!BNY_copy(k, scalar)) {
         ECerr(EC_F_EC_SCALAR_MUL_LADDER, ERR_R_BN_LIB);
         goto err;
     }
 
     BN_set_flags(k, BN_FLG_CONSTTIME);
 
-    if ((BN_num_bits(k) > cardinality_bits) || (BN_is_negative(k))) {
+    if ((BNY_num_bits(k) > cardinality_bits) || (BN_is_negative(k))) {
         /*-
          * this is an unusual input, and we don't guarantee
          * constant-timeness
@@ -372,7 +372,7 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
  err:
     EC_POINT_free(p);
     EC_POINT_clear_free(s);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 
     return ret;
 }
@@ -476,7 +476,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
              * determine maximum number of blocks that wNAF splitting may
              * yield (NB: maximum wNAF length is bit length plus one)
              */
-            numblocks = (BN_num_bits(scalar) / blocksize) + 1;
+            numblocks = (BNY_num_bits(scalar) / blocksize) + 1;
 
             /*
              * we cannot use more blocks than we have precomputation for
@@ -525,7 +525,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
     for (i = 0; i < num + num_scalar; i++) {
         size_t bits;
 
-        bits = i < num ? BN_num_bits(scalars[i]) : BN_num_bits(scalar);
+        bits = i < num ? BNY_num_bits(scalars[i]) : BNY_num_bits(scalar);
         wsize[i] = EC_window_bits_for_scalar_size(bits);
         num_val += (size_t)1 << (wsize[i] - 1);
         wNAF[i + 1] = NULL;     /* make sure we always have a pivot */
@@ -841,12 +841,12 @@ int ec_wNAF_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     }
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             goto err;
     }
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     order = EC_GROUP_get0_order(group);
     if (order == NULL)
@@ -856,7 +856,7 @@ int ec_wNAF_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
         goto err;
     }
 
-    bits = BN_num_bits(order);
+    bits = BNY_num_bits(order);
     /*
      * The following parameters mean we precompute (approximately) one point
      * per bit. TBD: The combination 8, 4 is perfect for 160 bits; for other
@@ -955,8 +955,8 @@ int ec_wNAF_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     EC_ec_pre_comp_free(pre_comp);
     if (points) {
         EC_POINT **p;

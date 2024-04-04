@@ -319,7 +319,7 @@ int i2d_DSA_PUBKEY_bio(BIO *bp, DSA *dsa)
 # ifndef OPENSSL_NO_STDIO
 EC_KEY *d2i_EC_PUBKEY_fp(FILE *fp, EC_KEY **eckey)
 {
-    return YASN1_d2i_fp_of(EC_KEY, EC_KEY_new, d2i_EC_PUBKEY, fp, eckey);
+    return YASN1_d2i_fp_of(EC_KEY, ECC_KEY_new, d2i_EC_PUBKEY, fp, eckey);
 }
 
 int i2d_EC_PUBKEY_fp(FILE *fp, EC_KEY *eckey)
@@ -327,9 +327,9 @@ int i2d_EC_PUBKEY_fp(FILE *fp, EC_KEY *eckey)
     return YASN1_i2d_fp_of(EC_KEY, i2d_EC_PUBKEY, fp, eckey);
 }
 
-EC_KEY *d2i_ECPrivateKey_fp(FILE *fp, EC_KEY **eckey)
+EC_KEY *d2i_ECCPrivateKey_fp(FILE *fp, EC_KEY **eckey)
 {
-    return YASN1_d2i_fp_of(EC_KEY, EC_KEY_new, d2i_ECPrivateKey, fp, eckey);
+    return YASN1_d2i_fp_of(EC_KEY, ECC_KEY_new, d2i_ECCPrivateKey, fp, eckey);
 }
 
 int i2d_ECPrivateKey_fp(FILE *fp, EC_KEY *eckey)
@@ -339,7 +339,7 @@ int i2d_ECPrivateKey_fp(FILE *fp, EC_KEY *eckey)
 # endif
 EC_KEY *d2i_EC_PUBKEY_bio(BIO *bp, EC_KEY **eckey)
 {
-    return YASN1_d2i_bio_of(EC_KEY, EC_KEY_new, d2i_EC_PUBKEY, bp, eckey);
+    return YASN1_d2i_bio_of(EC_KEY, ECC_KEY_new, d2i_EC_PUBKEY, bp, eckey);
 }
 
 int i2d_EC_PUBKEY_bio(BIO *bp, EC_KEY *ecdsa)
@@ -347,9 +347,9 @@ int i2d_EC_PUBKEY_bio(BIO *bp, EC_KEY *ecdsa)
     return YASN1_i2d_bio_of(EC_KEY, i2d_EC_PUBKEY, bp, ecdsa);
 }
 
-EC_KEY *d2i_ECPrivateKey_bio(BIO *bp, EC_KEY **eckey)
+EC_KEY *d2i_ECCPrivateKey_bio(BIO *bp, EC_KEY **eckey)
 {
-    return YASN1_d2i_bio_of(EC_KEY, EC_KEY_new, d2i_ECPrivateKey, bp, eckey);
+    return YASN1_d2i_bio_of(EC_KEY, ECC_KEY_new, d2i_ECCPrivateKey, bp, eckey);
 }
 
 int i2d_ECPrivateKey_bio(BIO *bp, EC_KEY *eckey)

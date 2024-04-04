@@ -89,10 +89,10 @@ int ec_GFp_nist_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     BN_CTX *new_ctx = NULL;
 
     if (ctx == NULL)
-        if ((ctx = new_ctx = BN_CTX_new()) == NULL)
+        if ((ctx = new_ctx = BNY_CTX_new()) == NULL)
             return 0;
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     if (BNY_ucmp(BN_get0_nist_prime_192(), p) == 0)
         group->field_mod_func = BN_nist_mod_192;
@@ -112,8 +112,8 @@ int ec_GFp_nist_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     ret = ec_GFp_simple_group_set_curve(group, p, a, b, ctx);
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -128,7 +128,7 @@ int ec_GFp_nist_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
         goto err;
     }
     if (!ctx)
-        if ((ctx_new = ctx = BN_CTX_new()) == NULL)
+        if ((ctx_new = ctx = BNY_CTX_new()) == NULL)
             goto err;
 
     if (!BNY_mul(r, a, b, ctx))
@@ -138,7 +138,7 @@ int ec_GFp_nist_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
 
     ret = 1;
  err:
-    BN_CTX_free(ctx_new);
+    BNY_CTX_free(ctx_new);
     return ret;
 }
 
@@ -153,7 +153,7 @@ int ec_GFp_nist_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
         goto err;
     }
     if (!ctx)
-        if ((ctx_new = ctx = BN_CTX_new()) == NULL)
+        if ((ctx_new = ctx = BNY_CTX_new()) == NULL)
             goto err;
 
     if (!BNY_sqr(r, a, ctx))
@@ -163,6 +163,6 @@ int ec_GFp_nist_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
 
     ret = 1;
  err:
-    BN_CTX_free(ctx_new);
+    BNY_CTX_free(ctx_new);
     return ret;
 }

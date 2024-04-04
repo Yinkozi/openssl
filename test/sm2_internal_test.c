@@ -157,16 +157,16 @@ static int test_sm2_crypt(const EC_GROUP *group,
             || !TEST_true(BN_hex2bn(&priv, privkey_hex)))
         goto done;
 
-    key = EC_KEY_new();
+    key = ECC_KEY_new();
     if (!TEST_ptr(key)
-            || !TEST_true(EC_KEY_set_group(key, group))
-            || !TEST_true(EC_KEY_set_private_key(key, priv)))
+            || !TEST_true(ECC_KEY_set_group(key, group))
+            || !TEST_true(ECC_KEY_set_private_key(key, priv)))
         goto done;
 
     pt = EC_POINT_new(group);
     if (!TEST_ptr(pt)
             || !TEST_true(EC_POINT_mul(group, pt, priv, NULL, NULL, NULL))
-            || !TEST_true(EC_KEY_set_public_key(key, pt))
+            || !TEST_true(ECC_KEY_set_public_key(key, pt))
             || !TEST_true(sm2_ciphertext_size(key, digest, msg_len, &ctext_len)))
         goto done;
 
@@ -322,16 +322,16 @@ static int test_sm2_sign(const EC_GROUP *group,
     if (!TEST_true(BN_hex2bn(&priv, privkey_hex)))
         goto done;
 
-    key = EC_KEY_new();
+    key = ECC_KEY_new();
     if (!TEST_ptr(key)
-            || !TEST_true(EC_KEY_set_group(key, group))
-            || !TEST_true(EC_KEY_set_private_key(key, priv)))
+            || !TEST_true(ECC_KEY_set_group(key, group))
+            || !TEST_true(ECC_KEY_set_private_key(key, priv)))
         goto done;
 
     pt = EC_POINT_new(group);
     if (!TEST_ptr(pt)
             || !TEST_true(EC_POINT_mul(group, pt, priv, NULL, NULL, NULL))
-            || !TEST_true(EC_KEY_set_public_key(key, pt)))
+            || !TEST_true(ECC_KEY_set_public_key(key, pt)))
         goto done;
 
     start_fake_rand(k_hex);
@@ -343,7 +343,7 @@ static int test_sm2_sign(const EC_GROUP *group,
     }
     restore_rand();
 
-    ECDSA_SIG_get0(sig, &sig_r, &sig_s);
+    ECCDSA_SIG_get0(sig, &sig_r, &sig_s);
 
     if (!TEST_true(BN_hex2bn(&r, r_hex))
             || !TEST_true(BN_hex2bn(&s, s_hex))

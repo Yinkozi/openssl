@@ -91,7 +91,7 @@ static int pkey_sm2_sign(EVVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
     int ret;
     unsigned int sltmp;
     EC_KEY *ec = ctx->pkey->pkey.ec;
-    const int sig_sz = ECDSA_size(ctx->pkey->pkey.ec);
+    const int sig_sz = ECCDSA_size(ctx->pkey->pkey.ec);
 
     if (sig_sz <= 0) {
         return 0;

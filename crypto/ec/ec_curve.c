@@ -3025,7 +3025,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     if (curve.data == NULL)
         return EC_GROUP_new(curve.meth != NULL ? curve.meth() : NULL);
 
-    if ((ctx = BN_CTX_new()) == NULL) {
+    if ((ctx = BNY_CTX_new()) == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -3036,9 +3036,9 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     params = (const unsigned char *)(data + 1); /* skip header */
     params += seed_len;         /* skip seed */
 
-    if ((p = BN_bin2bn(params + 0 * param_len, param_len, NULL)) == NULL
-        || (a = BN_bin2bn(params + 1 * param_len, param_len, NULL)) == NULL
-        || (b = BN_bin2bn(params + 2 * param_len, param_len, NULL)) == NULL) {
+    if ((p = BNY_bin2bn(params + 0 * param_len, param_len, NULL)) == NULL
+        || (a = BNY_bin2bn(params + 1 * param_len, param_len, NULL)) == NULL
+        || (b = BNY_bin2bn(params + 2 * param_len, param_len, NULL)) == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
     }
@@ -3074,8 +3074,8 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
         goto err;
     }
 
-    if ((x = BN_bin2bn(params + 3 * param_len, param_len, NULL)) == NULL
-        || (y = BN_bin2bn(params + 4 * param_len, param_len, NULL)) == NULL) {
+    if ((x = BNY_bin2bn(params + 3 * param_len, param_len, NULL)) == NULL
+        || (y = BNY_bin2bn(params + 4 * param_len, param_len, NULL)) == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
     }
@@ -3083,7 +3083,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
         ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
         goto err;
     }
-    if ((order = BN_bin2bn(params + 5 * param_len, param_len, NULL)) == NULL
+    if ((order = BNY_bin2bn(params + 5 * param_len, param_len, NULL)) == NULL
         || !BN_set_word(x, (BN_ULONG)data->cofactor)) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
@@ -3131,7 +3131,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
         group = NULL;
     }
     EC_POINT_free(P);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     BN_free(p);
     BN_free(a);
     BN_free(b);
@@ -3257,7 +3257,7 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
     seed = EC_GROUP_get0_seed(group);
     cofactor = EC_GROUP_get0_cofactor(group);
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
     /*
      * The built-in curves contains data fields (p, a, b, x, y, order) that are
@@ -3277,7 +3277,7 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
 
     /* Create the bignums */
     for (i = 0; i < NUM_BN_FIELDS; ++i) {
-        if ((bn[i] = BN_CTX_get(ctx)) == NULL)
+        if ((bn[i] = BNY_CTX_get(ctx)) == NULL)
             goto end;
     }
     /*
@@ -3299,7 +3299,7 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
      * (p, a, b, x, y, order) are all zero padded to be the same size.
      */
     for (i = 0; i < NUM_BN_FIELDS; ++i) {
-        if (BN_bn2binpad(bn[i], &param_bytes[i*param_len], param_len) <= 0)
+        if (BNY_bn2binpad(bn[i], &param_bytes[i*param_len], param_len) <= 0)
             goto end;
     }
 
@@ -3333,6 +3333,6 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
     ret = NID_undef;
 end:
     OPENSSL_free(param_bytes);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }

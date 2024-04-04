@@ -393,7 +393,7 @@ int test_BN_eq_word(const char *file, int line, const char *bns, const char *ws,
 
     if (a != NULL && BN_is_word(a, w))
         return 1;
-    if ((bw = BN_new()) != NULL)
+    if ((bw = BNY_new()) != NULL)
         BN_set_word(bw, w);
     test_fail_bignum_message(NULL, file, line, "BIGNUM", bns, ws, "==", a, bw);
     BN_free(bw);
@@ -409,7 +409,7 @@ int test_BN_abs_eq_word(const char *file, int line, const char *bns,
         return 1;
     if ((aa = BN_dup(a)) != NULL)
         BN_set_negative(aa, 0);
-    if ((bw = BN_new()) != NULL)
+    if ((bw = BNY_new()) != NULL)
         BN_set_word(bw, w);
     test_fail_bignum_message(NULL, file, line, "BIGNUM", bns, ws, "abs==",
                              aa, bw);

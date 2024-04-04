@@ -428,7 +428,7 @@ YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
         ret->type = V_YASN1_NEG_INTEGER;
     else
         ret->type = V_YASN1_INTEGER;
-    j = BN_num_bits(bn);
+    j = BNY_num_bits(bn);
     len = ((j == 0) ? 0 : ((j / 8) + 1));
     if (ret->length < len + 4) {
         unsigned char *new_data = OPENSSL_realloc(ret->data, len + 4);
@@ -438,7 +438,7 @@ YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
         }
         ret->data = new_data;
     }
-    ret->length = BN_bn2bin(bn, ret->data);
+    ret->length = BNY_bn2bin(bn, ret->data);
     /* Correct zero case */
     if (!ret->length) {
         ret->data[0] = 0;
@@ -455,7 +455,7 @@ BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn)
 {
     BIGNUM *ret;
 
-    if ((ret = BN_bin2bn(ai->data, ai->length, bn)) == NULL)
+    if ((ret = BNY_bin2bn(ai->data, ai->length, bn)) == NULL)
         OPENSSL_PUT_ERROR(YASN1, YASN1_R_BN_LIB);
     else if (ai->type == V_YASN1_NEG_INTEGER)
         BN_set_negative(ret, 1);

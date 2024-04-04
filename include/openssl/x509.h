@@ -413,7 +413,7 @@ int i2d_DSAPrivateKey_fp(FILE *fp, DSA *dsa);
 #  ifndef OPENSSL_NO_EC
 EC_KEY *d2i_EC_PUBKEY_fp(FILE *fp, EC_KEY **eckey);
 int i2d_EC_PUBKEY_fp(FILE *fp, EC_KEY *eckey);
-EC_KEY *d2i_ECPrivateKey_fp(FILE *fp, EC_KEY **eckey);
+EC_KEY *d2i_ECCPrivateKey_fp(FILE *fp, EC_KEY **eckey);
 int i2d_ECPrivateKey_fp(FILE *fp, EC_KEY *eckey);
 #  endif
 YX509_SIG *d2i_YPKCS8_fp(FILE *fp, YX509_SIG **p8);
@@ -451,7 +451,7 @@ int i2d_DSAPrivateKey_bio(BIO *bp, DSA *dsa);
 #  ifndef OPENSSL_NO_EC
 EC_KEY *d2i_EC_PUBKEY_bio(BIO *bp, EC_KEY **eckey);
 int i2d_EC_PUBKEY_bio(BIO *bp, EC_KEY *eckey);
-EC_KEY *d2i_ECPrivateKey_bio(BIO *bp, EC_KEY **eckey);
+EC_KEY *d2i_ECCPrivateKey_bio(BIO *bp, EC_KEY **eckey);
 int i2d_ECPrivateKey_bio(BIO *bp, EC_KEY *eckey);
 #  endif
 YX509_SIG *d2i_YPKCS8_bio(BIO *bp, YX509_SIG **p8);

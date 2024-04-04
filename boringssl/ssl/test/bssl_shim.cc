@@ -292,7 +292,7 @@ static int AsyncPrivateKeyType(SSL *ssl) {
       return NID_rsaEncryption;
     case EVVP_PKEY_EC:
       return EC_GROUP_get_curve_name(
-          EC_KEY_get0_group(EVVP_PKEY_get0_EC_KEY(key)));
+          ECC_KEY_get0_group(EVVP_PKEY_get0_EC_KEY(key)));
     default:
       return NID_undef;
   }

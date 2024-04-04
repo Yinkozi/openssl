@@ -70,19 +70,19 @@ extern "C" {
 void BN_set_flags(BIGNUM *b, int n);
 int BN_get_flags(const BIGNUM *b, int n);
 
-/* Values for |top| in BN_rand() */
+/* Values for |top| in BNY_rand() */
 #define BN_RAND_TOP_ANY    -1
 #define BN_RAND_TOP_ONE     0
 #define BN_RAND_TOP_TWO     1
 
-/* Values for |bottom| in BN_rand() */
+/* Values for |bottom| in BNY_rand() */
 #define BN_RAND_BOTTOM_ANY  0
 #define BN_RAND_BOTTOM_ODD  1
 
 /*
  * get a clone of a BIGNUM with changed flags, for *temporary* use only (the
  * two BIGNUMs cannot be used in parallel!). Also only for *read only* use. The
- * value |dest| should be a newly allocated BIGNUM obtained via BN_new() that
+ * value |dest| should be a newly allocated BIGNUM obtained via BNY_new() that
  * has not been otherwise initialised or used.
  */
 void BN_with_flags(BIGNUM *dest, const BIGNUM *b, int flags);
@@ -178,7 +178,7 @@ void *BN_GENCB_get_arg(BN_GENCB *cb);
                                 (b) >=  55  ? 27 : \
                                 /* b >= 6 */ 34)
 
-# define BN_num_bytes(a) ((BN_num_bits(a)+7)/8)
+# define BN_num_bytes(a) ((BNY_num_bits(a)+7)/8)
 
 int BN_abs_is_word(const BIGNUM *a, const BN_ULONG w);
 int BN_is_zero(const BIGNUM *a);
@@ -196,35 +196,35 @@ void BN_zero_ex(BIGNUM *a);
 #  define BN_zero(a)      (BN_set_word((a),0))
 # endif
 
-const BIGNUM *BN_value_one(void);
-char *BN_options(void);
-BN_CTX *BN_CTX_new(void);
-BN_CTX *BN_CTX_secure_new(void);
-void BN_CTX_free(BN_CTX *c);
-void BN_CTX_start(BN_CTX *ctx);
-BIGNUM *BN_CTX_get(BN_CTX *ctx);
-void BN_CTX_end(BN_CTX *ctx);
-int BN_rand(BIGNUM *rnd, int bits, int top, int bottom);
-int BN_priv_rand(BIGNUM *rnd, int bits, int top, int bottom);
-int BN_rand_range(BIGNUM *rnd, const BIGNUM *range);
-int BN_priv_rand_range(BIGNUM *rnd, const BIGNUM *range);
-int BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom);
-int BN_pseudo_rand_range(BIGNUM *rnd, const BIGNUM *range);
-int BN_num_bits(const BIGNUM *a);
-int BN_num_bits_word(BN_ULONG l);
-int BN_security_bits(int L, int N);
-BIGNUM *BN_new(void);
-BIGNUM *BN_secure_new(void);
-void BN_clear_free(BIGNUM *a);
-BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b);
-void BN_swap(BIGNUM *a, BIGNUM *b);
-BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret);
-int BN_bn2bin(const BIGNUM *a, unsigned char *to);
-int BN_bn2binpad(const BIGNUM *a, unsigned char *to, int tolen);
-BIGNUM *BN_lebin2bn(const unsigned char *s, int len, BIGNUM *ret);
-int BN_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen);
-BIGNUM *BN_mpi2bn(const unsigned char *s, int len, BIGNUM *ret);
-int BN_bn2mpi(const BIGNUM *a, unsigned char *to);
+const BIGNUM *BNY_value_one(void);
+char *BNY_options(void);
+BN_CTX *BNY_CTX_new(void);
+BN_CTX *BNY_CTX_secure_new(void);
+void BNY_CTX_free(BN_CTX *c);
+void BNY_CTX_start(BN_CTX *ctx);
+BIGNUM *BNY_CTX_get(BN_CTX *ctx);
+void BNY_CTX_end(BN_CTX *ctx);
+int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom);
+int BNY_priv_rand(BIGNUM *rnd, int bits, int top, int bottom);
+int BNY_rand_range(BIGNUM *rnd, const BIGNUM *range);
+int BNY_priv_rand_range(BIGNUM *rnd, const BIGNUM *range);
+int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom);
+int BNY_pseudo_rand_range(BIGNUM *rnd, const BIGNUM *range);
+int BNY_num_bits(const BIGNUM *a);
+int BNY_num_bits_word(BN_ULONG l);
+int BNY_security_bits(int L, int N);
+BIGNUM *BNY_new(void);
+BIGNUM *BNY_secure_new(void);
+void BNY_clear_free(BIGNUM *a);
+BIGNUM *BNY_copy(BIGNUM *a, const BIGNUM *b);
+void BNY_swap(BIGNUM *a, BIGNUM *b);
+BIGNUM *BNY_bin2bn(const unsigned char *s, int len, BIGNUM *ret);
+int BNY_bn2bin(const BIGNUM *a, unsigned char *to);
+int BNY_bn2binpad(const BIGNUM *a, unsigned char *to, int tolen);
+BIGNUM *BNY_lebin2bn(const unsigned char *s, int len, BIGNUM *ret);
+int BNY_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen);
+BIGNUM *BNY_mpi2bn(const unsigned char *s, int len, BIGNUM *ret);
+int BNY_bn2mpi(const BIGNUM *a, unsigned char *to);
 int BNY_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
 int BNY_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);
 int BNY_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b);

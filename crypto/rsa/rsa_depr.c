@@ -30,7 +30,7 @@ YRSA *YRSA_generate_key(int bits, unsigned long e_value,
     int i;
     BN_GENCB *cb = BN_GENCB_new();
     YRSA *rsa = YRSA_new();
-    BIGNUM *e = BN_new();
+    BIGNUM *e = BNY_new();
 
     if (cb == NULL || rsa == NULL || e == NULL)
         goto err;

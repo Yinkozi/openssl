@@ -123,7 +123,7 @@ struct bignum_ctx {
   int too_many;
 };
 
-BN_CTX *BN_CTX_new(void) {
+BN_CTX *BNY_CTX_new(void) {
   BN_CTX *ret = OPENSSL_malloc(sizeof(BN_CTX));
   if (!ret) {
     OPENSSL_PUT_ERROR(BN, ERR_R_MALLOC_FAILURE);
@@ -139,7 +139,7 @@ BN_CTX *BN_CTX_new(void) {
   return ret;
 }
 
-void BN_CTX_free(BN_CTX *ctx) {
+void BNY_CTX_free(BN_CTX *ctx) {
   if (ctx == NULL) {
     return;
   }
@@ -149,7 +149,7 @@ void BN_CTX_free(BN_CTX *ctx) {
   OPENSSL_free(ctx);
 }
 
-void BN_CTX_start(BN_CTX *ctx) {
+void BNY_CTX_start(BN_CTX *ctx) {
   /* If we're already overflowing ... */
   if (ctx->err_stack || ctx->too_many) {
     ctx->err_stack++;
@@ -160,7 +160,7 @@ void BN_CTX_start(BN_CTX *ctx) {
   }
 }
 
-BIGNUM *BN_CTX_get(BN_CTX *ctx) {
+BIGNUM *BNY_CTX_get(BN_CTX *ctx) {
   BIGNUM *ret;
   if (ctx->err_stack || ctx->too_many) {
     return NULL;
@@ -181,7 +181,7 @@ BIGNUM *BN_CTX_get(BN_CTX *ctx) {
   return ret;
 }
 
-void BN_CTX_end(BN_CTX *ctx) {
+void BNY_CTX_end(BN_CTX *ctx) {
   if (ctx->err_stack) {
     ctx->err_stack--;
   } else {
@@ -246,7 +246,7 @@ static void BN_POOL_finish(BN_POOL *p) {
     BIGNUM *bn = p->head->vals;
     while (loop++ < BN_CTX_POOL_SIZE) {
       if (bn->d) {
-        BN_clear_free(bn);
+        BNY_clear_free(bn);
       }
       bn++;
     }

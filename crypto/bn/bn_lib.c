@@ -78,7 +78,7 @@ int BN_get_params(int which)
 }
 #endif
 
-const BIGNUM *BN_value_one(void)
+const BIGNUM *BNY_value_one(void)
 {
     static const BN_ULONG data_one = 1L;
     static const BIGNUM const_one =
@@ -88,15 +88,15 @@ const BIGNUM *BN_value_one(void)
 }
 
 /*
- * Old Visual Studio ARM compiler miscompiles BN_num_bits_word()
+ * Old Visual Studio ARM compiler miscompiles BNY_num_bits_word()
  * https://mta.openssl.org/pipermail/openssl-users/2018-August/008465.html
  */
 #if defined(_MSC_VER) && defined(_ARM_) && defined(_WIN32_WCE) \
     && _MSC_VER>=1400 && _MSC_VER<1501
-# define MS_BROKEN_BN_num_bits_word
+# define MS_BROKEN_BNY_num_bits_word
 # pragma optimize("", off)
 #endif
-int BN_num_bits_word(BN_ULONG l)
+int BNY_num_bits_word(BN_ULONG l)
 {
     BN_ULONG x, mask;
     int bits = (l != 0);
@@ -140,7 +140,7 @@ int BN_num_bits_word(BN_ULONG l)
 
     return bits;
 }
-#ifdef MS_BROKEN_BN_num_bits_word
+#ifdef MS_BROKEN_BNY_num_bits_word
 # pragma optimize("", on)
 #endif
 
@@ -160,7 +160,7 @@ int bn_num_bits_consttime(const BIGNUM *a)
         mask = constant_time_eq_int(i, j); /* 0xff..ff if i==j, 0x0 otherwise */
 
         ret += BN_BITS2 & (~mask & ~past_i);
-        ret += BN_num_bits_word(a->d[j]) & mask;
+        ret += BNY_num_bits_word(a->d[j]) & mask;
 
         past_i |= mask; /* past_i will become 0xff..ff after i==j */
     }
@@ -174,7 +174,7 @@ int bn_num_bits_consttime(const BIGNUM *a)
     return ret & mask;
 }
 
-int BN_num_bits(const BIGNUM *a)
+int BNY_num_bits(const BIGNUM *a)
 {
     int i = a->top - 1;
     bn_check_top(a);
@@ -195,7 +195,7 @@ int BN_num_bits(const BIGNUM *a)
     if (BN_is_zero(a))
         return 0;
 
-    return ((i * BN_BITS2) + BN_num_bits_word(a->d[i]));
+    return ((i * BN_BITS2) + BNY_num_bits_word(a->d[i]));
 }
 
 static void bny_free_d(BIGNUM *a, int clear)
@@ -209,7 +209,7 @@ static void bny_free_d(BIGNUM *a, int clear)
 }
 
 
-void BN_clear_free(BIGNUM *a)
+void BNY_clear_free(BIGNUM *a)
 {
     if (a == NULL)
         return;
@@ -239,7 +239,7 @@ void bn_init(BIGNUM *a)
     bn_check_top(a);
 }
 
-BIGNUM *BN_new(void)
+BIGNUM *BNY_new(void)
 {
     BIGNUM *ret;
 
@@ -252,9 +252,9 @@ BIGNUM *BN_new(void)
     return ret;
 }
 
- BIGNUM *BN_secure_new(void)
+ BIGNUM *BNY_secure_new(void)
  {
-     BIGNUM *ret = BN_new();
+     BIGNUM *ret = BNY_new();
      if (ret != NULL)
          ret->flags |= BN_FLG_SECURE;
      return ret;
@@ -321,10 +321,10 @@ BIGNUM *BN_dup(const BIGNUM *a)
         return NULL;
     bn_check_top(a);
 
-    t = BN_get_flags(a, BN_FLG_SECURE) ? BN_secure_new() : BN_new();
+    t = BN_get_flags(a, BN_FLG_SECURE) ? BNY_secure_new() : BNY_new();
     if (t == NULL)
         return NULL;
-    if (!BN_copy(t, a)) {
+    if (!BNY_copy(t, a)) {
         BN_free(t);
         return NULL;
     }
@@ -332,7 +332,7 @@ BIGNUM *BN_dup(const BIGNUM *a)
     return t;
 }
 
-BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
+BIGNUM *BNY_copy(BIGNUM *a, const BIGNUM *b)
 {
     int bn_words;
 
@@ -361,7 +361,7 @@ BIGNUM *BN_copy(BIGNUM *a, const BIGNUM *b)
                                     | BN_FLG_FIXED_TOP))
 #define FLAGS_STRUCT(flags) ((flags) & (BN_FLG_MALLOCED))
 
-void BN_swap(BIGNUM *a, BIGNUM *b)
+void BNY_swap(BIGNUM *a, BIGNUM *b)
 {
     int flags_old_a, flags_old_b;
     BN_ULONG *tmp_d;
@@ -429,7 +429,7 @@ int BN_set_word(BIGNUM *a, BN_ULONG w)
     return 1;
 }
 
-BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
+BIGNUM *BNY_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
 {
     unsigned int i, m;
     unsigned int n;
@@ -437,7 +437,7 @@ BIGNUM *BN_bin2bn(const unsigned char *s, int len, BIGNUM *ret)
     BIGNUM *bn = NULL;
 
     if (ret == NULL)
-        ret = bn = BN_new();
+        ret = bn = BNY_new();
     if (ret == NULL)
         return NULL;
     bn_check_top(ret);
@@ -527,19 +527,19 @@ int bn2binpad(const BIGNUM *a, unsigned char *to, int tolen, endianess_t endiane
     return tolen;
 }
 
-int BN_bn2binpad(const BIGNUM *a, unsigned char *to, int tolen)
+int BNY_bn2binpad(const BIGNUM *a, unsigned char *to, int tolen)
 {
     if (tolen < 0)
         return -1;
     return bn2binpad(a, to, tolen, big);
 }
 
-int BN_bn2bin(const BIGNUM *a, unsigned char *to)
+int BNY_bn2bin(const BIGNUM *a, unsigned char *to)
 {
     return bn2binpad(a, to, -1, big);
 }
 
-BIGNUM *BN_lebin2bn(const unsigned char *s, int len, BIGNUM *ret)
+BIGNUM *BNY_lebin2bn(const unsigned char *s, int len, BIGNUM *ret)
 {
     unsigned int i, m;
     unsigned int n;
@@ -547,7 +547,7 @@ BIGNUM *BN_lebin2bn(const unsigned char *s, int len, BIGNUM *ret)
     BIGNUM *bn = NULL;
 
     if (ret == NULL)
-        ret = bn = BN_new();
+        ret = bn = BNY_new();
     if (ret == NULL)
         return NULL;
     bn_check_top(ret);
@@ -586,7 +586,7 @@ BIGNUM *BN_lebin2bn(const unsigned char *s, int len, BIGNUM *ret)
     return ret;
 }
 
-int BN_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen)
+int BNY_bn2lebinpad(const BIGNUM *a, unsigned char *to, int tolen)
 {
     if (tolen < 0)
         return -1;
@@ -865,7 +865,7 @@ void BN_consttime_swap(BN_ULONG condition, BIGNUM *a, BIGNUM *b, int nwords)
 
 /* Bits of security, see SP800-57 */
 
-int BN_security_bits(int L, int N)
+int BNY_security_bits(int L, int N)
 {
     int secbits, bits;
     if (L >= 15360)

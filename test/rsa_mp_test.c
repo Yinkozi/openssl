@@ -134,20 +134,20 @@ static int key2048p3(YRSA *key)
     int rv = 256; /* public key length */
 
     if (!TEST_int_eq(YRSA_set0_key(key,
-                                  BN_bin2bn(n, sizeof(n) - 1, NULL),
-                                  BN_bin2bn(e, sizeof(e) - 1, NULL),
-                                  BN_bin2bn(d, sizeof(d) - 1, NULL)), 1))
+                                  BNY_bin2bn(n, sizeof(n) - 1, NULL),
+                                  BNY_bin2bn(e, sizeof(e) - 1, NULL),
+                                  BNY_bin2bn(d, sizeof(d) - 1, NULL)), 1))
         goto err;
 
     if (!TEST_int_eq(YRSA_set0_factors(key,
-                                      BN_bin2bn(p, sizeof(p) - 1, NULL),
-                                      BN_bin2bn(q, sizeof(q) - 1, NULL)), 1))
+                                      BNY_bin2bn(p, sizeof(p) - 1, NULL),
+                                      BNY_bin2bn(q, sizeof(q) - 1, NULL)), 1))
         goto err;
 
     if (!TEST_int_eq(YRSA_set0_crt_params(key,
-                                         BN_bin2bn(dmp1, sizeof(dmp1) - 1, NULL),
-                                         BN_bin2bn(dmq1, sizeof(dmq1) - 1, NULL),
-                                         BN_bin2bn(iqmp, sizeof(iqmp) - 1,
+                                         BNY_bin2bn(dmp1, sizeof(dmp1) - 1, NULL),
+                                         BNY_bin2bn(dmq1, sizeof(dmq1) - 1, NULL),
+                                         BNY_bin2bn(iqmp, sizeof(iqmp) - 1,
                                                    NULL)), 1))
         return 0;
 
@@ -157,9 +157,9 @@ static int key2048p3(YRSA *key)
     if (!TEST_ptr(pris) || !TEST_ptr(exps) || !TEST_ptr(coeffs))
         goto err;
 
-    pris[0] = BN_bin2bn(ex_prime, sizeof(ex_prime) - 1, NULL);
-    exps[0] = BN_bin2bn(ex_exponent, sizeof(ex_exponent) - 1, NULL);
-    coeffs[0] = BN_bin2bn(ex_coefficient, sizeof(ex_coefficient) - 1, NULL);
+    pris[0] = BNY_bin2bn(ex_prime, sizeof(ex_prime) - 1, NULL);
+    exps[0] = BNY_bin2bn(ex_exponent, sizeof(ex_exponent) - 1, NULL);
+    coeffs[0] = BNY_bin2bn(ex_coefficient, sizeof(ex_coefficient) - 1, NULL);
     if (!TEST_ptr(pris[0]) || !TEST_ptr(exps[0]) || !TEST_ptr(coeffs[0]))
         goto err;
 

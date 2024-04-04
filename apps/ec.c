@@ -178,7 +178,7 @@ int ec_main(int argc, char **argv)
         if (pubin)
             eckey = d2i_EC_PUBKEY_bio(in, NULL);
         else
-            eckey = d2i_ECPrivateKey_bio(in, NULL);
+            eckey = d2i_ECCPrivateKey_bio(in, NULL);
     } else if (informat == FORMAT_ENGINE) {
         EVVP_PKEY *pkey;
         if (pubin)
@@ -205,20 +205,20 @@ int ec_main(int argc, char **argv)
     if (out == NULL)
         goto end;
 
-    group = EC_KEY_get0_group(eckey);
+    group = ECC_KEY_get0_group(eckey);
 
     if (new_form)
-        EC_KEY_set_conv_form(eckey, form);
+        ECC_KEY_set_conv_form(eckey, form);
 
     if (new_asn1_flag)
-        EC_KEY_set_asn1_flag(eckey, asn1_flag);
+        ECC_KEY_set_asn1_flag(eckey, asn1_flag);
 
     if (no_public)
-        EC_KEY_set_enc_flags(eckey, EC_PKEY_NO_PUBKEY);
+        ECC_KEY_set_enc_flags(eckey, EC_PKEY_NO_PUBKEY);
 
     if (text) {
         assert(pubin || private);
-        if (!EC_KEY_print(out, eckey, 0)) {
+        if (!ECC_KEY_print(out, eckey, 0)) {
             perror(outfile);
             ERR_print_errors(bio_err);
             goto end;
@@ -226,7 +226,7 @@ int ec_main(int argc, char **argv)
     }
 
     if (check) {
-        if (EC_KEY_check_key(eckey) == 1) {
+        if (ECC_KEY_check_key(eckey) == 1) {
             BIO_pprintf(bio_err, "EC Key valid.\n");
         } else {
             BIO_pprintf(bio_err, "EC Key Invalid!\n");

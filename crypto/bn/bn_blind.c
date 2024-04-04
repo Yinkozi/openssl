@@ -148,7 +148,7 @@ int BN_BLINDING_convert_ex(BIGNUM *n, BIGNUM *r, BN_BLINDING *b, BN_CTX *ctx)
     else if (!BN_BLINDING_update(b, ctx))
         return 0;
 
-    if (r != NULL && (BN_copy(r, b->Ai) == NULL))
+    if (r != NULL && (BNY_copy(r, b->Ai) == NULL))
         return 0;
 
     if (b->m_ctx != NULL)
@@ -252,9 +252,9 @@ BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
     if (ret == NULL)
         goto err;
 
-    if (ret->A == NULL && (ret->A = BN_new()) == NULL)
+    if (ret->A == NULL && (ret->A = BNY_new()) == NULL)
         goto err;
-    if (ret->Ai == NULL && (ret->Ai = BN_new()) == NULL)
+    if (ret->Ai == NULL && (ret->Ai = BNY_new()) == NULL)
         goto err;
 
     if (e != NULL) {
@@ -271,7 +271,7 @@ BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
 
     do {
         int rv;
-        if (!BN_priv_rand_range(ret->A, ret->mod))
+        if (!BNY_priv_rand_range(ret->A, ret->mod))
             goto err;
         if (int_bn_mod_inverse(ret->Ai, ret->A, ret->mod, ctx, &rv))
             break;

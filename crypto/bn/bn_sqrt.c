@@ -27,7 +27,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     if (!BN_is_odd(p) || BN_abs_is_word(p, 1)) {
         if (BN_abs_is_word(p, 2)) {
             if (ret == NULL)
-                ret = BN_new();
+                ret = BNY_new();
             if (ret == NULL)
                 goto end;
             if (!BN_set_word(ret, BN_is_bit_set(a, 0))) {
@@ -45,7 +45,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
 
     if (BN_is_zero(a) || BN_is_one(a)) {
         if (ret == NULL)
-            ret = BN_new();
+            ret = BNY_new();
         if (ret == NULL)
             goto end;
         if (!BN_set_word(ret, BN_is_one(a))) {
@@ -57,18 +57,18 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         return ret;
     }
 
-    BN_CTX_start(ctx);
-    A = BN_CTX_get(ctx);
-    b = BN_CTX_get(ctx);
-    q = BN_CTX_get(ctx);
-    t = BN_CTX_get(ctx);
-    x = BN_CTX_get(ctx);
-    y = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    A = BNY_CTX_get(ctx);
+    b = BNY_CTX_get(ctx);
+    q = BNY_CTX_get(ctx);
+    t = BNY_CTX_get(ctx);
+    x = BNY_CTX_get(ctx);
+    y = BNY_CTX_get(ctx);
     if (y == NULL)
         goto end;
 
     if (ret == NULL)
-        ret = BN_new();
+        ret = BNY_new();
     if (ret == NULL)
         goto end;
 
@@ -158,7 +158,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         if (!BN_mod_mul(x, x, t, p, ctx))
             goto end;
 
-        if (!BN_copy(ret, x))
+        if (!BNY_copy(ret, x))
             goto end;
         err = 0;
         goto vrfy;
@@ -168,7 +168,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
      * e > 2, so we really have to use the Tonelli/Shanks algorithm. First,
      * find some y that is not a square.
      */
-    if (!BN_copy(q, p))
+    if (!BNY_copy(q, p))
         goto end;               /* use 'q' as temp */
     q->neg = 0;
     i = 2;
@@ -181,7 +181,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
             if (!BN_set_word(y, i))
                 goto end;
         } else {
-            if (!BN_priv_rand(y, BN_num_bits(p), 0, 0))
+            if (!BNY_priv_rand(y, BNY_num_bits(p), 0, 0))
                 goto end;
             if (BNY_ucmp(y, p) >= 0) {
                 if (!(p->neg ? BNY_add : BNY_sub) (y, y, p))
@@ -296,7 +296,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
          */
 
         if (BN_is_one(b)) {
-            if (!BN_copy(ret, x))
+            if (!BNY_copy(ret, x))
                 goto end;
             err = 0;
             goto vrfy;
@@ -322,7 +322,7 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
         }
 
         /* t := y^2^(e - i - 1) */
-        if (!BN_copy(t, y))
+        if (!BNY_copy(t, y))
             goto end;
         for (j = e - i - 1; j > 0; j--) {
             if (!BN_mod_sqr(t, t, p, ctx))
@@ -356,10 +356,10 @@ BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
  end:
     if (err) {
         if (ret != in)
-            BN_clear_free(ret);
+            BNY_clear_free(ret);
         ret = NULL;
     }
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     bn_check_top(ret);
     return ret;
 }

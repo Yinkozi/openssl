@@ -137,12 +137,12 @@ BN_BLINDING *BN_BLINDING_new(void) {
   }
   OPENSSL_memset(ret, 0, sizeof(BN_BLINDING));
 
-  ret->A = BN_new();
+  ret->A = BNY_new();
   if (ret->A == NULL) {
     goto err;
   }
 
-  ret->Ai = BN_new();
+  ret->Ai = BNY_new();
   if (ret->Ai == NULL) {
     goto err;
   }
@@ -220,7 +220,7 @@ static int bn_blinding_create_param(BN_BLINDING *b, const BIGNUM *e,
   int retry_counter = 32;
 
   do {
-    if (!BN_rand_range_ex(b->A, 1, &mont->N)) {
+    if (!BNY_rand_range_ex(b->A, 1, &mont->N)) {
       OPENSSL_PUT_ERROR(YRSA, ERR_R_INTERNAL_ERROR);
       return 0;
     }

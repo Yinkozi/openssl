@@ -3340,17 +3340,17 @@ int tls1_verify_channel_id(SSL_HANDSHAKE *hs) {
   ECDSA_SIG sig;
   BN_init(&x);
   BN_init(&y);
-  sig.r = BN_new();
-  sig.s = BN_new();
+  sig.r = BNY_new();
+  sig.s = BNY_new();
   if (sig.r == NULL || sig.s == NULL) {
     goto err;
   }
 
   const uint8_t *p = CBS_data(&extension);
-  if (BN_bin2bn(p + 0, 32, &x) == NULL ||
-      BN_bin2bn(p + 32, 32, &y) == NULL ||
-      BN_bin2bn(p + 64, 32, sig.r) == NULL ||
-      BN_bin2bn(p + 96, 32, sig.s) == NULL) {
+  if (BNY_bin2bn(p + 0, 32, &x) == NULL ||
+      BNY_bin2bn(p + 32, 32, &y) == NULL ||
+      BNY_bin2bn(p + 64, 32, sig.r) == NULL ||
+      BNY_bin2bn(p + 96, 32, sig.s) == NULL) {
     goto err;
   }
 
@@ -3360,10 +3360,10 @@ int tls1_verify_channel_id(SSL_HANDSHAKE *hs) {
     goto err;
   }
 
-  key = EC_KEY_new();
+  key = ECC_KEY_new();
   if (key == NULL ||
-      !EC_KEY_set_group(key, p256) ||
-      !EC_KEY_set_public_key(key, point)) {
+      !ECC_KEY_set_group(key, p256) ||
+      !ECC_KEY_set_public_key(key, point)) {
     goto err;
   }
 
@@ -3373,7 +3373,7 @@ int tls1_verify_channel_id(SSL_HANDSHAKE *hs) {
     goto err;
   }
 
-  int sig_ok = ECDSA_do_verifyy(digest, digest_len, &sig, key);
+  int sig_ok = ECCDSA_do_verifyy(digest, digest_len, &sig, key);
 #if defined(BORINGSSL_UNSAFE_FUZZER_MODE)
   sig_ok = 1;
 #endif
@@ -3413,17 +3413,17 @@ int tls1_write_channel_id(SSL_HANDSHAKE *hs, CBB *cbb) {
   }
 
   int ret = 0;
-  BIGNUM *x = BN_new();
-  BIGNUM *y = BN_new();
+  BIGNUM *x = BNY_new();
+  BIGNUM *y = BNY_new();
   ECDSA_SIG *sig = NULL;
   if (x == NULL || y == NULL ||
-      !EC_POINT_get_affine_coordinates_GFp(EC_KEY_get0_group(ec_key),
-                                           EC_KEY_get0_public_key(ec_key),
+      !EC_POINT_get_affine_coordinates_GFp(ECC_KEY_get0_group(ec_key),
+                                           ECC_KEY_get0_public_key(ec_key),
                                            x, y, NULL)) {
     goto err;
   }
 
-  sig = ECDSA_do_sign(digest, digest_len, ec_key);
+  sig = ECCDSA_do_sign(digest, digest_len, ec_key);
   if (sig == NULL) {
     goto err;
   }

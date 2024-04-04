@@ -233,11 +233,11 @@ DSA *get_dsa(int dsa_bits)
 
     if ((dsa = DSA_new()) == NULL)
         return NULL;
-    priv_key = BN_bin2bn(dsa_t.priv, dsa_t.priv_l, NULL);
-    pub_key = BN_bin2bn(dsa_t.pub, dsa_t.pub_l, NULL);
-    p = BN_bin2bn(dsa_t.p, dsa_t.p_l, NULL);
-    q = BN_bin2bn(dsa_t.q, dsa_t.q_l, NULL);
-    g = BN_bin2bn(dsa_t.g, dsa_t.g_l, NULL);
+    priv_key = BNY_bin2bn(dsa_t.priv, dsa_t.priv_l, NULL);
+    pub_key = BNY_bin2bn(dsa_t.pub, dsa_t.pub_l, NULL);
+    p = BNY_bin2bn(dsa_t.p, dsa_t.p_l, NULL);
+    q = BNY_bin2bn(dsa_t.q, dsa_t.q_l, NULL);
+    g = BNY_bin2bn(dsa_t.g, dsa_t.g_l, NULL);
     if ((priv_key == NULL) || (pub_key == NULL) || (p == NULL) || (q == NULL)
          || (g == NULL)) {
         goto err;

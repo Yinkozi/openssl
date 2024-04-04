@@ -123,7 +123,7 @@ class _DSAPrivateKey(dsa.DSAPrivateKey):
             dsa_cdata, p, self._backend._ffi.NULL, self._backend._ffi.NULL
         )
         self._backend.openssl_assert(p[0] != backend._ffi.NULL)
-        self._key_size = self._backend._lib.BN_num_bits(p[0])
+        self._key_size = self._backend._lib.BNY_num_bits(p[0])
 
     key_size = utils.read_only_property("_key_size")
 
@@ -222,7 +222,7 @@ class _DSAPublicKey(dsa.DSAPublicKey):
             dsa_cdata, p, self._backend._ffi.NULL, self._backend._ffi.NULL
         )
         self._backend.openssl_assert(p[0] != backend._ffi.NULL)
-        self._key_size = self._backend._lib.BN_num_bits(p[0])
+        self._key_size = self._backend._lib.BNY_num_bits(p[0])
 
     key_size = utils.read_only_property("_key_size")
 

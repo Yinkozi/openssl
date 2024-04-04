@@ -33,11 +33,11 @@ static BIGNUM *srp_Calc_xy(const BIGNUM *x, const BIGNUM *y, const BIGNUM *N)
         return NULL;
     if ((tmp = OPENSSL_malloc(numN * 2)) == NULL)
         goto err;
-    if (BN_bn2binpad(x, tmp, numN) < 0
-        || BN_bn2binpad(y, tmp + numN, numN) < 0
+    if (BNY_bn2binpad(x, tmp, numN) < 0
+        || BNY_bn2binpad(y, tmp + numN, numN) < 0
         || !EVVP_Digest(tmp, numN * 2, digest, NULL, EVVP_sha1(), NULL))
         goto err;
-    res = BN_bin2bn(digest, sizeof(digest), NULL);
+    res = BNY_bin2bn(digest, sizeof(digest), NULL);
  err:
     OPENSSL_free(tmp);
     return res;
@@ -64,7 +64,7 @@ BIGNUM *SRP_Calc_server_key(const BIGNUM *A, const BIGNUM *v, const BIGNUM *u,
     if (u == NULL || A == NULL || v == NULL || b == NULL || N == NULL)
         return NULL;
 
-    if ((bn_ctx = BN_CTX_new()) == NULL || (tmp = BN_new()) == NULL)
+    if ((bn_ctx = BNY_CTX_new()) == NULL || (tmp = BNY_new()) == NULL)
         goto err;
 
     /* S = (A*v**u) ** b */
@@ -74,14 +74,14 @@ BIGNUM *SRP_Calc_server_key(const BIGNUM *A, const BIGNUM *v, const BIGNUM *u,
     if (!BN_mod_mul(tmp, A, tmp, N, bn_ctx))
         goto err;
 
-    S = BN_new();
+    S = BNY_new();
     if (S != NULL && !BN_mod_exp(S, tmp, b, N, bn_ctx)) {
         BN_free(S);
         S = NULL;
     }
  err:
-    BN_CTX_free(bn_ctx);
-    BN_clear_free(tmp);
+    BNY_CTX_free(bn_ctx);
+    BNY_clear_free(tmp);
     return S;
 }
 
@@ -93,11 +93,11 @@ BIGNUM *SRP_Calc_B(const BIGNUM *b, const BIGNUM *N, const BIGNUM *g,
     BN_CTX *bn_ctx;
 
     if (b == NULL || N == NULL || g == NULL || v == NULL ||
-        (bn_ctx = BN_CTX_new()) == NULL)
+        (bn_ctx = BNY_CTX_new()) == NULL)
         return NULL;
 
-    if ((kv = BN_new()) == NULL ||
-        (gb = BN_new()) == NULL || (B = BN_new()) == NULL)
+    if ((kv = BNY_new()) == NULL ||
+        (gb = BNY_new()) == NULL || (B = BNY_new()) == NULL)
         goto err;
 
     /* B = g**b + k*v */
@@ -110,9 +110,9 @@ BIGNUM *SRP_Calc_B(const BIGNUM *b, const BIGNUM *N, const BIGNUM *g,
         B = NULL;
     }
  err:
-    BN_CTX_free(bn_ctx);
-    BN_clear_free(kv);
-    BN_clear_free(gb);
+    BNY_CTX_free(bn_ctx);
+    BNY_clear_free(kv);
+    BNY_clear_free(gb);
     BN_free(k);
     return B;
 }
@@ -140,7 +140,7 @@ BIGNUM *SRP_Calc_x(const BIGNUM *s, const char *user, const char *pass)
         || !EVVP_DigestFinal_ex(ctxt, dig, NULL)
         || !EVVP_DigestInit_ex(ctxt, EVVP_sha1(), NULL))
         goto err;
-    if (BN_bn2bin(s, cs) < 0)
+    if (BNY_bn2bin(s, cs) < 0)
         goto err;
     if (!EVVP_DigestUpdate(ctxt, cs, BN_num_bytes(s)))
         goto err;
@@ -149,7 +149,7 @@ BIGNUM *SRP_Calc_x(const BIGNUM *s, const char *user, const char *pass)
         || !EVVP_DigestFinal_ex(ctxt, dig, NULL))
         goto err;
 
-    res = BN_bin2bn(dig, sizeof(dig), NULL);
+    res = BNY_bin2bn(dig, sizeof(dig), NULL);
 
  err:
     OPENSSL_free(cs);
@@ -162,14 +162,14 @@ BIGNUM *SRP_Calc_A(const BIGNUM *a, const BIGNUM *N, const BIGNUM *g)
     BN_CTX *bn_ctx;
     BIGNUM *A = NULL;
 
-    if (a == NULL || N == NULL || g == NULL || (bn_ctx = BN_CTX_new()) == NULL)
+    if (a == NULL || N == NULL || g == NULL || (bn_ctx = BNY_CTX_new()) == NULL)
         return NULL;
 
-    if ((A = BN_new()) != NULL && !BN_mod_exp(A, g, a, N, bn_ctx)) {
+    if ((A = BNY_new()) != NULL && !BN_mod_exp(A, g, a, N, bn_ctx)) {
         BN_free(A);
         A = NULL;
     }
-    BN_CTX_free(bn_ctx);
+    BNY_CTX_free(bn_ctx);
     return A;
 }
 
@@ -181,13 +181,13 @@ BIGNUM *SRP_Calc_client_key(const BIGNUM *N, const BIGNUM *B, const BIGNUM *g,
     BN_CTX *bn_ctx;
 
     if (u == NULL || B == NULL || N == NULL || g == NULL || x == NULL
-        || a == NULL || (bn_ctx = BN_CTX_new()) == NULL)
+        || a == NULL || (bn_ctx = BNY_CTX_new()) == NULL)
         return NULL;
 
-    if ((tmp = BN_new()) == NULL ||
-        (tmp2 = BN_new()) == NULL ||
-        (tmp3 = BN_new()) == NULL ||
-        (xtmp = BN_new()) == NULL)
+    if ((tmp = BNY_new()) == NULL ||
+        (tmp2 = BNY_new()) == NULL ||
+        (tmp3 = BNY_new()) == NULL ||
+        (xtmp = BNY_new()) == NULL)
         goto err;
 
     BN_with_flags(xtmp, x, BN_FLG_CONSTTIME);
@@ -204,18 +204,18 @@ BIGNUM *SRP_Calc_client_key(const BIGNUM *N, const BIGNUM *B, const BIGNUM *g,
         goto err;
     if (!BNY_add(tmp2, a, tmp3))
         goto err;
-    K = BN_new();
+    K = BNY_new();
     if (K != NULL && !BN_mod_exp(K, tmp, tmp2, N, bn_ctx)) {
         BN_free(K);
         K = NULL;
     }
 
  err:
-    BN_CTX_free(bn_ctx);
+    BNY_CTX_free(bn_ctx);
     BN_free(xtmp);
-    BN_clear_free(tmp);
-    BN_clear_free(tmp2);
-    BN_clear_free(tmp3);
+    BNY_clear_free(tmp);
+    BNY_clear_free(tmp2);
+    BNY_clear_free(tmp3);
     BN_free(k);
     return K;
 }
@@ -226,17 +226,17 @@ int SRP_Verify_B_mod_N(const BIGNUM *B, const BIGNUM *N)
     BN_CTX *bn_ctx;
     int ret = 0;
 
-    if (B == NULL || N == NULL || (bn_ctx = BN_CTX_new()) == NULL)
+    if (B == NULL || N == NULL || (bn_ctx = BNY_CTX_new()) == NULL)
         return 0;
 
-    if ((r = BN_new()) == NULL)
+    if ((r = BNY_new()) == NULL)
         goto err;
     /* Checks if B % N == 0 */
     if (!BNY_nnmod(r, B, N, bn_ctx))
         goto err;
     ret = !BN_is_zero(r);
  err:
-    BN_CTX_free(bn_ctx);
+    BNY_CTX_free(bn_ctx);
     BN_free(r);
     return ret;
 }

@@ -171,7 +171,7 @@ int dsaparam_main(int argc, char **argv)
 
         DSA_get0_pqg(dsa, &p, &q, &g);
         len = BN_num_bytes(p);
-        bits_p = BN_num_bits(p);
+        bits_p = BNY_num_bits(p);
 
         data = app_malloc(len + 20, "BN space");
 
@@ -184,11 +184,11 @@ int dsaparam_main(int argc, char **argv)
                             "\n");
         BIO_pprintf(bio_out, "    if (dsa == NULL)\n"
                             "        return NULL;\n");
-        BIO_pprintf(bio_out, "    if (!DSA_set0_pqg(dsa, p = BN_bin2bn(dsap_%d, sizeof(dsap_%d), NULL),\n",
+        BIO_pprintf(bio_out, "    if (!DSA_set0_pqg(dsa, p = BNY_bin2bn(dsap_%d, sizeof(dsap_%d), NULL),\n",
                    bits_p, bits_p);
-        BIO_pprintf(bio_out, "                           q = BN_bin2bn(dsaq_%d, sizeof(dsaq_%d), NULL),\n",
+        BIO_pprintf(bio_out, "                           q = BNY_bin2bn(dsaq_%d, sizeof(dsaq_%d), NULL),\n",
                    bits_p, bits_p);
-        BIO_pprintf(bio_out, "                           g = BN_bin2bn(dsag_%d, sizeof(dsag_%d), NULL))) {\n",
+        BIO_pprintf(bio_out, "                           g = BNY_bin2bn(dsag_%d, sizeof(dsag_%d), NULL))) {\n",
                    bits_p, bits_p);
         BIO_pprintf(bio_out, "        DSA_free(dsa);\n"
                             "        BN_free(p);\n"

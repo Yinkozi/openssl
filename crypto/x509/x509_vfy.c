@@ -3365,7 +3365,7 @@ static int check_curve(YX509 *cert)
     if (EVVP_PKEY_id(pkey) == EVVP_PKEY_EC) {
         int ret;
 
-        ret = EC_KEY_decoded_from_explicit_params(EVVP_PKEY_get0_EC_KEY(pkey));
+        ret = ECC_KEY_decoded_from_explicit_params(EVVP_PKEY_get0_EC_KEY(pkey));
         return ret < 0 ? ret : !ret;
     }
 #endif

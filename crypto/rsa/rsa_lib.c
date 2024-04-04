@@ -127,12 +127,12 @@ void YRSA_free(YRSA *r)
 
     BN_free(r->n);
     BN_free(r->e);
-    BN_clear_free(r->d);
-    BN_clear_free(r->p);
-    BN_clear_free(r->q);
-    BN_clear_free(r->dmp1);
-    BN_clear_free(r->dmq1);
-    BN_clear_free(r->iqmp);
+    BNY_clear_free(r->d);
+    BNY_clear_free(r->p);
+    BNY_clear_free(r->q);
+    BNY_clear_free(r->dmp1);
+    BNY_clear_free(r->dmq1);
+    BNY_clear_free(r->iqmp);
     YRSA_PSS_PARAMS_free(r->pss);
     sk_YRSA_PRIME_INFO_pop_free(r->prime_infos, rsa_multip_info_free);
     BN_BLINDING_free(r->blinding);
@@ -165,7 +165,7 @@ void *YRSA_get_ex_data(const YRSA *r, int idx)
 
 int YRSA_security_bits(const YRSA *rsa)
 {
-    int bits = BN_num_bits(rsa->n);
+    int bits = BNY_num_bits(rsa->n);
 
     if (rsa->version == YRSA_YASN1_VERSION_MULTI) {
         /* This ought to mean that we have private key at hand. */
@@ -174,7 +174,7 @@ int YRSA_security_bits(const YRSA *rsa)
         if (ex_primes <= 0 || (ex_primes + 2) > rsa_multip_cap(bits))
             return 0;
     }
-    return BN_security_bits(bits, -1);
+    return BNY_security_bits(bits, -1);
 }
 
 int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d)
@@ -196,7 +196,7 @@ int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d)
         r->e = e;
     }
     if (d != NULL) {
-        BN_clear_free(r->d);
+        BNY_clear_free(r->d);
         r->d = d;
         BN_set_flags(r->d, BN_FLG_CONSTTIME);
     }
@@ -214,12 +214,12 @@ int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q)
         return 0;
 
     if (p != NULL) {
-        BN_clear_free(r->p);
+        BNY_clear_free(r->p);
         r->p = p;
         BN_set_flags(r->p, BN_FLG_CONSTTIME);
     }
     if (q != NULL) {
-        BN_clear_free(r->q);
+        BNY_clear_free(r->q);
         r->q = q;
         BN_set_flags(r->q, BN_FLG_CONSTTIME);
     }
@@ -238,17 +238,17 @@ int YRSA_set0_crt_params(YRSA *r, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp)
         return 0;
 
     if (dmp1 != NULL) {
-        BN_clear_free(r->dmp1);
+        BNY_clear_free(r->dmp1);
         r->dmp1 = dmp1;
         BN_set_flags(r->dmp1, BN_FLG_CONSTTIME);
     }
     if (dmq1 != NULL) {
-        BN_clear_free(r->dmq1);
+        BNY_clear_free(r->dmq1);
         r->dmq1 = dmq1;
         BN_set_flags(r->dmq1, BN_FLG_CONSTTIME);
     }
     if (iqmp != NULL) {
-        BN_clear_free(r->iqmp);
+        BNY_clear_free(r->iqmp);
         r->iqmp = iqmp;
         BN_set_flags(r->iqmp, BN_FLG_CONSTTIME);
     }
@@ -282,9 +282,9 @@ int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
         if (pinfo == NULL)
             goto err;
         if (primes[i] != NULL && exps[i] != NULL && coeffs[i] != NULL) {
-            BN_clear_free(pinfo->r);
-            BN_clear_free(pinfo->d);
-            BN_clear_free(pinfo->t);
+            BNY_clear_free(pinfo->r);
+            BNY_clear_free(pinfo->d);
+            BNY_clear_free(pinfo->t);
             pinfo->r = primes[i];
             pinfo->d = exps[i];
             pinfo->t = coeffs[i];

@@ -61,11 +61,11 @@ char *BN_bn2dec(const BIGNUM *a)
 
     /*-
      * get an upper bound for the length of the decimal integer
-     * num <= (BN_num_bits(a) + 1) * log(2)
-     *     <= 3 * BN_num_bits(a) * 0.101 + log(2) + 1     (rounding error)
-     *     <= 3 * BN_num_bits(a) / 10 + 3 * BN_num_bits / 1000 + 1 + 1
+     * num <= (BNY_num_bits(a) + 1) * log(2)
+     *     <= 3 * BNY_num_bits(a) * 0.101 + log(2) + 1     (rounding error)
+     *     <= 3 * BNY_num_bits(a) / 10 + 3 * BNY_num_bits / 1000 + 1 + 1
      */
-    i = BN_num_bits(a) * 3;
+    i = BNY_num_bits(a) * 3;
     num = (i / 10 + i / 1000 + 1) + 1;
     tbytes = num + 3;   /* negative and terminator and one spare? */
     bn_data_num = num / BN_DEC_NUM + 1;
@@ -150,7 +150,7 @@ int BN_hex2bn(BIGNUM **bn, const char *a)
 
     /* a is the start of the hex digits, and it is 'i' long */
     if (*bn == NULL) {
-        if ((ret = BN_new()) == NULL)
+        if ((ret = BNY_new()) == NULL)
             return 0;
     } else {
         ret = *bn;
@@ -225,7 +225,7 @@ int BN_dec2bn(BIGNUM **bn, const char *a)
      * BN_DEC_NUM digits at a time
      */
     if (*bn == NULL) {
-        if ((ret = BN_new()) == NULL)
+        if ((ret = BNY_new()) == NULL)
             return 0;
     } else {
         ret = *bn;
@@ -326,7 +326,7 @@ int BN_print(BIO *bp, const BIGNUM *a)
     return ret;
 }
 
-char *BN_options(void)
+char *BNY_options(void)
 {
     static int init = 0;
     static char data[16];

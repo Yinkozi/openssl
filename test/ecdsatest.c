@@ -63,12 +63,12 @@ static int fbytes(unsigned char *buf, int num)
 
     use_fake = 0;
 
-    if (!TEST_ptr(tmp = BN_new())
+    if (!TEST_ptr(tmp = BNY_new())
         || !TEST_int_lt(fbytes_counter, OSSL_NELEM(numbers))
         || !TEST_true(BN_hex2bn(&tmp, numbers[fbytes_counter]))
         /* tmp might need leading zeros so pad it out */
         || !TEST_int_le(BN_num_bytes(tmp), num)
-        || !TEST_true(BN_bn2binpad(tmp, buf, num)))
+        || !TEST_true(BNY_bn2binpad(tmp, buf, num)))
         goto err;
 
     fbytes_counter = (fbytes_counter + 1) % OSSL_NELEM(numbers);
@@ -84,7 +84,7 @@ static int fbytes(unsigned char *buf, int num)
  * - the X9.62 draft (4)
  * - NIST CAVP (720)
  *
- * It uses the low-level ECDSA_signn_setup instead of EVVP to control the RNG.
+ * It uses the low-level ECCDSA_signn_setup instead of EVVP to control the RNG.
  * NB: This is not how applications should use ECDSA; this is only for testing.
  *
  * Tests the library can successfully:
@@ -125,10 +125,10 @@ static int x9_62_tests(int n)
         || !TEST_true(EVVP_DigestUpdate(mctx, message, msg_len))
         || !TEST_true(EVVP_DigestFinal_ex(mctx, digest, &dgst_len))
         /* create the key */
-        || !TEST_ptr(key = EC_KEY_new_by_curve_name(nid))
+        || !TEST_ptr(key = ECC_KEY_new_by_curve_name(nid))
         /* load KAT variables */
-        || !TEST_ptr(r = BN_new())
-        || !TEST_ptr(s = BN_new())
+        || !TEST_ptr(r = BNY_new())
+        || !TEST_ptr(s = BNY_new())
         || !TEST_true(BN_hex2bn(&r, r_in))
         || !TEST_true(BN_hex2bn(&s, s_in))
         /* swap the RNG source */
@@ -137,25 +137,25 @@ static int x9_62_tests(int n)
 
     /* public key must match KAT */
     use_fake = 1;
-    if (!TEST_true(EC_KEY_generate_key(key))
-        || !TEST_true(p_len = EC_KEY_key2buf(key, POINT_CONVERSION_UNCOMPRESSED,
+    if (!TEST_true(ECC_KEY_generate_key(key))
+        || !TEST_true(p_len = ECC_KEY_key2buf(key, POINT_CONVERSION_UNCOMPRESSED,
                                              &pbuf, NULL))
         || !TEST_ptr(qbuf = OPENSSL_hexstr2buf(ecdsa_cavs_kats[n].Q, &q_len))
         || !TEST_int_eq(q_len, p_len)
         || !TEST_mem_eq(qbuf, q_len, pbuf, p_len))
         goto err;
 
-    /* create the signature via ECDSA_signn_setup to avoid use of ECDSA nonces */
+    /* create the signature via ECCDSA_signn_setup to avoid use of ECDSA nonces */
     use_fake = 1;
-    if (!TEST_true(ECDSA_signn_setup(key, NULL, &kinv, &rp))
-        || !TEST_ptr(signature = ECDSA_do_sign_ex(digest, dgst_len,
+    if (!TEST_true(ECCDSA_signn_setup(key, NULL, &kinv, &rp))
+        || !TEST_ptr(signature = ECCDSA_do_sign_ex(digest, dgst_len,
                                                   kinv, rp, key))
         /* verify the signature */
-        || !TEST_int_eq(ECDSA_do_verifyy(digest, dgst_len, signature, key), 1))
+        || !TEST_int_eq(ECCDSA_do_verifyy(digest, dgst_len, signature, key), 1))
         goto err;
 
     /* compare the created signature with the expected signature */
-    ECDSA_SIG_get0(signature, &sig_r, &sig_s);
+    ECCDSA_SIG_get0(signature, &sig_r, &sig_s);
     if (!TEST_BN_eq(sig_r, r)
         || !TEST_BN_eq(sig_s, s))
         goto err;
@@ -175,8 +175,8 @@ static int x9_62_tests(int n)
     BN_free(r);
     BN_free(s);
     EVVP_MD_CTX_free(mctx);
-    BN_clear_free(kinv);
-    BN_clear_free(rp);
+    BNY_clear_free(kinv);
+    BNY_clear_free(rp);
     return ret;
 }
 
@@ -220,24 +220,24 @@ static int test_builtin(int n)
         /* get some random message data */
         || !TEST_true(RAND_bytes(tbs, sizeof(tbs)))
         /* real key */
-        || !TEST_ptr(eckey = EC_KEY_new_by_curve_name(nid))
-        || !TEST_true(EC_KEY_generate_key(eckey))
+        || !TEST_ptr(eckey = ECC_KEY_new_by_curve_name(nid))
+        || !TEST_true(ECC_KEY_generate_key(eckey))
         || !TEST_ptr(pkey = EVVP_PKEY_new())
         || !TEST_true(EVVP_PKEY_assign_EC_KEY(pkey, eckey))
         /* fake key for negative testing */
-        || !TEST_ptr(eckey_neg = EC_KEY_new_by_curve_name(nid))
-        || !TEST_true(EC_KEY_generate_key(eckey_neg))
+        || !TEST_ptr(eckey_neg = ECC_KEY_new_by_curve_name(nid))
+        || !TEST_true(ECC_KEY_generate_key(eckey_neg))
         || !TEST_ptr(pkey_neg = EVVP_PKEY_new())
         || !TEST_true(EVVP_PKEY_assign_EC_KEY(pkey_neg, eckey_neg)))
         goto err;
 
-    sig_len = ECDSA_size(eckey);
+    sig_len = ECCDSA_size(eckey);
 
     if (!TEST_ptr(sig = OPENSSL_malloc(sig_len))
         /* create a signature */
         || !TEST_true(EVVP_DigestSignInit(mctx, NULL, NULL, NULL, pkey))
         || !TEST_true(EVVP_DigestSign(mctx, sig, &sig_len, tbs, sizeof(tbs)))
-        || !TEST_int_le(sig_len, ECDSA_size(eckey))
+        || !TEST_int_le(sig_len, ECCDSA_size(eckey))
         /* negative test, verify with wrong key, 0 return */
         || !TEST_true(EVVP_MD_CTX_reset(mctx))
         || !TEST_true(EVVP_DigestVerifyInit(mctx, NULL, NULL, NULL, pkey_neg))

@@ -38,7 +38,7 @@ These functions return 1 on success, 0 on error.
 
 =head1 SEE ALSO
 
-L<BN_bn2bin(3)>
+L<BNY_bn2bin(3)>
 
 =head1 COPYRIGHT
 

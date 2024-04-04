@@ -116,14 +116,14 @@ void DH_free(DH *r)
 
     CRYPTO_THREAD_lock_free(r->lock);
 
-    BN_clear_free(r->p);
-    BN_clear_free(r->g);
-    BN_clear_free(r->q);
-    BN_clear_free(r->j);
+    BNY_clear_free(r->p);
+    BNY_clear_free(r->g);
+    BNY_clear_free(r->q);
+    BNY_clear_free(r->j);
     OPENSSL_free(r->seed);
-    BN_clear_free(r->counter);
-    BN_clear_free(r->pub_key);
-    BN_clear_free(r->priv_key);
+    BNY_clear_free(r->counter);
+    BNY_clear_free(r->pub_key);
+    BNY_clear_free(r->priv_key);
     OPENSSL_free(r);
 }
 
@@ -151,7 +151,7 @@ void *DH_get_ex_data(DH *d, int idx)
 
 int DH_bits(const DH *dh)
 {
-    return BN_num_bits(dh->p);
+    return BNY_num_bits(dh->p);
 }
 
 int DH_size(const DH *dh)
@@ -163,12 +163,12 @@ int DH_security_bits(const DH *dh)
 {
     int N;
     if (dh->q)
-        N = BN_num_bits(dh->q);
+        N = BNY_num_bits(dh->q);
     else if (dh->length)
         N = dh->length;
     else
         N = -1;
-    return BN_security_bits(BN_num_bits(dh->p), N);
+    return BNY_security_bits(BNY_num_bits(dh->p), N);
 }
 
 
@@ -206,7 +206,7 @@ int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
     }
 
     if (q != NULL) {
-        dh->length = BN_num_bits(q);
+        dh->length = BNY_num_bits(q);
     }
 
     return 1;
@@ -234,11 +234,11 @@ void DH_get0_key(const DH *dh, const BIGNUM **pub_key, const BIGNUM **priv_key)
 int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key)
 {
     if (pub_key != NULL) {
-        BN_clear_free(dh->pub_key);
+        BNY_clear_free(dh->pub_key);
         dh->pub_key = pub_key;
     }
     if (priv_key != NULL) {
-        BN_clear_free(dh->priv_key);
+        BNY_clear_free(dh->priv_key);
         dh->priv_key = priv_key;
     }
 

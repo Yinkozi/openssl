@@ -39,12 +39,12 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     BIGNUM *b4;
     BIGNUM *b5;
 
-    b1 = BN_new();
-    b2 = BN_new();
-    b3 = BN_new();
-    b4 = BN_new();
-    b5 = BN_new();
-    ctx = BN_CTX_new();
+    b1 = BNY_new();
+    b2 = BNY_new();
+    b3 = BNY_new();
+    b4 = BNY_new();
+    b5 = BNY_new();
+    ctx = BNY_CTX_new();
 
     /* Divide the input into three parts, using the values of the first two
      * bytes to choose lengths, which generate b1, b2 and b3. Use three bits
@@ -62,10 +62,10 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
         s3 = buf[0] & 4;
         ++buf;
     }
-    OPENSSL_assert(BN_bin2bn(buf, l1, b1) == b1);
+    OPENSSL_assert(BNY_bin2bn(buf, l1, b1) == b1);
     BN_set_negative(b1, s1);
-    OPENSSL_assert(BN_bin2bn(buf + l1, l2, b2) == b2);
-    OPENSSL_assert(BN_bin2bn(buf + l1 + l2, l3, b3) == b3);
+    OPENSSL_assert(BNY_bin2bn(buf + l1, l2, b2) == b2);
+    OPENSSL_assert(BNY_bin2bn(buf + l1 + l2, l3, b3) == b3);
     BN_set_negative(b3, s3);
 
     /* mod 0 is undefined */
@@ -98,7 +98,7 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     BN_free(b3);
     BN_free(b4);
     BN_free(b5);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     ERR_clear_error();
 
     return 0;

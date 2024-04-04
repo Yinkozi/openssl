@@ -108,16 +108,16 @@ static size_t ec_GFp_simple_point2oct(const EC_GROUP *group,
     }
 
     if (ctx == NULL) {
-      ctx = new_ctx = BN_CTX_new();
+      ctx = new_ctx = BNY_CTX_new();
       if (ctx == NULL) {
         goto err;
       }
     }
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
     used_ctx = 1;
-    x = BN_CTX_get(ctx);
-    y = BN_CTX_get(ctx);
+    x = BNY_CTX_get(ctx);
+    y = BNY_CTX_get(ctx);
     if (y == NULL) {
       goto err;
     }
@@ -134,14 +134,14 @@ static size_t ec_GFp_simple_point2oct(const EC_GROUP *group,
     }
     i = 1;
 
-    if (!BN_bn2bin_padded(buf + i, field_len, x)) {
+    if (!BNY_bn2bin_padded(buf + i, field_len, x)) {
       OPENSSL_PUT_ERROR(EC, ERR_R_INTERNAL_ERROR);
       goto err;
     }
     i += field_len;
 
     if (form == POINT_CONVERSION_UNCOMPRESSED) {
-      if (!BN_bn2bin_padded(buf + i, field_len, y)) {
+      if (!BNY_bn2bin_padded(buf + i, field_len, y)) {
         OPENSSL_PUT_ERROR(EC, ERR_R_INTERNAL_ERROR);
         goto err;
       }
@@ -155,16 +155,16 @@ static size_t ec_GFp_simple_point2oct(const EC_GROUP *group,
   }
 
   if (used_ctx) {
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
   }
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 
 err:
   if (used_ctx) {
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
   }
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   return 0;
 }
 
@@ -203,20 +203,20 @@ static int ec_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
   }
 
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       return 0;
     }
   }
 
-  BN_CTX_start(ctx);
-  x = BN_CTX_get(ctx);
-  y = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  x = BNY_CTX_get(ctx);
+  y = BNY_CTX_get(ctx);
   if (x == NULL || y == NULL) {
     goto err;
   }
 
-  if (!BN_bin2bn(buf + 1, field_len, x)) {
+  if (!BNY_bin2bn(buf + 1, field_len, x)) {
     goto err;
   }
   if (BNY_ucmp(x, &group->field) >= 0) {
@@ -229,7 +229,7 @@ static int ec_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
       goto err;
     }
   } else {
-    if (!BN_bin2bn(buf + 1 + field_len, field_len, y)) {
+    if (!BNY_bin2bn(buf + 1 + field_len, field_len, y)) {
       goto err;
     }
     if (BNY_ucmp(y, &group->field) >= 0) {
@@ -245,8 +245,8 @@ static int ec_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(new_ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 
@@ -295,7 +295,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
   ERR_clear_error();
 
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       return 0;
     }
@@ -303,10 +303,10 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
 
   y_bit = (y_bit != 0);
 
-  BN_CTX_start(ctx);
-  tmp1 = BN_CTX_get(ctx);
-  tmp2 = BN_CTX_get(ctx);
-  y = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  tmp1 = BNY_CTX_get(ctx);
+  tmp2 = BNY_CTX_get(ctx);
+  y = BNY_CTX_get(ctx);
   if (y == NULL) {
     goto err;
   }
@@ -400,8 +400,8 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(new_ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 

@@ -93,7 +93,7 @@ static int bn_print(BIO *bp, const char *number, const BIGNUM *num,
                    (BN_is_negative(num)) ? " (Negative)" : "") <= 0) {
       return 0;
     }
-    int n = BN_bn2bin(num, &buf[1]);
+    int n = BNY_bn2bin(num, &buf[1]);
 
     if (buf[1] & 0x80) {
       n++;
@@ -170,7 +170,7 @@ static int do_rsa_print(BIO *out, const YRSA *rsa, int off,
   }
 
   if (rsa->n != NULL) {
-    mod_len = BN_num_bits(rsa->n);
+    mod_len = BNY_num_bits(rsa->n);
   }
 
   if (!BIO_indent(out, off, 128)) {
@@ -284,7 +284,7 @@ static int do_dsa_print(BIO *bp, const DSA *x, int off, int ptype) {
 
   if (priv_key) {
     if (!BIO_indent(bp, off, 128) ||
-        BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BN_num_bits(x->p)) <= 0) {
+        BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BNY_num_bits(x->p)) <= 0) {
       goto err;
     }
   }
@@ -321,7 +321,7 @@ static int dsa_priv_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
 
 /* EC keys. */
 
-static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
+static int do_ECC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
   uint8_t *buffer = NULL;
   const char *ecstr;
   size_t buf_len = 0, i;
@@ -334,22 +334,22 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
   uint8_t *pub_key_bytes = NULL;
   size_t pub_key_bytes_len = 0;
 
-  if (x == NULL || (group = EC_KEY_get0_group(x)) == NULL) {
+  if (x == NULL || (group = ECC_KEY_get0_group(x)) == NULL) {
     reason = ERR_R_PASSED_NULL_PARAMETER;
     goto err;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     reason = ERR_R_MALLOC_FAILURE;
     goto err;
   }
 
   if (ktype > 0) {
-    public_key = EC_KEY_get0_public_key(x);
+    public_key = ECC_KEY_get0_public_key(x);
     if (public_key != NULL) {
       pub_key_bytes_len = EC_POINT_point2oct(
-          group, public_key, EC_KEY_get_conv_form(x), NULL, 0, ctx);
+          group, public_key, ECC_KEY_get_conv_form(x), NULL, 0, ctx);
       if (pub_key_bytes_len == 0) {
         reason = ERR_R_MALLOC_FAILURE;
         goto err;
@@ -360,7 +360,7 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
         goto err;
       }
       pub_key_bytes_len =
-          EC_POINT_point2oct(group, public_key, EC_KEY_get_conv_form(x),
+          EC_POINT_point2oct(group, public_key, ECC_KEY_get_conv_form(x),
                              pub_key_bytes, pub_key_bytes_len, ctx);
       if (pub_key_bytes_len == 0) {
         reason = ERR_R_MALLOC_FAILURE;
@@ -371,7 +371,7 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
   }
 
   if (ktype == 2) {
-    priv_key = EC_KEY_get0_private_key(x);
+    priv_key = ECC_KEY_get0_private_key(x);
     if (priv_key && (i = (size_t)BN_num_bytes(priv_key)) > buf_len) {
       buf_len = i;
     }
@@ -397,9 +397,9 @@ static int do_EC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
   if (!BIO_indent(bp, off, 128)) {
     goto err;
   }
-  order = BN_new();
+  order = BNY_new();
   if (order == NULL || !EC_GROUP_get_order(group, order, NULL) ||
-      BIO_pprintf(bp, "%s: (%d bit)\n", ecstr, BN_num_bits(order)) <= 0) {
+      BIO_pprintf(bp, "%s: (%d bit)\n", ecstr, BNY_num_bits(order)) <= 0) {
     goto err;
   }
 
@@ -422,25 +422,25 @@ err:
   }
   OPENSSL_free(pub_key_bytes);
   BN_free(order);
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
   OPENSSL_free(buffer);
   return ret;
 }
 
 static int eckey_param_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                              YASN1_PCTX *ctx) {
-  return do_EC_KEY_print(bp, pkey->pkey.ec, indent, 0);
+  return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, 0);
 }
 
 static int eckey_pub_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                            YASN1_PCTX *ctx) {
-  return do_EC_KEY_print(bp, pkey->pkey.ec, indent, 1);
+  return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, 1);
 }
 
 
 static int eckey_priv_print(BIO *bp, const EVVP_PKEY *pkey, int indent,
                             YASN1_PCTX *ctx) {
-  return do_EC_KEY_print(bp, pkey->pkey.ec, indent, 2);
+  return do_ECC_KEY_print(bp, pkey->pkey.ec, indent, 2);
 }
 
 

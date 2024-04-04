@@ -62,7 +62,7 @@ static void long_free(YASN1_VALUE **pval, const YASN1_ITEM *it)
 }
 
 /*
- * Originally BN_num_bits_word was called to perform this operation, but
+ * Originally BNY_num_bits_word was called to perform this operation, but
  * trouble is that there is no guarantee that sizeof(long) equals to
  * sizeof(BN_ULONG). BN_ULONG is a configurable type that can be as wide
  * as long, but also double or half...

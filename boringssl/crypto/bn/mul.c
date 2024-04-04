@@ -578,9 +578,9 @@ int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
   }
   top = al + bl;
 
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
   if ((r == a) || (r == b)) {
-    if ((rr = BN_CTX_get(ctx)) == NULL) {
+    if ((rr = BNY_CTX_get(ctx)) == NULL) {
       goto err;
     }
   } else {
@@ -606,15 +606,15 @@ int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
       /* Find out the power of two lower or equal
          to the longest of the two numbers */
       if (i >= 0) {
-        j = BN_num_bits_word((BN_ULONG)al);
+        j = BNY_num_bits_word((BN_ULONG)al);
       }
       if (i == -1) {
-        j = BN_num_bits_word((BN_ULONG)bl);
+        j = BNY_num_bits_word((BN_ULONG)bl);
       }
       j = 1 << (j - 1);
       assert(j <= al || j <= bl);
       k = j + j;
-      t = BN_CTX_get(ctx);
+      t = BNY_CTX_get(ctx);
       if (t == NULL) {
         goto err;
       }
@@ -649,13 +649,13 @@ int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
 
 end:
   bn_correct_top(rr);
-  if (r != rr && !BN_copy(r, rr)) {
+  if (r != rr && !BNY_copy(r, rr)) {
     goto err;
   }
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -811,9 +811,9 @@ int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx) {
     return 1;
   }
 
-  BN_CTX_start(ctx);
-  rr = (a != r) ? r : BN_CTX_get(ctx);
-  tmp = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  rr = (a != r) ? r : BNY_CTX_get(ctx);
+  tmp = BNY_CTX_get(ctx);
   if (!rr || !tmp) {
     goto err;
   }
@@ -834,7 +834,7 @@ int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx) {
     } else {
       int j, k;
 
-      j = BN_num_bits_word((BN_ULONG)al);
+      j = BNY_num_bits_word((BN_ULONG)al);
       j = 1 << (j - 1);
       k = j + j;
       if (al == j) {
@@ -860,12 +860,12 @@ int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx) {
     rr->top = max;
   }
 
-  if (rr != r && !BN_copy(r, rr)) {
+  if (rr != r && !BNY_copy(r, rr)) {
     goto err;
   }
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }

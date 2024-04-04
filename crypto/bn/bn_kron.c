@@ -32,16 +32,16 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
     bn_check_top(a);
     bn_check_top(b);
 
-    BN_CTX_start(ctx);
-    A = BN_CTX_get(ctx);
-    B = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    A = BNY_CTX_get(ctx);
+    B = BNY_CTX_get(ctx);
     if (B == NULL)
         goto end;
 
-    err = !BN_copy(A, a);
+    err = !BNY_copy(A, a);
     if (err)
         goto end;
-    err = !BN_copy(B, b);
+    err = !BNY_copy(B, b);
     if (err)
         goto end;
 
@@ -132,7 +132,7 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
         tmp->neg = 0;
     }
  end:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     if (err)
         return -2;
     else

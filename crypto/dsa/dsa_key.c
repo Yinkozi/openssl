@@ -28,28 +28,28 @@ static int dsa_builtin_keygen(DSA *dsa)
     BN_CTX *ctx = NULL;
     BIGNUM *pub_key = NULL, *priv_key = NULL;
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
 
     if (dsa->priv_key == NULL) {
-        if ((priv_key = BN_secure_new()) == NULL)
+        if ((priv_key = BNY_secure_new()) == NULL)
             goto err;
     } else
         priv_key = dsa->priv_key;
 
     do
-        if (!BN_priv_rand_range(priv_key, dsa->q))
+        if (!BNY_priv_rand_range(priv_key, dsa->q))
             goto err;
     while (BN_is_zero(priv_key)) ;
 
     if (dsa->pub_key == NULL) {
-        if ((pub_key = BN_new()) == NULL)
+        if ((pub_key = BNY_new()) == NULL)
             goto err;
     } else
         pub_key = dsa->pub_key;
 
     {
-        BIGNUM *prk = BN_new();
+        BIGNUM *prk = BNY_new();
 
         if (prk == NULL)
             goto err;
@@ -72,6 +72,6 @@ static int dsa_builtin_keygen(DSA *dsa)
         BN_free(pub_key);
     if (priv_key != dsa->priv_key)
         BN_free(priv_key);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }

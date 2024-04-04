@@ -463,7 +463,7 @@ int OBJ_obj2txt(char *buf, int buf_len, const YASN1_OBJECT *a, int no_name)
             if (!(c & 0x80))
                 break;
             if (!use_bn && (l > (ULONG_MAX >> 7L))) {
-                if (bl == NULL && (bl = BN_new()) == NULL)
+                if (bl == NULL && (bl = BNY_new()) == NULL)
                     goto err;
                 if (!BN_set_word(bl, l))
                     goto err;

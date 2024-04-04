@@ -182,8 +182,8 @@ static int DSA_sign_loop(void *args);
 static int DSA_verify_loop(void *args);
 #endif
 #ifndef OPENSSL_NO_EC
-static int ECDSA_signn_loop(void *args);
-static int ECDSA_verifyy_loop(void *args);
+static int ECCDSA_signn_loop(void *args);
+static int ECCDSA_verifyy_loop(void *args);
 static int EdDSA_sign_loop(void *args);
 static int EdDSA_verify_loop(void *args);
 #endif
@@ -1131,7 +1131,7 @@ static int DSA_verify_loop(void *args)
 
 #ifndef OPENSSL_NO_EC
 static long ecdsa_c[ECDSA_NUM][2];
-static int ECDSA_signn_loop(void *args)
+static int ECCDSA_signn_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -1140,7 +1140,7 @@ static int ECDSA_signn_loop(void *args)
     unsigned int *ecdsasiglen = &tempargs->siglen;
     int ret, count;
     for (count = 0; COND(ecdsa_c[testnum][0]); count++) {
-        ret = ECDSA_signn(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
+        ret = ECCDSA_signn(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
         if (ret == 0) {
             BIO_pprintf(bio_err, "ECDSA sign failure\n");
             ERR_print_errors(bio_err);
@@ -1151,7 +1151,7 @@ static int ECDSA_signn_loop(void *args)
     return count;
 }
 
-static int ECDSA_verifyy_loop(void *args)
+static int ECCDSA_verifyy_loop(void *args)
 {
     loopargs_t *tempargs = *(loopargs_t **) args;
     unsigned char *buf = tempargs->buf;
@@ -1160,7 +1160,7 @@ static int ECDSA_verifyy_loop(void *args)
     unsigned int ecdsasiglen = tempargs->siglen;
     int ret, count;
     for (count = 0; COND(ecdsa_c[testnum][1]); count++) {
-        ret = ECDSA_verifyy(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
+        ret = ECCDSA_verifyy(0, buf, 20, ecdsasig, ecdsasiglen, ecdsa[testnum]);
         if (ret != 1) {
             BIO_pprintf(bio_err, "ECDSA verify failure\n");
             ERR_print_errors(bio_err);
@@ -2690,7 +2690,7 @@ int speed_main(int argc, char **argv)
         for (i = 0; i < loopargs_len; i++) {
             if (primes > 2) {
                 /* we haven't set keys yet,  generate multi-prime YRSA keys */
-                BIGNUM *bn = BN_new();
+                BIGNUM *bn = BNY_new();
 
                 if (bn == NULL)
                     goto end;
@@ -2854,7 +2854,7 @@ int speed_main(int argc, char **argv)
             continue;           /* Ignore Curve */
         for (i = 0; i < loopargs_len; i++) {
             loopargs[i].ecdsa[testnum] =
-                EC_KEY_new_by_curve_name(test_curves[testnum].nid);
+                ECC_KEY_new_by_curve_name(test_curves[testnum].nid);
             if (loopargs[i].ecdsa[testnum] == NULL) {
                 st = 0;
                 break;
@@ -2866,10 +2866,10 @@ int speed_main(int argc, char **argv)
             rsa_count = 1;
         } else {
             for (i = 0; i < loopargs_len; i++) {
-                EC_KEY_precompute_mult(loopargs[i].ecdsa[testnum], NULL);
+                ECC_KEY_precompute_mult(loopargs[i].ecdsa[testnum], NULL);
                 /* Perform ECDSA signature test */
-                EC_KEY_generate_key(loopargs[i].ecdsa[testnum]);
-                st = ECDSA_signn(0, loopargs[i].buf, 20, loopargs[i].buf2,
+                ECC_KEY_generate_key(loopargs[i].ecdsa[testnum]);
+                st = ECCDSA_signn(0, loopargs[i].buf, 20, loopargs[i].buf2,
                                 &loopargs[i].siglen,
                                 loopargs[i].ecdsa[testnum]);
                 if (st == 0)
@@ -2885,7 +2885,7 @@ int speed_main(int argc, char **argv)
                                    ecdsa_c[testnum][0],
                                    test_curves[testnum].bits, seconds.ecdsa);
                 Time_F(START);
-                count = run_benchmark(async_jobs, ECDSA_signn_loop, loopargs);
+                count = run_benchmark(async_jobs, ECCDSA_signn_loop, loopargs);
                 d = Time_F(STOP);
 
                 BIO_pprintf(bio_err,
@@ -2898,7 +2898,7 @@ int speed_main(int argc, char **argv)
 
             /* Perform ECDSA verification test */
             for (i = 0; i < loopargs_len; i++) {
-                st = ECDSA_verifyy(0, loopargs[i].buf, 20, loopargs[i].buf2,
+                st = ECCDSA_verifyy(0, loopargs[i].buf, 20, loopargs[i].buf2,
                                   loopargs[i].siglen,
                                   loopargs[i].ecdsa[testnum]);
                 if (st != 1)
@@ -2914,7 +2914,7 @@ int speed_main(int argc, char **argv)
                                    ecdsa_c[testnum][1],
                                    test_curves[testnum].bits, seconds.ecdsa);
                 Time_F(START);
-                count = run_benchmark(async_jobs, ECDSA_verifyy_loop, loopargs);
+                count = run_benchmark(async_jobs, ECCDSA_verifyy_loop, loopargs);
                 d = Time_F(STOP);
                 BIO_pprintf(bio_err,
                            mr ? "+R6:%ld:%u:%.2f\n"
@@ -3204,7 +3204,7 @@ int speed_main(int argc, char **argv)
         printf("%s\n", OpenSSL_version(OPENSSL_VERSION));
         printf("%s\n", OpenSSL_version(OPENSSL_BUILT_ON));
         printf("options:");
-        printf("%s ", BN_options());
+        printf("%s ", BNY_options());
 #ifndef OPENSSL_NO_MD2
         printf("%s ", MD2_options());
 #endif

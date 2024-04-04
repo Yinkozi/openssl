@@ -57,7 +57,7 @@ EVVP_PKEY *d2i_PublicKey(int type, EVVP_PKEY **a, const unsigned char **pp,
 #endif
 #ifndef OPENSSL_NO_EC
     case EVVP_PKEY_EC:
-        if (!o2i_ECPublicKey(&ret->pkey.ec, pp, length)) {
+        if (!o2i_ECCPublicKey(&ret->pkey.ec, pp, length)) {
             YASN1err(YASN1_F_D2I_PUBLICKEY, ERR_R_YASN1_LIB);
             goto err;
         }

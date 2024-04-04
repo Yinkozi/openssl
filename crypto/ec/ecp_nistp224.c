@@ -335,7 +335,7 @@ static int BN_to_felem(felem out, const BIGNUM *bn)
         ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUM_OUT_OF_RANGE);
         return 0;
     }
-    num_bytes = BN_bn2lebinpad(bn, b_out, sizeof(b_out));
+    num_bytes = BNY_bn2lebinpad(bn, b_out, sizeof(b_out));
     if (num_bytes < 0) {
         ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUM_OUT_OF_RANGE);
         return 0;
@@ -349,7 +349,7 @@ static BIGNUM *felem_to_BN(BIGNUM *out, const felem in)
 {
     felem_bytearray b_out;
     felem_to_bin28(b_out, in);
-    return BN_lebin2bn(b_out, sizeof(b_out), out);
+    return BNY_lebin2bn(b_out, sizeof(b_out), out);
 }
 
 /******************************************************************************/
@@ -1297,17 +1297,17 @@ int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     BIGNUM *curve_p, *curve_a, *curve_b;
 
     if (ctx == NULL)
-        if ((ctx = new_ctx = BN_CTX_new()) == NULL)
+        if ((ctx = new_ctx = BNY_CTX_new()) == NULL)
             return 0;
-    BN_CTX_start(ctx);
-    curve_p = BN_CTX_get(ctx);
-    curve_a = BN_CTX_get(ctx);
-    curve_b = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    curve_p = BNY_CTX_get(ctx);
+    curve_a = BNY_CTX_get(ctx);
+    curve_b = BNY_CTX_get(ctx);
     if (curve_b == NULL)
         goto err;
-    BN_bin2bn(nistp224_curve_params[0], sizeof(felem_bytearray), curve_p);
-    BN_bin2bn(nistp224_curve_params[1], sizeof(felem_bytearray), curve_a);
-    BN_bin2bn(nistp224_curve_params[2], sizeof(felem_bytearray), curve_b);
+    BNY_bin2bn(nistp224_curve_params[0], sizeof(felem_bytearray), curve_p);
+    BNY_bin2bn(nistp224_curve_params[1], sizeof(felem_bytearray), curve_a);
+    BNY_bin2bn(nistp224_curve_params[2], sizeof(felem_bytearray), curve_b);
     if ((BN_cmp(curve_p, p)) || (BN_cmp(curve_a, a)) || (BN_cmp(curve_b, b))) {
         ECerr(EC_F_EC_GFP_NISTP224_GROUP_SET_CURVE,
               EC_R_WRONG_CURVE_PARAMETERS);
@@ -1316,8 +1316,8 @@ int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     group->field_mod_func = BN_nist_mod_224;
     ret = ec_GFp_simple_group_set_curve(group, p, a, b, ctx);
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -1426,11 +1426,11 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
     const EC_POINT *p = NULL;
     const BIGNUM *p_scalar = NULL;
 
-    BN_CTX_start(ctx);
-    x = BN_CTX_get(ctx);
-    y = BN_CTX_get(ctx);
-    z = BN_CTX_get(ctx);
-    tmp_scalar = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x = BNY_CTX_get(ctx);
+    y = BNY_CTX_get(ctx);
+    z = BNY_CTX_get(ctx);
+    tmp_scalar = BNY_CTX_get(ctx);
     if (tmp_scalar == NULL)
         goto err;
 
@@ -1502,7 +1502,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
             }
             if ((p_scalar != NULL) && (p != NULL)) {
                 /* reduce scalar to 0 <= scalar < 2^224 */
-                if ((BN_num_bits(p_scalar) > 224)
+                if ((BNY_num_bits(p_scalar) > 224)
                     || (BN_is_negative(p_scalar))) {
                     /*
                      * this is an unusual input, and we don't guarantee
@@ -1512,10 +1512,10 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
                         ECerr(EC_F_EC_GFP_NISTP224_POINTS_MUL, ERR_R_BN_LIB);
                         goto err;
                     }
-                    num_bytes = BN_bn2lebinpad(tmp_scalar,
+                    num_bytes = BNY_bn2lebinpad(tmp_scalar,
                                                secrets[i], sizeof(secrets[i]));
                 } else {
-                    num_bytes = BN_bn2lebinpad(p_scalar,
+                    num_bytes = BNY_bn2lebinpad(p_scalar,
                                                secrets[i], sizeof(secrets[i]));
                 }
                 if (num_bytes < 0) {
@@ -1555,7 +1555,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
     if ((scalar != NULL) && (have_pre_comp)) {
         memset(g_secret, 0, sizeof(g_secret));
         /* reduce scalar to 0 <= scalar < 2^224 */
-        if ((BN_num_bits(scalar) > 224) || (BN_is_negative(scalar))) {
+        if ((BNY_num_bits(scalar) > 224) || (BN_is_negative(scalar))) {
             /*
              * this is an unusual input, and we don't guarantee
              * constant-timeness
@@ -1564,9 +1564,9 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
                 ECerr(EC_F_EC_GFP_NISTP224_POINTS_MUL, ERR_R_BN_LIB);
                 goto err;
             }
-            num_bytes = BN_bn2lebinpad(tmp_scalar, g_secret, sizeof(g_secret));
+            num_bytes = BNY_bn2lebinpad(tmp_scalar, g_secret, sizeof(g_secret));
         } else {
-            num_bytes = BN_bn2lebinpad(scalar, g_secret, sizeof(g_secret));
+            num_bytes = BNY_bn2lebinpad(scalar, g_secret, sizeof(g_secret));
         }
         /* do the multiplication with generator precomputation */
         batch_mul(x_out, y_out, z_out,
@@ -1591,7 +1591,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
     ret = EC_POINT_set_Jprojective_coordinates_GFp(group, r, x, y, z, ctx);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     EC_POINT_free(generator);
     OPENSSL_free(secrets);
     OPENSSL_free(pre_comp);
@@ -1612,11 +1612,11 @@ int ec_GFp_nistp224_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     /* throw away old precomputation */
     EC_pre_comp_free(group);
     if (ctx == NULL)
-        if ((ctx = new_ctx = BN_CTX_new()) == NULL)
+        if ((ctx = new_ctx = BNY_CTX_new()) == NULL)
             return 0;
-    BN_CTX_start(ctx);
-    x = BN_CTX_get(ctx);
-    y = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x = BNY_CTX_get(ctx);
+    y = BNY_CTX_get(ctx);
     if (y == NULL)
         goto err;
     /* get the generator */
@@ -1625,8 +1625,8 @@ int ec_GFp_nistp224_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     generator = EC_POINT_new(group);
     if (generator == NULL)
         goto err;
-    BN_bin2bn(nistp224_curve_params[3], sizeof(felem_bytearray), x);
-    BN_bin2bn(nistp224_curve_params[4], sizeof(felem_bytearray), y);
+    BNY_bin2bn(nistp224_curve_params[3], sizeof(felem_bytearray), x);
+    BNY_bin2bn(nistp224_curve_params[4], sizeof(felem_bytearray), y);
     if (!EC_POINT_set_affine_coordinates(group, generator, x, y, ctx))
         goto err;
     if ((pre = nistp224_pre_comp_new()) == NULL)
@@ -1719,9 +1719,9 @@ int ec_GFp_nistp224_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     pre = NULL;
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     EC_POINT_free(generator);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_free(new_ctx);
     EC_nistp224_pre_comp_free(pre);
     return ret;
 }

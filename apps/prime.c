@@ -88,7 +88,7 @@ opthelp:
             BIO_pprintf(bio_err, "Specify the number of bits.\n");
             goto end;
         }
-        bn = BN_new();
+        bn = BNY_new();
         if (bn == NULL) {
             BIO_pprintf(bio_err, "Out of memory.\n");
             goto end;

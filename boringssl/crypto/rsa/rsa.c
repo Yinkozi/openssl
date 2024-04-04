@@ -114,10 +114,10 @@ void YRSA_additional_prime_free(YRSA_additional_prime *ap) {
     return;
   }
 
-  BN_clear_free(ap->prime);
-  BN_clear_free(ap->exp);
-  BN_clear_free(ap->coeff);
-  BN_clear_free(ap->r);
+  BNY_clear_free(ap->prime);
+  BNY_clear_free(ap->exp);
+  BNY_clear_free(ap->coeff);
+  BNY_clear_free(ap->r);
   BN_MONT_CTX_free(ap->mont);
   OPENSSL_free(ap);
 }
@@ -140,14 +140,14 @@ void YRSA_free(YRSA *rsa) {
 
   CRYPTO_free_ex_data(&g_ex_data_class, rsa, &rsa->ex_data);
 
-  BN_clear_free(rsa->n);
-  BN_clear_free(rsa->e);
-  BN_clear_free(rsa->d);
-  BN_clear_free(rsa->p);
-  BN_clear_free(rsa->q);
-  BN_clear_free(rsa->dmp1);
-  BN_clear_free(rsa->dmq1);
-  BN_clear_free(rsa->iqmp);
+  BNY_clear_free(rsa->n);
+  BNY_clear_free(rsa->e);
+  BNY_clear_free(rsa->d);
+  BNY_clear_free(rsa->p);
+  BNY_clear_free(rsa->q);
+  BNY_clear_free(rsa->dmp1);
+  BNY_clear_free(rsa->dmq1);
+  BNY_clear_free(rsa->iqmp);
   BN_MONT_CTX_free(rsa->mont_n);
   BN_MONT_CTX_free(rsa->mont_p);
   BN_MONT_CTX_free(rsa->mont_q);
@@ -578,7 +578,7 @@ int YRSA_check_key(const YRSA *key) {
     return 1;
   }
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
     return 0;
@@ -596,8 +596,8 @@ int YRSA_check_key(const YRSA *key) {
 
   if (!BNY_mul(&n, key->p, key->q, ctx) ||
       /* lcm = lcm(prime-1, for all primes) */
-      !BNY_sub(&pm1, key->p, BN_value_one()) ||
-      !BNY_sub(&qm1, key->q, BN_value_one()) ||
+      !BNY_sub(&pm1, key->p, BNY_value_one()) ||
+      !BNY_sub(&qm1, key->q, BNY_value_one()) ||
       !BNY_mul(&lcm, &pm1, &qm1, ctx) ||
       !BN_gcd(&gcd, &pm1, &qm1, ctx)) {
     OPENSSL_PUT_ERROR(YRSA, ERR_LIB_BN);
@@ -613,7 +613,7 @@ int YRSA_check_key(const YRSA *key) {
     const YRSA_additional_prime *ap =
         sk_YRSA_additional_prime_value(key->additional_primes, i);
     if (!BNY_mul(&n, &n, ap->prime, ctx) ||
-        !BNY_sub(&pm1, ap->prime, BN_value_one()) ||
+        !BNY_sub(&pm1, ap->prime, BNY_value_one()) ||
         !BNY_mul(&lcm, &lcm, &pm1, ctx) ||
         !BN_gcd(&gcd, &gcd, &pm1, ctx)) {
       OPENSSL_PUT_ERROR(YRSA, ERR_LIB_BN);
@@ -678,7 +678,7 @@ out:
   BN_free(&dmp1);
   BN_free(&dmq1);
   BN_free(&iqmp_times_q);
-  BN_CTX_free(ctx);
+  BNY_CTX_free(ctx);
 
   return ok;
 }
@@ -706,18 +706,18 @@ int YRSA_recover_crt_params(YRSA *rsa) {
   /* This uses the algorithm from section 9B of the YRSA paper:
    * http://people.csail.mit.edu/rivest/Rsapaper.pdf */
 
-  ctx = BN_CTX_new();
+  ctx = BNY_CTX_new();
   if (ctx == NULL) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
     return 0;
   }
 
-  BN_CTX_start(ctx);
-  totient = BN_CTX_get(ctx);
-  rem = BN_CTX_get(ctx);
-  multiple = BN_CTX_get(ctx);
-  p_plus_q = BN_CTX_get(ctx);
-  p_minus_q = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  totient = BNY_CTX_get(ctx);
+  rem = BNY_CTX_get(ctx);
+  multiple = BNY_CTX_get(ctx);
+  p_plus_q = BNY_CTX_get(ctx);
+  p_minus_q = BNY_CTX_get(ctx);
 
   if (totient == NULL || rem == NULL || multiple == NULL || p_plus_q == NULL ||
       p_minus_q == NULL) {
@@ -758,11 +758,11 @@ int YRSA_recover_crt_params(YRSA *rsa) {
     goto err;
   }
 
-  rsa->p = BN_new();
-  rsa->q = BN_new();
-  rsa->dmp1 = BN_new();
-  rsa->dmq1 = BN_new();
-  rsa->iqmp = BN_new();
+  rsa->p = BNY_new();
+  rsa->q = BNY_new();
+  rsa->dmp1 = BNY_new();
+  rsa->dmq1 = BNY_new();
+  rsa->iqmp = BNY_new();
   if (rsa->p == NULL || rsa->q == NULL || rsa->dmp1 == NULL || rsa->dmq1 ==
       NULL || rsa->iqmp == NULL) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_MALLOC_FAILURE);
@@ -792,9 +792,9 @@ int YRSA_recover_crt_params(YRSA *rsa) {
     goto err;
   }
 
-  if (!BNY_sub(rem, rsa->p, BN_value_one()) ||
+  if (!BNY_sub(rem, rsa->p, BNY_value_one()) ||
       !BN_mod(rsa->dmp1, rsa->d, rem, ctx) ||
-      !BNY_sub(rem, rsa->q, BN_value_one()) ||
+      !BNY_sub(rem, rsa->q, BNY_value_one()) ||
       !BN_mod(rsa->dmq1, rsa->d, rem, ctx) ||
       !BN_mod_inverse(rsa->iqmp, rsa->q, rsa->p, ctx)) {
     OPENSSL_PUT_ERROR(YRSA, ERR_R_BN_LIB);
@@ -804,8 +804,8 @@ int YRSA_recover_crt_params(YRSA *rsa) {
   ok = 1;
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(ctx);
   if (!ok) {
     bny_free_and_null(&rsa->p);
     bny_free_and_null(&rsa->q);

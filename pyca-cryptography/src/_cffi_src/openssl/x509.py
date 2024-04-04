@@ -230,7 +230,7 @@ int YX509_set1_notAfter(YX509 *, const YASN1_TIME *);
 
 EC_KEY *d2i_EC_PUBKEY_bio(BIO *, EC_KEY **);
 int i2d_EC_PUBKEY_bio(BIO *, EC_KEY *);
-EC_KEY *d2i_ECPrivateKey_bio(BIO *, EC_KEY **);
+EC_KEY *d2i_ECCPrivateKey_bio(BIO *, EC_KEY **);
 int i2d_ECPrivateKey_bio(BIO *, EC_KEY *);
 
 /* these functions were added in 1.1.0 */

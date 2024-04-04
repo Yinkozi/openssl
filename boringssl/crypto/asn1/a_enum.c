@@ -153,7 +153,7 @@ YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(BIGNUM *bn, YASN1_ENUMERATED *ai)
         ret->type = V_YASN1_NEG_ENUMERATED;
     else
         ret->type = V_YASN1_ENUMERATED;
-    j = BN_num_bits(bn);
+    j = BNY_num_bits(bn);
     len = ((j == 0) ? 0 : ((j / 8) + 1));
     if (ret->length < len + 4) {
         unsigned char *new_data = OPENSSL_realloc(ret->data, len + 4);
@@ -164,7 +164,7 @@ YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(BIGNUM *bn, YASN1_ENUMERATED *ai)
         ret->data = new_data;
     }
 
-    ret->length = BN_bn2bin(bn, ret->data);
+    ret->length = BNY_bn2bin(bn, ret->data);
     return (ret);
  err:
     if (ret != ai)
@@ -176,7 +176,7 @@ BIGNUM *YASN1_ENUMERATED_to_BN(YASN1_ENUMERATED *ai, BIGNUM *bn)
 {
     BIGNUM *ret;
 
-    if ((ret = BN_bin2bn(ai->data, ai->length, bn)) == NULL)
+    if ((ret = BNY_bin2bn(ai->data, ai->length, bn)) == NULL)
         OPENSSL_PUT_ERROR(YASN1, YASN1_R_BN_LIB);
     else if (ai->type == V_YASN1_NEG_ENUMERATED)
         BN_set_negative(ret, 1);

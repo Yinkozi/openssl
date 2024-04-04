@@ -24,7 +24,7 @@ BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
     if (buf_len == 0)
         return NULL;
 
-    ret = BN_bin2bn(buf, buf_len, ret);
+    ret = BNY_bin2bn(buf, buf_len, ret);
 
     OPENSSL_free(buf);
 
@@ -45,7 +45,7 @@ EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
         return NULL;
     }
 
-    if (!BN_bn2binpad(bn, buf, buf_len)) {
+    if (!BNY_bn2binpad(bn, buf, buf_len)) {
         OPENSSL_free(buf);
         return NULL;
     }
@@ -115,7 +115,7 @@ EC_POINT *EC_POINT_hex2point(const EC_GROUP *group,
 
     ret = EC_POINT_bn2pointt(group, tmp_bn, point, ctx);
 
-    BN_clear_free(tmp_bn);
+    BNY_clear_free(tmp_bn);
 
     return ret;
 }

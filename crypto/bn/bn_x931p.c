@@ -22,7 +22,7 @@ static int bn_x931_derive_pi(BIGNUM *pi, const BIGNUM *Xpi, BN_CTX *ctx,
                              BN_GENCB *cb)
 {
     int i = 0, is_prime;
-    if (!BN_copy(pi, Xpi))
+    if (!BNY_copy(pi, Xpi))
         return 0;
     if (!BN_is_odd(pi) && !BNY_add_word(pi, 1))
         return 0;
@@ -61,18 +61,18 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     if (!BN_is_odd(e))
         return 0;
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
     if (p1 == NULL)
-        p1 = BN_CTX_get(ctx);
+        p1 = BNY_CTX_get(ctx);
 
     if (p2 == NULL)
-        p2 = BN_CTX_get(ctx);
+        p2 = BNY_CTX_get(ctx);
 
-    t = BN_CTX_get(ctx);
+    t = BNY_CTX_get(ctx);
 
-    p1p2 = BN_CTX_get(ctx);
+    p1p2 = BNY_CTX_get(ctx);
 
-    pm1 = BN_CTX_get(ctx);
+    pm1 = BNY_CTX_get(ctx);
 
     if (pm1 == NULL)
         goto err;
@@ -119,7 +119,7 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     for (;;) {
         int i = 1;
         BN_GENCB_call(cb, 0, i++);
-        if (!BN_copy(pm1, p))
+        if (!BNY_copy(pm1, p))
             goto err;
         if (!BNY_sub_word(pm1, 1))
             goto err;
@@ -147,7 +147,7 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
 
  err:
 
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 
     return ret;
 }
@@ -173,26 +173,26 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
      * - 1. By setting the top two bits we ensure that the lower bound is
      * exceeded.
      */
-    if (!BN_priv_rand(Xp, nbits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ANY))
+    if (!BNY_priv_rand(Xp, nbits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ANY))
         goto err;
 
-    BN_CTX_start(ctx);
-    t = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t = BNY_CTX_get(ctx);
     if (t == NULL)
         goto err;
 
     for (i = 0; i < 1000; i++) {
-        if (!BN_priv_rand(Xq, nbits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ANY))
+        if (!BNY_priv_rand(Xq, nbits, BN_RAND_TOP_TWO, BN_RAND_BOTTOM_ANY))
             goto err;
 
         /* Check that |Xp - Xq| > 2^(nbits - 100) */
         if (!BNY_sub(t, Xp, Xq))
             goto err;
-        if (BN_num_bits(t) > (nbits - 100))
+        if (BNY_num_bits(t) > (nbits - 100))
             break;
     }
 
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 
     if (i < 1000)
         return 1;
@@ -200,7 +200,7 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
     return 0;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return 0;
 }
 
@@ -219,17 +219,17 @@ int BN_X931_generate_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
 {
     int ret = 0;
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
     if (Xp1 == NULL)
-        Xp1 = BN_CTX_get(ctx);
+        Xp1 = BNY_CTX_get(ctx);
     if (Xp2 == NULL)
-        Xp2 = BN_CTX_get(ctx);
+        Xp2 = BNY_CTX_get(ctx);
     if (Xp1 == NULL || Xp2 == NULL)
         goto error;
 
-    if (!BN_priv_rand(Xp1, 101, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
+    if (!BNY_priv_rand(Xp1, 101, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
         goto error;
-    if (!BN_priv_rand(Xp2, 101, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
+    if (!BNY_priv_rand(Xp2, 101, BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
         goto error;
     if (!BN_X931_derive_prime_ex(p, p1, p2, Xp, Xp1, Xp2, e, ctx, cb))
         goto error;
@@ -237,7 +237,7 @@ int BN_X931_generate_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
     ret = 1;
 
  error:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
 
     return ret;
 

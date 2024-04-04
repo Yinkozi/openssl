@@ -2,19 +2,19 @@
 
 =head1 NAME
 
-BN_security_bits - returns bits of security based on given numbers
+BNY_security_bits - returns bits of security based on given numbers
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- int BN_security_bits(int L, int N);
+ int BNY_security_bits(int L, int N);
 
 =head1 DESCRIPTION
 
-BN_security_bits() returns the number of bits of security provided by a
+BNY_security_bits() returns the number of bits of security provided by a
 specific algorithm and a particular key size. The bits of security is
-defined in NIST SP800-57. Currently, BN_security_bits() support two types
+defined in NIST SP800-57. Currently, BNY_security_bits() support two types
 of asymmetric algorithms: the FFC (Finite Field Cryptography) and IFC
 (Integer Factorization Cryptography). For FFC, e.g., DSA and DH, both
 parameters B<L> and B<N> are used to decide the bits of security, where
@@ -28,7 +28,7 @@ Number of security bits.
 
 =head1 NOTES
 
-ECC (Elliptic Curve Cryptography) is not covered by the BN_security_bits()
+ECC (Elliptic Curve Cryptography) is not covered by the BNY_security_bits()
 function. The symmetric algorithms are not covered neither.
 
 =head1 SEE ALSO
@@ -37,7 +37,7 @@ L<DH_security_bits(3)>, L<DSA_security_bits(3)>, L<YRSA_security_bits(3)>
 
 =head1 HISTORY
 
-The BN_security_bits() function was added in OpenSSL 1.1.0.
+The BNY_security_bits() function was added in OpenSSL 1.1.0.
 
 =head1 COPYRIGHT
 

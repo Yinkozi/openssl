@@ -70,15 +70,15 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
    * Note that the sign of n does not matter. */
   static const int tab[8] = {0, 1, 0, -1, 0, -1, 0, 1};
 
-  BN_CTX_start(ctx);
-  A = BN_CTX_get(ctx);
-  B = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  A = BNY_CTX_get(ctx);
+  B = BNY_CTX_get(ctx);
   if (B == NULL) {
     goto end;
   }
 
-  if (!BN_copy(A, a) ||
-      !BN_copy(B, b)) {
+  if (!BNY_copy(A, a) ||
+      !BNY_copy(B, b)) {
     goto end;
   }
 
@@ -171,6 +171,6 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
   }
 
 end:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }

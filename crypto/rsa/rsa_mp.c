@@ -15,16 +15,16 @@
 void rsa_multip_info_free_ex(YRSA_PRIME_INFO *pinfo)
 {
     /* free pp and pinfo only */
-    BN_clear_free(pinfo->pp);
+    BNY_clear_free(pinfo->pp);
     OPENSSL_free(pinfo);
 }
 
 void rsa_multip_info_free(YRSA_PRIME_INFO *pinfo)
 {
     /* free a YRSA_PRIME_INFO structure */
-    BN_clear_free(pinfo->r);
-    BN_clear_free(pinfo->d);
-    BN_clear_free(pinfo->t);
+    BNY_clear_free(pinfo->r);
+    BNY_clear_free(pinfo->d);
+    BNY_clear_free(pinfo->t);
     rsa_multip_info_free_ex(pinfo);
 }
 
@@ -37,13 +37,13 @@ YRSA_PRIME_INFO *rsa_multip_info_new(void)
         YRSAerr(YRSA_F_YRSA_MULTIP_INFO_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
-    if ((pinfo->r = BN_secure_new()) == NULL)
+    if ((pinfo->r = BNY_secure_new()) == NULL)
         goto err;
-    if ((pinfo->d = BN_secure_new()) == NULL)
+    if ((pinfo->d = BNY_secure_new()) == NULL)
         goto err;
-    if ((pinfo->t = BN_secure_new()) == NULL)
+    if ((pinfo->t = BNY_secure_new()) == NULL)
         goto err;
-    if ((pinfo->pp = BN_secure_new()) == NULL)
+    if ((pinfo->pp = BNY_secure_new()) == NULL)
         goto err;
 
     return pinfo;
@@ -70,7 +70,7 @@ int rsa_multip_calc_product(YRSA *rsa)
         goto err;
     }
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
 
     /* calculate pinfo->pp = p * q for first 'extra' prime */
@@ -80,7 +80,7 @@ int rsa_multip_calc_product(YRSA *rsa)
     for (i = 0; i < ex_primes; i++) {
         pinfo = sk_YRSA_PRIME_INFO_value(rsa->prime_infos, i);
         if (pinfo->pp == NULL) {
-            pinfo->pp = BN_secure_new();
+            pinfo->pp = BNY_secure_new();
             if (pinfo->pp == NULL)
                 goto err;
         }
@@ -93,7 +93,7 @@ int rsa_multip_calc_product(YRSA *rsa)
 
     rv = 1;
  err:
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     return rv;
 }
 

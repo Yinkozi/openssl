@@ -314,9 +314,9 @@ int dhparam_main(int argc, char **argv)
                         "\n"
                         "    if (dh == NULL)\n"
                         "        return NULL;\n");
-        BIO_pprintf(out, "    p = BN_bin2bn(dhp_%d, sizeof(dhp_%d), NULL);\n",
+        BIO_pprintf(out, "    p = BNY_bin2bn(dhp_%d, sizeof(dhp_%d), NULL);\n",
                    bits, bits);
-        BIO_pprintf(out, "    g = BN_bin2bn(dhg_%d, sizeof(dhg_%d), NULL);\n",
+        BIO_pprintf(out, "    g = BNY_bin2bn(dhg_%d, sizeof(dhg_%d), NULL);\n",
                    bits, bits);
         BIO_pprintf(out, "    if (p == NULL || g == NULL\n"
                         "            || !DH_set0_pqg(dh, p, NULL, g)) {\n"

@@ -421,8 +421,8 @@ int BN_GF2m_mod_mul_arr(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
         return BN_GF2m_mod_sqr_arr(r, a, p, ctx);
     }
 
-    BN_CTX_start(ctx);
-    if ((s = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((s = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     zlen = a->top + b->top + 4;
@@ -451,7 +451,7 @@ int BN_GF2m_mod_mul_arr(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
     bn_check_top(r);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -466,7 +466,7 @@ int BN_GF2m_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                     const BIGNUM *p, BN_CTX *ctx)
 {
     int ret = 0;
-    const int max = BN_num_bits(p) + 1;
+    const int max = BNY_num_bits(p) + 1;
     int *arr = NULL;
     bn_check_top(a);
     bn_check_top(b);
@@ -493,8 +493,8 @@ int BN_GF2m_mod_sqr_arr(BIGNUM *r, const BIGNUM *a, const int p[],
     BIGNUM *s;
 
     bn_check_top(a);
-    BN_CTX_start(ctx);
-    if ((s = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((s = BNY_CTX_get(ctx)) == NULL)
         goto err;
     if (!bn_wexpand(s, 2 * a->top))
         goto err;
@@ -511,7 +511,7 @@ int BN_GF2m_mod_sqr_arr(BIGNUM *r, const BIGNUM *a, const int p[],
     bn_check_top(r);
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -524,7 +524,7 @@ int BN_GF2m_mod_sqr_arr(BIGNUM *r, const BIGNUM *a, const int p[],
 int BN_GF2m_mod_sqr(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
 {
     int ret = 0;
-    const int max = BN_num_bits(p) + 1;
+    const int max = BNY_num_bits(p) + 1;
     int *arr = NULL;
 
     bn_check_top(a);
@@ -558,12 +558,12 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
     bn_check_top(a);
     bn_check_top(p);
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
-    b = BN_CTX_get(ctx);
-    c = BN_CTX_get(ctx);
-    u = BN_CTX_get(ctx);
-    v = BN_CTX_get(ctx);
+    b = BNY_CTX_get(ctx);
+    c = BNY_CTX_get(ctx);
+    u = BNY_CTX_get(ctx);
+    v = BNY_CTX_get(ctx);
     if (v == NULL)
         goto err;
 
@@ -572,7 +572,7 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
     if (BN_is_zero(u))
         goto err;
 
-    if (!BN_copy(v, p))
+    if (!BNY_copy(v, p))
         goto err;
 # if 0
     if (!BN_one(b))
@@ -595,7 +595,7 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
         if (BN_abs_is_word(u, 1))
             break;
 
-        if (BN_num_bits(u) < BN_num_bits(v)) {
+        if (BNY_num_bits(u) < BNY_num_bits(v)) {
             tmp = u;
             u = v;
             v = tmp;
@@ -612,8 +612,8 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
 # else
     {
         int i;
-        int ubits = BN_num_bits(u);
-        int vbits = BN_num_bits(v); /* v is copy of p */
+        int ubits = BNY_num_bits(u);
+        int vbits = BNY_num_bits(v); /* v is copy of p */
         int top = p->top;
         BN_ULONG *udp, *bdp, *vdp, *cdp;
 
@@ -693,26 +693,26 @@ static int BN_GF2m_mod_inv_vartime(BIGNUM *r, const BIGNUM *a,
 
                 while ((ul = udp[utop]) == 0 && utop)
                     utop--;
-                ubits = utop * BN_BITS2 + BN_num_bits_word(ul);
+                ubits = utop * BN_BITS2 + BNY_num_bits_word(ul);
             }
         }
         bn_correct_top(b);
     }
 # endif
 
-    if (!BN_copy(r, b))
+    if (!BNY_copy(r, b))
         goto err;
     bn_check_top(r);
     ret = 1;
 
  err:
-# ifdef BN_DEBUG                /* BN_CTX_end would complain about the
+# ifdef BN_DEBUG                /* BNY_CTX_end would complain about the
                                  * expanded form */
     bn_correct_top(c);
     bn_correct_top(u);
     bn_correct_top(v);
 # endif
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -726,13 +726,13 @@ int BN_GF2m_mod_inv(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     BIGNUM *b = NULL;
     int ret = 0;
 
-    BN_CTX_start(ctx);
-    if ((b = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((b = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     /* generate blinding value */
     do {
-        if (!BN_priv_rand(b, BN_num_bits(p) - 1,
+        if (!BNY_priv_rand(b, BNY_num_bits(p) - 1,
                           BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
             goto err;
     } while (BN_is_zero(b));
@@ -752,7 +752,7 @@ int BN_GF2m_mod_inv(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -769,8 +769,8 @@ int BN_GF2m_mod_inv_arr(BIGNUM *r, const BIGNUM *xx, const int p[],
     int ret = 0;
 
     bn_check_top(xx);
-    BN_CTX_start(ctx);
-    if ((field = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((field = BNY_CTX_get(ctx)) == NULL)
         goto err;
     if (!BN_GF2m_arr2poly(p, field))
         goto err;
@@ -779,7 +779,7 @@ int BN_GF2m_mod_inv_arr(BIGNUM *r, const BIGNUM *xx, const int p[],
     bn_check_top(r);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -797,8 +797,8 @@ int BN_GF2m_mod_div(BIGNUM *r, const BIGNUM *y, const BIGNUM *x,
     bn_check_top(x);
     bn_check_top(p);
 
-    BN_CTX_start(ctx);
-    xinv = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    xinv = BNY_CTX_get(ctx);
     if (xinv == NULL)
         goto err;
 
@@ -810,7 +810,7 @@ int BN_GF2m_mod_div(BIGNUM *r, const BIGNUM *y, const BIGNUM *x,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -829,8 +829,8 @@ int BN_GF2m_mod_div_arr(BIGNUM *r, const BIGNUM *yy, const BIGNUM *xx,
     bn_check_top(yy);
     bn_check_top(xx);
 
-    BN_CTX_start(ctx);
-    if ((field = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((field = BNY_CTX_get(ctx)) == NULL)
         goto err;
     if (!BN_GF2m_arr2poly(p, field))
         goto err;
@@ -839,7 +839,7 @@ int BN_GF2m_mod_div_arr(BIGNUM *r, const BIGNUM *yy, const BIGNUM *xx,
     bn_check_top(r);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -861,16 +861,16 @@ int BN_GF2m_mod_exp_arr(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
         return BN_one(r);
 
     if (BN_abs_is_word(b, 1))
-        return (BN_copy(r, a) != NULL);
+        return (BNY_copy(r, a) != NULL);
 
-    BN_CTX_start(ctx);
-    if ((u = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((u = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     if (!BN_GF2m_mod_arr(u, a, p))
         goto err;
 
-    n = BN_num_bits(b) - 1;
+    n = BNY_num_bits(b) - 1;
     for (i = n - 1; i >= 0; i--) {
         if (!BN_GF2m_mod_sqr_arr(u, u, p, ctx))
             goto err;
@@ -879,12 +879,12 @@ int BN_GF2m_mod_exp_arr(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                 goto err;
         }
     }
-    if (!BN_copy(r, u))
+    if (!BNY_copy(r, u))
         goto err;
     bn_check_top(r);
     ret = 1;
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -898,7 +898,7 @@ int BN_GF2m_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
                     const BIGNUM *p, BN_CTX *ctx)
 {
     int ret = 0;
-    const int max = BN_num_bits(p) + 1;
+    const int max = BNY_num_bits(p) + 1;
     int *arr = NULL;
     bn_check_top(a);
     bn_check_top(b);
@@ -935,8 +935,8 @@ int BN_GF2m_mod_sqrt_arr(BIGNUM *r, const BIGNUM *a, const int p[],
         return 1;
     }
 
-    BN_CTX_start(ctx);
-    if ((u = BN_CTX_get(ctx)) == NULL)
+    BNY_CTX_start(ctx);
+    if ((u = BNY_CTX_get(ctx)) == NULL)
         goto err;
 
     if (!BN_set_bit(u, p[0] - 1))
@@ -945,7 +945,7 @@ int BN_GF2m_mod_sqrt_arr(BIGNUM *r, const BIGNUM *a, const int p[],
     bn_check_top(r);
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -958,7 +958,7 @@ int BN_GF2m_mod_sqrt_arr(BIGNUM *r, const BIGNUM *a, const int p[],
 int BN_GF2m_mod_sqrt(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
 {
     int ret = 0;
-    const int max = BN_num_bits(p) + 1;
+    const int max = BNY_num_bits(p) + 1;
     int *arr = NULL;
     bn_check_top(a);
     bn_check_top(p);
@@ -994,10 +994,10 @@ int BN_GF2m_mod_solve_quad_arr(BIGNUM *r, const BIGNUM *a_, const int p[],
         return 1;
     }
 
-    BN_CTX_start(ctx);
-    a = BN_CTX_get(ctx);
-    z = BN_CTX_get(ctx);
-    w = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    a = BNY_CTX_get(ctx);
+    z = BNY_CTX_get(ctx);
+    w = BNY_CTX_get(ctx);
     if (w == NULL)
         goto err;
 
@@ -1012,7 +1012,7 @@ int BN_GF2m_mod_solve_quad_arr(BIGNUM *r, const BIGNUM *a_, const int p[],
 
     if (p[0] & 0x1) {           /* m is odd */
         /* compute half-trace of a */
-        if (!BN_copy(z, a))
+        if (!BNY_copy(z, a))
             goto err;
         for (j = 1; j <= (p[0] - 1) / 2; j++) {
             if (!BN_GF2m_mod_sqr_arr(z, z, p, ctx))
@@ -1025,18 +1025,18 @@ int BN_GF2m_mod_solve_quad_arr(BIGNUM *r, const BIGNUM *a_, const int p[],
 
     } else {                    /* m is even */
 
-        rho = BN_CTX_get(ctx);
-        w2 = BN_CTX_get(ctx);
-        tmp = BN_CTX_get(ctx);
+        rho = BNY_CTX_get(ctx);
+        w2 = BNY_CTX_get(ctx);
+        tmp = BNY_CTX_get(ctx);
         if (tmp == NULL)
             goto err;
         do {
-            if (!BN_priv_rand(rho, p[0], BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
+            if (!BNY_priv_rand(rho, p[0], BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
                 goto err;
             if (!BN_GF2m_mod_arr(rho, rho, p))
                 goto err;
             BN_zero(z);
-            if (!BN_copy(w, rho))
+            if (!BNY_copy(w, rho))
                 goto err;
             for (j = 1; j <= p[0] - 1; j++) {
                 if (!BN_GF2m_mod_sqr_arr(z, z, p, ctx))
@@ -1067,14 +1067,14 @@ int BN_GF2m_mod_solve_quad_arr(BIGNUM *r, const BIGNUM *a_, const int p[],
         goto err;
     }
 
-    if (!BN_copy(r, z))
+    if (!BNY_copy(r, z))
         goto err;
     bn_check_top(r);
 
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -1088,7 +1088,7 @@ int BN_GF2m_mod_solve_quad(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
                            BN_CTX *ctx)
 {
     int ret = 0;
-    const int max = BN_num_bits(p) + 1;
+    const int max = BNY_num_bits(p) + 1;
     int *arr = NULL;
     bn_check_top(a);
     bn_check_top(p);

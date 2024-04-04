@@ -166,8 +166,8 @@ extern "C" {
 
 /* Allocation and freeing. */
 
-/* BN_new creates a new, allocated BIGNUM and initialises it. */
-OPENSSL_EXPORT BIGNUM *BN_new(void);
+/* BNY_new creates a new, allocated BIGNUM and initialises it. */
+OPENSSL_EXPORT BIGNUM *BNY_new(void);
 
 /* BN_init initialises a stack allocated |BIGNUM|. */
 OPENSSL_EXPORT void BN_init(BIGNUM *bn);
@@ -176,30 +176,30 @@ OPENSSL_EXPORT void BN_init(BIGNUM *bn);
  * allocated on the heap, frees |bn| also. */
 OPENSSL_EXPORT void BN_free(BIGNUM *bn);
 
-/* BN_clear_free erases and frees the data referenced by |bn| and, if |bn| was
+/* BNY_clear_free erases and frees the data referenced by |bn| and, if |bn| was
  * originally allocated on the heap, frees |bn| also. */
-OPENSSL_EXPORT void BN_clear_free(BIGNUM *bn);
+OPENSSL_EXPORT void BNY_clear_free(BIGNUM *bn);
 
 /* BN_dup allocates a new BIGNUM and sets it equal to |src|. It returns the
  * allocated BIGNUM on success or NULL otherwise. */
 OPENSSL_EXPORT BIGNUM *BN_dup(const BIGNUM *src);
 
-/* BN_copy sets |dest| equal to |src| and returns |dest| or NULL on allocation
+/* BNY_copy sets |dest| equal to |src| and returns |dest| or NULL on allocation
  * failure. */
-OPENSSL_EXPORT BIGNUM *BN_copy(BIGNUM *dest, const BIGNUM *src);
+OPENSSL_EXPORT BIGNUM *BNY_copy(BIGNUM *dest, const BIGNUM *src);
 
 /* BN_clear sets |bn| to zero and erases the old data. */
 OPENSSL_EXPORT void BN_clear(BIGNUM *bn);
 
-/* BN_value_one returns a static BIGNUM with value 1. */
-OPENSSL_EXPORT const BIGNUM *BN_value_one(void);
+/* BNY_value_one returns a static BIGNUM with value 1. */
+OPENSSL_EXPORT const BIGNUM *BNY_value_one(void);
 
 
 /* Basic functions. */
 
-/* BN_num_bits returns the minimum number of bits needed to represent the
+/* BNY_num_bits returns the minimum number of bits needed to represent the
  * absolute value of |bn|. */
-OPENSSL_EXPORT unsigned BN_num_bits(const BIGNUM *bn);
+OPENSSL_EXPORT unsigned BNY_num_bits(const BIGNUM *bn);
 
 /* BN_num_bytes returns the minimum number of bytes needed to represent the
  * absolute value of |bn|. */
@@ -229,16 +229,16 @@ OPENSSL_EXPORT int BN_is_negative(const BIGNUM *bn);
 
 /* Conversion functions. */
 
-/* BN_bin2bn sets |*ret| to the value of |len| bytes from |in|, interpreted as
+/* BNY_bin2bn sets |*ret| to the value of |len| bytes from |in|, interpreted as
  * a big-endian number, and returns |ret|. If |ret| is NULL then a fresh
  * |BIGNUM| is allocated and returned. It returns NULL on allocation
  * failure. */
-OPENSSL_EXPORT BIGNUM *BN_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret);
+OPENSSL_EXPORT BIGNUM *BNY_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret);
 
-/* BN_bn2bin serialises the absolute value of |in| to |out| as a big-endian
+/* BNY_bn2bin serialises the absolute value of |in| to |out| as a big-endian
  * integer, which must have |BN_num_bytes| of space available. It returns the
  * number of bytes written. */
-OPENSSL_EXPORT size_t BN_bn2bin(const BIGNUM *in, uint8_t *out);
+OPENSSL_EXPORT size_t BNY_bn2bin(const BIGNUM *in, uint8_t *out);
 
 /* BN_le2bn sets |*ret| to the value of |len| bytes from |in|, interpreted as
  * a little-endian number, and returns |ret|. If |ret| is NULL then a fresh
@@ -252,13 +252,13 @@ OPENSSL_EXPORT BIGNUM *BN_le2bn(const uint8_t *in, size_t len, BIGNUM *ret);
  * the function fails and returns 0. Otherwise, it returns 1. */
 OPENSSL_EXPORT int BN_bn2le_padded(uint8_t *out, size_t len, const BIGNUM *in);
 
-/* BN_bn2bin_padded serialises the absolute value of |in| to |out| as a
+/* BNY_bn2bin_padded serialises the absolute value of |in| to |out| as a
  * big-endian integer. The integer is padded with leading zeros up to size
  * |len|. If |len| is smaller than |BN_num_bytes|, the function fails and
  * returns 0. Otherwise, it returns 1. */
-OPENSSL_EXPORT int BN_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in);
+OPENSSL_EXPORT int BNY_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in);
 
-/* BN_bn2cbb_padded behaves like |BN_bn2bin_padded| but writes to a |CBB|. */
+/* BN_bn2cbb_padded behaves like |BNY_bn2bin_padded| but writes to a |CBB|. */
 OPENSSL_EXPORT int BN_bn2cbb_padded(CBB *out, size_t len, const BIGNUM *in);
 
 /* BN_bn2hexx returns an allocated string that contains a NUL-terminated, hex
@@ -350,33 +350,33 @@ OPENSSL_EXPORT BIGNUM *bn_wexpand(BIGNUM *bn, size_t words);
  * argument to a public function may be NULL, in which case a local |BN_CTX|
  * will be created just for the lifetime of that call.
  *
- * A function must call |BN_CTX_start| first. Then, |BN_CTX_get| may be called
- * repeatedly to obtain temporary |BIGNUM|s. All |BN_CTX_get| calls must be made
+ * A function must call |BNY_CTX_start| first. Then, |BNY_CTX_get| may be called
+ * repeatedly to obtain temporary |BIGNUM|s. All |BNY_CTX_get| calls must be made
  * before calling any other functions that use the |ctx| as an argument.
  *
- * Finally, |BN_CTX_end| must be called before returning from the function.
- * When |BN_CTX_end| is called, the |BIGNUM| pointers obtained from
- * |BN_CTX_get| become invalid. */
+ * Finally, |BNY_CTX_end| must be called before returning from the function.
+ * When |BNY_CTX_end| is called, the |BIGNUM| pointers obtained from
+ * |BNY_CTX_get| become invalid. */
 
-/* BN_CTX_new returns a new, empty BN_CTX or NULL on allocation failure. */
-OPENSSL_EXPORT BN_CTX *BN_CTX_new(void);
+/* BNY_CTX_new returns a new, empty BN_CTX or NULL on allocation failure. */
+OPENSSL_EXPORT BN_CTX *BNY_CTX_new(void);
 
-/* BN_CTX_free frees all BIGNUMs contained in |ctx| and then frees |ctx|
+/* BNY_CTX_free frees all BIGNUMs contained in |ctx| and then frees |ctx|
  * itself. */
-OPENSSL_EXPORT void BN_CTX_free(BN_CTX *ctx);
+OPENSSL_EXPORT void BNY_CTX_free(BN_CTX *ctx);
 
-/* BN_CTX_start "pushes" a new entry onto the |ctx| stack and allows future
- * calls to |BN_CTX_get|. */
-OPENSSL_EXPORT void BN_CTX_start(BN_CTX *ctx);
+/* BNY_CTX_start "pushes" a new entry onto the |ctx| stack and allows future
+ * calls to |BNY_CTX_get|. */
+OPENSSL_EXPORT void BNY_CTX_start(BN_CTX *ctx);
 
-/* BN_CTX_get returns a new |BIGNUM|, or NULL on allocation failure. Once
- * |BN_CTX_get| has returned NULL, all future calls will also return NULL until
- * |BN_CTX_end| is called. */
-OPENSSL_EXPORT BIGNUM *BN_CTX_get(BN_CTX *ctx);
+/* BNY_CTX_get returns a new |BIGNUM|, or NULL on allocation failure. Once
+ * |BNY_CTX_get| has returned NULL, all future calls will also return NULL until
+ * |BNY_CTX_end| is called. */
+OPENSSL_EXPORT BIGNUM *BNY_CTX_get(BN_CTX *ctx);
 
-/* BN_CTX_end invalidates all |BIGNUM|s returned from |BN_CTX_get| since the
- * matching |BN_CTX_start| call. */
-OPENSSL_EXPORT void BN_CTX_end(BN_CTX *ctx);
+/* BNY_CTX_end invalidates all |BIGNUM|s returned from |BNY_CTX_get| since the
+ * matching |BNY_CTX_start| call. */
+OPENSSL_EXPORT void BNY_CTX_end(BN_CTX *ctx);
 
 
 /* Simple arithmetic */
@@ -599,47 +599,47 @@ OPENSSL_EXPORT BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p,
 
 /* Random and prime number generation. */
 
-/* The following are values for the |top| parameter of |BN_rand|. */
+/* The following are values for the |top| parameter of |BNY_rand|. */
 #define BN_RAND_TOP_ANY    (-1)
 #define BN_RAND_TOP_ONE     0
 #define BN_RAND_TOP_TWO     1
 
-/* The following are values for the |bottom| parameter of |BN_rand|. */
+/* The following are values for the |bottom| parameter of |BNY_rand|. */
 #define BN_RAND_BOTTOM_ANY  0
 #define BN_RAND_BOTTOM_ODD  1
 
-/* BN_rand sets |rnd| to a random number of length |bits|. It returns one on
+/* BNY_rand sets |rnd| to a random number of length |bits|. It returns one on
  * success and zero otherwise.
  *
  * |top| must be one of the |BN_RAND_TOP_*| values. If |BN_RAND_TOP_ONE|, the
  * most-significant bit, if any, will be set. If |BN_RAND_TOP_TWO|, the two
  * most significant bits, if any, will be set. If |BN_RAND_TOP_ANY|, no extra
- * action will be taken and |BN_num_bits(rnd)| may not equal |bits| if the most
+ * action will be taken and |BNY_num_bits(rnd)| may not equal |bits| if the most
  * significant bits randomly ended up as zeros.
  *
  * |bottom| must be one of the |BN_RAND_BOTTOM_*| values. If
  * |BN_RAND_BOTTOM_ODD|, the least-significant bit, if any, will be set. If
  * |BN_RAND_BOTTOM_ANY|, no extra action will be taken. */
-OPENSSL_EXPORT int BN_rand(BIGNUM *rnd, int bits, int top, int bottom);
+OPENSSL_EXPORT int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom);
 
-/* BN_pseudo_rand is an alias for |BN_rand|. */
-OPENSSL_EXPORT int BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom);
+/* BNY_pseudo_rand is an alias for |BNY_rand|. */
+OPENSSL_EXPORT int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom);
 
-/* BN_rand_range is equivalent to |BN_rand_range_ex| with |min_inclusive| set
+/* BNY_rand_range is equivalent to |BNY_rand_range_ex| with |min_inclusive| set
  * to zero and |max_exclusive| set to |range|. */
-OPENSSL_EXPORT int BN_rand_range(BIGNUM *rnd, const BIGNUM *range);
+OPENSSL_EXPORT int BNY_rand_range(BIGNUM *rnd, const BIGNUM *range);
 
-/* BN_rand_range_ex sets |rnd| to a random value in
+/* BNY_rand_range_ex sets |rnd| to a random value in
  * [min_inclusive..max_exclusive). It returns one on success and zero
  * otherwise. */
-OPENSSL_EXPORT int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
+OPENSSL_EXPORT int BNY_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
                                     const BIGNUM *max_exclusive);
 
-/* BN_pseudo_rand_range is an alias for BN_rand_range. */
-OPENSSL_EXPORT int BN_pseudo_rand_range(BIGNUM *rnd, const BIGNUM *range);
+/* BNY_pseudo_rand_range is an alias for BNY_rand_range. */
+OPENSSL_EXPORT int BNY_pseudo_rand_range(BIGNUM *rnd, const BIGNUM *range);
 
 /* BN_generate_dsa_nonce generates a random number 0 <= out < range. Unlike
- * BN_rand_range, it also includes the contents of |priv| and |message| in the
+ * BNY_rand_range, it also includes the contents of |priv| and |message| in the
  * generation so that an RNG failure isn't fatal as long as |priv| remains
  * secret. This is intended for use in DSA and ECDSA where an RNG weakness
  * leads directly to private key exposure unless this function is used.
@@ -872,21 +872,21 @@ OPENSSL_EXPORT int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a,
 
 /* Deprecated functions */
 
-/* BN_bn2mpi serialises the value of |in| to |out|, using a format that consists
+/* BNY_bn2mpi serialises the value of |in| to |out|, using a format that consists
  * of the number's length in bytes represented as a 4-byte big-endian number,
  * and the number itself in big-endian format, where the most significant bit
  * signals a negative number. (The representation of numbers with the MSB set is
  * prefixed with null byte). |out| must have sufficient space available; to
  * find the needed amount of space, call the function with |out| set to NULL. */
-OPENSSL_EXPORT size_t BN_bn2mpi(const BIGNUM *in, uint8_t *out);
+OPENSSL_EXPORT size_t BNY_bn2mpi(const BIGNUM *in, uint8_t *out);
 
-/* BN_mpi2bn parses |len| bytes from |in| and returns the resulting value. The
- * bytes at |in| are expected to be in the format emitted by |BN_bn2mpi|.
+/* BNY_mpi2bn parses |len| bytes from |in| and returns the resulting value. The
+ * bytes at |in| are expected to be in the format emitted by |BNY_bn2mpi|.
  *
  * If |out| is NULL then a fresh |BIGNUM| is allocated and returned, otherwise
  * |out| is reused and returned. On error, NULL is returned and the error queue
  * is updated. */
-OPENSSL_EXPORT BIGNUM *BN_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out);
+OPENSSL_EXPORT BIGNUM *BNY_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out);
 
 /* BNY_mod_exp_mont_word is like |BNY_mod_exp_mont| except that the base |a| is
  * given as a |BN_ULONG| instead of a |BIGNUM *|. It returns one on success
@@ -920,7 +920,7 @@ struct bn_mont_ctx_st {
   BN_ULONG n0[2]; /* least significant words of (R*Ri-1)/N */
 };
 
-OPENSSL_EXPORT unsigned BN_num_bits_word(BN_ULONG l);
+OPENSSL_EXPORT unsigned BNY_num_bits_word(BN_ULONG l);
 
 #define BN_FLG_MALLOCED 0x01
 #define BN_FLG_STATIC_DATA 0x02
@@ -939,7 +939,7 @@ extern "C++" {
 namespace bssl {
 
 BORINGSSL_MAKE_DELETER(BIGNUM, BN_free)
-BORINGSSL_MAKE_DELETER(BN_CTX, BN_CTX_free)
+BORINGSSL_MAKE_DELETER(BN_CTX, BNY_CTX_free)
 BORINGSSL_MAKE_DELETER(BN_MONT_CTX, BN_MONT_CTX_free)
 
 }  // namespace bssl

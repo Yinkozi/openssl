@@ -73,7 +73,7 @@ BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w)
         return 0;
 
     /* normalize input (so bn_div_wordss doesn't complain) */
-    j = BN_BITS2 - BN_num_bits_word(w);
+    j = BN_BITS2 - BNY_num_bits_word(w);
     w <<= j;
     if (!BN_lshift(a, a, j))
         return (BN_ULONG)-1;

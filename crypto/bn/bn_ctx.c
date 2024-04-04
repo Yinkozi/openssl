@@ -17,7 +17,7 @@
  * check they can be safely removed.
  *  - Check +1 and other ugliness in BN_from_montgomery()
  *
- * 2. Consider allowing a BN_new_ex() that, at least, lets you specify an
+ * 2. Consider allowing a BNY_new_ex() that, at least, lets you specify an
  * appropriate 'block' size that will be honoured by bny_expand_internal() to
  * prevent piddly little reallocations. OTOH, profiling bignum expansions in
  * BN_CTX doesn't show this to be a big issue.
@@ -131,7 +131,7 @@ static void ctxdbg(BN_CTX *ctx)
 #endif
 
 
-BN_CTX *BN_CTX_new(void)
+BN_CTX *BNY_CTX_new(void)
 {
     BN_CTX *ret;
 
@@ -145,23 +145,23 @@ BN_CTX *BN_CTX_new(void)
     return ret;
 }
 
-BN_CTX *BN_CTX_secure_new(void)
+BN_CTX *BNY_CTX_secure_new(void)
 {
-    BN_CTX *ret = BN_CTX_new();
+    BN_CTX *ret = BNY_CTX_new();
 
     if (ret != NULL)
         ret->flags = BN_FLG_SECURE;
     return ret;
 }
 
-void BN_CTX_free(BN_CTX *ctx)
+void BNY_CTX_free(BN_CTX *ctx)
 {
     if (ctx == NULL)
         return;
 #ifdef BN_CTX_DEBUG
     {
         BN_POOL_ITEM *pool = ctx->pool.head;
-        fprintf(stderr, "BN_CTX_free, stack-size=%d, pool-bignums=%d\n",
+        fprintf(stderr, "BNY_CTX_free, stack-size=%d, pool-bignums=%d\n",
                 ctx->stack.size, ctx->pool.size);
         fprintf(stderr, "dmaxs: ");
         while (pool) {
@@ -178,9 +178,9 @@ void BN_CTX_free(BN_CTX *ctx)
     OPENSSL_free(ctx);
 }
 
-void BN_CTX_start(BN_CTX *ctx)
+void BNY_CTX_start(BN_CTX *ctx)
 {
-    CTXDBG_ENTRY("BN_CTX_start", ctx);
+    CTXDBG_ENTRY("BNY_CTX_start", ctx);
     /* If we're already overflowing ... */
     if (ctx->err_stack || ctx->too_many)
         ctx->err_stack++;
@@ -192,11 +192,11 @@ void BN_CTX_start(BN_CTX *ctx)
     CTXDBG_EXIT(ctx);
 }
 
-void BN_CTX_end(BN_CTX *ctx)
+void BNY_CTX_end(BN_CTX *ctx)
 {
     if (ctx == NULL)
         return;
-    CTXDBG_ENTRY("BN_CTX_end", ctx);
+    CTXDBG_ENTRY("BNY_CTX_end", ctx);
     if (ctx->err_stack)
         ctx->err_stack--;
     else {
@@ -211,11 +211,11 @@ void BN_CTX_end(BN_CTX *ctx)
     CTXDBG_EXIT(ctx);
 }
 
-BIGNUM *BN_CTX_get(BN_CTX *ctx)
+BIGNUM *BNY_CTX_get(BN_CTX *ctx)
 {
     BIGNUM *ret;
 
-    CTXDBG_ENTRY("BN_CTX_get", ctx);
+    CTXDBG_ENTRY("BNY_CTX_get", ctx);
     if (ctx->err_stack || ctx->too_many)
         return NULL;
     if ((ret = BN_POOL_get(&ctx->pool, ctx->flags)) == NULL) {
@@ -298,7 +298,7 @@ static void BN_POOL_finish(BN_POOL *p)
     while (p->head) {
         for (loop = 0, bn = p->head->vals; loop++ < BN_CTX_POOL_SIZE; bn++)
             if (bn->d)
-                BN_clear_free(bn);
+                BNY_clear_free(bn);
         p->current = p->head->next;
         OPENSSL_free(p->head);
         p->head = p->current;

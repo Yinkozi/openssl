@@ -28,15 +28,15 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
     if (!rsa)
         goto err;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
-    r0 = BN_CTX_get(ctx);
-    r1 = BN_CTX_get(ctx);
-    r2 = BN_CTX_get(ctx);
-    r3 = BN_CTX_get(ctx);
+    r0 = BNY_CTX_get(ctx);
+    r1 = BNY_CTX_get(ctx);
+    r2 = BNY_CTX_get(ctx);
+    r3 = BNY_CTX_get(ctx);
 
     if (r3 == NULL)
         goto err;
@@ -54,7 +54,7 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
      */
 
     if (Xp && rsa->p == NULL) {
-        rsa->p = BN_new();
+        rsa->p = BNY_new();
         if (rsa->p == NULL)
             goto err;
 
@@ -64,7 +64,7 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
     }
 
     if (Xq && rsa->q == NULL) {
-        rsa->q = BN_new();
+        rsa->q = BNY_new();
         if (rsa->q == NULL)
             goto err;
         if (!BN_X931_derive_prime_ex(rsa->q, q1, q2,
@@ -73,8 +73,8 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
     }
 
     if (rsa->p == NULL || rsa->q == NULL) {
-        BN_CTX_end(ctx);
-        BN_CTX_free(ctx);
+        BNY_CTX_end(ctx);
+        BNY_CTX_free(ctx);
         return 2;
     }
 
@@ -84,16 +84,16 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
      */
 
     /* calculate n */
-    rsa->n = BN_new();
+    rsa->n = BNY_new();
     if (rsa->n == NULL)
         goto err;
     if (!BNY_mul(rsa->n, rsa->p, rsa->q, ctx))
         goto err;
 
     /* calculate d */
-    if (!BNY_sub(r1, rsa->p, BN_value_one()))
+    if (!BNY_sub(r1, rsa->p, BNY_value_one()))
         goto err;               /* p-1 */
-    if (!BNY_sub(r2, rsa->q, BN_value_one()))
+    if (!BNY_sub(r2, rsa->q, BNY_value_one()))
         goto err;               /* q-1 */
     if (!BNY_mul(r0, r1, r2, ctx))
         goto err;               /* (p-1)(q-1) */
@@ -104,7 +104,7 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
     if (!BNY_div(r0, NULL, r0, r3, ctx))
         goto err;               /* LCM((p-1)(q-1)) */
 
-    ctx2 = BN_CTX_new();
+    ctx2 = BNY_CTX_new();
     if (ctx2 == NULL)
         goto err;
 
@@ -113,14 +113,14 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
         goto err;
 
     /* calculate d mod (p-1) */
-    rsa->dmp1 = BN_new();
+    rsa->dmp1 = BNY_new();
     if (rsa->dmp1 == NULL)
         goto err;
     if (!BN_mod(rsa->dmp1, rsa->d, r1, ctx))
         goto err;
 
     /* calculate d mod (q-1) */
-    rsa->dmq1 = BN_new();
+    rsa->dmq1 = BNY_new();
     if (rsa->dmq1 == NULL)
         goto err;
     if (!BN_mod(rsa->dmq1, rsa->d, r2, ctx))
@@ -133,9 +133,9 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
 
     ret = 1;
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
-    BN_CTX_free(ctx2);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
+    BNY_CTX_free(ctx2);
 
     return ret;
 
@@ -148,20 +148,20 @@ int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
     BIGNUM *Xp = NULL, *Xq = NULL;
     BN_CTX *ctx = NULL;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto error;
 
-    BN_CTX_start(ctx);
-    Xp = BN_CTX_get(ctx);
-    Xq = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    Xp = BNY_CTX_get(ctx);
+    Xq = BNY_CTX_get(ctx);
     if (Xq == NULL)
         goto error;
     if (!BN_X931_generate_Xpq(Xp, Xq, bits, ctx))
         goto error;
 
-    rsa->p = BN_new();
-    rsa->q = BN_new();
+    rsa->p = BNY_new();
+    rsa->q = BNY_new();
     if (rsa->p == NULL || rsa->q == NULL)
         goto error;
 
@@ -187,8 +187,8 @@ int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
     ok = 1;
 
  error:
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
 
     if (ok)
         return 1;

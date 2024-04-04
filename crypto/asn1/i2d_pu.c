@@ -29,7 +29,7 @@ int i2d_PublicKey(EVVP_PKEY *a, unsigned char **pp)
 #endif
 #ifndef OPENSSL_NO_EC
     case EVVP_PKEY_EC:
-        return i2o_ECPublicKey(EVVP_PKEY_get0_EC_KEY(a), pp);
+        return i2o_ECCPublicKey(EVVP_PKEY_get0_EC_KEY(a), pp);
 #endif
     default:
         YASN1err(YASN1_F_I2D_PUBLICKEY, YASN1_R_UNSUPPORTED_PUBLIC_KEY_TYPE);

@@ -2,13 +2,13 @@
 
 =head1 NAME
 
-BN_copy, BN_dup, BN_with_flags - copy BIGNUMs
+BNY_copy, BN_dup, BN_with_flags - copy BIGNUMs
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- BIGNUM *BN_copy(BIGNUM *to, const BIGNUM *from);
+ BIGNUM *BNY_copy(BIGNUM *to, const BIGNUM *from);
 
  BIGNUM *BN_dup(const BIGNUM *from);
 
@@ -16,7 +16,7 @@ BN_copy, BN_dup, BN_with_flags - copy BIGNUMs
 
 =head1 DESCRIPTION
 
-BN_copy() copies B<from> to B<to>. BN_dup() creates a new B<BIGNUM>
+BNY_copy() copies B<from> to B<to>. BN_dup() creates a new B<BIGNUM>
 containing the value B<from>.
 
 BN_with_flags creates a B<temporary> shallow copy of B<b> in B<dest>. It places
@@ -33,7 +33,7 @@ restrictions apply to the use of B<dest>:
 
 =item *
 
-B<dest> should be a newly allocated BIGNUM obtained via a call to BN_new(). It
+B<dest> should be a newly allocated BIGNUM obtained via a call to BNY_new(). It
 should not have been used for other purposes or initialised in any way.
 
 =item *
@@ -49,7 +49,7 @@ B<dest> must be used and freed before any further subsequent use of B<b>
 
 =head1 RETURN VALUES
 
-BN_copy() returns B<to> on success, NULL on error. BN_dup() returns
+BNY_copy() returns B<to> on success, NULL on error. BN_dup() returns
 the new B<BIGNUM>, and NULL on error. The error codes can be obtained
 by L<ERR_get_error(3)>.
 

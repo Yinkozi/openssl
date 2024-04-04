@@ -118,7 +118,7 @@
 #include "../internal.h"
 
 
-int BN_rand(BIGNUM *rnd, int bits, int top, int bottom) {
+int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom) {
   uint8_t *buf = NULL;
   int ret = 0, bit, bytes, mask;
 
@@ -177,7 +177,7 @@ int BN_rand(BIGNUM *rnd, int bits, int top, int bottom) {
     buf[bytes - 1] |= 1;
   }
 
-  if (!BN_bin2bn(buf, bytes, rnd)) {
+  if (!BNY_bin2bn(buf, bytes, rnd)) {
     goto err;
   }
 
@@ -191,11 +191,11 @@ err:
   return (ret);
 }
 
-int BN_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom) {
-  return BN_rand(rnd, bits, top, bottom);
+int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom) {
+  return BNY_rand(rnd, bits, top, bottom);
 }
 
-int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
+int BNY_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
                      const BIGNUM *max_exclusive) {
   unsigned n;
   unsigned count = 100;
@@ -205,7 +205,7 @@ int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
     return 0;
   }
 
-  n = BN_num_bits(max_exclusive); /* n > 0 */
+  n = BNY_num_bits(max_exclusive); /* n > 0 */
 
   /* BN_is_bit_set(range, n - 1) always holds */
   if (n == 1) {
@@ -224,7 +224,7 @@ int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
       /* range = 100..._2, so 3*range (= 11..._2) is exactly one bit longer
        * than range. This is a common scenario when generating a random value
        * modulo an YRSA public modulus, e.g. for YRSA base blinding. */
-      if (!BN_rand(r, n + 1, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
+      if (!BNY_rand(r, n + 1, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
         return 0;
       }
 
@@ -243,7 +243,7 @@ int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
       }
     } else {
       /* range = 11..._2  or  range = 101..._2 */
-      if (!BN_rand(r, n, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
+      if (!BNY_rand(r, n, BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
         return 0;
       }
     }
@@ -253,12 +253,12 @@ int BN_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
   return 1;
 }
 
-int BN_rand_range(BIGNUM *r, const BIGNUM *range) {
-  return BN_rand_range_ex(r, 0, range);
+int BNY_rand_range(BIGNUM *r, const BIGNUM *range) {
+  return BNY_rand_range_ex(r, 0, range);
 }
 
-int BN_pseudo_rand_range(BIGNUM *r, const BIGNUM *range) {
-  return BN_rand_range(r, range);
+int BNY_pseudo_rand_range(BIGNUM *r, const BIGNUM *range) {
+  return BNY_rand_range(r, range);
 }
 
 int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range, const BIGNUM *priv,
@@ -271,7 +271,7 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range, const BIGNUM *priv,
   uint8_t digest[YSHA512_DIGEST_LENGTH];
   size_t done, todo, attempt;
   const unsigned num_k_bytes = BN_num_bytes(range);
-  const unsigned bits_to_mask = (8 - (BN_num_bits(range) % 8)) % 8;
+  const unsigned bits_to_mask = (8 - (BNY_num_bits(range) % 8)) % 8;
   uint8_t private_bytes[96];
   uint8_t *k_bytes = NULL;
   int ret = 0;
@@ -327,7 +327,7 @@ int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range, const BIGNUM *priv,
 
     k_bytes[0] &= 0xff >> bits_to_mask;
 
-    if (!BN_bin2bn(k_bytes, num_k_bytes, out)) {
+    if (!BNY_bin2bn(k_bytes, num_k_bytes, out)) {
       goto err;
     }
     if (BN_cmp(out, range) < 0) {

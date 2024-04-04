@@ -125,7 +125,7 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
   group->mont = NULL;
 
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       return 0;
     }
@@ -151,7 +151,7 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
   }
 
 err:
-  BN_CTX_free(new_ctx);
+  BNY_CTX_free(new_ctx);
   BN_MONT_CTX_free(mont);
   return ret;
 }
@@ -207,7 +207,7 @@ static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
 
   BN_CTX *new_ctx = NULL;
   if (ctx == NULL) {
-    ctx = new_ctx = BN_CTX_new();
+    ctx = new_ctx = BNY_CTX_new();
     if (ctx == NULL) {
       return 0;
     }
@@ -215,7 +215,7 @@ static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
 
   int ret = 0;
 
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
 
   if (BN_cmp(&point->Z, &group->one) == 0) {
     /* |point| is already affine. */
@@ -228,9 +228,9 @@ static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
   } else {
     /* transform  (X, Y, Z)  into  (x, y) := (X/Z^2, Y/Z^3) */
 
-    BIGNUM *Z_1 = BN_CTX_get(ctx);
-    BIGNUM *Z_2 = BN_CTX_get(ctx);
-    BIGNUM *Z_3 = BN_CTX_get(ctx);
+    BIGNUM *Z_1 = BNY_CTX_get(ctx);
+    BIGNUM *Z_2 = BNY_CTX_get(ctx);
+    BIGNUM *Z_3 = BNY_CTX_get(ctx);
     if (Z_1 == NULL ||
         Z_2 == NULL ||
         Z_3 == NULL) {
@@ -284,8 +284,8 @@ static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
-  BN_CTX_free(new_ctx);
+  BNY_CTX_end(ctx);
+  BNY_CTX_free(new_ctx);
   return ret;
 }
 

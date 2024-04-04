@@ -376,22 +376,22 @@ static bool SpeedECDHCurve(const std::string &name, int nid,
 
   TimeResults results;
   if (!TimeFunction(&results, [nid]() -> bool {
-        bssl::UniquePtr<EC_KEY> key(EC_KEY_new_by_curve_name(nid));
+        bssl::UniquePtr<EC_KEY> key(ECC_KEY_new_by_curve_name(nid));
         if (!key ||
-            !EC_KEY_generate_key(key.get())) {
+            !ECC_KEY_generate_key(key.get())) {
           return false;
         }
-        const EC_GROUP *const group = EC_KEY_get0_group(key.get());
+        const EC_GROUP *const group = ECC_KEY_get0_group(key.get());
         bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group));
-        bssl::UniquePtr<BN_CTX> ctx(BN_CTX_new());
+        bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
 
-        bssl::UniquePtr<BIGNUM> x(BN_new());
-        bssl::UniquePtr<BIGNUM> y(BN_new());
+        bssl::UniquePtr<BIGNUM> x(BNY_new());
+        bssl::UniquePtr<BIGNUM> y(BNY_new());
 
         if (!point || !ctx || !x || !y ||
             !EC_POINT_mul(group, point.get(), NULL,
-                          EC_KEY_get0_public_key(key.get()),
-                          EC_KEY_get0_private_key(key.get()), ctx.get()) ||
+                          ECC_KEY_get0_public_key(key.get()),
+                          ECC_KEY_get0_private_key(key.get()), ctx.get()) ||
             !EC_POINT_get_affine_coordinates_GFp(group, point.get(), x.get(),
                                                  y.get(), ctx.get())) {
           return false;
@@ -412,14 +412,14 @@ static bool SpeedECDSACurve(const std::string &name, int nid,
     return true;
   }
 
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new_by_curve_name(nid));
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new_by_curve_name(nid));
   if (!key ||
-      !EC_KEY_generate_key(key.get())) {
+      !ECC_KEY_generate_key(key.get())) {
     return false;
   }
 
   uint8_t signature[256];
-  if (ECDSA_size(key.get()) > sizeof(signature)) {
+  if (ECCDSA_size(key.get()) > sizeof(signature)) {
     return false;
   }
   uint8_t digest[20];
@@ -428,7 +428,7 @@ static bool SpeedECDSACurve(const std::string &name, int nid,
 
   TimeResults results;
   if (!TimeFunction(&results, [&key, &signature, &digest, &sig_len]() -> bool {
-        return ECDSA_signn(0, digest, sizeof(digest), signature, &sig_len,
+        return ECCDSA_signn(0, digest, sizeof(digest), signature, &sig_len,
                           key.get()) == 1;
       })) {
     return false;
@@ -437,7 +437,7 @@ static bool SpeedECDSACurve(const std::string &name, int nid,
   results.Print(name + " signing");
 
   if (!TimeFunction(&results, [&key, &signature, &digest, sig_len]() -> bool {
-        return ECDSA_verifyy(0, digest, sizeof(digest), signature, sig_len,
+        return ECCDSA_verifyy(0, digest, sizeof(digest), signature, sig_len,
                             key.get()) == 1;
       })) {
     return false;

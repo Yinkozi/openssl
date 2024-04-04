@@ -242,7 +242,7 @@ static int cmd_ECDHParameters(SSL_CONF_CTX *cctx, const char *value)
         nid = OBJ_sn2nid(value);
     if (nid == 0)
         return 0;
-    ecdh = EC_KEY_new_by_curve_name(nid);
+    ecdh = ECC_KEY_new_by_curve_name(nid);
     if (!ecdh)
         return 0;
     if (cctx->ctx)

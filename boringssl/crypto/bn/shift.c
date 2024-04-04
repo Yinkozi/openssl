@@ -149,7 +149,7 @@ int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n) {
     BN_zero(r);
     return 1;
   }
-  i = (BN_num_bits(a) - n + (BN_BITS2 - 1)) / BN_BITS2;
+  i = (BNY_num_bits(a) - n + (BN_BITS2 - 1)) / BN_BITS2;
   if (r != a) {
     r->neg = a->neg;
     if (bn_wexpand(r, i) == NULL) {

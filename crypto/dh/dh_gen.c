@@ -65,19 +65,19 @@ static int dh_builtin_genparams(DH *ret, int prime_len, int generator,
     int g, ok = -1;
     BN_CTX *ctx = NULL;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    BN_CTX_start(ctx);
-    t1 = BN_CTX_get(ctx);
-    t2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t1 = BNY_CTX_get(ctx);
+    t2 = BNY_CTX_get(ctx);
     if (t2 == NULL)
         goto err;
 
     /* Make sure 'ret' has the necessary elements */
-    if (!ret->p && ((ret->p = BN_new()) == NULL))
+    if (!ret->p && ((ret->p = BNY_new()) == NULL))
         goto err;
-    if (!ret->g && ((ret->g = BN_new()) == NULL))
+    if (!ret->g && ((ret->g = BNY_new()) == NULL))
         goto err;
 
     if (generator <= 1) {
@@ -122,7 +122,7 @@ static int dh_builtin_genparams(DH *ret, int prime_len, int generator,
         ok = 0;
     }
 
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     return ok;
 }

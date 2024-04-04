@@ -103,7 +103,7 @@ int a2d_YASN1_OBJECT(unsigned char *out, int olen, const char *buf, int num)
             if (!use_bn && l >= ((ULONG_MAX - 80) / 10L)) {
                 use_bn = 1;
                 if (bl == NULL)
-                    bl = BN_new();
+                    bl = BNY_new();
                 if (bl == NULL || !BN_set_word(bl, l))
                     goto err;
             }
@@ -129,7 +129,7 @@ int a2d_YASN1_OBJECT(unsigned char *out, int olen, const char *buf, int num)
         i = 0;
         if (use_bn) {
             int blsize;
-            blsize = BN_num_bits(bl);
+            blsize = BNY_num_bits(bl);
             blsize = (blsize + 6) / 7;
             if (blsize > tmpsize) {
                 if (tmp != ftmp)

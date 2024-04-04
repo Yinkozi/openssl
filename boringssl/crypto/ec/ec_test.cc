@@ -119,7 +119,7 @@ static bool EncodeECPrivateKey(std::vector<uint8_t> *out, const EC_KEY *key) {
   uint8_t *der;
   size_t der_len;
   if (!CBB_init(cbb.get(), 0) ||
-      !EC_KEY_marshal_private_key(cbb.get(), key, EC_KEY_get_enc_flags(key)) ||
+      !EC_KEY_marshal_private_key(cbb.get(), key, ECC_KEY_get_enc_flags(key)) ||
       !CBB_finish(cbb.get(), &der, &der_len)) {
     return false;
   }
@@ -138,15 +138,15 @@ TEST(ECTest, Encoding) {
   ASSERT_TRUE(EncodeECPrivateKey(&out, key.get()));
   EXPECT_EQ(Bytes(kECKeyWithoutPublic), Bytes(out.data(), out.size()));
 
-  const EC_POINT *pub_key = EC_KEY_get0_public_key(key.get());
+  const EC_POINT *pub_key = ECC_KEY_get0_public_key(key.get());
   ASSERT_TRUE(pub_key) << "Public key missing";
 
-  bssl::UniquePtr<BIGNUM> x(BN_new());
-  bssl::UniquePtr<BIGNUM> y(BN_new());
+  bssl::UniquePtr<BIGNUM> x(BNY_new());
+  bssl::UniquePtr<BIGNUM> y(BNY_new());
   ASSERT_TRUE(x);
   ASSERT_TRUE(y);
   ASSERT_TRUE(EC_POINT_get_affine_coordinates_GFp(
-      EC_KEY_get0_group(key.get()), pub_key, x.get(), y.get(), NULL));
+      ECC_KEY_get0_group(key.get()), pub_key, x.get(), y.get(), NULL));
   bssl::UniquePtr<char> x_hex(BN_bn2hexx(x.get()));
   bssl::UniquePtr<char> y_hex(BN_bn2hexx(y.get()));
   ASSERT_TRUE(x_hex);
@@ -184,7 +184,7 @@ TEST(ECTest, SpecifiedCurve) {
 
   // The group should have been interpreted as P-256.
   EXPECT_EQ(NID_X9_62_prime256v1,
-            EC_GROUP_get_curve_name(EC_KEY_get0_group(key.get())));
+            EC_GROUP_get_curve_name(ECC_KEY_get0_group(key.get())));
 
   // Encoding the key should still use named form.
   std::vector<uint8_t> out;
@@ -194,9 +194,9 @@ TEST(ECTest, SpecifiedCurve) {
 
 TEST(ECTest, ArbitraryCurve) {
   // Make a P-256 key and extract the affine coordinates.
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
   ASSERT_TRUE(key);
-  ASSERT_TRUE(EC_KEY_generate_key(key.get()));
+  ASSERT_TRUE(ECC_KEY_generate_key(key.get()));
 
   // Make an arbitrary curve which is identical to P-256.
   static const uint8_t kP[] = {
@@ -229,19 +229,19 @@ TEST(ECTest, ArbitraryCurve) {
       0xff, 0xff, 0xff, 0xff, 0xff, 0xbc, 0xe6, 0xfa, 0xad, 0xa7, 0x17,
       0x9e, 0x84, 0xf3, 0xb9, 0xca, 0xc2, 0xfc, 0x63, 0x25, 0x51,
   };
-  bssl::UniquePtr<BN_CTX> ctx(BN_CTX_new());
+  bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
   ASSERT_TRUE(ctx);
-  bssl::UniquePtr<BIGNUM> p(BN_bin2bn(kP, sizeof(kP), nullptr));
+  bssl::UniquePtr<BIGNUM> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
   ASSERT_TRUE(p);
-  bssl::UniquePtr<BIGNUM> a(BN_bin2bn(kA, sizeof(kA), nullptr));
+  bssl::UniquePtr<BIGNUM> a(BNY_bin2bn(kA, sizeof(kA), nullptr));
   ASSERT_TRUE(a);
-  bssl::UniquePtr<BIGNUM> b(BN_bin2bn(kB, sizeof(kB), nullptr));
+  bssl::UniquePtr<BIGNUM> b(BNY_bin2bn(kB, sizeof(kB), nullptr));
   ASSERT_TRUE(b);
-  bssl::UniquePtr<BIGNUM> gx(BN_bin2bn(kX, sizeof(kX), nullptr));
+  bssl::UniquePtr<BIGNUM> gx(BNY_bin2bn(kX, sizeof(kX), nullptr));
   ASSERT_TRUE(gx);
-  bssl::UniquePtr<BIGNUM> gy(BN_bin2bn(kY, sizeof(kY), nullptr));
+  bssl::UniquePtr<BIGNUM> gy(BNY_bin2bn(kY, sizeof(kY), nullptr));
   ASSERT_TRUE(gy);
-  bssl::UniquePtr<BIGNUM> order(BN_bin2bn(kOrder, sizeof(kOrder), nullptr));
+  bssl::UniquePtr<BIGNUM> order(BNY_bin2bn(kOrder, sizeof(kOrder), nullptr));
   ASSERT_TRUE(order);
 
   bssl::UniquePtr<EC_GROUP> group(
@@ -252,51 +252,51 @@ TEST(ECTest, ArbitraryCurve) {
   ASSERT_TRUE(EC_POINT_set_affine_coordinates_GFp(
       group.get(), generator.get(), gx.get(), gy.get(), ctx.get()));
   ASSERT_TRUE(EC_GROUP_set_generator(group.get(), generator.get(), order.get(),
-                                     BN_value_one()));
+                                     BNY_value_one()));
 
   // |group| should not have a curve name.
   EXPECT_EQ(NID_undef, EC_GROUP_get_curve_name(group.get()));
 
   // Copy |key| to |key2| using |group|.
-  bssl::UniquePtr<EC_KEY> key2(EC_KEY_new());
+  bssl::UniquePtr<EC_KEY> key2(ECC_KEY_new());
   ASSERT_TRUE(key2);
   bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group.get()));
   ASSERT_TRUE(point);
-  bssl::UniquePtr<BIGNUM> x(BN_new()), y(BN_new());
+  bssl::UniquePtr<BIGNUM> x(BNY_new()), y(BNY_new());
   ASSERT_TRUE(x);
-  ASSERT_TRUE(EC_KEY_set_group(key2.get(), group.get()));
+  ASSERT_TRUE(ECC_KEY_set_group(key2.get(), group.get()));
   ASSERT_TRUE(
-      EC_KEY_set_private_key(key2.get(), EC_KEY_get0_private_key(key.get())));
+      ECC_KEY_set_private_key(key2.get(), ECC_KEY_get0_private_key(key.get())));
   ASSERT_TRUE(EC_POINT_get_affine_coordinates_GFp(
-      EC_KEY_get0_group(key.get()), EC_KEY_get0_public_key(key.get()), x.get(),
+      ECC_KEY_get0_group(key.get()), ECC_KEY_get0_public_key(key.get()), x.get(),
       y.get(), nullptr));
   ASSERT_TRUE(EC_POINT_set_affine_coordinates_GFp(group.get(), point.get(),
                                                   x.get(), y.get(), nullptr));
-  ASSERT_TRUE(EC_KEY_set_public_key(key2.get(), point.get()));
+  ASSERT_TRUE(ECC_KEY_set_public_key(key2.get(), point.get()));
 
   // The key must be valid according to the new group too.
-  EXPECT_TRUE(EC_KEY_check_key(key2.get()));
+  EXPECT_TRUE(ECC_KEY_check_key(key2.get()));
 }
 
 class ECCurveTest : public testing::TestWithParam<EC_builtin_curve> {};
 
 TEST_P(ECCurveTest, SetAffine) {
   // Generate an EC_KEY.
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new_by_curve_name(GetParam().nid));
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new_by_curve_name(GetParam().nid));
   ASSERT_TRUE(key);
-  ASSERT_TRUE(EC_KEY_generate_key(key.get()));
+  ASSERT_TRUE(ECC_KEY_generate_key(key.get()));
 
-  const EC_GROUP *const group = EC_KEY_get0_group(key.get());
+  const EC_GROUP *const group = ECC_KEY_get0_group(key.get());
   EXPECT_TRUE(
-      EC_POINT_is_on_curve(group, EC_KEY_get0_public_key(key.get()), nullptr));
+      EC_POINT_is_on_curve(group, ECC_KEY_get0_public_key(key.get()), nullptr));
 
   // Get the public key's coordinates.
-  bssl::UniquePtr<BIGNUM> x(BN_new());
+  bssl::UniquePtr<BIGNUM> x(BNY_new());
   ASSERT_TRUE(x);
-  bssl::UniquePtr<BIGNUM> y(BN_new());
+  bssl::UniquePtr<BIGNUM> y(BNY_new());
   ASSERT_TRUE(y);
   EXPECT_TRUE(EC_POINT_get_affine_coordinates_GFp(
-      group, EC_KEY_get0_public_key(key.get()), x.get(), y.get(), nullptr));
+      group, ECC_KEY_get0_public_key(key.get()), x.get(), y.get(), nullptr));
 
   // Points on the curve should be accepted.
   auto point = bssl::UniquePtr<EC_POINT>(EC_POINT_new(group));
@@ -305,7 +305,7 @@ TEST_P(ECCurveTest, SetAffine) {
                                                   y.get(), nullptr));
 
   // Subtract one from |y| to make the point no longer on the curve.
-  EXPECT_TRUE(BNY_sub(y.get(), y.get(), BN_value_one()));
+  EXPECT_TRUE(BNY_sub(y.get(), y.get(), BNY_value_one()));
 
   // Points not on the curve should be rejected.
   bssl::UniquePtr<EC_POINT> invalid_point(EC_POINT_new(group));
@@ -315,23 +315,23 @@ TEST_P(ECCurveTest, SetAffine) {
 }
 
 TEST_P(ECCurveTest, AddingEqualPoints) {
-  bssl::UniquePtr<EC_KEY> key(EC_KEY_new_by_curve_name(GetParam().nid));
+  bssl::UniquePtr<EC_KEY> key(ECC_KEY_new_by_curve_name(GetParam().nid));
   ASSERT_TRUE(key);
-  ASSERT_TRUE(EC_KEY_generate_key(key.get()));
+  ASSERT_TRUE(ECC_KEY_generate_key(key.get()));
 
-  const EC_GROUP *const group = EC_KEY_get0_group(key.get());
+  const EC_GROUP *const group = ECC_KEY_get0_group(key.get());
 
   bssl::UniquePtr<EC_POINT> p1(EC_POINT_new(group));
   ASSERT_TRUE(p1);
-  ASSERT_TRUE(EC_POINT_copy(p1.get(), EC_KEY_get0_public_key(key.get())));
+  ASSERT_TRUE(EC_POINT_copy(p1.get(), ECC_KEY_get0_public_key(key.get())));
 
   bssl::UniquePtr<EC_POINT> p2(EC_POINT_new(group));
   ASSERT_TRUE(p2);
-  ASSERT_TRUE(EC_POINT_copy(p2.get(), EC_KEY_get0_public_key(key.get())));
+  ASSERT_TRUE(EC_POINT_copy(p2.get(), ECC_KEY_get0_public_key(key.get())));
 
   bssl::UniquePtr<EC_POINT> double_p1(EC_POINT_new(group));
   ASSERT_TRUE(double_p1);
-  bssl::UniquePtr<BN_CTX> ctx(BN_CTX_new());
+  bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
   ASSERT_TRUE(ctx);
   ASSERT_TRUE(EC_POINT_dbl(group, double_p1.get(), p1.get(), ctx.get()));
 
@@ -351,7 +351,7 @@ TEST_P(ECCurveTest, MulZero) {
 
   bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group.get()));
   ASSERT_TRUE(point);
-  bssl::UniquePtr<BIGNUM> zero(BN_new());
+  bssl::UniquePtr<BIGNUM> zero(BNY_new());
   ASSERT_TRUE(zero);
   BN_zero(zero.get());
   ASSERT_TRUE(EC_POINT_mul(group.get(), point.get(), zero.get(), nullptr,
@@ -364,7 +364,7 @@ TEST_P(ECCurveTest, MulZero) {
   // used as the arbitrary point.
   bssl::UniquePtr<EC_POINT> generator(EC_POINT_new(group.get()));
   ASSERT_TRUE(generator);
-  ASSERT_TRUE(EC_POINT_mul(group.get(), generator.get(), BN_value_one(),
+  ASSERT_TRUE(EC_POINT_mul(group.get(), generator.get(), BNY_value_one(),
                            nullptr, nullptr, nullptr));
   ASSERT_TRUE(EC_POINT_mul(group.get(), point.get(), nullptr, generator.get(),
                            zero.get(), nullptr));

@@ -176,7 +176,7 @@ static int dh_priv_decode(EVVP_PKEY *pkey, const YPKCS8_PRIV_KEY_INFO *p8)
         goto decerr;
 
     /* We have parameters now set private key */
-    if ((dh->priv_key = BN_secure_new()) == NULL
+    if ((dh->priv_key = BNY_secure_new()) == NULL
         || !YASN1_INTEGER_to_BN(privkey, dh->priv_key)) {
         DHerr(DH_F_DH_PRIV_DECODE, DH_R_BN_ERROR);
         goto dherr;
@@ -294,7 +294,7 @@ static int do_dh_print(BIO *bp, const DH *x, int indent, int ptype)
         ktype = "DH Parameters";
 
     BIO_indent(bp, indent, 128);
-    if (BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BN_num_bits(x->p)) <= 0)
+    if (BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BNY_num_bits(x->p)) <= 0)
         goto err;
     indent += 4;
 
@@ -351,7 +351,7 @@ static int int_dh_size(const EVVP_PKEY *pkey)
 
 static int dh_bits(const EVVP_PKEY *pkey)
 {
-    return BN_num_bits(pkey->pkey.dh->p);
+    return BNY_num_bits(pkey->pkey.dh->p);
 }
 
 static int dh_security_bits(const EVVP_PKEY *pkey)
@@ -386,7 +386,7 @@ static int int_dh_bn_cpy(BIGNUM **dst, const BIGNUM *src)
         a = (BIGNUM *)src;
     else if ((a = BN_dup(src)) == NULL)
         return 0;
-    BN_clear_free(*dst);
+    BNY_clear_free(*dst);
     *dst = a;
     return 1;
 }

@@ -164,17 +164,17 @@ static int dsa_priv_decode(EVVP_PKEY *pkey, const YPKCS8_PRIV_KEY_INFO *p8)
     if ((dsa = d2i_DSAparams(NULL, &pm, pmlen)) == NULL)
         goto decerr;
     /* We have parameters now set private key */
-    if ((dsa->priv_key = BN_secure_new()) == NULL
+    if ((dsa->priv_key = BNY_secure_new()) == NULL
         || !YASN1_INTEGER_to_BN(privkey, dsa->priv_key)) {
         DSAerr(DSA_F_DSA_PRIV_DECODE, DSA_R_BN_ERROR);
         goto dsaerr;
     }
     /* Calculate public key */
-    if ((dsa->pub_key = BN_new()) == NULL) {
+    if ((dsa->pub_key = BNY_new()) == NULL) {
         DSAerr(DSA_F_DSA_PRIV_DECODE, ERR_R_MALLOC_FAILURE);
         goto dsaerr;
     }
-    if ((ctx = BN_CTX_new()) == NULL) {
+    if ((ctx = BNY_CTX_new()) == NULL) {
         DSAerr(DSA_F_DSA_PRIV_DECODE, ERR_R_MALLOC_FAILURE);
         goto dsaerr;
     }
@@ -195,7 +195,7 @@ static int dsa_priv_decode(EVVP_PKEY *pkey, const YPKCS8_PRIV_KEY_INFO *p8)
  dsaerr:
     DSA_free(dsa);
  done:
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     YASN1_STRING_clear_free(privkey);
     return ret;
 }
@@ -352,7 +352,7 @@ static int do_dsa_print(BIO *bp, const DSA *x, int off, int ptype)
     if (priv_key) {
         if (!BIO_indent(bp, off, 128))
             goto err;
-        if (BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BN_num_bits(x->p))
+        if (BIO_pprintf(bp, "%s: (%d bit)\n", ktype, BNY_num_bits(x->p))
             <= 0)
             goto err;
     }

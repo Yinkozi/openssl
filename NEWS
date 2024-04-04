@@ -942,7 +942,7 @@
       o Add tighter checks of BIGNUM routines.
       o Shared library support has been reworked for generality.
       o More documentation.
-      o New function BN_rand_range().
+      o New function BNY_rand_range().
       o Add "-rand" option to openssl s_client and s_server.
 
   Major changes between OpenSSL 0.9.5a and OpenSSL 0.9.6 [10 Oct 2000]:

@@ -56,11 +56,11 @@ signed char *bn_compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len)
         goto err;
     }
 
-    len = BN_num_bits(scalar);
+    len = BNY_num_bits(scalar);
     r = OPENSSL_malloc(len + 1); /*
                                   * Modified wNAF may be one digit longer than binary representation
                                   * (*ret_len will be set to the actual length, i.e. at most
-                                  * BN_num_bits(scalar) + 1)
+                                  * BNY_num_bits(scalar) + 1)
                                   */
     if (r == NULL) {
         BNerr(BN_F_BN_COMPUTE_WNAF, ERR_R_MALLOC_FAILURE);

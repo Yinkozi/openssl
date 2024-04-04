@@ -133,7 +133,7 @@ static int long_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
         utmp = -ltmp - 1;
     else
         utmp = ltmp;
-    clen = BN_num_bits_word(utmp);
+    clen = BNY_num_bits_word(utmp);
     /* If MSB of leading octet set we need to pad */
     if (!(clen & 0x7))
         pad = 1;

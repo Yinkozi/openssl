@@ -198,7 +198,7 @@ STACK_OF(YX509_INFO) *PEM_YX509_INFO_read_bio(BIO *bp, STACK_OF(YX509_INFO) *sk,
         } else
 #endif
         if (strcmp(name, PEM_STRING_ECPRIVATEKEY) == 0) {
-            d2i = (D2I_OF(void)) d2i_ECPrivateKey;
+            d2i = (D2I_OF(void)) d2i_ECCPrivateKey;
             if (xi->x_pkey != NULL) {
                 if (!sk_YX509_INFO_push(ret, xi))
                     goto err;

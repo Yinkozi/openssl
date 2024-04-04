@@ -187,17 +187,17 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx) {
   BIGNUM *a, *b, *t;
   int ret = 0;
 
-  BN_CTX_start(ctx);
-  a = BN_CTX_get(ctx);
-  b = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  a = BNY_CTX_get(ctx);
+  b = BNY_CTX_get(ctx);
 
   if (a == NULL || b == NULL) {
     goto err;
   }
-  if (BN_copy(a, in_a) == NULL) {
+  if (BNY_copy(a, in_a) == NULL) {
     goto err;
   }
-  if (BN_copy(b, in_b) == NULL) {
+  if (BNY_copy(b, in_b) == NULL) {
     goto err;
   }
 
@@ -214,13 +214,13 @@ int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx) {
     goto err;
   }
 
-  if (BN_copy(r, t) == NULL) {
+  if (BNY_copy(r, t) == NULL) {
     goto err;
   }
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -247,11 +247,11 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
   int ret = 0;
   int sign;
 
-  BN_CTX_start(ctx);
-  A = BN_CTX_get(ctx);
-  B = BN_CTX_get(ctx);
-  X = BN_CTX_get(ctx);
-  Y = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  A = BNY_CTX_get(ctx);
+  B = BNY_CTX_get(ctx);
+  X = BNY_CTX_get(ctx);
+  Y = BNY_CTX_get(ctx);
   if (Y == NULL) {
     goto err;
   }
@@ -259,7 +259,7 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
   BIGNUM *R = out;
 
   BN_zero(Y);
-  if (!BN_one(X) || BN_copy(B, a) == NULL || BN_copy(A, n) == NULL) {
+  if (!BN_one(X) || BNY_copy(B, a) == NULL || BNY_copy(A, n) == NULL) {
     goto err;
   }
   A->neg = 0;
@@ -381,7 +381,7 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
 
   /* Y*a == 1  (mod |n|) */
   if (!Y->neg && BNY_ucmp(Y, n) < 0) {
-    if (!BN_copy(R, Y)) {
+    if (!BNY_copy(R, Y)) {
       goto err;
     }
   } else {
@@ -393,7 +393,7 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -401,7 +401,7 @@ BIGNUM *BN_mod_inverse(BIGNUM *out, const BIGNUM *a, const BIGNUM *n,
                        BN_CTX *ctx) {
   BIGNUM *new_out = NULL;
   if (out == NULL) {
-    new_out = BN_new();
+    new_out = BNY_new();
     if (new_out == NULL) {
       OPENSSL_PUT_ERROR(BN, ERR_R_MALLOC_FAILURE);
       return NULL;
@@ -455,7 +455,7 @@ int BN_mod_inverse_blinded(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
   BIGNUM blinding_factor;
   BN_init(&blinding_factor);
 
-  if (!BN_rand_range_ex(&blinding_factor, 1, &mont->N) ||
+  if (!BNY_rand_range_ex(&blinding_factor, 1, &mont->N) ||
       !BNY_mod_mul_montgomery(out, &blinding_factor, a, mont, ctx) ||
       !BN_mod_inverse_odd(out, out_no_inverse, out, &mont->N, ctx) ||
       !BNY_mod_mul_montgomery(out, &blinding_factor, out, mont, ctx)) {
@@ -484,14 +484,14 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
 
   *out_no_inverse = 0;
 
-  BN_CTX_start(ctx);
-  A = BN_CTX_get(ctx);
-  B = BN_CTX_get(ctx);
-  X = BN_CTX_get(ctx);
-  D = BN_CTX_get(ctx);
-  M = BN_CTX_get(ctx);
-  Y = BN_CTX_get(ctx);
-  T = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  A = BNY_CTX_get(ctx);
+  B = BNY_CTX_get(ctx);
+  X = BNY_CTX_get(ctx);
+  D = BNY_CTX_get(ctx);
+  M = BNY_CTX_get(ctx);
+  Y = BNY_CTX_get(ctx);
+  T = BNY_CTX_get(ctx);
   if (T == NULL) {
     goto err;
   }
@@ -499,7 +499,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
   BIGNUM *R = out;
 
   BN_zero(Y);
-  if (!BN_one(X) || BN_copy(B, a) == NULL || BN_copy(A, n) == NULL) {
+  if (!BN_one(X) || BNY_copy(B, a) == NULL || BNY_copy(A, n) == NULL) {
     goto err;
   }
   A->neg = 0;
@@ -594,7 +594,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
 
   /* Y*a == 1  (mod |n|) */
   if (!Y->neg && BNY_ucmp(Y, n) < 0) {
-    if (!BN_copy(R, Y)) {
+    if (!BNY_copy(R, Y)) {
       goto err;
     }
   } else {
@@ -606,30 +606,30 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
 int bn_mod_inverse_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
                          BN_CTX *ctx, const BN_MONT_CTX *mont_p) {
-  BN_CTX_start(ctx);
-  BIGNUM *p_minus_2 = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  BIGNUM *p_minus_2 = BNY_CTX_get(ctx);
   int ok = p_minus_2 != NULL &&
-           BN_copy(p_minus_2, p) &&
+           BNY_copy(p_minus_2, p) &&
            BNY_sub_word(p_minus_2, 2) &&
            BNY_mod_exp_mont(out, a, p_minus_2, p, ctx, mont_p);
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ok;
 }
 
 int bn_mod_inverse_secret_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
                                 BN_CTX *ctx, const BN_MONT_CTX *mont_p) {
-  BN_CTX_start(ctx);
-  BIGNUM *p_minus_2 = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  BIGNUM *p_minus_2 = BNY_CTX_get(ctx);
   int ok = p_minus_2 != NULL &&
-           BN_copy(p_minus_2, p) &&
+           BNY_copy(p_minus_2, p) &&
            BNY_sub_word(p_minus_2, 2) &&
            BNY_mod_exp_mont_consttime(out, a, p_minus_2, p, ctx, mont_p);
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ok;
 }

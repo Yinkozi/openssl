@@ -159,7 +159,7 @@ int SSL_srp_server_param_with_username(SSL *s, int *ad)
 
     if (RAND_priv_bytes(b, sizeof(b)) <= 0)
         return SSL3_AL_FATAL;
-    s->srp_ctx.b = BN_bin2bn(b, sizeof(b), NULL);
+    s->srp_ctx.b = BNY_bin2bn(b, sizeof(b), NULL);
     OPENSSL_cleanse(b, sizeof(b));
 
     /* Calculate:  B = (kv + g^b) % N  */
@@ -182,9 +182,9 @@ int SSL_set_srp_server_param_pw(SSL *s, const char *user, const char *pass,
         return -1;
     s->srp_ctx.N = BN_dup(GN->N);
     s->srp_ctx.g = BN_dup(GN->g);
-    BN_clear_free(s->srp_ctx.v);
+    BNY_clear_free(s->srp_ctx.v);
     s->srp_ctx.v = NULL;
-    BN_clear_free(s->srp_ctx.s);
+    BNY_clear_free(s->srp_ctx.s);
     s->srp_ctx.s = NULL;
     if (!SRP_create_verifier_BN
         (user, pass, &s->srp_ctx.s, &s->srp_ctx.v, GN->N, GN->g))
@@ -198,7 +198,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
 {
     if (N != NULL) {
         if (s->srp_ctx.N != NULL) {
-            if (!BN_copy(s->srp_ctx.N, N)) {
+            if (!BNY_copy(s->srp_ctx.N, N)) {
                 BN_free(s->srp_ctx.N);
                 s->srp_ctx.N = NULL;
             }
@@ -207,7 +207,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
     }
     if (g != NULL) {
         if (s->srp_ctx.g != NULL) {
-            if (!BN_copy(s->srp_ctx.g, g)) {
+            if (!BNY_copy(s->srp_ctx.g, g)) {
                 BN_free(s->srp_ctx.g);
                 s->srp_ctx.g = NULL;
             }
@@ -216,7 +216,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
     }
     if (sa != NULL) {
         if (s->srp_ctx.s != NULL) {
-            if (!BN_copy(s->srp_ctx.s, sa)) {
+            if (!BNY_copy(s->srp_ctx.s, sa)) {
                 BN_free(s->srp_ctx.s);
                 s->srp_ctx.s = NULL;
             }
@@ -225,7 +225,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
     }
     if (v != NULL) {
         if (s->srp_ctx.v != NULL) {
-            if (!BN_copy(s->srp_ctx.v, v)) {
+            if (!BNY_copy(s->srp_ctx.v, v)) {
                 BN_free(s->srp_ctx.v);
                 s->srp_ctx.v = NULL;
             }
@@ -266,12 +266,12 @@ int srp_generate_server_master_secret(SSL *s)
                  SSL_F_SRP_GENERATE_SERVER_MASTER_SECRET, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    BN_bn2bin(K, tmp);
+    BNY_bn2bin(K, tmp);
     /* Calls SSLfatal() as required */
     ret = ssl_generate_master_secret(s, tmp, tmp_len, 1);
  err:
-    BN_clear_free(K);
-    BN_clear_free(u);
+    BNY_clear_free(K);
+    BNY_clear_free(u);
     return ret;
 }
 
@@ -317,15 +317,15 @@ int srp_generate_client_master_secret(SSL *s)
                  SSL_F_SRP_GENERATE_CLIENT_MASTER_SECRET, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    BN_bn2bin(K, tmp);
+    BNY_bn2bin(K, tmp);
     /* Calls SSLfatal() as required */
     ret = ssl_generate_master_secret(s, tmp, tmp_len, 1);
  err:
-    BN_clear_free(K);
-    BN_clear_free(x);
+    BNY_clear_free(K);
+    BNY_clear_free(x);
     if (passwd != NULL)
         OPENSSL_clear_free(passwd, strlen(passwd));
-    BN_clear_free(u);
+    BNY_clear_free(u);
     return ret;
 }
 
@@ -343,7 +343,7 @@ int srp_verify_server_param(SSL *s)
         return 0;
     }
 
-    if (BN_num_bits(srp->N) < srp->strength) {
+    if (BNY_num_bits(srp->N) < srp->strength) {
         SSLfatal(s, SSL_AD_INSUFFICIENT_SECURITY, SSL_F_SRP_VERIFY_SERVER_PARAM,
                  SSL_R_INSUFFICIENT_SECURITY);
         return 0;
@@ -371,7 +371,7 @@ int SRP_Calc_A_param(SSL *s)
 
     if (RAND_priv_bytes(rnd, sizeof(rnd)) <= 0)
         return 0;
-    s->srp_ctx.a = BN_bin2bn(rnd, sizeof(rnd), s->srp_ctx.a);
+    s->srp_ctx.a = BNY_bin2bn(rnd, sizeof(rnd), s->srp_ctx.a);
     OPENSSL_cleanse(rnd, sizeof(rnd));
 
     if (!(s->srp_ctx.A = SRP_Calc_A(s->srp_ctx.a, s->srp_ctx.N, s->srp_ctx.g)))

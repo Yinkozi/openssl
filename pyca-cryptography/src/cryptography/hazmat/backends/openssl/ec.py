@@ -34,7 +34,7 @@ def _check_signature_algorithm(
 
 
 def _ec_key_curve_sn(backend, ec_key):
-    group = backend._lib.EC_KEY_get0_group(ec_key)
+    group = backend._lib.ECC_KEY_get0_group(ec_key)
     backend.openssl_assert(group != backend._ffi.NULL)
 
     nid = backend._lib.EC_GROUP_get_curve_name(group)
@@ -70,7 +70,7 @@ def _mark_asn1_named_ec_curve(backend, ec_cdata):
     deserialization easier.
     """
 
-    backend._lib.EC_KEY_set_asn1_flag(
+    backend._lib.ECC_KEY_set_asn1_flag(
         ec_cdata, backend._lib.OPENSSL_EC_NAMED_CURVE
     )
 
@@ -86,12 +86,12 @@ def _sn_to_elliptic_curve(backend, sn):
 
 
 def _ecdsa_sig_sign(backend, private_key, data):
-    max_size = backend._lib.ECDSA_size(private_key._ec_key)
+    max_size = backend._lib.ECCDSA_size(private_key._ec_key)
     backend.openssl_assert(max_size > 0)
 
     sigbuf = backend._ffi.new("unsigned char[]", max_size)
     siglen_ptr = backend._ffi.new("unsigned int[]", 1)
-    res = backend._lib.ECDSA_signn(
+    res = backend._lib.ECCDSA_signn(
         0, data, len(data), sigbuf, siglen_ptr, private_key._ec_key
     )
     backend.openssl_assert(res == 1)
@@ -99,7 +99,7 @@ def _ecdsa_sig_sign(backend, private_key, data):
 
 
 def _ecdsa_sig_verify(backend, public_key, signature, data):
-    res = backend._lib.ECDSA_verifyy(
+    res = backend._lib.ECCDSA_verifyy(
         0, data, len(data), signature, len(signature), public_key._ec_key
     )
     if res != 1:
@@ -199,16 +199,16 @@ class _EllipticCurvePrivateKey(ec.EllipticCurvePrivateKey):
         return _evp_pkey_derive(self._backend, self._evp_pkey, peer_public_key)
 
     def public_key(self) -> ec.EllipticCurvePublicKey:
-        group = self._backend._lib.EC_KEY_get0_group(self._ec_key)
+        group = self._backend._lib.ECC_KEY_get0_group(self._ec_key)
         self._backend.openssl_assert(group != self._backend._ffi.NULL)
 
         curve_nid = self._backend._lib.EC_GROUP_get_curve_name(group)
         public_ec_key = self._backend._ec_key_new_by_curve_nid(curve_nid)
 
-        point = self._backend._lib.EC_KEY_get0_public_key(self._ec_key)
+        point = self._backend._lib.ECC_KEY_get0_public_key(self._ec_key)
         self._backend.openssl_assert(point != self._backend._ffi.NULL)
 
-        res = self._backend._lib.EC_KEY_set_public_key(public_ec_key, point)
+        res = self._backend._lib.ECC_KEY_set_public_key(public_ec_key, point)
         self._backend.openssl_assert(res == 1)
 
         evp_pkey = self._backend._ec_cdata_to_evp_pkey(public_ec_key)
@@ -216,7 +216,7 @@ class _EllipticCurvePrivateKey(ec.EllipticCurvePrivateKey):
         return _EllipticCurvePublicKey(self._backend, public_ec_key, evp_pkey)
 
     def private_numbers(self) -> ec.EllipticCurvePrivateNumbers:
-        bn = self._backend._lib.EC_KEY_get0_private_key(self._ec_key)
+        bn = self._backend._lib.ECC_KEY_get0_private_key(self._ec_key)
         private_value = self._backend._bn_to_int(bn)
         return ec.EllipticCurvePrivateNumbers(
             private_value=private_value,
@@ -288,12 +288,12 @@ class _EllipticCurvePublicKey(ec.EllipticCurvePublicKey):
         get_func, group = self._backend._ec_key_determine_group_get_func(
             self._ec_key
         )
-        point = self._backend._lib.EC_KEY_get0_public_key(self._ec_key)
+        point = self._backend._lib.ECC_KEY_get0_public_key(self._ec_key)
         self._backend.openssl_assert(point != self._backend._ffi.NULL)
 
         with self._backend._tmp_bn_ctx() as bn_ctx:
-            bn_x = self._backend._lib.BN_CTX_get(bn_ctx)
-            bn_y = self._backend._lib.BN_CTX_get(bn_ctx)
+            bn_x = self._backend._lib.BNY_CTX_get(bn_ctx)
+            bn_y = self._backend._lib.BNY_CTX_get(bn_ctx)
 
             res = get_func(group, point, bn_x, bn_y, bn_ctx)
             self._backend.openssl_assert(res == 1)
@@ -310,9 +310,9 @@ class _EllipticCurvePublicKey(ec.EllipticCurvePublicKey):
             assert format is serialization.PublicFormat.UncompressedPoint
             conversion = self._backend._lib.POINT_CONVERSION_UNCOMPRESSED
 
-        group = self._backend._lib.EC_KEY_get0_group(self._ec_key)
+        group = self._backend._lib.ECC_KEY_get0_group(self._ec_key)
         self._backend.openssl_assert(group != self._backend._ffi.NULL)
-        point = self._backend._lib.EC_KEY_get0_public_key(self._ec_key)
+        point = self._backend._lib.ECC_KEY_get0_public_key(self._ec_key)
         self._backend.openssl_assert(point != self._backend._ffi.NULL)
         with self._backend._tmp_bn_ctx() as bn_ctx:
             buflen = self._backend._lib.EC_POINT_point2oct(

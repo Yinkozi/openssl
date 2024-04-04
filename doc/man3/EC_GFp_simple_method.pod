@@ -53,7 +53,7 @@ EC_METHOD_get_field_type returns an integer that identifies the type of field th
 =head1 SEE ALSO
 
 L<crypto(7)>, L<EC_GROUP_new(3)>, L<EC_GROUP_copy(3)>,
-L<EC_POINT_new(3)>, L<EC_POINT_add(3)>, L<EC_KEY_new(3)>,
+L<EC_POINT_new(3)>, L<EC_POINT_add(3)>, L<ECC_KEY_new(3)>,
 L<d2i_ECPKParameters(3)>,
 L<BNY_mod_mul_montgomery(3)>
 

@@ -159,8 +159,8 @@ BN_MONT_CTX *BN_MONT_CTX_copy(BN_MONT_CTX *to, const BN_MONT_CTX *from) {
     return to;
   }
 
-  if (!BN_copy(&to->RR, &from->RR) ||
-      !BN_copy(&to->N, &from->N)) {
+  if (!BNY_copy(&to->RR, &from->RR) ||
+      !BNY_copy(&to->N, &from->N)) {
     return NULL;
   }
   to->n0[0] = from->n0[0];
@@ -188,7 +188,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx) {
   }
 
   /* Save the modulus. */
-  if (!BN_copy(&mont->N, mod)) {
+  if (!BNY_copy(&mont->N, mod)) {
     OPENSSL_PUT_ERROR(BN, ERR_R_INTERNAL_ERROR);
     return 0;
   }
@@ -215,7 +215,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx) {
    *
    * XXX: This is not constant time with respect to |mont->N|, but it should
    * be. */
-  unsigned lgBigR = (BN_num_bits(mod) + (BN_BITS2 - 1)) / BN_BITS2 * BN_BITS2;
+  unsigned lgBigR = (BNY_num_bits(mod) + (BN_BITS2 - 1)) / BN_BITS2 * BN_BITS2;
   if (!bn_mod_exp_base_2_vartime(&mont->RR, lgBigR * 2, &mont->N)) {
     return 0;
   }
@@ -349,17 +349,17 @@ int BN_from_montgomery(BIGNUM *r, const BIGNUM *a, const BN_MONT_CTX *mont,
   int ret = 0;
   BIGNUM *t;
 
-  BN_CTX_start(ctx);
-  t = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t = BNY_CTX_get(ctx);
   if (t == NULL ||
-      !BN_copy(t, a)) {
+      !BNY_copy(t, a)) {
     goto err;
   }
 
   ret = BN_from_montgomery_word(r, t, mont);
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
 
   return ret;
 }
@@ -401,8 +401,8 @@ static int bn_mod_mul_montgomery_fallback(BIGNUM *r, const BIGNUM *a,
                                           BN_CTX *ctx) {
   int ret = 0;
 
-  BN_CTX_start(ctx);
-  BIGNUM *tmp = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  BIGNUM *tmp = BNY_CTX_get(ctx);
   if (tmp == NULL) {
     goto err;
   }
@@ -425,6 +425,6 @@ static int bn_mod_mul_montgomery_fallback(BIGNUM *r, const BIGNUM *a,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }

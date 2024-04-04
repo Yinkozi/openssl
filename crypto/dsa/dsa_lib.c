@@ -123,11 +123,11 @@ void DSA_free(DSA *r)
 
     CRYPTO_THREAD_lock_free(r->lock);
 
-    BN_clear_free(r->p);
-    BN_clear_free(r->q);
-    BN_clear_free(r->g);
-    BN_clear_free(r->pub_key);
-    BN_clear_free(r->priv_key);
+    BNY_clear_free(r->p);
+    BNY_clear_free(r->q);
+    BNY_clear_free(r->g);
+    BNY_clear_free(r->pub_key);
+    BNY_clear_free(r->priv_key);
     OPENSSL_free(r);
 }
 
@@ -152,7 +152,7 @@ int DSA_size(const DSA *r)
                                  * the first byte, as long as the second
                                  * parameter is NULL. */
 
-    i = BN_num_bits(r->q);
+    i = BNY_num_bits(r->q);
     bs.length = (i + 7) / 8;
     bs.data = buf;
     bs.type = V_YASN1_INTEGER;
@@ -178,7 +178,7 @@ void *DSA_get_ex_data(DSA *d, int idx)
 int DSA_security_bits(const DSA *d)
 {
     if (d->p && d->q)
-        return BN_security_bits(BN_num_bits(d->p), BN_num_bits(d->q));
+        return BNY_security_bits(BNY_num_bits(d->p), BNY_num_bits(d->q));
     return -1;
 }
 
@@ -354,5 +354,5 @@ ENGINE *DSA_get0_engine(DSA *d)
 
 int DSA_bits(const DSA *dsa)
 {
-    return BN_num_bits(dsa->p);
+    return BNY_num_bits(dsa->p);
 }

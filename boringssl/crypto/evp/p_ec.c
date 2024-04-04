@@ -120,14 +120,14 @@ static int pkey_ec_sign(EVVP_PKEY_CTX *ctx, uint8_t *sig, size_t *siglen,
   EC_KEY *ec = ctx->pkey->pkey.ec;
 
   if (!sig) {
-    *siglen = ECDSA_size(ec);
+    *siglen = ECCDSA_size(ec);
     return 1;
-  } else if (*siglen < (size_t)ECDSA_size(ec)) {
+  } else if (*siglen < (size_t)ECCDSA_size(ec)) {
     OPENSSL_PUT_ERROR(EVVP, EVVP_R_BUFFER_TOO_SMALL);
     return 0;
   }
 
-  if (!ECDSA_signn(0, tbs, tbslen, sig, &sltmp, ec)) {
+  if (!ECCDSA_signn(0, tbs, tbslen, sig, &sltmp, ec)) {
     return 0;
   }
   *siglen = (size_t)sltmp;
@@ -136,7 +136,7 @@ static int pkey_ec_sign(EVVP_PKEY_CTX *ctx, uint8_t *sig, size_t *siglen,
 
 static int pkey_ec_verify(EVVP_PKEY_CTX *ctx, const uint8_t *sig, size_t siglen,
                           const uint8_t *tbs, size_t tbslen) {
-  return ECDSA_verifyy(0, tbs, tbslen, sig, siglen, ctx->pkey->pkey.ec);
+  return ECCDSA_verifyy(0, tbs, tbslen, sig, siglen, ctx->pkey->pkey.ec);
 }
 
 static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, uint8_t *key,
@@ -155,18 +155,18 @@ static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, uint8_t *key,
 
   if (!key) {
     const EC_GROUP *group;
-    group = EC_KEY_get0_group(eckey);
+    group = ECC_KEY_get0_group(eckey);
     *keylen = (EC_GROUP_get_degree(group) + 7) / 8;
     return 1;
   }
-  pubkey = EC_KEY_get0_public_key(ctx->peerkey->pkey.ec);
+  pubkey = ECC_KEY_get0_public_key(ctx->peerkey->pkey.ec);
 
   /* NB: unlike YPKCS#3 DH, if *outlen is less than maximum size this is
    * not an error, the result is truncated. */
 
   outlen = *keylen;
 
-  ret = ECDH_compute_key(key, outlen, pubkey, eckey, 0);
+  ret = ECCDH_compute_key(key, outlen, pubkey, eckey, 0);
   if (ret < 0) {
     return 0;
   }
@@ -210,10 +210,10 @@ static int pkey_ec_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey) {
     OPENSSL_PUT_ERROR(EVVP, EVVP_R_NO_PARAMETERS_SET);
     return 0;
   }
-  EC_KEY *ec = EC_KEY_new();
+  EC_KEY *ec = ECC_KEY_new();
   if (ec == NULL ||
-      !EC_KEY_set_group(ec, EC_KEY_get0_group(ctx->pkey->pkey.ec)) ||
-      !EC_KEY_generate_key(ec)) {
+      !ECC_KEY_set_group(ec, ECC_KEY_get0_group(ctx->pkey->pkey.ec)) ||
+      !ECC_KEY_generate_key(ec)) {
     EC_KEY_free(ec);
     return 0;
   }

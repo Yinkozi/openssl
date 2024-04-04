@@ -65,7 +65,7 @@
 #include "internal.h"
 
 
-BIGNUM *BN_new(void) {
+BIGNUM *BNY_new(void) {
   BIGNUM *bn = OPENSSL_malloc(sizeof(BIGNUM));
 
   if (bn == NULL) {
@@ -99,7 +99,7 @@ void BN_free(BIGNUM *bn) {
   }
 }
 
-void BN_clear_free(BIGNUM *bn) {
+void BNY_clear_free(BIGNUM *bn) {
   char should_free;
 
   if (bn == NULL) {
@@ -127,12 +127,12 @@ BIGNUM *BN_dup(const BIGNUM *src) {
     return NULL;
   }
 
-  copy = BN_new();
+  copy = BNY_new();
   if (copy == NULL) {
     return NULL;
   }
 
-  if (!BN_copy(copy, src)) {
+  if (!BNY_copy(copy, src)) {
     BN_free(copy);
     return NULL;
   }
@@ -140,7 +140,7 @@ BIGNUM *BN_dup(const BIGNUM *src) {
   return copy;
 }
 
-BIGNUM *BN_copy(BIGNUM *dest, const BIGNUM *src) {
+BIGNUM *BNY_copy(BIGNUM *dest, const BIGNUM *src) {
   if (src == dest) {
     return dest;
   }
@@ -165,16 +165,16 @@ void BN_clear(BIGNUM *bn) {
   bn->neg = 0;
 }
 
-const BIGNUM *BN_value_one(void) {
+const BIGNUM *BNY_value_one(void) {
   static const BN_ULONG kOneLimbs[1] = { 1 };
   static const BIGNUM kOne = STATIC_BIGNUM(kOneLimbs);
 
   return &kOne;
 }
 
-/* BN_num_bits_word returns the minimum number of bits needed to represent the
+/* BNY_num_bits_word returns the minimum number of bits needed to represent the
  * value in |l|. */
-unsigned BN_num_bits_word(BN_ULONG l) {
+unsigned BNY_num_bits_word(BN_ULONG l) {
   static const unsigned char bits[256] = {
       0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5,
       5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6,
@@ -222,18 +222,18 @@ unsigned BN_num_bits_word(BN_ULONG l) {
   }
 }
 
-unsigned BN_num_bits(const BIGNUM *bn) {
+unsigned BNY_num_bits(const BIGNUM *bn) {
   const int max = bn->top - 1;
 
   if (BN_is_zero(bn)) {
     return 0;
   }
 
-  return max*BN_BITS2 + BN_num_bits_word(bn->d[max]);
+  return max*BN_BITS2 + BNY_num_bits_word(bn->d[max]);
 }
 
 unsigned BN_num_bytes(const BIGNUM *bn) {
-  return (BN_num_bits(bn) + 7) / 8;
+  return (BNY_num_bits(bn) + 7) / 8;
 }
 
 void BN_zero(BIGNUM *bn) {

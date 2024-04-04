@@ -80,18 +80,18 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
     ret = DSA_SIG_new();
     if (ret == NULL)
         goto err;
-    ret->r = BN_new();
-    ret->s = BN_new();
+    ret->r = BNY_new();
+    ret->s = BNY_new();
     if (ret->r == NULL || ret->s == NULL)
         goto err;
 
-    ctx = BN_CTX_new();
+    ctx = BNY_CTX_new();
     if (ctx == NULL)
         goto err;
-    m = BN_CTX_get(ctx);
-    blind = BN_CTX_get(ctx);
-    blindm = BN_CTX_get(ctx);
-    tmp = BN_CTX_get(ctx);
+    m = BNY_CTX_get(ctx);
+    blind = BNY_CTX_get(ctx);
+    blindm = BNY_CTX_get(ctx);
+    tmp = BNY_CTX_get(ctx);
     if (tmp == NULL)
         goto err;
 
@@ -102,11 +102,11 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
     if (dlen > BN_num_bytes(dsa->q))
         /*
          * if the digest length is greater than the size of q use the
-         * BN_num_bits(dsa->q) leftmost bits of the digest, see fips 186-3,
+         * BNY_num_bits(dsa->q) leftmost bits of the digest, see fips 186-3,
          * 4.2
          */
         dlen = BN_num_bytes(dsa->q);
-    if (BN_bin2bn(dgst, dlen, m) == NULL)
+    if (BNY_bin2bn(dgst, dlen, m) == NULL)
         goto err;
 
     /*
@@ -121,7 +121,7 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
 
     /* Generate a blinding value */
     do {
-        if (!BN_priv_rand(blind, BN_num_bits(dsa->q) - 1,
+        if (!BNY_priv_rand(blind, BNY_num_bits(dsa->q) - 1,
                           BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY))
             goto err;
     } while (BN_is_zero(blind));
@@ -168,8 +168,8 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
         DSA_SIG_free(ret);
         ret = NULL;
     }
-    BN_CTX_free(ctx);
-    BN_clear_free(kinv);
+    BNY_CTX_free(ctx);
+    BNY_clear_free(kinv);
     return ret;
 }
 
@@ -204,19 +204,19 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
         return 0;
     }
 
-    k = BN_new();
-    l = BN_new();
+    k = BNY_new();
+    l = BNY_new();
     if (k == NULL || l == NULL)
         goto err;
 
     if (ctx_in == NULL) {
-        if ((ctx = BN_CTX_new()) == NULL)
+        if ((ctx = BNY_CTX_new()) == NULL)
             goto err;
     } else
         ctx = ctx_in;
 
     /* Preallocate space */
-    q_bits = BN_num_bits(dsa->q);
+    q_bits = BNY_num_bits(dsa->q);
     q_words = bn_get_top(dsa->q);
     if (!bn_wexpand(k, q_words + 2)
         || !bn_wexpand(l, q_words + 2))
@@ -232,7 +232,7 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
             if (!BN_generate_dsa_nonce(k, dsa->q, dsa->priv_key, dgst,
                                        dlen, ctx))
                 goto err;
-        } else if (!BN_priv_rand_range(k, dsa->q))
+        } else if (!BNY_priv_rand_range(k, dsa->q))
             goto err;
     } while (BN_is_zero(k));
 
@@ -282,7 +282,7 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
     if ((kinv = dsa_mod_inverse_fermat(k, dsa->q, ctx)) == NULL)
         goto err;
 
-    BN_clear_free(*kinvp);
+    BNY_clear_free(*kinvp);
     *kinvp = kinv;
     kinv = NULL;
     ret = 1;
@@ -290,9 +290,9 @@ static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
     if (!ret)
         DSAerr(DSA_F_DSA_SIGN_SETUP, ERR_R_BN_LIB);
     if (ctx != ctx_in)
-        BN_CTX_free(ctx);
-    BN_clear_free(k);
-    BN_clear_free(l);
+        BNY_CTX_free(ctx);
+    BNY_clear_free(k);
+    BNY_clear_free(l);
     return ret;
 }
 
@@ -309,21 +309,21 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
         return -1;
     }
 
-    i = BN_num_bits(dsa->q);
+    i = BNY_num_bits(dsa->q);
     /* fips 186-3 allows only different sizes for q */
     if (i != 160 && i != 224 && i != 256) {
         DSAerr(DSA_F_DSA_DO_VERIFY, DSA_R_BAD_Q_VALUE);
         return -1;
     }
 
-    if (BN_num_bits(dsa->p) > OPENSSL_DSA_MAX_MODULUS_BITS) {
+    if (BNY_num_bits(dsa->p) > OPENSSL_DSA_MAX_MODULUS_BITS) {
         DSAerr(DSA_F_DSA_DO_VERIFY, DSA_R_MODULUS_TOO_LARGE);
         return -1;
     }
-    u1 = BN_new();
-    u2 = BN_new();
-    t1 = BN_new();
-    ctx = BN_CTX_new();
+    u1 = BNY_new();
+    u2 = BNY_new();
+    t1 = BNY_new();
+    ctx = BNY_CTX_new();
     if (u1 == NULL || u2 == NULL || t1 == NULL || ctx == NULL)
         goto err;
 
@@ -350,11 +350,11 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
     if (dgst_len > (i >> 3))
         /*
          * if the digest length is greater than the size of q use the
-         * BN_num_bits(dsa->q) leftmost bits of the digest, see fips 186-3,
+         * BNY_num_bits(dsa->q) leftmost bits of the digest, see fips 186-3,
          * 4.2
          */
         dgst_len = (i >> 3);
-    if (BN_bin2bn(dgst, dgst_len, u1) == NULL)
+    if (BNY_bin2bn(dgst, dgst_len, u1) == NULL)
         goto err;
 
     /* u1 = M * w mod q */
@@ -394,7 +394,7 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
  err:
     if (ret < 0)
         DSAerr(DSA_F_DSA_DO_VERIFY, ERR_R_BN_LIB);
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
     BN_free(u1);
     BN_free(u2);
     BN_free(t1);
@@ -426,17 +426,17 @@ static BIGNUM *dsa_mod_inverse_fermat(const BIGNUM *k, const BIGNUM *q,
     BIGNUM *res = NULL;
     BIGNUM *r, *e;
 
-    if ((r = BN_new()) == NULL)
+    if ((r = BNY_new()) == NULL)
         return NULL;
 
-    BN_CTX_start(ctx);
-    if ((e = BN_CTX_get(ctx)) != NULL
+    BNY_CTX_start(ctx);
+    if ((e = BNY_CTX_get(ctx)) != NULL
             && BN_set_word(r, 2)
             && BNY_sub(e, q, r)
             && BNY_mod_exp_mont(r, k, e, q, ctx, NULL))
         res = r;
     else
         BN_free(r);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return res;
 }

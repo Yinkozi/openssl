@@ -24,7 +24,7 @@ DSA_bits() returns the number of bits in key B<dsa>: this is the number
 of bits in the B<p> parameter.
 
 DSA_security_bits() returns the number of security bits of the given B<dsa>
-key. See L<BN_security_bits(3)>.
+key. See L<BNY_security_bits(3)>.
 
 =head1 RETURN VALUES
 

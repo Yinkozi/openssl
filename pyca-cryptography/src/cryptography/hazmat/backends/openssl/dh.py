@@ -84,7 +84,7 @@ def _get_dh_num_bits(backend, dh_cdata) -> int:
     p = backend._ffi.new("BIGNUM **")
     backend._lib.DH_get0_pqg(dh_cdata, p, backend._ffi.NULL, backend._ffi.NULL)
     backend.openssl_assert(p[0] != backend._ffi.NULL)
-    return backend._lib.BN_num_bits(p[0])
+    return backend._lib.BNY_num_bits(p[0])
 
 
 class _DHPrivateKey(dh.DHPrivateKey):

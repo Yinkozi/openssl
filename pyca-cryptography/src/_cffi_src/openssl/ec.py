@@ -39,20 +39,20 @@ int EC_GROUP_get_curve_name(const EC_GROUP *);
 
 size_t EC_get_builtin_curves(EC_builtin_curve *, size_t);
 
-EC_KEY *EC_KEY_new(void);
+EC_KEY *ECC_KEY_new(void);
 void EC_KEY_free(EC_KEY *);
 
-EC_KEY *EC_KEY_new_by_curve_name(int);
-const EC_GROUP *EC_KEY_get0_group(const EC_KEY *);
+EC_KEY *ECC_KEY_new_by_curve_name(int);
+const EC_GROUP *ECC_KEY_get0_group(const EC_KEY *);
 int EC_GROUP_get_order(const EC_GROUP *, BIGNUM *, BN_CTX *);
-int EC_KEY_set_group(EC_KEY *, const EC_GROUP *);
-const BIGNUM *EC_KEY_get0_private_key(const EC_KEY *);
-int EC_KEY_set_private_key(EC_KEY *, const BIGNUM *);
-const EC_POINT *EC_KEY_get0_public_key(const EC_KEY *);
-int EC_KEY_set_public_key(EC_KEY *, const EC_POINT *);
-void EC_KEY_set_asn1_flag(EC_KEY *, int);
-int EC_KEY_generate_key(EC_KEY *);
-int EC_KEY_set_public_key_affine_coordinates(EC_KEY *, BIGNUM *, BIGNUM *);
+int ECC_KEY_set_group(EC_KEY *, const EC_GROUP *);
+const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *);
+int ECC_KEY_set_private_key(EC_KEY *, const BIGNUM *);
+const EC_POINT *ECC_KEY_get0_public_key(const EC_KEY *);
+int ECC_KEY_set_public_key(EC_KEY *, const EC_POINT *);
+void ECC_KEY_set_asn1_flag(EC_KEY *, int);
+int ECC_KEY_generate_key(EC_KEY *);
+int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *, BIGNUM *, BIGNUM *);
 
 EC_POINT *EC_POINT_new(const EC_GROUP *);
 void EC_POINT_free(EC_POINT *);

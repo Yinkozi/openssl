@@ -21,9 +21,9 @@
  */
 int ec_GF2m_simple_group_init(EC_GROUP *group)
 {
-    group->field = BN_new();
-    group->a = BN_new();
-    group->b = BN_new();
+    group->field = BNY_new();
+    group->a = BNY_new();
+    group->b = BNY_new();
 
     if (group->field == NULL || group->a == NULL || group->b == NULL) {
         BN_free(group->field);
@@ -51,9 +51,9 @@ void ec_GF2m_simple_group_finish(EC_GROUP *group)
  */
 void ec_GF2m_simple_group_clear_finish(EC_GROUP *group)
 {
-    BN_clear_free(group->field);
-    BN_clear_free(group->a);
-    BN_clear_free(group->b);
+    BNY_clear_free(group->field);
+    BNY_clear_free(group->a);
+    BNY_clear_free(group->b);
     group->poly[0] = 0;
     group->poly[1] = 0;
     group->poly[2] = 0;
@@ -68,11 +68,11 @@ void ec_GF2m_simple_group_clear_finish(EC_GROUP *group)
  */
 int ec_GF2m_simple_group_copy(EC_GROUP *dest, const EC_GROUP *src)
 {
-    if (!BN_copy(dest->field, src->field))
+    if (!BNY_copy(dest->field, src->field))
         return 0;
-    if (!BN_copy(dest->a, src->a))
+    if (!BNY_copy(dest->a, src->a))
         return 0;
-    if (!BN_copy(dest->b, src->b))
+    if (!BNY_copy(dest->b, src->b))
         return 0;
     dest->poly[0] = src->poly[0];
     dest->poly[1] = src->poly[1];
@@ -99,7 +99,7 @@ int ec_GF2m_simple_group_set_curve(EC_GROUP *group,
     int ret = 0, i;
 
     /* group->field */
-    if (!BN_copy(group->field, p))
+    if (!BNY_copy(group->field, p))
         goto err;
     i = BN_GF2m_poly2arr(group->field, group->poly, 6) - 1;
     if ((i != 5) && (i != 3)) {
@@ -138,17 +138,17 @@ int ec_GF2m_simple_group_get_curve(const EC_GROUP *group, BIGNUM *p,
     int ret = 0;
 
     if (p != NULL) {
-        if (!BN_copy(p, group->field))
+        if (!BNY_copy(p, group->field))
             return 0;
     }
 
     if (a != NULL) {
-        if (!BN_copy(a, group->a))
+        if (!BNY_copy(a, group->a))
             goto err;
     }
 
     if (b != NULL) {
-        if (!BN_copy(b, group->b))
+        if (!BNY_copy(b, group->b))
             goto err;
     }
 
@@ -164,7 +164,7 @@ int ec_GF2m_simple_group_get_curve(const EC_GROUP *group, BIGNUM *p,
  */
 int ec_GF2m_simple_group_get_degree(const EC_GROUP *group)
 {
-    return BN_num_bits(group->field) - 1;
+    return BNY_num_bits(group->field) - 1;
 }
 
 /*
@@ -179,15 +179,15 @@ int ec_GF2m_simple_group_check_discriminant(const EC_GROUP *group,
     BN_CTX *new_ctx = NULL;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL) {
             ECerr(EC_F_EC_GF2M_SIMPLE_GROUP_CHECK_DISCRIMINANT,
                   ERR_R_MALLOC_FAILURE);
             goto err;
         }
     }
-    BN_CTX_start(ctx);
-    b = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    b = BNY_CTX_get(ctx);
     if (b == NULL)
         goto err;
 
@@ -204,17 +204,17 @@ int ec_GF2m_simple_group_check_discriminant(const EC_GROUP *group,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
 /* Initializes an EC_POINT. */
 int ec_GF2m_simple_point_init(EC_POINT *point)
 {
-    point->X = BN_new();
-    point->Y = BN_new();
-    point->Z = BN_new();
+    point->X = BNY_new();
+    point->Y = BNY_new();
+    point->Z = BNY_new();
 
     if (point->X == NULL || point->Y == NULL || point->Z == NULL) {
         BN_free(point->X);
@@ -236,9 +236,9 @@ void ec_GF2m_simple_point_finish(EC_POINT *point)
 /* Clears and frees an EC_POINT. */
 void ec_GF2m_simple_point_clear_finish(EC_POINT *point)
 {
-    BN_clear_free(point->X);
-    BN_clear_free(point->Y);
-    BN_clear_free(point->Z);
+    BNY_clear_free(point->X);
+    BNY_clear_free(point->Y);
+    BNY_clear_free(point->Z);
     point->Z_is_one = 0;
 }
 
@@ -248,11 +248,11 @@ void ec_GF2m_simple_point_clear_finish(EC_POINT *point)
  */
 int ec_GF2m_simple_point_copy(EC_POINT *dest, const EC_POINT *src)
 {
-    if (!BN_copy(dest->X, src->X))
+    if (!BNY_copy(dest->X, src->X))
         return 0;
-    if (!BN_copy(dest->Y, src->Y))
+    if (!BNY_copy(dest->Y, src->Y))
         return 0;
-    if (!BN_copy(dest->Z, src->Z))
+    if (!BNY_copy(dest->Z, src->Z))
         return 0;
     dest->Z_is_one = src->Z_is_one;
     dest->curve_name = src->curve_name;
@@ -288,13 +288,13 @@ int ec_GF2m_simple_point_set_affine_coordinates(const EC_GROUP *group,
         return 0;
     }
 
-    if (!BN_copy(point->X, x))
+    if (!BNY_copy(point->X, x))
         goto err;
     BN_set_negative(point->X, 0);
-    if (!BN_copy(point->Y, y))
+    if (!BNY_copy(point->Y, y))
         goto err;
     BN_set_negative(point->Y, 0);
-    if (!BN_copy(point->Z, BN_value_one()))
+    if (!BNY_copy(point->Z, BNY_value_one()))
         goto err;
     BN_set_negative(point->Z, 0);
     point->Z_is_one = 1;
@@ -321,18 +321,18 @@ int ec_GF2m_simple_point_get_affine_coordinates(const EC_GROUP *group,
         return 0;
     }
 
-    if (BN_cmp(point->Z, BN_value_one())) {
+    if (BN_cmp(point->Z, BNY_value_one())) {
         ECerr(EC_F_EC_GF2M_SIMPLE_POINT_GET_AFFINE_COORDINATES,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (x != NULL) {
-        if (!BN_copy(x, point->X))
+        if (!BNY_copy(x, point->X))
             goto err;
         BN_set_negative(x, 0);
     }
     if (y != NULL) {
-        if (!BN_copy(y, point->Y))
+        if (!BNY_copy(y, point->Y))
             goto err;
         BN_set_negative(y, 0);
     }
@@ -366,36 +366,36 @@ int ec_GF2m_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
     }
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             return 0;
     }
 
-    BN_CTX_start(ctx);
-    x0 = BN_CTX_get(ctx);
-    y0 = BN_CTX_get(ctx);
-    x1 = BN_CTX_get(ctx);
-    y1 = BN_CTX_get(ctx);
-    x2 = BN_CTX_get(ctx);
-    y2 = BN_CTX_get(ctx);
-    s = BN_CTX_get(ctx);
-    t = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x0 = BNY_CTX_get(ctx);
+    y0 = BNY_CTX_get(ctx);
+    x1 = BNY_CTX_get(ctx);
+    y1 = BNY_CTX_get(ctx);
+    x2 = BNY_CTX_get(ctx);
+    y2 = BNY_CTX_get(ctx);
+    s = BNY_CTX_get(ctx);
+    t = BNY_CTX_get(ctx);
     if (t == NULL)
         goto err;
 
     if (a->Z_is_one) {
-        if (!BN_copy(x0, a->X))
+        if (!BNY_copy(x0, a->X))
             goto err;
-        if (!BN_copy(y0, a->Y))
+        if (!BNY_copy(y0, a->Y))
             goto err;
     } else {
         if (!EC_POINT_get_affine_coordinates(group, a, x0, y0, ctx))
             goto err;
     }
     if (b->Z_is_one) {
-        if (!BN_copy(x1, b->X))
+        if (!BNY_copy(x1, b->X))
             goto err;
-        if (!BN_copy(y1, b->Y))
+        if (!BNY_copy(y1, b->Y))
             goto err;
     } else {
         if (!EC_POINT_get_affine_coordinates(group, b, x1, y1, ctx))
@@ -452,8 +452,8 @@ int ec_GF2m_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -511,14 +511,14 @@ int ec_GF2m_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
         return -1;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             return -1;
     }
 
-    BN_CTX_start(ctx);
-    y2 = BN_CTX_get(ctx);
-    lh = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    y2 = BNY_CTX_get(ctx);
+    lh = BNY_CTX_get(ctx);
     if (lh == NULL)
         goto err;
 
@@ -545,8 +545,8 @@ int ec_GF2m_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
     ret = BN_is_zero(lh);
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -576,16 +576,16 @@ int ec_GF2m_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
     }
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             return -1;
     }
 
-    BN_CTX_start(ctx);
-    aX = BN_CTX_get(ctx);
-    aY = BN_CTX_get(ctx);
-    bX = BN_CTX_get(ctx);
-    bY = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    aX = BNY_CTX_get(ctx);
+    aY = BNY_CTX_get(ctx);
+    bX = BNY_CTX_get(ctx);
+    bY = BNY_CTX_get(ctx);
     if (bY == NULL)
         goto err;
 
@@ -596,8 +596,8 @@ int ec_GF2m_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
     ret = ((BN_cmp(aX, bX) == 0) && BN_cmp(aY, bY) == 0) ? 0 : 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -613,22 +613,22 @@ int ec_GF2m_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
         return 1;
 
     if (ctx == NULL) {
-        ctx = new_ctx = BN_CTX_new();
+        ctx = new_ctx = BNY_CTX_new();
         if (ctx == NULL)
             return 0;
     }
 
-    BN_CTX_start(ctx);
-    x = BN_CTX_get(ctx);
-    y = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    x = BNY_CTX_get(ctx);
+    y = BNY_CTX_get(ctx);
     if (y == NULL)
         goto err;
 
     if (!EC_POINT_get_affine_coordinates(group, point, x, y, ctx))
         goto err;
-    if (!BN_copy(point->X, x))
+    if (!BNY_copy(point->X, x))
         goto err;
-    if (!BN_copy(point->Y, y))
+    if (!BNY_copy(point->Y, y))
         goto err;
     if (!BN_one(point->Z))
         goto err;
@@ -637,8 +637,8 @@ int ec_GF2m_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
-    BN_CTX_free(new_ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(new_ctx);
     return ret;
 }
 
@@ -696,7 +696,7 @@ int ec_GF2m_simple_ladder_pre(const EC_GROUP *group,
 
     /* s blinding: make sure lambda (s->Z here) is not zero */
     do {
-        if (!BN_priv_rand(s->Z, BN_num_bits(group->field) - 1,
+        if (!BNY_priv_rand(s->Z, BNY_num_bits(group->field) - 1,
                           BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
             ECerr(EC_F_EC_GF2M_SIMPLE_LADDER_PRE, ERR_R_BN_LIB);
             return 0;
@@ -711,7 +711,7 @@ int ec_GF2m_simple_ladder_pre(const EC_GROUP *group,
 
     /* r blinding: make sure lambda (r->Y here for storage) is not zero */
     do {
-        if (!BN_priv_rand(r->Y, BN_num_bits(group->field) - 1,
+        if (!BNY_priv_rand(r->Y, BNY_num_bits(group->field) - 1,
                           BN_RAND_TOP_ANY, BN_RAND_BOTTOM_ANY)) {
             ECerr(EC_F_EC_GF2M_SIMPLE_LADDER_PRE, ERR_R_BN_LIB);
             return 0;
@@ -788,10 +788,10 @@ int ec_GF2m_simple_ladder_post(const EC_GROUP *group,
         return 1;
     }
 
-    BN_CTX_start(ctx);
-    t0 = BN_CTX_get(ctx);
-    t1 = BN_CTX_get(ctx);
-    t2 = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    t0 = BNY_CTX_get(ctx);
+    t1 = BNY_CTX_get(ctx);
+    t2 = BNY_CTX_get(ctx);
     if (t2 == NULL) {
         ECerr(EC_F_EC_GF2M_SIMPLE_LADDER_POST, ERR_R_MALLOC_FAILURE);
         goto err;
@@ -827,7 +827,7 @@ int ec_GF2m_simple_ladder_post(const EC_GROUP *group,
     ret = 1;
 
  err:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 

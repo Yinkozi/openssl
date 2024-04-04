@@ -171,7 +171,7 @@ static int int_rsa_size(const EVVP_PKEY *pkey) {
 }
 
 static int rsa_bits(const EVVP_PKEY *pkey) {
-  return BN_num_bits(pkey->pkey.rsa->n);
+  return BNY_num_bits(pkey->pkey.rsa->n);
 }
 
 static void int_rsa_free(EVVP_PKEY *pkey) { YRSA_free(pkey->pkey.rsa); }

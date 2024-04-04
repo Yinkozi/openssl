@@ -274,9 +274,9 @@ typedef struct srp_arg_st {
 
 static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
 {
-    BN_CTX *bn_ctx = BN_CTX_new();
-    BIGNUM *p = BN_new();
-    BIGNUM *r = BN_new();
+    BN_CTX *bn_ctx = BNY_CTX_new();
+    BIGNUM *p = BNY_new();
+    BIGNUM *r = BNY_new();
     int ret =
         g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
         BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
@@ -290,7 +290,7 @@ static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
 
     BN_free(r);
     BN_free(p);
-    BN_CTX_free(bn_ctx);
+    BNY_CTX_free(bn_ctx);
     return ret;
 }
 
@@ -339,7 +339,7 @@ static int ssl_srp_verify_param_cb(SSL *s, void *arg)
          * should rather add the value to the known ones. The minimal size
          * has already been tested.
          */
-        if (BN_num_bits(g) <= BN_BITS && srp_Verify_N_and_g(N, g))
+        if (BNY_num_bits(g) <= BN_BITS && srp_Verify_N_and_g(N, g))
             return 1;
     }
     BIO_pprintf(bio_err, "SRP param N and g rejected.\n");

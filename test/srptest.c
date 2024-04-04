@@ -53,7 +53,7 @@ static int run_srp(const char *username, const char *client_pass,
 
     /* Server random */
     RAND_bytes(rand_tmp, sizeof(rand_tmp));
-    b = BN_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
+    b = BNY_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
     if (!TEST_BN_ne_zero(b))
         goto end;
     test_output_bignum("b", b);
@@ -67,7 +67,7 @@ static int run_srp(const char *username, const char *client_pass,
 
     /* Client random */
     RAND_bytes(rand_tmp, sizeof(rand_tmp));
-    a = BN_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
+    a = BNY_bin2bn(rand_tmp, sizeof(rand_tmp), NULL);
     if (!TEST_BN_ne_zero(a))
         goto end;
     test_output_bignum("a", a);
@@ -97,16 +97,16 @@ static int run_srp(const char *username, const char *client_pass,
     ret = 1;
 
 end:
-    BN_clear_free(Kclient);
-    BN_clear_free(Kserver);
-    BN_clear_free(x);
+    BNY_clear_free(Kclient);
+    BNY_clear_free(Kserver);
+    BNY_clear_free(x);
     BN_free(u);
     BN_free(Apub);
-    BN_clear_free(a);
+    BNY_clear_free(a);
     BN_free(Bpub);
-    BN_clear_free(b);
+    BNY_clear_free(b);
     BN_free(s);
-    BN_clear_free(v);
+    BNY_clear_free(v);
 
     return ret;
 }
@@ -234,16 +234,16 @@ static int run_srp_kat(void)
     ret = 1;
 
 err:
-    BN_clear_free(Kclient);
-    BN_clear_free(Kserver);
-    BN_clear_free(x);
+    BNY_clear_free(Kclient);
+    BNY_clear_free(Kserver);
+    BNY_clear_free(x);
     BN_free(u);
     BN_free(Apub);
-    BN_clear_free(a);
+    BNY_clear_free(a);
     BN_free(Bpub);
-    BN_clear_free(b);
+    BNY_clear_free(b);
     BN_free(s);
-    BN_clear_free(v);
+    BNY_clear_free(v);
 
     return ret;
 }

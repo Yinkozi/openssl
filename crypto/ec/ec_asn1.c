@@ -267,7 +267,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
     }
 
     if (nid == NID_X9_62_prime_field) {
-        if ((tmp = BN_new()) == NULL) {
+        if ((tmp = BNY_new()) == NULL) {
             ECerr(EC_F_EC_YASN1_GROUP2FIELDID, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -379,7 +379,7 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
     if (!group || !curve || !curve->a || !curve->b)
         return 0;
 
-    if ((tmp_1 = BN_new()) == NULL || (tmp_2 = BN_new()) == NULL) {
+    if ((tmp_1 = BNY_new()) == NULL || (tmp_2 = BNY_new()) == NULL) {
         ECerr(EC_F_EC_YASN1_GROUP2CURVE, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -401,8 +401,8 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
         ECerr(EC_F_EC_YASN1_GROUP2CURVE, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    if (BN_bn2binpad(tmp_1, a_buf, len) < 0
-        || BN_bn2binpad(tmp_2, b_buf, len) < 0) {
+    if (BNY_bn2binpad(tmp_1, a_buf, len) < 0
+        || BNY_bn2binpad(tmp_2, b_buf, len) < 0) {
         ECerr(EC_F_EC_YASN1_GROUP2CURVE, ERR_R_BN_LIB);
         goto err;
     }
@@ -610,12 +610,12 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
         goto err;
     }
-    a = BN_bin2bn(params->curve->a->data, params->curve->a->length, NULL);
+    a = BNY_bin2bn(params->curve->a->data, params->curve->a->length, NULL);
     if (a == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
     }
-    b = BN_bin2bn(params->curve->b->data, params->curve->b->length, NULL);
+    b = BNY_bin2bn(params->curve->b->data, params->curve->b->length, NULL);
     if (b == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
@@ -641,7 +641,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             goto err;
         }
 
-        if ((p = BN_new()) == NULL) {
+        if ((p = BNY_new()) == NULL) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -731,7 +731,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             goto err;
         }
 
-        field_bits = BN_num_bits(p);
+        field_bits = BNY_num_bits(p);
         if (field_bits > OPENSSL_ECC_MAX_FIELD_BITS) {
             ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_FIELD_TOO_LARGE);
             goto err;
@@ -802,7 +802,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
         goto err;
     }
-    if (BN_num_bits(a) > (int)field_bits + 1) { /* Hasse bound */
+    if (BNY_num_bits(a) > (int)field_bits + 1) { /* Hasse bound */
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
         goto err;
     }
@@ -833,7 +833,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
      * cofactor different from the one in the built-in table is just
      * mathematically wrong anyway and should not be used.
      */
-    if ((ctx = BN_CTX_new()) == NULL) {
+    if ((ctx = BNY_CTX_new()) == NULL) {
         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
     }
@@ -906,7 +906,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
     BN_free(b);
     EC_POINT_free(point);
 
-    BN_CTX_free(ctx);
+    BNY_CTX_free(ctx);
 
     return ret;
 }
@@ -1001,7 +1001,7 @@ int i2d_ECPKParameters(const EC_GROUP *a, unsigned char **out)
 
 /* some EC_KEY functions */
 
-EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
+EC_KEY *d2i_ECCPrivateKey(EC_KEY **a, const unsigned char **in, long len)
 {
     EC_KEY *ret = NULL;
     EC_PRIVATEKEY *priv_key = NULL;
@@ -1013,7 +1013,7 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
     }
 
     if (a == NULL || *a == NULL) {
-        if ((ret = EC_KEY_new()) == NULL) {
+        if ((ret = ECC_KEY_new()) == NULL) {
             ECerr(EC_F_D2I_ECPRIVATEKEY, ERR_R_MALLOC_FAILURE);
             goto err;
         }
@@ -1037,7 +1037,7 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
 
     if (priv_key->privateKey) {
         YASN1_OCTET_STRING *pkey = priv_key->privateKey;
-        if (EC_KEY_oct2priv(ret, YASN1_STRING_get0_data(pkey),
+        if (ECC_KEY_oct2priv(ret, YASN1_STRING_get0_data(pkey),
                             YASN1_STRING_length(pkey)) == 0)
             goto err;
     } else {
@@ -1058,7 +1058,7 @@ EC_KEY *d2i_ECPrivateKey(EC_KEY **a, const unsigned char **in, long len)
 
         pub_oct = YASN1_STRING_get0_data(priv_key->publicKey);
         pub_oct_len = YASN1_STRING_length(priv_key->publicKey);
-        if (!EC_KEY_oct2key(ret, pub_oct, pub_oct_len, NULL)) {
+        if (!ECC_KEY_oct2key(ret, pub_oct, pub_oct_len, NULL)) {
             ECerr(EC_F_D2I_ECPRIVATEKEY, ERR_R_EC_LIB);
             goto err;
         }
@@ -1104,7 +1104,7 @@ int i2d_ECPrivateKey(EC_KEY *a, unsigned char **out)
 
     priv_key->version = a->version;
 
-    privlen = EC_KEY_priv2buf(a, &priv);
+    privlen = ECC_KEY_priv2buf(a, &priv);
 
     if (privlen == 0) {
         ECerr(EC_F_I2D_ECPRIVATEKEY, ERR_R_EC_LIB);
@@ -1130,7 +1130,7 @@ int i2d_ECPrivateKey(EC_KEY *a, unsigned char **out)
             goto err;
         }
 
-        publen = EC_KEY_key2buf(a, a->conv_form, &pub, NULL);
+        publen = ECC_KEY_key2buf(a, a->conv_form, &pub, NULL);
 
         if (publen == 0) {
             ECerr(EC_F_I2D_ECPRIVATEKEY, ERR_R_EC_LIB);
@@ -1155,7 +1155,7 @@ int i2d_ECPrivateKey(EC_KEY *a, unsigned char **out)
     return (ok ? ret : 0);
 }
 
-int i2d_ECParameters(EC_KEY *a, unsigned char **out)
+int i2d_ECCParameters(EC_KEY *a, unsigned char **out)
 {
     if (a == NULL) {
         ECerr(EC_F_I2D_ECPARAMETERS, ERR_R_PASSED_NULL_PARAMETER);
@@ -1164,7 +1164,7 @@ int i2d_ECParameters(EC_KEY *a, unsigned char **out)
     return i2d_ECPKParameters(a->group, out);
 }
 
-EC_KEY *d2i_ECParameters(EC_KEY **a, const unsigned char **in, long len)
+EC_KEY *d2i_ECCParameters(EC_KEY **a, const unsigned char **in, long len)
 {
     EC_KEY *ret;
 
@@ -1174,7 +1174,7 @@ EC_KEY *d2i_ECParameters(EC_KEY **a, const unsigned char **in, long len)
     }
 
     if (a == NULL || *a == NULL) {
-        if ((ret = EC_KEY_new()) == NULL) {
+        if ((ret = ECC_KEY_new()) == NULL) {
             ECerr(EC_F_D2I_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             return NULL;
         }
@@ -1194,7 +1194,7 @@ EC_KEY *d2i_ECParameters(EC_KEY **a, const unsigned char **in, long len)
     return ret;
 }
 
-EC_KEY *o2i_ECPublicKey(EC_KEY **a, const unsigned char **in, long len)
+EC_KEY *o2i_ECCPublicKey(EC_KEY **a, const unsigned char **in, long len)
 {
     EC_KEY *ret = NULL;
 
@@ -1206,7 +1206,7 @@ EC_KEY *o2i_ECPublicKey(EC_KEY **a, const unsigned char **in, long len)
         return 0;
     }
     ret = *a;
-    if (!EC_KEY_oct2key(ret, *in, len, NULL)) {
+    if (!ECC_KEY_oct2key(ret, *in, len, NULL)) {
         ECerr(EC_F_O2I_ECPUBLICKEY, ERR_R_EC_LIB);
         return 0;
     }
@@ -1214,7 +1214,7 @@ EC_KEY *o2i_ECPublicKey(EC_KEY **a, const unsigned char **in, long len)
     return ret;
 }
 
-int i2o_ECPublicKey(const EC_KEY *a, unsigned char **out)
+int i2o_ECCPublicKey(const EC_KEY *a, unsigned char **out)
 {
     size_t buf_len = 0;
     int new_buffer = 0;
@@ -1261,7 +1261,7 @@ DECLARE_YASN1_FUNCTIONS_const(ECDSA_SIG)
 DECLARE_YASN1_ENCODE_FUNCTIONS_const(ECDSA_SIG, ECDSA_SIG)
 IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(ECDSA_SIG, ECDSA_SIG, ECDSA_SIG)
 
-ECDSA_SIG *ECDSA_SIG_new(void)
+ECDSA_SIG *ECCDSA_SIG_new(void)
 {
     ECDSA_SIG *sig = OPENSSL_zalloc(sizeof(*sig));
     if (sig == NULL)
@@ -1273,12 +1273,12 @@ void ECDSA_SIG_free(ECDSA_SIG *sig)
 {
     if (sig == NULL)
         return;
-    BN_clear_free(sig->r);
-    BN_clear_free(sig->s);
+    BNY_clear_free(sig->r);
+    BNY_clear_free(sig->s);
     OPENSSL_free(sig);
 }
 
-void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
+void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
 {
     if (pr != NULL)
         *pr = sig->r;
@@ -1286,28 +1286,28 @@ void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
         *ps = sig->s;
 }
 
-const BIGNUM *ECDSA_SIG_get0_r(const ECDSA_SIG *sig)
+const BIGNUM *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig)
 {
     return sig->r;
 }
 
-const BIGNUM *ECDSA_SIG_get0_s(const ECDSA_SIG *sig)
+const BIGNUM *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig)
 {
     return sig->s;
 }
 
-int ECDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s)
+int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s)
 {
     if (r == NULL || s == NULL)
         return 0;
-    BN_clear_free(sig->r);
-    BN_clear_free(sig->s);
+    BNY_clear_free(sig->r);
+    BNY_clear_free(sig->s);
     sig->r = r;
     sig->s = s;
     return 1;
 }
 
-int ECDSA_size(const EC_KEY *r)
+int ECCDSA_size(const EC_KEY *r)
 {
     int ret, i;
     YASN1_INTEGER bs;
@@ -1316,7 +1316,7 @@ int ECDSA_size(const EC_KEY *r)
 
     if (r == NULL)
         return 0;
-    group = EC_KEY_get0_group(r);
+    group = ECC_KEY_get0_group(r);
     if (group == NULL)
         return 0;
 

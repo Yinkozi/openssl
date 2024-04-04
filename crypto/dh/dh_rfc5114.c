@@ -16,7 +16,7 @@
 /*
  * Macro to make a DH structure from BIGNUM data. NB: although just copying
  * the BIGNUM static pointers would be more efficient, we can't do that
- * because they get wiped using BN_clear_free() when DH_free() is called.
+ * because they get wiped using BNY_clear_free() when DH_free() is called.
  */
 
 #define make_dh(x) \

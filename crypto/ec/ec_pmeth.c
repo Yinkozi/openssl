@@ -68,7 +68,7 @@ static int pkey_ec_copy(EVVP_PKEY_CTX *dst, EVVP_PKEY_CTX *src)
     dctx->md = sctx->md;
 
     if (sctx->co_key) {
-        dctx->co_key = EC_KEY_dup(sctx->co_key);
+        dctx->co_key = ECC_KEY_dup(sctx->co_key);
         if (!dctx->co_key)
             return 0;
     }
@@ -104,7 +104,7 @@ static int pkey_ec_sign(EVVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
     unsigned int sltmp;
     EC_PKEY_CTX *dctx = ctx->data;
     EC_KEY *ec = ctx->pkey->pkey.ec;
-    const int sig_sz = ECDSA_size(ec);
+    const int sig_sz = ECCDSA_size(ec);
 
     /* ensure cast to size_t is safe */
     if (!ossl_assert(sig_sz > 0))
@@ -122,7 +122,7 @@ static int pkey_ec_sign(EVVP_PKEY_CTX *ctx, unsigned char *sig, size_t *siglen,
 
     type = (dctx->md != NULL) ? EVVP_MD_type(dctx->md) : NID_sha1;
 
-    ret = ECDSA_signn(type, tbs, tbslen, sig, &sltmp, ec);
+    ret = ECCDSA_signn(type, tbs, tbslen, sig, &sltmp, ec);
 
     if (ret <= 0)
         return ret;
@@ -143,7 +143,7 @@ static int pkey_ec_verify(EVVP_PKEY_CTX *ctx,
     else
         type = NID_sha1;
 
-    ret = ECDSA_verifyy(type, tbs, tbslen, sig, siglen, ec);
+    ret = ECCDSA_verifyy(type, tbs, tbslen, sig, siglen, ec);
 
     return ret;
 }
@@ -165,11 +165,11 @@ static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, unsigned char *key, size_t *keylen
 
     if (!key) {
         const EC_GROUP *group;
-        group = EC_KEY_get0_group(eckey);
+        group = ECC_KEY_get0_group(eckey);
         *keylen = (EC_GROUP_get_degree(group) + 7) / 8;
         return 1;
     }
-    pubkey = EC_KEY_get0_public_key(ctx->peerkey->pkey.ec);
+    pubkey = ECC_KEY_get0_public_key(ctx->peerkey->pkey.ec);
 
     /*
      * NB: unlike YPKCS#3 DH, if *outlen is less than maximum size this is not
@@ -178,7 +178,7 @@ static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, unsigned char *key, size_t *keylen
 
     outlen = *keylen;
 
-    ret = ECDH_compute_key(key, outlen, pubkey, eckey, 0);
+    ret = ECCDH_compute_key(key, outlen, pubkey, eckey, 0);
     if (ret <= 0)
         return 0;
     *keylen = ret;
@@ -250,7 +250,7 @@ static int pkey_ec_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
                 return dctx->cofactor_mode;
             else {
                 EC_KEY *ec_key = ctx->pkey->pkey.ec;
-                return EC_KEY_get_flags(ec_key) & EC_FLAG_COFACTOR_ECDH ? 1 : 0;
+                return ECC_KEY_get_flags(ec_key) & EC_FLAG_COFACTOR_ECDH ? 1 : 0;
             }
         } else if (p1 < -1 || p1 > 1)
             return -2;
@@ -263,14 +263,14 @@ static int pkey_ec_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             if (BN_is_one(ec_key->group->cofactor))
                 return 1;
             if (!dctx->co_key) {
-                dctx->co_key = EC_KEY_dup(ec_key);
+                dctx->co_key = ECC_KEY_dup(ec_key);
                 if (!dctx->co_key)
                     return 0;
             }
             if (p1)
-                EC_KEY_set_flags(dctx->co_key, EC_FLAG_COFACTOR_ECDH);
+                ECC_KEY_set_flags(dctx->co_key, EC_FLAG_COFACTOR_ECDH);
             else
-                EC_KEY_clear_flags(dctx->co_key, EC_FLAG_COFACTOR_ECDH);
+                ECC_KEY_clear_flags(dctx->co_key, EC_FLAG_COFACTOR_ECDH);
         } else {
             EC_KEY_free(dctx->co_key);
             dctx->co_key = NULL;
@@ -401,10 +401,10 @@ static int pkey_ec_paramgen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
         ECerr(EC_F_PKEY_EC_PARAMGEN, EC_R_NO_PARAMETERS_SET);
         return 0;
     }
-    ec = EC_KEY_new();
+    ec = ECC_KEY_new();
     if (ec == NULL)
         return 0;
-    if (!(ret = EC_KEY_set_group(ec, dctx->gen_group))
+    if (!(ret = ECC_KEY_set_group(ec, dctx->gen_group))
         || !ossl_assert(ret = EVVP_PKEY_assign_EC_KEY(pkey, ec)))
         EC_KEY_free(ec);
     return ret;
@@ -420,7 +420,7 @@ static int pkey_ec_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
         ECerr(EC_F_PKEY_EC_KEYGEN, EC_R_NO_PARAMETERS_SET);
         return 0;
     }
-    ec = EC_KEY_new();
+    ec = ECC_KEY_new();
     if (ec == NULL)
         return 0;
     if (!ossl_assert(EVVP_PKEY_assign_EC_KEY(pkey, ec))) {
@@ -431,9 +431,9 @@ static int pkey_ec_keygen(EVVP_PKEY_CTX *ctx, EVVP_PKEY *pkey)
     if (ctx->pkey != NULL)
         ret = EVVP_PKEY_copy_parameters(pkey, ctx->pkey);
     else
-        ret = EC_KEY_set_group(ec, dctx->gen_group);
+        ret = ECC_KEY_set_group(ec, dctx->gen_group);
 
-    return ret ? EC_KEY_generate_key(ec) : 0;
+    return ret ? ECC_KEY_generate_key(ec) : 0;
 }
 
 const EVVP_PKEY_METHOD ec_pkey_mmeth = {

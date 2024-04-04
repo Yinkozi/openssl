@@ -95,24 +95,24 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
     if ((mont = BN_MONT_CTX_new()) == NULL)
         goto err;
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
 
-    BN_CTX_start(ctx);
+    BNY_CTX_start(ctx);
 
-    r0 = BN_CTX_get(ctx);
-    g = BN_CTX_get(ctx);
-    W = BN_CTX_get(ctx);
-    q = BN_CTX_get(ctx);
-    X = BN_CTX_get(ctx);
-    c = BN_CTX_get(ctx);
-    p = BN_CTX_get(ctx);
-    test = BN_CTX_get(ctx);
+    r0 = BNY_CTX_get(ctx);
+    g = BNY_CTX_get(ctx);
+    W = BNY_CTX_get(ctx);
+    q = BNY_CTX_get(ctx);
+    X = BNY_CTX_get(ctx);
+    c = BNY_CTX_get(ctx);
+    p = BNY_CTX_get(ctx);
+    test = BNY_CTX_get(ctx);
 
     if (test == NULL)
         goto err;
 
-    if (!BN_lshift(test, BN_value_one(), bits - 1))
+    if (!BN_lshift(test, BNY_value_one(), bits - 1))
         goto err;
 
     for (;;) {
@@ -150,7 +150,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
             /* step 3 */
             md[0] |= 0x80;
             md[qsize - 1] |= 0x01;
-            if (!BN_bin2bn(md, qsize, q))
+            if (!BNY_bin2bn(md, qsize, q))
                 goto err;
 
             /* step 4 */
@@ -197,7 +197,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
                     goto err;
 
                 /* step 8 */
-                if (!BN_bin2bn(md, qsize, r0))
+                if (!BNY_bin2bn(md, qsize, r0))
                     goto err;
                 if (!BN_lshift(r0, r0, (qsize << 3) * k))
                     goto err;
@@ -208,7 +208,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
             /* more of step 8 */
             if (!BN_mask_bits(W, bits - 1))
                 goto err;
-            if (!BN_copy(X, W))
+            if (!BNY_copy(X, W))
                 goto err;
             if (!BNY_add(X, X, test))
                 goto err;
@@ -218,7 +218,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
                 goto err;
             if (!BN_mod(c, X, r0, ctx))
                 goto err;
-            if (!BNY_sub(r0, c, BN_value_one()))
+            if (!BNY_sub(r0, c, BNY_value_one()))
                 goto err;
             if (!BNY_sub(p, X, r0))
                 goto err;
@@ -248,7 +248,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
 
     /* We now need to generate g */
     /* Set r0=(p-1)/q */
-    if (!BNY_sub(test, p, BN_value_one()))
+    if (!BNY_sub(test, p, BNY_value_one()))
         goto err;
     if (!BNY_div(r0, NULL, test, q, ctx))
         goto err;
@@ -264,7 +264,7 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
             goto err;
         if (!BN_is_one(g))
             break;
-        if (!BNY_add(test, test, BN_value_one()))
+        if (!BNY_add(test, test, BNY_value_one()))
             goto err;
         h++;
     }
@@ -292,8 +292,8 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
         if (seed_out)
             memcpy(seed_out, seed, qsize);
     }
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     BN_MONT_CTX_free(mont);
     return ok;
 }
@@ -362,19 +362,19 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
 
     }
 
-    if ((ctx = BN_CTX_new()) == NULL)
+    if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
 
     if ((mont = BN_MONT_CTX_new()) == NULL)
         goto err;
 
-    BN_CTX_start(ctx);
-    r0 = BN_CTX_get(ctx);
-    g = BN_CTX_get(ctx);
-    W = BN_CTX_get(ctx);
-    X = BN_CTX_get(ctx);
-    c = BN_CTX_get(ctx);
-    test = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    r0 = BNY_CTX_get(ctx);
+    g = BNY_CTX_get(ctx);
+    W = BNY_CTX_get(ctx);
+    X = BNY_CTX_get(ctx);
+    c = BNY_CTX_get(ctx);
+    test = BNY_CTX_get(ctx);
     if (test == NULL)
         goto err;
 
@@ -386,13 +386,13 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
             memcpy(seed_tmp, seed, seed_len);
         goto g_only;
     } else {
-        p = BN_CTX_get(ctx);
-        q = BN_CTX_get(ctx);
+        p = BNY_CTX_get(ctx);
+        q = BNY_CTX_get(ctx);
         if (q == NULL)
             goto err;
     }
 
-    if (!BN_lshift(test, BN_value_one(), L - 1))
+    if (!BN_lshift(test, BNY_value_one(), L - 1))
         goto err;
     for (;;) {
         for (;;) {              /* find q */
@@ -420,7 +420,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
             /* step 3 */
             pmd[0] |= 0x80;
             pmd[qsize - 1] |= 0x01;
-            if (!BN_bin2bn(pmd, qsize, q))
+            if (!BNY_bin2bn(pmd, qsize, q))
                 goto err;
 
             /* step 4 */
@@ -476,7 +476,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
                     goto err;
 
                 /* step 8 */
-                if (!BN_bin2bn(md, mdsize, r0))
+                if (!BNY_bin2bn(md, mdsize, r0))
                     goto err;
                 if (!BN_lshift(r0, r0, (mdsize << 3) * k))
                     goto err;
@@ -487,7 +487,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
             /* more of step 8 */
             if (!BN_mask_bits(W, L - 1))
                 goto err;
-            if (!BN_copy(X, W))
+            if (!BNY_copy(X, W))
                 goto err;
             if (!BNY_add(X, X, test))
                 goto err;
@@ -497,7 +497,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
                 goto err;
             if (!BN_mod(c, X, r0, ctx))
                 goto err;
-            if (!BNY_sub(r0, c, BN_value_one()))
+            if (!BNY_sub(r0, c, BNY_value_one()))
                 goto err;
             if (!BNY_sub(p, X, r0))
                 goto err;
@@ -534,7 +534,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
 
     /* We now need to generate g */
     /* Set r0=(p-1)/q */
-    if (!BNY_sub(test, p, BN_value_one()))
+    if (!BNY_sub(test, p, BNY_value_one()))
         goto err;
     if (!BNY_div(r0, NULL, test, q, ctx))
         goto err;
@@ -563,7 +563,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
                 goto err;
             if (!EVVP_DigestFinal_ex(mctx, md, NULL))
                 goto err;
-            if (!BN_bin2bn(md, mdsize, test))
+            if (!BNY_bin2bn(md, mdsize, test))
                 goto err;
         }
         /* g=test^r0%p */
@@ -571,7 +571,7 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
             goto err;
         if (!BN_is_one(g))
             break;
-        if (idx < 0 && !BNY_add(test, test, BN_value_one()))
+        if (idx < 0 && !BNY_add(test, test, BNY_value_one()))
             goto err;
         h++;
         if (idx >= 0 && h > 0xffff)
@@ -606,8 +606,8 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
     OPENSSL_free(seed);
     if (seed_out != seed_tmp)
         OPENSSL_free(seed_tmp);
-    BN_CTX_end(ctx);
-    BN_CTX_free(ctx);
+    BNY_CTX_end(ctx);
+    BNY_CTX_free(ctx);
     BN_MONT_CTX_free(mont);
     EVVP_MD_CTX_free(mctx);
     return ok;

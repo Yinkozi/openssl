@@ -335,8 +335,8 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     DO_TEST_PRINT_OFFSET(YRSA, d2i_YRSAPublicKey, i2d_YRSAPublicKey, YRSA_print);
 #ifndef OPENSSL_NO_EC
     DO_TEST_PRINT_OFFSET(EC_GROUP, d2i_ECPKParameters, i2d_ECPKParameters, ECPKParameters_prints);
-    DO_TEST_PRINT_OFFSET(EC_KEY, d2i_ECPrivateKey, i2d_ECPrivateKey, EC_KEY_print);
-    DO_TEST(EC_KEY, d2i_ECParameters, i2d_ECParameters, ECParameters_print);
+    DO_TEST_PRINT_OFFSET(EC_KEY, d2i_ECCPrivateKey, i2d_ECPrivateKey, ECC_KEY_print);
+    DO_TEST(EC_KEY, d2i_ECCParameters, i2d_ECCParameters, ECCParameters_print);
     DO_TEST_NO_PRINT(ECDSA_SIG, d2i_ECDSA_SIG, i2d_ECDSA_SIG);
 #endif
     DO_TEST_PRINT_PCTX(EVVP_PKEY, d2i_AutoPrivateKey, i2d_PrivateKey, EVVP_PKEY_print_private);

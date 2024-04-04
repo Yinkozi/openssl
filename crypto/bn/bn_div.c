@@ -30,7 +30,7 @@ int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
 
     if (BNY_ucmp(m, d) < 0) {
         if (rem != NULL) {
-            if (BN_copy(rem, m) == NULL)
+            if (BNY_copy(rem, m) == NULL)
                 return 0;
         }
         if (dv != NULL)
@@ -38,20 +38,20 @@ int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
         return 1;
     }
 
-    BN_CTX_start(ctx);
-    D = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    D = BNY_CTX_get(ctx);
     if (dv == NULL)
-        dv = BN_CTX_get(ctx);
+        dv = BNY_CTX_get(ctx);
     if (rem == NULL)
-        rem = BN_CTX_get(ctx);
+        rem = BNY_CTX_get(ctx);
     if (D == NULL || dv == NULL || rem == NULL)
         goto end;
 
-    nd = BN_num_bits(d);
-    nm = BN_num_bits(m);
-    if (BN_copy(D, d) == NULL)
+    nd = BNY_num_bits(d);
+    nm = BNY_num_bits(m);
+    if (BNY_copy(D, d) == NULL)
         goto end;
-    if (BN_copy(rem, m) == NULL)
+    if (BNY_copy(rem, m) == NULL)
         goto end;
 
     /*
@@ -81,7 +81,7 @@ int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
     dv->neg = m->neg ^ d->neg;
     ret = 1;
  end:
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return ret;
 }
 
@@ -142,7 +142,7 @@ static int bn_left_align(BIGNUM *num)
 {
     BN_ULONG *d = num->d, n, m, rmask;
     int top = num->top;
-    int ryshift = BN_num_bits_word(d[top - 1]), lshift, i;
+    int ryshift = BNY_num_bits_word(d[top - 1]), lshift, i;
 
     lshift = BN_BITS2 - ryshift;
     ryshift %= BN_BITS2;            /* say no to undefined behaviour */
@@ -277,16 +277,16 @@ int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
     bn_check_top(dv);
     bn_check_top(rm);
 
-    BN_CTX_start(ctx);
-    res = (dv == NULL) ? BN_CTX_get(ctx) : dv;
-    tmp = BN_CTX_get(ctx);
-    snum = BN_CTX_get(ctx);
-    sdiv = BN_CTX_get(ctx);
+    BNY_CTX_start(ctx);
+    res = (dv == NULL) ? BNY_CTX_get(ctx) : dv;
+    tmp = BNY_CTX_get(ctx);
+    snum = BNY_CTX_get(ctx);
+    sdiv = BNY_CTX_get(ctx);
     if (sdiv == NULL)
         goto err;
 
     /* First we normalise the numbers */
-    if (!BN_copy(sdiv, divisor))
+    if (!BNY_copy(sdiv, divisor))
         goto err;
     norm_shift = bn_left_align(sdiv);
     sdiv->neg = 0;
@@ -450,11 +450,11 @@ int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
     if (rm != NULL && bn_ryshift_fixed_top(rm, snum, norm_shift) == 0)
         goto err;
 
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return 1;
  err:
     bn_check_top(rm);
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return 0;
 }
 #endif

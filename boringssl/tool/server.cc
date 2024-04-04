@@ -99,8 +99,8 @@ out:
 }
 
 static bssl::UniquePtr<EVVP_PKEY> MakeKeyPairForSelfSignedCert() {
-  bssl::UniquePtr<EC_KEY> ec_key(EC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
-  if (!ec_key || !EC_KEY_generate_key(ec_key.get())) {
+  bssl::UniquePtr<EC_KEY> ec_key(ECC_KEY_new_by_curve_name(NID_X9_62_prime256v1));
+  if (!ec_key || !ECC_KEY_generate_key(ec_key.get())) {
     fprintf(stderr, "Failed to generate key pair.\n");
     return nullptr;
   }

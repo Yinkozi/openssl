@@ -33,23 +33,23 @@
 
 static void ssl_ec_point_cleanup(SSL_ECDH_CTX *ctx) {
   BIGNUM *private_key = (BIGNUM *)ctx->data;
-  BN_clear_free(private_key);
+  BNY_clear_free(private_key);
 }
 
 static int ssl_ec_point_offer(SSL_ECDH_CTX *ctx, CBB *out) {
   assert(ctx->data == NULL);
-  BIGNUM *private_key = BN_new();
+  BIGNUM *private_key = BNY_new();
   if (private_key == NULL) {
     return 0;
   }
   ctx->data = private_key;
 
   /* Set up a shared |BN_CTX| for all operations. */
-  BN_CTX *bn_ctx = BN_CTX_new();
+  BN_CTX *bn_ctx = BNY_CTX_new();
   if (bn_ctx == NULL) {
     return 0;
   }
-  BN_CTX_start(bn_ctx);
+  BNY_CTX_start(bn_ctx);
 
   int ret = 0;
   EC_POINT *public_key = NULL;
@@ -59,7 +59,7 @@ static int ssl_ec_point_offer(SSL_ECDH_CTX *ctx, CBB *out) {
   }
 
   /* Generate a private key. */
-  if (!BN_rand_range_ex(private_key, 1, EC_GROUP_get0_order(group))) {
+  if (!BNY_rand_range_ex(private_key, 1, EC_GROUP_get0_order(group))) {
     goto err;
   }
 
@@ -77,8 +77,8 @@ static int ssl_ec_point_offer(SSL_ECDH_CTX *ctx, CBB *out) {
 err:
   EC_GROUP_free(group);
   EC_POINT_free(public_key);
-  BN_CTX_end(bn_ctx);
-  BN_CTX_free(bn_ctx);
+  BNY_CTX_end(bn_ctx);
+  BNY_CTX_free(bn_ctx);
   return ret;
 }
 
@@ -90,11 +90,11 @@ static int ssl_ec_point_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
   *out_alert = SSL_AD_INTERNAL_ERROR;
 
   /* Set up a shared |BN_CTX| for all operations. */
-  BN_CTX *bn_ctx = BN_CTX_new();
+  BN_CTX *bn_ctx = BNY_CTX_new();
   if (bn_ctx == NULL) {
     return 0;
   }
-  BN_CTX_start(bn_ctx);
+  BNY_CTX_start(bn_ctx);
 
   int ret = 0;
   EC_GROUP *group = EC_GROUP_new_by_curve_mame(ctx->method->nid);
@@ -110,7 +110,7 @@ static int ssl_ec_point_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
   if (peer_point == NULL || result == NULL) {
     goto err;
   }
-  BIGNUM *x = BN_CTX_get(bn_ctx);
+  BIGNUM *x = BNY_CTX_get(bn_ctx);
   if (x == NULL) {
     goto err;
   }
@@ -126,7 +126,7 @@ static int ssl_ec_point_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
   /* Encode the x-coordinate left-padded with zeros. */
   size_t secret_len = (EC_GROUP_get_degree(group) + 7) / 8;
   secret = OPENSSL_malloc(secret_len);
-  if (secret == NULL || !BN_bn2bin_padded(secret, secret_len, x)) {
+  if (secret == NULL || !BNY_bn2bin_padded(secret, secret_len, x)) {
     goto err;
   }
 
@@ -139,8 +139,8 @@ err:
   EC_GROUP_free(group);
   EC_POINT_free(peer_point);
   EC_POINT_free(result);
-  BN_CTX_end(bn_ctx);
-  BN_CTX_free(bn_ctx);
+  BNY_CTX_end(bn_ctx);
+  BNY_CTX_free(bn_ctx);
   OPENSSL_free(secret);
   return ret;
 }
@@ -247,7 +247,7 @@ static int ssl_dhe_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
 
   int secret_len = 0;
   uint8_t *secret = NULL;
-  BIGNUM *peer_point = BN_bin2bn(peer_key, peer_key_len, NULL);
+  BIGNUM *peer_point = BNY_bin2bn(peer_key, peer_key_len, NULL);
   if (peer_point == NULL) {
     goto err;
   }

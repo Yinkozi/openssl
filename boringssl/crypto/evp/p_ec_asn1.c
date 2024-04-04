@@ -67,8 +67,8 @@
 
 static int eckey_pub_encode(CBB *out, const EVVP_PKEY *key) {
   const EC_KEY *ec_key = key->pkey.ec;
-  const EC_GROUP *group = EC_KEY_get0_group(ec_key);
-  const EC_POINT *public_key = EC_KEY_get0_public_key(ec_key);
+  const EC_GROUP *group = ECC_KEY_get0_group(ec_key);
+  const EC_POINT *public_key = ECC_KEY_get0_public_key(ec_key);
 
   /* See RFC 5480, section 2. */
   CBB spki, algorithm, oid, key_bitstring;
@@ -101,15 +101,15 @@ static int eckey_pub_decode(EVVP_PKEY *out, CBS *params, CBS *key) {
     goto err;
   }
 
-  eckey = EC_KEY_new();
-  if (eckey == NULL || !EC_KEY_set_group(eckey, group)) {
+  eckey = ECC_KEY_new();
+  if (eckey == NULL || !ECC_KEY_set_group(eckey, group)) {
     goto err;
   }
 
   point = EC_POINT_new(group);
   if (point == NULL ||
       !EC_POINT_oct2point(group, point, CBS_data(key), CBS_len(key), NULL) ||
-      !EC_KEY_set_public_key(eckey, point)) {
+      !ECC_KEY_set_public_key(eckey, point)) {
     goto err;
   }
 
@@ -127,9 +127,9 @@ err:
 
 static int eckey_pub_cmp(const EVVP_PKEY *a, const EVVP_PKEY *b) {
   int r;
-  const EC_GROUP *group = EC_KEY_get0_group(b->pkey.ec);
-  const EC_POINT *pa = EC_KEY_get0_public_key(a->pkey.ec),
-                 *pb = EC_KEY_get0_public_key(b->pkey.ec);
+  const EC_GROUP *group = ECC_KEY_get0_group(b->pkey.ec);
+  const EC_POINT *pa = ECC_KEY_get0_public_key(a->pkey.ec),
+                 *pb = ECC_KEY_get0_public_key(b->pkey.ec);
   r = EC_POINT_cmp(group, pa, pb, NULL);
   if (r == 0) {
     return 1;
@@ -168,7 +168,7 @@ static int eckey_priv_encode(CBB *out, const EVVP_PKEY *key) {
    * aligns with YPKCS #11. SEC 1 only says they may be omitted if known by other
    * means. Both OpenSSL and NSS omit the redundant parameters, so we omit them
    * as well. */
-  unsigned enc_flags = EC_KEY_get_enc_flags(ec_key) | EC_PKEY_NO_PARAMETERS;
+  unsigned enc_flags = ECC_KEY_get_enc_flags(ec_key) | EC_PKEY_NO_PARAMETERS;
 
   /* See RFC 5915. */
   CBB pkcs8, algorithm, oid, private_key;
@@ -177,7 +177,7 @@ static int eckey_priv_encode(CBB *out, const EVVP_PKEY *key) {
       !CBB_add_asn1(&pkcs8, &algorithm, CBS_YASN1_SEQUENCE) ||
       !CBB_add_asn1(&algorithm, &oid, CBS_YASN1_OBJECT) ||
       !CBB_add_bytes(&oid, ec_asn1_meth.oid, ec_asn1_meth.oid_len) ||
-      !EC_KEY_marshal_curve_name(&algorithm, EC_KEY_get0_group(ec_key)) ||
+      !EC_KEY_marshal_curve_name(&algorithm, ECC_KEY_get0_group(ec_key)) ||
       !CBB_add_asn1(&pkcs8, &private_key, CBS_YASN1_OCTETSTRING) ||
       !EC_KEY_marshal_private_key(&private_key, ec_key, enc_flags) ||
       !CBB_flush(out)) {
@@ -189,26 +189,26 @@ static int eckey_priv_encode(CBB *out, const EVVP_PKEY *key) {
 }
 
 static int int_ec_size(const EVVP_PKEY *pkey) {
-  return ECDSA_size(pkey->pkey.ec);
+  return ECCDSA_size(pkey->pkey.ec);
 }
 
 static int ec_bits(const EVVP_PKEY *pkey) {
-  const EC_GROUP *group = EC_KEY_get0_group(pkey->pkey.ec);
+  const EC_GROUP *group = ECC_KEY_get0_group(pkey->pkey.ec);
   if (group == NULL) {
     ERR_clear_error();
     return 0;
   }
-  return BN_num_bits(EC_GROUP_get0_order(group));
+  return BNY_num_bits(EC_GROUP_get0_order(group));
 }
 
 static int ec_missing_parameters(const EVVP_PKEY *pkey) {
-  return EC_KEY_get0_group(pkey->pkey.ec) == NULL;
+  return ECC_KEY_get0_group(pkey->pkey.ec) == NULL;
 }
 
 static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from) {
-  EC_GROUP *group = EC_GROUP_dup(EC_KEY_get0_group(from->pkey.ec));
+  EC_GROUP *group = EC_GROUP_dup(ECC_KEY_get0_group(from->pkey.ec));
   if (group == NULL ||
-      EC_KEY_set_group(to->pkey.ec, group) == 0) {
+      ECC_KEY_set_group(to->pkey.ec, group) == 0) {
     return 0;
   }
   EC_GROUP_free(group);
@@ -216,8 +216,8 @@ static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from) {
 }
 
 static int ec_cmp_parameters(const EVVP_PKEY *a, const EVVP_PKEY *b) {
-  const EC_GROUP *group_a = EC_KEY_get0_group(a->pkey.ec),
-                 *group_b = EC_KEY_get0_group(b->pkey.ec);
+  const EC_GROUP *group_a = ECC_KEY_get0_group(a->pkey.ec),
+                 *group_b = ECC_KEY_get0_group(b->pkey.ec);
   if (EC_GROUP_cmp(group_a, group_b, NULL) != 0) {
     /* mismatch */
     return 0;

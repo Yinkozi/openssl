@@ -140,25 +140,25 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
   int i, bits, ret = 0;
   BIGNUM *v, *rr;
 
-  BN_CTX_start(ctx);
+  BNY_CTX_start(ctx);
   if (r == a || r == p) {
-    rr = BN_CTX_get(ctx);
+    rr = BNY_CTX_get(ctx);
   } else {
     rr = r;
   }
 
-  v = BN_CTX_get(ctx);
+  v = BNY_CTX_get(ctx);
   if (rr == NULL || v == NULL) {
     goto err;
   }
 
-  if (BN_copy(v, a) == NULL) {
+  if (BNY_copy(v, a) == NULL) {
     goto err;
   }
-  bits = BN_num_bits(p);
+  bits = BNY_num_bits(p);
 
   if (BN_is_odd(p)) {
-    if (BN_copy(rr, a) == NULL) {
+    if (BNY_copy(rr, a) == NULL) {
       goto err;
     }
   } else {
@@ -178,13 +178,13 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
     }
   }
 
-  if (r != rr && !BN_copy(r, rr)) {
+  if (r != rr && !BNY_copy(r, rr)) {
     goto err;
   }
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -217,11 +217,11 @@ static void BN_RECP_CTX_free(BN_RECP_CTX *recp) {
 }
 
 static int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *d, BN_CTX *ctx) {
-  if (!BN_copy(&(recp->N), d)) {
+  if (!BNY_copy(&(recp->N), d)) {
     return 0;
   }
   BN_zero(&recp->Nr);
-  recp->num_bits = BN_num_bits(d);
+  recp->num_bits = BNY_num_bits(d);
   recp->shift = 0;
 
   return 1;
@@ -235,8 +235,8 @@ static int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx) {
   int ret = -1;
   BIGNUM *t;
 
-  BN_CTX_start(ctx);
-  t = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  t = BNY_CTX_get(ctx);
   if (t == NULL) {
     goto err;
   }
@@ -252,7 +252,7 @@ static int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx) {
   ret = len;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -261,19 +261,19 @@ static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
   int i, j, ret = 0;
   BIGNUM *a, *b, *d, *r;
 
-  BN_CTX_start(ctx);
-  a = BN_CTX_get(ctx);
-  b = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  a = BNY_CTX_get(ctx);
+  b = BNY_CTX_get(ctx);
   if (dv != NULL) {
     d = dv;
   } else {
-    d = BN_CTX_get(ctx);
+    d = BNY_CTX_get(ctx);
   }
 
   if (rem != NULL) {
     r = rem;
   } else {
-    r = BN_CTX_get(ctx);
+    r = BNY_CTX_get(ctx);
   }
 
   if (a == NULL || b == NULL || d == NULL || r == NULL) {
@@ -282,10 +282,10 @@ static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
 
   if (BNY_ucmp(m, &recp->N) < 0) {
     BN_zero(d);
-    if (!BN_copy(r, m)) {
+    if (!BNY_copy(r, m)) {
       goto err;
     }
-    BN_CTX_end(ctx);
+    BNY_CTX_end(ctx);
     return 1;
   }
 
@@ -293,8 +293,8 @@ static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
    * Given input of ABCDEF / ab
    * we need multiply ABCDEF by 3 digests of the reciprocal of ab */
 
-  /* i := max(BN_num_bits(m), 2*BN_num_bits(N)) */
-  i = BN_num_bits(m);
+  /* i := max(BNY_num_bits(m), 2*BNY_num_bits(N)) */
+  i = BNY_num_bits(m);
   j = recp->num_bits << 1;
   if (j > i) {
     i = j;
@@ -311,11 +311,11 @@ static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
     goto err;
   }
 
-  /* d := |round(round(m / 2^BN_num_bits(N)) * recp->Nr / 2^(i -
-   * BN_num_bits(N)))|
-   *    = |round(round(m / 2^BN_num_bits(N)) * round(2^i / N) / 2^(i -
-   * BN_num_bits(N)))|
-   *   <= |(m / 2^BN_num_bits(N)) * (2^i / N) * (2^BN_num_bits(N) / 2^i)|
+  /* d := |round(round(m / 2^BNY_num_bits(N)) * recp->Nr / 2^(i -
+   * BNY_num_bits(N)))|
+   *    = |round(round(m / 2^BNY_num_bits(N)) * round(2^i / N) / 2^(i -
+   * BNY_num_bits(N)))|
+   *   <= |(m / 2^BNY_num_bits(N)) * (2^i / N) * (2^BNY_num_bits(N) / 2^i)|
    *    = |m/N| */
   if (!BN_ryshift(a, m, recp->num_bits)) {
     goto err;
@@ -355,7 +355,7 @@ static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -365,8 +365,8 @@ static int BN_mod_mul_reciprocal(BIGNUM *r, const BIGNUM *x, const BIGNUM *y,
   BIGNUM *a;
   const BIGNUM *ca;
 
-  BN_CTX_start(ctx);
-  a = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  a = BNY_CTX_get(ctx);
   if (a == NULL) {
     goto err;
   }
@@ -389,7 +389,7 @@ static int BN_mod_mul_reciprocal(BIGNUM *r, const BIGNUM *x, const BIGNUM *y,
   ret = BNY_div_recp(NULL, r, ca, recp, ctx);
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -431,7 +431,7 @@ static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
   BIGNUM *val[TABLE_SIZE];
   BN_RECP_CTX recp;
 
-  bits = BN_num_bits(p);
+  bits = BNY_num_bits(p);
 
   if (bits == 0) {
     /* x**0 mod 1 is still zero. */
@@ -442,9 +442,9 @@ static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return BN_one(r);
   }
 
-  BN_CTX_start(ctx);
-  aa = BN_CTX_get(ctx);
-  val[0] = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  aa = BNY_CTX_get(ctx);
+  val[0] = BNY_CTX_get(ctx);
   if (!aa || !val[0]) {
     goto err;
   }
@@ -452,7 +452,7 @@ static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
   BN_RECP_CTX_init(&recp);
   if (m->neg) {
     /* ignore sign of 'm' */
-    if (!BN_copy(aa, m)) {
+    if (!BNY_copy(aa, m)) {
       goto err;
     }
     aa->neg = 0;
@@ -481,7 +481,7 @@ static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     }
     j = 1 << (window - 1);
     for (i = 1; i < j; i++) {
-      if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+      if (((val[i] = BNY_CTX_get(ctx)) == NULL) ||
           !BN_mod_mul_reciprocal(val[i], val[i - 1], aa, &recp, ctx)) {
         goto err;
       }
@@ -557,7 +557,7 @@ static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
   ret = 1;
 
 err:
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   BN_RECP_CTX_free(&recp);
   return ret;
 }
@@ -585,7 +585,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     OPENSSL_PUT_ERROR(BN, BN_R_CALLED_WITH_EVEN_MODULUS);
     return 0;
   }
-  bits = BN_num_bits(p);
+  bits = BNY_num_bits(p);
   if (bits == 0) {
     /* x**0 mod 1 is still zero. */
     if (BN_is_one(m)) {
@@ -595,10 +595,10 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return BN_one(rr);
   }
 
-  BN_CTX_start(ctx);
-  d = BN_CTX_get(ctx);
-  r = BN_CTX_get(ctx);
-  val[0] = BN_CTX_get(ctx);
+  BNY_CTX_start(ctx);
+  d = BNY_CTX_get(ctx);
+  r = BNY_CTX_get(ctx);
+  val[0] = BNY_CTX_get(ctx);
   if (!d || !r || !val[0]) {
     goto err;
   }
@@ -637,7 +637,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
     j = 1 << (window - 1);
     for (i = 1; i < j; i++) {
-      if (((val[i] = BN_CTX_get(ctx)) == NULL) ||
+      if (((val[i] = BNY_CTX_get(ctx)) == NULL) ||
           !BNY_mod_mul_montgomery(val[i], val[i - 1], d, mont, ctx)) {
         goto err;
       }
@@ -663,7 +663,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     /* Upper words will be zero if the corresponding words of 'm'
      * were 0xfff[...], so decrement r->top accordingly. */
     bn_correct_top(r);
-  } else if (!BN_to_montgomery(r, BN_value_one(), mont, ctx)) {
+  } else if (!BN_to_montgomery(r, BNY_value_one(), mont, ctx)) {
     goto err;
   }
 
@@ -729,7 +729,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
 err:
   BN_MONT_CTX_free(new_mont);
-  BN_CTX_end(ctx);
+  BNY_CTX_end(ctx);
   return ret;
 }
 
@@ -869,7 +869,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
   top = m->top;
 
-  bits = BN_num_bits(p);
+  bits = BNY_num_bits(p);
   if (bits == 0) {
     /* x**0 mod 1 is still zero. */
     if (BN_is_one(m)) {
@@ -889,7 +889,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
   }
 
   if (a->neg || BNY_ucmp(a, m) >= 0) {
-    new_a = BN_new();
+    new_a = BNY_new();
     if (new_a == NULL ||
         !BNY_nnmod(new_a, a, m, ctx)) {
       goto err;
@@ -901,7 +901,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
   /* If the size of the operands allow it, perform the optimized
    * YRSAZ exponentiation. For further information see
    * crypto/bn/rsaz_exp.c and accompanying assembly modules. */
-  if ((16 == a->top) && (16 == p->top) && (BN_num_bits(m) == 1024) &&
+  if ((16 == a->top) && (16 == p->top) && (BNY_num_bits(m) == 1024) &&
       rsaz_avx2_eligible()) {
     if (NULL == bn_wexpand(rr, 16)) {
       goto err;
@@ -970,7 +970,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
       tmp.d[i] = (~m->d[i]) & BN_MASK2;
     }
     tmp.top = top;
-  } else if (!BN_to_montgomery(&tmp, BN_value_one(), mont, ctx)) {
+  } else if (!BN_to_montgomery(&tmp, BNY_value_one(), mont, ctx)) {
     goto err;
   }
 
@@ -1097,7 +1097,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     tmp.top = top;
     bn_correct_top(&tmp);
     if (ret) {
-      if (!BN_copy(rr, &tmp)) {
+      if (!BNY_copy(rr, &tmp)) {
         ret = 0;
       }
       goto err; /* non-zero ret means it's not error */
@@ -1171,7 +1171,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
 
 err:
   BN_MONT_CTX_free(new_mont);
-  BN_clear_free(new_a);
+  BNY_clear_free(new_a);
   if (powerbuf != NULL) {
     OPENSSL_cleanse(powerbuf, powerbufLen);
     OPENSSL_free(powerbufFree);

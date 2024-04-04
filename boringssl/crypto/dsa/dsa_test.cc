@@ -171,11 +171,11 @@ static bssl::UniquePtr<DSA> GetFIPSDSA(void) {
   if (!dsa) {
     return nullptr;
   }
-  dsa->p = BN_bin2bn(fips_p, sizeof(fips_p), nullptr);
-  dsa->q = BN_bin2bn(fips_q, sizeof(fips_q), nullptr);
-  dsa->g = BN_bin2bn(fips_g, sizeof(fips_g), nullptr);
-  dsa->pub_key = BN_bin2bn(fips_y, sizeof(fips_y), nullptr);
-  dsa->priv_key = BN_bin2bn(fips_x, sizeof(fips_x), nullptr);
+  dsa->p = BNY_bin2bn(fips_p, sizeof(fips_p), nullptr);
+  dsa->q = BNY_bin2bn(fips_q, sizeof(fips_q), nullptr);
+  dsa->g = BNY_bin2bn(fips_g, sizeof(fips_g), nullptr);
+  dsa->pub_key = BNY_bin2bn(fips_y, sizeof(fips_y), nullptr);
+  dsa->priv_key = BNY_bin2bn(fips_x, sizeof(fips_x), nullptr);
   if (dsa->p == nullptr || dsa->q == nullptr || dsa->g == nullptr ||
       dsa->pub_key == nullptr || dsa->priv_key == nullptr) {
     return nullptr;
@@ -252,21 +252,21 @@ static int TestGenerate(FILE *out) {
     return false;
   }
 
-  i = BN_bn2bin(dsa->q, buf);
+  i = BNY_bn2bin(dsa->q, buf);
   j = sizeof(fips_q);
   if (i != j || OPENSSL_memcmp(buf, fips_q, i) != 0) {
     fprintf(stderr, "q value is wrong\n");
     return false;
   }
 
-  i = BN_bn2bin(dsa->p, buf);
+  i = BNY_bn2bin(dsa->p, buf);
   j = sizeof(fips_p);
   if (i != j || OPENSSL_memcmp(buf, fips_p, i) != 0) {
     fprintf(stderr, "p value is wrong\n");
     return false;
   }
 
-  i = BN_bn2bin(dsa->g, buf);
+  i = BNY_bn2bin(dsa->g, buf);
   j = sizeof(fips_g);
   if (i != j || OPENSSL_memcmp(buf, fips_g, i) != 0) {
     fprintf(stderr, "g value is wrong\n");

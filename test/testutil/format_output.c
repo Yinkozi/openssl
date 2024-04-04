@@ -306,11 +306,11 @@ static void test_fail_bignum_common(const char *prefix, const char *file,
 
     if (bn1 != NULL) {
         m1 = bufp;
-        BN_bn2binpad(bn1, m1, len);
+        BNY_bn2binpad(bn1, m1, len);
     }
     if (bn2 != NULL) {
         m2 = bufp + len;
-        BN_bn2binpad(bn2, m2, len);
+        BNY_bn2binpad(bn2, m2, len);
     }
 
     while (len > 0) {
@@ -390,7 +390,7 @@ void test_output_bignum(const char *name, const BIGNUM *bn)
         unsigned char buf[BN_OUTPUT_SIZE];
         char out[2 * sizeof(buf) + 1];
         char *p = out;
-        int n = BN_bn2bin(bn, buf);
+        int n = BNY_bn2bin(bn, buf);
 
         hex_convert_memory(buf, n, p, BN_OUTPUT_SIZE);
         while (*p == '0' && *++p != '\0')

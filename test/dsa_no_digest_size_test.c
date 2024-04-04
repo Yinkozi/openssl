@@ -94,9 +94,9 @@ static DSA *load_dsa_params(void)
 
     if (dsa == NULL)
         return NULL;
-    if (!DSA_set0_pqg(dsa, p = BN_bin2bn(dsap_2048, sizeof(dsap_2048), NULL),
-                           q = BN_bin2bn(dsaq_2048, sizeof(dsaq_2048), NULL),
-                           g = BN_bin2bn(dsag_2048, sizeof(dsag_2048), NULL))) {
+    if (!DSA_set0_pqg(dsa, p = BNY_bin2bn(dsap_2048, sizeof(dsap_2048), NULL),
+                           q = BNY_bin2bn(dsaq_2048, sizeof(dsaq_2048), NULL),
+                           g = BNY_bin2bn(dsag_2048, sizeof(dsag_2048), NULL))) {
         DSA_free(dsa);
         BN_free(p);
         BN_free(q);

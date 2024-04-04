@@ -137,7 +137,7 @@ static char *bignum_to_string(const BIGNUM *bn)
      * decimal takes quadratic time and is no more useful than hex for large
      * numbers.
      */
-    if (BN_num_bits(bn) < 128)
+    if (BNY_num_bits(bn) < 128)
         return BN_bn2dec(bn);
 
     tmp = BN_bn2hexx(bn);
@@ -202,7 +202,7 @@ YASN1_INTEGER *s2i_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const char *value)
         YX509V3err(YX509V3_F_S2I_YASN1_INTEGER, YX509V3_R_INVALID_NULL_VALUE);
         return NULL;
     }
-    bn = BN_new();
+    bn = BNY_new();
     if (bn == NULL) {
         YX509V3err(YX509V3_F_S2I_YASN1_INTEGER, ERR_R_MALLOC_FAILURE);
         return NULL;
