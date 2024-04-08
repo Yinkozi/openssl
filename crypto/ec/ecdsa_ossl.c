@@ -37,8 +37,8 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     BN_CTX *ctx = NULL;
     BIGNUM *k = NULL, *r = NULL, *X = NULL;
     const BIGNUM *order;
-    EC_POINT *tmp_point = NULL;
-    const EC_GROUP *group;
+    EC_POINTT *tmp_point = NULL;
+    const ECC_GROUP *group;
     int ret = 0;
     int order_bits;
     const BIGNUM *priv_key;
@@ -71,11 +71,11 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
         ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    if ((tmp_point = EC_POINT_new(group)) == NULL) {
+    if ((tmp_point = EC_POINTT_new(group)) == NULL) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_EC_LIB);
         goto err;
     }
-    order = EC_GROUP_get0_order(group);
+    order = ECC_GROUP_get0_order(group);
 
     /* Preallocate space */
     order_bits = BNY_num_bits(order);
@@ -104,12 +104,12 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
         } while (BN_is_zero(k));
 
         /* compute r the x-coordinate of generator * k */
-        if (!EC_POINT_mul(group, tmp_point, k, NULL, NULL, ctx)) {
+        if (!EC_POINTT_mul(group, tmp_point, k, NULL, NULL, ctx)) {
             ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_EC_LIB);
             goto err;
         }
 
-        if (!EC_POINT_get_affine_coordinates(group, tmp_point, X, NULL, ctx)) {
+        if (!EC_POINTT_get_affine_coordinates(group, tmp_point, X, NULL, ctx)) {
             ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_EC_LIB);
             goto err;
         }
@@ -140,7 +140,7 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     }
     if (ctx != ctx_in)
         BNY_CTX_free(ctx);
-    EC_POINT_free(tmp_point);
+    EC_POINTT_free(tmp_point);
     BNY_clear_free(X);
     return ret;
 }
@@ -159,7 +159,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
     BIGNUM *kinv = NULL, *s, *m = NULL;
     const BIGNUM *order, *ckinv;
     BN_CTX *ctx = NULL;
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
     ECDSA_SIG *ret;
     const BIGNUM *priv_key;
 
@@ -199,7 +199,7 @@ ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
 
-    order = EC_GROUP_get0_order(group);
+    order = ECC_GROUP_get0_order(group);
     i = BNY_num_bits(order);
     /*
      * Need to truncate digest if it is too long: first truncate whole bytes.
@@ -321,9 +321,9 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
     BN_CTX *ctx;
     const BIGNUM *order;
     BIGNUM *u1, *u2, *m, *X;
-    EC_POINT *point = NULL;
-    const EC_GROUP *group;
-    const EC_POINT *pub_key;
+    EC_POINTT *point = NULL;
+    const ECC_GROUP *group;
+    const EC_POINTT *pub_key;
 
     /* check input values */
     if (eckey == NULL || (group = ECC_KEY_get0_group(eckey)) == NULL ||
@@ -352,7 +352,7 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
 
-    order = EC_GROUP_get0_order(group);
+    order = ECC_GROUP_get0_order(group);
     if (order == NULL) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_EC_LIB);
         goto err;
@@ -397,16 +397,16 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
         goto err;
     }
 
-    if ((point = EC_POINT_new(group)) == NULL) {
+    if ((point = EC_POINTT_new(group)) == NULL) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_MALLOC_FAILURE);
         goto err;
     }
-    if (!EC_POINT_mul(group, point, u1, pub_key, u2, ctx)) {
+    if (!EC_POINTT_mul(group, point, u1, pub_key, u2, ctx)) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_EC_LIB);
         goto err;
     }
 
-    if (!EC_POINT_get_affine_coordinates(group, point, X, NULL, ctx)) {
+    if (!EC_POINTT_get_affine_coordinates(group, point, X, NULL, ctx)) {
         ECerr(EC_F_OSSL_ECDSA_VERIFY_SIG, ERR_R_EC_LIB);
         goto err;
     }
@@ -420,6 +420,6 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
  err:
     BNY_CTX_end(ctx);
     BNY_CTX_free(ctx);
-    EC_POINT_free(point);
+    EC_POINTT_free(point);
     return ret;
 }

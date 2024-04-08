@@ -16,7 +16,7 @@ ECC_KEY_get_enc_flags, ECC_KEY_set_enc_flags
 
 The format of the external representation of the public key written by
 i2d_ECPrivateKey() (such as whether it is stored in a compressed form or not) is
-described by the point_conversion_form. See L<EC_GROUP_copy(3)>
+described by the point_conversion_form. See L<ECC_GROUP_copy(3)>
 for a description of point_conversion_form.
 
 When reading a private key encoded without an associated public key (e.g. if
@@ -40,9 +40,9 @@ EC_KEY.
 
 =head1 SEE ALSO
 
-L<crypto(7)>, L<EC_GROUP_new(3)>,
-L<EC_GROUP_copy(3)>, L<EC_POINT_new(3)>,
-L<EC_POINT_add(3)>,
+L<crypto(7)>, L<ECC_GROUP_new(3)>,
+L<ECC_GROUP_copy(3)>, L<EC_POINTT_new(3)>,
+L<EC_POINTT_add(3)>,
 L<EC_GFp_simple_method(3)>,
 L<d2i_ECPKParameters(3)>,
 L<d2i_ECCPrivateKey(3)>

@@ -56,7 +56,7 @@ then B<*a> will be freed and replaced on a successful call.
 
 To decode a key with type B<EVVP_PKEY_EC>, d2i_PublicKey() requires B<*a> to be
 a non-NULL EVVP_PKEY structure assigned an EC_KEY structure referencing the proper
-EC_GROUP.
+ECC_GROUP.
 
 =head1 RETURN VALUES
 

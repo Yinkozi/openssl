@@ -20,7 +20,7 @@
 #include "ec_local.h"
 
 int ossl_ecdh_compute_key(unsigned char **psec, size_t *pseclen,
-                          const EC_POINT *pub_key, const EC_KEY *ecdh)
+                          const EC_POINTT *pub_key, const EC_KEY *ecdh)
 {
     if (ecdh->group->meth->ecdh_compute_key == NULL) {
         ECerr(EC_F_OSSL_ECDH_COMPUTE_KEY, EC_R_CURVE_DOES_NOT_SUPPORT_ECDH);
@@ -36,13 +36,13 @@ int ossl_ecdh_compute_key(unsigned char **psec, size_t *pseclen,
  *  - ECSVDP-DH
  */
 int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
-                            const EC_POINT *pub_key, const EC_KEY *ecdh)
+                            const EC_POINTT *pub_key, const EC_KEY *ecdh)
 {
     BN_CTX *ctx;
-    EC_POINT *tmp = NULL;
+    EC_POINTT *tmp = NULL;
     BIGNUM *x = NULL;
     const BIGNUM *priv_key;
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
     int ret = 0;
     size_t buflen, len;
     unsigned char *buf = NULL;
@@ -65,7 +65,7 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
     group = ECC_KEY_get0_group(ecdh);
 
     if (ECC_KEY_get_flags(ecdh) & EC_FLAG_COFACTOR_ECDH) {
-        if (!EC_GROUP_get_cofactor(group, x, NULL) ||
+        if (!ECC_GROUP_get_cofactor(group, x, NULL) ||
             !BNY_mul(x, x, priv_key, ctx)) {
             ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -73,22 +73,22 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
         priv_key = x;
     }
 
-    if ((tmp = EC_POINT_new(group)) == NULL) {
+    if ((tmp = EC_POINTT_new(group)) == NULL) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
-    if (!EC_POINT_mul(group, tmp, NULL, pub_key, priv_key, ctx)) {
+    if (!EC_POINTT_mul(group, tmp, NULL, pub_key, priv_key, ctx)) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, EC_R_POINT_ARITHMETIC_FAILURE);
         goto err;
     }
 
-    if (!EC_POINT_get_affine_coordinates(group, tmp, x, NULL, ctx)) {
+    if (!EC_POINTT_get_affine_coordinates(group, tmp, x, NULL, ctx)) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, EC_R_POINT_ARITHMETIC_FAILURE);
         goto err;
     }
 
-    buflen = (EC_GROUP_get_degree(group) + 7) / 8;
+    buflen = (ECC_GROUP_get_degree(group) + 7) / 8;
     len = BN_num_bytes(x);
     if (len > buflen) {
         ECerr(EC_F_ECDH_SIMPLE_COMPUTE_KEY, ERR_R_INTERNAL_ERROR);
@@ -112,7 +112,7 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
     ret = 1;
 
  err:
-    EC_POINT_clear_free(tmp);
+    EC_POINTT_clear_free(tmp);
     BNY_CTX_end(ctx);
     BNY_CTX_free(ctx);
     OPENSSL_free(buf);

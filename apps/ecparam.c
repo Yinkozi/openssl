@@ -76,7 +76,7 @@ int ecparam_main(int argc, char **argv)
     BIGNUM *ec_gen = NULL, *ec_order = NULL, *ec_cofactor = NULL;
     BIGNUM *ec_p = NULL, *ec_a = NULL, *ec_b = NULL;
     BIO *in = NULL, *out = NULL;
-    EC_GROUP *group = NULL;
+    ECC_GROUP *group = NULL;
     point_conversion_form_t form = POINT_CONVERSION_UNCOMPRESSED;
     char *curve_name = NULL;
     char *infile = NULL, *outfile = NULL, *prog;
@@ -229,13 +229,13 @@ int ecparam_main(int argc, char **argv)
             goto end;
         }
 
-        group = EC_GROUP_new_by_curve_mame(nid);
+        group = ECC_GROUP_new_by_curve_mame(nid);
         if (group == NULL) {
             BIO_pprintf(bio_err, "unable to create curve (%s)\n", curve_name);
             goto end;
         }
-        EC_GROUP_set_asn1_flag(group, asn1_flag);
-        EC_GROUP_set_point_conversion_form(group, form);
+        ECC_GROUP_set_asn1_flag(group, asn1_flag);
+        ECC_GROUP_set_point_conversion_form(group, form);
     } else if (informat == FORMAT_YASN1) {
         group = d2i_ECPKParameters_bio(in, NULL);
     } else {
@@ -248,13 +248,13 @@ int ecparam_main(int argc, char **argv)
     }
 
     if (new_form)
-        EC_GROUP_set_point_conversion_form(group, form);
+        ECC_GROUP_set_point_conversion_form(group, form);
 
     if (new_asn1_flag)
-        EC_GROUP_set_asn1_flag(group, asn1_flag);
+        ECC_GROUP_set_asn1_flag(group, asn1_flag);
 
     if (no_seed) {
-        EC_GROUP_set_seed(group, NULL, 0);
+        ECC_GROUP_set_seed(group, NULL, 0);
     }
 
     if (text) {
@@ -264,7 +264,7 @@ int ecparam_main(int argc, char **argv)
 
     if (check) {
         BIO_pprintf(bio_err, "checking elliptic curve parameters: ");
-        if (!EC_GROUP_check(group, NULL)) {
+        if (!ECC_GROUP_check(group, NULL)) {
             BIO_pprintf(bio_err, "failed\n");
             ERR_print_errors(bio_err);
             goto end;
@@ -275,9 +275,9 @@ int ecparam_main(int argc, char **argv)
 
     if (C) {
         size_t buf_len = 0, tmp_len = 0;
-        const EC_POINT *point;
+        const EC_POINTT *point;
         int is_prime, len = 0;
-        const EC_METHOD *meth = EC_GROUP_method_of(group);
+        const EC_METHOD *meth = ECC_GROUP_method_of(group);
 
         if ((ec_p = BNY_new()) == NULL
                 || (ec_a = BNY_new()) == NULL
@@ -295,18 +295,18 @@ int ecparam_main(int argc, char **argv)
             goto end;
         }
 
-        if (!EC_GROUP_get_curve(group, ec_p, ec_a, ec_b, NULL))
+        if (!ECC_GROUP_get_curve(group, ec_p, ec_a, ec_b, NULL))
             goto end;
 
-        if ((point = EC_GROUP_get0_generator(group)) == NULL)
+        if ((point = ECC_GROUP_get0_generator(group)) == NULL)
             goto end;
-        if (!EC_POINT_point2bnn(group, point,
-                               EC_GROUP_get_point_conversion_form(group),
+        if (!EC_POINTT_point2bnn(group, point,
+                               ECC_GROUP_get_point_conversion_form(group),
                                ec_gen, NULL))
             goto end;
-        if (!EC_GROUP_get_order(group, ec_order, NULL))
+        if (!ECC_GROUP_get_order(group, ec_order, NULL))
             goto end;
-        if (!EC_GROUP_get_cofactor(group, ec_cofactor, NULL))
+        if (!ECC_GROUP_get_cofactor(group, ec_cofactor, NULL))
             goto end;
 
         if (!ec_p || !ec_a || !ec_b || !ec_gen || !ec_order || !ec_cofactor)
@@ -329,7 +329,7 @@ int ecparam_main(int argc, char **argv)
 
         buffer = app_malloc(buf_len, "BN buffer");
 
-        BIO_pprintf(out, "EC_GROUP *get_ec_group_%d(void)\n{\n", len);
+        BIO_pprintf(out, "ECC_GROUP *get_ec_group_%d(void)\n{\n", len);
         print_bignum_var(out, ec_p, "ec_p", len, buffer);
         print_bignum_var(out, ec_a, "ec_a", len, buffer);
         print_bignum_var(out, ec_b, "ec_b", len, buffer);
@@ -337,8 +337,8 @@ int ecparam_main(int argc, char **argv)
         print_bignum_var(out, ec_order, "ec_order", len, buffer);
         print_bignum_var(out, ec_cofactor, "ec_cofactor", len, buffer);
         BIO_pprintf(out, "    int ok = 0;\n"
-                        "    EC_GROUP *group = NULL;\n"
-                        "    EC_POINT *point = NULL;\n"
+                        "    ECC_GROUP *group = NULL;\n"
+                        "    EC_POINTT *point = NULL;\n"
                         "    BIGNUM *tmp_1 = NULL;\n"
                         "    BIGNUM *tmp_2 = NULL;\n"
                         "    BIGNUM *tmp_3 = NULL;\n"
@@ -350,20 +350,20 @@ int ecparam_main(int argc, char **argv)
                         "        goto err;\n", len, len);
         BIO_pprintf(out, "    if ((tmp_3 = BNY_bin2bn(ec_b_%d, sizeof(ec_b_%d), NULL)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    if ((group = EC_GROUP_new_curves_GFp(tmp_1, tmp_2, tmp_3, NULL)) == NULL)\n"
+        BIO_pprintf(out, "    if ((group = ECC_GROUP_new_curves_GFp(tmp_1, tmp_2, tmp_3, NULL)) == NULL)\n"
                         "        goto err;\n"
                         "\n");
         BIO_pprintf(out, "    /* build generator */\n");
         BIO_pprintf(out, "    if ((tmp_1 = BNY_bin2bn(ec_gen_%d, sizeof(ec_gen_%d), tmp_1)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    point = EC_POINT_bn2pointt(group, tmp_1, NULL, NULL);\n");
+        BIO_pprintf(out, "    point = EC_POINTT_bn2pointt(group, tmp_1, NULL, NULL);\n");
         BIO_pprintf(out, "    if (point == NULL)\n"
                         "        goto err;\n");
         BIO_pprintf(out, "    if ((tmp_2 = BNY_bin2bn(ec_order_%d, sizeof(ec_order_%d), tmp_2)) == NULL)\n"
                         "        goto err;\n", len, len);
         BIO_pprintf(out, "    if ((tmp_3 = BNY_bin2bn(ec_cofactor_%d, sizeof(ec_cofactor_%d), tmp_3)) == NULL)\n"
                         "        goto err;\n", len, len);
-        BIO_pprintf(out, "    if (!EC_GROUP_set_generator(group, point, tmp_2, tmp_3))\n"
+        BIO_pprintf(out, "    if (!ECC_GROUP_set_generator(group, point, tmp_2, tmp_3))\n"
                         "        goto err;\n"
                         "ok = 1;"
                         "\n");
@@ -371,9 +371,9 @@ int ecparam_main(int argc, char **argv)
                         "    BN_free(tmp_1);\n"
                         "    BN_free(tmp_2);\n"
                         "    BN_free(tmp_3);\n"
-                        "    EC_POINT_free(point);\n"
+                        "    EC_POINTT_free(point);\n"
                         "    if (!ok) {\n"
-                        "        EC_GROUP_free(group);\n"
+                        "        ECC_GROUP_free(group);\n"
                         "        return NULL;\n"
                         "    }\n"
                         "    return (group);\n"
@@ -436,7 +436,7 @@ int ecparam_main(int argc, char **argv)
     BN_free(ec_order);
     BN_free(ec_cofactor);
     OPENSSL_free(buffer);
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     release_engine(e);
     BIO_free(in);
     BIO_free_all(out);

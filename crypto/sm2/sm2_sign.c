@@ -26,7 +26,7 @@ int sm2_compute_z_digest(uint8_t *out,
                          const EC_KEY *key)
 {
     int rc = 0;
-    const EC_GROUP *group = ECC_KEY_get0_group(key);
+    const ECC_GROUP *group = ECC_KEY_get0_group(key);
     BN_CTX *ctx = NULL;
     EVVP_MD_CTX *hash = NULL;
     BIGNUM *p = NULL;
@@ -92,7 +92,7 @@ int sm2_compute_z_digest(uint8_t *out,
         goto done;
     }
 
-    if (!EC_GROUP_get_curve(group, p, a, b, ctx)) {
+    if (!ECC_GROUP_get_curve(group, p, a, b, ctx)) {
         SM2err(SM2_F_SM2_COMPUTE_Z_DIGEST, ERR_R_EC_LIB);
         goto done;
     }
@@ -108,14 +108,14 @@ int sm2_compute_z_digest(uint8_t *out,
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || BNY_bn2binpad(b, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
-            || !EC_POINT_get_affine_coordinates(group,
-                                                EC_GROUP_get0_generator(group),
+            || !EC_POINTT_get_affine_coordinates(group,
+                                                ECC_GROUP_get0_generator(group),
                                                 xG, yG, ctx)
             || BNY_bn2binpad(xG, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
             || BNY_bn2binpad(yG, buf, p_bytes) < 0
             || !EVVP_DigestUpdate(hash, buf, p_bytes)
-            || !EC_POINT_get_affine_coordinates(group,
+            || !EC_POINTT_get_affine_coordinates(group,
                                                 ECC_KEY_get0_public_key(key),
                                                 xA, yA, ctx)
             || BNY_bn2binpad(xA, buf, p_bytes) < 0
@@ -185,10 +185,10 @@ static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
 static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
 {
     const BIGNUM *dA = ECC_KEY_get0_private_key(key);
-    const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
+    const ECC_GROUP *group = ECC_KEY_get0_group(key);
+    const BIGNUM *order = ECC_GROUP_get0_order(group);
     ECDSA_SIG *sig = NULL;
-    EC_POINT *kG = NULL;
+    EC_POINTT *kG = NULL;
     BN_CTX *ctx = NULL;
     BIGNUM *k = NULL;
     BIGNUM *rk = NULL;
@@ -197,7 +197,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
     BIGNUM *x1 = NULL;
     BIGNUM *tmp = NULL;
 
-    kG = EC_POINT_new(group);
+    kG = EC_POINTT_new(group);
     ctx = BNY_CTX_new();
     if (kG == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_SIG_GEN, ERR_R_MALLOC_FAILURE);
@@ -232,8 +232,8 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
             goto done;
         }
 
-        if (!EC_POINT_mul(group, kG, k, NULL, NULL, ctx)
-                || !EC_POINT_get_affine_coordinates(group, kG, x1, NULL,
+        if (!EC_POINTT_mul(group, kG, k, NULL, NULL, ctx)
+                || !EC_POINTT_get_affine_coordinates(group, kG, x1, NULL,
                                                     ctx)
                 || !BN_mod_add(r, e, x1, order, ctx)) {
             SM2err(SM2_F_SM2_SIG_GEN, ERR_R_INTERNAL_ERROR);
@@ -279,7 +279,7 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
     }
 
     BNY_CTX_free(ctx);
-    EC_POINT_free(kG);
+    EC_POINTT_free(kG);
     return sig;
 }
 
@@ -287,17 +287,17 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
                           const BIGNUM *e)
 {
     int ret = 0;
-    const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
+    const ECC_GROUP *group = ECC_KEY_get0_group(key);
+    const BIGNUM *order = ECC_GROUP_get0_order(group);
     BN_CTX *ctx = NULL;
-    EC_POINT *pt = NULL;
+    EC_POINTT *pt = NULL;
     BIGNUM *t = NULL;
     BIGNUM *x1 = NULL;
     const BIGNUM *r = NULL;
     const BIGNUM *s = NULL;
 
     ctx = BNY_CTX_new();
-    pt = EC_POINT_new(group);
+    pt = EC_POINTT_new(group);
     if (ctx == NULL || pt == NULL) {
         SM2err(SM2_F_SM2_SIG_VERIFY, ERR_R_MALLOC_FAILURE);
         goto done;
@@ -341,8 +341,8 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
         goto done;
     }
 
-    if (!EC_POINT_mul(group, pt, s, ECC_KEY_get0_public_key(key), t, ctx)
-            || !EC_POINT_get_affine_coordinates(group, pt, x1, NULL, ctx)) {
+    if (!EC_POINTT_mul(group, pt, s, ECC_KEY_get0_public_key(key), t, ctx)
+            || !EC_POINTT_get_affine_coordinates(group, pt, x1, NULL, ctx)) {
         SM2err(SM2_F_SM2_SIG_VERIFY, ERR_R_EC_LIB);
         goto done;
     }
@@ -356,7 +356,7 @@ static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
         ret = 1;
 
  done:
-    EC_POINT_free(pt);
+    EC_POINTT_free(pt);
     BNY_CTX_free(ctx);
     return ret;
 }

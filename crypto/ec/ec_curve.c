@@ -3008,10 +3008,10 @@ static const ec_list_element curve_list[] = {
 
 #define curve_list_length OSSL_NELEM(curve_list)
 
-static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
+static ECC_GROUP *ec_group_new_from_data(const ec_list_element curve)
 {
-    EC_GROUP *group = NULL;
-    EC_POINT *P = NULL;
+    ECC_GROUP *group = NULL;
+    EC_POINTT *P = NULL;
     BN_CTX *ctx = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL, *order =
         NULL;
@@ -3023,10 +3023,10 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
 
     /* If no curve data curve method must handle everything */
     if (curve.data == NULL)
-        return EC_GROUP_new(curve.meth != NULL ? curve.meth() : NULL);
+        return ECC_GROUP_new(curve.meth != NULL ? curve.meth() : NULL);
 
     if ((ctx = BNY_CTX_new()) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_MALLOC_FAILURE);
         goto err;
     }
 
@@ -3039,20 +3039,20 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     if ((p = BNY_bin2bn(params + 0 * param_len, param_len, NULL)) == NULL
         || (a = BNY_bin2bn(params + 1 * param_len, param_len, NULL)) == NULL
         || (b = BNY_bin2bn(params + 2 * param_len, param_len, NULL)) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
     }
 
     if (curve.meth != 0) {
         meth = curve.meth();
-        if (((group = EC_GROUP_new(meth)) == NULL) ||
+        if (((group = ECC_GROUP_new(meth)) == NULL) ||
             (!(group->meth->group_set_curve(group, p, a, b, ctx)))) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
     } else if (data->field_type == NID_X9_62_prime_field) {
-        if ((group = EC_GROUP_new_curves_GFp(p, a, b, ctx)) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+        if ((group = ECC_GROUP_new_curves_GFp(p, a, b, ctx)) == NULL) {
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
     }
@@ -3060,66 +3060,66 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     else {                      /* field_type ==
                                  * NID_X9_62_characteristic_two_field */
 
-        if ((group = EC_GROUP_new_curves_GF2m(p, a, b, ctx)) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+        if ((group = ECC_GROUP_new_curves_GF2m(p, a, b, ctx)) == NULL) {
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
     }
 #endif
 
-    EC_GROUP_set_curve_name(group, curve.nid);
+    ECC_GROUP_set_curve_name(group, curve.nid);
 
-    if ((P = EC_POINT_new(group)) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+    if ((P = EC_POINTT_new(group)) == NULL) {
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
         goto err;
     }
 
     if ((x = BNY_bin2bn(params + 3 * param_len, param_len, NULL)) == NULL
         || (y = BNY_bin2bn(params + 4 * param_len, param_len, NULL)) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
     }
-    if (!EC_POINT_set_affine_coordinates(group, P, x, y, ctx)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+    if (!EC_POINTT_set_affine_coordinates(group, P, x, y, ctx)) {
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
         goto err;
     }
     if ((order = BNY_bin2bn(params + 5 * param_len, param_len, NULL)) == NULL
         || !BN_set_word(x, (BN_ULONG)data->cofactor)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_BN_LIB);
         goto err;
     }
-    if (!EC_GROUP_set_generator(group, P, order, x)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+    if (!ECC_GROUP_set_generator(group, P, order, x)) {
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
         goto err;
     }
     if (seed_len) {
-        if (!EC_GROUP_set_seed(group, params - seed_len, seed_len)) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
+        if (!ECC_GROUP_set_seed(group, params - seed_len, seed_len)) {
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_EC_LIB);
             goto err;
         }
     }
 
-    if (EC_GROUP_get_asn1_flag(group) == OPENSSL_EC_NAMED_CURVE) {
+    if (ECC_GROUP_get_asn1_flag(group) == OPENSSL_EC_NAMED_CURVE) {
         /*
          * Some curves don't have an associated OID: for those we should not
          * default to `OPENSSL_EC_NAMED_CURVE` encoding of parameters and
          * instead set the YASN1 flag to `OPENSSL_EC_EXPLICIT_CURVE`.
          *
          * Note that `OPENSSL_EC_NAMED_CURVE` is set as the default YASN1 flag on
-         * `EC_GROUP_new()`, when we don't have enough elements to determine if
+         * `ECC_GROUP_new()`, when we don't have enough elements to determine if
          * an OID for the curve name actually exists.
-         * We could implement this check on `EC_GROUP_set_curve_name()` but
+         * We could implement this check on `ECC_GROUP_set_curve_name()` but
          * overloading the simple setter with this lookup could have a negative
          * performance impact and unexpected consequences.
          */
         YASN1_OBJECT *asn1obj = OBJ_nid2obj(curve.nid);
 
         if (asn1obj == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_DATA, ERR_R_OBJ_LIB);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_DATA, ERR_R_OBJ_LIB);
             goto err;
         }
         if (OBJ_length(asn1obj) == 0)
-            EC_GROUP_set_asn1_flag(group, OPENSSL_EC_EXPLICIT_CURVE);
+            ECC_GROUP_set_asn1_flag(group, OPENSSL_EC_EXPLICIT_CURVE);
 
         YASN1_OBJECT_free(asn1obj);
     }
@@ -3127,10 +3127,10 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     ok = 1;
  err:
     if (!ok) {
-        EC_GROUP_free(group);
+        ECC_GROUP_free(group);
         group = NULL;
     }
-    EC_POINT_free(P);
+    EC_POINTT_free(P);
     BNY_CTX_free(ctx);
     BN_free(p);
     BN_free(a);
@@ -3141,10 +3141,10 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     return group;
 }
 
-EC_GROUP *EC_GROUP_new_by_curve_mame(int nid)
+ECC_GROUP *ECC_GROUP_new_by_curve_mame(int nid)
 {
     size_t i;
-    EC_GROUP *ret = NULL;
+    ECC_GROUP *ret = NULL;
 
     if (nid <= 0)
         return NULL;
@@ -3156,7 +3156,7 @@ EC_GROUP *EC_GROUP_new_by_curve_mame(int nid)
         }
 
     if (ret == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_BY_CURVE_NAME, EC_R_UNKNOWN_GROUP);
+        ECerr(EC_F_ECC_GROUP_NEW_BY_CURVE_NAME, EC_R_UNKNOWN_GROUP);
         return NULL;
     }
 
@@ -3234,28 +3234,28 @@ int EC_curve_nist2nid(const char *name)
  * Returns: The nid associated with the found named curve, or NID_undef
  *          if not found. If there was an error it returns -1.
  */
-int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
+int ec_curve_nid_from_params(const ECC_GROUP *group, BN_CTX *ctx)
 {
     int ret = -1, nid, len, field_type, param_len;
     size_t i, seed_len;
     const unsigned char *seed, *params_seed, *params;
     unsigned char *param_bytes = NULL;
     const EC_CURVE_DATA *data;
-    const EC_POINT *generator = NULL;
+    const EC_POINTT *generator = NULL;
     const EC_METHOD *meth;
     const BIGNUM *cofactor = NULL;
     /* An array of BIGNUMs for (p, a, b, x, y, order) */
     BIGNUM *bn[NUM_BN_FIELDS] = {NULL, NULL, NULL, NULL, NULL, NULL};
 
-    meth = EC_GROUP_method_of(group);
+    meth = ECC_GROUP_method_of(group);
     if (meth == NULL)
         return -1;
     /* Use the optional named curve nid as a search field */
-    nid = EC_GROUP_get_curve_name(group);
+    nid = ECC_GROUP_get_curve_name(group);
     field_type = EC_METHOD_get_field_type(meth);
-    seed_len = EC_GROUP_get_seed_len(group);
-    seed = EC_GROUP_get0_seed(group);
-    cofactor = EC_GROUP_get0_cofactor(group);
+    seed_len = ECC_GROUP_get_seed_len(group);
+    seed = ECC_GROUP_get0_seed(group);
+    cofactor = ECC_GROUP_get0_cofactor(group);
 
     BNY_CTX_start(ctx);
 
@@ -3285,12 +3285,12 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
      * i.e. the values are p, a, b, x, y, order.
      */
     /* Get p, a & b */
-    if (!(EC_GROUP_get_curve(group, bn[0], bn[1], bn[2], ctx)
-        && ((generator = EC_GROUP_get0_generator(group)) != NULL)
+    if (!(ECC_GROUP_get_curve(group, bn[0], bn[1], bn[2], ctx)
+        && ((generator = ECC_GROUP_get0_generator(group)) != NULL)
         /* Get x & y */
-        && EC_POINT_get_affine_coordinates(group, generator, bn[3], bn[4], ctx)
+        && EC_POINTT_get_affine_coordinates(group, generator, bn[3], bn[4], ctx)
         /* Get order */
-        && EC_GROUP_get_order(group, bn[5], ctx)))
+        && ECC_GROUP_get_order(group, bn[5], ctx)))
         goto end;
 
    /*

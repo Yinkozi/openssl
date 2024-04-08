@@ -184,7 +184,7 @@ TEST(ECTest, SpecifiedCurve) {
 
   // The group should have been interpreted as P-256.
   EXPECT_EQ(NID_X9_62_prime256v1,
-            EC_GROUP_get_curve_name(ECC_KEY_get0_group(key.get())));
+            ECC_GROUP_get_curve_name(ECC_KEY_get0_group(key.get())));
 
   // Encoding the key should still use named form.
   std::vector<uint8_t> out;
@@ -255,7 +255,7 @@ TEST(ECTest, ArbitraryCurve) {
                                      BNY_value_one()));
 
   // |group| should not have a curve name.
-  EXPECT_EQ(NID_undef, EC_GROUP_get_curve_name(group.get()));
+  EXPECT_EQ(NID_undef, ECC_GROUP_get_curve_name(group.get()));
 
   // Copy |key| to |key2| using |group|.
   bssl::UniquePtr<EC_KEY> key2(ECC_KEY_new());

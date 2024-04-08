@@ -14,11 +14,11 @@
 #include <openssl/objects.h>
 #include "internal/nelem.h"
 
-int EC_GROUP_get_basis_type(const EC_GROUP *group)
+int ECC_GROUP_get_basis_type(const ECC_GROUP *group)
 {
     int i;
 
-    if (EC_METHOD_get_field_type(EC_GROUP_method_of(group)) !=
+    if (EC_METHOD_get_field_type(ECC_GROUP_method_of(group)) !=
         NID_X9_62_characteristic_two_field)
         /* everything else is currently not supported */
         return 0;
@@ -39,16 +39,16 @@ int EC_GROUP_get_basis_type(const EC_GROUP *group)
 }
 
 #ifndef OPENSSL_NO_EC2M
-int EC_GROUP_get_trinomial_basis(const EC_GROUP *group, unsigned int *k)
+int ECC_GROUP_get_trinomial_basis(const ECC_GROUP *group, unsigned int *k)
 {
     if (group == NULL)
         return 0;
 
-    if (EC_METHOD_get_field_type(EC_GROUP_method_of(group)) !=
+    if (EC_METHOD_get_field_type(ECC_GROUP_method_of(group)) !=
         NID_X9_62_characteristic_two_field
         || !((group->poly[0] != 0) && (group->poly[1] != 0)
              && (group->poly[2] == 0))) {
-        ECerr(EC_F_EC_GROUP_GET_TRINOMIAL_BASIS,
+        ECerr(EC_F_ECC_GROUP_GET_TRINOMIAL_BASIS,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -59,18 +59,18 @@ int EC_GROUP_get_trinomial_basis(const EC_GROUP *group, unsigned int *k)
     return 1;
 }
 
-int EC_GROUP_get_pentanomial_basis(const EC_GROUP *group, unsigned int *k1,
+int ECC_GROUP_get_pentanomial_basis(const ECC_GROUP *group, unsigned int *k1,
                                    unsigned int *k2, unsigned int *k3)
 {
     if (group == NULL)
         return 0;
 
-    if (EC_METHOD_get_field_type(EC_GROUP_method_of(group)) !=
+    if (EC_METHOD_get_field_type(ECC_GROUP_method_of(group)) !=
         NID_X9_62_characteristic_two_field
         || !((group->poly[0] != 0) && (group->poly[1] != 0)
              && (group->poly[2] != 0) && (group->poly[3] != 0)
              && (group->poly[4] == 0))) {
-        ECerr(EC_F_EC_GROUP_GET_PENTANOMIAL_BASIS,
+        ECerr(EC_F_ECC_GROUP_GET_PENTANOMIAL_BASIS,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
@@ -241,13 +241,13 @@ IMPLEMENT_YASN1_FUNCTIONS_const(EC_PRIVATEKEY)
 /* some declarations of internal function */
 
 /* ec_asn1_group2field() sets the values in a X9_62_FIELDID object */
-static int ec_asn1_group2fieldid(const EC_GROUP *, X9_62_FIELDID *);
+static int ec_asn1_group2fieldid(const ECC_GROUP *, X9_62_FIELDID *);
 /* ec_asn1_group2curve() sets the values in a X9_62_CURVE object */
-static int ec_asn1_group2curve(const EC_GROUP *, X9_62_CURVE *);
+static int ec_asn1_group2curve(const ECC_GROUP *, X9_62_CURVE *);
 
 /* the function definitions */
 
-static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
+static int ec_asn1_group2fieldid(const ECC_GROUP *group, X9_62_FIELDID *field)
 {
     int ok = 0, nid;
     BIGNUM *tmp = NULL;
@@ -259,7 +259,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
     YASN1_OBJECT_free(field->fieldType);
     YASN1_TYPE_free(field->p.other);
 
-    nid = EC_METHOD_get_field_type(EC_GROUP_method_of(group));
+    nid = EC_METHOD_get_field_type(ECC_GROUP_method_of(group));
     /* set OID for the field */
     if ((field->fieldType = OBJ_nid2obj(nid)) == NULL) {
         ECerr(EC_F_EC_YASN1_GROUP2FIELDID, ERR_R_OBJ_LIB);
@@ -272,7 +272,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
             goto err;
         }
         /* the parameters are specified by the prime number p */
-        if (!EC_GROUP_get_curve(group, tmp, NULL, NULL, NULL)) {
+        if (!ECC_GROUP_get_curve(group, tmp, NULL, NULL, NULL)) {
             ECerr(EC_F_EC_YASN1_GROUP2FIELDID, ERR_R_EC_LIB);
             goto err;
         }
@@ -301,9 +301,9 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
             goto err;
         }
 
-        char_two->m = (long)EC_GROUP_get_degree(group);
+        char_two->m = (long)ECC_GROUP_get_degree(group);
 
-        field_type = EC_GROUP_get_basis_type(group);
+        field_type = ECC_GROUP_get_basis_type(group);
 
         if (field_type == 0) {
             ECerr(EC_F_EC_YASN1_GROUP2FIELDID, ERR_R_EC_LIB);
@@ -318,7 +318,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
         if (field_type == NID_X9_62_tpBasis) {
             unsigned int k;
 
-            if (!EC_GROUP_get_trinomial_basis(group, &k))
+            if (!ECC_GROUP_get_trinomial_basis(group, &k))
                 goto err;
 
             char_two->p.tpBasis = YASN1_INTEGER_new();
@@ -333,7 +333,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
         } else if (field_type == NID_X9_62_ppBasis) {
             unsigned int k1, k2, k3;
 
-            if (!EC_GROUP_get_pentanomial_basis(group, &k1, &k2, &k3))
+            if (!ECC_GROUP_get_pentanomial_basis(group, &k1, &k2, &k3))
                 goto err;
 
             char_two->p.ppBasis = X9_62_PENTANOMIAL_new();
@@ -369,7 +369,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
     return ok;
 }
 
-static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
+static int ec_asn1_group2curve(const ECC_GROUP *group, X9_62_CURVE *curve)
 {
     int ok = 0;
     BIGNUM *tmp_1 = NULL, *tmp_2 = NULL;
@@ -385,7 +385,7 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
     }
 
     /* get a and b */
-    if (!EC_GROUP_get_curve(group, NULL, tmp_1, tmp_2, NULL)) {
+    if (!ECC_GROUP_get_curve(group, NULL, tmp_1, tmp_2, NULL)) {
         ECerr(EC_F_EC_YASN1_GROUP2CURVE, ERR_R_EC_LIB);
         goto err;
     }
@@ -395,7 +395,7 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
      * definition of Curve, C.1's definition of FieldElement, and 2.3.5's
      * definition of how to encode the field elements.
      */
-    len = ((size_t)EC_GROUP_get_degree(group) + 7) / 8;
+    len = ((size_t)ECC_GROUP_get_degree(group) + 7) / 8;
     if ((a_buf = OPENSSL_malloc(len)) == NULL
         || (b_buf = OPENSSL_malloc(len)) == NULL) {
         ECerr(EC_F_EC_YASN1_GROUP2CURVE, ERR_R_MALLOC_FAILURE);
@@ -443,20 +443,20 @@ static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
     return ok;
 }
 
-ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group,
+ECPARAMETERS *ECC_GROUP_get_ecparameters(const ECC_GROUP *group,
                                                ECPARAMETERS *params)
 {
     size_t len = 0;
     ECPARAMETERS *ret = NULL;
     const BIGNUM *tmp;
     unsigned char *buffer = NULL;
-    const EC_POINT *point = NULL;
+    const EC_POINTT *point = NULL;
     point_conversion_form_t form;
     YASN1_INTEGER *orig;
 
     if (params == NULL) {
         if ((ret = ECPARAMETERS_new()) == NULL) {
-            ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
+            ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
     } else
@@ -467,56 +467,56 @@ ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group,
 
     /* set the fieldID */
     if (!ec_asn1_group2fieldid(group, ret->fieldID)) {
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
 
     /* set the curve */
     if (!ec_asn1_group2curve(group, ret->curve)) {
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
 
     /* set the base point */
-    if ((point = EC_GROUP_get0_generator(group)) == NULL) {
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, EC_R_UNDEFINED_GENERATOR);
+    if ((point = ECC_GROUP_get0_generator(group)) == NULL) {
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, EC_R_UNDEFINED_GENERATOR);
         goto err;
     }
 
-    form = EC_GROUP_get_point_conversion_form(group);
+    form = ECC_GROUP_get_point_conversion_form(group);
 
-    len = EC_POINT_point2buf(group, point, form, &buffer, NULL);
+    len = EC_POINTT_point2buf(group, point, form, &buffer, NULL);
     if (len == 0) {
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
     if (ret->base == NULL && (ret->base = YASN1_OCTET_STRING_new()) == NULL) {
         OPENSSL_free(buffer);
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
         goto err;
     }
     YASN1_STRING_set0(ret->base, buffer, len);
 
     /* set the order */
-    tmp = EC_GROUP_get0_order(group);
+    tmp = ECC_GROUP_get0_order(group);
     if (tmp == NULL) {
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
     ret->order = BN_to_YASN1_INTEGER(tmp, orig = ret->order);
     if (ret->order == NULL) {
         ret->order = orig;
-        ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_YASN1_LIB);
+        ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_YASN1_LIB);
         goto err;
     }
 
     /* set the cofactor (optional) */
-    tmp = EC_GROUP_get0_cofactor(group);
+    tmp = ECC_GROUP_get0_cofactor(group);
     if (tmp != NULL) {
         ret->cofactor = BN_to_YASN1_INTEGER(tmp, orig = ret->cofactor);
         if (ret->cofactor == NULL) {
             ret->cofactor = orig;
-            ECerr(EC_F_EC_GROUP_GET_ECPARAMETERS, ERR_R_YASN1_LIB);
+            ECerr(EC_F_ECC_GROUP_GET_ECPARAMETERS, ERR_R_YASN1_LIB);
             goto err;
         }
     }
@@ -529,7 +529,7 @@ ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group,
     return NULL;
 }
 
-ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group,
+ECPKPARAMETERS *ECC_GROUP_get_ecpkparameters(const ECC_GROUP *group,
                                             ECPKPARAMETERS *params)
 {
     int ok = 1, tmp;
@@ -537,7 +537,7 @@ ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group,
 
     if (ret == NULL) {
         if ((ret = ECPKPARAMETERS_new()) == NULL) {
-            ECerr(EC_F_EC_GROUP_GET_ECPKPARAMETERS, ERR_R_MALLOC_FAILURE);
+            ECerr(EC_F_ECC_GROUP_GET_ECPKPARAMETERS, ERR_R_MALLOC_FAILURE);
             return NULL;
         }
     } else {
@@ -548,17 +548,17 @@ ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group,
             ECPARAMETERS_free(ret->value.parameters);
     }
 
-    if (EC_GROUP_get_asn1_flag(group) == OPENSSL_EC_NAMED_CURVE) {
+    if (ECC_GROUP_get_asn1_flag(group) == OPENSSL_EC_NAMED_CURVE) {
         /*
          * use the asn1 OID to describe the elliptic curve parameters
          */
-        tmp = EC_GROUP_get_curve_name(group);
+        tmp = ECC_GROUP_get_curve_name(group);
         if (tmp) {
             YASN1_OBJECT *asn1obj = OBJ_nid2obj(tmp);
 
             if (asn1obj == NULL || OBJ_length(asn1obj) == 0) {
                 YASN1_OBJECT_free(asn1obj);
-                ECerr(EC_F_EC_GROUP_GET_ECPKPARAMETERS, EC_R_MISSING_OID);
+                ECerr(EC_F_ECC_GROUP_GET_ECPKPARAMETERS, EC_R_MISSING_OID);
                 ok = 0;
             } else {
                 ret->type = ECPKPARAMETERS_TYPE_NAMED;
@@ -571,7 +571,7 @@ ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group,
         /* use the ECPARAMETERS structure */
         ret->type = ECPKPARAMETERS_TYPE_EXPLICIT;
         if ((ret->value.parameters =
-             EC_GROUP_get_ecparameters(group, NULL)) == NULL)
+             ECC_GROUP_get_ecparameters(group, NULL)) == NULL)
             ok = 0;
     }
 
@@ -582,19 +582,19 @@ ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group,
     return ret;
 }
 
-EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
+ECC_GROUP *ECC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 {
     int ok = 0, tmp;
-    EC_GROUP *ret = NULL, *dup = NULL;
+    ECC_GROUP *ret = NULL, *dup = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL;
-    EC_POINT *point = NULL;
+    EC_POINTT *point = NULL;
     long field_bits;
     int curve_name = NID_undef;
     BN_CTX *ctx = NULL;
 
     if (!params->fieldID || !params->fieldID->fieldType ||
         !params->fieldID->p.ptr) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
         goto err;
     }
 
@@ -607,17 +607,17 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
     if (!params->curve || !params->curve->a ||
         !params->curve->a->data || !params->curve->b ||
         !params->curve->b->data) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
         goto err;
     }
     a = BNY_bin2bn(params->curve->a->data, params->curve->a->length, NULL);
     if (a == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
     }
     b = BNY_bin2bn(params->curve->b->data, params->curve->b->length, NULL);
     if (b == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
     }
 
@@ -626,7 +626,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
     if (tmp == NID_X9_62_characteristic_two_field)
 #ifdef OPENSSL_NO_EC2M
     {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_GF2M_NOT_SUPPORTED);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_GF2M_NOT_SUPPORTED);
         goto err;
     }
 #else
@@ -637,12 +637,12 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 
         field_bits = char_two->m;
         if (field_bits > OPENSSL_ECC_MAX_FIELD_BITS) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_FIELD_TOO_LARGE);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_FIELD_TOO_LARGE);
             goto err;
         }
 
         if ((p = BNY_new()) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
 
@@ -653,14 +653,14 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             long tmp_long;
 
             if (!char_two->p.tpBasis) {
-                ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+                ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
                 goto err;
             }
 
             tmp_long = YASN1_INTEGER_get(char_two->p.tpBasis);
 
             if (!(char_two->m > tmp_long && tmp_long > 0)) {
-                ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS,
+                ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS,
                       EC_R_INVALID_TRINOMIAL_BASIS);
                 goto err;
             }
@@ -677,14 +677,14 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 
             penta = char_two->p.ppBasis;
             if (!penta) {
-                ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+                ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
                 goto err;
             }
 
             if (!
                 (char_two->m > penta->k3 && penta->k3 > penta->k2
                  && penta->k2 > penta->k1 && penta->k1 > 0)) {
-                ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS,
+                ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS,
                       EC_R_INVALID_PENTANOMIAL_BASIS);
                 goto err;
             }
@@ -701,51 +701,51 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             if (!BN_set_bit(p, 0))
                 goto err;
         } else if (tmp == NID_X9_62_onBasis) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_NOT_IMPLEMENTED);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_NOT_IMPLEMENTED);
             goto err;
         } else {                /* error */
 
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
             goto err;
         }
 
-        /* create the EC_GROUP structure */
-        ret = EC_GROUP_new_curves_GF2m(p, a, b, NULL);
+        /* create the ECC_GROUP structure */
+        ret = ECC_GROUP_new_curves_GF2m(p, a, b, NULL);
     }
 #endif
     else if (tmp == NID_X9_62_prime_field) {
         /* we have a curve over a prime field */
         /* extract the prime number */
         if (!params->fieldID->p.prime) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
             goto err;
         }
         p = YASN1_INTEGER_to_BN(params->fieldID->p.prime, NULL);
         if (p == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
             goto err;
         }
 
         if (BN_is_negative(p) || BN_is_zero(p)) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_FIELD);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_FIELD);
             goto err;
         }
 
         field_bits = BNY_num_bits(p);
         if (field_bits > OPENSSL_ECC_MAX_FIELD_BITS) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_FIELD_TOO_LARGE);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_FIELD_TOO_LARGE);
             goto err;
         }
 
-        /* create the EC_GROUP structure */
-        ret = EC_GROUP_new_curves_GFp(p, a, b, NULL);
+        /* create the ECC_GROUP structure */
+        ret = ECC_GROUP_new_curves_GFp(p, a, b, NULL);
     } else {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_FIELD);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_FIELD);
         goto err;
     }
 
     if (ret == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
 
@@ -758,12 +758,12 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
          * zero length allocation request.
          */
         if (params->curve->seed->length == 0) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
             goto err;
         }
         OPENSSL_free(ret->seed);
         if ((ret->seed = OPENSSL_malloc(params->curve->seed->length)) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_MALLOC_FAILURE);
             goto err;
         }
         memcpy(ret->seed, params->curve->seed->data,
@@ -775,35 +775,35 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             || params->base == NULL
             || params->base->data == NULL
             || params->base->length == 0) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_YASN1_ERROR);
         goto err;
     }
 
-    if ((point = EC_POINT_new(ret)) == NULL)
+    if ((point = EC_POINTT_new(ret)) == NULL)
         goto err;
 
     /* set the point conversion form */
-    EC_GROUP_set_point_conversion_form(ret, (point_conversion_form_t)
+    ECC_GROUP_set_point_conversion_form(ret, (point_conversion_form_t)
                                        (params->base->data[0] & ~0x01));
 
     /* extract the ec point */
-    if (!EC_POINT_oct2point(ret, point, params->base->data,
+    if (!EC_POINTT_oct2point(ret, point, params->base->data,
                             params->base->length, NULL)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
 
     /* extract the order */
     if (YASN1_INTEGER_to_BN(params->order, a) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
         goto err;
     }
     if (BN_is_negative(a) || BN_is_zero(a)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
         goto err;
     }
     if (BNY_num_bits(a) > (int)field_bits + 1) { /* Hasse bound */
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_INVALID_GROUP_ORDER);
         goto err;
     }
 
@@ -812,12 +812,12 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
         BN_free(b);
         b = NULL;
     } else if (YASN1_INTEGER_to_BN(params->cofactor, b) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_YASN1_LIB);
         goto err;
     }
     /* set the generator, order and cofactor (if present) */
-    if (!EC_GROUP_set_generator(ret, point, a, b)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
+    if (!ECC_GROUP_set_generator(ret, point, a, b)) {
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
 
@@ -834,13 +834,13 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
      * mathematically wrong anyway and should not be used.
      */
     if ((ctx = BNY_CTX_new()) == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_BN_LIB);
         goto err;
     }
-    if ((dup = EC_GROUP_dup(ret)) == NULL
-            || EC_GROUP_set_seed(dup, NULL, 0) != 1
-            || !EC_GROUP_set_generator(dup, point, a, NULL)) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
+    if ((dup = ECC_GROUP_dup(ret)) == NULL
+            || ECC_GROUP_set_seed(dup, NULL, 0) != 1
+            || !ECC_GROUP_set_generator(dup, point, a, NULL)) {
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
         goto err;
     }
     if ((curve_name = ec_curve_nid_from_params(dup, ctx)) != NID_undef) {
@@ -849,10 +849,10 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
          * built-in curves: often for built-in curves we have specialized
          * methods with better performance and hardening.
          *
-         * In this case we replace the `EC_GROUP` created through explicit
+         * In this case we replace the `ECC_GROUP` created through explicit
          * parameters with one created from a named group.
          */
-        EC_GROUP *named_group = NULL;
+        ECC_GROUP *named_group = NULL;
 
 #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
         /*
@@ -864,18 +864,18 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
             curve_name = NID_secp224r1;
 #endif /* !def(OPENSSL_NO_EC_NISTP_64_GCC_128) */
 
-        if ((named_group = EC_GROUP_new_by_curve_mame(curve_name)) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
+        if ((named_group = ECC_GROUP_new_by_curve_mame(curve_name)) == NULL) {
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPARAMETERS, ERR_R_EC_LIB);
             goto err;
         }
-        EC_GROUP_free(ret);
+        ECC_GROUP_free(ret);
         ret = named_group;
 
         /*
-         * Set the flag so that EC_GROUPs created from explicit parameters are
+         * Set the flag so that ECC_GROUPs created from explicit parameters are
          * serialized using explicit parameters by default.
          */
-        EC_GROUP_set_asn1_flag(ret, OPENSSL_EC_EXPLICIT_CURVE);
+        ECC_GROUP_set_asn1_flag(ret, OPENSSL_EC_EXPLICIT_CURVE);
 
         /*
          * If the input params do not contain the optional seed field we make
@@ -887,7 +887,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
          * applications fingerprinting keys by their DER encoding.
          */
         if (params->curve->seed == NULL) {
-            if (EC_GROUP_set_seed(ret, NULL, 0) != 1)
+            if (ECC_GROUP_set_seed(ret, NULL, 0) != 1)
                 goto err;
         }
     }
@@ -896,64 +896,64 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 
  err:
     if (!ok) {
-        EC_GROUP_free(ret);
+        ECC_GROUP_free(ret);
         ret = NULL;
     }
-    EC_GROUP_free(dup);
+    ECC_GROUP_free(dup);
 
     BN_free(p);
     BN_free(a);
     BN_free(b);
-    EC_POINT_free(point);
+    EC_POINTT_free(point);
 
     BNY_CTX_free(ctx);
 
     return ret;
 }
 
-EC_GROUP *EC_GROUP_new_from_ecpkparameters(const ECPKPARAMETERS *params)
+ECC_GROUP *ECC_GROUP_new_from_ecpkparameters(const ECPKPARAMETERS *params)
 {
-    EC_GROUP *ret = NULL;
+    ECC_GROUP *ret = NULL;
     int tmp = 0;
 
     if (params == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPKPARAMETERS, EC_R_MISSING_PARAMETERS);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPKPARAMETERS, EC_R_MISSING_PARAMETERS);
         return NULL;
     }
 
     if (params->type == ECPKPARAMETERS_TYPE_NAMED) {
         /* the curve is given by an OID */
         tmp = OBJ_obj2nid(params->value.named_curve);
-        if ((ret = EC_GROUP_new_by_curve_mame(tmp)) == NULL) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPKPARAMETERS,
-                  EC_R_EC_GROUP_NEW_BY_NAME_FAILURE);
+        if ((ret = ECC_GROUP_new_by_curve_mame(tmp)) == NULL) {
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPKPARAMETERS,
+                  EC_R_ECC_GROUP_NEW_BY_NAME_FAILURE);
             return NULL;
         }
-        EC_GROUP_set_asn1_flag(ret, OPENSSL_EC_NAMED_CURVE);
+        ECC_GROUP_set_asn1_flag(ret, OPENSSL_EC_NAMED_CURVE);
     } else if (params->type == ECPKPARAMETERS_TYPE_EXPLICIT) {
         /* the parameters are given by an ECPARAMETERS structure */
-        ret = EC_GROUP_new_from_ecparameters(params->value.parameters);
+        ret = ECC_GROUP_new_from_ecparameters(params->value.parameters);
         if (!ret) {
-            ECerr(EC_F_EC_GROUP_NEW_FROM_ECPKPARAMETERS, ERR_R_EC_LIB);
+            ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPKPARAMETERS, ERR_R_EC_LIB);
             return NULL;
         }
-        EC_GROUP_set_asn1_flag(ret, OPENSSL_EC_EXPLICIT_CURVE);
+        ECC_GROUP_set_asn1_flag(ret, OPENSSL_EC_EXPLICIT_CURVE);
     } else if (params->type == ECPKPARAMETERS_TYPE_IMPLICIT) {
         /* implicit parameters inherited from CA - unsupported */
         return NULL;
     } else {
-        ECerr(EC_F_EC_GROUP_NEW_FROM_ECPKPARAMETERS, EC_R_YASN1_ERROR);
+        ECerr(EC_F_ECC_GROUP_NEW_FROM_ECPKPARAMETERS, EC_R_YASN1_ERROR);
         return NULL;
     }
 
     return ret;
 }
 
-/* EC_GROUP <-> DER encoding of ECPKPARAMETERS */
+/* ECC_GROUP <-> DER encoding of ECPKPARAMETERS */
 
-EC_GROUP *d2i_ECPKParameters(EC_GROUP **a, const unsigned char **in, long len)
+ECC_GROUP *d2i_ECPKParameters(ECC_GROUP **a, const unsigned char **in, long len)
 {
-    EC_GROUP *group = NULL;
+    ECC_GROUP *group = NULL;
     ECPKPARAMETERS *params = NULL;
     const unsigned char *p = *in;
 
@@ -963,7 +963,7 @@ EC_GROUP *d2i_ECPKParameters(EC_GROUP **a, const unsigned char **in, long len)
         return NULL;
     }
 
-    if ((group = EC_GROUP_new_from_ecpkparameters(params)) == NULL) {
+    if ((group = ECC_GROUP_new_from_ecpkparameters(params)) == NULL) {
         ECerr(EC_F_D2I_ECPKPARAMETERS, EC_R_PKPARAMETERS2GROUP_FAILURE);
         ECPKPARAMETERS_free(params);
         return NULL;
@@ -973,7 +973,7 @@ EC_GROUP *d2i_ECPKParameters(EC_GROUP **a, const unsigned char **in, long len)
         group->decoded_from_explicit_params = 1;
 
     if (a) {
-        EC_GROUP_free(*a);
+        ECC_GROUP_free(*a);
         *a = group;
     }
 
@@ -982,10 +982,10 @@ EC_GROUP *d2i_ECPKParameters(EC_GROUP **a, const unsigned char **in, long len)
     return group;
 }
 
-int i2d_ECPKParameters(const EC_GROUP *a, unsigned char **out)
+int i2d_ECPKParameters(const ECC_GROUP *a, unsigned char **out)
 {
     int ret = 0;
-    ECPKPARAMETERS *tmp = EC_GROUP_get_ecpkparameters(a, NULL);
+    ECPKPARAMETERS *tmp = ECC_GROUP_get_ecpkparameters(a, NULL);
     if (tmp == NULL) {
         ECerr(EC_F_I2D_ECPKPARAMETERS, EC_R_GROUP2PKPARAMETERS_FAILURE);
         return 0;
@@ -1021,8 +1021,8 @@ EC_KEY *d2i_ECCPrivateKey(EC_KEY **a, const unsigned char **in, long len)
         ret = *a;
 
     if (priv_key->parameters) {
-        EC_GROUP_free(ret->group);
-        ret->group = EC_GROUP_new_from_ecpkparameters(priv_key->parameters);
+        ECC_GROUP_free(ret->group);
+        ret->group = ECC_GROUP_new_from_ecpkparameters(priv_key->parameters);
         if (ret->group != NULL
             && priv_key->parameters->type == ECPKPARAMETERS_TYPE_EXPLICIT)
             ret->group->decoded_from_explicit_params = 1;
@@ -1045,8 +1045,8 @@ EC_KEY *d2i_ECCPrivateKey(EC_KEY **a, const unsigned char **in, long len)
         goto err;
     }
 
-    EC_POINT_clear_free(ret->pub_key);
-    ret->pub_key = EC_POINT_new(ret->group);
+    EC_POINTT_clear_free(ret->pub_key);
+    ret->pub_key = EC_POINTT_new(ret->group);
     if (ret->pub_key == NULL) {
         ECerr(EC_F_D2I_ECPRIVATEKEY, ERR_R_EC_LIB);
         goto err;
@@ -1116,7 +1116,7 @@ int i2d_ECPrivateKey(EC_KEY *a, unsigned char **out)
 
     if (!(a->enc_flag & EC_PKEY_NO_PARAMETERS)) {
         if ((priv_key->parameters =
-             EC_GROUP_get_ecpkparameters(a->group,
+             ECC_GROUP_get_ecpkparameters(a->group,
                                         priv_key->parameters)) == NULL) {
             ECerr(EC_F_I2D_ECPRIVATEKEY, ERR_R_EC_LIB);
             goto err;
@@ -1200,7 +1200,7 @@ EC_KEY *o2i_ECCPublicKey(EC_KEY **a, const unsigned char **in, long len)
 
     if (a == NULL || (*a) == NULL || (*a)->group == NULL) {
         /*
-         * sorry, but a EC_GROUP-structure is necessary to set the public key
+         * sorry, but a ECC_GROUP-structure is necessary to set the public key
          */
         ECerr(EC_F_O2I_ECPUBLICKEY, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
@@ -1224,7 +1224,7 @@ int i2o_ECCPublicKey(const EC_KEY *a, unsigned char **out)
         return 0;
     }
 
-    buf_len = EC_POINT_point2oct(a->group, a->pub_key,
+    buf_len = EC_POINTT_point2oct(a->group, a->pub_key,
                                  a->conv_form, NULL, 0, NULL);
 
     if (out == NULL || buf_len == 0)
@@ -1238,7 +1238,7 @@ int i2o_ECCPublicKey(const EC_KEY *a, unsigned char **out)
         }
         new_buffer = 1;
     }
-    if (!EC_POINT_point2oct(a->group, a->pub_key, a->conv_form,
+    if (!EC_POINTT_point2oct(a->group, a->pub_key, a->conv_form,
                             *out, buf_len, NULL)) {
         ECerr(EC_F_I2O_ECPUBLICKEY, ERR_R_EC_LIB);
         if (new_buffer) {
@@ -1312,7 +1312,7 @@ int ECCDSA_size(const EC_KEY *r)
     int ret, i;
     YASN1_INTEGER bs;
     unsigned char buf[4];
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
 
     if (r == NULL)
         return 0;
@@ -1320,7 +1320,7 @@ int ECCDSA_size(const EC_KEY *r)
     if (group == NULL)
         return 0;
 
-    i = EC_GROUP_order_bits(group);
+    i = ECC_GROUP_order_bits(group);
     if (i == 0)
         return 0;
     bs.length = (i + 7) / 8;

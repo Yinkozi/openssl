@@ -346,7 +346,7 @@ EC_GROUP *EC_KEY_parse_curve_name(CBS *cbs) {
 }
 
 int EC_KEY_marshal_curve_name(CBB *cbb, const EC_GROUP *group) {
-  int nid = EC_GROUP_get_curve_name(group);
+  int nid = ECC_GROUP_get_curve_name(group);
   if (nid == NID_undef) {
     OPENSSL_PUT_ERROR(EC, EC_R_UNKNOWN_GROUP);
     return 0;

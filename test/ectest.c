@@ -27,11 +27,11 @@ static size_t crv_len = 0;
 static EC_builtin_curve *curves = NULL;
 
 /* test multiplication with group order, long and negative scalars */
-static int group_order_tests(EC_GROUP *group)
+static int group_order_tests(ECC_GROUP *group)
 {
     BIGNUM *n1 = NULL, *n2 = NULL, *order = NULL;
-    EC_POINT *P = NULL, *Q = NULL, *R = NULL, *S = NULL;
-    const EC_POINT *G = NULL;
+    EC_POINTT *P = NULL, *Q = NULL, *R = NULL, *S = NULL;
+    const EC_POINTT *G = NULL;
     BN_CTX *ctx = NULL;
     int i = 0, r = 0;
 
@@ -39,74 +39,74 @@ static int group_order_tests(EC_GROUP *group)
         || !TEST_ptr(n2 = BNY_new())
         || !TEST_ptr(order = BNY_new())
         || !TEST_ptr(ctx = BNY_CTX_new())
-        || !TEST_ptr(G = EC_GROUP_get0_generator(group))
-        || !TEST_ptr(P = EC_POINT_new(group))
-        || !TEST_ptr(Q = EC_POINT_new(group))
-        || !TEST_ptr(R = EC_POINT_new(group))
-        || !TEST_ptr(S = EC_POINT_new(group)))
+        || !TEST_ptr(G = ECC_GROUP_get0_generator(group))
+        || !TEST_ptr(P = EC_POINTT_new(group))
+        || !TEST_ptr(Q = EC_POINTT_new(group))
+        || !TEST_ptr(R = EC_POINTT_new(group))
+        || !TEST_ptr(S = EC_POINTT_new(group)))
         goto err;
 
-    if (!TEST_true(EC_GROUP_get_order(group, order, ctx))
-        || !TEST_true(EC_POINT_mul(group, Q, order, NULL, NULL, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, Q))
-        || !TEST_true(EC_GROUP_precompute_mult(group, ctx))
-        || !TEST_true(EC_POINT_mul(group, Q, order, NULL, NULL, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, Q))
-        || !TEST_true(EC_POINT_copy(P, G))
+    if (!TEST_true(ECC_GROUP_get_order(group, order, ctx))
+        || !TEST_true(EC_POINTT_mul(group, Q, order, NULL, NULL, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, Q))
+        || !TEST_true(ECC_GROUP_precompute_mult(group, ctx))
+        || !TEST_true(EC_POINTT_mul(group, Q, order, NULL, NULL, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, Q))
+        || !TEST_true(EC_POINTT_copy(P, G))
         || !TEST_true(BN_one(n1))
-        || !TEST_true(EC_POINT_mul(group, Q, n1, NULL, NULL, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
+        || !TEST_true(EC_POINTT_mul(group, Q, n1, NULL, NULL, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, ctx))
         || !TEST_true(BNY_sub(n1, order, n1))
-        || !TEST_true(EC_POINT_mul(group, Q, n1, NULL, NULL, ctx))
-        || !TEST_true(EC_POINT_invert(group, Q, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx)))
+        || !TEST_true(EC_POINTT_mul(group, Q, n1, NULL, NULL, ctx))
+        || !TEST_true(EC_POINTT_invert(group, Q, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, ctx)))
         goto err;
 
     for (i = 1; i <= 2; i++) {
         const BIGNUM *scalars[6];
-        const EC_POINT *points[6];
+        const EC_POINTT *points[6];
 
         if (!TEST_true(BN_set_word(n1, i))
             /*
              * If i == 1, P will be the predefined generator for which
-             * EC_GROUP_precompute_mult has set up precomputation.
+             * ECC_GROUP_precompute_mult has set up precomputation.
              */
-            || !TEST_true(EC_POINT_mul(group, P, n1, NULL, NULL, ctx))
-            || (i == 1 && !TEST_int_eq(0, EC_POINT_cmp(group, P, G, ctx)))
+            || !TEST_true(EC_POINTT_mul(group, P, n1, NULL, NULL, ctx))
+            || (i == 1 && !TEST_int_eq(0, EC_POINTT_cmp(group, P, G, ctx)))
             || !TEST_true(BN_one(n1))
             /* n1 = 1 - order */
             || !TEST_true(BNY_sub(n1, n1, order))
-            || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n1, ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
+            || !TEST_true(EC_POINTT_mul(group, Q, NULL, P, n1, ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, ctx))
 
             /* n2 = 1 + order */
             || !TEST_true(BNY_add(n2, order, BNY_value_one()))
-            || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n2, ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx))
+            || !TEST_true(EC_POINTT_mul(group, Q, NULL, P, n2, ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, ctx))
 
             /* n2 = (1 - order) * (1 + order) = 1 - order^2 */
             || !TEST_true(BNY_mul(n2, n1, n2, ctx))
-            || !TEST_true(EC_POINT_mul(group, Q, NULL, P, n2, ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, ctx)))
+            || !TEST_true(EC_POINTT_mul(group, Q, NULL, P, n2, ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, ctx)))
             goto err;
 
         /* n2 = order^2 - 1 */
         BN_set_negative(n2, 0);
-        if (!TEST_true(EC_POINT_mul(group, Q, NULL, P, n2, ctx))
+        if (!TEST_true(EC_POINTT_mul(group, Q, NULL, P, n2, ctx))
             /* Add P to verify the result. */
-            || !TEST_true(EC_POINT_add(group, Q, Q, P, ctx))
-            || !TEST_true(EC_POINT_is_at_infinity(group, Q))
+            || !TEST_true(EC_POINTT_add(group, Q, Q, P, ctx))
+            || !TEST_true(EC_POINTT_is_at_infinity(group, Q))
 
-            /* Exercise EC_POINTs_mul, including corner cases. */
-            || !TEST_false(EC_POINT_is_at_infinity(group, P)))
+            /* Exercise EC_POINTTs_mul, including corner cases. */
+            || !TEST_false(EC_POINTT_is_at_infinity(group, P)))
             goto err;
 
         scalars[0] = scalars[1] = BNY_value_one();
         points[0]  = points[1]  = P;
 
-        if (!TEST_true(EC_POINTs_mul(group, R, NULL, 2, points, scalars, ctx))
-            || !TEST_true(EC_POINT_dbl(group, S, points[0], ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, R, S, ctx)))
+        if (!TEST_true(EC_POINTTs_mul(group, R, NULL, 2, points, scalars, ctx))
+            || !TEST_true(EC_POINTT_dbl(group, S, points[0], ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, R, S, ctx)))
             goto err;
 
         scalars[0] = n1;
@@ -121,8 +121,8 @@ static int group_order_tests(EC_GROUP *group)
         points[4] = P;          /* => P */
         scalars[5] = n2;
         points[5] = Q;          /* => infinity */
-        if (!TEST_true(EC_POINTs_mul(group, P, NULL, 6, points, scalars, ctx))
-            || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+        if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 6, points, scalars, ctx))
+            || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
             goto err;
     }
 
@@ -131,10 +131,10 @@ err:
     if (r == 0 && i != 0)
         TEST_info(i == 1 ? "allowing precomputation" :
                            "without precomputation");
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(R);
-    EC_POINT_free(S);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(R);
+    EC_POINTT_free(S);
     BN_free(n1);
     BN_free(n2);
     BN_free(order);
@@ -146,12 +146,12 @@ static int prime_field_tests(void)
 {
     BN_CTX *ctx = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL, *scalar3 = NULL;
-    EC_GROUP *group = NULL, *tmp = NULL;
-    EC_GROUP *P_160 = NULL, *P_192 = NULL, *P_224 = NULL,
+    ECC_GROUP *group = NULL, *tmp = NULL;
+    ECC_GROUP *P_160 = NULL, *P_192 = NULL, *P_224 = NULL,
              *P_256 = NULL, *P_384 = NULL, *P_521 = NULL;
-    EC_POINT *P = NULL, *Q = NULL, *R = NULL;
+    EC_POINTT *P = NULL, *Q = NULL, *R = NULL;
     BIGNUM *x = NULL, *y = NULL, *z = NULL, *yplusone = NULL;
-    const EC_POINT *points[4];
+    const EC_POINTT *points[4];
     const BIGNUM *scalars[4];
     unsigned char buf[100];
     size_t len, r = 0;
@@ -165,19 +165,19 @@ static int prime_field_tests(void)
         || !TEST_true(BN_hex2bn(&a, "1"))
         || !TEST_true(BN_hex2bn(&b, "1"))
         /*
-         * applications should use EC_GROUP_new_curves_GFp so
+         * applications should use ECC_GROUP_new_curves_GFp so
          * that the library gets to choose the EC_METHOD
          */
-        || !TEST_ptr(group = EC_GROUP_new(EC_GFp_mont_method()))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
-        || !TEST_ptr(tmp = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(tmp, group)))
+        || !TEST_ptr(group = ECC_GROUP_new(EC_GFp_mont_method()))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_ptr(tmp = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(tmp, group)))
         goto err;
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     group = tmp;
     tmp = NULL;
 
-    if (!TEST_true(EC_GROUP_get_curve(group, p, a, b, ctx)))
+    if (!TEST_true(ECC_GROUP_get_curve(group, p, a, b, ctx)))
         goto err;
 
     TEST_info("Curve defined by Weierstrass equation");
@@ -187,24 +187,24 @@ static int prime_field_tests(void)
     test_output_bignum("p", p);
 
     buf[0] = 0;
-    if (!TEST_ptr(P = EC_POINT_new(group))
-        || !TEST_ptr(Q = EC_POINT_new(group))
-        || !TEST_ptr(R = EC_POINT_new(group))
-        || !TEST_true(EC_POINT_set_to_infinity(group, P))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P))
-        || !TEST_true(EC_POINT_oct2point(group, Q, buf, 1, ctx))
-        || !TEST_true(EC_POINT_add(group, P, P, Q, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P))
+    if (!TEST_ptr(P = EC_POINTT_new(group))
+        || !TEST_ptr(Q = EC_POINTT_new(group))
+        || !TEST_ptr(R = EC_POINTT_new(group))
+        || !TEST_true(EC_POINTT_set_to_infinity(group, P))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P))
+        || !TEST_true(EC_POINTT_oct2point(group, Q, buf, 1, ctx))
+        || !TEST_true(EC_POINTT_add(group, P, P, Q, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P))
         || !TEST_ptr(x = BNY_new())
         || !TEST_ptr(y = BNY_new())
         || !TEST_ptr(z = BNY_new())
         || !TEST_ptr(yplusone = BNY_new())
         || !TEST_true(BN_hex2bn(&x, "D"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, Q, x, 1, ctx)))
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, Q, x, 1, ctx)))
         goto err;
 
-    if (!TEST_int_gt(EC_POINT_is_on_curve(group, Q, ctx), 0)) {
-        if (!TEST_true(EC_POINT_get_affine_coordinates(group, Q, x, y, ctx)))
+    if (!TEST_int_gt(EC_POINTT_is_on_curve(group, Q, ctx), 0)) {
+        if (!TEST_true(EC_POINTT_get_affine_coordinates(group, Q, x, y, ctx)))
             goto err;
         TEST_info("Point is not on curve");
         test_output_bignum("x", x);
@@ -218,10 +218,10 @@ static int prime_field_tests(void)
         if (!TEST_int_ne(k--, 0))
             goto err;
 
-        if (EC_POINT_is_at_infinity(group, P)) {
+        if (EC_POINTT_is_at_infinity(group, P)) {
             TEST_note("     point at infinity");
         } else {
-            if (!TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y,
+            if (!TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y,
                                                            ctx)))
                 goto err;
 
@@ -229,45 +229,45 @@ static int prime_field_tests(void)
             test_output_bignum("y", y);
         }
 
-        if (!TEST_true(EC_POINT_copy(R, P))
-            || !TEST_true(EC_POINT_add(group, P, P, Q, ctx)))
+        if (!TEST_true(EC_POINTT_copy(R, P))
+            || !TEST_true(EC_POINTT_add(group, P, P, Q, ctx)))
             goto err;
 
-    } while (!EC_POINT_is_at_infinity(group, P));
+    } while (!EC_POINTT_is_at_infinity(group, P));
 
-    if (!TEST_true(EC_POINT_add(group, P, Q, R, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+    if (!TEST_true(EC_POINTT_add(group, P, Q, R, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
         goto err;
 
     len =
-        EC_POINT_point2oct(group, Q, POINT_CONVERSION_COMPRESSED, buf,
+        EC_POINTT_point2oct(group, Q, POINT_CONVERSION_COMPRESSED, buf,
                            sizeof(buf), ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, compressed form:",
                        buf, len);
 
-    len = EC_POINT_point2oct(group, Q, POINT_CONVERSION_UNCOMPRESSED,
+    len = EC_POINTT_point2oct(group, Q, POINT_CONVERSION_UNCOMPRESSED,
                              buf, sizeof(buf), ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, uncompressed form:",
                        buf, len);
 
-    len = EC_POINT_point2oct(group, Q, POINT_CONVERSION_HYBRID,
+    len = EC_POINTT_point2oct(group, Q, POINT_CONVERSION_HYBRID,
                              buf, sizeof(buf), ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, hybrid form:",
                        buf, len);
 
-    if (!TEST_true(EC_POINT_get_Jprojective_coordinates_GFp(group, R, x, y, z,
+    if (!TEST_true(EC_POINTT_get_Jprojective_coordinates_GFp(group, R, x, y, z,
                                                             ctx)))
         goto err;
     TEST_info("A representation of the inverse of that generator in");
@@ -276,8 +276,8 @@ static int prime_field_tests(void)
     test_output_bignum("y", y);
     test_output_bignum("z", z);
 
-    if (!TEST_true(EC_POINT_invert(group, P, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, R, ctx))
+    if (!TEST_true(EC_POINTT_invert(group, P, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, R, ctx))
 
     /*
      * Curve secp160r1 (Certicom Research SEC 2 Version 1.0, section 2.4.2,
@@ -291,7 +291,7 @@ static int prime_field_tests(void)
                                     "FFFFFFFFFFFFFFFFFFFFFFFF7FFFFFFC"))
         || !TEST_true(BN_hex2bn(&b,                         "1C97BEFC"
                                     "54BD7A8B65ACF89F81D4D4ADC565FA45"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
         || !TEST_true(BN_hex2bn(&x,                         "4A96B568"
                                     "8EF573284664698968C38BB913CBFC82"))
         || !TEST_true(BN_hex2bn(&y,                         "23a62855"
@@ -301,14 +301,14 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_true(EC_POINT_set_affine_coordinates(group, P, x, y, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_affine_coordinates(group, P, x, y, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z,                       "0100000000"
                                     "000000000001F4C8F927AED3CA752257"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
     TEST_info("SEC2 curve secp160r1 -- Generator");
     test_output_bignum("x", x);
@@ -317,10 +317,10 @@ static int prime_field_tests(void)
     if (!TEST_true(BN_hex2bn(&z,                         "23a62855"
                                  "3168947d59dcc912042351377ac5fb32"))
         || !TEST_BN_eq(y, z)
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 160)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 160)
         || !group_order_tests(group)
-        || !TEST_ptr(P_160 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_160, group))
+        || !TEST_ptr(P_160 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_160, group))
 
     /* Curve P-192 (FIPS PUB 186-2, App. 6) */
 
@@ -331,15 +331,15 @@ static int prime_field_tests(void)
                                     "FFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFC"))
         || !TEST_true(BN_hex2bn(&b,                 "64210519E59C80E7"
                                     "0FA7E9AB72243049FEB8DEECC146B9B1"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
         || !TEST_true(BN_hex2bn(&x,                 "188DA80EB03090F6"
                                     "7CBF20EB43A18800F4FF0AFD82FF1012"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x, 1, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x, 1, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z,                 "FFFFFFFFFFFFFFFF"
                                     "FFFFFFFF99DEF836146BC9B1B4D22831"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
 
     TEST_info("NIST curve P-192 -- Generator");
@@ -354,12 +354,12 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 192)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 192)
         || !group_order_tests(group)
-        || !TEST_ptr(P_192 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_192, group))
+        || !TEST_ptr(P_192 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_192, group))
 
     /* Curve P-224 (FIPS PUB 186-2, App. 6) */
 
@@ -370,15 +370,15 @@ static int prime_field_tests(void)
                                     "FFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFE"))
         || !TEST_true(BN_hex2bn(&b,         "B4050A850C04B3ABF5413256"
                                     "5044B0B7D7BFD8BA270B39432355FFB4"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
         || !TEST_true(BN_hex2bn(&x,         "B70E0CBD6BB4BF7F321390B9"
                                     "4A03C1D356C21122343280D6115C1D21"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x, 0, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x, 0, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z,         "FFFFFFFFFFFFFFFFFFFFFFFF"
                                     "FFFF16A2E0B8F03E13DD29455C5C2A3D"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
 
     TEST_info("NIST curve P-224 -- Generator");
@@ -393,12 +393,12 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 224)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 224)
         || !group_order_tests(group)
-        || !TEST_ptr(P_224 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_224, group))
+        || !TEST_ptr(P_224 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_224, group))
 
     /* Curve P-256 (FIPS PUB 186-2, App. 6) */
 
@@ -409,16 +409,16 @@ static int prime_field_tests(void)
                                     "00000000FFFFFFFFFFFFFFFFFFFFFFFC"))
         || !TEST_true(BN_hex2bn(&b, "5AC635D8AA3A93E7B3EBBD55769886BC"
                                     "651D06B0CC53B0F63BCE3C3E27D2604B"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
 
         || !TEST_true(BN_hex2bn(&x, "6B17D1F2E12C4247F8BCE6E563A440F2"
                                     "77037D812DEB33A0F4A13945D898C296"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x, 1, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x, 1, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z, "FFFFFFFF00000000FFFFFFFFFFFFFFFF"
                                     "BCE6FAADA7179E84F3B9CAC2FC632551"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
 
     TEST_info("NIST curve P-256 -- Generator");
@@ -433,12 +433,12 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 256)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 256)
         || !group_order_tests(group)
-        || !TEST_ptr(P_256 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_256, group))
+        || !TEST_ptr(P_256 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_256, group))
 
     /* Curve P-384 (FIPS PUB 186-2, App. 6) */
 
@@ -452,18 +452,18 @@ static int prime_field_tests(void)
         || !TEST_true(BN_hex2bn(&b, "B3312FA7E23EE7E4988E056BE3F82D19"
                                     "181D9C6EFE8141120314088F5013875A"
                                     "C656398D8A2ED19D2A85C8EDD3EC2AEF"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
 
         || !TEST_true(BN_hex2bn(&x, "AA87CA22BE8B05378EB1C71EF320AD74"
                                     "6E1D3B628BA79B9859F741E082542A38"
                                     "5502F25DBF55296C3A545E3872760AB7"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x, 1, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x, 1, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
                                     "FFFFFFFFFFFFFFFFC7634D81F4372DDF"
                                     "581A0DB248B0A77AECEC196ACCC52973"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
 
     TEST_info("NIST curve P-384 -- Generator");
@@ -479,12 +479,12 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 384)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 384)
         || !group_order_tests(group)
-        || !TEST_ptr(P_384 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_384, group))
+        || !TEST_ptr(P_384 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_384, group))
 
     /* Curve P-521 (FIPS PUB 186-2, App. 6) */
         || !TEST_true(BN_hex2bn(&p,                              "1FF"
@@ -503,21 +503,21 @@ static int prime_field_tests(void)
                                     "A2DA725B99B315F3B8B489918EF109E1"
                                     "56193951EC7E937B1652C0BD3BB1BF07"
                                     "3573DF883D2C34F1EF451FD46B503F00"))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
         || !TEST_true(BN_hex2bn(&x,                               "C6"
                                     "858E06B70404E9CD9E3ECB662395B442"
                                     "9C648139053FB521F828AF606B4D3DBA"
                                     "A14B5E77EFE75928FE1DC127A2FFA8DE"
                                     "3348B3C1856A429BF97E7E31C2E5BD66"))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x, 0, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x, 0, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z,                              "1FF"
                                     "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
                                     "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFA"
                                     "51868783BF2F966B7FCC0148F709A5D0"
                                     "3BB5C9B8899C47AEBB6FB71E91386409"))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, BNY_value_one()))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, BNY_value_one()))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
 
     TEST_info("NIST curve P-521 -- Generator");
@@ -535,33 +535,33 @@ static int prime_field_tests(void)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone,
                                                        ctx))
-        || !TEST_int_eq(EC_GROUP_get_degree(group), 521)
+        || !TEST_int_eq(ECC_GROUP_get_degree(group), 521)
         || !group_order_tests(group)
-        || !TEST_ptr(P_521 = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(P_521, group))
+        || !TEST_ptr(P_521 = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(P_521, group))
 
     /* more tests using the last curve */
 
     /* Restore the point that got mangled in the (x, y + 1) test. */
-        || !TEST_true(EC_POINT_set_affine_coordinates(group, P, x, y, ctx))
-        || !TEST_true(EC_POINT_copy(Q, P))
-        || !TEST_false(EC_POINT_is_at_infinity(group, Q))
-        || !TEST_true(EC_POINT_dbl(group, P, P, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
-        || !TEST_true(EC_POINT_invert(group, Q, ctx))       /* P = -2Q */
-        || !TEST_true(EC_POINT_add(group, R, P, Q, ctx))
-        || !TEST_true(EC_POINT_add(group, R, R, Q, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, R))    /* R = P + 2Q */
-        || !TEST_false(EC_POINT_is_at_infinity(group, Q)))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(group, P, x, y, ctx))
+        || !TEST_true(EC_POINTT_copy(Q, P))
+        || !TEST_false(EC_POINTT_is_at_infinity(group, Q))
+        || !TEST_true(EC_POINTT_dbl(group, P, P, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
+        || !TEST_true(EC_POINTT_invert(group, Q, ctx))       /* P = -2Q */
+        || !TEST_true(EC_POINTT_add(group, R, P, Q, ctx))
+        || !TEST_true(EC_POINTT_add(group, R, R, Q, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, R))    /* R = P + 2Q */
+        || !TEST_false(EC_POINTT_is_at_infinity(group, Q)))
         goto err;
     points[0] = Q;
     points[1] = Q;
     points[2] = Q;
     points[3] = Q;
 
-    if (!TEST_true(EC_GROUP_get_order(group, z, ctx))
+    if (!TEST_true(ECC_GROUP_get_order(group, z, ctx))
         || !TEST_true(BNY_add(y, z, BNY_value_one()))
         || !TEST_BN_even(y)
         || !TEST_true(BN_ryshift1(y, y)))
@@ -572,10 +572,10 @@ static int prime_field_tests(void)
     TEST_note("combined multiplication ...");
 
     /* z is still the group order */
-    if (!TEST_true(EC_POINTs_mul(group, P, NULL, 2, points, scalars, ctx))
-        || !TEST_true(EC_POINTs_mul(group, R, z, 2, points, scalars, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, R, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, R, Q, ctx))
+    if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 2, points, scalars, ctx))
+        || !TEST_true(EC_POINTTs_mul(group, R, z, 2, points, scalars, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, R, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, R, Q, ctx))
         || !TEST_true(BNY_rand(y, BNY_num_bits(y), 0, 0))
         || !TEST_true(BNY_add(z, z, y)))
         goto err;
@@ -583,8 +583,8 @@ static int prime_field_tests(void)
     scalars[0] = y;
     scalars[1] = z;         /* z = -(order + y) */
 
-    if (!TEST_true(EC_POINTs_mul(group, P, NULL, 2, points, scalars, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P))
+    if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 2, points, scalars, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P))
         || !TEST_true(BNY_rand(x, BNY_num_bits(y) - 1, 0, 0))
         || !TEST_true(BNY_add(z, x, y)))
         goto err;
@@ -598,8 +598,8 @@ static int prime_field_tests(void)
     BN_zero(scalar3);
     scalars[3] = scalar3;
 
-    if (!TEST_true(EC_POINTs_mul(group, P, NULL, 4, points, scalars, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+    if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 4, points, scalars, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
         goto err;
 
     TEST_note(" ok\n");
@@ -611,23 +611,23 @@ err:
     BN_free(p);
     BN_free(a);
     BN_free(b);
-    EC_GROUP_free(group);
-    EC_GROUP_free(tmp);
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(R);
+    ECC_GROUP_free(group);
+    ECC_GROUP_free(tmp);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(R);
     BN_free(x);
     BN_free(y);
     BN_free(z);
     BN_free(yplusone);
     BN_free(scalar3);
 
-    EC_GROUP_free(P_160);
-    EC_GROUP_free(P_192);
-    EC_GROUP_free(P_224);
-    EC_GROUP_free(P_256);
-    EC_GROUP_free(P_384);
-    EC_GROUP_free(P_521);
+    ECC_GROUP_free(P_160);
+    ECC_GROUP_free(P_192);
+    ECC_GROUP_free(P_224);
+    ECC_GROUP_free(P_256);
+    ECC_GROUP_free(P_384);
+    ECC_GROUP_free(P_521);
     return r;
 }
 
@@ -809,9 +809,9 @@ static int char2_curve_test(int n)
     BN_CTX *ctx = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL;
     BIGNUM *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
-    EC_GROUP *group = NULL, *variable = NULL;
-    EC_POINT *P = NULL, *Q = NULL, *R = NULL;
-    const EC_POINT *points[3];
+    ECC_GROUP *group = NULL, *variable = NULL;
+    EC_POINTT *P = NULL, *Q = NULL, *R = NULL;
+    const EC_POINTT *points[3];
     const BIGNUM *scalars[3];
     struct c2_curve_test *const test = char2_curve_tests + n;
 
@@ -826,11 +826,11 @@ static int char2_curve_test(int n)
         || !TEST_true(BN_hex2bn(&p, test->p))
         || !TEST_true(BN_hex2bn(&a, test->a))
         || !TEST_true(BN_hex2bn(&b, test->b))
-        || !TEST_true(group = EC_GROUP_new(EC_GF2m_simple_method()))
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
-        || !TEST_ptr(P = EC_POINT_new(group))
-        || !TEST_ptr(Q = EC_POINT_new(group))
-        || !TEST_ptr(R = EC_POINT_new(group))
+        || !TEST_true(group = ECC_GROUP_new(EC_GF2m_simple_method()))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_ptr(P = EC_POINTT_new(group))
+        || !TEST_ptr(Q = EC_POINTT_new(group))
+        || !TEST_ptr(R = EC_POINTT_new(group))
         || !TEST_true(BN_hex2bn(&x, test->x))
         || !TEST_true(BN_hex2bn(&y, test->y))
         || !TEST_true(BNY_add(yplusone, y, BNY_value_one())))
@@ -842,15 +842,15 @@ static int char2_curve_test(int n)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-    if (!TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone, ctx))
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, P, x,
+    if (!TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone, ctx))
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, P, x,
                                                           test->y_bit,
                                                           ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z, test->order))
         || !TEST_true(BN_hex2bn(&cof, test->cof))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, cof))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y, ctx)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, cof))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y, ctx)))
         goto err;
     TEST_info("%s -- Generator", test->name);
     test_output_bignum("x", x);
@@ -864,36 +864,36 @@ static int char2_curve_test(int n)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-    if (!TEST_false(EC_POINT_set_affine_coordinates(group, P, x, yplusone, ctx))
-        || !TEST_true(EC_POINT_set_affine_coordinates(group, P, x, y, ctx))
-        || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
+    if (!TEST_false(EC_POINTT_set_affine_coordinates(group, P, x, yplusone, ctx))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(group, P, x, y, ctx))
+        || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
         || !TEST_true(BN_hex2bn(&z, test->order))
         || !TEST_true(BN_hex2bn(&cof, test->cof))
-        || !TEST_true(EC_GROUP_set_generator(group, P, z, cof)))
+        || !TEST_true(ECC_GROUP_set_generator(group, P, z, cof)))
         goto err;
     TEST_info("%s -- Generator:", test->name);
     test_output_bignum("x", x);
     test_output_bignum("y", y);
 # endif
 
-    if (!TEST_int_eq(EC_GROUP_get_degree(group), test->degree)
+    if (!TEST_int_eq(ECC_GROUP_get_degree(group), test->degree)
         || !group_order_tests(group)
-        || !TEST_ptr(variable = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(variable, group)))
+        || !TEST_ptr(variable = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(variable, group)))
         goto err;
 
     /* more tests using the last curve */
     if (n == OSSL_NELEM(char2_curve_tests) - 1) {
-        if (!TEST_true(EC_POINT_set_affine_coordinates(group, P, x, y, ctx))
-            || !TEST_true(EC_POINT_copy(Q, P))
-            || !TEST_false(EC_POINT_is_at_infinity(group, Q))
-            || !TEST_true(EC_POINT_dbl(group, P, P, ctx))
-            || !TEST_int_gt(EC_POINT_is_on_curve(group, P, ctx), 0)
-            || !TEST_true(EC_POINT_invert(group, Q, ctx))       /* P = -2Q */
-            || !TEST_true(EC_POINT_add(group, R, P, Q, ctx))
-            || !TEST_true(EC_POINT_add(group, R, R, Q, ctx))
-            || !TEST_true(EC_POINT_is_at_infinity(group, R))   /* R = P + 2Q */
-            || !TEST_false(EC_POINT_is_at_infinity(group, Q)))
+        if (!TEST_true(EC_POINTT_set_affine_coordinates(group, P, x, y, ctx))
+            || !TEST_true(EC_POINTT_copy(Q, P))
+            || !TEST_false(EC_POINTT_is_at_infinity(group, Q))
+            || !TEST_true(EC_POINTT_dbl(group, P, P, ctx))
+            || !TEST_int_gt(EC_POINTT_is_on_curve(group, P, ctx), 0)
+            || !TEST_true(EC_POINTT_invert(group, Q, ctx))       /* P = -2Q */
+            || !TEST_true(EC_POINTT_add(group, R, P, Q, ctx))
+            || !TEST_true(EC_POINTT_add(group, R, R, Q, ctx))
+            || !TEST_true(EC_POINTT_is_at_infinity(group, R))   /* R = P + 2Q */
+            || !TEST_false(EC_POINTT_is_at_infinity(group, Q)))
             goto err;
 
         points[0] = Q;
@@ -910,10 +910,10 @@ static int char2_curve_test(int n)
         TEST_note("combined multiplication ...");
 
         /* z is still the group order */
-        if (!TEST_true(EC_POINTs_mul(group, P, NULL, 2, points, scalars, ctx))
-            || !TEST_true(EC_POINTs_mul(group, R, z, 2, points, scalars, ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, P, R, ctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, R, Q, ctx)))
+        if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 2, points, scalars, ctx))
+            || !TEST_true(EC_POINTTs_mul(group, R, z, 2, points, scalars, ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, P, R, ctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, R, Q, ctx)))
             goto err;
 
         if (!TEST_true(BNY_rand(y, BNY_num_bits(y), 0, 0))
@@ -923,8 +923,8 @@ static int char2_curve_test(int n)
         scalars[0] = y;
         scalars[1] = z;         /* z = -(order + y) */
 
-        if (!TEST_true(EC_POINTs_mul(group, P, NULL, 2, points, scalars, ctx))
-            || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+        if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 2, points, scalars, ctx))
+            || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
             goto err;
 
         if (!TEST_true(BNY_rand(x, BNY_num_bits(y) - 1, 0, 0))
@@ -935,8 +935,8 @@ static int char2_curve_test(int n)
         scalars[1] = y;
         scalars[2] = z;         /* z = -(x+y) */
 
-        if (!TEST_true(EC_POINTs_mul(group, P, NULL, 3, points, scalars, ctx))
-            || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+        if (!TEST_true(EC_POINTTs_mul(group, P, NULL, 3, points, scalars, ctx))
+            || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
             goto err;;
     }
 
@@ -951,11 +951,11 @@ err:
     BN_free(z);
     BN_free(yplusone);
     BN_free(cof);
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(R);
-    EC_GROUP_free(group);
-    EC_GROUP_free(variable);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(R);
+    ECC_GROUP_free(group);
+    ECC_GROUP_free(variable);
     return r;
 }
 
@@ -963,8 +963,8 @@ static int char2_field_tests(void)
 {
     BN_CTX *ctx = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL;
-    EC_GROUP *group = NULL, *tmp = NULL;
-    EC_POINT *P = NULL, *Q = NULL, *R = NULL;
+    ECC_GROUP *group = NULL, *tmp = NULL;
+    EC_POINTT *P = NULL, *Q = NULL, *R = NULL;
     BIGNUM *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
     unsigned char buf[100];
     size_t len;
@@ -979,20 +979,20 @@ static int char2_field_tests(void)
         || !TEST_true(BN_hex2bn(&b, "1")))
         goto err;
 
-    group = EC_GROUP_new(EC_GF2m_simple_method()); /* applications should use
-                                                    * EC_GROUP_new_curves_GF2m
+    group = ECC_GROUP_new(EC_GF2m_simple_method()); /* applications should use
+                                                    * ECC_GROUP_new_curves_GF2m
                                                     * so that the library gets
                                                     * to choose the EC_METHOD */
     if (!TEST_ptr(group)
-        || !TEST_true(EC_GROUP_set_curve(group, p, a, b, ctx))
-        || !TEST_ptr(tmp = EC_GROUP_new(EC_GROUP_method_of(group)))
-        || !TEST_true(EC_GROUP_copy(tmp, group)))
+        || !TEST_true(ECC_GROUP_set_curve(group, p, a, b, ctx))
+        || !TEST_ptr(tmp = ECC_GROUP_new(ECC_GROUP_method_of(group)))
+        || !TEST_true(ECC_GROUP_copy(tmp, group)))
         goto err;
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     group = tmp;
     tmp = NULL;
 
-    if (!TEST_true(EC_GROUP_get_curve(group, p, a, b, ctx)))
+    if (!TEST_true(ECC_GROUP_get_curve(group, p, a, b, ctx)))
         goto err;
 
     TEST_info("Curve defined by Weierstrass equation");
@@ -1001,17 +1001,17 @@ static int char2_field_tests(void)
     test_output_bignum("b", b);
     test_output_bignum("p", p);
 
-     if (!TEST_ptr(P = EC_POINT_new(group))
-        || !TEST_ptr(Q = EC_POINT_new(group))
-        || !TEST_ptr(R = EC_POINT_new(group))
-        || !TEST_true(EC_POINT_set_to_infinity(group, P))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+     if (!TEST_ptr(P = EC_POINTT_new(group))
+        || !TEST_ptr(Q = EC_POINTT_new(group))
+        || !TEST_ptr(R = EC_POINTT_new(group))
+        || !TEST_true(EC_POINTT_set_to_infinity(group, P))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
         goto err;
 
     buf[0] = 0;
-    if (!TEST_true(EC_POINT_oct2point(group, Q, buf, 1, ctx))
-        || !TEST_true(EC_POINT_add(group, P, P, Q, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P))
+    if (!TEST_true(EC_POINTT_oct2point(group, Q, buf, 1, ctx))
+        || !TEST_true(EC_POINTT_add(group, P, P, Q, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P))
         || !TEST_ptr(x = BNY_new())
         || !TEST_ptr(y = BNY_new())
         || !TEST_ptr(z = BNY_new())
@@ -1020,17 +1020,17 @@ static int char2_field_tests(void)
         || !TEST_true(BN_hex2bn(&x, "6"))
 /* Change test based on whether binary point compression is enabled or not. */
 #  ifdef OPENSSL_EC_BIN_PT_COMP
-        || !TEST_true(EC_POINT_set_compressed_coordinates(group, Q, x, 1, ctx))
+        || !TEST_true(EC_POINTT_set_compressed_coordinates(group, Q, x, 1, ctx))
 #  else
         || !TEST_true(BN_hex2bn(&y, "8"))
-        || !TEST_true(EC_POINT_set_affine_coordinates(group, Q, x, y, ctx))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(group, Q, x, y, ctx))
 #  endif
        )
         goto err;
-    if (!TEST_int_gt(EC_POINT_is_on_curve(group, Q, ctx), 0)) {
+    if (!TEST_int_gt(EC_POINTT_is_on_curve(group, Q, ctx), 0)) {
 /* Change test based on whether binary point compression is enabled or not. */
 #  ifdef OPENSSL_EC_BIN_PT_COMP
-        if (!TEST_true(EC_POINT_get_affine_coordinates(group, Q, x, y, ctx)))
+        if (!TEST_true(EC_POINTT_get_affine_coordinates(group, Q, x, y, ctx)))
             goto err;
 #  endif
         TEST_info("Point is not on curve");
@@ -1045,10 +1045,10 @@ static int char2_field_tests(void)
         if (!TEST_int_ne(k--, 0))
             goto err;
 
-        if (EC_POINT_is_at_infinity(group, P))
+        if (EC_POINTT_is_at_infinity(group, P))
             TEST_note("     point at infinity");
         else {
-            if (!TEST_true(EC_POINT_get_affine_coordinates(group, P, x, y,
+            if (!TEST_true(EC_POINTT_get_affine_coordinates(group, P, x, y,
                                                            ctx)))
                 goto err;
 
@@ -1056,33 +1056,33 @@ static int char2_field_tests(void)
             test_output_bignum("y", y);
         }
 
-        if (!TEST_true(EC_POINT_copy(R, P))
-            || !TEST_true(EC_POINT_add(group, P, P, Q, ctx)))
+        if (!TEST_true(EC_POINTT_copy(R, P))
+            || !TEST_true(EC_POINTT_add(group, P, P, Q, ctx)))
             goto err;
     }
-    while (!EC_POINT_is_at_infinity(group, P));
+    while (!EC_POINTT_is_at_infinity(group, P));
 
-    if (!TEST_true(EC_POINT_add(group, P, Q, R, ctx))
-        || !TEST_true(EC_POINT_is_at_infinity(group, P)))
+    if (!TEST_true(EC_POINTT_add(group, P, Q, R, ctx))
+        || !TEST_true(EC_POINTT_is_at_infinity(group, P)))
         goto err;
 
 /* Change test based on whether binary point compression is enabled or not. */
 #  ifdef OPENSSL_EC_BIN_PT_COMP
-    len = EC_POINT_point2oct(group, Q, POINT_CONVERSION_COMPRESSED,
+    len = EC_POINTT_point2oct(group, Q, POINT_CONVERSION_COMPRESSED,
                              buf, sizeof(buf), ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, compressed form:",
                        buf, len);
 #  endif
 
-    len = EC_POINT_point2oct(group, Q, POINT_CONVERSION_UNCOMPRESSED,
+    len = EC_POINTT_point2oct(group, Q, POINT_CONVERSION_UNCOMPRESSED,
                              buf, sizeof(buf), ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, uncompressed form:",
                        buf, len);
@@ -1090,18 +1090,18 @@ static int char2_field_tests(void)
 /* Change test based on whether binary point compression is enabled or not. */
 #  ifdef OPENSSL_EC_BIN_PT_COMP
     len =
-        EC_POINT_point2oct(group, Q, POINT_CONVERSION_HYBRID, buf, sizeof(buf),
+        EC_POINTT_point2oct(group, Q, POINT_CONVERSION_HYBRID, buf, sizeof(buf),
                            ctx);
     if (!TEST_size_t_ne(len, 0)
-        || !TEST_true(EC_POINT_oct2point(group, P, buf, len, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, Q, ctx)))
+        || !TEST_true(EC_POINTT_oct2point(group, P, buf, len, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, Q, ctx)))
         goto err;
     test_output_memory("Generator as octet string, hybrid form:",
                        buf, len);
 #  endif
 
-    if (!TEST_true(EC_POINT_invert(group, P, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(group, P, R, ctx)))
+    if (!TEST_true(EC_POINTT_invert(group, P, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(group, P, R, ctx)))
         goto err;
 
     TEST_note("\n");
@@ -1112,11 +1112,11 @@ err:
     BN_free(p);
     BN_free(a);
     BN_free(b);
-    EC_GROUP_free(group);
-    EC_GROUP_free(tmp);
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(R);
+    ECC_GROUP_free(group);
+    ECC_GROUP_free(tmp);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(R);
     BN_free(x);
     BN_free(y);
     BN_free(z);
@@ -1128,25 +1128,25 @@ err:
 static int hybrid_point_encoding_test(void)
 {
     BIGNUM *x = NULL, *y = NULL;
-    EC_GROUP *group = NULL;
-    EC_POINT *point = NULL;
+    ECC_GROUP *group = NULL;
+    EC_POINTT *point = NULL;
     unsigned char *buf = NULL;
     size_t len;
     int r = 0;
 
     if (!TEST_true(BN_dec2bn(&x, "0"))
         || !TEST_true(BN_dec2bn(&y, "1"))
-        || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_sect571k1))
-        || !TEST_ptr(point = EC_POINT_new(group))
-        || !TEST_true(EC_POINT_set_affine_coordinates(group, point, x, y, NULL))
-        || !TEST_size_t_ne(0, (len = EC_POINT_point2oct(group,
+        || !TEST_ptr(group = ECC_GROUP_new_by_curve_mame(NID_sect571k1))
+        || !TEST_ptr(point = EC_POINTT_new(group))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(group, point, x, y, NULL))
+        || !TEST_size_t_ne(0, (len = EC_POINTT_point2oct(group,
                                                         point,
                                                         POINT_CONVERSION_HYBRID,
                                                         NULL,
                                                         0,
                                                         NULL)))
         || !TEST_ptr(buf = OPENSSL_malloc(len))
-        || !TEST_size_t_eq(len, EC_POINT_point2oct(group,
+        || !TEST_size_t_eq(len, EC_POINTT_point2oct(group,
                                                    point,
                                                    POINT_CONVERSION_HYBRID,
                                                    buf,
@@ -1157,19 +1157,19 @@ static int hybrid_point_encoding_test(void)
     r = 1;
 
     /* buf contains a valid hybrid point, check that we can decode it. */
-    if (!TEST_true(EC_POINT_oct2point(group, point, buf, len, NULL)))
+    if (!TEST_true(EC_POINTT_oct2point(group, point, buf, len, NULL)))
         r = 0;
 
     /* Flip the y_bit and verify that the invalid encoding is rejected. */
     buf[0] ^= 1;
-    if (!TEST_false(EC_POINT_oct2point(group, point, buf, len, NULL)))
+    if (!TEST_false(EC_POINTT_oct2point(group, point, buf, len, NULL)))
         r = 0;
 
 err:
     BN_free(x);
     BN_free(y);
-    EC_GROUP_free(group);
-    EC_POINT_free(point);
+    ECC_GROUP_free(group);
+    EC_POINTT_free(point);
     OPENSSL_free(buf);
     return r;
 }
@@ -1177,34 +1177,34 @@ err:
 
 static int internal_curve_test(int n)
 {
-    EC_GROUP *group = NULL;
+    ECC_GROUP *group = NULL;
     int nid = curves[n].nid;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))) {
-        TEST_info("EC_GROUP_new_curve_name() failed with curve %s\n",
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(nid))) {
+        TEST_info("ECC_GROUP_new_curve_name() failed with curve %s\n",
                   OBJ_nid2sn(nid));
         return 0;
     }
-    if (!TEST_true(EC_GROUP_check(group, NULL))) {
-        TEST_info("EC_GROUP_check() failed with curve %s\n", OBJ_nid2sn(nid));
-        EC_GROUP_free(group);
+    if (!TEST_true(ECC_GROUP_check(group, NULL))) {
+        TEST_info("ECC_GROUP_check() failed with curve %s\n", OBJ_nid2sn(nid));
+        ECC_GROUP_free(group);
         return 0;
     }
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return 1;
 }
 
 static int internal_curve_test_method(int n)
 {
     int r, nid = curves[n].nid;
-    EC_GROUP *group;
+    ECC_GROUP *group;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))) {
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(nid))) {
         TEST_info("Curve %s failed\n", OBJ_nid2sn(nid));
         return 0;
     }
     r = group_order_tests(group);
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return r;
 }
 
@@ -1320,8 +1320,8 @@ static int nistp_single_test(int idx)
     BN_CTX *ctx = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
     BIGNUM *n = NULL, *m = NULL, *order = NULL, *yplusone = NULL;
-    EC_GROUP *NISTP = NULL;
-    EC_POINT *G = NULL, *P = NULL, *Q = NULL, *Q_CHECK = NULL;
+    ECC_GROUP *NISTP = NULL;
+    EC_POINTT *G = NULL, *P = NULL, *Q = NULL, *Q_CHECK = NULL;
     int r = 0;
 
     TEST_note("NIST curve P-%d (optimised implementation):",
@@ -1337,16 +1337,16 @@ static int nistp_single_test(int idx)
         || !TEST_ptr(order = BNY_new())
         || !TEST_ptr(yplusone = BNY_new())
 
-        || !TEST_ptr(NISTP = EC_GROUP_new(test->meth()))
+        || !TEST_ptr(NISTP = ECC_GROUP_new(test->meth()))
         || !TEST_true(BN_hex2bn(&p, test->p))
         || !TEST_int_eq(1, BN_is_prime_ex(p, BN_prime_checks, ctx, NULL))
         || !TEST_true(BN_hex2bn(&a, test->a))
         || !TEST_true(BN_hex2bn(&b, test->b))
-        || !TEST_true(EC_GROUP_set_curve(NISTP, p, a, b, ctx))
-        || !TEST_ptr(G = EC_POINT_new(NISTP))
-        || !TEST_ptr(P = EC_POINT_new(NISTP))
-        || !TEST_ptr(Q = EC_POINT_new(NISTP))
-        || !TEST_ptr(Q_CHECK = EC_POINT_new(NISTP))
+        || !TEST_true(ECC_GROUP_set_curve(NISTP, p, a, b, ctx))
+        || !TEST_ptr(G = EC_POINTT_new(NISTP))
+        || !TEST_ptr(P = EC_POINTT_new(NISTP))
+        || !TEST_ptr(Q = EC_POINTT_new(NISTP))
+        || !TEST_ptr(Q_CHECK = EC_POINTT_new(NISTP))
         || !TEST_true(BN_hex2bn(&x, test->Qx))
         || !TEST_true(BN_hex2bn(&y, test->Qy))
         || !TEST_true(BNY_add(yplusone, y, BNY_value_one()))
@@ -1354,92 +1354,92 @@ static int nistp_single_test(int idx)
      * When (x, y) is on the curve, (x, y + 1) is, as it happens, not,
      * and therefore setting the coordinates should fail.
      */
-        || !TEST_false(EC_POINT_set_affine_coordinates(NISTP, Q_CHECK, x,
+        || !TEST_false(EC_POINTT_set_affine_coordinates(NISTP, Q_CHECK, x,
                                                        yplusone, ctx))
-        || !TEST_true(EC_POINT_set_affine_coordinates(NISTP, Q_CHECK, x, y,
+        || !TEST_true(EC_POINTT_set_affine_coordinates(NISTP, Q_CHECK, x, y,
                                                       ctx))
         || !TEST_true(BN_hex2bn(&x, test->Gx))
         || !TEST_true(BN_hex2bn(&y, test->Gy))
-        || !TEST_true(EC_POINT_set_affine_coordinates(NISTP, G, x, y, ctx))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(NISTP, G, x, y, ctx))
         || !TEST_true(BN_hex2bn(&order, test->order))
-        || !TEST_true(EC_GROUP_set_generator(NISTP, G, order, BNY_value_one()))
-        || !TEST_int_eq(EC_GROUP_get_degree(NISTP), test->degree))
+        || !TEST_true(ECC_GROUP_set_generator(NISTP, G, order, BNY_value_one()))
+        || !TEST_int_eq(ECC_GROUP_get_degree(NISTP), test->degree))
         goto err;
 
     TEST_note("NIST test vectors ... ");
     if (!TEST_true(BN_hex2bn(&n, test->d)))
         goto err;
     /* fixed point multiplication */
-    EC_POINT_mul(NISTP, Q, n, NULL, NULL, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx)))
+    EC_POINTT_mul(NISTP, Q, n, NULL, NULL, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx)))
         goto err;
     /* random point multiplication */
-    EC_POINT_mul(NISTP, Q, NULL, G, n, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx))
+    EC_POINTT_mul(NISTP, Q, NULL, G, n, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx))
 
         /* set generator to P = 2*G, where G is the standard generator */
-        || !TEST_true(EC_POINT_dbl(NISTP, P, G, ctx))
-        || !TEST_true(EC_GROUP_set_generator(NISTP, P, order, BNY_value_one()))
+        || !TEST_true(EC_POINTT_dbl(NISTP, P, G, ctx))
+        || !TEST_true(ECC_GROUP_set_generator(NISTP, P, order, BNY_value_one()))
         /* set the scalar to m=n/2, where n is the NIST test scalar */
         || !TEST_true(BN_ryshift(m, n, 1)))
         goto err;
 
     /* test the non-standard generator */
     /* fixed point multiplication */
-    EC_POINT_mul(NISTP, Q, m, NULL, NULL, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx)))
+    EC_POINTT_mul(NISTP, Q, m, NULL, NULL, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx)))
         goto err;
     /* random point multiplication */
-    EC_POINT_mul(NISTP, Q, NULL, P, m, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx))
+    EC_POINTT_mul(NISTP, Q, NULL, P, m, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx))
 
     /*
      * We have not performed precomputation so have_precompute mult should be
      * false
      */
-        || !TEST_false(EC_GROUP_have_precompute_mult(NISTP))
+        || !TEST_false(ECC_GROUP_have_precompute_mult(NISTP))
 
     /* now repeat all tests with precomputation */
-        || !TEST_true(EC_GROUP_precompute_mult(NISTP, ctx))
-        || !TEST_true(EC_GROUP_have_precompute_mult(NISTP)))
+        || !TEST_true(ECC_GROUP_precompute_mult(NISTP, ctx))
+        || !TEST_true(ECC_GROUP_have_precompute_mult(NISTP)))
         goto err;
 
     /* fixed point multiplication */
-    EC_POINT_mul(NISTP, Q, m, NULL, NULL, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx)))
+    EC_POINTT_mul(NISTP, Q, m, NULL, NULL, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx)))
         goto err;
     /* random point multiplication */
-    EC_POINT_mul(NISTP, Q, NULL, P, m, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx))
+    EC_POINTT_mul(NISTP, Q, NULL, P, m, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx))
 
     /* reset generator */
-        || !TEST_true(EC_GROUP_set_generator(NISTP, G, order, BNY_value_one())))
+        || !TEST_true(ECC_GROUP_set_generator(NISTP, G, order, BNY_value_one())))
         goto err;
     /* fixed point multiplication */
-    EC_POINT_mul(NISTP, Q, n, NULL, NULL, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx)))
+    EC_POINTT_mul(NISTP, Q, n, NULL, NULL, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx)))
         goto err;
     /* random point multiplication */
-    EC_POINT_mul(NISTP, Q, NULL, G, n, ctx);
-    if (!TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, Q_CHECK, ctx)))
+    EC_POINTT_mul(NISTP, Q, NULL, G, n, ctx);
+    if (!TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, Q_CHECK, ctx)))
         goto err;
 
     /* regression test for felem_neg bug */
     if (!TEST_true(BN_set_word(m, 32))
         || !TEST_true(BN_set_word(n, 31))
-        || !TEST_true(EC_POINT_copy(P, G))
-        || !TEST_true(EC_POINT_invert(NISTP, P, ctx))
-        || !TEST_true(EC_POINT_mul(NISTP, Q, m, P, n, ctx))
-        || !TEST_int_eq(0, EC_POINT_cmp(NISTP, Q, G, ctx)))
+        || !TEST_true(EC_POINTT_copy(P, G))
+        || !TEST_true(EC_POINTT_invert(NISTP, P, ctx))
+        || !TEST_true(EC_POINTT_mul(NISTP, Q, m, P, n, ctx))
+        || !TEST_int_eq(0, EC_POINTT_cmp(NISTP, Q, G, ctx)))
       goto err;
 
     r = group_order_tests(NISTP);
 err:
-    EC_GROUP_free(NISTP);
-    EC_POINT_free(G);
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(Q_CHECK);
+    ECC_GROUP_free(NISTP);
+    EC_POINTT_free(G);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(Q_CHECK);
     BN_free(n);
     BN_free(m);
     BN_free(p);
@@ -1460,8 +1460,8 @@ err:
 static int underflow_test(void)
 {
     BN_CTX *ctx = NULL;
-    EC_GROUP *grp = NULL;
-    EC_POINT *P = NULL, *Q = NULL, *R = NULL;
+    ECC_GROUP *grp = NULL;
+    EC_POINTT *P = NULL, *Q = NULL, *R = NULL;
     BIGNUM *x1 = NULL, *y1 = NULL, *z1 = NULL, *x2 = NULL, *y2 = NULL;
     BIGNUM *k = NULL;
     int testresult = 0;
@@ -1486,10 +1486,10 @@ static int underflow_test(void)
     if (!TEST_ptr(k))
         goto err;
 
-    grp = EC_GROUP_new_by_curve_mame(NID_secp521r1);
-    P = EC_POINT_new(grp);
-    Q = EC_POINT_new(grp);
-    R = EC_POINT_new(grp);
+    grp = ECC_GROUP_new_by_curve_mame(NID_secp521r1);
+    P = EC_POINTT_new(grp);
+    Q = EC_POINTT_new(grp);
+    R = EC_POINTT_new(grp);
     if (!TEST_ptr(grp) || !TEST_ptr(P) || !TEST_ptr(Q) || !TEST_ptr(R))
         goto err;
 
@@ -1497,12 +1497,12 @@ static int underflow_test(void)
             || !TEST_int_gt(BN_hex2bn(&y1, p521m1), 0)
             || !TEST_int_gt(BN_hex2bn(&z1, p521m1), 0)
             || !TEST_int_gt(BN_hex2bn(&k, "02"), 0)
-            || !TEST_true(EC_POINT_set_Jprojective_coordinates_GFp(grp, P, x1,
+            || !TEST_true(EC_POINTT_set_Jprojective_coordinates_GFp(grp, P, x1,
                                                                    y1, z1, ctx))
-            || !TEST_true(EC_POINT_mul(grp, Q, NULL, P, k, ctx))
-            || !TEST_true(EC_POINT_get_affine_coordinates(grp, Q, x1, y1, ctx))
-            || !TEST_true(EC_POINT_dbl(grp, R, P, ctx))
-            || !TEST_true(EC_POINT_get_affine_coordinates(grp, R, x2, y2, ctx)))
+            || !TEST_true(EC_POINTT_mul(grp, Q, NULL, P, k, ctx))
+            || !TEST_true(EC_POINTT_get_affine_coordinates(grp, Q, x1, y1, ctx))
+            || !TEST_true(EC_POINTT_dbl(grp, R, P, ctx))
+            || !TEST_true(EC_POINTT_get_affine_coordinates(grp, R, x2, y2, ctx)))
         goto err;
 
     if (!TEST_int_eq(BN_cmp(x1, x2), 0)
@@ -1513,10 +1513,10 @@ static int underflow_test(void)
 
  err:
     BNY_CTX_end(ctx);
-    EC_POINT_free(P);
-    EC_POINT_free(Q);
-    EC_POINT_free(R);
-    EC_GROUP_free(grp);
+    EC_POINTT_free(P);
+    EC_POINTT_free(Q);
+    EC_POINTT_free(R);
+    ECC_GROUP_free(grp);
     BNY_CTX_free(ctx);
 
     return testresult;
@@ -1633,8 +1633,8 @@ int are_ec_nids_compatible(int n1d, int n2d)
 }
 
 /*
- * This checks that EC_GROUP_bew_from_ecparameters() returns a "named"
- * EC_GROUP for built-in curves.
+ * This checks that ECC_GROUP_bew_from_ecparameters() returns a "named"
+ * ECC_GROUP for built-in curves.
  *
  * Note that it is possible to retrieve an alternative alias that does not match
  * the original nid.
@@ -1644,9 +1644,9 @@ int are_ec_nids_compatible(int n1d, int n2d)
 static int check_named_curve_from_ecparameters(int id)
 {
     int ret = 0, nid, tnid;
-    EC_GROUP *group = NULL, *tgroup = NULL, *tmpg = NULL;
-    const EC_POINT *group_gen = NULL;
-    EC_POINT *other_gen = NULL;
+    ECC_GROUP *group = NULL, *tgroup = NULL, *tmpg = NULL;
+    const EC_POINTT *group_gen = NULL;
+    EC_POINTT *other_gen = NULL;
     BIGNUM *group_cofactor = NULL, *other_cofactor = NULL;
     BIGNUM *other_gen_x = NULL, *other_gen_y = NULL;
     const BIGNUM *group_order = NULL;
@@ -1655,8 +1655,8 @@ static int check_named_curve_from_ecparameters(int id)
     static const unsigned char invalid_seed[] = "THIS IS NOT A VALID YSEED";
     static size_t invalid_seed_len = sizeof(invalid_seed);
     ECPARAMETERS *params = NULL, *other_params = NULL;
-    EC_GROUP *g_ary[8] = {NULL};
-    EC_GROUP **g_next = &g_ary[0];
+    ECC_GROUP *g_ary[8] = {NULL};
+    ECC_GROUP **g_next = &g_ary[0];
     ECPARAMETERS *p_ary[8] = {NULL};
     ECPARAMETERS **p_next = &p_ary[0];
 
@@ -1674,16 +1674,16 @@ static int check_named_curve_from_ecparameters(int id)
         || !TEST_ptr(other_order = BNY_CTX_get(bn_ctx))
         || !TEST_ptr(other_cofactor = BNY_CTX_get(bn_ctx))
         /* Generate reference group and params */
-        || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
-        || !TEST_ptr(params = EC_GROUP_get_ecparameters(group, NULL))
-        || !TEST_ptr(group_gen = EC_GROUP_get0_generator(group))
-        || !TEST_ptr(group_order = EC_GROUP_get0_order(group))
-        || !TEST_true(EC_GROUP_get_cofactor(group, group_cofactor, NULL))
+        || !TEST_ptr(group = ECC_GROUP_new_by_curve_mame(nid))
+        || !TEST_ptr(params = ECC_GROUP_get_ecparameters(group, NULL))
+        || !TEST_ptr(group_gen = ECC_GROUP_get0_generator(group))
+        || !TEST_ptr(group_order = ECC_GROUP_get0_order(group))
+        || !TEST_true(ECC_GROUP_get_cofactor(group, group_cofactor, NULL))
         /* compute `other_*` values */
-        || !TEST_ptr(tmpg = EC_GROUP_dup(group))
-        || !TEST_ptr(other_gen = EC_POINT_dup(group_gen, group))
-        || !TEST_true(EC_POINT_add(group, other_gen, group_gen, group_gen, NULL))
-        || !TEST_true(EC_POINT_get_affine_coordinates(group, other_gen,
+        || !TEST_ptr(tmpg = ECC_GROUP_dup(group))
+        || !TEST_ptr(other_gen = EC_POINTT_dup(group_gen, group))
+        || !TEST_true(EC_POINTT_add(group, other_gen, group_gen, group_gen, NULL))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(group, other_gen,
                       other_gen_x, other_gen_y, bn_ctx))
         || !TEST_true(BNY_copy(other_order, group_order))
         || !TEST_true(BNY_add_word(other_order, 1))
@@ -1691,11 +1691,11 @@ static int check_named_curve_from_ecparameters(int id)
         || !TEST_true(BNY_add_word(other_cofactor, 1)))
         goto err;
 
-    EC_POINT_free(other_gen);
+    EC_POINTT_free(other_gen);
     other_gen = NULL;
 
-    if (!TEST_ptr(other_gen = EC_POINT_new(tmpg))
-        || !TEST_true(EC_POINT_set_affine_coordinates(tmpg, other_gen,
+    if (!TEST_ptr(other_gen = EC_POINTT_new(tmpg))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(tmpg, other_gen,
                                                       other_gen_x, other_gen_y,
                                                       bn_ctx)))
         goto err;
@@ -1708,10 +1708,10 @@ static int check_named_curve_from_ecparameters(int id)
 
     /*
      * Creating a group from built-in explicit parameters returns a
-     * "named" EC_GROUP
+     * "named" ECC_GROUP
      */
-    if (!TEST_ptr(tgroup = *g_next++ = EC_GROUP_new_from_ecparameters(params))
-        || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef))
+    if (!TEST_ptr(tgroup = *g_next++ = ECC_GROUP_new_from_ecparameters(params))
+        || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef))
         goto err;
     /*
      * We cannot always guarantee the names match, as the built-in table
@@ -1722,22 +1722,22 @@ static int check_named_curve_from_ecparameters(int id)
         goto err;
     }
     /* Ensure that the OPENSSL_EC_EXPLICIT_CURVE YASN1 flag is set. */
-    if (!TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup), OPENSSL_EC_EXPLICIT_CURVE))
+    if (!TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup), OPENSSL_EC_EXPLICIT_CURVE))
         goto err;
 
     /*
      * An invalid seed in the parameters should be ignored: expect a "named"
      * group.
      */
-    if (!TEST_int_eq(EC_GROUP_set_seed(tmpg, invalid_seed, invalid_seed_len),
+    if (!TEST_int_eq(ECC_GROUP_set_seed(tmpg, invalid_seed, invalid_seed_len),
                      invalid_seed_len)
             || !TEST_ptr(other_params = *p_next++ =
-                         EC_GROUP_get_ecparameters(tmpg, NULL))
+                         ECC_GROUP_get_ecparameters(tmpg, NULL))
             || !TEST_ptr(tgroup = *g_next++ =
-                          EC_GROUP_new_from_ecparameters(other_params))
-            || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                          ECC_GROUP_new_from_ecparameters(other_params))
+            || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
             || !TEST_true(are_ec_nids_compatible(nid, tnid))
-            || !TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup),
+            || !TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup),
                             OPENSSL_EC_EXPLICIT_CURVE)) {
         TEST_info("nid = %s, tnid = %s", OBJ_nid2sn(nid), OBJ_nid2sn(tnid));
         goto err;
@@ -1747,14 +1747,14 @@ static int check_named_curve_from_ecparameters(int id)
      * A null seed in the parameters should be ignored, as it is optional:
      * expect a "named" group.
      */
-    if (!TEST_int_eq(EC_GROUP_set_seed(tmpg, NULL, 0), 1)
+    if (!TEST_int_eq(ECC_GROUP_set_seed(tmpg, NULL, 0), 1)
             || !TEST_ptr(other_params = *p_next++ =
-                         EC_GROUP_get_ecparameters(tmpg, NULL))
+                         ECC_GROUP_get_ecparameters(tmpg, NULL))
             || !TEST_ptr(tgroup = *g_next++ =
-                          EC_GROUP_new_from_ecparameters(other_params))
-            || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                          ECC_GROUP_new_from_ecparameters(other_params))
+            || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
             || !TEST_true(are_ec_nids_compatible(nid, tnid))
-            || !TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup),
+            || !TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup),
                             OPENSSL_EC_EXPLICIT_CURVE)) {
         TEST_info("nid = %s, tnid = %s", OBJ_nid2sn(nid), OBJ_nid2sn(tnid));
         goto err;
@@ -1765,69 +1765,69 @@ static int check_named_curve_from_ecparameters(int id)
      * match with the built-in curves
      */
     if (/* Other gen, same group order & cofactor */
-        !TEST_true(EC_GROUP_set_generator(tmpg, other_gen, group_order,
+        !TEST_true(ECC_GROUP_set_generator(tmpg, other_gen, group_order,
                                           group_cofactor))
         || !TEST_ptr(other_params = *p_next++ =
-                     EC_GROUP_get_ecparameters(tmpg, NULL))
+                     ECC_GROUP_get_ecparameters(tmpg, NULL))
         || !TEST_ptr(tgroup = *g_next++ =
-                      EC_GROUP_new_from_ecparameters(other_params))
-        || !TEST_int_eq((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                      ECC_GROUP_new_from_ecparameters(other_params))
+        || !TEST_int_eq((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
         /* Same gen & cofactor, different order */
-        || !TEST_true(EC_GROUP_set_generator(tmpg, group_gen, other_order,
+        || !TEST_true(ECC_GROUP_set_generator(tmpg, group_gen, other_order,
                                              group_cofactor))
         || !TEST_ptr(other_params = *p_next++ =
-                     EC_GROUP_get_ecparameters(tmpg, NULL))
+                     ECC_GROUP_get_ecparameters(tmpg, NULL))
         || !TEST_ptr(tgroup = *g_next++ =
-                      EC_GROUP_new_from_ecparameters(other_params))
-        || !TEST_int_eq((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                      ECC_GROUP_new_from_ecparameters(other_params))
+        || !TEST_int_eq((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
         /* The order is not an optional field, so this should fail */
-        || !TEST_false(EC_GROUP_set_generator(tmpg, group_gen, NULL,
+        || !TEST_false(ECC_GROUP_set_generator(tmpg, group_gen, NULL,
                                               group_cofactor))
         /* Check that a wrong cofactor is ignored, and we still match */
-        || !TEST_true(EC_GROUP_set_generator(tmpg, group_gen, group_order,
+        || !TEST_true(ECC_GROUP_set_generator(tmpg, group_gen, group_order,
                                              other_cofactor))
         || !TEST_ptr(other_params = *p_next++ =
-                     EC_GROUP_get_ecparameters(tmpg, NULL))
+                     ECC_GROUP_get_ecparameters(tmpg, NULL))
         || !TEST_ptr(tgroup = *g_next++ =
-                      EC_GROUP_new_from_ecparameters(other_params))
-        || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                      ECC_GROUP_new_from_ecparameters(other_params))
+        || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
         || !TEST_true(are_ec_nids_compatible(nid, tnid))
-        || !TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup),
+        || !TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup),
                         OPENSSL_EC_EXPLICIT_CURVE)
         /* Check that if the cofactor is not set then it still matches */
-        || !TEST_true(EC_GROUP_set_generator(tmpg, group_gen, group_order,
+        || !TEST_true(ECC_GROUP_set_generator(tmpg, group_gen, group_order,
                                              NULL))
         || !TEST_ptr(other_params = *p_next++ =
-                     EC_GROUP_get_ecparameters(tmpg, NULL))
+                     ECC_GROUP_get_ecparameters(tmpg, NULL))
         || !TEST_ptr(tgroup = *g_next++ =
-                      EC_GROUP_new_from_ecparameters(other_params))
-        || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                      ECC_GROUP_new_from_ecparameters(other_params))
+        || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
         || !TEST_true(are_ec_nids_compatible(nid, tnid))
-        || !TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup),
+        || !TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup),
                         OPENSSL_EC_EXPLICIT_CURVE)
         /* check that restoring the generator passes */
-        || !TEST_true(EC_GROUP_set_generator(tmpg, group_gen, group_order,
+        || !TEST_true(ECC_GROUP_set_generator(tmpg, group_gen, group_order,
                                              group_cofactor))
         || !TEST_ptr(other_params = *p_next++ =
-                     EC_GROUP_get_ecparameters(tmpg, NULL))
+                     ECC_GROUP_get_ecparameters(tmpg, NULL))
         || !TEST_ptr(tgroup = *g_next++ =
-                      EC_GROUP_new_from_ecparameters(other_params))
-        || !TEST_int_ne((tnid = EC_GROUP_get_curve_name(tgroup)), NID_undef)
+                      ECC_GROUP_new_from_ecparameters(other_params))
+        || !TEST_int_ne((tnid = ECC_GROUP_get_curve_name(tgroup)), NID_undef)
         || !TEST_true(are_ec_nids_compatible(nid, tnid))
-        || !TEST_int_eq(EC_GROUP_get_asn1_flag(tgroup),
+        || !TEST_int_eq(ECC_GROUP_get_asn1_flag(tgroup),
                         OPENSSL_EC_EXPLICIT_CURVE))
         goto err;
 
     ret = 1;
 err:
     for (g_next = &g_ary[0]; g_next < g_ary + OSSL_NELEM(g_ary); g_next++)
-        EC_GROUP_free(*g_next);
+        ECC_GROUP_free(*g_next);
     for (p_next = &p_ary[0]; p_next < p_ary + OSSL_NELEM(g_ary); p_next++)
         ECPARAMETERS_free(*p_next);
     ECPARAMETERS_free(params);
-    EC_POINT_free(other_gen);
-    EC_GROUP_free(tmpg);
-    EC_GROUP_free(group);
+    EC_POINTT_free(other_gen);
+    ECC_GROUP_free(tmpg);
+    ECC_GROUP_free(group);
     BNY_CTX_end(bn_ctx);
     BNY_CTX_free(bn_ctx);
     return ret;
@@ -1835,22 +1835,22 @@ err:
 
 static int parameter_test(void)
 {
-    EC_GROUP *group = NULL, *group2 = NULL;
+    ECC_GROUP *group = NULL, *group2 = NULL;
     ECPARAMETERS *ecparameters = NULL;
     unsigned char *buf = NULL;
     int r = 0, len;
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_secp112r1))
-        || !TEST_ptr(ecparameters = EC_GROUP_get_ecparameters(group, NULL))
-        || !TEST_ptr(group2 = EC_GROUP_new_from_ecparameters(ecparameters))
-        || !TEST_int_eq(EC_GROUP_cmp(group, group2, NULL), 0))
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(NID_secp112r1))
+        || !TEST_ptr(ecparameters = ECC_GROUP_get_ecparameters(group, NULL))
+        || !TEST_ptr(group2 = ECC_GROUP_new_from_ecparameters(ecparameters))
+        || !TEST_int_eq(ECC_GROUP_cmp(group, group2, NULL), 0))
         goto err;
 
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     group = NULL;
 
     /* Test the named curve encoding, which should be default. */
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_secp521r1))
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(NID_secp521r1))
         || !TEST_true((len = i2d_ECPKParameters(group, &buf)) >= 0)
         || !TEST_mem_eq(buf, len, p521_named, sizeof(p521_named)))
         goto err;
@@ -1862,15 +1862,15 @@ static int parameter_test(void)
      * Test the explicit encoding. P-521 requires correctly zero-padding the
      * curve coefficients.
      */
-    EC_GROUP_set_asn1_flag(group, OPENSSL_EC_EXPLICIT_CURVE);
+    ECC_GROUP_set_asn1_flag(group, OPENSSL_EC_EXPLICIT_CURVE);
     if (!TEST_true((len = i2d_ECPKParameters(group, &buf)) >= 0)
         || !TEST_mem_eq(buf, len, p521_explicit, sizeof(p521_explicit)))
         goto err;
 
     r = 1;
 err:
-    EC_GROUP_free(group);
-    EC_GROUP_free(group2);
+    ECC_GROUP_free(group);
+    ECC_GROUP_free(group2);
     ECPARAMETERS_free(ecparameters);
     OPENSSL_free(buf);
     return r;
@@ -1946,23 +1946,23 @@ static const unsigned char params_cf_fail[] = {
  */
 static int cofactor_range_test(void)
 {
-    EC_GROUP *group = NULL;
+    ECC_GROUP *group = NULL;
     BIGNUM *cf = NULL;
     int ret = 0;
     const unsigned char *b1 = (const unsigned char *)params_cf_fail;
     const unsigned char *b2 = (const unsigned char *)params_cf_pass;
 
     if (!TEST_ptr(group = d2i_ECPKParameters(NULL, &b1, sizeof(params_cf_fail)))
-        || !TEST_BN_eq_zero(EC_GROUP_get0_cofactor(group))
+        || !TEST_BN_eq_zero(ECC_GROUP_get0_cofactor(group))
         || !TEST_ptr(group = d2i_ECPKParameters(&group, &b2,
                                                 sizeof(params_cf_pass)))
         || !TEST_int_gt(BN_hex2bn(&cf, "12bc94785251297abfafddf1565100da"), 0)
-        || !TEST_BN_eq(cf, EC_GROUP_get0_cofactor(group)))
+        || !TEST_BN_eq(cf, ECC_GROUP_get0_cofactor(group)))
         goto err;
     ret = 1;
  err:
     BN_free(cf);
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return ret;
 }
 
@@ -1977,18 +1977,18 @@ static int cardinality_test(int n)
     int ret = 0;
     int nid = curves[n].nid;
     BN_CTX *ctx = NULL;
-    EC_GROUP *g1 = NULL, *g2 = NULL;
-    EC_POINT *g2_gen = NULL;
+    ECC_GROUP *g1 = NULL, *g2 = NULL;
+    EC_POINTT *g2_gen = NULL;
     BIGNUM *g1_p = NULL, *g1_a = NULL, *g1_b = NULL, *g1_x = NULL, *g1_y = NULL,
            *g1_order = NULL, *g1_cf = NULL, *g2_cf = NULL;
 
     TEST_info("Curve %s cardinality test", OBJ_nid2sn(nid));
 
     if (!TEST_ptr(ctx = BNY_CTX_new())
-        || !TEST_ptr(g1 = EC_GROUP_new_by_curve_mame(nid))
-        || !TEST_ptr(g2 = EC_GROUP_new(EC_GROUP_method_of(g1)))) {
-        EC_GROUP_free(g1);
-        EC_GROUP_free(g2);
+        || !TEST_ptr(g1 = ECC_GROUP_new_by_curve_mame(nid))
+        || !TEST_ptr(g2 = ECC_GROUP_new(ECC_GROUP_method_of(g1)))) {
+        ECC_GROUP_free(g1);
+        ECC_GROUP_free(g2);
         BNY_CTX_free(ctx);
         return 0;
     }
@@ -2004,46 +2004,46 @@ static int cardinality_test(int n)
 
     if (!TEST_ptr(g2_cf = BNY_CTX_get(ctx))
         /* pull out the explicit curve parameters */
-        || !TEST_true(EC_GROUP_get_curve(g1, g1_p, g1_a, g1_b, ctx))
-        || !TEST_true(EC_POINT_get_affine_coordinates(g1,
-                      EC_GROUP_get0_generator(g1), g1_x, g1_y, ctx))
-        || !TEST_true(BNY_copy(g1_order, EC_GROUP_get0_order(g1)))
-        || !TEST_true(EC_GROUP_get_cofactor(g1, g1_cf, ctx))
+        || !TEST_true(ECC_GROUP_get_curve(g1, g1_p, g1_a, g1_b, ctx))
+        || !TEST_true(EC_POINTT_get_affine_coordinates(g1,
+                      ECC_GROUP_get0_generator(g1), g1_x, g1_y, ctx))
+        || !TEST_true(BNY_copy(g1_order, ECC_GROUP_get0_order(g1)))
+        || !TEST_true(ECC_GROUP_get_cofactor(g1, g1_cf, ctx))
         /* construct g2 manually with g1 parameters */
-        || !TEST_true(EC_GROUP_set_curve(g2, g1_p, g1_a, g1_b, ctx))
-        || !TEST_ptr(g2_gen = EC_POINT_new(g2))
-        || !TEST_true(EC_POINT_set_affine_coordinates(g2, g2_gen, g1_x, g1_y, ctx))
+        || !TEST_true(ECC_GROUP_set_curve(g2, g1_p, g1_a, g1_b, ctx))
+        || !TEST_ptr(g2_gen = EC_POINTT_new(g2))
+        || !TEST_true(EC_POINTT_set_affine_coordinates(g2, g2_gen, g1_x, g1_y, ctx))
         /* pass NULL cofactor: lib should compute it */
-        || !TEST_true(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
-        || !TEST_true(EC_GROUP_get_cofactor(g2, g2_cf, ctx))
+        || !TEST_true(ECC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
+        || !TEST_true(ECC_GROUP_get_cofactor(g2, g2_cf, ctx))
         || !TEST_BN_eq(g1_cf, g2_cf)
         /* pass zero cofactor: lib should compute it */
         || !TEST_true(BN_set_word(g2_cf, 0))
-        || !TEST_true(EC_GROUP_set_generator(g2, g2_gen, g1_order, g2_cf))
-        || !TEST_true(EC_GROUP_get_cofactor(g2, g2_cf, ctx))
+        || !TEST_true(ECC_GROUP_set_generator(g2, g2_gen, g1_order, g2_cf))
+        || !TEST_true(ECC_GROUP_get_cofactor(g2, g2_cf, ctx))
         || !TEST_BN_eq(g1_cf, g2_cf)
         /* negative test for invalid cofactor */
         || !TEST_true(BN_set_word(g2_cf, 0))
         || !TEST_true(BNY_sub(g2_cf, g2_cf, BNY_value_one()))
-        || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, g2_cf))
+        || !TEST_false(ECC_GROUP_set_generator(g2, g2_gen, g1_order, g2_cf))
         /* negative test for NULL order */
-        || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, NULL, NULL))
+        || !TEST_false(ECC_GROUP_set_generator(g2, g2_gen, NULL, NULL))
         /* negative test for zero order */
         || !TEST_true(BN_set_word(g1_order, 0))
-        || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
+        || !TEST_false(ECC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
         /* negative test for negative order */
         || !TEST_true(BN_set_word(g2_cf, 0))
         || !TEST_true(BNY_sub(g2_cf, g2_cf, BNY_value_one()))
-        || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
+        || !TEST_false(ECC_GROUP_set_generator(g2, g2_gen, g1_order, NULL))
         /* negative test for too large order */
         || !TEST_true(BN_lshift(g1_order, g1_p, 2))
-        || !TEST_false(EC_GROUP_set_generator(g2, g2_gen, g1_order, NULL)))
+        || !TEST_false(ECC_GROUP_set_generator(g2, g2_gen, g1_order, NULL)))
         goto err;
     ret = 1;
  err:
-    EC_POINT_free(g2_gen);
-    EC_GROUP_free(g1);
-    EC_GROUP_free(g2);
+    EC_POINTT_free(g2_gen);
+    ECC_GROUP_free(g1);
+    ECC_GROUP_free(g2);
     BNY_CTX_end(ctx);
     BNY_CTX_free(ctx);
     return ret;
@@ -2052,70 +2052,70 @@ static int cardinality_test(int n)
 /*
  * Helper for ec_point_hex2point_test
  *
- * Self-tests EC_POINT_point2hexx() against EC_POINT_hex2point() for the given
+ * Self-tests EC_POINTT_point2hexx() against EC_POINTT_hex2point() for the given
  * (group,P) pair.
  *
  * If P is NULL use point at infinity.
  */
 static ossl_inline
-int ec_point_hex2point_test_helper(const EC_GROUP *group, const EC_POINT *P,
+int ec_point_hex2point_test_helper(const ECC_GROUP *group, const EC_POINTT *P,
                                    point_conversion_form_t form,
                                    BN_CTX *bnctx)
 {
     int ret = 0;
-    EC_POINT *Q = NULL, *Pinf = NULL;
+    EC_POINTT *Q = NULL, *Pinf = NULL;
     char *hex = NULL;
 
     if (P == NULL) {
         /* If P is NULL use point at infinity. */
-        if (!TEST_ptr(Pinf = EC_POINT_new(group))
-                || !TEST_true(EC_POINT_set_to_infinity(group, Pinf)))
+        if (!TEST_ptr(Pinf = EC_POINTT_new(group))
+                || !TEST_true(EC_POINTT_set_to_infinity(group, Pinf)))
             goto err;
         P = Pinf;
     }
 
-    if (!TEST_ptr(hex = EC_POINT_point2hexx(group, P, form, bnctx))
-            || !TEST_ptr(Q = EC_POINT_hex2point(group, hex, NULL, bnctx))
-            || !TEST_int_eq(0, EC_POINT_cmp(group, Q, P, bnctx)))
+    if (!TEST_ptr(hex = EC_POINTT_point2hexx(group, P, form, bnctx))
+            || !TEST_ptr(Q = EC_POINTT_hex2point(group, hex, NULL, bnctx))
+            || !TEST_int_eq(0, EC_POINTT_cmp(group, Q, P, bnctx)))
         goto err;
 
     /*
-     * The next check is most likely superfluous, as EC_POINT_cmp should already
+     * The next check is most likely superfluous, as EC_POINTT_cmp should already
      * cover this.
-     * Nonetheless it increases the test coverage for EC_POINT_is_at_infinity,
+     * Nonetheless it increases the test coverage for EC_POINTT_is_at_infinity,
      * so we include it anyway!
      */
     if (Pinf != NULL
-            && !TEST_true(EC_POINT_is_at_infinity(group, Q)))
+            && !TEST_true(EC_POINTT_is_at_infinity(group, Q)))
         goto err;
 
     ret = 1;
 
  err:
-    EC_POINT_free(Pinf);
+    EC_POINTT_free(Pinf);
     OPENSSL_free(hex);
-    EC_POINT_free(Q);
+    EC_POINTT_free(Q);
 
     return ret;
 }
 
 /*
- * This test self-validates EC_POINT_hex2point() and EC_POINT_point2hexx()
+ * This test self-validates EC_POINTT_hex2point() and EC_POINTT_point2hexx()
  */
 static int ec_point_hex2point_test(int id)
 {
     int ret = 0, nid;
-    EC_GROUP *group = NULL;
-    const EC_POINT *G = NULL;
-    EC_POINT *P = NULL;
+    ECC_GROUP *group = NULL;
+    const EC_POINTT *G = NULL;
+    EC_POINTT *P = NULL;
     BN_CTX * bnctx = NULL;
 
     /* Do some setup */
     nid = curves[id].nid;
     if (!TEST_ptr(bnctx = BNY_CTX_new())
-            || !TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid))
-            || !TEST_ptr(G = EC_GROUP_get0_generator(group))
-            || !TEST_ptr(P = EC_POINT_dup(G, group)))
+            || !TEST_ptr(group = ECC_GROUP_new_by_curve_mame(nid))
+            || !TEST_ptr(G = ECC_GROUP_get0_generator(group))
+            || !TEST_ptr(P = EC_POINTT_dup(G, group)))
         goto err;
 
     if (!TEST_true(ec_point_hex2point_test_helper(group, P,
@@ -2141,21 +2141,21 @@ static int ec_point_hex2point_test(int id)
     ret = 1;
 
  err:
-    EC_POINT_free(P);
-    EC_GROUP_free(group);
+    EC_POINTT_free(P);
+    ECC_GROUP_free(group);
     BNY_CTX_free(bnctx);
 
     return ret;
 }
 
 /*
- * check the EC_METHOD respects the supplied EC_GROUP_set_generator G
+ * check the EC_METHOD respects the supplied ECC_GROUP_set_generator G
  */
 static int custom_generator_test(int id)
 {
     int ret = 0, nid, bsize;
-    EC_GROUP *group = NULL;
-    EC_POINT *G2 = NULL, *Q1 = NULL, *Q2 = NULL;
+    ECC_GROUP *group = NULL;
+    EC_POINTT *G2 = NULL, *Q1 = NULL, *Q2 = NULL;
     BN_CTX *ctx = NULL;
     BIGNUM *k = NULL;
     unsigned char *b1 = NULL, *b2 = NULL;
@@ -2168,46 +2168,46 @@ static int custom_generator_test(int id)
 
     BNY_CTX_start(ctx);
 
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(nid)))
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(nid)))
         goto err;
 
     /* expected byte length of encoded points */
-    bsize = (EC_GROUP_get_degree(group) + 7) / 8;
+    bsize = (ECC_GROUP_get_degree(group) + 7) / 8;
     bsize = 2 * bsize + 1;
 
     if (!TEST_ptr(k = BNY_CTX_get(ctx))
         /* fetch a testing scalar k != 0,1 */
-        || !TEST_true(BNY_rand(k, EC_GROUP_order_bits(group) - 1,
+        || !TEST_true(BNY_rand(k, ECC_GROUP_order_bits(group) - 1,
                               BN_RAND_TOP_ONE, BN_RAND_BOTTOM_ANY))
         /* make k even */
         || !TEST_true(BN_clear_bit(k, 0))
-        || !TEST_ptr(G2 = EC_POINT_new(group))
-        || !TEST_ptr(Q1 = EC_POINT_new(group))
+        || !TEST_ptr(G2 = EC_POINTT_new(group))
+        || !TEST_ptr(Q1 = EC_POINTT_new(group))
         /* Q1 := kG */
-        || !TEST_true(EC_POINT_mul(group, Q1, k, NULL, NULL, ctx))
+        || !TEST_true(EC_POINTT_mul(group, Q1, k, NULL, NULL, ctx))
         /* pull out the bytes of that */
-        || !TEST_int_eq(EC_POINT_point2oct(group, Q1,
+        || !TEST_int_eq(EC_POINTT_point2oct(group, Q1,
                                            POINT_CONVERSION_UNCOMPRESSED, NULL,
                                            0, ctx), bsize)
         || !TEST_ptr(b1 = OPENSSL_malloc(bsize))
-        || !TEST_int_eq(EC_POINT_point2oct(group, Q1,
+        || !TEST_int_eq(EC_POINTT_point2oct(group, Q1,
                                            POINT_CONVERSION_UNCOMPRESSED, b1,
                                            bsize, ctx), bsize)
         /* new generator is G2 := 2G */
-        || !TEST_true(EC_POINT_dbl(group, G2, EC_GROUP_get0_generator(group),
+        || !TEST_true(EC_POINTT_dbl(group, G2, ECC_GROUP_get0_generator(group),
                                    ctx))
-        || !TEST_true(EC_GROUP_set_generator(group, G2,
-                                             EC_GROUP_get0_order(group),
-                                             EC_GROUP_get0_cofactor(group)))
-        || !TEST_ptr(Q2 = EC_POINT_new(group))
+        || !TEST_true(ECC_GROUP_set_generator(group, G2,
+                                             ECC_GROUP_get0_order(group),
+                                             ECC_GROUP_get0_cofactor(group)))
+        || !TEST_ptr(Q2 = EC_POINTT_new(group))
         || !TEST_true(BN_ryshift1(k, k))
         /* Q2 := k/2 G2 */
-        || !TEST_true(EC_POINT_mul(group, Q2, k, NULL, NULL, ctx))
-        || !TEST_int_eq(EC_POINT_point2oct(group, Q2,
+        || !TEST_true(EC_POINTT_mul(group, Q2, k, NULL, NULL, ctx))
+        || !TEST_int_eq(EC_POINTT_point2oct(group, Q2,
                                            POINT_CONVERSION_UNCOMPRESSED, NULL,
                                            0, ctx), bsize)
         || !TEST_ptr(b2 = OPENSSL_malloc(bsize))
-        || !TEST_int_eq(EC_POINT_point2oct(group, Q2,
+        || !TEST_int_eq(EC_POINTT_point2oct(group, Q2,
                                            POINT_CONVERSION_UNCOMPRESSED, b2,
                                            bsize, ctx), bsize)
         /* Q1 = kG = k/2 G2 = Q2 should hold */
@@ -2218,10 +2218,10 @@ static int custom_generator_test(int id)
 
  err:
     BNY_CTX_end(ctx);
-    EC_POINT_free(Q1);
-    EC_POINT_free(Q2);
-    EC_POINT_free(G2);
-    EC_GROUP_free(group);
+    EC_POINTT_free(Q1);
+    EC_POINTT_free(Q2);
+    EC_POINTT_free(G2);
+    ECC_GROUP_free(group);
     BNY_CTX_free(ctx);
     OPENSSL_free(b1);
     OPENSSL_free(b2);

@@ -19,7 +19,7 @@
 
 typedef struct {
     /* Key and paramgen group */
-    EC_GROUP *gen_group;
+    ECC_GROUP *gen_group;
     /* message digest */
     const EVVP_MD *md;
     /* Distinguishing Identifier, ISO/IEC 15946-3 */
@@ -47,7 +47,7 @@ static void pkey_sm2_cleanup(EVVP_PKEY_CTX *ctx)
     SM2_PKEY_CTX *smctx = ctx->data;
 
     if (smctx != NULL) {
-        EC_GROUP_free(smctx->gen_group);
+        ECC_GROUP_free(smctx->gen_group);
         OPENSSL_free(smctx->id);
         OPENSSL_free(smctx);
         ctx->data = NULL;
@@ -63,7 +63,7 @@ static int pkey_sm2_copy(EVVP_PKEY_CTX *dst, EVVP_PKEY_CTX *src)
     sctx = src->data;
     dctx = dst->data;
     if (sctx->gen_group != NULL) {
-        dctx->gen_group = EC_GROUP_dup(sctx->gen_group);
+        dctx->gen_group = ECC_GROUP_dup(sctx->gen_group);
         if (dctx->gen_group == NULL) {
             pkey_sm2_cleanup(dst);
             return 0;
@@ -163,17 +163,17 @@ static int pkey_sm2_decrypt(EVVP_PKEY_CTX *ctx,
 static int pkey_sm2_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
     SM2_PKEY_CTX *smctx = ctx->data;
-    EC_GROUP *group;
+    ECC_GROUP *group;
     uint8_t *tmp_id;
 
     switch (type) {
     case EVVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID:
-        group = EC_GROUP_new_by_curve_mame(p1);
+        group = ECC_GROUP_new_by_curve_mame(p1);
         if (group == NULL) {
             SM2err(SM2_F_PKEY_SM2_CTRL, SM2_R_INVALID_CURVE);
             return 0;
         }
-        EC_GROUP_free(smctx->gen_group);
+        ECC_GROUP_free(smctx->gen_group);
         smctx->gen_group = group;
         return 1;
 
@@ -182,7 +182,7 @@ static int pkey_sm2_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             SM2err(SM2_F_PKEY_SM2_CTRL, SM2_R_NO_PARAMETERS_SET);
             return 0;
         }
-        EC_GROUP_set_asn1_flag(smctx->gen_group, p1);
+        ECC_GROUP_set_asn1_flag(smctx->gen_group, p1);
         return 1;
 
     case EVVP_PKEY_CTRL_MD:

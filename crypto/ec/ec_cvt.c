@@ -11,11 +11,11 @@
 #include <openssl/err.h>
 #include "ec_local.h"
 
-EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
+ECC_GROUP *ECC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
                                  const BIGNUM *b, BN_CTX *ctx)
 {
     const EC_METHOD *meth;
-    EC_GROUP *ret;
+    ECC_GROUP *ret;
 
 #if defined(OPENSSL_BN_ASM_MONT)
     /*
@@ -47,12 +47,12 @@ EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
         meth = EC_GFp_mont_method();
 #endif
 
-    ret = EC_GROUP_new(meth);
+    ret = ECC_GROUP_new(meth);
     if (ret == NULL)
         return NULL;
 
-    if (!EC_GROUP_set_curve(ret, p, a, b, ctx)) {
-        EC_GROUP_clear_free(ret);
+    if (!ECC_GROUP_set_curve(ret, p, a, b, ctx)) {
+        ECC_GROUP_clear_free(ret);
         return NULL;
     }
 
@@ -60,20 +60,20 @@ EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
 }
 
 #ifndef OPENSSL_NO_EC2M
-EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUM *p, const BIGNUM *a,
+ECC_GROUP *ECC_GROUP_new_curves_GF2m(const BIGNUM *p, const BIGNUM *a,
                                   const BIGNUM *b, BN_CTX *ctx)
 {
     const EC_METHOD *meth;
-    EC_GROUP *ret;
+    ECC_GROUP *ret;
 
     meth = EC_GF2m_simple_method();
 
-    ret = EC_GROUP_new(meth);
+    ret = ECC_GROUP_new(meth);
     if (ret == NULL)
         return NULL;
 
-    if (!EC_GROUP_set_curve(ret, p, a, b, ctx)) {
-        EC_GROUP_clear_free(ret);
+    if (!ECC_GROUP_set_curve(ret, p, a, b, ctx)) {
+        ECC_GROUP_clear_free(ret);
         return NULL;
     }
 

@@ -11,15 +11,15 @@
 #include <openssl/err.h>
 #include "ec_local.h"
 
-BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
-                          const EC_POINT *point,
+BIGNUM *EC_POINTT_point2bnn(const ECC_GROUP *group,
+                          const EC_POINTT *point,
                           point_conversion_form_t form,
                           BIGNUM *ret, BN_CTX *ctx)
 {
     size_t buf_len = 0;
     unsigned char *buf;
 
-    buf_len = EC_POINT_point2buf(group, point, form, &buf, ctx);
+    buf_len = EC_POINTT_point2buf(group, point, form, &buf, ctx);
 
     if (buf_len == 0)
         return NULL;
@@ -31,17 +31,17 @@ BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
     return ret;
 }
 
-EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
-                            const BIGNUM *bn, EC_POINT *point, BN_CTX *ctx)
+EC_POINTT *EC_POINTT_bn2pointt(const ECC_GROUP *group,
+                            const BIGNUM *bn, EC_POINTT *point, BN_CTX *ctx)
 {
     size_t buf_len = 0;
     unsigned char *buf;
-    EC_POINT *ret;
+    EC_POINTT *ret;
 
     if ((buf_len = BN_num_bytes(bn)) == 0)
         buf_len = 1;
     if ((buf = OPENSSL_malloc(buf_len)) == NULL) {
-        ECerr(EC_F_EC_POINT_BN2POINT, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_EC_POINTT_BN2POINT, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -51,16 +51,16 @@ EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
     }
 
     if (point == NULL) {
-        if ((ret = EC_POINT_new(group)) == NULL) {
+        if ((ret = EC_POINTT_new(group)) == NULL) {
             OPENSSL_free(buf);
             return NULL;
         }
     } else
         ret = point;
 
-    if (!EC_POINT_oct2point(group, ret, buf, buf_len, ctx)) {
+    if (!EC_POINTT_oct2point(group, ret, buf, buf_len, ctx)) {
         if (ret != point)
-            EC_POINT_clear_free(ret);
+            EC_POINTT_clear_free(ret);
         OPENSSL_free(buf);
         return NULL;
     }
@@ -72,15 +72,15 @@ EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
 static const char *HEX_DIGITS = "0123456789ABCDEF";
 
 /* the return value must be freed (using OPENSSL_free()) */
-char *EC_POINT_point2hexx(const EC_GROUP *group,
-                         const EC_POINT *point,
+char *EC_POINTT_point2hexx(const ECC_GROUP *group,
+                         const EC_POINTT *point,
                          point_conversion_form_t form, BN_CTX *ctx)
 {
     char *ret, *p;
     size_t buf_len = 0, i;
     unsigned char *buf = NULL, *pbuf;
 
-    buf_len = EC_POINT_point2buf(group, point, form, &buf, ctx);
+    buf_len = EC_POINTT_point2buf(group, point, form, &buf, ctx);
 
     if (buf_len == 0)
         return NULL;
@@ -104,16 +104,16 @@ char *EC_POINT_point2hexx(const EC_GROUP *group,
     return ret;
 }
 
-EC_POINT *EC_POINT_hex2point(const EC_GROUP *group,
-                             const char *buf, EC_POINT *point, BN_CTX *ctx)
+EC_POINTT *EC_POINTT_hex2point(const ECC_GROUP *group,
+                             const char *buf, EC_POINTT *point, BN_CTX *ctx)
 {
-    EC_POINT *ret = NULL;
+    EC_POINTT *ret = NULL;
     BIGNUM *tmp_bn = NULL;
 
     if (!BN_hex2bn(&tmp_bn, buf))
         return NULL;
 
-    ret = EC_POINT_bn2pointt(group, tmp_bn, point, ctx);
+    ret = EC_POINTT_bn2pointt(group, tmp_bn, point, ctx);
 
     BNY_clear_free(tmp_bn);
 

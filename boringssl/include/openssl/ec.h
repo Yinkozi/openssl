@@ -145,8 +145,8 @@ OPENSSL_EXPORT int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *out_p,
                                           BIGNUM *out_a, BIGNUM *out_b,
                                           BN_CTX *ctx);
 
-/* EC_GROUP_get_curve_name returns a NID that identifies |group|. */
-OPENSSL_EXPORT int EC_GROUP_get_curve_name(const EC_GROUP *group);
+/* ECC_GROUP_get_curve_name returns a NID that identifies |group|. */
+OPENSSL_EXPORT int ECC_GROUP_get_curve_name(const EC_GROUP *group);
 
 /* EC_GROUP_get_degree returns the number of bits needed to represent an
  * element of the field underlying |group|. */
@@ -295,7 +295,7 @@ OPENSSL_EXPORT int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r,
  * |EC_POINT_set_affine_coordinates_GFp|, and |EC_GROUP_set_generator|.
  *
  * |EC_GROUP|s returned by this function will always compare as unequal via
- * |EC_GROUP_cmp| (even to themselves). |EC_GROUP_get_curve_name| will always
+ * |EC_GROUP_cmp| (even to themselves). |ECC_GROUP_get_curve_name| will always
  * return |NID_undef|.
  *
  * Avoid using arbitrary curves and use |EC_GROUP_new_by_curve_mame| instead. */

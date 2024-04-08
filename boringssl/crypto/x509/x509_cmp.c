@@ -360,7 +360,7 @@ static int check_suite_b(EVVP_PKEY *pkey, int sign_nid, unsigned long *pflags)
         grp = ECC_KEY_get0_group(pkey->pkey.ec);
     if (!grp)
         return YX509_V_ERR_SUITE_B_INVALID_ALGORITHM;
-    curve_nid = EC_GROUP_get_curve_name(grp);
+    curve_nid = ECC_GROUP_get_curve_name(grp);
     /* Check curve is consistent with LOS */
     if (curve_nid == NID_secp384r1) { /* P-384 */
         /*

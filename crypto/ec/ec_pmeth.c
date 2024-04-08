@@ -20,7 +20,7 @@
 
 typedef struct {
     /* Key and paramgen group */
-    EC_GROUP *gen_group;
+    ECC_GROUP *gen_group;
     /* message digest */
     const EVVP_MD *md;
     /* Duplicate key if custom cofactor needed */
@@ -61,7 +61,7 @@ static int pkey_ec_copy(EVVP_PKEY_CTX *dst, EVVP_PKEY_CTX *src)
     sctx = src->data;
     dctx = dst->data;
     if (sctx->gen_group) {
-        dctx->gen_group = EC_GROUP_dup(sctx->gen_group);
+        dctx->gen_group = ECC_GROUP_dup(sctx->gen_group);
         if (!dctx->gen_group)
             return 0;
     }
@@ -89,7 +89,7 @@ static void pkey_ec_cleanup(EVVP_PKEY_CTX *ctx)
 {
     EC_PKEY_CTX *dctx = ctx->data;
     if (dctx != NULL) {
-        EC_GROUP_free(dctx->gen_group);
+        ECC_GROUP_free(dctx->gen_group);
         EC_KEY_free(dctx->co_key);
         OPENSSL_free(dctx->kdf_ukm);
         OPENSSL_free(dctx);
@@ -153,7 +153,7 @@ static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, unsigned char *key, size_t *keylen
 {
     int ret;
     size_t outlen;
-    const EC_POINT *pubkey = NULL;
+    const EC_POINTT *pubkey = NULL;
     EC_KEY *eckey;
     EC_PKEY_CTX *dctx = ctx->data;
     if (!ctx->pkey || !ctx->peerkey) {
@@ -164,9 +164,9 @@ static int pkey_ec_derive(EVVP_PKEY_CTX *ctx, unsigned char *key, size_t *keylen
     eckey = dctx->co_key ? dctx->co_key : ctx->pkey->pkey.ec;
 
     if (!key) {
-        const EC_GROUP *group;
+        const ECC_GROUP *group;
         group = ECC_KEY_get0_group(eckey);
-        *keylen = (EC_GROUP_get_degree(group) + 7) / 8;
+        *keylen = (ECC_GROUP_get_degree(group) + 7) / 8;
         return 1;
     }
     pubkey = ECC_KEY_get0_public_key(ctx->peerkey->pkey.ec);
@@ -223,15 +223,15 @@ static int pkey_ec_kdf_derive(EVVP_PKEY_CTX *ctx,
 static int pkey_ec_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
 {
     EC_PKEY_CTX *dctx = ctx->data;
-    EC_GROUP *group;
+    ECC_GROUP *group;
     switch (type) {
     case EVVP_PKEY_CTRL_EC_PARAMGEN_CURVE_NID:
-        group = EC_GROUP_new_by_curve_mame(p1);
+        group = ECC_GROUP_new_by_curve_mame(p1);
         if (group == NULL) {
             ECerr(EC_F_PKEY_EC_CTRL, EC_R_INVALID_CURVE);
             return 0;
         }
-        EC_GROUP_free(dctx->gen_group);
+        ECC_GROUP_free(dctx->gen_group);
         dctx->gen_group = group;
         return 1;
 
@@ -240,7 +240,7 @@ static int pkey_ec_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
             ECerr(EC_F_PKEY_EC_CTRL, EC_R_NO_PARAMETERS_SET);
             return 0;
         }
-        EC_GROUP_set_asn1_flag(dctx->gen_group, p1);
+        ECC_GROUP_set_asn1_flag(dctx->gen_group, p1);
         return 1;
 
 #ifndef OPENSSL_NO_EC

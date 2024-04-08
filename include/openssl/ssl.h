@@ -1286,7 +1286,7 @@ DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
 # define SSL_CTRL_GET_PEER_SIGNATURE_NID         108
 # define SSL_CTRL_GET_PEER_TMP_KEY               109
 # define SSL_CTRL_GET_RAW_CIPHERLIST             110
-# define SSL_CTRL_GET_EC_POINT_FORMATS           111
+# define SSL_CTRL_GET_EC_POINTT_FORMATS           111
 # define SSL_CTRL_GET_CHAIN_CERTS                115
 # define SSL_CTRL_SELECT_CURRENT_CERT            116
 # define SSL_CTRL_SET_CURRENT_CERT               117
@@ -1446,7 +1446,7 @@ DECLARE_PEM_rw(SSL_SESSION, SSL_SESSION)
 # define SSL_get0_raw_cipherlist(s, plst) \
         SSL_ctrl(s,SSL_CTRL_GET_RAW_CIPHERLIST,0,plst)
 # define SSL_get0_ec_point_formats(s, plst) \
-        SSL_ctrl(s,SSL_CTRL_GET_EC_POINT_FORMATS,0,plst)
+        SSL_ctrl(s,SSL_CTRL_GET_EC_POINTT_FORMATS,0,plst)
 # define SSL_CTX_set_min_proto_version(ctx, version) \
         SSL_CTX_ctrl(ctx, SSL_CTRL_SET_MIN_PROTO_VERSION, version, NULL)
 # define SSL_CTX_set_max_proto_version(ctx, version) \

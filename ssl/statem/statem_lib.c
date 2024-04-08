@@ -1558,7 +1558,7 @@ static int is_tls13_capable(const SSL *s)
         eckey = EVVP_PKEY_get0_EC_KEY(s->cert->pkeys[SSL_PKEY_ECC].privatekey);
         if (eckey == NULL)
             continue;
-        curve = EC_GROUP_get_curve_name(ECC_KEY_get0_group(eckey));
+        curve = ECC_GROUP_get_curve_name(ECC_KEY_get0_group(eckey));
         if (tls_check_sigalg_curve(s, curve))
             return 1;
 #else

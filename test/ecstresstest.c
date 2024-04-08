@@ -39,19 +39,19 @@ static const char *kP256DefaultResult =
  * point multiplication.
  * Returns the X-coordinate of the end result or NULL on error.
  */
-static BIGNUM *walk_curve(const EC_GROUP *group, EC_POINT *point, int64_t num)
+static BIGNUM *walk_curve(const ECC_GROUP *group, EC_POINTT *point, int64_t num)
 {
     BIGNUM *scalar = NULL;
     int64_t i;
 
     if (!TEST_ptr(scalar = BNY_new())
-            || !TEST_true(EC_POINT_get_affine_coordinates(group, point, scalar,
+            || !TEST_true(EC_POINTT_get_affine_coordinates(group, point, scalar,
                                                           NULL, NULL)))
         goto err;
 
     for (i = 0; i < num; i++) {
-        if (!TEST_true(EC_POINT_mul(group, point, NULL, point, scalar, NULL))
-                || !TEST_true(EC_POINT_get_affine_coordinates(group, point,
+        if (!TEST_true(EC_POINTT_mul(group, point, NULL, point, scalar, NULL))
+                || !TEST_true(EC_POINTT_get_affine_coordinates(group, point,
                                                               scalar,
                                                               NULL, NULL)))
             goto err;
@@ -65,8 +65,8 @@ err:
 
 static int test_curve(void)
 {
-    EC_GROUP *group = NULL;
-    EC_POINT *point = NULL;
+    ECC_GROUP *group = NULL;
+    EC_POINTT *point = NULL;
     BIGNUM *result = NULL, *expected_result = NULL;
     int ret = 0;
 
@@ -74,8 +74,8 @@ static int test_curve(void)
      * We currently hard-code P-256, though adaptation to other curves.
      * would be straightforward.
      */
-    if (!TEST_ptr(group = EC_GROUP_new_by_curve_mame(NID_X9_62_prime256v1))
-            || !TEST_ptr(point = EC_POINT_dup(EC_GROUP_get0_generator(group),
+    if (!TEST_ptr(group = ECC_GROUP_new_by_curve_mame(NID_X9_62_prime256v1))
+            || !TEST_ptr(point = EC_POINTT_dup(ECC_GROUP_get0_generator(group),
                                               group))
             || !TEST_ptr(result = walk_curve(group, point, num_repeats)))
         return 0;
@@ -93,8 +93,8 @@ static int test_curve(void)
     }
 
 err:
-    EC_GROUP_free(group);
-    EC_POINT_free(point);
+    ECC_GROUP_free(group);
+    EC_POINTT_free(point);
     BN_free(result);
     BN_free(expected_result);
     return ret;

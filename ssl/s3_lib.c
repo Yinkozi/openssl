@@ -3444,7 +3444,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
 #ifndef OPENSSL_NO_EC
     case SSL_CTRL_SET_TMP_ECDH:
         {
-            const EC_GROUP *group = NULL;
+            const ECC_GROUP *group = NULL;
             int nid;
 
             if (parg == NULL) {
@@ -3456,7 +3456,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
                 SSLerr(SSL_F_SSL3_CTRL, EC_R_MISSING_PARAMETERS);
                 return 0;
             }
-            nid = EC_GROUP_get_curve_name(group);
+            nid = ECC_GROUP_get_curve_name(group);
             if (nid == NID_undef)
                 return 0;
             return tls1_set_groups(&s->ext.supportedgroups,
@@ -3721,7 +3721,7 @@ long ssl3_ctrl(SSL *s, int cmd, long larg, void *parg)
 #endif
 
 #ifndef OPENSSL_NO_EC
-    case SSL_CTRL_GET_EC_POINT_FORMATS:
+    case SSL_CTRL_GET_EC_POINTT_FORMATS:
         {
             const unsigned char **pformat = parg;
 
@@ -3805,7 +3805,7 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
 #ifndef OPENSSL_NO_EC
     case SSL_CTRL_SET_TMP_ECDH:
         {
-            const EC_GROUP *group = NULL;
+            const ECC_GROUP *group = NULL;
             int nid;
 
             if (parg == NULL) {
@@ -3817,7 +3817,7 @@ long ssl3_ctx_ctrl(SSL_CTX *ctx, int cmd, long larg, void *parg)
                 SSLerr(SSL_F_SSL3_CTX_CTRL, EC_R_MISSING_PARAMETERS);
                 return 0;
             }
-            nid = EC_GROUP_get_curve_name(group);
+            nid = ECC_GROUP_get_curve_name(group);
             if (nid == NID_undef)
                 return 0;
             return tls1_set_groups(&ctx->ext.supportedgroups,

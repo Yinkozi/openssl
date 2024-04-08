@@ -1894,7 +1894,7 @@ void EC_nistp256_pre_comp_free(NISTP256_PRE_COMP *pre)
  * OPENSSL EC_METHOD FUNCTIONS
  */
 
-int ec_GFp_nistp256_group_init(EC_GROUP *group)
+int ec_GFp_nistp256_group_init(ECC_GROUP *group)
 {
     int ret;
     ret = ec_GFp_simple_group_init(group);
@@ -1902,7 +1902,7 @@ int ec_GFp_nistp256_group_init(EC_GROUP *group)
     return ret;
 }
 
-int ec_GFp_nistp256_group_set_curve(EC_GROUP *group, const BIGNUM *p,
+int ec_GFp_nistp256_group_set_curve(ECC_GROUP *group, const BIGNUM *p,
                                     const BIGNUM *a, const BIGNUM *b,
                                     BN_CTX *ctx)
 {
@@ -1939,8 +1939,8 @@ int ec_GFp_nistp256_group_set_curve(EC_GROUP *group, const BIGNUM *p,
  * Takes the Jacobian coordinates (X, Y, Z) of a point and returns (X', Y') =
  * (X/Z^2, Y/Z^3)
  */
-int ec_GFp_nistp256_point_get_affine_coordinates(const EC_GROUP *group,
-                                                 const EC_POINT *point,
+int ec_GFp_nistp256_point_get_affine_coordinates(const ECC_GROUP *group,
+                                                 const EC_POINTT *point,
                                                  BIGNUM *x, BIGNUM *y,
                                                  BN_CTX *ctx)
 {
@@ -1948,7 +1948,7 @@ int ec_GFp_nistp256_point_get_affine_coordinates(const EC_GROUP *group,
     smallfelem x_out, y_out;
     longfelem tmp;
 
-    if (EC_POINT_is_at_infinity(group, point)) {
+    if (EC_POINTT_is_at_infinity(group, point)) {
         ECerr(EC_F_EC_GFP_NISTP256_POINT_GET_AFFINE_COORDINATES,
               EC_R_POINT_AT_INFINITY);
         return 0;
@@ -2017,9 +2017,9 @@ static void make_points_affine(size_t num, smallfelem points[][3],
  * Computes scalar*generator + \sum scalars[i]*points[i], ignoring NULL
  * values Result is stored in r (r can equal one of the inputs).
  */
-int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp256_points_mul(const ECC_GROUP *group, EC_POINTT *r,
                                const BIGNUM *scalar, size_t num,
-                               const EC_POINT *points[],
+                               const EC_POINTT *points[],
                                const BIGNUM *scalars[], BN_CTX *ctx)
 {
     int ret = 0;
@@ -2038,8 +2038,8 @@ int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
     felem x_out, y_out, z_out;
     NISTP256_PRE_COMP *pre = NULL;
     const smallfelem(*g_pre_comp)[16][3] = NULL;
-    EC_POINT *generator = NULL;
-    const EC_POINT *p = NULL;
+    EC_POINTT *generator = NULL;
+    const EC_POINTT *p = NULL;
     const BIGNUM *p_scalar = NULL;
 
     BNY_CTX_start(ctx);
@@ -2058,7 +2058,7 @@ int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
         else
             /* try to use the standard precomputation */
             g_pre_comp = &gmul[0];
-        generator = EC_POINT_new(group);
+        generator = EC_POINTT_new(group);
         if (generator == NULL)
             goto err;
         /* get the generator from precomputation */
@@ -2068,11 +2068,11 @@ int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
             ECerr(EC_F_EC_GFP_NISTP256_POINTS_MUL, ERR_R_BN_LIB);
             goto err;
         }
-        if (!EC_POINT_set_Jprojective_coordinates_GFp(group,
+        if (!EC_POINTT_set_Jprojective_coordinates_GFp(group,
                                                       generator, x, y, z,
                                                       ctx))
             goto err;
-        if (0 == EC_POINT_cmp(group, generator, group->generator, ctx))
+        if (0 == EC_POINTT_cmp(group, generator, group->generator, ctx))
             /* precomputation matches generator */
             have_pre_comp = 1;
         else
@@ -2113,7 +2113,7 @@ int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
                  * we didn't have a valid precomputation, so we pick the
                  * generator
                  */
-                p = EC_GROUP_get0_generator(group);
+                p = ECC_GROUP_get0_generator(group);
                 p_scalar = scalar;
             } else {
                 /* the i^th point */
@@ -2210,25 +2210,25 @@ int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
         ECerr(EC_F_EC_GFP_NISTP256_POINTS_MUL, ERR_R_BN_LIB);
         goto err;
     }
-    ret = EC_POINT_set_Jprojective_coordinates_GFp(group, r, x, y, z, ctx);
+    ret = EC_POINTT_set_Jprojective_coordinates_GFp(group, r, x, y, z, ctx);
 
  err:
     BNY_CTX_end(ctx);
-    EC_POINT_free(generator);
+    EC_POINTT_free(generator);
     OPENSSL_free(secrets);
     OPENSSL_free(pre_comp);
     OPENSSL_free(tmp_smallfelems);
     return ret;
 }
 
-int ec_GFp_nistp256_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
+int ec_GFp_nistp256_precompute_mult(ECC_GROUP *group, BN_CTX *ctx)
 {
     int ret = 0;
     NISTP256_PRE_COMP *pre = NULL;
     int i, j;
     BN_CTX *new_ctx = NULL;
     BIGNUM *x, *y;
-    EC_POINT *generator = NULL;
+    EC_POINTT *generator = NULL;
     smallfelem tmp_smallfelems[32];
     felem x_tmp, y_tmp, z_tmp;
 
@@ -2245,19 +2245,19 @@ int ec_GFp_nistp256_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     /* get the generator */
     if (group->generator == NULL)
         goto err;
-    generator = EC_POINT_new(group);
+    generator = EC_POINTT_new(group);
     if (generator == NULL)
         goto err;
     BNY_bin2bn(nistp256_curve_params[3], sizeof(felem_bytearray), x);
     BNY_bin2bn(nistp256_curve_params[4], sizeof(felem_bytearray), y);
-    if (!EC_POINT_set_affine_coordinates(group, generator, x, y, ctx))
+    if (!EC_POINTT_set_affine_coordinates(group, generator, x, y, ctx))
         goto err;
     if ((pre = nistp256_pre_comp_new()) == NULL)
         goto err;
     /*
      * if the generator is the standard one, use built-in precomputation
      */
-    if (0 == EC_POINT_cmp(group, generator, group->generator, ctx)) {
+    if (0 == EC_POINTT_cmp(group, generator, group->generator, ctx)) {
         memcpy(pre->g_pre_comp, gmul, sizeof(pre->g_pre_comp));
         goto done;
     }
@@ -2353,13 +2353,13 @@ int ec_GFp_nistp256_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
 
  err:
     BNY_CTX_end(ctx);
-    EC_POINT_free(generator);
+    EC_POINTT_free(generator);
     BNY_CTX_free(new_ctx);
     EC_nistp256_pre_comp_free(pre);
     return ret;
 }
 
-int ec_GFp_nistp256_have_precompute_mult(const EC_GROUP *group)
+int ec_GFp_nistp256_have_precompute_mult(const ECC_GROUP *group)
 {
     return HAVEPRECOMP(group, nistp256);
 }

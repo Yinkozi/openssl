@@ -30,12 +30,12 @@ EC_KEY objects
  EC_KEY *ECC_KEY_dup(const EC_KEY *src);
  int ECC_KEY_up_ref(EC_KEY *key);
  ENGINE *ECC_KEY_get0_engine(const EC_KEY *eckey);
- const EC_GROUP *ECC_KEY_get0_group(const EC_KEY *key);
- int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group);
+ const ECC_GROUP *ECC_KEY_get0_group(const EC_KEY *key);
+ int ECC_KEY_set_group(EC_KEY *key, const ECC_GROUP *group);
  const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key);
  int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key);
- const EC_POINT *ECC_KEY_get0_public_key(const EC_KEY *key);
- int ECC_KEY_set_public_key(EC_KEY *key, const EC_POINT *pub);
+ const EC_POINTT *ECC_KEY_get0_public_key(const EC_KEY *key);
+ int ECC_KEY_set_public_key(EC_KEY *key, const EC_POINTT *pub);
  point_conversion_form_t ECC_KEY_get_conv_form(const EC_KEY *key);
  void ECC_KEY_set_conv_form(EC_KEY *eckey, point_conversion_form_t cform);
  void ECC_KEY_set_asn1_flag(EC_KEY *eckey, int asn1_flag);
@@ -66,8 +66,8 @@ ECC_KEY_set_group().
 
 Alternatively a new EC_KEY can be constructed by calling
 ECC_KEY_new_by_curve_name() and supplying the nid of the associated curve. See
-L<EC_GROUP_new(3)> for a description of curve names. This function simply
-wraps calls to ECC_KEY_new() and EC_GROUP_new_by_curve_mame().
+L<ECC_GROUP_new(3)> for a description of curve names. This function simply
+wraps calls to ECC_KEY_new() and ECC_GROUP_new_by_curve_mame().
 
 Calling EC_KEY_free() decrements the reference count for the EC_KEY object,
 and if it has dropped to zero then frees the memory associated with it.  If
@@ -84,31 +84,31 @@ ECC_KEY_get0_engine() returns a handle to the ENGINE that has been set for
 this EC_KEY object.
 
 ECC_KEY_generate_key() generates a new public and private key for the supplied
-B<eckey> object. B<eckey> must have an EC_GROUP object associated with it
+B<eckey> object. B<eckey> must have an ECC_GROUP object associated with it
 before calling this function. The private key is a random integer (0 < priv_key
-< order, where I<order> is the order of the EC_GROUP object). The public key is
-an EC_POINT on the curve calculated by multiplying the generator for the
+< order, where I<order> is the order of the ECC_GROUP object). The public key is
+an EC_POINTT on the curve calculated by multiplying the generator for the
 curve by the private key.
 
 ECC_KEY_check_key() performs various sanity checks on the EC_KEY object to
 confirm that it is valid.
 
 ECC_KEY_set_public_key_affine_coordinates() sets the public key for B<key> based
-on its affine co-ordinates; i.e., it constructs an EC_POINT object based on
+on its affine co-ordinates; i.e., it constructs an EC_POINTT object based on
 the supplied B<x> and B<y> values and sets the public key to be this
-EC_POINT. It also performs certain sanity checks on the key to confirm
+EC_POINTT. It also performs certain sanity checks on the key to confirm
 that it is valid.
 
 The functions ECC_KEY_get0_group(), ECC_KEY_set_group(),
 ECC_KEY_get0_private_key(), ECC_KEY_set_private_key(), ECC_KEY_get0_public_key(),
-and ECC_KEY_set_public_key() get and set the EC_GROUP object, the private key,
-and the EC_POINT public key for the B<key> respectively. The function
+and ECC_KEY_set_public_key() get and set the ECC_GROUP object, the private key,
+and the EC_POINTT public key for the B<key> respectively. The function
 ECC_KEY_set_private_key() accepts NULL as the priv_key argument to securely clear
 the private key component from the EC_KEY.
 
 The functions ECC_KEY_get_conv_form() and ECC_KEY_set_conv_form() get and set the
 point_conversion_form for the B<key>. For a description of
-point_conversion_forms please see L<EC_POINT_new(3)>.
+point_conversion_forms please see L<EC_POINTT_new(3)>.
 
 ECC_KEY_set_flags() sets the flags in the B<flags> parameter on the EC_KEY
 object. Any flags that are already set are left set. The flags currently
@@ -118,20 +118,20 @@ ECC_KEY_get_flags() returns the current flags that are set for this EC_KEY.
 ECC_KEY_clear_flags() clears the flags indicated by the B<flags> parameter; all
 other flags are left in their existing state.
 
-ECC_KEY_set_asn1_flag() sets the asn1_flag on the underlying EC_GROUP object
-(if set). Refer to L<EC_GROUP_copy(3)> for further information on the
+ECC_KEY_set_asn1_flag() sets the asn1_flag on the underlying ECC_GROUP object
+(if set). Refer to L<ECC_GROUP_copy(3)> for further information on the
 asn1_flag.
 
 ECC_KEY_decoded_from_explicit_params() returns 1 if the group of the I<key> was
 decoded from data with explicitly encoded group parameters, -1 if the I<key>
 is NULL or the group parameters are missing, and 0 otherwise.
 
-ECC_KEY_precompute_mult() stores multiples of the underlying EC_GROUP generator
-for faster point multiplication. See also L<EC_POINT_add(3)>.
+ECC_KEY_precompute_mult() stores multiples of the underlying ECC_GROUP generator
+for faster point multiplication. See also L<EC_POINTT_add(3)>.
 
 ECC_KEY_oct2key() and ECC_KEY_key2buf() are identical to the functions
-EC_POINT_oct2point() and EC_POINT_point2buf() except they use the public key
-EC_POINT in B<eckey>.
+EC_POINTT_oct2point() and EC_POINTT_point2buf() except they use the public key
+EC_POINTT in B<eckey>.
 
 ECC_KEY_oct2priv() and ECC_KEY_priv2oct() convert between the private key
 component of B<eckey> and octet form. The octet form consists of the content
@@ -171,7 +171,7 @@ ECC_KEY_set_private_key() returns 1 on success or 0 on error except when the
 priv_key argument is NULL, in that case it returns 0, for legacy compatibility,
 and should not be treated as an error.
 
-ECC_KEY_get0_group() returns the EC_GROUP associated with the EC_KEY.
+ECC_KEY_get0_group() returns the ECC_GROUP associated with the EC_KEY.
 
 ECC_KEY_get0_private_key() returns the private key associated with the EC_KEY.
 
@@ -182,9 +182,9 @@ of the buffer or 0 on error.
 
 =head1 SEE ALSO
 
-L<crypto(7)>, L<EC_GROUP_new(3)>,
-L<EC_GROUP_copy(3)>, L<EC_POINT_new(3)>,
-L<EC_POINT_add(3)>,
+L<crypto(7)>, L<ECC_GROUP_new(3)>,
+L<ECC_GROUP_copy(3)>, L<EC_POINTT_new(3)>,
+L<EC_POINTT_add(3)>,
 L<EC_GFp_simple_method(3)>,
 L<d2i_ECPKParameters(3)>
 

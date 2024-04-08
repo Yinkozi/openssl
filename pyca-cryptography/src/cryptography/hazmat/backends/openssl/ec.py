@@ -37,7 +37,7 @@ def _ec_key_curve_sn(backend, ec_key):
     group = backend._lib.ECC_KEY_get0_group(ec_key)
     backend.openssl_assert(group != backend._ffi.NULL)
 
-    nid = backend._lib.EC_GROUP_get_curve_name(group)
+    nid = backend._lib.ECC_GROUP_get_curve_name(group)
     # The following check is to find EC keys with unnamed curves and raise
     # an error for now.
     if nid == backend._lib.NID_undef:
@@ -202,7 +202,7 @@ class _EllipticCurvePrivateKey(ec.EllipticCurvePrivateKey):
         group = self._backend._lib.ECC_KEY_get0_group(self._ec_key)
         self._backend.openssl_assert(group != self._backend._ffi.NULL)
 
-        curve_nid = self._backend._lib.EC_GROUP_get_curve_name(group)
+        curve_nid = self._backend._lib.ECC_GROUP_get_curve_name(group)
         public_ec_key = self._backend._ec_key_new_by_curve_nid(curve_nid)
 
         point = self._backend._lib.ECC_KEY_get0_public_key(self._ec_key)

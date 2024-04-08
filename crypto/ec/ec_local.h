@@ -25,7 +25,7 @@
 /* Use default functions for poin2oct, oct2point and compressed coordinates */
 #define EC_FLAGS_DEFAULT_OCT    0x1
 
-/* Use custom formats for EC_GROUP, EC_POINT and EC_KEY */
+/* Use custom formats for ECC_GROUP, EC_POINTT and EC_KEY */
 #define EC_FLAGS_CUSTOM_CURVE   0x2
 
 /* Curve does not support signing operations */
@@ -42,81 +42,81 @@ struct ec_method_st {
     /* used by EC_METHOD_get_field_type: */
     int field_type;             /* a NID */
     /*
-     * used by EC_GROUP_new, EC_GROUP_free, EC_GROUP_clear_free,
-     * EC_GROUP_copy:
+     * used by ECC_GROUP_new, ECC_GROUP_free, ECC_GROUP_clear_free,
+     * ECC_GROUP_copy:
      */
-    int (*group_init) (EC_GROUP *);
-    void (*group_finish) (EC_GROUP *);
-    void (*group_clear_finish) (EC_GROUP *);
-    int (*group_copy) (EC_GROUP *, const EC_GROUP *);
-    /* used by EC_GROUP_set_curve, EC_GROUP_get_curve: */
-    int (*group_set_curve) (EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
+    int (*group_init) (ECC_GROUP *);
+    void (*group_finish) (ECC_GROUP *);
+    void (*group_clear_finish) (ECC_GROUP *);
+    int (*group_copy) (ECC_GROUP *, const ECC_GROUP *);
+    /* used by ECC_GROUP_set_curve, ECC_GROUP_get_curve: */
+    int (*group_set_curve) (ECC_GROUP *, const BIGNUM *p, const BIGNUM *a,
                             const BIGNUM *b, BN_CTX *);
-    int (*group_get_curve) (const EC_GROUP *, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+    int (*group_get_curve) (const ECC_GROUP *, BIGNUM *p, BIGNUM *a, BIGNUM *b,
                             BN_CTX *);
-    /* used by EC_GROUP_get_degree: */
-    int (*group_get_degree) (const EC_GROUP *);
-    int (*group_order_bits) (const EC_GROUP *);
-    /* used by EC_GROUP_check: */
-    int (*group_check_discriminant) (const EC_GROUP *, BN_CTX *);
+    /* used by ECC_GROUP_get_degree: */
+    int (*group_get_degree) (const ECC_GROUP *);
+    int (*group_order_bits) (const ECC_GROUP *);
+    /* used by ECC_GROUP_check: */
+    int (*group_check_discriminant) (const ECC_GROUP *, BN_CTX *);
     /*
-     * used by EC_POINT_new, EC_POINT_free, EC_POINT_clear_free,
-     * EC_POINT_copy:
+     * used by EC_POINTT_new, EC_POINTT_free, EC_POINTT_clear_free,
+     * EC_POINTT_copy:
      */
-    int (*point_init) (EC_POINT *);
-    void (*point_finish) (EC_POINT *);
-    void (*point_clear_finish) (EC_POINT *);
-    int (*point_copy) (EC_POINT *, const EC_POINT *);
+    int (*point_init) (EC_POINTT *);
+    void (*point_finish) (EC_POINTT *);
+    void (*point_clear_finish) (EC_POINTT *);
+    int (*point_copy) (EC_POINTT *, const EC_POINTT *);
     /*-
-     * used by EC_POINT_set_to_infinity,
-     * EC_POINT_set_Jprojective_coordinates_GFp,
-     * EC_POINT_get_Jprojective_coordinates_GFp,
-     * EC_POINT_set_affine_coordinates,
-     * EC_POINT_get_affine_coordinates,
-     * EC_POINT_set_compressed_coordinates:
+     * used by EC_POINTT_set_to_infinity,
+     * EC_POINTT_set_Jprojective_coordinates_GFp,
+     * EC_POINTT_get_Jprojective_coordinates_GFp,
+     * EC_POINTT_set_affine_coordinates,
+     * EC_POINTT_get_affine_coordinates,
+     * EC_POINTT_set_compressed_coordinates:
      */
-    int (*point_set_to_infinity) (const EC_GROUP *, EC_POINT *);
-    int (*point_set_Jprojective_coordinates_GFp) (const EC_GROUP *,
-                                                  EC_POINT *, const BIGNUM *x,
+    int (*point_set_to_infinity) (const ECC_GROUP *, EC_POINTT *);
+    int (*point_set_Jprojective_coordinates_GFp) (const ECC_GROUP *,
+                                                  EC_POINTT *, const BIGNUM *x,
                                                   const BIGNUM *y,
                                                   const BIGNUM *z, BN_CTX *);
-    int (*point_get_Jprojective_coordinates_GFp) (const EC_GROUP *,
-                                                  const EC_POINT *, BIGNUM *x,
+    int (*point_get_Jprojective_coordinates_GFp) (const ECC_GROUP *,
+                                                  const EC_POINTT *, BIGNUM *x,
                                                   BIGNUM *y, BIGNUM *z,
                                                   BN_CTX *);
-    int (*point_set_affine_coordinates) (const EC_GROUP *, EC_POINT *,
+    int (*point_set_affine_coordinates) (const ECC_GROUP *, EC_POINTT *,
                                          const BIGNUM *x, const BIGNUM *y,
                                          BN_CTX *);
-    int (*point_get_affine_coordinates) (const EC_GROUP *, const EC_POINT *,
+    int (*point_get_affine_coordinates) (const ECC_GROUP *, const EC_POINTT *,
                                          BIGNUM *x, BIGNUM *y, BN_CTX *);
-    int (*point_set_compressed_coordinates) (const EC_GROUP *, EC_POINT *,
+    int (*point_set_compressed_coordinates) (const ECC_GROUP *, EC_POINTT *,
                                              const BIGNUM *x, int y_bit,
                                              BN_CTX *);
-    /* used by EC_POINT_point2oct, EC_POINT_oct2point: */
-    size_t (*point2oct) (const EC_GROUP *, const EC_POINT *,
+    /* used by EC_POINTT_point2oct, EC_POINTT_oct2point: */
+    size_t (*point2oct) (const ECC_GROUP *, const EC_POINTT *,
                          point_conversion_form_t form, unsigned char *buf,
                          size_t len, BN_CTX *);
-    int (*oct2point) (const EC_GROUP *, EC_POINT *, const unsigned char *buf,
+    int (*oct2point) (const ECC_GROUP *, EC_POINTT *, const unsigned char *buf,
                       size_t len, BN_CTX *);
-    /* used by EC_POINT_add, EC_POINT_dbl, ECP_POINT_invert: */
-    int (*add) (const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
-                const EC_POINT *b, BN_CTX *);
-    int (*dbl) (const EC_GROUP *, EC_POINT *r, const EC_POINT *a, BN_CTX *);
-    int (*invert) (const EC_GROUP *, EC_POINT *, BN_CTX *);
+    /* used by EC_POINTT_add, EC_POINTT_dbl, ECP_POINT_invert: */
+    int (*add) (const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a,
+                const EC_POINTT *b, BN_CTX *);
+    int (*dbl) (const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a, BN_CTX *);
+    int (*invert) (const ECC_GROUP *, EC_POINTT *, BN_CTX *);
     /*
-     * used by EC_POINT_is_at_infinity, EC_POINT_is_on_curve, EC_POINT_cmp:
+     * used by EC_POINTT_is_at_infinity, EC_POINTT_is_on_curve, EC_POINTT_cmp:
      */
-    int (*is_at_infinity) (const EC_GROUP *, const EC_POINT *);
-    int (*is_on_curve) (const EC_GROUP *, const EC_POINT *, BN_CTX *);
-    int (*point_cmp) (const EC_GROUP *, const EC_POINT *a, const EC_POINT *b,
+    int (*is_at_infinity) (const ECC_GROUP *, const EC_POINTT *);
+    int (*is_on_curve) (const ECC_GROUP *, const EC_POINTT *, BN_CTX *);
+    int (*point_cmp) (const ECC_GROUP *, const EC_POINTT *a, const EC_POINTT *b,
                       BN_CTX *);
-    /* used by EC_POINT_make_affine, EC_POINTs_make_affine: */
-    int (*make_affine) (const EC_GROUP *, EC_POINT *, BN_CTX *);
-    int (*points_make_affine) (const EC_GROUP *, size_t num, EC_POINT *[],
+    /* used by EC_POINTT_make_affine, EC_POINTTs_make_affine: */
+    int (*make_affine) (const ECC_GROUP *, EC_POINTT *, BN_CTX *);
+    int (*points_make_affine) (const ECC_GROUP *, size_t num, EC_POINTT *[],
                                BN_CTX *);
     /*
-     * used by EC_POINTs_mul, EC_POINT_mul, EC_POINT_precompute_mult,
-     * EC_POINT_have_precompute_mult (default implementations are used if the
+     * used by EC_POINTTs_mul, EC_POINTT_mul, EC_POINTT_precompute_mult,
+     * EC_POINTT_have_precompute_mult (default implementations are used if the
      * 'mul' pointer is 0):
      */
     /*-
@@ -136,11 +136,11 @@ struct ec_method_st {
      * may treat it as an unusual input, without any constant-timeness
      * guarantee.
      */
-    int (*mul) (const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
-                size_t num, const EC_POINT *points[], const BIGNUM *scalars[],
+    int (*mul) (const ECC_GROUP *group, EC_POINTT *r, const BIGNUM *scalar,
+                size_t num, const EC_POINTT *points[], const BIGNUM *scalars[],
                 BN_CTX *);
-    int (*precompute_mult) (EC_GROUP *group, BN_CTX *);
-    int (*have_precompute_mult) (const EC_GROUP *group);
+    int (*precompute_mult) (ECC_GROUP *group, BN_CTX *);
+    int (*have_precompute_mult) (const ECC_GROUP *group);
     /* internal functions */
     /*
      * 'field_mul', 'field_sqr', and 'field_div' can be used by 'add' and
@@ -148,10 +148,10 @@ struct ec_method_st {
      * with different optimized implementations of expensive field
      * operations:
      */
-    int (*field_mul) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+    int (*field_mul) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                       const BIGNUM *b, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a, BN_CTX *);
-    int (*field_div) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+    int (*field_sqr) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a, BN_CTX *);
+    int (*field_div) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                       const BIGNUM *b, BN_CTX *);
     /*-
      * 'field_inv' computes the multiplicative inverse of a in the field,
@@ -159,14 +159,14 @@ struct ec_method_st {
      *
      * If 'a' is zero (or equivalent), you'll get an EC_R_CANNOT_INVERT error.
      */
-    int (*field_inv) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a, BN_CTX *);
+    int (*field_inv) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a, BN_CTX *);
     /* e.g. to Montgomery */
-    int (*field_encode) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+    int (*field_encode) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                          BN_CTX *);
     /* e.g. from Montgomery */
-    int (*field_decode) (const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+    int (*field_decode) (const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                          BN_CTX *);
-    int (*field_set_to_one) (const EC_GROUP *, BIGNUM *r, BN_CTX *);
+    int (*field_set_to_one) (const ECC_GROUP *, BIGNUM *r, BN_CTX *);
     /* private key operations */
     size_t (*priv2oct)(const EC_KEY *eckey, unsigned char *buf, size_t len);
     int (*oct2priv)(EC_KEY *eckey, const unsigned char *buf, size_t len);
@@ -178,20 +178,20 @@ struct ec_method_st {
     void (*keyfinish)(EC_KEY *eckey);
     /* custom ECDH operation */
     int (*ecdh_compute_key)(unsigned char **pout, size_t *poutlen,
-                            const EC_POINT *pub_key, const EC_KEY *ecdh);
+                            const EC_POINTT *pub_key, const EC_KEY *ecdh);
     /* Inverse modulo order */
-    int (*field_inverse_mod_ord)(const EC_GROUP *, BIGNUM *r,
+    int (*field_inverse_mod_ord)(const ECC_GROUP *, BIGNUM *r,
                                  const BIGNUM *x, BN_CTX *);
-    int (*blind_coordinates)(const EC_GROUP *group, EC_POINT *p, BN_CTX *ctx);
-    int (*ladder_pre)(const EC_GROUP *group,
-                      EC_POINT *r, EC_POINT *s,
-                      EC_POINT *p, BN_CTX *ctx);
-    int (*ladder_step)(const EC_GROUP *group,
-                       EC_POINT *r, EC_POINT *s,
-                       EC_POINT *p, BN_CTX *ctx);
-    int (*ladder_post)(const EC_GROUP *group,
-                       EC_POINT *r, EC_POINT *s,
-                       EC_POINT *p, BN_CTX *ctx);
+    int (*blind_coordinates)(const ECC_GROUP *group, EC_POINTT *p, BN_CTX *ctx);
+    int (*ladder_pre)(const ECC_GROUP *group,
+                      EC_POINTT *r, EC_POINTT *s,
+                      EC_POINTT *p, BN_CTX *ctx);
+    int (*ladder_step)(const ECC_GROUP *group,
+                       EC_POINTT *r, EC_POINTT *s,
+                       EC_POINTT *p, BN_CTX *ctx);
+    int (*ladder_post)(const ECC_GROUP *group,
+                       EC_POINTT *r, EC_POINTT *s,
+                       EC_POINTT *p, BN_CTX *ctx);
 };
 
 /*
@@ -205,7 +205,7 @@ typedef struct ec_pre_comp_st EC_PRE_COMP;
 
 struct ec_group_st {
     const EC_METHOD *meth;
-    EC_POINT *generator;        /* optional */
+    EC_POINTT *generator;        /* optional */
     BIGNUM *order, *cofactor;
     int curve_name;             /* optional NID for named curve */
     int asn1_flag;              /* flag to control the asn1 encoding */
@@ -281,8 +281,8 @@ struct ec_key_st {
     const EC_KEY_METHOD *meth;
     ENGINE *engine;
     int version;
-    EC_GROUP *group;
-    EC_POINT *pub_key;
+    ECC_GROUP *group;
+    EC_POINTT *pub_key;
     BIGNUM *priv_key;
     unsigned int enc_flag;
     point_conversion_form_t conv_form;
@@ -308,8 +308,8 @@ struct ec_point_st {
                                  * special case */
 };
 
-static ossl_inline int ec_point_is_compat(const EC_POINT *point,
-                                          const EC_GROUP *group)
+static ossl_inline int ec_point_is_compat(const EC_POINTT *point,
+                                          const ECC_GROUP *group)
 {
     if (group->meth != point->meth
         || (group->curve_name != 0
@@ -327,7 +327,7 @@ NISTZ256_PRE_COMP *EC_nistz256_pre_comp_dup(NISTZ256_PRE_COMP *);
 NISTP256_PRE_COMP *EC_nistp256_pre_comp_dup(NISTP256_PRE_COMP *);
 EC_PRE_COMP *EC_ec_pre_comp_dup(EC_PRE_COMP *);
 
-void EC_pre_comp_free(EC_GROUP *group);
+void EC_pre_comp_free(ECC_GROUP *group);
 void EC_nistp224_pre_comp_free(NISTP224_PRE_COMP *);
 void EC_nistp256_pre_comp_free(NISTP256_PRE_COMP *);
 void EC_nistp521_pre_comp_free(NISTP521_PRE_COMP *);
@@ -338,218 +338,218 @@ void EC_ec_pre_comp_free(EC_PRE_COMP *);
  * method functions in ec_mult.c (ec_lib.c uses these as defaults if
  * group->method->mul is 0)
  */
-int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
-                size_t num, const EC_POINT *points[], const BIGNUM *scalars[],
+int ec_wNAF_mul(const ECC_GROUP *group, EC_POINTT *r, const BIGNUM *scalar,
+                size_t num, const EC_POINTT *points[], const BIGNUM *scalars[],
                 BN_CTX *);
-int ec_wNAF_precompute_mult(EC_GROUP *group, BN_CTX *);
-int ec_wNAF_have_precompute_mult(const EC_GROUP *group);
+int ec_wNAF_precompute_mult(ECC_GROUP *group, BN_CTX *);
+int ec_wNAF_have_precompute_mult(const ECC_GROUP *group);
 
 /* method functions in ecp_smpl.c */
-int ec_GFp_simple_group_init(EC_GROUP *);
-void ec_GFp_simple_group_finish(EC_GROUP *);
-void ec_GFp_simple_group_clear_finish(EC_GROUP *);
-int ec_GFp_simple_group_copy(EC_GROUP *, const EC_GROUP *);
-int ec_GFp_simple_group_set_curve(EC_GROUP *, const BIGNUM *p,
+int ec_GFp_simple_group_init(ECC_GROUP *);
+void ec_GFp_simple_group_finish(ECC_GROUP *);
+void ec_GFp_simple_group_clear_finish(ECC_GROUP *);
+int ec_GFp_simple_group_copy(ECC_GROUP *, const ECC_GROUP *);
+int ec_GFp_simple_group_set_curve(ECC_GROUP *, const BIGNUM *p,
                                   const BIGNUM *a, const BIGNUM *b, BN_CTX *);
-int ec_GFp_simple_group_get_curve(const EC_GROUP *, BIGNUM *p, BIGNUM *a,
+int ec_GFp_simple_group_get_curve(const ECC_GROUP *, BIGNUM *p, BIGNUM *a,
                                   BIGNUM *b, BN_CTX *);
-int ec_GFp_simple_group_get_degree(const EC_GROUP *);
-int ec_GFp_simple_group_check_discriminant(const EC_GROUP *, BN_CTX *);
-int ec_GFp_simple_point_init(EC_POINT *);
-void ec_GFp_simple_point_finish(EC_POINT *);
-void ec_GFp_simple_point_clear_finish(EC_POINT *);
-int ec_GFp_simple_point_copy(EC_POINT *, const EC_POINT *);
-int ec_GFp_simple_point_set_to_infinity(const EC_GROUP *, EC_POINT *);
-int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *,
-                                                  EC_POINT *, const BIGNUM *x,
+int ec_GFp_simple_group_get_degree(const ECC_GROUP *);
+int ec_GFp_simple_group_check_discriminant(const ECC_GROUP *, BN_CTX *);
+int ec_GFp_simple_point_init(EC_POINTT *);
+void ec_GFp_simple_point_finish(EC_POINTT *);
+void ec_GFp_simple_point_clear_finish(EC_POINTT *);
+int ec_GFp_simple_point_copy(EC_POINTT *, const EC_POINTT *);
+int ec_GFp_simple_point_set_to_infinity(const ECC_GROUP *, EC_POINTT *);
+int ec_GFp_simple_set_Jprojective_coordinates_GFp(const ECC_GROUP *,
+                                                  EC_POINTT *, const BIGNUM *x,
                                                   const BIGNUM *y,
                                                   const BIGNUM *z, BN_CTX *);
-int ec_GFp_simple_get_Jprojective_coordinates_GFp(const EC_GROUP *,
-                                                  const EC_POINT *, BIGNUM *x,
+int ec_GFp_simple_get_Jprojective_coordinates_GFp(const ECC_GROUP *,
+                                                  const EC_POINTT *, BIGNUM *x,
                                                   BIGNUM *y, BIGNUM *z,
                                                   BN_CTX *);
-int ec_GFp_simple_point_set_affine_coordinates(const EC_GROUP *, EC_POINT *,
+int ec_GFp_simple_point_set_affine_coordinates(const ECC_GROUP *, EC_POINTT *,
                                                const BIGNUM *x,
                                                const BIGNUM *y, BN_CTX *);
-int ec_GFp_simple_point_get_affine_coordinates(const EC_GROUP *,
-                                               const EC_POINT *, BIGNUM *x,
+int ec_GFp_simple_point_get_affine_coordinates(const ECC_GROUP *,
+                                               const EC_POINTT *, BIGNUM *x,
                                                BIGNUM *y, BN_CTX *);
-int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *, EC_POINT *,
+int ec_GFp_simple_set_compressed_coordinates(const ECC_GROUP *, EC_POINTT *,
                                              const BIGNUM *x, int y_bit,
                                              BN_CTX *);
-size_t ec_GFp_simple_point2oct(const EC_GROUP *, const EC_POINT *,
+size_t ec_GFp_simple_point2octtt(const ECC_GROUP *, const EC_POINTT *,
                                point_conversion_form_t form,
                                unsigned char *buf, size_t len, BN_CTX *);
-int ec_GFp_simple_oct2point(const EC_GROUP *, EC_POINT *,
+int ec_GFp_simple_oct2pointt(const ECC_GROUP *, EC_POINTT *,
                             const unsigned char *buf, size_t len, BN_CTX *);
-int ec_GFp_simple_add(const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
-                      const EC_POINT *b, BN_CTX *);
-int ec_GFp_simple_dbl(const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
+int ec_GFp_simple_add(const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a,
+                      const EC_POINTT *b, BN_CTX *);
+int ec_GFp_simple_dbl(const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a,
                       BN_CTX *);
-int ec_GFp_simple_invert(const EC_GROUP *, EC_POINT *, BN_CTX *);
-int ec_GFp_simple_is_at_infinity(const EC_GROUP *, const EC_POINT *);
-int ec_GFp_simple_is_on_curve(const EC_GROUP *, const EC_POINT *, BN_CTX *);
-int ec_GFp_simple_cmp(const EC_GROUP *, const EC_POINT *a, const EC_POINT *b,
+int ec_GFp_simple_invert(const ECC_GROUP *, EC_POINTT *, BN_CTX *);
+int ec_GFp_simple_is_at_infinity(const ECC_GROUP *, const EC_POINTT *);
+int ec_GFp_simple_is_on_curve(const ECC_GROUP *, const EC_POINTT *, BN_CTX *);
+int ec_GFp_simple_cmp(const ECC_GROUP *, const EC_POINTT *a, const EC_POINTT *b,
                       BN_CTX *);
-int ec_GFp_simple_make_affine(const EC_GROUP *, EC_POINT *, BN_CTX *);
-int ec_GFp_simple_points_make_affine(const EC_GROUP *, size_t num,
-                                     EC_POINT *[], BN_CTX *);
-int ec_GFp_simple_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_make_affine(const ECC_GROUP *, EC_POINTT *, BN_CTX *);
+int ec_GFp_simple_points_make_affine(const ECC_GROUP *, size_t num,
+                                     EC_POINTT *[], BN_CTX *);
+int ec_GFp_simple_field_mul(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                             const BIGNUM *b, BN_CTX *);
-int ec_GFp_simple_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_sqr(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                             BN_CTX *);
-int ec_GFp_simple_field_inv(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_inv(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                             BN_CTX *);
-int ec_GFp_simple_blind_coordinates(const EC_GROUP *group, EC_POINT *p,
+int ec_GFp_simple_blind_coordinates(const ECC_GROUP *group, EC_POINTT *p,
                                     BN_CTX *ctx);
-int ec_GFp_simple_ladder_pre(const EC_GROUP *group,
-                             EC_POINT *r, EC_POINT *s,
-                             EC_POINT *p, BN_CTX *ctx);
-int ec_GFp_simple_ladder_step(const EC_GROUP *group,
-                              EC_POINT *r, EC_POINT *s,
-                              EC_POINT *p, BN_CTX *ctx);
-int ec_GFp_simple_ladder_post(const EC_GROUP *group,
-                              EC_POINT *r, EC_POINT *s,
-                              EC_POINT *p, BN_CTX *ctx);
+int ec_GFp_simple_ladder_pre(const ECC_GROUP *group,
+                             EC_POINTT *r, EC_POINTT *s,
+                             EC_POINTT *p, BN_CTX *ctx);
+int ec_GFp_simple_ladder_step(const ECC_GROUP *group,
+                              EC_POINTT *r, EC_POINTT *s,
+                              EC_POINTT *p, BN_CTX *ctx);
+int ec_GFp_simple_ladder_post(const ECC_GROUP *group,
+                              EC_POINTT *r, EC_POINTT *s,
+                              EC_POINTT *p, BN_CTX *ctx);
 
 /* method functions in ecp_mont.c */
-int ec_GFp_mont_group_init(EC_GROUP *);
-int ec_GFp_mont_group_set_curve(EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
+int ec_GFp_mont_group_init(ECC_GROUP *);
+int ec_GFp_mont_group_set_curve(ECC_GROUP *, const BIGNUM *p, const BIGNUM *a,
                                 const BIGNUM *b, BN_CTX *);
-void ec_GFp_mont_group_finish(EC_GROUP *);
-void ec_GFp_mont_group_clear_finish(EC_GROUP *);
-int ec_GFp_mont_group_copy(EC_GROUP *, const EC_GROUP *);
-int ec_GFp_mont_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+void ec_GFp_mont_group_finish(ECC_GROUP *);
+void ec_GFp_mont_group_clear_finish(ECC_GROUP *);
+int ec_GFp_mont_group_copy(ECC_GROUP *, const ECC_GROUP *);
+int ec_GFp_mont_field_mul(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                           const BIGNUM *b, BN_CTX *);
-int ec_GFp_mont_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_sqr(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                           BN_CTX *);
-int ec_GFp_mont_field_inv(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_inv(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                           BN_CTX *);
-int ec_GFp_mont_field_encode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_encode(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              BN_CTX *);
-int ec_GFp_mont_field_decode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_decode(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              BN_CTX *);
-int ec_GFp_mont_field_set_to_one(const EC_GROUP *, BIGNUM *r, BN_CTX *);
+int ec_GFp_mont_field_set_to_one(const ECC_GROUP *, BIGNUM *r, BN_CTX *);
 
 /* method functions in ecp_nist.c */
-int ec_GFp_nist_group_copy(EC_GROUP *dest, const EC_GROUP *src);
-int ec_GFp_nist_group_set_curve(EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
+int ec_GFp_nist_group_copy(ECC_GROUP *dest, const ECC_GROUP *src);
+int ec_GFp_nist_group_set_curve(ECC_GROUP *, const BIGNUM *p, const BIGNUM *a,
                                 const BIGNUM *b, BN_CTX *);
-int ec_GFp_nist_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_nist_field_mul(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                           const BIGNUM *b, BN_CTX *);
-int ec_GFp_nist_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_nist_field_sqr(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                           BN_CTX *);
 
 /* method functions in ec2_smpl.c */
-int ec_GF2m_simple_group_init(EC_GROUP *);
-void ec_GF2m_simple_group_finish(EC_GROUP *);
-void ec_GF2m_simple_group_clear_finish(EC_GROUP *);
-int ec_GF2m_simple_group_copy(EC_GROUP *, const EC_GROUP *);
-int ec_GF2m_simple_group_set_curve(EC_GROUP *, const BIGNUM *p,
+int ec_GF2m_simple_group_init(ECC_GROUP *);
+void ec_GF2m_simple_group_finish(ECC_GROUP *);
+void ec_GF2m_simple_group_clear_finish(ECC_GROUP *);
+int ec_GF2m_simple_group_copy(ECC_GROUP *, const ECC_GROUP *);
+int ec_GF2m_simple_group_set_curve(ECC_GROUP *, const BIGNUM *p,
                                    const BIGNUM *a, const BIGNUM *b,
                                    BN_CTX *);
-int ec_GF2m_simple_group_get_curve(const EC_GROUP *, BIGNUM *p, BIGNUM *a,
+int ec_GF2m_simple_group_get_curve(const ECC_GROUP *, BIGNUM *p, BIGNUM *a,
                                    BIGNUM *b, BN_CTX *);
-int ec_GF2m_simple_group_get_degree(const EC_GROUP *);
-int ec_GF2m_simple_group_check_discriminant(const EC_GROUP *, BN_CTX *);
-int ec_GF2m_simple_point_init(EC_POINT *);
-void ec_GF2m_simple_point_finish(EC_POINT *);
-void ec_GF2m_simple_point_clear_finish(EC_POINT *);
-int ec_GF2m_simple_point_copy(EC_POINT *, const EC_POINT *);
-int ec_GF2m_simple_point_set_to_infinity(const EC_GROUP *, EC_POINT *);
-int ec_GF2m_simple_point_set_affine_coordinates(const EC_GROUP *, EC_POINT *,
+int ec_GF2m_simple_group_get_degree(const ECC_GROUP *);
+int ec_GF2m_simple_group_check_discriminant(const ECC_GROUP *, BN_CTX *);
+int ec_GF2m_simple_point_init(EC_POINTT *);
+void ec_GF2m_simple_point_finish(EC_POINTT *);
+void ec_GF2m_simple_point_clear_finish(EC_POINTT *);
+int ec_GF2m_simple_point_copy(EC_POINTT *, const EC_POINTT *);
+int ec_GF2m_simple_point_set_to_infinity(const ECC_GROUP *, EC_POINTT *);
+int ec_GF2m_simple_point_set_affine_coordinates(const ECC_GROUP *, EC_POINTT *,
                                                 const BIGNUM *x,
                                                 const BIGNUM *y, BN_CTX *);
-int ec_GF2m_simple_point_get_affine_coordinates(const EC_GROUP *,
-                                                const EC_POINT *, BIGNUM *x,
+int ec_GF2m_simple_point_get_affine_coordinates(const ECC_GROUP *,
+                                                const EC_POINTT *, BIGNUM *x,
                                                 BIGNUM *y, BN_CTX *);
-int ec_GF2m_simple_set_compressed_coordinates(const EC_GROUP *, EC_POINT *,
+int ec_GF2m_simple_set_compressed_coordinates(const ECC_GROUP *, EC_POINTT *,
                                               const BIGNUM *x, int y_bit,
                                               BN_CTX *);
-size_t ec_GF2m_simple_point2oct(const EC_GROUP *, const EC_POINT *,
+size_t ec_GF2m_simple_point2oct(const ECC_GROUP *, const EC_POINTT *,
                                 point_conversion_form_t form,
                                 unsigned char *buf, size_t len, BN_CTX *);
-int ec_GF2m_simple_oct2point(const EC_GROUP *, EC_POINT *,
+int ec_GF2m_simple_oct2point(const ECC_GROUP *, EC_POINTT *,
                              const unsigned char *buf, size_t len, BN_CTX *);
-int ec_GF2m_simple_add(const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
-                       const EC_POINT *b, BN_CTX *);
-int ec_GF2m_simple_dbl(const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
+int ec_GF2m_simple_add(const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a,
+                       const EC_POINTT *b, BN_CTX *);
+int ec_GF2m_simple_dbl(const ECC_GROUP *, EC_POINTT *r, const EC_POINTT *a,
                        BN_CTX *);
-int ec_GF2m_simple_invert(const EC_GROUP *, EC_POINT *, BN_CTX *);
-int ec_GF2m_simple_is_at_infinity(const EC_GROUP *, const EC_POINT *);
-int ec_GF2m_simple_is_on_curve(const EC_GROUP *, const EC_POINT *, BN_CTX *);
-int ec_GF2m_simple_cmp(const EC_GROUP *, const EC_POINT *a, const EC_POINT *b,
+int ec_GF2m_simple_invert(const ECC_GROUP *, EC_POINTT *, BN_CTX *);
+int ec_GF2m_simple_is_at_infinity(const ECC_GROUP *, const EC_POINTT *);
+int ec_GF2m_simple_is_on_curve(const ECC_GROUP *, const EC_POINTT *, BN_CTX *);
+int ec_GF2m_simple_cmp(const ECC_GROUP *, const EC_POINTT *a, const EC_POINTT *b,
                        BN_CTX *);
-int ec_GF2m_simple_make_affine(const EC_GROUP *, EC_POINT *, BN_CTX *);
-int ec_GF2m_simple_points_make_affine(const EC_GROUP *, size_t num,
-                                      EC_POINT *[], BN_CTX *);
-int ec_GF2m_simple_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GF2m_simple_make_affine(const ECC_GROUP *, EC_POINTT *, BN_CTX *);
+int ec_GF2m_simple_points_make_affine(const ECC_GROUP *, size_t num,
+                                      EC_POINTT *[], BN_CTX *);
+int ec_GF2m_simple_field_mul(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              const BIGNUM *b, BN_CTX *);
-int ec_GF2m_simple_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GF2m_simple_field_sqr(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              BN_CTX *);
-int ec_GF2m_simple_field_div(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GF2m_simple_field_div(const ECC_GROUP *, BIGNUM *r, const BIGNUM *a,
                              const BIGNUM *b, BN_CTX *);
 
 #ifndef OPENSSL_NO_EC_NISTP_64_GCC_128
 /* method functions in ecp_nistp224.c */
-int ec_GFp_nistp224_group_init(EC_GROUP *group);
-int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUM *p,
+int ec_GFp_nistp224_group_init(ECC_GROUP *group);
+int ec_GFp_nistp224_group_set_curve(ECC_GROUP *group, const BIGNUM *p,
                                     const BIGNUM *a, const BIGNUM *n,
                                     BN_CTX *);
-int ec_GFp_nistp224_point_get_affine_coordinates(const EC_GROUP *group,
-                                                 const EC_POINT *point,
+int ec_GFp_nistp224_point_get_affine_coordinates(const ECC_GROUP *group,
+                                                 const EC_POINTT *point,
                                                  BIGNUM *x, BIGNUM *y,
                                                  BN_CTX *ctx);
-int ec_GFp_nistp224_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp224_mul(const ECC_GROUP *group, EC_POINTT *r,
                         const BIGNUM *scalar, size_t num,
-                        const EC_POINT *points[], const BIGNUM *scalars[],
+                        const EC_POINTT *points[], const BIGNUM *scalars[],
                         BN_CTX *);
-int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp224_points_mul(const ECC_GROUP *group, EC_POINTT *r,
                                const BIGNUM *scalar, size_t num,
-                               const EC_POINT *points[],
+                               const EC_POINTT *points[],
                                const BIGNUM *scalars[], BN_CTX *ctx);
-int ec_GFp_nistp224_precompute_mult(EC_GROUP *group, BN_CTX *ctx);
-int ec_GFp_nistp224_have_precompute_mult(const EC_GROUP *group);
+int ec_GFp_nistp224_precompute_mult(ECC_GROUP *group, BN_CTX *ctx);
+int ec_GFp_nistp224_have_precompute_mult(const ECC_GROUP *group);
 
 /* method functions in ecp_nistp256.c */
-int ec_GFp_nistp256_group_init(EC_GROUP *group);
-int ec_GFp_nistp256_group_set_curve(EC_GROUP *group, const BIGNUM *p,
+int ec_GFp_nistp256_group_init(ECC_GROUP *group);
+int ec_GFp_nistp256_group_set_curve(ECC_GROUP *group, const BIGNUM *p,
                                     const BIGNUM *a, const BIGNUM *n,
                                     BN_CTX *);
-int ec_GFp_nistp256_point_get_affine_coordinates(const EC_GROUP *group,
-                                                 const EC_POINT *point,
+int ec_GFp_nistp256_point_get_affine_coordinates(const ECC_GROUP *group,
+                                                 const EC_POINTT *point,
                                                  BIGNUM *x, BIGNUM *y,
                                                  BN_CTX *ctx);
-int ec_GFp_nistp256_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp256_mul(const ECC_GROUP *group, EC_POINTT *r,
                         const BIGNUM *scalar, size_t num,
-                        const EC_POINT *points[], const BIGNUM *scalars[],
+                        const EC_POINTT *points[], const BIGNUM *scalars[],
                         BN_CTX *);
-int ec_GFp_nistp256_points_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp256_points_mul(const ECC_GROUP *group, EC_POINTT *r,
                                const BIGNUM *scalar, size_t num,
-                               const EC_POINT *points[],
+                               const EC_POINTT *points[],
                                const BIGNUM *scalars[], BN_CTX *ctx);
-int ec_GFp_nistp256_precompute_mult(EC_GROUP *group, BN_CTX *ctx);
-int ec_GFp_nistp256_have_precompute_mult(const EC_GROUP *group);
+int ec_GFp_nistp256_precompute_mult(ECC_GROUP *group, BN_CTX *ctx);
+int ec_GFp_nistp256_have_precompute_mult(const ECC_GROUP *group);
 
 /* method functions in ecp_nistp521.c */
-int ec_GFp_nistp521_group_init(EC_GROUP *group);
-int ec_GFp_nistp521_group_set_curve(EC_GROUP *group, const BIGNUM *p,
+int ec_GFp_nistp521_group_init(ECC_GROUP *group);
+int ec_GFp_nistp521_group_set_curve(ECC_GROUP *group, const BIGNUM *p,
                                     const BIGNUM *a, const BIGNUM *n,
                                     BN_CTX *);
-int ec_GFp_nistp521_point_get_affine_coordinates(const EC_GROUP *group,
-                                                 const EC_POINT *point,
+int ec_GFp_nistp521_point_get_affine_coordinates(const ECC_GROUP *group,
+                                                 const EC_POINTT *point,
                                                  BIGNUM *x, BIGNUM *y,
                                                  BN_CTX *ctx);
-int ec_GFp_nistp521_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp521_mul(const ECC_GROUP *group, EC_POINTT *r,
                         const BIGNUM *scalar, size_t num,
-                        const EC_POINT *points[], const BIGNUM *scalars[],
+                        const EC_POINTT *points[], const BIGNUM *scalars[],
                         BN_CTX *);
-int ec_GFp_nistp521_points_mul(const EC_GROUP *group, EC_POINT *r,
+int ec_GFp_nistp521_points_mul(const ECC_GROUP *group, EC_POINTT *r,
                                const BIGNUM *scalar, size_t num,
-                               const EC_POINT *points[],
+                               const EC_POINTT *points[],
                                const BIGNUM *scalars[], BN_CTX *ctx);
-int ec_GFp_nistp521_precompute_mult(EC_GROUP *group, BN_CTX *ctx);
-int ec_GFp_nistp521_have_precompute_mult(const EC_GROUP *group);
+int ec_GFp_nistp521_precompute_mult(ECC_GROUP *group, BN_CTX *ctx);
+int ec_GFp_nistp521_have_precompute_mult(const ECC_GROUP *group);
 
 /* utility functions in ecp_nistputil.c */
 void ec_GFp_nistp_points_make_affine_internal(size_t num, void *point_array,
@@ -580,7 +580,7 @@ void ec_GFp_nistp_points_make_affine_internal(size_t num, void *point_array,
 void ec_GFp_nistp_recode_scalar_bits(unsigned char *sign,
                                      unsigned char *digit, unsigned char in);
 #endif
-int ec_group_simple_order_bits(const EC_GROUP *group);
+int ec_group_simple_order_bits(const ECC_GROUP *group);
 
 #ifdef ECP_NISTZ256_ASM
 /** Returns GFp methods using montgomery multiplication, with x86-64 optimized
@@ -597,7 +597,7 @@ int ec_key_simple_generate_key(EC_KEY *eckey);
 int ec_key_simple_generate_public_key(EC_KEY *eckey);
 int ec_key_simple_check_key(const EC_KEY *eckey);
 
-int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx);
+int ec_curve_nid_from_params(const ECC_GROUP *group, BN_CTX *ctx);
 
 /* EC_METHOD definitions */
 
@@ -607,12 +607,12 @@ struct ec_key_method_st {
     int (*init)(EC_KEY *key);
     void (*finish)(EC_KEY *key);
     int (*copy)(EC_KEY *dest, const EC_KEY *src);
-    int (*set_group)(EC_KEY *key, const EC_GROUP *grp);
+    int (*set_group)(EC_KEY *key, const ECC_GROUP *grp);
     int (*set_private)(EC_KEY *key, const BIGNUM *priv_key);
-    int (*set_public)(EC_KEY *key, const EC_POINT *pub_key);
+    int (*set_public)(EC_KEY *key, const EC_POINTT *pub_key);
     int (*keygen)(EC_KEY *key);
     int (*compute_key)(unsigned char **pout, size_t *poutlen,
-                       const EC_POINT *pub_key, const EC_KEY *ecdh);
+                       const EC_POINTT *pub_key, const EC_KEY *ecdh);
     int (*sign)(int type, const unsigned char *dgst, int dlen, unsigned char
                 *sig, unsigned int *siglen, const BIGNUM *kinv,
                 const BIGNUM *r, EC_KEY *eckey);
@@ -632,9 +632,9 @@ struct ec_key_method_st {
 
 int ossl_ec_key_gen(EC_KEY *eckey);
 int ossl_ecdh_compute_key(unsigned char **pout, size_t *poutlen,
-                          const EC_POINT *pub_key, const EC_KEY *ecdh);
+                          const EC_POINTT *pub_key, const EC_KEY *ecdh);
 int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
-                            const EC_POINT *pub_key, const EC_KEY *ecdh);
+                            const EC_POINTT *pub_key, const EC_KEY *ecdh);
 
 struct ECDSA_SIG_st {
     BIGNUM *r;
@@ -684,8 +684,8 @@ void X25519_public_from_private(uint8_t out_public_value[32],
  * defined and non-zero: it fails with an error code otherwise.
  *
  * NB: This says nothing about the constant-timeness of the ladder step
- * implementation (i.e., the default implementation is based on EC_POINT_add and
- * EC_POINT_dbl, which of course are not constant time themselves) or the
+ * implementation (i.e., the default implementation is based on EC_POINTT_add and
+ * EC_POINTT_dbl, which of course are not constant time themselves) or the
  * underlying multiprecision arithmetic.
  *
  * The product is stored in `r`.
@@ -695,44 +695,44 @@ void X25519_public_from_private(uint8_t out_public_value[32],
  *
  * Returns 1 on success, 0 otherwise.
  */
-int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
-                         const BIGNUM *scalar, const EC_POINT *point,
+int ec_scalar_mul_ladder(const ECC_GROUP *group, EC_POINTT *r,
+                         const BIGNUM *scalar, const EC_POINTT *point,
                          BN_CTX *ctx);
 
-int ec_point_blind_coordinates(const EC_GROUP *group, EC_POINT *p, BN_CTX *ctx);
+int ec_point_blind_coordinates(const ECC_GROUP *group, EC_POINTT *p, BN_CTX *ctx);
 
-static ossl_inline int ec_point_ladder_pre(const EC_GROUP *group,
-                                           EC_POINT *r, EC_POINT *s,
-                                           EC_POINT *p, BN_CTX *ctx)
+static ossl_inline int ec_point_ladder_pre(const ECC_GROUP *group,
+                                           EC_POINTT *r, EC_POINTT *s,
+                                           EC_POINTT *p, BN_CTX *ctx)
 {
     if (group->meth->ladder_pre != NULL)
         return group->meth->ladder_pre(group, r, s, p, ctx);
 
-    if (!EC_POINT_copy(s, p)
-        || !EC_POINT_dbl(group, r, s, ctx))
+    if (!EC_POINTT_copy(s, p)
+        || !EC_POINTT_dbl(group, r, s, ctx))
         return 0;
 
     return 1;
 }
 
-static ossl_inline int ec_point_ladder_step(const EC_GROUP *group,
-                                            EC_POINT *r, EC_POINT *s,
-                                            EC_POINT *p, BN_CTX *ctx)
+static ossl_inline int ec_point_ladder_step(const ECC_GROUP *group,
+                                            EC_POINTT *r, EC_POINTT *s,
+                                            EC_POINTT *p, BN_CTX *ctx)
 {
     if (group->meth->ladder_step != NULL)
         return group->meth->ladder_step(group, r, s, p, ctx);
 
-    if (!EC_POINT_add(group, s, r, s, ctx)
-        || !EC_POINT_dbl(group, r, r, ctx))
+    if (!EC_POINTT_add(group, s, r, s, ctx)
+        || !EC_POINTT_dbl(group, r, r, ctx))
         return 0;
 
     return 1;
 
 }
 
-static ossl_inline int ec_point_ladder_post(const EC_GROUP *group,
-                                            EC_POINT *r, EC_POINT *s,
-                                            EC_POINT *p, BN_CTX *ctx)
+static ossl_inline int ec_point_ladder_post(const ECC_GROUP *group,
+                                            EC_POINTT *r, EC_POINTT *s,
+                                            EC_POINTT *p, BN_CTX *ctx)
 {
     if (group->meth->ladder_post != NULL)
         return group->meth->ladder_post(group, r, s, p, ctx);

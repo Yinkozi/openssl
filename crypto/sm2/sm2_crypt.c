@@ -38,7 +38,7 @@ YASN1_SEQUENCE(SM2_Ciphertext) = {
 
 IMPLEMENT_YASN1_FUNCTIONS(SM2_Ciphertext)
 
-static size_t ec_field_size(const EC_GROUP *group)
+static size_t ec_field_size(const ECC_GROUP *group)
 {
     /* Is there some simpler way to do this? */
     BIGNUM *p = BNY_new();
@@ -49,7 +49,7 @@ static size_t ec_field_size(const EC_GROUP *group)
     if (p == NULL || a == NULL || b == NULL)
        goto done;
 
-    if (!EC_GROUP_get_curve(group, p, a, b, NULL))
+    if (!ECC_GROUP_get_curve(group, p, a, b, NULL))
         goto done;
     field_size = (BNY_num_bits(p) + 7) / 8;
 
@@ -113,11 +113,11 @@ int sm2_encrypt(const EC_KEY *key,
     BIGNUM *y2 = NULL;
     EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
     struct SM2_Ciphertext_st ctext_struct;
-    const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
-    const EC_POINT *P = ECC_KEY_get0_public_key(key);
-    EC_POINT *kG = NULL;
-    EC_POINT *kP = NULL;
+    const ECC_GROUP *group = ECC_KEY_get0_group(key);
+    const BIGNUM *order = ECC_GROUP_get0_order(group);
+    const EC_POINTT *P = ECC_KEY_get0_public_key(key);
+    EC_POINTT *kG = NULL;
+    EC_POINTT *kP = NULL;
     uint8_t *msg_mask = NULL;
     uint8_t *x2y2 = NULL;
     uint8_t *C3 = NULL;
@@ -139,8 +139,8 @@ int sm2_encrypt(const EC_KEY *key,
         goto done;
     }
 
-    kG = EC_POINT_new(group);
-    kP = EC_POINT_new(group);
+    kG = EC_POINTT_new(group);
+    kP = EC_POINTT_new(group);
     ctx = BNY_CTX_new();
     if (kG == NULL || kP == NULL || ctx == NULL) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_MALLOC_FAILURE);
@@ -174,10 +174,10 @@ int sm2_encrypt(const EC_KEY *key,
         goto done;
     }
 
-    if (!EC_POINT_mul(group, kG, k, NULL, NULL, ctx)
-            || !EC_POINT_get_affine_coordinates(group, kG, x1, y1, ctx)
-            || !EC_POINT_mul(group, kP, NULL, P, k, ctx)
-            || !EC_POINT_get_affine_coordinates(group, kP, x2, y2, ctx)) {
+    if (!EC_POINTT_mul(group, kG, k, NULL, NULL, ctx)
+            || !EC_POINTT_get_affine_coordinates(group, kG, x1, y1, ctx)
+            || !EC_POINTT_mul(group, kP, NULL, P, k, ctx)
+            || !EC_POINTT_get_affine_coordinates(group, kP, x2, y2, ctx)) {
         SM2err(SM2_F_SM2_ENCRYPT, ERR_R_EC_LIB);
         goto done;
     }
@@ -246,8 +246,8 @@ int sm2_encrypt(const EC_KEY *key,
     OPENSSL_free(C3);
     EVVP_MD_CTX_free(hash);
     BNY_CTX_free(ctx);
-    EC_POINT_free(kG);
-    EC_POINT_free(kP);
+    EC_POINTT_free(kG);
+    EC_POINTT_free(kP);
     return rc;
 }
 
@@ -259,8 +259,8 @@ int sm2_decrypt(const EC_KEY *key,
     int rc = 0;
     int i;
     BN_CTX *ctx = NULL;
-    const EC_GROUP *group = ECC_KEY_get0_group(key);
-    EC_POINT *C1 = NULL;
+    const ECC_GROUP *group = ECC_KEY_get0_group(key);
+    EC_POINTT *C1 = NULL;
     struct SM2_Ciphertext_st *sm2_ctext = NULL;
     BIGNUM *x2 = NULL;
     BIGNUM *y2 = NULL;
@@ -323,17 +323,17 @@ int sm2_decrypt(const EC_KEY *key,
         goto done;
     }
 
-    C1 = EC_POINT_new(group);
+    C1 = EC_POINTT_new(group);
     if (C1 == NULL) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_MALLOC_FAILURE);
         goto done;
     }
 
-    if (!EC_POINT_set_affine_coordinates(group, C1, sm2_ctext->C1x,
+    if (!EC_POINTT_set_affine_coordinates(group, C1, sm2_ctext->C1x,
                                          sm2_ctext->C1y, ctx)
-            || !EC_POINT_mul(group, C1, NULL, C1, ECC_KEY_get0_private_key(key),
+            || !EC_POINTT_mul(group, C1, NULL, C1, ECC_KEY_get0_private_key(key),
                              ctx)
-            || !EC_POINT_get_affine_coordinates(group, C1, x2, y2, ctx)) {
+            || !EC_POINTT_get_affine_coordinates(group, C1, x2, y2, ctx)) {
         SM2err(SM2_F_SM2_DECRYPT, ERR_R_EC_LIB);
         goto done;
     }
@@ -379,7 +379,7 @@ int sm2_decrypt(const EC_KEY *key,
     OPENSSL_free(msg_mask);
     OPENSSL_free(x2y2);
     OPENSSL_free(computed_C3);
-    EC_POINT_free(C1);
+    EC_POINTT_free(C1);
     BNY_CTX_free(ctx);
     SM2_Ciphertext_free(sm2_ctext);
     EVVP_MD_CTX_free(hash);

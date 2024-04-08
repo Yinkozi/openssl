@@ -15,7 +15,7 @@
 #ifndef OPENSSL_NO_EC2M
 
 /*-
- * Calculates and sets the affine coordinates of an EC_POINT from the given
+ * Calculates and sets the affine coordinates of an EC_POINTT from the given
  * compressed coordinates.  Uses algorithm 2.3.4 of SEC 1.
  * Note that the simple implementation only uses affine coordinates.
  *
@@ -30,8 +30,8 @@
  * the same method, but claim no priority date earlier than July 29, 1994
  * (and additionally fail to cite the EUROCRYPT '92 publication as prior art).
  */
-int ec_GF2m_simple_set_compressed_coordinates(const EC_GROUP *group,
-                                              EC_POINT *point,
+int ec_GF2m_simple_set_compressed_coordinates(const ECC_GROUP *group,
+                                              EC_POINTT *point,
                                               const BIGNUM *x_, int y_bit,
                                               BN_CTX *ctx)
 {
@@ -94,7 +94,7 @@ int ec_GF2m_simple_set_compressed_coordinates(const EC_GROUP *group,
         }
     }
 
-    if (!EC_POINT_set_affine_coordinates(group, point, x, y, ctx))
+    if (!EC_POINTT_set_affine_coordinates(group, point, x, y, ctx))
         goto err;
 
     ret = 1;
@@ -106,11 +106,11 @@ int ec_GF2m_simple_set_compressed_coordinates(const EC_GROUP *group,
 }
 
 /*
- * Converts an EC_POINT to an octet string. If buf is NULL, the encoded
+ * Converts an EC_POINTT to an octet string. If buf is NULL, the encoded
  * length will be returned. If the length len of buf is smaller than required
  * an error will be returned.
  */
-size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
+size_t ec_GF2m_simple_point2oct(const ECC_GROUP *group, const EC_POINTT *point,
                                 point_conversion_form_t form,
                                 unsigned char *buf, size_t len, BN_CTX *ctx)
 {
@@ -127,7 +127,7 @@ size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
         goto err;
     }
 
-    if (EC_POINT_is_at_infinity(group, point)) {
+    if (EC_POINTT_is_at_infinity(group, point)) {
         /* encodes to a single 0 octet */
         if (buf != NULL) {
             if (len < 1) {
@@ -140,7 +140,7 @@ size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
     }
 
     /* ret := required output buffer length */
-    field_len = (EC_GROUP_get_degree(group) + 7) / 8;
+    field_len = (ECC_GROUP_get_degree(group) + 7) / 8;
     ret =
         (form ==
          POINT_CONVERSION_COMPRESSED) ? 1 + field_len : 1 + 2 * field_len;
@@ -166,7 +166,7 @@ size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
         if (yxi == NULL)
             goto err;
 
-        if (!EC_POINT_get_affine_coordinates(group, point, x, y, ctx))
+        if (!EC_POINTT_get_affine_coordinates(group, point, x, y, ctx))
             goto err;
 
         buf[0] = form;
@@ -229,10 +229,10 @@ size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
 }
 
 /*
- * Converts an octet string representation to an EC_POINT. Note that the
+ * Converts an octet string representation to an EC_POINTT. Note that the
  * simple implementation only uses affine coordinates.
  */
-int ec_GF2m_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
+int ec_GF2m_simple_oct2point(const ECC_GROUP *group, EC_POINTT *point,
                              const unsigned char *buf, size_t len,
                              BN_CTX *ctx)
 {
@@ -280,10 +280,10 @@ int ec_GF2m_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
             return 0;
         }
 
-        return EC_POINT_set_to_infinity(group, point);
+        return EC_POINTT_set_to_infinity(group, point);
     }
 
-    m = EC_GROUP_get_degree(group);
+    m = ECC_GROUP_get_degree(group);
     field_len = (m + 7) / 8;
     enc_len =
         (form ==
@@ -315,7 +315,7 @@ int ec_GF2m_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
     }
 
     if (form == POINT_CONVERSION_COMPRESSED) {
-        if (!EC_POINT_set_compressed_coordinates(group, point, x, y_bit, ctx))
+        if (!EC_POINTT_set_compressed_coordinates(group, point, x, y_bit, ctx))
             goto err;
     } else {
         if (!BNY_bin2bn(buf + 1 + field_len, field_len, y))
@@ -346,10 +346,10 @@ int ec_GF2m_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
         }
 
         /*
-         * EC_POINT_set_affine_coordinates is responsible for checking that
+         * EC_POINTT_set_affine_coordinates is responsible for checking that
          * the point is on the curve.
          */
-        if (!EC_POINT_set_affine_coordinates(group, point, x, y, ctx))
+        if (!EC_POINTT_set_affine_coordinates(group, point, x, y, ctx))
             goto err;
     }
 

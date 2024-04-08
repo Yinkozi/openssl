@@ -124,7 +124,7 @@ EC_KEY *ECC_KEY_new_method(ENGINE *engine)
     return NULL;
 }
 
-int ECCDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
+int ECCDH_compute_key(void *out, size_t outlen, const EC_POINTT *pub_key,
                      const EC_KEY *eckey,
                      void *(*KDF) (const void *in, size_t inlen, void *out,
                                    size_t *outlen))
@@ -174,11 +174,11 @@ void ECC_KEY_METHOD_set_init(EC_KEY_METHOD *meth,
                             int (*init)(EC_KEY *key),
                             void (*finish)(EC_KEY *key),
                             int (*copy)(EC_KEY *dest, const EC_KEY *src),
-                            int (*set_group)(EC_KEY *key, const EC_GROUP *grp),
+                            int (*set_group)(EC_KEY *key, const ECC_GROUP *grp),
                             int (*set_private)(EC_KEY *key,
                                                const BIGNUM *priv_key),
                             int (*set_public)(EC_KEY *key,
-                                              const EC_POINT *pub_key))
+                                              const EC_POINTT *pub_key))
 {
     meth->init = init;
     meth->finish = finish;
@@ -197,7 +197,7 @@ void ECC_KEY_METHOD_set_keygen(EC_KEY_METHOD *meth,
 void ECC_KEY_METHOD_set_compute_key(EC_KEY_METHOD *meth,
                                    int (*ckey)(unsigned char **psec,
                                                size_t *pseclen,
-                                               const EC_POINT *pub_key,
+                                               const EC_POINTT *pub_key,
                                                const EC_KEY *ecdh))
 {
     meth->compute_key = ckey;
@@ -241,11 +241,11 @@ void ECC_KEY_METHOD_get_init(const EC_KEY_METHOD *meth,
                             void (**pfinish)(EC_KEY *key),
                             int (**pcopy)(EC_KEY *dest, const EC_KEY *src),
                             int (**pset_group)(EC_KEY *key,
-                                               const EC_GROUP *grp),
+                                               const ECC_GROUP *grp),
                             int (**pset_private)(EC_KEY *key,
                                                  const BIGNUM *priv_key),
                             int (**pset_public)(EC_KEY *key,
-                                                const EC_POINT *pub_key))
+                                                const EC_POINTT *pub_key))
 {
     if (pinit != NULL)
         *pinit = meth->init;
@@ -271,7 +271,7 @@ void ECC_KEY_METHOD_get_keygen(const EC_KEY_METHOD *meth,
 void ECC_KEY_METHOD_get_compute_key(const EC_KEY_METHOD *meth,
                                    int (**pck)(unsigned char **pout,
                                                size_t *poutlen,
-                                               const EC_POINT *pub_key,
+                                               const EC_POINTT *pub_key,
                                                const EC_KEY *ecdh))
 {
     if (pck != NULL)

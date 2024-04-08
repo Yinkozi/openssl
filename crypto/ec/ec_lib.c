@@ -15,24 +15,24 @@
 
 #include "ec_local.h"
 
-/* functions for EC_GROUP objects */
+/* functions for ECC_GROUP objects */
 
-EC_GROUP *EC_GROUP_new(const EC_METHOD *meth)
+ECC_GROUP *ECC_GROUP_new(const EC_METHOD *meth)
 {
-    EC_GROUP *ret;
+    ECC_GROUP *ret;
 
     if (meth == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW, EC_R_SLOT_FULL);
+        ECerr(EC_F_ECC_GROUP_NEW, EC_R_SLOT_FULL);
         return NULL;
     }
     if (meth->group_init == 0) {
-        ECerr(EC_F_EC_GROUP_NEW, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_ECC_GROUP_NEW, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return NULL;
     }
 
     ret = OPENSSL_zalloc(sizeof(*ret));
     if (ret == NULL) {
-        ECerr(EC_F_EC_GROUP_NEW, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_ECC_GROUP_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -58,7 +58,7 @@ EC_GROUP *EC_GROUP_new(const EC_METHOD *meth)
     return NULL;
 }
 
-void EC_pre_comp_free(EC_GROUP *group)
+void EC_pre_comp_free(ECC_GROUP *group)
 {
     switch (group->pre_comp_type) {
     case PCT_none:
@@ -91,7 +91,7 @@ void EC_pre_comp_free(EC_GROUP *group)
     group->pre_comp.ec = NULL;
 }
 
-void EC_GROUP_free(EC_GROUP *group)
+void ECC_GROUP_free(ECC_GROUP *group)
 {
     if (!group)
         return;
@@ -101,14 +101,14 @@ void EC_GROUP_free(EC_GROUP *group)
 
     EC_pre_comp_free(group);
     BN_MONT_CTX_free(group->mont_data);
-    EC_POINT_free(group->generator);
+    EC_POINTT_free(group->generator);
     BN_free(group->order);
     BN_free(group->cofactor);
     OPENSSL_free(group->seed);
     OPENSSL_free(group);
 }
 
-void EC_GROUP_clear_free(EC_GROUP *group)
+void ECC_GROUP_clear_free(ECC_GROUP *group)
 {
     if (!group)
         return;
@@ -120,21 +120,21 @@ void EC_GROUP_clear_free(EC_GROUP *group)
 
     EC_pre_comp_free(group);
     BN_MONT_CTX_free(group->mont_data);
-    EC_POINT_clear_free(group->generator);
+    EC_POINTT_clear_free(group->generator);
     BNY_clear_free(group->order);
     BNY_clear_free(group->cofactor);
     OPENSSL_clear_free(group->seed, group->seed_len);
     OPENSSL_clear_free(group, sizeof(*group));
 }
 
-int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
+int ECC_GROUP_copy(ECC_GROUP *dest, const ECC_GROUP *src)
 {
     if (dest->meth->group_copy == 0) {
-        ECerr(EC_F_EC_GROUP_COPY, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_ECC_GROUP_COPY, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (dest->meth != src->meth) {
-        ECerr(EC_F_EC_GROUP_COPY, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_ECC_GROUP_COPY, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     if (dest == src)
@@ -190,15 +190,15 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
 
     if (src->generator != NULL) {
         if (dest->generator == NULL) {
-            dest->generator = EC_POINT_new(dest);
+            dest->generator = EC_POINTT_new(dest);
             if (dest->generator == NULL)
                 return 0;
         }
-        if (!EC_POINT_copy(dest->generator, src->generator))
+        if (!EC_POINTT_copy(dest->generator, src->generator))
             return 0;
     } else {
         /* src->generator == NULL */
-        EC_POINT_clear_free(dest->generator);
+        EC_POINTT_clear_free(dest->generator);
         dest->generator = NULL;
     }
 
@@ -216,7 +216,7 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
     if (src->seed) {
         OPENSSL_free(dest->seed);
         if ((dest->seed = OPENSSL_malloc(src->seed_len)) == NULL) {
-            ECerr(EC_F_EC_GROUP_COPY, ERR_R_MALLOC_FAILURE);
+            ECerr(EC_F_ECC_GROUP_COPY, ERR_R_MALLOC_FAILURE);
             return 0;
         }
         if (!memcpy(dest->seed, src->seed, src->seed_len))
@@ -231,30 +231,30 @@ int EC_GROUP_copy(EC_GROUP *dest, const EC_GROUP *src)
     return dest->meth->group_copy(dest, src);
 }
 
-EC_GROUP *EC_GROUP_dup(const EC_GROUP *a)
+ECC_GROUP *ECC_GROUP_dup(const ECC_GROUP *a)
 {
-    EC_GROUP *t = NULL;
+    ECC_GROUP *t = NULL;
     int ok = 0;
 
     if (a == NULL)
         return NULL;
 
-    if ((t = EC_GROUP_new(a->meth)) == NULL)
+    if ((t = ECC_GROUP_new(a->meth)) == NULL)
         return NULL;
-    if (!EC_GROUP_copy(t, a))
+    if (!ECC_GROUP_copy(t, a))
         goto err;
 
     ok = 1;
 
  err:
     if (!ok) {
-        EC_GROUP_free(t);
+        ECC_GROUP_free(t);
         return NULL;
     }
         return t;
 }
 
-const EC_METHOD *EC_GROUP_method_of(const EC_GROUP *group)
+const EC_METHOD *ECC_GROUP_method_of(const ECC_GROUP *group)
 {
     return group->meth;
 }
@@ -264,7 +264,7 @@ int EC_METHOD_get_field_type(const EC_METHOD *meth)
     return meth->field_type;
 }
 
-static int ec_precompute_mont_data(EC_GROUP *);
+static int ec_precompute_mont_data(ECC_GROUP *);
 
 /*-
  * Try computing cofactor from the generator order (n) and field cardinality (q).
@@ -279,7 +279,7 @@ static int ec_precompute_mont_data(EC_GROUP *);
  *
  * Otherwise, zero cofactor and return success.
  */
-static int ec_guess_cofactor(EC_GROUP *group) {
+static int ec_guess_cofactor(ECC_GROUP *group) {
     int ret = 0;
     BN_CTX *ctx = NULL;
     BIGNUM *q = NULL;
@@ -327,18 +327,18 @@ static int ec_guess_cofactor(EC_GROUP *group) {
     return ret;
 }
 
-int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
+int ECC_GROUP_set_generator(ECC_GROUP *group, const EC_POINTT *generator,
                            const BIGNUM *order, const BIGNUM *cofactor)
 {
     if (generator == NULL) {
-        ECerr(EC_F_EC_GROUP_SET_GENERATOR, ERR_R_PASSED_NULL_PARAMETER);
+        ECerr(EC_F_ECC_GROUP_SET_GENERATOR, ERR_R_PASSED_NULL_PARAMETER);
         return 0;
     }
 
     /* require group->field >= 1 */
     if (group->field == NULL || BN_is_zero(group->field)
         || BN_is_negative(group->field)) {
-        ECerr(EC_F_EC_GROUP_SET_GENERATOR, EC_R_INVALID_FIELD);
+        ECerr(EC_F_ECC_GROUP_SET_GENERATOR, EC_R_INVALID_FIELD);
         return 0;
     }
 
@@ -349,7 +349,7 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
      */
     if (order == NULL || BN_is_zero(order) || BN_is_negative(order)
         || BNY_num_bits(order) > BNY_num_bits(group->field) + 1) {
-        ECerr(EC_F_EC_GROUP_SET_GENERATOR, EC_R_INVALID_GROUP_ORDER);
+        ECerr(EC_F_ECC_GROUP_SET_GENERATOR, EC_R_INVALID_GROUP_ORDER);
         return 0;
     }
 
@@ -359,16 +359,16 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
      * So accept cofactor == NULL or cofactor >= 0.
      */
     if (cofactor != NULL && BN_is_negative(cofactor)) {
-        ECerr(EC_F_EC_GROUP_SET_GENERATOR, EC_R_UNKNOWN_COFACTOR);
+        ECerr(EC_F_ECC_GROUP_SET_GENERATOR, EC_R_UNKNOWN_COFACTOR);
         return 0;
     }
 
     if (group->generator == NULL) {
-        group->generator = EC_POINT_new(group);
+        group->generator = EC_POINTT_new(group);
         if (group->generator == NULL)
             return 0;
     }
-    if (!EC_POINT_copy(group->generator, generator))
+    if (!EC_POINTT_copy(group->generator, generator))
         return 0;
 
     if (!BNY_copy(group->order, order))
@@ -397,17 +397,17 @@ int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
     return 1;
 }
 
-const EC_POINT *EC_GROUP_get0_generator(const EC_GROUP *group)
+const EC_POINTT *ECC_GROUP_get0_generator(const ECC_GROUP *group)
 {
     return group->generator;
 }
 
-BN_MONT_CTX *EC_GROUP_get_mont_data(const EC_GROUP *group)
+BN_MONT_CTX *ECC_GROUP_get_mont_data(const ECC_GROUP *group)
 {
     return group->mont_data;
 }
 
-int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
+int ECC_GROUP_get_order(const ECC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
 {
     if (group->order == NULL)
         return 0;
@@ -417,17 +417,17 @@ int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
     return !BN_is_zero(order);
 }
 
-const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group)
+const BIGNUM *ECC_GROUP_get0_order(const ECC_GROUP *group)
 {
     return group->order;
 }
 
-int EC_GROUP_order_bits(const EC_GROUP *group)
+int ECC_GROUP_order_bits(const ECC_GROUP *group)
 {
     return group->meth->group_order_bits(group);
 }
 
-int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
+int ECC_GROUP_get_cofactor(const ECC_GROUP *group, BIGNUM *cofactor,
                           BN_CTX *ctx)
 {
 
@@ -439,44 +439,44 @@ int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
     return !BN_is_zero(group->cofactor);
 }
 
-const BIGNUM *EC_GROUP_get0_cofactor(const EC_GROUP *group)
+const BIGNUM *ECC_GROUP_get0_cofactor(const ECC_GROUP *group)
 {
     return group->cofactor;
 }
 
-void EC_GROUP_set_curve_name(EC_GROUP *group, int nid)
+void ECC_GROUP_set_curve_name(ECC_GROUP *group, int nid)
 {
     group->curve_name = nid;
 }
 
-int EC_GROUP_get_curve_name(const EC_GROUP *group)
+int ECC_GROUP_get_curve_name(const ECC_GROUP *group)
 {
     return group->curve_name;
 }
 
-void EC_GROUP_set_asn1_flag(EC_GROUP *group, int flag)
+void ECC_GROUP_set_asn1_flag(ECC_GROUP *group, int flag)
 {
     group->asn1_flag = flag;
 }
 
-int EC_GROUP_get_asn1_flag(const EC_GROUP *group)
+int ECC_GROUP_get_asn1_flag(const ECC_GROUP *group)
 {
     return group->asn1_flag;
 }
 
-void EC_GROUP_set_point_conversion_form(EC_GROUP *group,
+void ECC_GROUP_set_point_conversion_form(ECC_GROUP *group,
                                         point_conversion_form_t form)
 {
     group->asn1_form = form;
 }
 
-point_conversion_form_t EC_GROUP_get_point_conversion_form(const EC_GROUP
+point_conversion_form_t ECC_GROUP_get_point_conversion_form(const ECC_GROUP
                                                            *group)
 {
     return group->asn1_form;
 }
 
-size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
+size_t ECC_GROUP_set_seed(ECC_GROUP *group, const unsigned char *p, size_t len)
 {
     OPENSSL_free(group->seed);
     group->seed = NULL;
@@ -486,7 +486,7 @@ size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
         return 1;
 
     if ((group->seed = OPENSSL_malloc(len)) == NULL) {
-        ECerr(EC_F_EC_GROUP_SET_YSEED, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_ECC_GROUP_SET_YSEED, ERR_R_MALLOC_FAILURE);
         return 0;
     }
     memcpy(group->seed, p, len);
@@ -495,96 +495,96 @@ size_t EC_GROUP_set_seed(EC_GROUP *group, const unsigned char *p, size_t len)
     return len;
 }
 
-unsigned char *EC_GROUP_get0_seed(const EC_GROUP *group)
+unsigned char *ECC_GROUP_get0_seed(const ECC_GROUP *group)
 {
     return group->seed;
 }
 
-size_t EC_GROUP_get_seed_len(const EC_GROUP *group)
+size_t ECC_GROUP_get_seed_len(const ECC_GROUP *group)
 {
     return group->seed_len;
 }
 
-int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
+int ECC_GROUP_set_curve(ECC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
                        const BIGNUM *b, BN_CTX *ctx)
 {
     if (group->meth->group_set_curve == 0) {
-        ECerr(EC_F_EC_GROUP_SET_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_ECC_GROUP_SET_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     return group->meth->group_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+int ECC_GROUP_get_curve(const ECC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
                        BN_CTX *ctx)
 {
     if (group->meth->group_get_curve == NULL) {
-        ECerr(EC_F_EC_GROUP_GET_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_ECC_GROUP_GET_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     return group->meth->group_get_curve(group, p, a, b, ctx);
 }
 
 #if OPENSSL_API_COMPAT < 0x10200000L
-int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
+int ECC_GROUP_set_curve_GFp(ECC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
                            const BIGNUM *b, BN_CTX *ctx)
 {
-    return EC_GROUP_set_curve(group, p, a, b, ctx);
+    return ECC_GROUP_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
+int ECC_GROUP_get_curve_GFp(const ECC_GROUP *group, BIGNUM *p, BIGNUM *a,
                            BIGNUM *b, BN_CTX *ctx)
 {
-    return EC_GROUP_get_curve(group, p, a, b, ctx);
+    return ECC_GROUP_get_curve(group, p, a, b, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
-int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
+int ECC_GROUP_set_curve_GF2m(ECC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
                             const BIGNUM *b, BN_CTX *ctx)
 {
-    return EC_GROUP_set_curve(group, p, a, b, ctx);
+    return ECC_GROUP_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
+int ECC_GROUP_get_curve_GF2m(const ECC_GROUP *group, BIGNUM *p, BIGNUM *a,
                             BIGNUM *b, BN_CTX *ctx)
 {
-    return EC_GROUP_get_curve(group, p, a, b, ctx);
+    return ECC_GROUP_get_curve(group, p, a, b, ctx);
 }
 # endif
 #endif
 
-int EC_GROUP_get_degree(const EC_GROUP *group)
+int ECC_GROUP_get_degree(const ECC_GROUP *group)
 {
     if (group->meth->group_get_degree == 0) {
-        ECerr(EC_F_EC_GROUP_GET_DEGREE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_ECC_GROUP_GET_DEGREE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     return group->meth->group_get_degree(group);
 }
 
-int EC_GROUP_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
+int ECC_GROUP_check_discriminant(const ECC_GROUP *group, BN_CTX *ctx)
 {
     if (group->meth->group_check_discriminant == 0) {
-        ECerr(EC_F_EC_GROUP_CHECK_DISCRIMINANT,
+        ECerr(EC_F_ECC_GROUP_CHECK_DISCRIMINANT,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     return group->meth->group_check_discriminant(group, ctx);
 }
 
-int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
+int ECC_GROUP_cmp(const ECC_GROUP *a, const ECC_GROUP *b, BN_CTX *ctx)
 {
     int r = 0;
     BIGNUM *a1, *a2, *a3, *b1, *b2, *b3;
     BN_CTX *ctx_new = NULL;
 
     /* compare the field types */
-    if (EC_METHOD_get_field_type(EC_GROUP_method_of(a)) !=
-        EC_METHOD_get_field_type(EC_GROUP_method_of(b)))
+    if (EC_METHOD_get_field_type(ECC_GROUP_method_of(a)) !=
+        EC_METHOD_get_field_type(ECC_GROUP_method_of(b)))
         return 1;
     /* compare the curve name (if present in both) */
-    if (EC_GROUP_get_curve_name(a) && EC_GROUP_get_curve_name(b) &&
-        EC_GROUP_get_curve_name(a) != EC_GROUP_get_curve_name(b))
+    if (ECC_GROUP_get_curve_name(a) && ECC_GROUP_get_curve_name(b) &&
+        ECC_GROUP_get_curve_name(a) != ECC_GROUP_get_curve_name(b))
         return 1;
     if (a->meth->flags & EC_FLAGS_CUSTOM_CURVE)
         return 0;
@@ -618,18 +618,18 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
     if (r || BN_cmp(a1, b1) || BN_cmp(a2, b2) || BN_cmp(a3, b3))
         r = 1;
 
-    /* XXX EC_POINT_cmp() assumes that the methods are equal */
-    if (r || EC_POINT_cmp(a, EC_GROUP_get0_generator(a),
-                          EC_GROUP_get0_generator(b), ctx))
+    /* XXX EC_POINTT_cmp() assumes that the methods are equal */
+    if (r || EC_POINTT_cmp(a, ECC_GROUP_get0_generator(a),
+                          ECC_GROUP_get0_generator(b), ctx))
         r = 1;
 
     if (!r) {
         const BIGNUM *ao, *bo, *ac, *bc;
         /* compare the order and cofactor */
-        ao = EC_GROUP_get0_order(a);
-        bo = EC_GROUP_get0_order(b);
-        ac = EC_GROUP_get0_cofactor(a);
-        bc = EC_GROUP_get0_cofactor(b);
+        ao = ECC_GROUP_get0_order(a);
+        bo = ECC_GROUP_get0_order(b);
+        ac = ECC_GROUP_get0_cofactor(a);
+        bc = ECC_GROUP_get0_cofactor(b);
         if (ao == NULL || bo == NULL) {
             BNY_CTX_end(ctx);
             BNY_CTX_free(ctx_new);
@@ -645,24 +645,24 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
     return r;
 }
 
-/* functions for EC_POINT objects */
+/* functions for EC_POINTT objects */
 
-EC_POINT *EC_POINT_new(const EC_GROUP *group)
+EC_POINTT *EC_POINTT_new(const ECC_GROUP *group)
 {
-    EC_POINT *ret;
+    EC_POINTT *ret;
 
     if (group == NULL) {
-        ECerr(EC_F_EC_POINT_NEW, ERR_R_PASSED_NULL_PARAMETER);
+        ECerr(EC_F_EC_POINTT_NEW, ERR_R_PASSED_NULL_PARAMETER);
         return NULL;
     }
     if (group->meth->point_init == NULL) {
-        ECerr(EC_F_EC_POINT_NEW, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_NEW, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return NULL;
     }
 
     ret = OPENSSL_zalloc(sizeof(*ret));
     if (ret == NULL) {
-        ECerr(EC_F_EC_POINT_NEW, ERR_R_MALLOC_FAILURE);
+        ECerr(EC_F_EC_POINTT_NEW, ERR_R_MALLOC_FAILURE);
         return NULL;
     }
 
@@ -677,7 +677,7 @@ EC_POINT *EC_POINT_new(const EC_GROUP *group)
     return ret;
 }
 
-void EC_POINT_free(EC_POINT *point)
+void EC_POINTT_free(EC_POINTT *point)
 {
     if (!point)
         return;
@@ -687,7 +687,7 @@ void EC_POINT_free(EC_POINT *point)
     OPENSSL_free(point);
 }
 
-void EC_POINT_clear_free(EC_POINT *point)
+void EC_POINTT_clear_free(EC_POINTT *point)
 {
     if (!point)
         return;
@@ -699,17 +699,17 @@ void EC_POINT_clear_free(EC_POINT *point)
     OPENSSL_clear_free(point, sizeof(*point));
 }
 
-int EC_POINT_copy(EC_POINT *dest, const EC_POINT *src)
+int EC_POINTT_copy(EC_POINTT *dest, const EC_POINTT *src)
 {
     if (dest->meth->point_copy == 0) {
-        ECerr(EC_F_EC_POINT_COPY, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_COPY, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (dest->meth != src->meth
             || (dest->curve_name != src->curve_name
                 && dest->curve_name != 0
                 && src->curve_name != 0)) {
-        ECerr(EC_F_EC_POINT_COPY, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_COPY, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     if (dest == src)
@@ -717,56 +717,56 @@ int EC_POINT_copy(EC_POINT *dest, const EC_POINT *src)
     return dest->meth->point_copy(dest, src);
 }
 
-EC_POINT *EC_POINT_dup(const EC_POINT *a, const EC_GROUP *group)
+EC_POINTT *EC_POINTT_dup(const EC_POINTT *a, const ECC_GROUP *group)
 {
-    EC_POINT *t;
+    EC_POINTT *t;
     int r;
 
     if (a == NULL)
         return NULL;
 
-    t = EC_POINT_new(group);
+    t = EC_POINTT_new(group);
     if (t == NULL)
         return NULL;
-    r = EC_POINT_copy(t, a);
+    r = EC_POINTT_copy(t, a);
     if (!r) {
-        EC_POINT_free(t);
+        EC_POINTT_free(t);
         return NULL;
     }
     return t;
 }
 
-const EC_METHOD *EC_POINT_method_of(const EC_POINT *point)
+const EC_METHOD *EC_POINTT_method_of(const EC_POINTT *point)
 {
     return point->meth;
 }
 
-int EC_POINT_set_to_infinity(const EC_GROUP *group, EC_POINT *point)
+int EC_POINTT_set_to_infinity(const ECC_GROUP *group, EC_POINTT *point)
 {
     if (group->meth->point_set_to_infinity == 0) {
-        ECerr(EC_F_EC_POINT_SET_TO_INFINITY,
+        ECerr(EC_F_EC_POINTT_SET_TO_INFINITY,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (group->meth != point->meth) {
-        ECerr(EC_F_EC_POINT_SET_TO_INFINITY, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_SET_TO_INFINITY, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->point_set_to_infinity(group, point);
 }
 
-int EC_POINT_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             EC_POINT *point, const BIGNUM *x,
+int EC_POINTT_set_Jprojective_coordinates_GFp(const ECC_GROUP *group,
+                                             EC_POINTT *point, const BIGNUM *x,
                                              const BIGNUM *y, const BIGNUM *z,
                                              BN_CTX *ctx)
 {
     if (group->meth->point_set_Jprojective_coordinates_GFp == 0) {
-        ECerr(EC_F_EC_POINT_SET_JPROJECTIVE_COORDINATES_GFP,
+        ECerr(EC_F_EC_POINTT_SET_JPROJECTIVE_COORDINATES_GFP,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_SET_JPROJECTIVE_COORDINATES_GFP,
+        ECerr(EC_F_EC_POINTT_SET_JPROJECTIVE_COORDINATES_GFP,
               EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
@@ -774,18 +774,18 @@ int EC_POINT_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
                                                               y, z, ctx);
 }
 
-int EC_POINT_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             const EC_POINT *point, BIGNUM *x,
+int EC_POINTT_get_Jprojective_coordinates_GFp(const ECC_GROUP *group,
+                                             const EC_POINTT *point, BIGNUM *x,
                                              BIGNUM *y, BIGNUM *z,
                                              BN_CTX *ctx)
 {
     if (group->meth->point_get_Jprojective_coordinates_GFp == 0) {
-        ECerr(EC_F_EC_POINT_GET_JPROJECTIVE_COORDINATES_GFP,
+        ECerr(EC_F_EC_POINTT_GET_JPROJECTIVE_COORDINATES_GFP,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_GET_JPROJECTIVE_COORDINATES_GFP,
+        ECerr(EC_F_EC_POINTT_GET_JPROJECTIVE_COORDINATES_GFP,
               EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
@@ -793,201 +793,201 @@ int EC_POINT_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
                                                               y, z, ctx);
 }
 
-int EC_POINT_set_affine_coordinates(const EC_GROUP *group, EC_POINT *point,
+int EC_POINTT_set_affine_coordinates(const ECC_GROUP *group, EC_POINTT *point,
                                     const BIGNUM *x, const BIGNUM *y,
                                     BN_CTX *ctx)
 {
     if (group->meth->point_set_affine_coordinates == NULL) {
-        ECerr(EC_F_EC_POINT_SET_AFFINE_COORDINATES,
+        ECerr(EC_F_EC_POINTT_SET_AFFINE_COORDINATES,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_SET_AFFINE_COORDINATES, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_SET_AFFINE_COORDINATES, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     if (!group->meth->point_set_affine_coordinates(group, point, x, y, ctx))
         return 0;
 
-    if (EC_POINT_is_on_curve(group, point, ctx) <= 0) {
-        ECerr(EC_F_EC_POINT_SET_AFFINE_COORDINATES, EC_R_POINT_IS_NOT_ON_CURVE);
+    if (EC_POINTT_is_on_curve(group, point, ctx) <= 0) {
+        ECerr(EC_F_EC_POINTT_SET_AFFINE_COORDINATES, EC_R_POINT_IS_NOT_ON_CURVE);
         return 0;
     }
     return 1;
 }
 
 #if OPENSSL_API_COMPAT < 0x10200000L
-int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group,
-                                        EC_POINT *point, const BIGNUM *x,
+int EC_POINTT_set_affine_coordinates_GFp(const ECC_GROUP *group,
+                                        EC_POINTT *point, const BIGNUM *x,
                                         const BIGNUM *y, BN_CTX *ctx)
 {
-    return EC_POINT_set_affine_coordinates(group, point, x, y, ctx);
+    return EC_POINTT_set_affine_coordinates(group, point, x, y, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
-int EC_POINT_set_affine_coordinates_GF2m(const EC_GROUP *group,
-                                         EC_POINT *point, const BIGNUM *x,
+int EC_POINTT_set_affine_coordinates_GF2m(const ECC_GROUP *group,
+                                         EC_POINTT *point, const BIGNUM *x,
                                          const BIGNUM *y, BN_CTX *ctx)
 {
-    return EC_POINT_set_affine_coordinates(group, point, x, y, ctx);
+    return EC_POINTT_set_affine_coordinates(group, point, x, y, ctx);
 }
 # endif
 #endif
 
-int EC_POINT_get_affine_coordinates(const EC_GROUP *group,
-                                    const EC_POINT *point, BIGNUM *x, BIGNUM *y,
+int EC_POINTT_get_affine_coordinates(const ECC_GROUP *group,
+                                    const EC_POINTT *point, BIGNUM *x, BIGNUM *y,
                                     BN_CTX *ctx)
 {
     if (group->meth->point_get_affine_coordinates == NULL) {
-        ECerr(EC_F_EC_POINT_GET_AFFINE_COORDINATES,
+        ECerr(EC_F_EC_POINTT_GET_AFFINE_COORDINATES,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_GET_AFFINE_COORDINATES, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_GET_AFFINE_COORDINATES, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
-    if (EC_POINT_is_at_infinity(group, point)) {
-        ECerr(EC_F_EC_POINT_GET_AFFINE_COORDINATES, EC_R_POINT_AT_INFINITY);
+    if (EC_POINTT_is_at_infinity(group, point)) {
+        ECerr(EC_F_EC_POINTT_GET_AFFINE_COORDINATES, EC_R_POINT_AT_INFINITY);
         return 0;
     }
     return group->meth->point_get_affine_coordinates(group, point, x, y, ctx);
 }
 
 #if OPENSSL_API_COMPAT < 0x10200000L
-int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
-                                        const EC_POINT *point, BIGNUM *x,
+int EC_POINTT_get_affine_coordinates_GFp(const ECC_GROUP *group,
+                                        const EC_POINTT *point, BIGNUM *x,
                                         BIGNUM *y, BN_CTX *ctx)
 {
-    return EC_POINT_get_affine_coordinates(group, point, x, y, ctx);
+    return EC_POINTT_get_affine_coordinates(group, point, x, y, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
-int EC_POINT_get_affine_coordinates_GF2m(const EC_GROUP *group,
-                                         const EC_POINT *point, BIGNUM *x,
+int EC_POINTT_get_affine_coordinates_GF2m(const ECC_GROUP *group,
+                                         const EC_POINTT *point, BIGNUM *x,
                                          BIGNUM *y, BN_CTX *ctx)
 {
-    return EC_POINT_get_affine_coordinates(group, point, x, y, ctx);
+    return EC_POINTT_get_affine_coordinates(group, point, x, y, ctx);
 }
 # endif
 #endif
 
-int EC_POINT_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
-                 const EC_POINT *b, BN_CTX *ctx)
+int EC_POINTT_add(const ECC_GROUP *group, EC_POINTT *r, const EC_POINTT *a,
+                 const EC_POINTT *b, BN_CTX *ctx)
 {
     if (group->meth->add == 0) {
-        ECerr(EC_F_EC_POINT_ADD, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_ADD, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(r, group) || !ec_point_is_compat(a, group)
         || !ec_point_is_compat(b, group)) {
-        ECerr(EC_F_EC_POINT_ADD, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_ADD, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->add(group, r, a, b, ctx);
 }
 
-int EC_POINT_dbl(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
+int EC_POINTT_dbl(const ECC_GROUP *group, EC_POINTT *r, const EC_POINTT *a,
                  BN_CTX *ctx)
 {
     if (group->meth->dbl == 0) {
-        ECerr(EC_F_EC_POINT_DBL, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_DBL, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(r, group) || !ec_point_is_compat(a, group)) {
-        ECerr(EC_F_EC_POINT_DBL, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_DBL, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->dbl(group, r, a, ctx);
 }
 
-int EC_POINT_invert(const EC_GROUP *group, EC_POINT *a, BN_CTX *ctx)
+int EC_POINTT_invert(const ECC_GROUP *group, EC_POINTT *a, BN_CTX *ctx)
 {
     if (group->meth->invert == 0) {
-        ECerr(EC_F_EC_POINT_INVERT, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_INVERT, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(a, group)) {
-        ECerr(EC_F_EC_POINT_INVERT, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_INVERT, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->invert(group, a, ctx);
 }
 
-int EC_POINT_is_at_infinity(const EC_GROUP *group, const EC_POINT *point)
+int EC_POINTT_is_at_infinity(const ECC_GROUP *group, const EC_POINTT *point)
 {
     if (group->meth->is_at_infinity == 0) {
-        ECerr(EC_F_EC_POINT_IS_AT_INFINITY,
+        ECerr(EC_F_EC_POINTT_IS_AT_INFINITY,
               ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_IS_AT_INFINITY, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_IS_AT_INFINITY, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->is_at_infinity(group, point);
 }
 
 /*
- * Check whether an EC_POINT is on the curve or not. Note that the return
+ * Check whether an EC_POINTT is on the curve or not. Note that the return
  * value for this function should NOT be treated as a boolean. Return values:
  *  1: The point is on the curve
  *  0: The point is not on the curve
  * -1: An error occurred
  */
-int EC_POINT_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
+int EC_POINTT_is_on_curve(const ECC_GROUP *group, const EC_POINTT *point,
                          BN_CTX *ctx)
 {
     if (group->meth->is_on_curve == 0) {
-        ECerr(EC_F_EC_POINT_IS_ON_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_IS_ON_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_IS_ON_CURVE, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_IS_ON_CURVE, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->is_on_curve(group, point, ctx);
 }
 
-int EC_POINT_cmp(const EC_GROUP *group, const EC_POINT *a, const EC_POINT *b,
+int EC_POINTT_cmp(const ECC_GROUP *group, const EC_POINTT *a, const EC_POINTT *b,
                  BN_CTX *ctx)
 {
     if (group->meth->point_cmp == 0) {
-        ECerr(EC_F_EC_POINT_CMP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_CMP, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return -1;
     }
     if (!ec_point_is_compat(a, group) || !ec_point_is_compat(b, group)) {
-        ECerr(EC_F_EC_POINT_CMP, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_CMP, EC_R_INCOMPATIBLE_OBJECTS);
         return -1;
     }
     return group->meth->point_cmp(group, a, b, ctx);
 }
 
-int EC_POINT_make_affine(const EC_GROUP *group, EC_POINT *point, BN_CTX *ctx)
+int EC_POINTT_make_affine(const ECC_GROUP *group, EC_POINTT *point, BN_CTX *ctx)
 {
     if (group->meth->make_affine == 0) {
-        ECerr(EC_F_EC_POINT_MAKE_AFFINE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTT_MAKE_AFFINE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     if (!ec_point_is_compat(point, group)) {
-        ECerr(EC_F_EC_POINT_MAKE_AFFINE, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTT_MAKE_AFFINE, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
     return group->meth->make_affine(group, point, ctx);
 }
 
-int EC_POINTs_make_affine(const EC_GROUP *group, size_t num,
-                          EC_POINT *points[], BN_CTX *ctx)
+int EC_POINTTs_make_affine(const ECC_GROUP *group, size_t num,
+                          EC_POINTT *points[], BN_CTX *ctx)
 {
     size_t i;
 
     if (group->meth->points_make_affine == 0) {
-        ECerr(EC_F_EC_POINTS_MAKE_AFFINE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
+        ECerr(EC_F_EC_POINTTS_MAKE_AFFINE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
         return 0;
     }
     for (i = 0; i < num; i++) {
         if (!ec_point_is_compat(points[i], group)) {
-            ECerr(EC_F_EC_POINTS_MAKE_AFFINE, EC_R_INCOMPATIBLE_OBJECTS);
+            ECerr(EC_F_EC_POINTTS_MAKE_AFFINE, EC_R_INCOMPATIBLE_OBJECTS);
             return 0;
         }
     }
@@ -1000,8 +1000,8 @@ int EC_POINTs_make_affine(const EC_GROUP *group, size_t num,
  * methods.
  */
 
-int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
-                  size_t num, const EC_POINT *points[],
+int EC_POINTTs_mul(const ECC_GROUP *group, EC_POINTT *r, const BIGNUM *scalar,
+                  size_t num, const EC_POINTT *points[],
                   const BIGNUM *scalars[], BN_CTX *ctx)
 {
     int ret = 0;
@@ -1009,22 +1009,22 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
     BN_CTX *new_ctx = NULL;
 
     if (!ec_point_is_compat(r, group)) {
-        ECerr(EC_F_EC_POINTS_MUL, EC_R_INCOMPATIBLE_OBJECTS);
+        ECerr(EC_F_EC_POINTTS_MUL, EC_R_INCOMPATIBLE_OBJECTS);
         return 0;
     }
 
     if (scalar == NULL && num == 0)
-        return EC_POINT_set_to_infinity(group, r);
+        return EC_POINTT_set_to_infinity(group, r);
 
     for (i = 0; i < num; i++) {
         if (!ec_point_is_compat(points[i], group)) {
-            ECerr(EC_F_EC_POINTS_MUL, EC_R_INCOMPATIBLE_OBJECTS);
+            ECerr(EC_F_EC_POINTTS_MUL, EC_R_INCOMPATIBLE_OBJECTS);
             return 0;
         }
     }
 
     if (ctx == NULL && (ctx = new_ctx = BNY_CTX_secure_new()) == NULL) {
-        ECerr(EC_F_EC_POINTS_MUL, ERR_R_INTERNAL_ERROR);
+        ECerr(EC_F_EC_POINTTS_MUL, ERR_R_INTERNAL_ERROR);
         return 0;
     }
 
@@ -1038,23 +1038,23 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
     return ret;
 }
 
-int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-                 const EC_POINT *point, const BIGNUM *p_scalar, BN_CTX *ctx)
+int EC_POINTT_mul(const ECC_GROUP *group, EC_POINTT *r, const BIGNUM *g_scalar,
+                 const EC_POINTT *point, const BIGNUM *p_scalar, BN_CTX *ctx)
 {
-    /* just a convenient interface to EC_POINTs_mul() */
+    /* just a convenient interface to EC_POINTTs_mul() */
 
-    const EC_POINT *points[1];
+    const EC_POINTT *points[1];
     const BIGNUM *scalars[1];
 
     points[0] = point;
     scalars[0] = p_scalar;
 
-    return EC_POINTs_mul(group, r, g_scalar,
+    return EC_POINTTs_mul(group, r, g_scalar,
                          (point != NULL
                           && p_scalar != NULL), points, scalars, ctx);
 }
 
-int EC_GROUP_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
+int ECC_GROUP_precompute_mult(ECC_GROUP *group, BN_CTX *ctx)
 {
     if (group->meth->mul == 0)
         /* use default */
@@ -1066,7 +1066,7 @@ int EC_GROUP_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
         return 1;               /* nothing to do, so report success */
 }
 
-int EC_GROUP_have_precompute_mult(const EC_GROUP *group)
+int ECC_GROUP_have_precompute_mult(const ECC_GROUP *group)
 {
     if (group->meth->mul == 0)
         /* use default */
@@ -1083,7 +1083,7 @@ int EC_GROUP_have_precompute_mult(const EC_GROUP *group)
  * ec_precompute_mont_data sets |group->mont_data| from |group->order| and
  * returns one on success. On error it returns zero.
  */
-static int ec_precompute_mont_data(EC_GROUP *group)
+static int ec_precompute_mont_data(ECC_GROUP *group)
 {
     BN_CTX *ctx = BNY_CTX_new();
     int ret = 0;
@@ -1122,14 +1122,14 @@ void *ECC_KEY_get_ex_data(const EC_KEY *key, int idx)
     return CRYPTO_get_ex_data(&key->ex_data, idx);
 }
 
-int ec_group_simple_order_bits(const EC_GROUP *group)
+int ec_group_simple_order_bits(const ECC_GROUP *group)
 {
     if (group->order == NULL)
         return 0;
     return BNY_num_bits(group->order);
 }
 
-static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
+static int ec_field_inverse_mod_ord(const ECC_GROUP *group, BIGNUM *r,
                                     const BIGNUM *x, BN_CTX *ctx)
 {
     BIGNUM *e = NULL;
@@ -1182,7 +1182,7 @@ static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
  * EC_METHODs must implement their own field_inverse_mod_ord for
  * other functionality.
  */
-int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
+int ec_group_do_inverse_ord(const ECC_GROUP *group, BIGNUM *res,
                             const BIGNUM *x, BN_CTX *ctx)
 {
     if (group->meth->field_inverse_mod_ord != NULL)
@@ -1192,7 +1192,7 @@ int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
 }
 
 /*-
- * Coordinate blinding for EC_POINT.
+ * Coordinate blinding for EC_POINTT.
  *
  * The underlying EC_METHOD can optionally implement this function:
  * underlying implementations should return 0 on errors, or 1 on
@@ -1201,7 +1201,7 @@ int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
  * This wrapper returns 1 in case the underlying EC_METHOD does not
  * support coordinate blinding.
  */
-int ec_point_blind_coordinates(const EC_GROUP *group, EC_POINT *p, BN_CTX *ctx)
+int ec_point_blind_coordinates(const ECC_GROUP *group, EC_POINTT *p, BN_CTX *ctx)
 {
     if (group->meth->blind_coordinates == NULL)
         return 1; /* ignore if not implemented */

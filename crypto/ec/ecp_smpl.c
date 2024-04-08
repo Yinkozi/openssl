@@ -88,7 +88,7 @@ const EC_METHOD *EC_GFp_simple_method(void)
  * representation (i.e. 'encoding' means multiplying by some factor R).
  */
 
-int ec_GFp_simple_group_init(EC_GROUP *group)
+int ec_GFp_simple_group_init(ECC_GROUP *group)
 {
     group->field = BNY_new();
     group->a = BNY_new();
@@ -103,21 +103,21 @@ int ec_GFp_simple_group_init(EC_GROUP *group)
     return 1;
 }
 
-void ec_GFp_simple_group_finish(EC_GROUP *group)
+void ec_GFp_simple_group_finish(ECC_GROUP *group)
 {
     BN_free(group->field);
     BN_free(group->a);
     BN_free(group->b);
 }
 
-void ec_GFp_simple_group_clear_finish(EC_GROUP *group)
+void ec_GFp_simple_group_clear_finish(ECC_GROUP *group)
 {
     BNY_clear_free(group->field);
     BNY_clear_free(group->a);
     BNY_clear_free(group->b);
 }
 
-int ec_GFp_simple_group_copy(EC_GROUP *dest, const EC_GROUP *src)
+int ec_GFp_simple_group_copy(ECC_GROUP *dest, const ECC_GROUP *src)
 {
     if (!BNY_copy(dest->field, src->field))
         return 0;
@@ -131,7 +131,7 @@ int ec_GFp_simple_group_copy(EC_GROUP *dest, const EC_GROUP *src)
     return 1;
 }
 
-int ec_GFp_simple_group_set_curve(EC_GROUP *group,
+int ec_GFp_simple_group_set_curve(ECC_GROUP *group,
                                   const BIGNUM *p, const BIGNUM *a,
                                   const BIGNUM *b, BN_CTX *ctx)
 {
@@ -190,7 +190,7 @@ int ec_GFp_simple_group_set_curve(EC_GROUP *group,
     return ret;
 }
 
-int ec_GFp_simple_group_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
+int ec_GFp_simple_group_get_curve(const ECC_GROUP *group, BIGNUM *p, BIGNUM *a,
                                   BIGNUM *b, BN_CTX *ctx)
 {
     int ret = 0;
@@ -235,12 +235,12 @@ int ec_GFp_simple_group_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
     return ret;
 }
 
-int ec_GFp_simple_group_get_degree(const EC_GROUP *group)
+int ec_GFp_simple_group_get_degree(const ECC_GROUP *group)
 {
     return BNY_num_bits(group->field);
 }
 
-int ec_GFp_simple_group_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
+int ec_GFp_simple_group_check_discriminant(const ECC_GROUP *group, BN_CTX *ctx)
 {
     int ret = 0;
     BIGNUM *a, *b, *order, *tmp_1, *tmp_2;
@@ -312,7 +312,7 @@ int ec_GFp_simple_group_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
     return ret;
 }
 
-int ec_GFp_simple_point_init(EC_POINT *point)
+int ec_GFp_simple_point_init(EC_POINTT *point)
 {
     point->X = BNY_new();
     point->Y = BNY_new();
@@ -328,14 +328,14 @@ int ec_GFp_simple_point_init(EC_POINT *point)
     return 1;
 }
 
-void ec_GFp_simple_point_finish(EC_POINT *point)
+void ec_GFp_simple_point_finish(EC_POINTT *point)
 {
     BN_free(point->X);
     BN_free(point->Y);
     BN_free(point->Z);
 }
 
-void ec_GFp_simple_point_clear_finish(EC_POINT *point)
+void ec_GFp_simple_point_clear_finish(EC_POINTT *point)
 {
     BNY_clear_free(point->X);
     BNY_clear_free(point->Y);
@@ -343,7 +343,7 @@ void ec_GFp_simple_point_clear_finish(EC_POINT *point)
     point->Z_is_one = 0;
 }
 
-int ec_GFp_simple_point_copy(EC_POINT *dest, const EC_POINT *src)
+int ec_GFp_simple_point_copy(EC_POINTT *dest, const EC_POINTT *src)
 {
     if (!BNY_copy(dest->X, src->X))
         return 0;
@@ -357,16 +357,16 @@ int ec_GFp_simple_point_copy(EC_POINT *dest, const EC_POINT *src)
     return 1;
 }
 
-int ec_GFp_simple_point_set_to_infinity(const EC_GROUP *group,
-                                        EC_POINT *point)
+int ec_GFp_simple_point_set_to_infinity(const ECC_GROUP *group,
+                                        EC_POINTT *point)
 {
     point->Z_is_one = 0;
     BN_zero(point->Z);
     return 1;
 }
 
-int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                                  EC_POINT *point,
+int ec_GFp_simple_set_Jprojective_coordinates_GFp(const ECC_GROUP *group,
+                                                  EC_POINTT *point,
                                                   const BIGNUM *x,
                                                   const BIGNUM *y,
                                                   const BIGNUM *z,
@@ -425,8 +425,8 @@ int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
     return ret;
 }
 
-int ec_GFp_simple_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                                  const EC_POINT *point,
+int ec_GFp_simple_get_Jprojective_coordinates_GFp(const ECC_GROUP *group,
+                                                  const EC_POINTT *point,
                                                   BIGNUM *x, BIGNUM *y,
                                                   BIGNUM *z, BN_CTX *ctx)
 {
@@ -474,8 +474,8 @@ int ec_GFp_simple_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
     return ret;
 }
 
-int ec_GFp_simple_point_set_affine_coordinates(const EC_GROUP *group,
-                                               EC_POINT *point,
+int ec_GFp_simple_point_set_affine_coordinates(const ECC_GROUP *group,
+                                               EC_POINTT *point,
                                                const BIGNUM *x,
                                                const BIGNUM *y, BN_CTX *ctx)
 {
@@ -488,12 +488,12 @@ int ec_GFp_simple_point_set_affine_coordinates(const EC_GROUP *group,
         return 0;
     }
 
-    return EC_POINT_set_Jprojective_coordinates_GFp(group, point, x, y,
+    return EC_POINTT_set_Jprojective_coordinates_GFp(group, point, x, y,
                                                     BNY_value_one(), ctx);
 }
 
-int ec_GFp_simple_point_get_affine_coordinates(const EC_GROUP *group,
-                                               const EC_POINT *point,
+int ec_GFp_simple_point_get_affine_coordinates(const ECC_GROUP *group,
+                                               const EC_POINTT *point,
                                                BIGNUM *x, BIGNUM *y,
                                                BN_CTX *ctx)
 {
@@ -502,7 +502,7 @@ int ec_GFp_simple_point_get_affine_coordinates(const EC_GROUP *group,
     const BIGNUM *Z_;
     int ret = 0;
 
-    if (EC_POINT_is_at_infinity(group, point)) {
+    if (EC_POINTT_is_at_infinity(group, point)) {
         ECerr(EC_F_EC_GFP_SIMPLE_POINT_GET_AFFINE_COORDINATES,
               EC_R_POINT_AT_INFINITY);
         return 0;
@@ -606,23 +606,23 @@ int ec_GFp_simple_point_get_affine_coordinates(const EC_GROUP *group,
     return ret;
 }
 
-int ec_GFp_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
-                      const EC_POINT *b, BN_CTX *ctx)
+int ec_GFp_simple_add(const ECC_GROUP *group, EC_POINTT *r, const EC_POINTT *a,
+                      const EC_POINTT *b, BN_CTX *ctx)
 {
-    int (*field_mul) (const EC_GROUP *, BIGNUM *, const BIGNUM *,
+    int (*field_mul) (const ECC_GROUP *, BIGNUM *, const BIGNUM *,
                       const BIGNUM *, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
+    int (*field_sqr) (const ECC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
     const BIGNUM *p;
     BN_CTX *new_ctx = NULL;
     BIGNUM *n0, *n1, *n2, *n3, *n4, *n5, *n6;
     int ret = 0;
 
     if (a == b)
-        return EC_POINT_dbl(group, r, a, ctx);
-    if (EC_POINT_is_at_infinity(group, a))
-        return EC_POINT_copy(r, b);
-    if (EC_POINT_is_at_infinity(group, b))
-        return EC_POINT_copy(r, a);
+        return EC_POINTT_dbl(group, r, a, ctx);
+    if (EC_POINTT_is_at_infinity(group, a))
+        return EC_POINTT_copy(r, b);
+    if (EC_POINTT_is_at_infinity(group, b))
+        return EC_POINTT_copy(r, a);
 
     field_mul = group->meth->field_mul;
     field_sqr = group->meth->field_sqr;
@@ -707,7 +707,7 @@ int ec_GFp_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
         if (BN_is_zero(n6)) {
             /* a is the same point as b */
             BNY_CTX_end(ctx);
-            ret = EC_POINT_dbl(group, r, a, ctx);
+            ret = EC_POINTT_dbl(group, r, a, ctx);
             ctx = NULL;
             goto end;
         } else {
@@ -791,18 +791,18 @@ int ec_GFp_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
     return ret;
 }
 
-int ec_GFp_simple_dbl(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
+int ec_GFp_simple_dbl(const ECC_GROUP *group, EC_POINTT *r, const EC_POINTT *a,
                       BN_CTX *ctx)
 {
-    int (*field_mul) (const EC_GROUP *, BIGNUM *, const BIGNUM *,
+    int (*field_mul) (const ECC_GROUP *, BIGNUM *, const BIGNUM *,
                       const BIGNUM *, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
+    int (*field_sqr) (const ECC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
     const BIGNUM *p;
     BN_CTX *new_ctx = NULL;
     BIGNUM *n0, *n1, *n2, *n3;
     int ret = 0;
 
-    if (EC_POINT_is_at_infinity(group, a)) {
+    if (EC_POINTT_is_at_infinity(group, a)) {
         BN_zero(r->Z);
         r->Z_is_one = 0;
         return 1;
@@ -933,32 +933,32 @@ int ec_GFp_simple_dbl(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
     return ret;
 }
 
-int ec_GFp_simple_invert(const EC_GROUP *group, EC_POINT *point, BN_CTX *ctx)
+int ec_GFp_simple_invert(const ECC_GROUP *group, EC_POINTT *point, BN_CTX *ctx)
 {
-    if (EC_POINT_is_at_infinity(group, point) || BN_is_zero(point->Y))
+    if (EC_POINTT_is_at_infinity(group, point) || BN_is_zero(point->Y))
         /* point is its own inverse */
         return 1;
 
     return BNY_usub(point->Y, group->field, point->Y);
 }
 
-int ec_GFp_simple_is_at_infinity(const EC_GROUP *group, const EC_POINT *point)
+int ec_GFp_simple_is_at_infinity(const ECC_GROUP *group, const EC_POINTT *point)
 {
     return BN_is_zero(point->Z);
 }
 
-int ec_GFp_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
+int ec_GFp_simple_is_on_curve(const ECC_GROUP *group, const EC_POINTT *point,
                               BN_CTX *ctx)
 {
-    int (*field_mul) (const EC_GROUP *, BIGNUM *, const BIGNUM *,
+    int (*field_mul) (const ECC_GROUP *, BIGNUM *, const BIGNUM *,
                       const BIGNUM *, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
+    int (*field_sqr) (const ECC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
     const BIGNUM *p;
     BN_CTX *new_ctx = NULL;
     BIGNUM *rh, *tmp, *Z4, *Z6;
     int ret = -1;
 
-    if (EC_POINT_is_at_infinity(group, point))
+    if (EC_POINTT_is_at_infinity(group, point))
         return 1;
 
     field_mul = group->meth->field_mul;
@@ -1050,8 +1050,8 @@ int ec_GFp_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
     return ret;
 }
 
-int ec_GFp_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
-                      const EC_POINT *b, BN_CTX *ctx)
+int ec_GFp_simple_cmp(const ECC_GROUP *group, const EC_POINTT *a,
+                      const EC_POINTT *b, BN_CTX *ctx)
 {
     /*-
      * return values:
@@ -1060,19 +1060,19 @@ int ec_GFp_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
      *   1   not equal
      */
 
-    int (*field_mul) (const EC_GROUP *, BIGNUM *, const BIGNUM *,
+    int (*field_mul) (const ECC_GROUP *, BIGNUM *, const BIGNUM *,
                       const BIGNUM *, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
+    int (*field_sqr) (const ECC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
     BN_CTX *new_ctx = NULL;
     BIGNUM *tmp1, *tmp2, *Za23, *Zb23;
     const BIGNUM *tmp1_, *tmp2_;
     int ret = -1;
 
-    if (EC_POINT_is_at_infinity(group, a)) {
-        return EC_POINT_is_at_infinity(group, b) ? 0 : 1;
+    if (EC_POINTT_is_at_infinity(group, a)) {
+        return EC_POINTT_is_at_infinity(group, b) ? 0 : 1;
     }
 
-    if (EC_POINT_is_at_infinity(group, b))
+    if (EC_POINTT_is_at_infinity(group, b))
         return 1;
 
     if (a->Z_is_one && b->Z_is_one) {
@@ -1158,14 +1158,14 @@ int ec_GFp_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
     return ret;
 }
 
-int ec_GFp_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
+int ec_GFp_simple_make_affine(const ECC_GROUP *group, EC_POINTT *point,
                               BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
     BIGNUM *x, *y;
     int ret = 0;
 
-    if (point->Z_is_one || EC_POINT_is_at_infinity(group, point))
+    if (point->Z_is_one || EC_POINTT_is_at_infinity(group, point))
         return 1;
 
     if (ctx == NULL) {
@@ -1180,9 +1180,9 @@ int ec_GFp_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
     if (y == NULL)
         goto err;
 
-    if (!EC_POINT_get_affine_coordinates(group, point, x, y, ctx))
+    if (!EC_POINTT_get_affine_coordinates(group, point, x, y, ctx))
         goto err;
-    if (!EC_POINT_set_affine_coordinates(group, point, x, y, ctx))
+    if (!EC_POINTT_set_affine_coordinates(group, point, x, y, ctx))
         goto err;
     if (!point->Z_is_one) {
         ECerr(EC_F_EC_GFP_SIMPLE_MAKE_AFFINE, ERR_R_INTERNAL_ERROR);
@@ -1197,8 +1197,8 @@ int ec_GFp_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
     return ret;
 }
 
-int ec_GFp_simple_points_make_affine(const EC_GROUP *group, size_t num,
-                                     EC_POINT *points[], BN_CTX *ctx)
+int ec_GFp_simple_points_make_affine(const ECC_GROUP *group, size_t num,
+                                     EC_POINTT *points[], BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
     BIGNUM *tmp, *tmp_Z;
@@ -1314,7 +1314,7 @@ int ec_GFp_simple_points_make_affine(const EC_GROUP *group, size_t num,
     /* Finally, fix up the X and Y coordinates for all points. */
 
     for (i = 0; i < num; i++) {
-        EC_POINT *p = points[i];
+        EC_POINTT *p = points[i];
 
         if (!BN_is_zero(p->Z)) {
             /* turn  (X, Y, 1/Z)  into  (X/Z^2, Y/Z^3, 1) */
@@ -1356,13 +1356,13 @@ int ec_GFp_simple_points_make_affine(const EC_GROUP *group, size_t num,
     return ret;
 }
 
-int ec_GFp_simple_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_mul(const ECC_GROUP *group, BIGNUM *r, const BIGNUM *a,
                             const BIGNUM *b, BN_CTX *ctx)
 {
     return BN_mod_mul(r, a, b, group->field, ctx);
 }
 
-int ec_GFp_simple_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_sqr(const ECC_GROUP *group, BIGNUM *r, const BIGNUM *a,
                             BN_CTX *ctx)
 {
     return BN_mod_sqr(r, a, group->field, ctx);
@@ -1374,7 +1374,7 @@ int ec_GFp_simple_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
  * Since we don't have a Mont structure here, SCA hardening is with blinding.
  * NB: "a" must be in _decoded_ form. (i.e. field_decode must precede.)
  */
-int ec_GFp_simple_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_inv(const ECC_GROUP *group, BIGNUM *r, const BIGNUM *a,
                             BN_CTX *ctx)
 {
     BIGNUM *e = NULL;
@@ -1420,7 +1420,7 @@ int ec_GFp_simple_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
  *   lambda = [1,group->field)
  *
  */
-int ec_GFp_simple_blind_coordinates(const EC_GROUP *group, EC_POINT *p,
+int ec_GFp_simple_blind_coordinates(const ECC_GROUP *group, EC_POINTT *p,
                                     BN_CTX *ctx)
 {
     int ret = 0;
@@ -1483,9 +1483,9 @@ int ec_GFp_simple_blind_coordinates(const EC_GROUP *group, EC_POINT *p,
  * Blinding uses the equivalence relation (\lambda X, \lambda Y, \lambda Z)
  * for any non-zero \lambda that holds for projective (homogeneous) coords.
  */
-int ec_GFp_simple_ladder_pre(const EC_GROUP *group,
-                             EC_POINT *r, EC_POINT *s,
-                             EC_POINT *p, BN_CTX *ctx)
+int ec_GFp_simple_ladder_pre(const ECC_GROUP *group,
+                             EC_POINTT *r, EC_POINTT *s,
+                             EC_POINTT *p, BN_CTX *ctx)
 {
     BIGNUM *t1, *t2, *t3, *t4, *t5 = NULL;
 
@@ -1553,9 +1553,9 @@ int ec_GFp_simple_ladder_pre(const EC_GROUP *group,
  * attacks", as described at
  * https://hyperelliptic.org/EFD/g1p/auto-shortw-xz.html#ladder-mladd-2002-it-4
  */
-int ec_GFp_simple_ladder_step(const EC_GROUP *group,
-                              EC_POINT *r, EC_POINT *s,
-                              EC_POINT *p, BN_CTX *ctx)
+int ec_GFp_simple_ladder_step(const ECC_GROUP *group,
+                              EC_POINTT *r, EC_POINTT *s,
+                              EC_POINTT *p, BN_CTX *ctx)
 {
     int ret = 0;
     BIGNUM *t0, *t1, *t2, *t3, *t4, *t5, *t6 = NULL;
@@ -1641,19 +1641,19 @@ int ec_GFp_simple_ladder_step(const EC_GROUP *group,
  *  - Y1==0 implies p has order 2, so either r or s are infinity and handled by
  *    one of the BN_is_zero(...) branches.
  */
-int ec_GFp_simple_ladder_post(const EC_GROUP *group,
-                              EC_POINT *r, EC_POINT *s,
-                              EC_POINT *p, BN_CTX *ctx)
+int ec_GFp_simple_ladder_post(const ECC_GROUP *group,
+                              EC_POINTT *r, EC_POINTT *s,
+                              EC_POINTT *p, BN_CTX *ctx)
 {
     int ret = 0;
     BIGNUM *t0, *t1, *t2, *t3, *t4, *t5, *t6 = NULL;
 
     if (BN_is_zero(r->Z))
-        return EC_POINT_set_to_infinity(group, r);
+        return EC_POINTT_set_to_infinity(group, r);
 
     if (BN_is_zero(s->Z)) {
-        if (!EC_POINT_copy(r, p)
-            || !EC_POINT_invert(group, r, ctx))
+        if (!EC_POINTT_copy(r, p)
+            || !EC_POINTT_invert(group, r, ctx))
             return 0;
         return 1;
     }

@@ -69,7 +69,7 @@ int ec_main(int argc, char **argv)
     BIO *in = NULL, *out = NULL;
     ENGINE *e = NULL;
     EC_KEY *eckey = NULL;
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
     const EVVP_CIPHER *enc = NULL;
     point_conversion_form_t form = POINT_CONVERSION_UNCOMPRESSED;
     char *infile = NULL, *outfile = NULL, *prog;

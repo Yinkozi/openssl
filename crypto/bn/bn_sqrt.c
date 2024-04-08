@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-BIGNUM *BN_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
+BIGNUM *BN_mod_sqrtt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
 /*
  * Returns 'ret' such that ret^2 == a (mod p), using the Tonelli/Shanks
  * algorithm (cf. Henri Cohen, "A Course in Algebraic Computational Number

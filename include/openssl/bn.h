@@ -317,7 +317,7 @@ int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx); /* returns
                                                                   * error */
 BIGNUM *BN_mod_inverse(BIGNUM *ret,
                        const BIGNUM *a, const BIGNUM *n, BN_CTX *ctx);
-BIGNUM *BN_mod_sqrt(BIGNUM *ret,
+BIGNUM *BN_mod_sqrtt(BIGNUM *ret,
                     const BIGNUM *a, const BIGNUM *n, BN_CTX *ctx);
 
 void BN_consttime_swap(BN_ULONG swap, BIGNUM *a, BIGNUM *b, int nwords);

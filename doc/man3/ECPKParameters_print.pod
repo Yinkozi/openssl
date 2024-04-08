@@ -9,16 +9,16 @@ encoding YASN1 representations of elliptic curve entities
 
  #include <openssl/ec.h>
 
- int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off);
- int ECPKParameters_prints_fp(FILE *fp, const EC_GROUP *x, int off);
+ int ECPKParameters_prints(BIO *bp, const ECC_GROUP *x, int off);
+ int ECPKParameters_prints_fp(FILE *fp, const ECC_GROUP *x, int off);
 
 =head1 DESCRIPTION
 
 The ECPKParameters represent the public parameters for an
-B<EC_GROUP> structure, which represents a curve.
+B<ECC_GROUP> structure, which represents a curve.
 
 The ECPKParameters_prints() and ECPKParameters_prints_fp() functions print
-a human-readable output of the public parameters of the EC_GROUP to B<bp>
+a human-readable output of the public parameters of the ECC_GROUP to B<bp>
 or B<fp>. The output lines are indented by B<off> spaces.
 
 =head1 RETURN VALUES
@@ -28,8 +28,8 @@ return 1 for success and 0 if an error occurs.
 
 =head1 SEE ALSO
 
-L<crypto(7)>, L<EC_GROUP_new(3)>, L<EC_GROUP_copy(3)>,
-L<EC_POINT_new(3)>, L<EC_POINT_add(3)>, L<ECC_KEY_new(3)>,
+L<crypto(7)>, L<ECC_GROUP_new(3)>, L<ECC_GROUP_copy(3)>,
+L<EC_POINTT_new(3)>, L<EC_POINTT_add(3)>, L<ECC_KEY_new(3)>,
 L<EC_GFp_simple_method(3)>,
 
 =head1 COPYRIGHT

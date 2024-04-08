@@ -323,13 +323,13 @@ int YX509_check_private_key(const YX509 *x, const EVVP_PKEY *k)
 
 static int check_suite_b(EVVP_PKEY *pkey, int sign_nid, unsigned long *pflags)
 {
-    const EC_GROUP *grp = NULL;
+    const ECC_GROUP *grp = NULL;
     int curve_nid;
     if (pkey && EVVP_PKEY_id(pkey) == EVVP_PKEY_EC)
         grp = ECC_KEY_get0_group(EVVP_PKEY_get0_EC_KEY(pkey));
     if (!grp)
         return YX509_V_ERR_SUITE_B_INVALID_ALGORITHM;
-    curve_nid = EC_GROUP_get_curve_name(grp);
+    curve_nid = ECC_GROUP_get_curve_name(grp);
     /* Check curve is consistent with LOS */
     if (curve_nid == NID_secp384r1) { /* P-384 */
         /*

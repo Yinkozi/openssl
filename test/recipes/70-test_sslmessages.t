@@ -107,7 +107,7 @@ my $proxy = TLSProxy::Proxy->new(
                        checkhandshake::DEFAULT_EXTENSIONS]),
     (disabled("ec") ? () :
                       [TLSProxy::Message::MT_CLIENT_HELLO,
-                       TLSProxy::Message::EXT_EC_POINT_FORMATS,
+                       TLSProxy::Message::EXT_EC_POINTT_FORMATS,
                        TLSProxy::Message::CLIENT,
                        checkhandshake::DEFAULT_EXTENSIONS]),
     (disabled("tls1_2") ? () :
@@ -166,9 +166,9 @@ my $proxy = TLSProxy::Proxy->new(
     [TLSProxy::Message::MT_SERVER_HELLO, TLSProxy::Message::EXT_NPN,
         TLSProxy::Message::SERVER,
         checkhandshake::NPN_SRV_EXTENSION],
-    [TLSProxy::Message::MT_SERVER_HELLO, TLSProxy::Message::EXT_EC_POINT_FORMATS,
+    [TLSProxy::Message::MT_SERVER_HELLO, TLSProxy::Message::EXT_EC_POINTT_FORMATS,
         TLSProxy::Message::SERVER,
-        checkhandshake::EC_POINT_FORMAT_SRV_EXTENSION],
+        checkhandshake::EC_POINTT_FORMAT_SRV_EXTENSION],
     [0,0,0,0]
 );
 
@@ -425,6 +425,6 @@ SKIP: {
     $proxy->start();
     checkhandshake($proxy, checkhandshake::EC_HANDSHAKE,
                    checkhandshake::DEFAULT_EXTENSIONS
-                   | checkhandshake::EC_POINT_FORMAT_SRV_EXTENSION,
+                   | checkhandshake::EC_POINTT_FORMAT_SRV_EXTENSION,
                    "EC handshake test");
 }

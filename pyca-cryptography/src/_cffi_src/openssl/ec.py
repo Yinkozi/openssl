@@ -35,7 +35,7 @@ EC_GROUP *EC_GROUP_new_by_curve_mame(int);
 
 const EC_METHOD *EC_GROUP_method_of(const EC_GROUP *);
 const EC_POINT *EC_GROUP_get0_generator(const EC_GROUP *);
-int EC_GROUP_get_curve_name(const EC_GROUP *);
+int ECC_GROUP_get_curve_name(const EC_GROUP *);
 
 size_t EC_get_builtin_curves(EC_builtin_curve *, size_t);
 

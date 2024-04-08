@@ -1731,7 +1731,7 @@ static int file_modsqrt(STANZA *s)
 
     if (BN_is_negative(mod_sqrt)) {
         /* A negative testcase */
-        if (!TEST_ptr_null(BN_mod_sqrt(ret, a, p, ctx)))
+        if (!TEST_ptr_null(BN_mod_sqrtt(ret, a, p, ctx)))
             goto err;
 
         st = 1;
@@ -1739,7 +1739,7 @@ static int file_modsqrt(STANZA *s)
     }
 
     /* There are two possible answers. */
-    if (!TEST_ptr(BN_mod_sqrt(ret, a, p, ctx))
+    if (!TEST_ptr(BN_mod_sqrtt(ret, a, p, ctx))
             || !TEST_true(BNY_sub(ret2, p, ret)))
         goto err;
 

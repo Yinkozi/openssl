@@ -77,7 +77,7 @@ static int restore_rand(void)
     return 1;
 }
 
-static EC_GROUP *create_EC_group(const char *p_hex, const char *a_hex,
+static ECC_GROUP *create_EC_group(const char *p_hex, const char *a_hex,
                                  const char *b_hex, const char *x_hex,
                                  const char *y_hex, const char *order_hex,
                                  const char *cof_hex)
@@ -89,8 +89,8 @@ static EC_GROUP *create_EC_group(const char *p_hex, const char *a_hex,
     BIGNUM *g_y = NULL;
     BIGNUM *order = NULL;
     BIGNUM *cof = NULL;
-    EC_POINT *generator = NULL;
-    EC_GROUP *group = NULL;
+    EC_POINTT *generator = NULL;
+    ECC_GROUP *group = NULL;
     int ok = 0;
 
     if (!TEST_true(BN_hex2bn(&p, p_hex))
@@ -98,23 +98,23 @@ static EC_GROUP *create_EC_group(const char *p_hex, const char *a_hex,
             || !TEST_true(BN_hex2bn(&b, b_hex)))
         goto done;
 
-    group = EC_GROUP_new_curves_GFp(p, a, b, NULL);
+    group = ECC_GROUP_new_curves_GFp(p, a, b, NULL);
     if (!TEST_ptr(group))
         goto done;
 
-    generator = EC_POINT_new(group);
+    generator = EC_POINTT_new(group);
     if (!TEST_ptr(generator))
         goto done;
 
     if (!TEST_true(BN_hex2bn(&g_x, x_hex))
             || !TEST_true(BN_hex2bn(&g_y, y_hex))
-            || !TEST_true(EC_POINT_set_affine_coordinates(group, generator, g_x,
+            || !TEST_true(EC_POINTT_set_affine_coordinates(group, generator, g_x,
                                                           g_y, NULL)))
         goto done;
 
     if (!TEST_true(BN_hex2bn(&order, order_hex))
             || !TEST_true(BN_hex2bn(&cof, cof_hex))
-            || !TEST_true(EC_GROUP_set_generator(group, generator, order, cof)))
+            || !TEST_true(ECC_GROUP_set_generator(group, generator, order, cof)))
         goto done;
 
     ok = 1;
@@ -124,18 +124,18 @@ done:
     BN_free(b);
     BN_free(g_x);
     BN_free(g_y);
-    EC_POINT_free(generator);
+    EC_POINTT_free(generator);
     BN_free(order);
     BN_free(cof);
     if (!ok) {
-        EC_GROUP_free(group);
+        ECC_GROUP_free(group);
         group = NULL;
     }
 
     return group;
 }
 
-static int test_sm2_crypt(const EC_GROUP *group,
+static int test_sm2_crypt(const ECC_GROUP *group,
                           const EVVP_MD *digest,
                           const char *privkey_hex,
                           const char *message,
@@ -144,7 +144,7 @@ static int test_sm2_crypt(const EC_GROUP *group,
     const size_t msg_len = strlen(message);
     BIGNUM *priv = NULL;
     EC_KEY *key = NULL;
-    EC_POINT *pt = NULL;
+    EC_POINTT *pt = NULL;
     unsigned char *expected = OPENSSL_hexstr2buf(ctext_hex, NULL);
     size_t ctext_len = 0;
     size_t ptext_len = 0;
@@ -163,9 +163,9 @@ static int test_sm2_crypt(const EC_GROUP *group,
             || !TEST_true(ECC_KEY_set_private_key(key, priv)))
         goto done;
 
-    pt = EC_POINT_new(group);
+    pt = EC_POINTT_new(group);
     if (!TEST_ptr(pt)
-            || !TEST_true(EC_POINT_mul(group, pt, priv, NULL, NULL, NULL))
+            || !TEST_true(EC_POINTT_mul(group, pt, priv, NULL, NULL, NULL))
             || !TEST_true(ECC_KEY_set_public_key(key, pt))
             || !TEST_true(sm2_ciphertext_size(key, digest, msg_len, &ctext_len)))
         goto done;
@@ -199,7 +199,7 @@ static int test_sm2_crypt(const EC_GROUP *group,
     rc = 1;
  done:
     BN_free(priv);
-    EC_POINT_free(pt);
+    EC_POINTT_free(pt);
     OPENSSL_free(ctext);
     OPENSSL_free(recovered);
     OPENSSL_free(expected);
@@ -210,8 +210,8 @@ static int test_sm2_crypt(const EC_GROUP *group,
 static int sm2_crypt_test(void)
 {
     int testresult = 0;
-    EC_GROUP *gm_group = NULL;
-    EC_GROUP *test_group =
+    ECC_GROUP *gm_group = NULL;
+    ECC_GROUP *test_group =
         create_EC_group
         ("8542D69E4C044F18E8B92435BF6FF7DE457283915C45517D722EDB8B08F1DFC3",
          "787968B4FA32C3FD2417842E73BBFEFF2F3C848B6831D7E0EC65228B3937E498",
@@ -294,13 +294,13 @@ static int sm2_crypt_test(void)
 
     testresult = 1;
  done:
-    EC_GROUP_free(test_group);
-    EC_GROUP_free(gm_group);
+    ECC_GROUP_free(test_group);
+    ECC_GROUP_free(gm_group);
 
     return testresult;
 }
 
-static int test_sm2_sign(const EC_GROUP *group,
+static int test_sm2_sign(const ECC_GROUP *group,
                          const char *userid,
                          const char *privkey_hex,
                          const char *message,
@@ -311,7 +311,7 @@ static int test_sm2_sign(const EC_GROUP *group,
     const size_t msg_len = strlen(message);
     int ok = 0;
     BIGNUM *priv = NULL;
-    EC_POINT *pt = NULL;
+    EC_POINTT *pt = NULL;
     EC_KEY *key = NULL;
     ECDSA_SIG *sig = NULL;
     const BIGNUM *sig_r = NULL;
@@ -328,9 +328,9 @@ static int test_sm2_sign(const EC_GROUP *group,
             || !TEST_true(ECC_KEY_set_private_key(key, priv)))
         goto done;
 
-    pt = EC_POINT_new(group);
+    pt = EC_POINTT_new(group);
     if (!TEST_ptr(pt)
-            || !TEST_true(EC_POINT_mul(group, pt, priv, NULL, NULL, NULL))
+            || !TEST_true(EC_POINTT_mul(group, pt, priv, NULL, NULL, NULL))
             || !TEST_true(ECC_KEY_set_public_key(key, pt)))
         goto done;
 
@@ -359,7 +359,7 @@ static int test_sm2_sign(const EC_GROUP *group,
 
  done:
     ECDSA_SIG_free(sig);
-    EC_POINT_free(pt);
+    EC_POINTT_free(pt);
     EC_KEY_free(key);
     BN_free(priv);
     BN_free(r);
@@ -372,7 +372,7 @@ static int sm2_sig_test(void)
 {
     int testresult = 0;
     /* From draft-shen-sm2-ecdsa-02 */
-    EC_GROUP *test_group =
+    ECC_GROUP *test_group =
         create_EC_group
         ("8542D69E4C044F18E8B92435BF6FF7DE457283915C45517D722EDB8B08F1DFC3",
          "787968B4FA32C3FD2417842E73BBFEFF2F3C848B6831D7E0EC65228B3937E498",
@@ -399,7 +399,7 @@ static int sm2_sig_test(void)
     testresult = 1;
 
  done:
-    EC_GROUP_free(test_group);
+    ECC_GROUP_free(test_group);
 
     return testresult;
 }

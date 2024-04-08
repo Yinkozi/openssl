@@ -25,14 +25,14 @@ static int ecdh_cms_encrypt(CMS_RecipientInfo *ri);
 
 static int eckey_param2type(int *pptype, void **ppval, const EC_KEY *ec_key)
 {
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
     int nid;
     if (ec_key == NULL || (group = ECC_KEY_get0_group(ec_key)) == NULL) {
         ECerr(EC_F_ECKEY_PARAM2TYPE, EC_R_MISSING_PARAMETERS);
         return 0;
     }
-    if (EC_GROUP_get_asn1_flag(group)
-        && (nid = EC_GROUP_get_curve_name(group)))
+    if (ECC_GROUP_get_asn1_flag(group)
+        && (nid = ECC_GROUP_get_curve_name(group)))
         /* we have a 'named curve' => just set the OID */
     {
         YASN1_OBJECT *asn1obj = OBJ_nid2obj(nid);
@@ -106,7 +106,7 @@ static int eckey_pub_encode(YX509_PUBKEY *pk, const EVVP_PKEY *pkey)
 static EC_KEY *eckey_type2param(int ptype, const void *pval)
 {
     EC_KEY *eckey = NULL;
-    EC_GROUP *group = NULL;
+    ECC_GROUP *group = NULL;
 
     if (ptype == V_YASN1_SEQUENCE) {
         const YASN1_STRING *pstr = pval;
@@ -127,13 +127,13 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
             ECerr(EC_F_ECKEY_TYPE2PARAM, ERR_R_MALLOC_FAILURE);
             goto ecerr;
         }
-        group = EC_GROUP_new_by_curve_mame(OBJ_obj2nid(poid));
+        group = ECC_GROUP_new_by_curve_mame(OBJ_obj2nid(poid));
         if (group == NULL)
             goto ecerr;
-        EC_GROUP_set_asn1_flag(group, OPENSSL_EC_NAMED_CURVE);
+        ECC_GROUP_set_asn1_flag(group, OPENSSL_EC_NAMED_CURVE);
         if (ECC_KEY_set_group(eckey, group) == 0)
             goto ecerr;
-        EC_GROUP_free(group);
+        ECC_GROUP_free(group);
     } else {
         ECerr(EC_F_ECKEY_TYPE2PARAM, EC_R_DECODE_ERROR);
         goto ecerr;
@@ -143,7 +143,7 @@ static EC_KEY *eckey_type2param(int ptype, const void *pval)
 
  ecerr:
     EC_KEY_free(eckey);
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return NULL;
 }
 
@@ -183,12 +183,12 @@ static int eckey_pub_decode(EVVP_PKEY *pkey, YX509_PUBKEY *pubkey)
 static int eckey_pub_cmp(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
     int r;
-    const EC_GROUP *group = ECC_KEY_get0_group(b->pkey.ec);
-    const EC_POINT *pa = ECC_KEY_get0_public_key(a->pkey.ec),
+    const ECC_GROUP *group = ECC_KEY_get0_group(b->pkey.ec);
+    const EC_POINTT *pa = ECC_KEY_get0_public_key(a->pkey.ec),
         *pb = ECC_KEY_get0_public_key(b->pkey.ec);
     if (group == NULL || pa == NULL || pb == NULL)
         return -2;
-    r = EC_POINT_cmp(group, pa, pb, NULL);
+    r = EC_POINTT_cmp(group, pa, pb, NULL);
     if (r == 0)
         return 1;
     if (r == 1)
@@ -292,7 +292,7 @@ static int int_ec_size(const EVVP_PKEY *pkey)
 
 static int ec_bits(const EVVP_PKEY *pkey)
 {
-    return EC_GROUP_order_bits(ECC_KEY_get0_group(pkey->pkey.ec));
+    return ECC_GROUP_order_bits(ECC_KEY_get0_group(pkey->pkey.ec));
 }
 
 static int ec_security_bits(const EVVP_PKEY *pkey)
@@ -320,7 +320,7 @@ static int ec_missing_parameters(const EVVP_PKEY *pkey)
 
 static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
 {
-    EC_GROUP *group = EC_GROUP_dup(ECC_KEY_get0_group(from->pkey.ec));
+    ECC_GROUP *group = ECC_GROUP_dup(ECC_KEY_get0_group(from->pkey.ec));
 
     if (group == NULL)
         return 0;
@@ -331,20 +331,20 @@ static int ec_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
     }
     if (ECC_KEY_set_group(to->pkey.ec, group) == 0)
         goto err;
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return 1;
  err:
-    EC_GROUP_free(group);
+    ECC_GROUP_free(group);
     return 0;
 }
 
 static int ec_cmp_parameters(const EVVP_PKEY *a, const EVVP_PKEY *b)
 {
-    const EC_GROUP *group_a = ECC_KEY_get0_group(a->pkey.ec),
+    const ECC_GROUP *group_a = ECC_KEY_get0_group(a->pkey.ec),
         *group_b = ECC_KEY_get0_group(b->pkey.ec);
     if (group_a == NULL || group_b == NULL)
         return -2;
-    if (EC_GROUP_cmp(group_a, group_b, NULL))
+    if (ECC_GROUP_cmp(group_a, group_b, NULL))
         return 0;
     else
         return 1;
@@ -367,7 +367,7 @@ static int do_ECC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
     unsigned char *priv = NULL, *pub = NULL;
     size_t privlen = 0, publen = 0;
     int ret = 0;
-    const EC_GROUP *group;
+    const ECC_GROUP *group;
 
     if (x == NULL || (group = ECC_KEY_get0_group(x)) == NULL) {
         ECerr(EC_F_DO_EC_KEY_PRINT, ERR_R_PASSED_NULL_PARAMETER);
@@ -396,7 +396,7 @@ static int do_ECC_KEY_print(BIO *bp, const EC_KEY *x, int off, ec_print_t ktype)
     if (!BIO_indent(bp, off, 128))
         goto err;
     if (BIO_pprintf(bp, "%s: (%d bit)\n", ecstr,
-                   EC_GROUP_order_bits(group)) <= 0)
+                   ECC_GROUP_order_bits(group)) <= 0)
         goto err;
 
     if (privlen != 0) {
@@ -587,7 +587,7 @@ static int ec_pkey_param_check(const EVVP_PKEY *pkey)
         return 0;
     }
 
-    return EC_GROUP_check(eckey->group, NULL);
+    return ECC_GROUP_check(eckey->group, NULL);
 }
 
 const EVVP_PKEY_YASN1_METHOD eckey_asn1_meth = {
@@ -669,7 +669,7 @@ static int ecdh_cms_set_peerkey(EVVP_PKEY_CTX *pctx,
         goto err;
     /* If absent parameters get group from main key */
     if (atype == V_YASN1_UNDEF || atype == V_YASN1_NULL) {
-        const EC_GROUP *grp;
+        const ECC_GROUP *grp;
         EVVP_PKEY *pk;
         pk = EVVP_PKEY_CTX_get0_pkey(pctx);
         if (!pk)

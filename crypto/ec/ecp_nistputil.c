@@ -38,9 +38,9 @@ NON_EMPTY_TRANSLATION_UNIT
 /*
  * Convert an array of points into affine coordinates. (If the point at
  * infinity is found (Z = 0), it remains unchanged.) This function is
- * essentially an equivalent to EC_POINTs_make_affine(), but works with the
+ * essentially an equivalent to EC_POINTTs_make_affine(), but works with the
  * internal representation of points as used by ecp_nistp###.c rather than
- * with (BIGNUM-based) EC_POINT data structures. point_array is the
+ * with (BIGNUM-based) EC_POINTT data structures. point_array is the
  * input/output buffer ('num' points in projective form, i.e. three
  * coordinates each), based on an internal representation of field elements
  * of size 'felem_size'. tmp_felems needs to point to a temporary array of

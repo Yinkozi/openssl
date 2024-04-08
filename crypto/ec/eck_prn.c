@@ -15,7 +15,7 @@
 #include <openssl/bn.h>
 
 #ifndef OPENSSL_NO_STDIO
-int ECPKParameters_prints_fp(FILE *fp, const EC_GROUP *x, int off)
+int ECPKParameters_prints_fp(FILE *fp, const ECC_GROUP *x, int off)
 {
     BIO *b;
     int ret;
@@ -64,11 +64,11 @@ int ECCParameters_print_fp(FILE *fp, const EC_KEY *x)
 static int print_bin(BIO *fp, const char *str, const unsigned char *num,
                      size_t len, int off);
 
-int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
+int ECPKParameters_prints(BIO *bp, const ECC_GROUP *x, int off)
 {
     int ret = 0, reason = ERR_R_BIO_LIB;
     BN_CTX *ctx = NULL;
-    const EC_POINT *point = NULL;
+    const EC_POINTT *point = NULL;
     BIGNUM *p = NULL, *a = NULL, *b = NULL, *gen = NULL;
     const BIGNUM *order = NULL, *cofactor = NULL;
     const unsigned char *seed;
@@ -89,7 +89,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
         goto err;
     }
 
-    if (EC_GROUP_get_asn1_flag(x)) {
+    if (ECC_GROUP_get_asn1_flag(x)) {
         /* the curve parameter are given by an asn1 OID */
         int nid;
         const char *nname;
@@ -97,7 +97,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
         if (!BIO_indent(bp, off, 128))
             goto err;
 
-        nid = EC_GROUP_get_curve_name(x);
+        nid = ECC_GROUP_get_curve_name(x);
         if (nid == 0)
             goto err;
         if (BIO_pprintf(bp, "YASN1 OID: %s", OBJ_nid2sn(nid)) <= 0)
@@ -115,7 +115,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
         /* explicit parameters */
         int is_char_two = 0;
         point_conversion_form_t form;
-        int tmp_nid = EC_METHOD_get_field_type(EC_GROUP_method_of(x));
+        int tmp_nid = EC_METHOD_get_field_type(ECC_GROUP_method_of(x));
 
         if (tmp_nid == NID_X9_62_characteristic_two_field)
             is_char_two = 1;
@@ -126,31 +126,31 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
             goto err;
         }
 
-        if (!EC_GROUP_get_curve(x, p, a, b, ctx)) {
+        if (!ECC_GROUP_get_curve(x, p, a, b, ctx)) {
             reason = ERR_R_EC_LIB;
             goto err;
         }
 
-        if ((point = EC_GROUP_get0_generator(x)) == NULL) {
+        if ((point = ECC_GROUP_get0_generator(x)) == NULL) {
             reason = ERR_R_EC_LIB;
             goto err;
         }
-        order = EC_GROUP_get0_order(x);
-        cofactor = EC_GROUP_get0_cofactor(x);
+        order = ECC_GROUP_get0_order(x);
+        cofactor = ECC_GROUP_get0_cofactor(x);
         if (order == NULL) {
             reason = ERR_R_EC_LIB;
             goto err;
         }
 
-        form = EC_GROUP_get_point_conversion_form(x);
+        form = ECC_GROUP_get_point_conversion_form(x);
 
-        if ((gen = EC_POINT_point2bnn(x, point, form, NULL, ctx)) == NULL) {
+        if ((gen = EC_POINTT_point2bnn(x, point, form, NULL, ctx)) == NULL) {
             reason = ERR_R_EC_LIB;
             goto err;
         }
 
-        if ((seed = EC_GROUP_get0_seed(x)) != NULL)
-            seed_len = EC_GROUP_get_seed_len(x);
+        if ((seed = ECC_GROUP_get0_seed(x)) != NULL)
+            seed_len = ECC_GROUP_get_seed_len(x);
 
         if (!BIO_indent(bp, off, 128))
             goto err;
@@ -162,7 +162,7 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
 
         if (is_char_two) {
             /* print the 'short name' of the base type OID */
-            int basis_type = EC_GROUP_get_basis_type(x);
+            int basis_type = ECC_GROUP_get_basis_type(x);
             if (basis_type == 0)
                 goto err;
 

@@ -152,7 +152,7 @@ EC_KEY *PEM_readd_bio_ECPrivateKey(BIO *bp, EC_KEY **key, pem_password_cb *cb,
     return pkey_get_eckey(pktmp, key); /* will free pktmp */
 }
 
-IMPLEMENT_PEM_rw_const(ECPKParameters, EC_GROUP, PEM_STRING_ECPARAMETERS,
+IMPLEMENT_PEM_rw_const(ECPKParameters, ECC_GROUP, PEM_STRING_ECPARAMETERS,
                        ECPKParameters)
 
 
