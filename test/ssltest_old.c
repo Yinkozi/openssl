@@ -741,7 +741,7 @@ static void print_key_details(BIO *out, EVVP_PKEY *key)
         EC_KEY *ec = EVVP_PKEY_get1_EC_KEY(key);
         int nid;
         const char *cname;
-        nid = EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
+        nid = ECC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
         EC_KEY_free(ec);
         cname = EC_curve_nid2nist(nid);
         if (!cname)

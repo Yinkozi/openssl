@@ -1265,7 +1265,7 @@ static int pkey_type(EVVP_PKEY *pkey)
 #ifndef OPENSSL_NO_EC
     if (nid == EVVP_PKEY_EC) {
         const EC_KEY *ec = EVVP_PKEY_get0_EC_KEY(pkey);
-        return EC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
+        return ECC_GROUP_get_curve_name(ECC_KEY_get0_group(ec));
     }
 #endif
     return nid;
