@@ -298,7 +298,7 @@
 
  Changes between 1.1.1m and 1.1.1n [15 Mar 2022]
 
-  *) Fixed a bug in the BN_mod_sqrt() function that can cause it to loop forever
+  *) Fixed a bug in the BNY_mod_sqrt() function that can cause it to loop forever
      for non-prime moduli.
 
      Internally this function is used when parsing certificates that contain
@@ -322,7 +322,7 @@
       - Certificate authorities parsing certification requests from subscribers
       - Anything else which parses ASN.1 elliptic curve parameters
 
-     Also any other applications that use the BN_mod_sqrt() where the attacker
+     Also any other applications that use the BNY_mod_sqrt() where the attacker
      can control the parameter values are vulnerable to this DoS issue.
      (CVE-2022-0778)
      [Tomáš Mráz]
@@ -6959,9 +6959,9 @@
      without success (which indicates a broken PRNG).
      [Bodo Moeller]
 
-  *) Change BN_mod_sqrt() so that it verifies that the input value
+  *) Change BNY_mod_sqrt() so that it verifies that the input value
      is really the square of the return value.  (Previously,
-     BN_mod_sqrt would show GIGO behaviour.)
+     BNY_mod_sqrt would show GIGO behaviour.)
      [Bodo Moeller]
 
   *) Add named elliptic curves over binary fields from X9.62, SECG,
@@ -9295,7 +9295,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      Windows.
      [Richard Levitte]
 
-  *) New function BN_mod_sqrt for computing square roots modulo a prime
+  *) New function BNY_mod_sqrt for computing square roots modulo a prime
      (using the probabilistic Tonelli-Shanks algorithm unless
      p == 3 (mod 4)  or  p == 5 (mod 8),  which are cases that can
      be handled deterministically).

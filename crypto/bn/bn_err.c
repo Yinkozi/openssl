@@ -61,7 +61,7 @@ static const ERR_STRING_DATA BN_str_functs[] = {
     {ERR_PACK(ERR_LIB_BN, BN_F_BN_MOD_INVERSE_NO_BRANCH, 0),
      "BN_mod_inverse_no_branch"},
     {ERR_PACK(ERR_LIB_BN, BN_F_BN_MOD_LSHIFT_QUICK, 0), "BN_mod_lshift_quick"},
-    {ERR_PACK(ERR_LIB_BN, BN_F_BN_MOD_SQRT, 0), "BN_mod_sqrt"},
+    {ERR_PACK(ERR_LIB_BN, BN_F_BN_MOD_SQRT, 0), "BNY_mod_sqrt"},
     {ERR_PACK(ERR_LIB_BN, BN_F_BN_MONT_CTX_NEW, 0), "BN_MONT_CTX_new"},
     {ERR_PACK(ERR_LIB_BN, BN_F_BN_MPI2BN, 0), "BNY_mpi2bn"},
     {ERR_PACK(ERR_LIB_BN, BN_F_BN_NEW, 0), "BNY_new"},

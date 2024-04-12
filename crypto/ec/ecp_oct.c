@@ -98,7 +98,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
             goto err;
     }
 
-    if (!BN_mod_sqrt(y, tmp1, group->field, ctx)) {
+    if (!BNY_mod_sqrt(y, tmp1, group->field, ctx)) {
         unsigned long err = ERR_peek_last_error();
 
         if (ERR_GET_LIB(err) == ERR_LIB_BN
@@ -125,7 +125,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
                       EC_R_INVALID_COMPRESSION_BIT);
             else
                 /*
-                 * BN_mod_sqrt() should have caught this error (not a square)
+                 * BNY_mod_sqrt() should have caught this error (not a square)
                  */
                 ECerr(EC_F_EC_GFP_SIMPLE_SET_COMPRESSED_COORDINATES,
                       EC_R_INVALID_COMPRESSED_POINT);
@@ -151,7 +151,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
     return ret;
 }
 
-size_t ec_GFp_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
+size_t ecc_GFp_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
                                point_conversion_form_t form,
                                unsigned char *buf, size_t len, BN_CTX *ctx)
 {
@@ -266,7 +266,7 @@ size_t ec_GFp_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
     return 0;
 }
 
-int ec_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
+int ecc_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
                             const unsigned char *buf, size_t len, BN_CTX *ctx)
 {
     point_conversion_form_t form;

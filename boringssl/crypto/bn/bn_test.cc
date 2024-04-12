@@ -630,7 +630,7 @@ static bool TestModSqrt(FileTest *t, BN_CTX *ctx) {
 
   bssl::UniquePtr<BIGNUM> ret(BNY_new());
   if (!ret ||
-      !BN_mod_sqrt(ret.get(), a.get(), p.get(), ctx)) {
+      !BNY_mod_sqrt(ret.get(), a.get(), p.get(), ctx)) {
     return false;
   }
 
@@ -650,8 +650,8 @@ static bool TestNotModSquare(FileTest *t, BN_CTX *ctx) {
     return false;
   }
 
-  if (BN_mod_sqrt(ret.get(), not_mod_square.get(), p.get(), ctx)) {
-    t->PrintLine("BN_mod_sqrt unexpectedly succeeded.");
+  if (BNY_mod_sqrt(ret.get(), not_mod_square.get(), p.get(), ctx)) {
+    t->PrintLine("BNY_mod_sqrt unexpectedly succeeded.");
     return false;
   }
 

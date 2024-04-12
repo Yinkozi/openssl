@@ -82,7 +82,7 @@ size_t EC_POINT_point2oct(const EC_GROUP *group, const EC_POINT *point,
     }
     if (group->meth->flags & EC_FLAGS_DEFAULT_OCT) {
         if (group->meth->field_type == NID_X9_62_prime_field)
-            return ec_GFp_simple_point2oct(group, point, form, buf, len, ctx);
+            return ecc_GFp_simple_point2oct(group, point, form, buf, len, ctx);
         else
 #ifdef OPENSSL_NO_EC2M
         {
@@ -112,7 +112,7 @@ int EC_POINT_oct2point(const EC_GROUP *group, EC_POINT *point,
     }
     if (group->meth->flags & EC_FLAGS_DEFAULT_OCT) {
         if (group->meth->field_type == NID_X9_62_prime_field)
-            return ec_GFp_simple_oct2point(group, point, buf, len, ctx);
+            return ecc_GFp_simple_oct2point(group, point, buf, len, ctx);
         else
 #ifdef OPENSSL_NO_EC2M
         {

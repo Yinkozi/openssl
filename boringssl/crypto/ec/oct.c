@@ -74,7 +74,7 @@
 #include "internal.h"
 
 
-static size_t ec_GFp_simple_point2oct(const EC_GROUP *group,
+static size_t ecc_GFp_simple_point2oct(const EC_GROUP *group,
                                       const EC_POINT *point,
                                       point_conversion_form_t form,
                                       uint8_t *buf, size_t len, BN_CTX *ctx) {
@@ -169,7 +169,7 @@ err:
 }
 
 
-static int ec_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
+static int ecc_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
                                    const uint8_t *buf, size_t len,
                                    BN_CTX *ctx) {
   point_conversion_form_t form;
@@ -256,7 +256,7 @@ int EC_POINT_oct2point(const EC_GROUP *group, EC_POINT *point,
     OPENSSL_PUT_ERROR(EC, EC_R_INCOMPATIBLE_OBJECTS);
     return 0;
   }
-  return ec_GFp_simple_oct2point(group, point, buf, len, ctx);
+  return ecc_GFp_simple_oct2point(group, point, buf, len, ctx);
 }
 
 size_t EC_POINT_point2oct(const EC_GROUP *group, const EC_POINT *point,
@@ -266,7 +266,7 @@ size_t EC_POINT_point2oct(const EC_GROUP *group, const EC_POINT *point,
     OPENSSL_PUT_ERROR(EC, EC_R_INCOMPATIBLE_OBJECTS);
     return 0;
   }
-  return ec_GFp_simple_point2oct(group, point, form, buf, len, ctx);
+  return ecc_GFp_simple_point2oct(group, point, form, buf, len, ctx);
 }
 
 int EC_POINT_point2cbb(CBB *out, const EC_GROUP *group, const EC_POINT *point,
@@ -366,7 +366,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
     }
   }
 
-  if (!BN_mod_sqrt(y, tmp1, &group->field, ctx)) {
+  if (!BNY_mod_sqrt(y, tmp1, &group->field, ctx)) {
     unsigned long err = ERR_peek_last_error();
 
     if (ERR_GET_LIB(err) == ERR_LIB_BN &&

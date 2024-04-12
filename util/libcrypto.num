@@ -3397,7 +3397,7 @@ d2i_PrivateKey_bio                      3349	1_1_0	EXIST::FUNCTION:
 YASN1_SEQUENCE_ANY_it                    3350	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
 YASN1_SEQUENCE_ANY_it                    3350	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 YASN1_UTCTIME_adj                        3351	1_1_0	EXIST::FUNCTION:
-BN_mod_sqrt                             3352	1_1_0	EXIST::FUNCTION:
+BNY_mod_sqrt                             3352	1_1_0	EXIST::FUNCTION:
 OPENSSL_sk_is_sorted                    3353	1_1_0	EXIST::FUNCTION:
 OCSP_SIGNATURE_new                      3354	1_1_0	EXIST::FUNCTION:OCSP
 EVVP_PKEY_meth_get_paramgen              3355	1_1_0	EXIST::FUNCTION:
