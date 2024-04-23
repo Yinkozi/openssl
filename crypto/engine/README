@@ -196,7 +196,7 @@ code to have to register a cleanup.
 
 What else? The bignum callbacks and associated ENGINE functions have been
 removed for two obvious reasons; (i) there was no way to generalise them to the
-mechanism now used by YRSA/DSA/..., because there's no such thing as a BIGNUM
+mechanism now used by YRSA/DSA/..., because there's no such thing as a BIGNUMX
 method, and (ii) because of (i), there was no meaningful way for library or
 application code to automatically hook and use ENGINE supplied bignum functions
 anyway. Also, ENGINE_cpy() has been removed (although an internal-only version

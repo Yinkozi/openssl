@@ -32,8 +32,8 @@ static int dh_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
 }
 
 YASN1_SEQUENCE_cb(DHparams, dh_cb) = {
-        YASN1_SIMPLE(DH, p, BIGNUM),
-        YASN1_SIMPLE(DH, g, BIGNUM),
+        YASN1_SIMPLE(DH, p, BIGNUMX),
+        YASN1_SIMPLE(DH, g, BIGNUMX),
         YASN1_OPT_EMBED(DH, length, ZINT32),
 } YASN1_SEQUENCE_END_cb(DH, DHparams)
 
@@ -46,27 +46,27 @@ IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DH, DHparams, DHparams)
 
 typedef struct {
     YASN1_BIT_STRING *seed;
-    BIGNUM *counter;
+    BIGNUMX *counter;
 } int_dhvparams;
 
 typedef struct {
-    BIGNUM *p;
-    BIGNUM *q;
-    BIGNUM *g;
-    BIGNUM *j;
+    BIGNUMX *p;
+    BIGNUMX *q;
+    BIGNUMX *g;
+    BIGNUMX *j;
     int_dhvparams *vparams;
 } int_dhx942_dh;
 
 YASN1_SEQUENCE(DHvparams) = {
         YASN1_SIMPLE(int_dhvparams, seed, YASN1_BIT_STRING),
-        YASN1_SIMPLE(int_dhvparams, counter, BIGNUM)
+        YASN1_SIMPLE(int_dhvparams, counter, BIGNUMX)
 } static_YASN1_SEQUENCE_END_name(int_dhvparams, DHvparams)
 
 YASN1_SEQUENCE(DHxparams) = {
-        YASN1_SIMPLE(int_dhx942_dh, p, BIGNUM),
-        YASN1_SIMPLE(int_dhx942_dh, g, BIGNUM),
-        YASN1_SIMPLE(int_dhx942_dh, q, BIGNUM),
-        YASN1_OPT(int_dhx942_dh, j, BIGNUM),
+        YASN1_SIMPLE(int_dhx942_dh, p, BIGNUMX),
+        YASN1_SIMPLE(int_dhx942_dh, g, BIGNUMX),
+        YASN1_SIMPLE(int_dhx942_dh, q, BIGNUMX),
+        YASN1_OPT(int_dhx942_dh, j, BIGNUMX),
         YASN1_OPT(int_dhx942_dh, vparams, DHvparams),
 } static_YASN1_SEQUENCE_END_name(int_dhx942_dh, DHxparams)
 

@@ -140,7 +140,7 @@ extern "C" {
 
 /* bn_expand acts the same as |bn_wexpand|, but takes a number of bits rather
  * than a number of words. */
-BIGNUM *bn_expand(BIGNUM *bn, size_t bits);
+BIGNUMX *bn_expand(BIGNUMX *bn, size_t bits);
 
 #if defined(OPENSSL_64_BIT)
 
@@ -188,7 +188,7 @@ BIGNUM *bn_expand(BIGNUM *bn, size_t bits);
 #endif
 
 
-#define STATIC_BIGNUM(x)                                    \
+#define STATIC_BIGNUMX(x)                                    \
   {                                                         \
     (BN_ULONG *)(x), sizeof(x) / sizeof(BN_ULONG),          \
         sizeof(x) / sizeof(BN_ULONG), 0, BN_FLG_STATIC_DATA \
@@ -201,7 +201,7 @@ BIGNUM *bn_expand(BIGNUM *bn, size_t bits);
 
 /* bn_set_words sets |bn| to the value encoded in the |num| words in |words|,
  * least significant word first. */
-int bn_set_words(BIGNUM *bn, const BN_ULONG *words, size_t num);
+int bn_set_words(BIGNUMX *bn, const BN_ULONG *words, size_t num);
 
 BN_ULONG bn_mul_add_words(BN_ULONG *rp, const BN_ULONG *ap, int num, BN_ULONG w);
 BN_ULONG bn_mul_words(BN_ULONG *rp, const BN_ULONG *ap, int num, BN_ULONG w);
@@ -227,8 +227,8 @@ int bn_cmp_part_words(const BN_ULONG *a, const BN_ULONG *b, int cl, int dl);
 int bn_mul_mont(BN_ULONG *rp, const BN_ULONG *ap, const BN_ULONG *bp,
                 const BN_ULONG *np, const BN_ULONG *n0, int num);
 
-uint64_t bn_mont_n0(const BIGNUM *n);
-int bn_mod_exp_base_2_vartime(BIGNUM *r, unsigned p, const BIGNUM *n);
+uint64_t bn_mont_n0(const BIGNUMX *n);
+int bn_mod_exp_base_2_vartime(BIGNUMX *r, unsigned p, const BIGNUMX *n);
 
 #if defined(OPENSSL_X86_64) && defined(_MSC_VER)
 #define BN_UMULT_LOHI(low, high, a, b) ((low) = _umul128((a), (b), &(high)))
@@ -241,13 +241,13 @@ int bn_mod_exp_base_2_vartime(BIGNUM *r, unsigned p, const BIGNUM *n);
 /* bn_mod_inverse_prime sets |out| to the modular inverse of |a| modulo |p|,
  * computed with Fermat's Little Theorem. It returns one on success and zero on
  * error. If |mont_p| is NULL, one will be computed temporarily. */
-int bn_mod_inverse_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
+int bn_mod_inverse_prime(BIGNUMX *out, const BIGNUMX *a, const BIGNUMX *p,
                          BN_CTX *ctx, const BN_MONT_CTX *mont_p);
 
 /* bn_mod_inverse_secret_prime behaves like |bn_mod_inverse_prime| but uses
  * |BNY_mod_exp_mont_consttime| instead of |BNY_mod_exp_mont| in hopes of
  * protecting the exponent. */
-int bn_mod_inverse_secret_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
+int bn_mod_inverse_secret_prime(BIGNUMX *out, const BIGNUMX *a, const BIGNUMX *p,
                                 BN_CTX *ctx, const BN_MONT_CTX *mont_p);
 
 

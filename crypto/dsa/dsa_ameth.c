@@ -278,7 +278,7 @@ static int dsa_missing_parameters(const EVVP_PKEY *pkey)
 
 static int dsa_copy_parameters(EVVP_PKEY *to, const EVVP_PKEY *from)
 {
-    BIGNUM *a;
+    BIGNUMX *a;
 
     if (to->pkey.dsa == NULL) {
         to->pkey.dsa = DSA_new();
@@ -330,7 +330,7 @@ static int do_dsa_print(BIO *bp, const DSA *x, int off, int ptype)
 {
     int ret = 0;
     const char *ktype = NULL;
-    const BIGNUM *priv_key, *pub_key;
+    const BIGNUMX *priv_key, *pub_key;
 
     if (ptype == 2)
         priv_key = x->priv_key;
@@ -442,7 +442,7 @@ static int dsa_sig_print(BIO *bp, const YX509_ALGOR *sigalg,
     dsa_sig = d2i_DSA_SIG(NULL, &p, sig->length);
     if (dsa_sig) {
         int rv = 0;
-        const BIGNUM *r, *s;
+        const BIGNUMX *r, *s;
 
         DSA_SIG_get0(dsa_sig, &r, &s);
 

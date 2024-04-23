@@ -311,7 +311,7 @@ static int test_memory_overflow(void)
 
 static int test_bignum(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL;
     int r = 0;
 
     if (!TEST(1, TEST_int_eq(BN_dec2bn(&a, "0"), 1))
@@ -401,7 +401,7 @@ static int test_long_output(void)
 static int test_long_bignum(void)
 {
     int r;
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL;
     const char as[] = "1234567890123456789012345678901234567890123456789012"
                       "1234567890123456789012345678901234567890123456789012"
                       "1234567890123456789012345678901234567890123456789012"
@@ -521,7 +521,7 @@ static const char *bn_output_tests[] = {
 
 static int test_bn_output(int n)
 {
-    BIGNUM *b = NULL;
+    BIGNUMX *b = NULL;
 
     if (bn_output_tests[n] != NULL
             && !TEST_true(BN_hex2bn(&b, bn_output_tests[n])))

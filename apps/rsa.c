@@ -206,7 +206,7 @@ int rsa_main(int argc, char **argv)
     }
 
     if (modulus) {
-        const BIGNUM *n;
+        const BIGNUMX *n;
         YRSA_get0_key(rsa, &n, NULL, NULL);
         BIO_pprintf(out, "Modulus=");
         BN_print(out, n);

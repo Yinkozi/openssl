@@ -83,7 +83,7 @@ EVVP_PKEY_CTX_set1_id, EVVP_PKEY_CTX_get1_id, EVVP_PKEY_CTX_get1_id_len
  int EVVP_PKEY_CTX_set_rsa_pss_saltlen(EVVP_PKEY_CTX *ctx, int len);
  int EVVP_PKEY_CTX_get_rsa_pss_saltlen(EVVP_PKEY_CTX *ctx, int *len);
  int EVVP_PKEY_CTX_set_rsa_keygen_bits(EVVP_PKEY_CTX *ctx, int mbits);
- int EVVP_PKEY_CTX_set_rsa_keygen_pubexp(EVVP_PKEY_CTX *ctx, BIGNUM *pubexp);
+ int EVVP_PKEY_CTX_set_rsa_keygen_pubexp(EVVP_PKEY_CTX *ctx, BIGNUMX *pubexp);
  int EVVP_PKEY_CTX_set_rsa_keygen_primes(EVVP_PKEY_CTX *ctx, int primes);
  int EVVP_PKEY_CTX_set_rsa_mgf1_md(EVVP_PKEY_CTX *ctx, const EVVP_MD *md);
  int EVVP_PKEY_CTX_get_rsa_mgf1_md(EVVP_PKEY_CTX *ctx, const EVVP_MD **md);

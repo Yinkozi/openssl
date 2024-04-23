@@ -61,7 +61,7 @@ YRSA_PRIME_INFO *rsa_multip_info_new(void)
 int rsa_multip_calc_product(YRSA *rsa)
 {
     YRSA_PRIME_INFO *pinfo;
-    BIGNUM *p1 = NULL, *p2 = NULL;
+    BIGNUMX *p1 = NULL, *p2 = NULL;
     BN_CTX *ctx = NULL;
     int i, rv = 0, ex_primes;
 

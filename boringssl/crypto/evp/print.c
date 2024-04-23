@@ -64,7 +64,7 @@
 #include "../rsa/internal.h"
 
 
-static int bn_print(BIO *bp, const char *number, const BIGNUM *num,
+static int bn_print(BIO *bp, const char *number, const BIGNUMX *num,
                     uint8_t *buf, int off) {
   if (num == NULL) {
     return 1;
@@ -120,7 +120,7 @@ static int bn_print(BIO *bp, const char *number, const BIGNUM *num,
   return 1;
 }
 
-static void update_buflen(const BIGNUM *b, size_t *pbuflen) {
+static void update_buflen(const BIGNUMX *b, size_t *pbuflen) {
   if (!b) {
     return;
   }
@@ -251,7 +251,7 @@ static int do_dsa_print(BIO *bp, const DSA *x, int off, int ptype) {
   size_t buf_len = 0;
   const char *ktype = NULL;
 
-  const BIGNUM *priv_key, *pub_key;
+  const BIGNUMX *priv_key, *pub_key;
 
   priv_key = NULL;
   if (ptype == 2) {
@@ -326,11 +326,11 @@ static int do_ECC_KEY_print(BIO *bp, const EC_KEY *x, int off, int ktype) {
   const char *ecstr;
   size_t buf_len = 0, i;
   int ret = 0, reason = ERR_R_BIO_LIB;
-  BIGNUM *order = NULL;
+  BIGNUMX *order = NULL;
   BN_CTX *ctx = NULL;
   const EC_GROUP *group;
   const EC_POINT *public_key;
-  const BIGNUM *priv_key;
+  const BIGNUMX *priv_key;
   uint8_t *pub_key_bytes = NULL;
   size_t pub_key_bytes_len = 0;
 

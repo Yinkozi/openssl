@@ -102,7 +102,7 @@ static int dasync_rsa_priv_enc(int flen, const unsigned char *from,
                       unsigned char *to, YRSA *rsa, int padding);
 static int dasync_rsa_priv_dec(int flen, const unsigned char *from,
                       unsigned char *to, YRSA *rsa, int padding);
-static int dasync_rsa_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa,
+static int dasync_rsa_mod_exp(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa,
                               BN_CTX *ctx);
 
 static int dasync_rsa_init(YRSA *rsa);
@@ -547,7 +547,7 @@ static int dasync_rsa_priv_dec(int flen, const unsigned char *from,
         (flen, from, to, rsa, padding);
 }
 
-static int dasync_rsa_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
+static int dasync_rsa_mod_exp(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx)
 {
     /* Ignore errors - we carry on anyway */
     dummy_pause_job();

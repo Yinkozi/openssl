@@ -8,7 +8,7 @@ bn_sqr_comba4, bny_sqr_comba8, bn_cmp_words, bn_mul_normal,
 bn_mul_low_normal, bn_mul_recursive, bn_mul_part_recursive,
 bn_mul_low_recursive, bn_sqr_normal, bny_sqr_recursive,
 bn_expand, bn_wexpand, bny_expand2, bn_fix_top, bn_check_top,
-bn_print, bn_dump, bn_set_max, bn_set_high, bn_set_low - BIGNUM
+bn_print, bn_dump, bn_set_max, bn_set_high, bn_set_low - BIGNUMX
 library internal functions
 
 =head1 SYNOPSIS
@@ -49,28 +49,28 @@ library internal functions
  void mul_add(BN_ULONG r, BN_ULONG a, BN_ULONG w, BN_ULONG c);
  void sqr(BN_ULONG r0, BN_ULONG r1, BN_ULONG a);
 
- BIGNUM *bn_expand(BIGNUM *a, int bits);
- BIGNUM *bn_wexpand(BIGNUM *a, int n);
- BIGNUM *bny_expand2(BIGNUM *a, int n);
- void bn_fix_top(BIGNUM *a);
+ BIGNUMX *bn_expand(BIGNUMX *a, int bits);
+ BIGNUMX *bn_wexpand(BIGNUMX *a, int n);
+ BIGNUMX *bny_expand2(BIGNUMX *a, int n);
+ void bn_fix_top(BIGNUMX *a);
 
- void bn_check_top(BIGNUM *a);
- void bn_print(BIGNUM *a);
+ void bn_check_top(BIGNUMX *a);
+ void bn_print(BIGNUMX *a);
  void bn_dump(BN_ULONG *d, int n);
- void bn_set_max(BIGNUM *a);
- void bn_set_high(BIGNUM *r, BIGNUM *a, int n);
- void bn_set_low(BIGNUM *r, BIGNUM *a, int n);
+ void bn_set_max(BIGNUMX *a);
+ void bn_set_high(BIGNUMX *r, BIGNUMX *a, int n);
+ void bn_set_low(BIGNUMX *r, BIGNUMX *a, int n);
 
 =head1 DESCRIPTION
 
 This page documents the internal functions used by the OpenSSL
-B<BIGNUM> implementation. They are described here to facilitate
+B<BIGNUMX> implementation. They are described here to facilitate
 debugging and extending the library. They are I<not> to be used by
 applications.
 
-=head2 The BIGNUM structure
+=head2 The BIGNUMX structure
 
- typedef struct bignum_st BIGNUM;
+ typedef struct bignum_st BIGNUMX;
 
  struct bignum_st
         {
@@ -90,19 +90,19 @@ C<openssl/bn.h>.
 
 B<dmax> is the size of the B<d> array that has been allocated.  B<top>
 is the number of words being used, so for a value of 4, bn.d[0]=4 and
-bn.top=1.  B<neg> is 1 if the number is negative.  When a B<BIGNUM> is
+bn.top=1.  B<neg> is 1 if the number is negative.  When a B<BIGNUMX> is
 B<0>, the B<d> field can be B<NULL> and B<top> == B<0>.
 
 B<flags> is a bit field of flags which are defined in C<openssl/bn.h>. The
 flags begin with B<BN_FLG_>. The macros BN_set_flags(b, n) and
-BN_get_flags(b, n) exist to enable or fetch flag(s) B<n> from B<BIGNUM>
+BN_get_flags(b, n) exist to enable or fetch flag(s) B<n> from B<BIGNUMX>
 structure B<b>.
 
 Various routines in this library require the use of temporary
-B<BIGNUM> variables during their execution.  Since dynamic memory
-allocation to create B<BIGNUM>s is rather expensive when used in
+B<BIGNUMX> variables during their execution.  Since dynamic memory
+allocation to create B<BIGNUMX>s is rather expensive when used in
 conjunction with repeated subroutine calls, the B<BN_CTX> structure is
-used.  This structure contains B<BN_CTX_NUM> B<BIGNUM>s, see
+used.  This structure contains B<BN_CTX_NUM> B<BIGNUMX>s, see
 L<BNY_CTX_start(3)>.
 
 =head2 Low-level arithmetic operations
@@ -220,7 +220,7 @@ bn_print() prints B<a> to stderr. bn_dump() prints B<n> words at B<d>
 
 bn_set_max() makes B<a> a static number with a B<dmax> of its current size.
 This is used by bn_set_low() and bn_set_high() to make B<r> a read-only
-B<BIGNUM> that contains the B<n> low or high words of B<a>.
+B<BIGNUMX> that contains the B<n> low or high words of B<a>.
 
 If B<BN_DEBUG> is not defined, bn_check_top(), bn_print(), bn_dump()
 and bn_set_max() are defined as empty macros.

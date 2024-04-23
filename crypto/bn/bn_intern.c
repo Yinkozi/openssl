@@ -19,7 +19,7 @@
  * with the exception that the most significant digit may be only
  * w-1 zeros away from that next non-zero digit.
  */
-signed char *bn_compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len)
+signed char *bn_compute_wNAF(const BIGNUMX *scalar, int w, size_t *ret_len)
 {
     int window_val;
     signed char *r = NULL;
@@ -138,17 +138,17 @@ signed char *bn_compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len)
     return NULL;
 }
 
-int bn_get_top(const BIGNUM *a)
+int bn_get_top(const BIGNUMX *a)
 {
     return a->top;
 }
 
-int bn_get_dmax(const BIGNUM *a)
+int bn_get_dmax(const BIGNUMX *a)
 {
     return a->dmax;
 }
 
-void bn_set_all_zero(BIGNUM *a)
+void bn_set_all_zero(BIGNUMX *a)
 {
     int i;
 
@@ -156,7 +156,7 @@ void bn_set_all_zero(BIGNUM *a)
         a->d[i] = 0;
 }
 
-int bn_copy_words(BN_ULONG *out, const BIGNUM *in, int size)
+int bn_copy_words(BN_ULONG *out, const BIGNUMX *in, int size)
 {
     if (in->top > size)
         return 0;
@@ -167,12 +167,12 @@ int bn_copy_words(BN_ULONG *out, const BIGNUM *in, int size)
     return 1;
 }
 
-BN_ULONG *bn_get_words(const BIGNUM *a)
+BN_ULONG *bn_get_words(const BIGNUMX *a)
 {
     return a->d;
 }
 
-void bn_set_static_words(BIGNUM *a, const BN_ULONG *words, int size)
+void bn_set_static_words(BIGNUMX *a, const BN_ULONG *words, int size)
 {
     /*
      * |const| qualifier omission is compensated by BN_FLG_STATIC_DATA
@@ -185,7 +185,7 @@ void bn_set_static_words(BIGNUM *a, const BN_ULONG *words, int size)
     bn_correct_top(a);
 }
 
-int bn_set_words(BIGNUM *a, const BN_ULONG *words, int num_words)
+int bn_set_words(BIGNUMX *a, const BN_ULONG *words, int num_words)
 {
     if (bn_wexpand(a, num_words) == NULL) {
         BNerr(BN_F_BN_SET_WORDS, ERR_R_MALLOC_FAILURE);

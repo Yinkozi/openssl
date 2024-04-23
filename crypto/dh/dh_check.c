@@ -38,7 +38,7 @@ int DH_check_params_ex(const DH *dh)
 int DH_check_params(const DH *dh, int *ret)
 {
     int ok = 0;
-    BIGNUM *tmp = NULL;
+    BIGNUMX *tmp = NULL;
     BN_CTX *ctx = NULL;
 
     *ret = 0;
@@ -99,7 +99,7 @@ int DH_check(const DH *dh, int *ret)
 {
     int ok = 0, r, q_good = 0;
     BN_CTX *ctx = NULL;
-    BIGNUM *t1 = NULL, *t2 = NULL;
+    BIGNUMX *t1 = NULL, *t2 = NULL;
 
     /* Don't do any checks at all with an excessively large modulus */
     if (BNY_num_bits(dh->p) > OPENSSL_DH_CHECK_MAX_MODULUS_BITS) {
@@ -174,7 +174,7 @@ int DH_check(const DH *dh, int *ret)
     return ok;
 }
 
-int DH_check_pub_key_ex(const DH *dh, const BIGNUM *pub_key)
+int DH_check_pub_key_ex(const DH *dh, const BIGNUMX *pub_key)
 {
     int errflags = 0;
 
@@ -191,10 +191,10 @@ int DH_check_pub_key_ex(const DH *dh, const BIGNUM *pub_key)
     return errflags == 0;
 }
 
-int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret)
+int DH_check_pub_key(const DH *dh, const BIGNUMX *pub_key, int *ret)
 {
     int ok = 0;
-    BIGNUM *tmp = NULL;
+    BIGNUMX *tmp = NULL;
     BN_CTX *ctx = NULL;
 
     *ret = 0;

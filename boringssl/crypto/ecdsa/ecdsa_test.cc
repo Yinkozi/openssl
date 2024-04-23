@@ -100,12 +100,12 @@ static bool VerifyECDSASig(Api api, const uint8_t *digest,
 // be modified. TestTamperedSig returns true on success, false on failure.
 static bool TestTamperedSig(FILE *out, Api api, const uint8_t *digest,
                             size_t digest_len, ECDSA_SIG *ecdsa_sig,
-                            EC_KEY *eckey, const BIGNUM *order) {
+                            EC_KEY *eckey, const BIGNUMX *order) {
   // Modify a single byte of the signature: to ensure we don't
   // garble the YASN1 structure, we read the raw signature and
   // modify a byte in one of the bignums directly.
 
-  // Store the two BIGNUMs in raw_buf.
+  // Store the two BIGNUMXs in raw_buf.
   size_t r_len = BN_num_bytes(ecdsa_sig->r);
   size_t s_len = BN_num_bytes(ecdsa_sig->s);
   size_t bn_len = BN_num_bytes(order);
@@ -124,7 +124,7 @@ static bool TestTamperedSig(FILE *out, Api api, const uint8_t *digest,
   size_t offset = raw_buf[10] % buf_len;
   uint8_t dirt = raw_buf[11] ? raw_buf[11] : 1;
   raw_buf[offset] ^= dirt;
-  // Now read the BIGNUMs back in from raw_buf.
+  // Now read the BIGNUMXs back in from raw_buf.
   if (BNY_bin2bn(raw_buf.data(), bn_len, ecdsa_sig->r) == NULL ||
       BNY_bin2bn(raw_buf.data() + bn_len, bn_len, ecdsa_sig->s) == NULL ||
       !VerifyECDSASig(api, digest, digest_len, ecdsa_sig, eckey, 0)) {
@@ -174,7 +174,7 @@ static bool TestBuiltin(FILE *out) {
       fprintf(out, " failed\n");
       return false;
     }
-    const BIGNUM *order = EC_GROUP_get0_order(group.get());
+    const BIGNUMX *order = EC_GROUP_get0_order(group.get());
     if (BNY_num_bits(order) < 160) {
       // Too small to test.
       fprintf(out, " skipped\n");

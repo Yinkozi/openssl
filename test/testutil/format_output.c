@@ -141,7 +141,7 @@ void test_output_string(const char *name, const char *m, size_t l)
                             m, l, m, l);
 }
 
-/* BIGNUM formatted output routines */
+/* BIGNUMX formatted output routines */
 
 /*
  * A basic memory byte to hex digit converter with allowance for spacing
@@ -180,7 +180,7 @@ static void test_bignum_header_line(void)
     test_printf_stderr(" %*s\n", bn_chars + 6, "bit position");
 }
 
-static const char *test_bignum_zero_null(const BIGNUM *bn)
+static const char *test_bignum_zero_null(const BIGNUMX *bn)
 {
     if (bn != NULL)
         return BN_is_negative(bn) ? "-0" : "0";
@@ -191,7 +191,7 @@ static const char *test_bignum_zero_null(const BIGNUM *bn)
  * Print a bignum zero taking care to include the correct sign.
  * This routine correctly deals with a NULL bignum pointer as input.
  */
-static void test_bignum_zero_print(const BIGNUM *bn, char sep)
+static void test_bignum_zero_print(const BIGNUMX *bn, char sep)
 {
     const char *v = test_bignum_zero_null(bn);
     const char *suf = bn != NULL ? ":    0" : "";
@@ -204,7 +204,7 @@ static void test_bignum_zero_print(const BIGNUM *bn, char sep)
  * string with appropriate visual aid spaces inserted.
  */
 static int convert_bn_memory(const unsigned char *in, size_t bytes,
-                             char *out, int *lz, const BIGNUM *bn)
+                             char *out, int *lz, const BIGNUMX *bn)
 {
     int n = bytes * 2, i;
     char *p = out, *q = NULL;
@@ -265,7 +265,7 @@ static void test_fail_bignum_common(const char *prefix, const char *file,
                                     int line, const char *type,
                                     const char *left, const char *right,
                                     const char *op,
-                                    const BIGNUM *bn1, const BIGNUM *bn2)
+                                    const BIGNUMX *bn1, const BIGNUMX *bn2)
 {
     const size_t bytes = bn_bytes;
     char b1[MAX_STRING_WIDTH + 1], b2[MAX_STRING_WIDTH + 1];
@@ -301,7 +301,7 @@ static void test_fail_bignum_common(const char *prefix, const char *file,
     if (len > MEM_BUFFER_SIZE && (bufp = OPENSSL_malloc(len * 2)) == NULL) {
         bufp = buffer;
         len = MEM_BUFFER_SIZE;
-        test_printf_stderr("WARNING: these BIGNUMs have been truncated\n");
+        test_printf_stderr("WARNING: these BIGNUMXs have been truncated\n");
     }
 
     if (bn1 != NULL) {
@@ -366,7 +366,7 @@ void test_fail_bignum_message(const char *prefix, const char *file,
                               int line, const char *type,
                               const char *left, const char *right,
                               const char *op,
-                              const BIGNUM *bn1, const BIGNUM *bn2)
+                              const BIGNUMX *bn1, const BIGNUMX *bn2)
 {
     test_fail_bignum_common(prefix, file, line, type, left, right, op, bn1, bn2);
     test_printf_stderr("\n");
@@ -375,13 +375,13 @@ void test_fail_bignum_message(const char *prefix, const char *file,
 void test_fail_bignum_mono_message(const char *prefix, const char *file,
                                    int line, const char *type,
                                    const char *left, const char *right,
-                                   const char *op, const BIGNUM *bn)
+                                   const char *op, const BIGNUMX *bn)
 {
     test_fail_bignum_common(prefix, file, line, type, left, right, op, bn, bn);
     test_printf_stderr("\n");
 }
 
-void test_output_bignum(const char *name, const BIGNUM *bn)
+void test_output_bignum(const char *name, const BIGNUMX *bn)
 {
     if (bn == NULL || BN_is_zero(bn)) {
         test_printf_stderr("bignum: '%s' = %s\n", name,

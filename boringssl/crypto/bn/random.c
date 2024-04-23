@@ -118,7 +118,7 @@
 #include "../internal.h"
 
 
-int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom) {
+int BNY_rand(BIGNUMX *rnd, int bits, int top, int bottom) {
   uint8_t *buf = NULL;
   int ret = 0, bit, bytes, mask;
 
@@ -191,12 +191,12 @@ err:
   return (ret);
 }
 
-int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom) {
+int BNY_pseudo_rand(BIGNUMX *rnd, int bits, int top, int bottom) {
   return BNY_rand(rnd, bits, top, bottom);
 }
 
-int BNY_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
-                     const BIGNUM *max_exclusive) {
+int BNY_rand_range_ex(BIGNUMX *r, BN_ULONG min_inclusive,
+                     const BIGNUMX *max_exclusive) {
   unsigned n;
   unsigned count = 100;
 
@@ -253,15 +253,15 @@ int BNY_rand_range_ex(BIGNUM *r, BN_ULONG min_inclusive,
   return 1;
 }
 
-int BNY_rand_range(BIGNUM *r, const BIGNUM *range) {
+int BNY_rand_range(BIGNUMX *r, const BIGNUMX *range) {
   return BNY_rand_range_ex(r, 0, range);
 }
 
-int BNY_pseudo_rand_range(BIGNUM *r, const BIGNUM *range) {
+int BNY_pseudo_rand_range(BIGNUMX *r, const BIGNUMX *range) {
   return BNY_rand_range(r, range);
 }
 
-int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range, const BIGNUM *priv,
+int BN_generate_dsa_nonce(BIGNUMX *out, const BIGNUMX *range, const BIGNUMX *priv,
                           const uint8_t *message, size_t message_len,
                           BN_CTX *ctx) {
   YSHA512_CTX sha;

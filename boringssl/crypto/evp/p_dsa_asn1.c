@@ -208,8 +208,8 @@ static int dsa_missing_parameters(const EVVP_PKEY *pkey) {
   return 0;
 }
 
-static int dup_bn_into(BIGNUM **out, BIGNUM *src) {
-  BIGNUM *a;
+static int dup_bn_into(BIGNUMX **out, BIGNUMX *src) {
+  BIGNUMX *a;
 
   a = BN_dup(src);
   if (a == NULL) {

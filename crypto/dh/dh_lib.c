@@ -173,7 +173,7 @@ int DH_security_bits(const DH *dh)
 
 
 void DH_get0_pqg(const DH *dh,
-                 const BIGNUM **p, const BIGNUM **q, const BIGNUM **g)
+                 const BIGNUMX **p, const BIGNUMX **q, const BIGNUMX **g)
 {
     if (p != NULL)
         *p = dh->p;
@@ -183,7 +183,7 @@ void DH_get0_pqg(const DH *dh,
         *g = dh->g;
 }
 
-int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+int DH_set0_pqg(DH *dh, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g)
 {
     /* If the fields p and g in d are NULL, the corresponding input
      * parameters MUST be non-NULL.  q may remain NULL.
@@ -223,7 +223,7 @@ int DH_set_length(DH *dh, long length)
     return 1;
 }
 
-void DH_get0_key(const DH *dh, const BIGNUM **pub_key, const BIGNUM **priv_key)
+void DH_get0_key(const DH *dh, const BIGNUMX **pub_key, const BIGNUMX **priv_key)
 {
     if (pub_key != NULL)
         *pub_key = dh->pub_key;
@@ -231,7 +231,7 @@ void DH_get0_key(const DH *dh, const BIGNUM **pub_key, const BIGNUM **priv_key)
         *priv_key = dh->priv_key;
 }
 
-int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key)
+int DH_set0_key(DH *dh, BIGNUMX *pub_key, BIGNUMX *priv_key)
 {
     if (pub_key != NULL) {
         BNY_clear_free(dh->pub_key);
@@ -245,27 +245,27 @@ int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key)
     return 1;
 }
 
-const BIGNUM *DH_get0_p(const DH *dh)
+const BIGNUMX *DH_get0_p(const DH *dh)
 {
     return dh->p;
 }
 
-const BIGNUM *DH_get0_q(const DH *dh)
+const BIGNUMX *DH_get0_q(const DH *dh)
 {
     return dh->q;
 }
 
-const BIGNUM *DH_get0_g(const DH *dh)
+const BIGNUMX *DH_get0_g(const DH *dh)
 {
     return dh->g;
 }
 
-const BIGNUM *DH_get0_priv_key(const DH *dh)
+const BIGNUMX *DH_get0_priv_key(const DH *dh)
 {
     return dh->priv_key;
 }
 
-const BIGNUM *DH_get0_pub_key(const DH *dh)
+const BIGNUMX *DH_get0_pub_key(const DH *dh)
 {
     return dh->pub_key;
 }

@@ -385,8 +385,8 @@ static bool SpeedECDHCurve(const std::string &name, int nid,
         bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group));
         bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
 
-        bssl::UniquePtr<BIGNUM> x(BNY_new());
-        bssl::UniquePtr<BIGNUM> y(BNY_new());
+        bssl::UniquePtr<BIGNUMX> x(BNY_new());
+        bssl::UniquePtr<BIGNUMX> y(BNY_new());
 
         if (!point || !ctx || !x || !y ||
             !EC_POINT_mul(group, point.get(), NULL,

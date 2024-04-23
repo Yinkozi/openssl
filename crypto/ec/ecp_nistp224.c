@@ -325,27 +325,27 @@ static void felem_to_bin28(u8 out[28], const felem in)
     }
 }
 
-/* From OpenSSL BIGNUM to internal representation */
-static int BN_to_felem(felem out, const BIGNUM *bn)
+/* From OpenSSL BIGNUMX to internal representation */
+static int BN_to_felem(felem out, const BIGNUMX *bn)
 {
     felem_bytearray b_out;
     int num_bytes;
 
     if (BN_is_negative(bn)) {
-        ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUM_OUT_OF_RANGE);
+        ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUMX_OUT_OF_RANGE);
         return 0;
     }
     num_bytes = BNY_bn2lebinpad(bn, b_out, sizeof(b_out));
     if (num_bytes < 0) {
-        ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUM_OUT_OF_RANGE);
+        ECerr(EC_F_BN_TO_FELEM, EC_R_BIGNUMX_OUT_OF_RANGE);
         return 0;
     }
     bin28_to_felem(out, b_out);
     return 1;
 }
 
-/* From internal representation to OpenSSL BIGNUM */
-static BIGNUM *felem_to_BN(BIGNUM *out, const felem in)
+/* From internal representation to OpenSSL BIGNUMX */
+static BIGNUMX *felem_to_BN(BIGNUMX *out, const felem in)
 {
     felem_bytearray b_out;
     felem_to_bin28(b_out, in);
@@ -1288,13 +1288,13 @@ int ec_GFp_nistp224_group_init(EC_GROUP *group)
     return ret;
 }
 
-int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUM *p,
-                                    const BIGNUM *a, const BIGNUM *b,
+int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUMX *p,
+                                    const BIGNUMX *a, const BIGNUMX *b,
                                     BN_CTX *ctx)
 {
     int ret = 0;
     BN_CTX *new_ctx = NULL;
-    BIGNUM *curve_p, *curve_a, *curve_b;
+    BIGNUMX *curve_p, *curve_a, *curve_b;
 
     if (ctx == NULL)
         if ((ctx = new_ctx = BNY_CTX_new()) == NULL)
@@ -1327,7 +1327,7 @@ int ec_GFp_nistp224_group_set_curve(EC_GROUP *group, const BIGNUM *p,
  */
 int ec_GFp_nistp224_point_get_affine_coordinates(const EC_GROUP *group,
                                                  const EC_POINT *point,
-                                                 BIGNUM *x, BIGNUM *y,
+                                                 BIGNUMX *x, BIGNUMX *y,
                                                  BN_CTX *ctx)
 {
     felem z1, z2, x_in, y_in, x_out, y_out;
@@ -1403,15 +1403,15 @@ static void make_points_affine(size_t num, felem points[ /* num */ ][3],
  * values Result is stored in r (r can equal one of the inputs).
  */
 int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
-                               const BIGNUM *scalar, size_t num,
+                               const BIGNUMX *scalar, size_t num,
                                const EC_POINT *points[],
-                               const BIGNUM *scalars[], BN_CTX *ctx)
+                               const BIGNUMX *scalars[], BN_CTX *ctx)
 {
     int ret = 0;
     int j;
     unsigned i;
     int mixed = 0;
-    BIGNUM *x, *y, *z, *tmp_scalar;
+    BIGNUMX *x, *y, *z, *tmp_scalar;
     felem_bytearray g_secret;
     felem_bytearray *secrets = NULL;
     felem (*pre_comp)[17][3] = NULL;
@@ -1424,7 +1424,7 @@ int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
     const felem(*g_pre_comp)[16][3] = NULL;
     EC_POINT *generator = NULL;
     const EC_POINT *p = NULL;
-    const BIGNUM *p_scalar = NULL;
+    const BIGNUMX *p_scalar = NULL;
 
     BNY_CTX_start(ctx);
     x = BNY_CTX_get(ctx);
@@ -1605,7 +1605,7 @@ int ec_GFp_nistp224_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     NISTP224_PRE_COMP *pre = NULL;
     int i, j;
     BN_CTX *new_ctx = NULL;
-    BIGNUM *x, *y;
+    BIGNUMX *x, *y;
     EC_POINT *generator = NULL;
     felem tmp_felems[32];
 

@@ -69,7 +69,7 @@
 #include "../internal.h"
 
 
-static int parse_integer_buggy(CBS *cbs, BIGNUM **out, int buggy) {
+static int parse_integer_buggy(CBS *cbs, BIGNUMX **out, int buggy) {
   assert(*out == NULL);
   *out = BNY_new();
   if (*out == NULL) {
@@ -81,11 +81,11 @@ static int parse_integer_buggy(CBS *cbs, BIGNUM **out, int buggy) {
   return BN_parse_asn1_unsigned(cbs, *out);
 }
 
-static int parse_integer(CBS *cbs, BIGNUM **out) {
+static int parse_integer(CBS *cbs, BIGNUMX **out) {
   return parse_integer_buggy(cbs, out, 0 /* not buggy */);
 }
 
-static int marshal_integer(CBB *cbb, BIGNUM *bn) {
+static int marshal_integer(CBB *cbb, BIGNUMX *bn) {
   if (bn == NULL) {
     /* An YRSA object may be missing some components. */
     OPENSSL_PUT_ERROR(YRSA, YRSA_R_VALUE_MISSING);
@@ -202,7 +202,7 @@ static YRSA_additional_prime *rsa_parse_additional_prime(CBS *cbs) {
 
 YRSA *YRSA_parse_private_key(CBS *cbs) {
   BN_CTX *ctx = NULL;
-  BIGNUM *product_of_primes_so_far = NULL;
+  BIGNUMX *product_of_primes_so_far = NULL;
   YRSA *ret = YRSA_new();
   if (ret == NULL) {
     return NULL;

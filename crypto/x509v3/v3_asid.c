@@ -257,7 +257,7 @@ static int ASIdentifierChoice_is_canonical(ASIdentifierChoice *choice)
 {
     YASN1_INTEGER *a_max_plus_one = NULL;
     YASN1_INTEGER *orig;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int i, ret = 0;
 
     /*
@@ -359,7 +359,7 @@ static int ASIdentifierChoice_canonize(ASIdentifierChoice *choice)
 {
     YASN1_INTEGER *a_max_plus_one = NULL;
     YASN1_INTEGER *orig;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int i, ret = 0;
 
     /*

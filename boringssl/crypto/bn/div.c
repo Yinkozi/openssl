@@ -189,10 +189,10 @@ static inline void bn_div_rem_words(BN_ULONG *quotient_out, BN_ULONG *rem_out,
  * sensitive information; see "New Branch Prediction Vulnerabilities in OpenSSL
  * and Necessary Software Countermeasures" by Onur Acıçmez, Shay Gueron, and
  * Jean-Pierre Seifert. */
-int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+int BNY_div(BIGNUMX *dv, BIGNUMX *rm, const BIGNUMX *num, const BIGNUMX *divisor,
            BN_CTX *ctx) {
   int norm_shift, i, loop;
-  BIGNUM *tmp, wnum, *snum, *sdiv, *res;
+  BIGNUMX *tmp, wnum, *snum, *sdiv, *res;
   BN_ULONG *resp, *wnump;
   BN_ULONG d0, d1;
   int num_n, div_n;
@@ -386,7 +386,7 @@ err:
   return 0;
 }
 
-int BNY_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx) {
+int BNY_nnmod(BIGNUMX *r, const BIGNUMX *m, const BIGNUMX *d, BN_CTX *ctx) {
   if (!(BN_mod(r, m, d, ctx))) {
     return 0;
   }
@@ -398,7 +398,7 @@ int BNY_nnmod(BIGNUM *r, const BIGNUM *m, const BIGNUM *d, BN_CTX *ctx) {
   return (d->neg ? BNY_sub : BNY_add)(r, r, d);
 }
 
-int BN_mod_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+int BN_mod_add(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, const BIGNUMX *m,
                BN_CTX *ctx) {
   if (!BNY_add(r, a, b)) {
     return 0;
@@ -406,8 +406,8 @@ int BN_mod_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
   return BNY_nnmod(r, r, m, ctx);
 }
 
-int BN_mod_add_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
-                     const BIGNUM *m) {
+int BN_mod_add_quick(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
+                     const BIGNUMX *m) {
   if (!BNY_uadd(r, a, b)) {
     return 0;
   }
@@ -417,7 +417,7 @@ int BN_mod_add_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
   return 1;
 }
 
-int BN_mod_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+int BN_mod_sub(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, const BIGNUMX *m,
                BN_CTX *ctx) {
   if (!BNY_sub(r, a, b)) {
     return 0;
@@ -427,8 +427,8 @@ int BN_mod_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
 
 /* BN_mod_sub variant that may be used if both  a  and  b  are non-negative
  * and less than  m */
-int BN_mod_sub_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
-                     const BIGNUM *m) {
+int BN_mod_sub_quick(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
+                     const BIGNUMX *m) {
   if (!BNY_sub(r, a, b)) {
     return 0;
   }
@@ -438,9 +438,9 @@ int BN_mod_sub_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
   return 1;
 }
 
-int BN_mod_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, const BIGNUM *m,
+int BN_mod_mul(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, const BIGNUMX *m,
                BN_CTX *ctx) {
-  BIGNUM *t;
+  BIGNUMX *t;
   int ret = 0;
 
   BNY_CTX_start(ctx);
@@ -470,7 +470,7 @@ err:
   return ret;
 }
 
-int BN_mod_sqr(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx) {
+int BN_mod_sqr(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *m, BN_CTX *ctx) {
   if (!BNY_sqr(r, a, ctx)) {
     return 0;
   }
@@ -479,9 +479,9 @@ int BN_mod_sqr(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx) {
   return BN_mod(r, r, m, ctx);
 }
 
-int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
+int BN_mod_lshift(BIGNUMX *r, const BIGNUMX *a, int n, const BIGNUMX *m,
                   BN_CTX *ctx) {
-  BIGNUM *abs_m = NULL;
+  BIGNUMX *abs_m = NULL;
   int ret;
 
   if (!BNY_nnmod(r, a, m, ctx)) {
@@ -502,7 +502,7 @@ int BN_mod_lshift(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m,
   return ret;
 }
 
-int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m) {
+int BN_mod_lshift_quick(BIGNUMX *r, const BIGNUMX *a, int n, const BIGNUMX *m) {
   if (r != a) {
     if (BNY_copy(r, a) == NULL) {
       return 0;
@@ -548,7 +548,7 @@ int BN_mod_lshift_quick(BIGNUM *r, const BIGNUM *a, int n, const BIGNUM *m) {
   return 1;
 }
 
-int BN_mod_lshift1(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx) {
+int BN_mod_lshift1(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *m, BN_CTX *ctx) {
   if (!BN_lshift1(r, a)) {
     return 0;
   }
@@ -556,7 +556,7 @@ int BN_mod_lshift1(BIGNUM *r, const BIGNUM *a, const BIGNUM *m, BN_CTX *ctx) {
   return BNY_nnmod(r, r, m, ctx);
 }
 
-int BN_mod_lshift1_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *m) {
+int BN_mod_lshift1_quick(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *m) {
   if (!BN_lshift1(r, a)) {
     return 0;
   }
@@ -567,7 +567,7 @@ int BN_mod_lshift1_quick(BIGNUM *r, const BIGNUM *a, const BIGNUM *m) {
   return 1;
 }
 
-BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w) {
+BN_ULONG BNY_div_word(BIGNUMX *a, BN_ULONG w) {
   BN_ULONG ret = 0;
   int i, j;
 
@@ -610,7 +610,7 @@ BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w) {
   return ret;
 }
 
-BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w) {
+BN_ULONG BNY_mod_word(const BIGNUMX *a, BN_ULONG w) {
 #ifndef BN_ULLONG
   BN_ULONG ret = 0;
 #else
@@ -626,7 +626,7 @@ BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w) {
   /* If |w| is too long and we don't have |BN_ULLONG| then we need to fall back
    * to using |BNY_div_word|. */
   if (w > ((BN_ULONG)1 << BN_BITS4)) {
-    BIGNUM *tmp = BN_dup(a);
+    BIGNUMX *tmp = BN_dup(a);
     if (tmp == NULL) {
       return (BN_ULONG)-1;
     }
@@ -648,7 +648,7 @@ BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w) {
   return (BN_ULONG)ret;
 }
 
-int BN_mod_pow2(BIGNUM *r, const BIGNUM *a, size_t e) {
+int BN_mod_pow2(BIGNUMX *r, const BIGNUMX *a, size_t e) {
   if (e == 0 || a->top == 0) {
     BN_zero(r);
     return 1;
@@ -683,7 +683,7 @@ int BN_mod_pow2(BIGNUM *r, const BIGNUM *a, size_t e) {
   return 1;
 }
 
-int BNY_nnmod_pow2(BIGNUM *r, const BIGNUM *a, size_t e) {
+int BNY_nnmod_pow2(BIGNUMX *r, const BIGNUMX *a, size_t e) {
   if (!BN_mod_pow2(r, a, e)) {
     return 0;
   }

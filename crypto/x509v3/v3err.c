@@ -22,7 +22,7 @@ static const ERR_STRING_DATA YX509V3_str_functs[] = {
      "ASIdentifierChoice_canonize"},
     {ERR_PACK(ERR_LIB_YX509V3, YX509V3_F_ASIDENTIFIERCHOICE_IS_CANONICAL, 0),
      "ASIdentifierChoice_is_canonical"},
-    {ERR_PACK(ERR_LIB_YX509V3, YX509V3_F_BIGNUM_TO_STRING, 0),
+    {ERR_PACK(ERR_LIB_YX509V3, YX509V3_F_BIGNUMX_TO_STRING, 0),
      "bignum_to_string"},
     {ERR_PACK(ERR_LIB_YX509V3, YX509V3_F_COPY_EMAIL, 0), "copy_email"},
     {ERR_PACK(ERR_LIB_YX509V3, YX509V3_F_COPY_ISSUER, 0), "copy_issuer"},

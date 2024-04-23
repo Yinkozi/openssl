@@ -411,7 +411,7 @@ long YASN1_INTEGER_get(const YASN1_INTEGER *a)
     return (r);
 }
 
-YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
+YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUMX *bn, YASN1_INTEGER *ai)
 {
     YASN1_INTEGER *ret;
     int len, j;
@@ -451,9 +451,9 @@ YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
     return (NULL);
 }
 
-BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn)
+BIGNUMX *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUMX *bn)
 {
-    BIGNUM *ret;
+    BIGNUMX *ret;
 
     if ((ret = BNY_bin2bn(ai->data, ai->length, bn)) == NULL)
         OPENSSL_PUT_ERROR(YASN1, YASN1_R_BN_LIB);

@@ -299,7 +299,7 @@ int dhparam_main(int argc, char **argv)
     if (C) {
         unsigned char *data;
         int len, bits;
-        const BIGNUM *pbn, *gbn;
+        const BIGNUMX *pbn, *gbn;
 
         len = DH_size(dh);
         bits = DH_bits(dh);
@@ -310,7 +310,7 @@ int dhparam_main(int argc, char **argv)
         print_bignum_var(out, pbn, "dhp", bits, data);
         print_bignum_var(out, gbn, "dhg", bits, data);
         BIO_pprintf(out, "    DH *dh = DH_new();\n"
-                        "    BIGNUM *p, *g;\n"
+                        "    BIGNUMX *p, *g;\n"
                         "\n"
                         "    if (dh == NULL)\n"
                         "        return NULL;\n");
@@ -336,7 +336,7 @@ int dhparam_main(int argc, char **argv)
     }
 
     if (!noout) {
-        const BIGNUM *q;
+        const BIGNUMX *q;
         DH_get0_pqg(dh, NULL, &q, NULL);
         if (outformat == FORMAT_YASN1) {
             if (q != NULL)

@@ -151,7 +151,7 @@ int EC_METHOD_get_field_type(const EC_METHOD *meth);
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
-                           const BIGNUM *order, const BIGNUM *cofactor);
+                           const BIGNUMX *order, const BIGNUMX *cofactor);
 
 /** Returns the generator of a EC_GROUP object.
  *  \param  group  EC_GROUP object
@@ -167,17 +167,17 @@ BN_MONT_CTX *EC_GROUP_get_mont_data(const EC_GROUP *group);
 
 /** Gets the order of a EC_GROUP
  *  \param  group  EC_GROUP object
- *  \param  order  BIGNUM to which the order is copied
+ *  \param  order  BIGNUMX to which the order is copied
  *  \param  ctx    unused
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx);
+int EC_GROUP_get_order(const EC_GROUP *group, BIGNUMX *order, BN_CTX *ctx);
 
 /** Gets the order of an EC_GROUP
  *  \param  group  EC_GROUP object
  *  \return the group order
  */
-const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group);
+const BIGNUMX *EC_GROUP_get0_order(const EC_GROUP *group);
 
 /** Gets the number of bits of the order of an EC_GROUP
  *  \param  group  EC_GROUP object
@@ -187,18 +187,18 @@ int EC_GROUP_order_bits(const EC_GROUP *group);
 
 /** Gets the cofactor of a EC_GROUP
  *  \param  group     EC_GROUP object
- *  \param  cofactor  BIGNUM to which the cofactor is copied
+ *  \param  cofactor  BIGNUMX to which the cofactor is copied
  *  \param  ctx       unused
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
+int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUMX *cofactor,
                           BN_CTX *ctx);
 
 /** Gets the cofactor of an EC_GROUP
  *  \param  group  EC_GROUP object
  *  \return the group cofactor
  */
-const BIGNUM *EC_GROUP_get0_cofactor(const EC_GROUP *group);
+const BIGNUMX *EC_GROUP_get0_cofactor(const EC_GROUP *group);
 
 /** Sets the name of a EC_GROUP object
  *  \param  group  EC_GROUP object
@@ -226,80 +226,80 @@ size_t EC_GROUP_set_seed(EC_GROUP *, const unsigned char *, size_t len);
 /** Sets the parameters of a ec curve defined by y^2 = x^3 + a*x + b (for GFp)
  *  or y^2 + x*y = x^3 + a*x^2 + b (for GF2m)
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM with parameter a of the equation
- *  \param  b      BIGNUM with parameter b of the equation
+ *  \param  a      BIGNUMX with parameter a of the equation
+ *  \param  b      BIGNUMX with parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
-                       const BIGNUM *b, BN_CTX *ctx);
+int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUMX *p, const BIGNUMX *a,
+                       const BIGNUMX *b, BN_CTX *ctx);
 
 /** Gets the parameters of the ec curve defined by y^2 = x^3 + a*x + b (for GFp)
  *  or y^2 + x*y = x^3 + a*x^2 + b (for GF2m)
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM for parameter a of the equation
- *  \param  b      BIGNUM for parameter b of the equation
+ *  \param  a      BIGNUMX for parameter a of the equation
+ *  \param  b      BIGNUMX for parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUMX *p, BIGNUMX *a, BIGNUMX *b,
                        BN_CTX *ctx);
 
 /** Sets the parameters of an ec curve. Synonym for EC_GROUP_set_curve
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM with parameter a of the equation
- *  \param  b      BIGNUM with parameter b of the equation
+ *  \param  a      BIGNUMX with parameter a of the equation
+ *  \param  b      BIGNUMX with parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-DEPRECATEDIN_1_2_0(int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUM *p,
-                                              const BIGNUM *a, const BIGNUM *b,
+DEPRECATEDIN_1_2_0(int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUMX *p,
+                                              const BIGNUMX *a, const BIGNUMX *b,
                                               BN_CTX *ctx))
 
 /** Gets the parameters of an ec curve. Synonym for EC_GROUP_get_curve
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM for parameter a of the equation
- *  \param  b      BIGNUM for parameter b of the equation
+ *  \param  a      BIGNUMX for parameter a of the equation
+ *  \param  b      BIGNUMX for parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-DEPRECATEDIN_1_2_0(int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *p,
-                                              BIGNUM *a, BIGNUM *b,
+DEPRECATEDIN_1_2_0(int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUMX *p,
+                                              BIGNUMX *a, BIGNUMX *b,
                                               BN_CTX *ctx))
 
 # ifndef OPENSSL_NO_EC2M
 /** Sets the parameter of an ec curve. Synonym for EC_GROUP_set_curve
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM with parameter a of the equation
- *  \param  b      BIGNUM with parameter b of the equation
+ *  \param  a      BIGNUMX with parameter a of the equation
+ *  \param  b      BIGNUMX with parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-DEPRECATEDIN_1_2_0(int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUM *p,
-                                               const BIGNUM *a, const BIGNUM *b,
+DEPRECATEDIN_1_2_0(int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUMX *p,
+                                               const BIGNUMX *a, const BIGNUMX *b,
                                                BN_CTX *ctx))
 
 /** Gets the parameters of an ec curve. Synonym for EC_GROUP_get_curve
  *  \param  group  EC_GROUP object
- *  \param  p      BIGNUM with the prime number (GFp) or the polynomial
+ *  \param  p      BIGNUMX with the prime number (GFp) or the polynomial
  *                 defining the underlying field (GF2m)
- *  \param  a      BIGNUM for parameter a of the equation
- *  \param  b      BIGNUM for parameter b of the equation
+ *  \param  a      BIGNUMX for parameter a of the equation
+ *  \param  b      BIGNUMX for parameter b of the equation
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-DEPRECATEDIN_1_2_0(int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUM *p,
-                                               BIGNUM *a, BIGNUM *b,
+DEPRECATEDIN_1_2_0(int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUMX *p,
+                                               BIGNUMX *a, BIGNUMX *b,
                                                BN_CTX *ctx))
 # endif
 /** Returns the number of bits needed to represent a field element
@@ -337,25 +337,25 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx);
 
 /** Creates a new EC_GROUP object with the specified parameters defined
  *  over GFp (defined by the equation y^2 = x^3 + a*x + b)
- *  \param  p    BIGNUM with the prime number
- *  \param  a    BIGNUM with the parameter a of the equation
- *  \param  b    BIGNUM with the parameter b of the equation
+ *  \param  p    BIGNUMX with the prime number
+ *  \param  a    BIGNUMX with the parameter a of the equation
+ *  \param  b    BIGNUMX with the parameter b of the equation
  *  \param  ctx  BN_CTX object (optional)
  *  \return newly created EC_GROUP object with the specified parameters
  */
-EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
-                                 const BIGNUM *b, BN_CTX *ctx);
+EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUMX *p, const BIGNUMX *a,
+                                 const BIGNUMX *b, BN_CTX *ctx);
 # ifndef OPENSSL_NO_EC2M
 /** Creates a new EC_GROUP object with the specified parameters defined
  *  over GF2m (defined by the equation y^2 + x*y = x^3 + a*x^2 + b)
- *  \param  p    BIGNUM with the polynomial defining the underlying field
- *  \param  a    BIGNUM with the parameter a of the equation
- *  \param  b    BIGNUM with the parameter b of the equation
+ *  \param  p    BIGNUMX with the polynomial defining the underlying field
+ *  \param  a    BIGNUMX with the parameter a of the equation
+ *  \param  b    BIGNUMX with the parameter b of the equation
  *  \param  ctx  BN_CTX object (optional)
  *  \return newly created EC_GROUP object with the specified parameters
  */
-EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUM *p, const BIGNUM *a,
-                                  const BIGNUM *b, BN_CTX *ctx);
+EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUMX *p, const BIGNUMX *a,
+                                  const BIGNUMX *b, BN_CTX *ctx);
 # endif
 
 /** Creates a EC_GROUP object with a curve specified by a NID
@@ -468,108 +468,108 @@ int EC_POINT_set_to_infinity(const EC_GROUP *group, EC_POINT *point);
 /** Sets the jacobian projective coordinates of a EC_POINT over GFp
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with the x-coordinate
- *  \param  y      BIGNUM with the y-coordinate
- *  \param  z      BIGNUM with the z-coordinate
+ *  \param  x      BIGNUMX with the x-coordinate
+ *  \param  y      BIGNUMX with the y-coordinate
+ *  \param  z      BIGNUMX with the z-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_POINT_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             EC_POINT *p, const BIGNUM *x,
-                                             const BIGNUM *y, const BIGNUM *z,
+                                             EC_POINT *p, const BIGNUMX *x,
+                                             const BIGNUMX *y, const BIGNUMX *z,
                                              BN_CTX *ctx);
 
 /** Gets the jacobian projective coordinates of a EC_POINT over GFp
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM for the x-coordinate
- *  \param  y      BIGNUM for the y-coordinate
- *  \param  z      BIGNUM for the z-coordinate
+ *  \param  x      BIGNUMX for the x-coordinate
+ *  \param  y      BIGNUMX for the y-coordinate
+ *  \param  z      BIGNUMX for the z-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_POINT_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             const EC_POINT *p, BIGNUM *x,
-                                             BIGNUM *y, BIGNUM *z,
+                                             const EC_POINT *p, BIGNUMX *x,
+                                             BIGNUMX *y, BIGNUMX *z,
                                              BN_CTX *ctx);
 
 /** Sets the affine coordinates of an EC_POINT
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with the x-coordinate
- *  \param  y      BIGNUM with the y-coordinate
+ *  \param  x      BIGNUMX with the x-coordinate
+ *  \param  y      BIGNUMX with the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_POINT_set_affine_coordinates(const EC_GROUP *group, EC_POINT *p,
-                                    const BIGNUM *x, const BIGNUM *y,
+                                    const BIGNUMX *x, const BIGNUMX *y,
                                     BN_CTX *ctx);
 
 /** Gets the affine coordinates of an EC_POINT.
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM for the x-coordinate
- *  \param  y      BIGNUM for the y-coordinate
+ *  \param  x      BIGNUMX for the x-coordinate
+ *  \param  y      BIGNUMX for the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_POINT_get_affine_coordinates(const EC_GROUP *group, const EC_POINT *p,
-                                    BIGNUM *x, BIGNUM *y, BN_CTX *ctx);
+                                    BIGNUMX *x, BIGNUMX *y, BN_CTX *ctx);
 
 /** Sets the affine coordinates of an EC_POINT. A synonym of
  *  EC_POINT_set_affine_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with the x-coordinate
- *  \param  y      BIGNUM with the y-coordinate
+ *  \param  x      BIGNUMX with the x-coordinate
+ *  \param  y      BIGNUMX with the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group,
                                                            EC_POINT *p,
-                                                           const BIGNUM *x,
-                                                           const BIGNUM *y,
+                                                           const BIGNUMX *x,
+                                                           const BIGNUMX *y,
                                                            BN_CTX *ctx))
 
 /** Gets the affine coordinates of an EC_POINT. A synonym of
  *  EC_POINT_get_affine_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM for the x-coordinate
- *  \param  y      BIGNUM for the y-coordinate
+ *  \param  x      BIGNUMX for the x-coordinate
+ *  \param  y      BIGNUMX for the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
                                                            const EC_POINT *p,
-                                                           BIGNUM *x,
-                                                           BIGNUM *y,
+                                                           BIGNUMX *x,
+                                                           BIGNUMX *y,
                                                            BN_CTX *ctx))
 
 /** Sets the x9.62 compressed coordinates of a EC_POINT
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with x-coordinate
+ *  \param  x      BIGNUMX with x-coordinate
  *  \param  y_bit  integer with the y-Bit (either 0 or 1)
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 int EC_POINT_set_compressed_coordinates(const EC_GROUP *group, EC_POINT *p,
-                                        const BIGNUM *x, int y_bit,
+                                        const BIGNUMX *x, int y_bit,
                                         BN_CTX *ctx);
 
 /** Sets the x9.62 compressed coordinates of a EC_POINT. A synonym of
  *  EC_POINT_set_compressed_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with x-coordinate
+ *  \param  x      BIGNUMX with x-coordinate
  *  \param  y_bit  integer with the y-Bit (either 0 or 1)
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_set_compressed_coordinates_GFp(const EC_GROUP *group,
                                                                EC_POINT *p,
-                                                               const BIGNUM *x,
+                                                               const BIGNUMX *x,
                                                                int y_bit,
                                                                BN_CTX *ctx))
 # ifndef OPENSSL_NO_EC2M
@@ -577,44 +577,44 @@ DEPRECATEDIN_1_2_0(int EC_POINT_set_compressed_coordinates_GFp(const EC_GROUP *g
  *  EC_POINT_set_affine_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with the x-coordinate
- *  \param  y      BIGNUM with the y-coordinate
+ *  \param  x      BIGNUMX with the x-coordinate
+ *  \param  y      BIGNUMX with the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_set_affine_coordinates_GF2m(const EC_GROUP *group,
                                                             EC_POINT *p,
-                                                            const BIGNUM *x,
-                                                            const BIGNUM *y,
+                                                            const BIGNUMX *x,
+                                                            const BIGNUMX *y,
                                                             BN_CTX *ctx))
 
 /** Gets the affine coordinates of an EC_POINT. A synonym of
  *  EC_POINT_get_affine_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM for the x-coordinate
- *  \param  y      BIGNUM for the y-coordinate
+ *  \param  x      BIGNUMX for the x-coordinate
+ *  \param  y      BIGNUMX for the y-coordinate
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_get_affine_coordinates_GF2m(const EC_GROUP *group,
                                                             const EC_POINT *p,
-                                                            BIGNUM *x,
-                                                            BIGNUM *y,
+                                                            BIGNUMX *x,
+                                                            BIGNUMX *y,
                                                             BN_CTX *ctx))
 
 /** Sets the x9.62 compressed coordinates of a EC_POINT. A synonym of
  *  EC_POINT_set_compressed_coordinates
  *  \param  group  underlying EC_GROUP object
  *  \param  p      EC_POINT object
- *  \param  x      BIGNUM with x-coordinate
+ *  \param  x      BIGNUMX with x-coordinate
  *  \param  y_bit  integer with the y-Bit (either 0 or 1)
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
 DEPRECATEDIN_1_2_0(int EC_POINT_set_compressed_coordinates_GF2m(const EC_GROUP *group,
                                                                 EC_POINT *p,
-                                                                const BIGNUM *x,
+                                                                const BIGNUMX *x,
                                                                 int y_bit,
                                                                 BN_CTX *ctx))
 # endif
@@ -656,9 +656,9 @@ size_t EC_POINT_point2buf(const EC_GROUP *group, const EC_POINT *point,
                           unsigned char **pbuf, BN_CTX *ctx);
 
 /* other interfaces to point2oct/oct2point: */
-BIGNUM *EC_POINT_point2bnn(const EC_GROUP *, const EC_POINT *,
-                          point_conversion_form_t form, BIGNUM *, BN_CTX *);
-EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *, const BIGNUM *,
+BIGNUMX *EC_POINT_point2bnn(const EC_GROUP *, const EC_POINT *,
+                          point_conversion_form_t form, BIGNUMX *, BN_CTX *);
+EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *, const BIGNUMX *,
                             EC_POINT *, BN_CTX *);
 char *EC_POINT_point2hexx(const EC_GROUP *, const EC_POINT *,
                          point_conversion_form_t form, BN_CTX *);
@@ -731,28 +731,28 @@ int EC_POINTs_make_affine(const EC_GROUP *group, size_t num,
 /** Computes r = generator * n + sum_{i=0}^{num-1} p[i] * m[i]
  *  \param  group  underlying EC_GROUP object
  *  \param  r      EC_POINT object for the result
- *  \param  n      BIGNUM with the multiplier for the group generator (optional)
+ *  \param  n      BIGNUMX with the multiplier for the group generator (optional)
  *  \param  num    number further summands
  *  \param  p      array of size num of EC_POINT objects
- *  \param  m      array of size num of BIGNUM objects
+ *  \param  m      array of size num of BIGNUMX objects
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *n,
-                  size_t num, const EC_POINT *p[], const BIGNUM *m[],
+int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *n,
+                  size_t num, const EC_POINT *p[], const BIGNUMX *m[],
                   BN_CTX *ctx);
 
 /** Computes r = generator * n + q * m
  *  \param  group  underlying EC_GROUP object
  *  \param  r      EC_POINT object for the result
- *  \param  n      BIGNUM with the multiplier for the group generator (optional)
+ *  \param  n      BIGNUMX with the multiplier for the group generator (optional)
  *  \param  q      EC_POINT object with the first factor of the second summand
- *  \param  m      BIGNUM with the second factor of the second summand
+ *  \param  m      BIGNUMX with the second factor of the second summand
  *  \param  ctx    BN_CTX object (optional)
  *  \return 1 on success and 0 if an error occurred
  */
-int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *n,
-                 const EC_POINT *q, const BIGNUM *m, BN_CTX *ctx);
+int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *n,
+                 const EC_POINT *q, const BIGNUMX *m, BN_CTX *ctx);
 
 /** Stores multiples of generator for faster point multiplication
  *  \param  group  EC_GROUP object
@@ -887,17 +887,17 @@ int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group);
 
 /** Returns the private key of a EC_KEY object.
  *  \param  key  EC_KEY object
- *  \return a BIGNUM with the private key (possibly NULL).
+ *  \return a BIGNUMX with the private key (possibly NULL).
  */
-const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key);
+const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *key);
 
 /** Sets the private key of a EC_KEY object.
  *  \param  key  EC_KEY object
- *  \param  prv  BIGNUM with the private key (note: the EC_KEY object
- *               will use an own copy of the BIGNUM).
+ *  \param  prv  BIGNUMX with the private key (note: the EC_KEY object
+ *               will use an own copy of the BIGNUMX).
  *  \return 1 on success and 0 if an error occurred.
  */
-int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *prv);
+int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUMX *prv);
 
 /** Returns the public key of a EC_KEY object.
  *  \param  key  the EC_KEY object
@@ -959,8 +959,8 @@ int ECC_KEY_can_sign(const EC_KEY *eckey);
  *  \param  y    public key y coordinate
  *  \return 1 on success and 0 otherwise.
  */
-int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x,
-                                             BIGNUM *y);
+int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUMX *x,
+                                             BIGNUMX *y);
 
 /** Encodes an EC_KEY public key to an allocated octet string
  *  \param  key    key to encode
@@ -1159,27 +1159,27 @@ ECDSA_SIG *d2i_ECDSA_SIG(ECDSA_SIG **sig, const unsigned char **pp, long len);
 
 /** Accessor for r and s fields of ECDSA_SIG
  *  \param  sig  pointer to ECDSA_SIG structure
- *  \param  pr   pointer to BIGNUM pointer for r (may be NULL)
- *  \param  ps   pointer to BIGNUM pointer for s (may be NULL)
+ *  \param  pr   pointer to BIGNUMX pointer for r (may be NULL)
+ *  \param  ps   pointer to BIGNUMX pointer for s (may be NULL)
  */
-void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
+void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUMX **pr, const BIGNUMX **ps);
 
 /** Accessor for r field of ECDSA_SIG
  *  \param  sig  pointer to ECDSA_SIG structure
  */
-const BIGNUM *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig);
+const BIGNUMX *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig);
 
 /** Accessor for s field of ECDSA_SIG
  *  \param  sig  pointer to ECDSA_SIG structure
  */
-const BIGNUM *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig);
+const BIGNUMX *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig);
 
 /** Setter for r and s fields of ECDSA_SIG
  *  \param  sig  pointer to ECDSA_SIG structure
- *  \param  r    pointer to BIGNUM for r (may be NULL)
- *  \param  s    pointer to BIGNUM for s (may be NULL)
+ *  \param  r    pointer to BIGNUMX for r (may be NULL)
+ *  \param  s    pointer to BIGNUMX for s (may be NULL)
  */
-int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s);
+int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUMX *r, BIGNUMX *s);
 
 /** Computes the ECDSA signature of the given hash value using
  *  the supplied private key and returns the created signature.
@@ -1195,14 +1195,14 @@ ECDSA_SIG *ECCDSA_do_sign(const unsigned char *dgst, int dgst_len,
  *  private key (note: sig must point to ECCDSA_size(eckey) bytes of memory).
  *  \param  dgst     pointer to the hash value to sign
  *  \param  dgstlen  length of the hash value
- *  \param  kinv     BIGNUM with a pre-computed inverse k (optional)
- *  \param  rp       BIGNUM with a pre-computed rp value (optional),
+ *  \param  kinv     BIGNUMX with a pre-computed inverse k (optional)
+ *  \param  rp       BIGNUMX with a pre-computed rp value (optional),
  *                   see ECCDSA_signn_setup
  *  \param  eckey    EC_KEY object containing a private EC key
  *  \return pointer to a ECDSA_SIG structure or NULL if an error occurred
  */
 ECDSA_SIG *ECCDSA_do_sign_ex(const unsigned char *dgst, int dgstlen,
-                            const BIGNUM *kinv, const BIGNUM *rp,
+                            const BIGNUMX *kinv, const BIGNUMX *rp,
                             EC_KEY *eckey);
 
 /** Verifies that the supplied signature is a valid ECDSA
@@ -1220,11 +1220,11 @@ int ECCDSA_do_verifyy(const unsigned char *dgst, int dgst_len,
 /** Precompute parts of the signing operation
  *  \param  eckey  EC_KEY object containing a private EC key
  *  \param  ctx    BN_CTX object (optional)
- *  \param  kinv   BIGNUM pointer for the inverse of k
- *  \param  rp     BIGNUM pointer for x coordinate of k * generator
+ *  \param  kinv   BIGNUMX pointer for the inverse of k
+ *  \param  rp     BIGNUMX pointer for x coordinate of k * generator
  *  \return 1 on success and 0 otherwise
  */
-int ECCDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv, BIGNUM **rp);
+int ECCDSA_signn_setup(EC_KEY *eckey, BN_CTX *ctx, BIGNUMX **kinv, BIGNUMX **rp);
 
 /** Computes ECDSA signature of a given hash value using the supplied
  *  private key (note: sig must point to ECCDSA_size(eckey) bytes of memory).
@@ -1246,15 +1246,15 @@ int ECCDSA_signn(int type, const unsigned char *dgst, int dgstlen,
  *  \param  dgstlen  length of the hash value
  *  \param  sig      buffer to hold the DER encoded signature
  *  \param  siglen   pointer to the length of the returned signature
- *  \param  kinv     BIGNUM with a pre-computed inverse k (optional)
- *  \param  rp       BIGNUM with a pre-computed rp value (optional),
+ *  \param  kinv     BIGNUMX with a pre-computed inverse k (optional)
+ *  \param  rp       BIGNUMX with a pre-computed rp value (optional),
  *                   see ECCDSA_signn_setup
  *  \param  eckey    EC_KEY object containing a private EC key
  *  \return 1 on success and 0 otherwise
  */
 int ECCDSA_signn_ex(int type, const unsigned char *dgst, int dgstlen,
                   unsigned char *sig, unsigned int *siglen,
-                  const BIGNUM *kinv, const BIGNUM *rp, EC_KEY *eckey);
+                  const BIGNUMX *kinv, const BIGNUMX *rp, EC_KEY *eckey);
 
 /** Verifies that the given signature is valid ECDSA signature
  *  of the supplied hash value using the specified public key.
@@ -1288,7 +1288,7 @@ void ECC_KEY_METHOD_set_init(EC_KEY_METHOD *meth,
                             int (*copy)(EC_KEY *dest, const EC_KEY *src),
                             int (*set_group)(EC_KEY *key, const EC_GROUP *grp),
                             int (*set_private)(EC_KEY *key,
-                                               const BIGNUM *priv_key),
+                                               const BIGNUMX *priv_key),
                             int (*set_public)(EC_KEY *key,
                                               const EC_POINT *pub_key));
 
@@ -1305,14 +1305,14 @@ void ECC_KEY_METHOD_set_sign(EC_KEY_METHOD *meth,
                             int (*sign)(int type, const unsigned char *dgst,
                                         int dlen, unsigned char *sig,
                                         unsigned int *siglen,
-                                        const BIGNUM *kinv, const BIGNUM *r,
+                                        const BIGNUMX *kinv, const BIGNUMX *r,
                                         EC_KEY *eckey),
                             int (*sign_setup)(EC_KEY *eckey, BN_CTX *ctx_in,
-                                              BIGNUM **kinvp, BIGNUM **rp),
+                                              BIGNUMX **kinvp, BIGNUMX **rp),
                             ECDSA_SIG *(*sign_sig)(const unsigned char *dgst,
                                                    int dgst_len,
-                                                   const BIGNUM *in_kinv,
-                                                   const BIGNUM *in_r,
+                                                   const BIGNUMX *in_kinv,
+                                                   const BIGNUMX *in_r,
                                                    EC_KEY *eckey));
 
 void ECC_KEY_METHOD_set_verify(EC_KEY_METHOD *meth,
@@ -1332,7 +1332,7 @@ void ECC_KEY_METHOD_get_init(const EC_KEY_METHOD *meth,
                             int (**pset_group)(EC_KEY *key,
                                                const EC_GROUP *grp),
                             int (**pset_private)(EC_KEY *key,
-                                                 const BIGNUM *priv_key),
+                                                 const BIGNUMX *priv_key),
                             int (**pset_public)(EC_KEY *key,
                                                 const EC_POINT *pub_key));
 
@@ -1349,14 +1349,14 @@ void ECC_KEY_METHOD_get_sign(const EC_KEY_METHOD *meth,
                             int (**psign)(int type, const unsigned char *dgst,
                                           int dlen, unsigned char *sig,
                                           unsigned int *siglen,
-                                          const BIGNUM *kinv, const BIGNUM *r,
+                                          const BIGNUMX *kinv, const BIGNUMX *r,
                                           EC_KEY *eckey),
                             int (**psign_setup)(EC_KEY *eckey, BN_CTX *ctx_in,
-                                                BIGNUM **kinvp, BIGNUM **rp),
+                                                BIGNUMX **kinvp, BIGNUMX **rp),
                             ECDSA_SIG *(**psign_sig)(const unsigned char *dgst,
                                                      int dgst_len,
-                                                     const BIGNUM *in_kinv,
-                                                     const BIGNUM *in_r,
+                                                     const BIGNUMX *in_kinv,
+                                                     const BIGNUMX *in_r,
                                                      EC_KEY *eckey));
 
 void ECC_KEY_METHOD_get_verify(const EC_KEY_METHOD *meth,

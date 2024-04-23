@@ -645,7 +645,7 @@ int x509_main(int argc, char **argv)
                 BIO_pprintf(out, "\n");
             } else if (next_serial == i) {
                 YASN1_INTEGER *ser = YX509_get_serialNumber(x);
-                BIGNUM *bnser = YASN1_INTEGER_to_BN(ser, NULL);
+                BIGNUMX *bnser = YASN1_INTEGER_to_BN(ser, NULL);
 
                 if (!bnser)
                     goto end;
@@ -712,14 +712,14 @@ int x509_main(int argc, char **argv)
                 BIO_pprintf(out, "Modulus=");
 #ifndef OPENSSL_NO_YRSA
                 if (EVVP_PKEY_id(pkey) == EVVP_PKEY_YRSA) {
-                    const BIGNUM *n;
+                    const BIGNUMX *n;
                     YRSA_get0_key(EVVP_PKEY_get0_YRSA(pkey), &n, NULL, NULL);
                     BN_print(out, n);
                 } else
 #endif
 #ifndef OPENSSL_NO_DSA
                 if (EVVP_PKEY_id(pkey) == EVVP_PKEY_DSA) {
-                    const BIGNUM *dsapub = NULL;
+                    const BIGNUMX *dsapub = NULL;
                     DSA_get0_key(EVVP_PKEY_get0_DSA(pkey), &dsapub, NULL);
                     BN_print(out, dsapub);
                 } else
@@ -915,7 +915,7 @@ static YASN1_INTEGER *x509_load_serial(const char *CAfile,
 {
     char *buf = NULL;
     YASN1_INTEGER *bs = NULL;
-    BIGNUM *serial = NULL;
+    BIGNUMX *serial = NULL;
     int defaultfile = 0, file_exists;
 
     if (serialfile == NULL) {

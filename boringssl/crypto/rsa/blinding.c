@@ -121,12 +121,12 @@
 #define BN_BLINDING_COUNTER 32
 
 struct bn_blinding_st {
-  BIGNUM *A; /* The base blinding factor, Montgomery-encoded. */
-  BIGNUM *Ai; /* The inverse of the blinding factor, Montgomery-encoded. */
+  BIGNUMX *A; /* The base blinding factor, Montgomery-encoded. */
+  BIGNUMX *Ai; /* The inverse of the blinding factor, Montgomery-encoded. */
   unsigned counter;
 };
 
-static int bn_blinding_create_param(BN_BLINDING *b, const BIGNUM *e,
+static int bn_blinding_create_param(BN_BLINDING *b, const BIGNUMX *e,
                                     const BN_MONT_CTX *mont, BN_CTX *ctx);
 
 BN_BLINDING *BN_BLINDING_new(void) {
@@ -167,7 +167,7 @@ void BN_BLINDING_free(BN_BLINDING *r) {
   OPENSSL_free(r);
 }
 
-static int bn_blinding_update(BN_BLINDING *b, const BIGNUM *e,
+static int bn_blinding_update(BN_BLINDING *b, const BIGNUMX *e,
                               const BN_MONT_CTX *mont, BN_CTX *ctx) {
   if (++b->counter == BN_BLINDING_COUNTER) {
     /* re-create blinding parameters */
@@ -194,7 +194,7 @@ err:
   return 0;
 }
 
-int BN_BLINDING_convert(BIGNUM *n, BN_BLINDING *b, const BIGNUM *e,
+int BN_BLINDING_convert(BIGNUMX *n, BN_BLINDING *b, const BIGNUMX *e,
                         const BN_MONT_CTX *mont, BN_CTX *ctx) {
   /* |n| is not Montgomery-encoded and |b->A| is. |BNY_mod_mul_montgomery|
    * cancels one Montgomery factor, so the resulting value of |n| is unencoded.
@@ -207,7 +207,7 @@ int BN_BLINDING_convert(BIGNUM *n, BN_BLINDING *b, const BIGNUM *e,
   return 1;
 }
 
-int BN_BLINDING_invert(BIGNUM *n, const BN_BLINDING *b, BN_MONT_CTX *mont,
+int BN_BLINDING_invert(BIGNUMX *n, const BN_BLINDING *b, BN_MONT_CTX *mont,
                        BN_CTX *ctx) {
   /* |n| is not Montgomery-encoded and |b->A| is. |BNY_mod_mul_montgomery|
    * cancels one Montgomery factor, so the resulting value of |n| is unencoded.
@@ -215,7 +215,7 @@ int BN_BLINDING_invert(BIGNUM *n, const BN_BLINDING *b, BN_MONT_CTX *mont,
   return BNY_mod_mul_montgomery(n, n, b->Ai, mont, ctx);
 }
 
-static int bn_blinding_create_param(BN_BLINDING *b, const BIGNUM *e,
+static int bn_blinding_create_param(BN_BLINDING *b, const BIGNUMX *e,
                                     const BN_MONT_CTX *mont, BN_CTX *ctx) {
   int retry_counter = 32;
 

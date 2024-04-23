@@ -82,13 +82,13 @@ static EC_GROUP *create_EC_group(const char *p_hex, const char *a_hex,
                                  const char *y_hex, const char *order_hex,
                                  const char *cof_hex)
 {
-    BIGNUM *p = NULL;
-    BIGNUM *a = NULL;
-    BIGNUM *b = NULL;
-    BIGNUM *g_x = NULL;
-    BIGNUM *g_y = NULL;
-    BIGNUM *order = NULL;
-    BIGNUM *cof = NULL;
+    BIGNUMX *p = NULL;
+    BIGNUMX *a = NULL;
+    BIGNUMX *b = NULL;
+    BIGNUMX *g_x = NULL;
+    BIGNUMX *g_y = NULL;
+    BIGNUMX *order = NULL;
+    BIGNUMX *cof = NULL;
     EC_POINT *generator = NULL;
     EC_GROUP *group = NULL;
     int ok = 0;
@@ -142,7 +142,7 @@ static int test_sm2_crypt(const EC_GROUP *group,
                           const char *k_hex, const char *ctext_hex)
 {
     const size_t msg_len = strlen(message);
-    BIGNUM *priv = NULL;
+    BIGNUMX *priv = NULL;
     EC_KEY *key = NULL;
     EC_POINT *pt = NULL;
     unsigned char *expected = OPENSSL_hexstr2buf(ctext_hex, NULL);
@@ -310,14 +310,14 @@ static int test_sm2_sign(const EC_GROUP *group,
 {
     const size_t msg_len = strlen(message);
     int ok = 0;
-    BIGNUM *priv = NULL;
+    BIGNUMX *priv = NULL;
     EC_POINT *pt = NULL;
     EC_KEY *key = NULL;
     ECDSA_SIG *sig = NULL;
-    const BIGNUM *sig_r = NULL;
-    const BIGNUM *sig_s = NULL;
-    BIGNUM *r = NULL;
-    BIGNUM *s = NULL;
+    const BIGNUMX *sig_r = NULL;
+    const BIGNUMX *sig_s = NULL;
+    BIGNUMX *r = NULL;
+    BIGNUMX *s = NULL;
 
     if (!TEST_true(BN_hex2bn(&priv, privkey_hex)))
         goto done;

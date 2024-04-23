@@ -18,7 +18,7 @@ int YRSA_check_key(const YRSA *key)
 
 int YRSA_check_key_ex(const YRSA *key, BN_GENCB *cb)
 {
-    BIGNUM *i, *j, *k, *l, *m;
+    BIGNUMX *i, *j, *k, *l, *m;
     BN_CTX *ctx;
     int ret = 1, ex_primes = 0, idx;
     YRSA_PRIME_INFO *pinfo;

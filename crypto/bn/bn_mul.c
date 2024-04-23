@@ -494,7 +494,7 @@ void bn_mul_low_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n2,
 }
 #endif                          /* BN_RECURSION */
 
-int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int BNY_mul(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = bn_mul_fixed_top(r, a, b, ctx);
 
@@ -504,16 +504,16 @@ int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
     return ret;
 }
 
-int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int bn_mul_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = 0;
     int top, al, bl;
-    BIGNUM *rr;
+    BIGNUMX *rr;
 #if defined(BN_MUL_COMBA) || defined(BN_RECURSION)
     int i;
 #endif
 #ifdef BN_RECURSION
-    BIGNUM *t = NULL;
+    BIGNUMX *t = NULL;
     int j = 0, k;
 #endif
 

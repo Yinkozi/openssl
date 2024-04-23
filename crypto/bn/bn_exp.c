@@ -47,10 +47,10 @@ extern unsigned int OPENSSL_sparcv9cap_P[];
 #define BN_CONSTTIME_SIZE_LIMIT (INT_MAX / BN_BYTES / 256)
 
 /* this one works - simple but works */
-int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
+int BN_exp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p, BN_CTX *ctx)
 {
     int i, bits, ret = 0;
-    BIGNUM *v, *rr;
+    BIGNUMX *v, *rr;
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0) {
@@ -95,7 +95,7 @@ int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
     return ret;
 }
 
-int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+int BN_mod_exp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p, const BIGNUMX *m,
                BN_CTX *ctx)
 {
     int ret;
@@ -167,14 +167,14 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
     return ret;
 }
 
-int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx)
+int BN_mod_exp_recp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                    const BIGNUMX *m, BN_CTX *ctx)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
     int start = 1;
-    BIGNUM *aa;
+    BIGNUMX *aa;
     /* Table of variables obtained from 'ctx' */
-    BIGNUM *val[TABLE_SIZE];
+    BIGNUMX *val[TABLE_SIZE];
     BN_RECP_CTX recp;
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
@@ -303,15 +303,15 @@ int BN_mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+int BNY_mod_exp_mont(BIGNUMX *rr, const BIGNUMX *a, const BIGNUMX *p,
+                    const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
     int start = 1;
-    BIGNUM *d, *r;
-    const BIGNUM *aa;
+    BIGNUMX *d, *r;
+    const BIGNUMX *aa;
     /* Table of variables obtained from 'ctx' */
-    BIGNUM *val[TABLE_SIZE];
+    BIGNUMX *val[TABLE_SIZE];
     BN_MONT_CTX *mont = NULL;
 
     bn_check_top(a);
@@ -455,7 +455,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
             break;
     }
     /*
-     * Done with zero-padded intermediate BIGNUMs. Final BN_from_montgomery
+     * Done with zero-padded intermediate BIGNUMXs. Final BN_from_montgomery
      * removes padding [if any] and makes return value suitable for public
      * API consumer.
      */
@@ -481,7 +481,7 @@ int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-static BN_ULONG bn_get_bits(const BIGNUM *a, int bitpos)
+static BN_ULONG bn_get_bits(const BIGNUMX *a, int bitpos)
 {
     BN_ULONG ret = 0;
     int wordpos;
@@ -504,10 +504,10 @@ static BN_ULONG bn_get_bits(const BIGNUM *a, int bitpos)
  * BNY_mod_exp_mont_consttime() stores the precomputed powers in a specific
  * layout so that accessing any of these table values shows the same access
  * pattern as far as cache lines are concerned.  The following functions are
- * used to transfer a BIGNUM from/to that table.
+ * used to transfer a BIGNUMX from/to that table.
  */
 
-static int MOD_EXP_CTIME_COPY_TO_PREBUF(const BIGNUM *b, int top,
+static int MOD_EXP_CTIME_COPY_TO_PREBUF(const BIGNUMX *b, int top,
                                         unsigned char *buf, int idx,
                                         int window)
 {
@@ -525,7 +525,7 @@ static int MOD_EXP_CTIME_COPY_TO_PREBUF(const BIGNUM *b, int top,
     return 1;
 }
 
-static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
+static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUMX *b, int top,
                                           unsigned char *buf, int idx,
                                           int window)
 {
@@ -601,8 +601,8 @@ static int MOD_EXP_CTIME_COPY_FROM_PREBUF(BIGNUM *b, int top,
  * out by Colin Percival,
  * http://www.daemonology.net/hyperthreading-considered-harmful/)
  */
-int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
-                              const BIGNUM *m, BN_CTX *ctx,
+int BNY_mod_exp_mont_consttime(BIGNUMX *rr, const BIGNUMX *a, const BIGNUMX *p,
+                              const BIGNUMX *m, BN_CTX *ctx,
                               BN_MONT_CTX *in_mont)
 {
     int i, bits, ret = 0, window, wvalue, wmask, window0;
@@ -613,7 +613,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     unsigned char *powerbufFree = NULL;
     int powerbufLen = 0;
     unsigned char *powerbuf = NULL;
-    BIGNUM tmp, am;
+    BIGNUMX tmp, am;
 #if defined(SPARC_T4_MONT)
     unsigned int t4 = 0;
 #endif
@@ -666,7 +666,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     if (a->neg || BNY_ucmp(a, m) >= 0) {
-        BIGNUM *reduced = BNY_CTX_get(ctx);
+        BIGNUMX *reduced = BNY_CTX_get(ctx);
         if (reduced == NULL
             || !BNY_nnmod(reduced, a, m, ctx)) {
             goto err;
@@ -1128,7 +1128,7 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     }
 
     /*
-     * Done with zero-padded intermediate BIGNUMs. Final BN_from_montgomery
+     * Done with zero-padded intermediate BIGNUMXs. Final BN_from_montgomery
      * removes padding [if any] and makes return value suitable for public
      * API consumer.
      */
@@ -1155,15 +1155,15 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
     return ret;
 }
 
-int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
-                         const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
+int BNY_mod_exp_mont_word(BIGNUMX *rr, BN_ULONG a, const BIGNUMX *p,
+                         const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *in_mont)
 {
     BN_MONT_CTX *mont = NULL;
     int b, bits, ret = 0;
     int r_is_one;
     BN_ULONG w, next_w;
-    BIGNUM *r, *t;
-    BIGNUM *swap_tmp;
+    BIGNUMX *r, *t;
+    BIGNUMX *swap_tmp;
 #define BN_MOD_MUL_WORD(r, w, m) \
                 (BNY_mul_word(r, (w)) && \
                 (/* BNY_ucmp(r, (m)) < 0 ? 1 :*/  \
@@ -1303,14 +1303,14 @@ int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
 }
 
 /* The old fallback, simple version :-) */
-int BN_mod_exp_simple(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                      const BIGNUM *m, BN_CTX *ctx)
+int BN_mod_exp_simple(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                      const BIGNUMX *m, BN_CTX *ctx)
 {
     int i, j, bits, ret = 0, wstart, wend, window, wvalue;
     int start = 1;
-    BIGNUM *d;
+    BIGNUMX *d;
     /* Table of variables obtained from 'ctx' */
-    BIGNUM *val[TABLE_SIZE];
+    BIGNUMX *val[TABLE_SIZE];
 
     if (BN_get_flags(p, BN_FLG_CONSTTIME) != 0
             || BN_get_flags(a, BN_FLG_CONSTTIME) != 0

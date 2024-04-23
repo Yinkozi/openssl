@@ -272,11 +272,11 @@ typedef struct srp_arg_st {
 
 # define SRP_NUMBER_ITERATIONS_FOR_PRIME 64
 
-static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
+static int srp_Verify_N_and_g(const BIGNUMX *N, const BIGNUMX *g)
 {
     BN_CTX *bn_ctx = BNY_CTX_new();
-    BIGNUM *p = BNY_new();
-    BIGNUM *r = BNY_new();
+    BIGNUMX *p = BNY_new();
+    BIGNUMX *r = BNY_new();
     int ret =
         g != NULL && N != NULL && bn_ctx != NULL && BN_is_odd(N) &&
         BN_is_prime_ex(N, SRP_NUMBER_ITERATIONS_FOR_PRIME, bn_ctx, NULL) == 1 &&
@@ -313,7 +313,7 @@ static int srp_Verify_N_and_g(const BIGNUM *N, const BIGNUM *g)
 static int ssl_srp_verify_param_cb(SSL *s, void *arg)
 {
     SRP_ARG *srp_arg = (SRP_ARG *)arg;
-    BIGNUM *N = NULL, *g = NULL;
+    BIGNUMX *N = NULL, *g = NULL;
 
     if (((N = SSL_get_srp_N(s)) == NULL) || ((g = SSL_get_srp_g(s)) == NULL))
         return 0;

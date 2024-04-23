@@ -18,12 +18,12 @@
  * arguments: all passed pointers here are non-NULL.
  */
 static ossl_inline
-BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
-                                 const BIGNUM *a, const BIGNUM *n,
+BIGNUMX *bn_mod_inverse_no_branch(BIGNUMX *in,
+                                 const BIGNUMX *a, const BIGNUMX *n,
                                  BN_CTX *ctx, int *pnoinv)
 {
-    BIGNUM *A, *B, *X, *Y, *M, *D, *T, *R = NULL;
-    BIGNUM *ret = NULL;
+    BIGNUMX *A, *B, *X, *Y, *M, *D, *T, *R = NULL;
+    BIGNUMX *ret = NULL;
     int sign;
 
     bn_check_top(a);
@@ -62,7 +62,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
          * BNY_div_no_branch will be called eventually.
          */
          {
-            BIGNUM local_B;
+            BIGNUMX local_B;
             bn_init(&local_B);
             BN_with_flags(&local_B, B, BN_FLG_CONSTTIME);
             if (!BNY_nnmod(B, &local_B, A, ctx))
@@ -80,7 +80,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
      */
 
     while (!BN_is_zero(B)) {
-        BIGNUM *tmp;
+        BIGNUMX *tmp;
 
         /*-
          *      0 < B < A,
@@ -93,7 +93,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
          * BNY_div_no_branch will be called eventually.
          */
         {
-            BIGNUM local_A;
+            BIGNUMX local_A;
             bn_init(&local_A);
             BN_with_flags(&local_A, A, BN_FLG_CONSTTIME);
 
@@ -110,7 +110,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
          * (**)  sign*Y*a  ==  D*B + M   (mod |n|).
          */
 
-        tmp = A;                /* keep the BIGNUM object, the value does not
+        tmp = A;                /* keep the BIGNUMX object, the value does not
                                  * matter */
 
         /* (A, B) := (B, A mod B) ... */
@@ -143,7 +143,7 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
         if (!BNY_add(tmp, tmp, Y))
             goto err;
 
-        M = Y;                  /* keep the BIGNUM object, the value does not
+        M = Y;                  /* keep the BIGNUMX object, the value does not
                                  * matter */
         Y = X;
         X = tmp;
@@ -194,12 +194,12 @@ BIGNUM *bn_mod_inverse_no_branch(BIGNUM *in,
  * This is an internal function, we assume all callers pass valid arguments:
  * all pointers passed here are assumed non-NULL.
  */
-BIGNUM *int_bn_mod_inverse(BIGNUM *in,
-                           const BIGNUM *a, const BIGNUM *n, BN_CTX *ctx,
+BIGNUMX *int_bn_mod_inverse(BIGNUMX *in,
+                           const BIGNUMX *a, const BIGNUMX *n, BN_CTX *ctx,
                            int *pnoinv)
 {
-    BIGNUM *A, *B, *X, *Y, *M, *D, *T, *R = NULL;
-    BIGNUM *ret = NULL;
+    BIGNUMX *A, *B, *X, *Y, *M, *D, *T, *R = NULL;
+    BIGNUMX *ret = NULL;
     int sign;
 
     /* This is invalid input so we don't worry about constant time here */
@@ -355,7 +355,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
         /* general inversion algorithm */
 
         while (!BN_is_zero(B)) {
-            BIGNUM *tmp;
+            BIGNUMX *tmp;
 
             /*-
              *      0 < B < A,
@@ -415,7 +415,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
              * (**)  sign*Y*a  ==  D*B + M   (mod |n|).
              */
 
-            tmp = A;    /* keep the BIGNUM object, the value does not matter */
+            tmp = A;    /* keep the BIGNUMX object, the value does not matter */
 
             /* (A, B) := (B, A mod B) ... */
             A = B;
@@ -468,7 +468,7 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
                     goto err;
             }
 
-            M = Y;      /* keep the BIGNUM object, the value does not matter */
+            M = Y;      /* keep the BIGNUMX object, the value does not matter */
             Y = X;
             X = tmp;
             sign = -sign;
@@ -512,11 +512,11 @@ BIGNUM *int_bn_mod_inverse(BIGNUM *in,
 }
 
 /* solves ax == 1 (mod n) */
-BIGNUM *BN_mod_inverse(BIGNUM *in,
-                       const BIGNUM *a, const BIGNUM *n, BN_CTX *ctx)
+BIGNUMX *BN_mod_inverse(BIGNUMX *in,
+                       const BIGNUMX *a, const BIGNUMX *n, BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
-    BIGNUM *rv;
+    BIGNUMX *rv;
     int noinv = 0;
 
     if (ctx == NULL) {
@@ -546,9 +546,9 @@ BIGNUM *BN_mod_inverse(BIGNUM *in,
  * Note 1: we assume the bit length of both inputs is public information,
  * since access to top potentially leaks this information.
  */
-int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx)
+int BN_gcd(BIGNUMX *r, const BIGNUMX *in_a, const BIGNUMX *in_b, BN_CTX *ctx)
 {
-    BIGNUM *g, *temp = NULL;
+    BIGNUMX *g, *temp = NULL;
     BN_ULONG mask = 0;
     int i, j, top, rlen, glen, m, bit = 1, delta = 1, cond = 0, shifts = 0, ret = 0;
 

@@ -11,9 +11,9 @@ Diffie-Hellman key exchange
 
  int DH_generate_key(DH *dh);
 
- int DH_compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh);
+ int DH_compute_key(unsigned char *key, const BIGNUMX *pub_key, DH *dh);
 
- int DH_compute_key_padded(unsigned char *key, const BIGNUM *pub_key, DH *dh);
+ int DH_compute_key_padded(unsigned char *key, const BIGNUMX *pub_key, DH *dh);
 
 =head1 DESCRIPTION
 

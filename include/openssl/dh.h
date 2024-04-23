@@ -147,13 +147,13 @@ int DH_generate_parameters_ex(DH *dh, int prime_len, int generator,
 
 int DH_check_params_ex(const DH *dh);
 int DH_check_ex(const DH *dh);
-int DH_check_pub_key_ex(const DH *dh, const BIGNUM *pub_key);
+int DH_check_pub_key_ex(const DH *dh, const BIGNUMX *pub_key);
 int DH_check_params(const DH *dh, int *ret);
 int DH_check(const DH *dh, int *codes);
-int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *codes);
+int DH_check_pub_key(const DH *dh, const BIGNUMX *pub_key, int *codes);
 int DH_generate_key(DH *dh);
-int DH_compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh);
-int DH_compute_key_padded(unsigned char *key, const BIGNUM *pub_key, DH *dh);
+int DH_compute_key(unsigned char *key, const BIGNUMX *pub_key, DH *dh);
+int DH_compute_key_padded(unsigned char *key, const BIGNUMX *pub_key, DH *dh);
 DH *d2i_DHparams(DH **a, const unsigned char **pp, long length);
 int i2d_DHparams(const DH *a, unsigned char **pp);
 DH *d2i_DHxparams(DH **a, const unsigned char **pp, long length);
@@ -181,16 +181,16 @@ int DH_KDF_X9_42(unsigned char *out, size_t outlen,
 # endif
 
 void DH_get0_pqg(const DH *dh,
-                 const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);
-int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+                 const BIGNUMX **p, const BIGNUMX **q, const BIGNUMX **g);
+int DH_set0_pqg(DH *dh, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g);
 void DH_get0_key(const DH *dh,
-                 const BIGNUM **pub_key, const BIGNUM **priv_key);
-int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key);
-const BIGNUM *DH_get0_p(const DH *dh);
-const BIGNUM *DH_get0_q(const DH *dh);
-const BIGNUM *DH_get0_g(const DH *dh);
-const BIGNUM *DH_get0_priv_key(const DH *dh);
-const BIGNUM *DH_get0_pub_key(const DH *dh);
+                 const BIGNUMX **pub_key, const BIGNUMX **priv_key);
+int DH_set0_key(DH *dh, BIGNUMX *pub_key, BIGNUMX *priv_key);
+const BIGNUMX *DH_get0_p(const DH *dh);
+const BIGNUMX *DH_get0_q(const DH *dh);
+const BIGNUMX *DH_get0_g(const DH *dh);
+const BIGNUMX *DH_get0_priv_key(const DH *dh);
+const BIGNUMX *DH_get0_pub_key(const DH *dh);
 void DH_clear_flags(DH *dh, int flags);
 int DH_test_flags(const DH *dh, int flags);
 void DH_set_flags(DH *dh, int flags);
@@ -210,15 +210,15 @@ int DH_meth_set0_app_data(DH_METHOD *dhm, void *app_data);
 int (*DH_meth_get_generate_key(const DH_METHOD *dhm)) (DH *);
 int DH_meth_set_generate_key(DH_METHOD *dhm, int (*generate_key) (DH *));
 int (*DH_meth_get_compute_key(const DH_METHOD *dhm))
-        (unsigned char *key, const BIGNUM *pub_key, DH *dh);
+        (unsigned char *key, const BIGNUMX *pub_key, DH *dh);
 int DH_meth_set_compute_key(DH_METHOD *dhm,
-        int (*compute_key) (unsigned char *key, const BIGNUM *pub_key, DH *dh));
+        int (*compute_key) (unsigned char *key, const BIGNUMX *pub_key, DH *dh));
 int (*DH_meth_get_bn_mod_exp(const DH_METHOD *dhm))
-    (const DH *, BIGNUM *, const BIGNUM *, const BIGNUM *, const BIGNUM *,
+    (const DH *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
      BN_CTX *, BN_MONT_CTX *);
 int DH_meth_set_bn_mod_exp(DH_METHOD *dhm,
-    int (*bn_mod_exp) (const DH *, BIGNUM *, const BIGNUM *, const BIGNUM *,
-                       const BIGNUM *, BN_CTX *, BN_MONT_CTX *));
+    int (*bn_mod_exp) (const DH *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+                       const BIGNUMX *, BN_CTX *, BN_MONT_CTX *));
 int (*DH_meth_get_init(const DH_METHOD *dhm))(DH *);
 int DH_meth_set_init(DH_METHOD *dhm, int (*init)(DH *));
 int (*DH_meth_get_finish(const DH_METHOD *dhm)) (DH *);

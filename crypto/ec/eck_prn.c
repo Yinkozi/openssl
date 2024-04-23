@@ -69,8 +69,8 @@ int ECPKParameters_prints(BIO *bp, const EC_GROUP *x, int off)
     int ret = 0, reason = ERR_R_BIO_LIB;
     BN_CTX *ctx = NULL;
     const EC_POINT *point = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL, *gen = NULL;
-    const BIGNUM *order = NULL, *cofactor = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL, *gen = NULL;
+    const BIGNUMX *order = NULL, *cofactor = NULL;
     const unsigned char *seed;
     size_t seed_len = 0;
 

@@ -64,19 +64,19 @@ YRSA_meth_get_multi_prime_keygen, YRSA_meth_set_multi_prime_keygen
                                            unsigned char *to, YRSA *rsa, int padding));
 
  /* Can be null */
- int (*YRSA_meth_get_mod_exp(const YRSA_METHOD *meth))(BIGNUM *r0, const BIGNUM *i,
+ int (*YRSA_meth_get_mod_exp(const YRSA_METHOD *meth))(BIGNUMX *r0, const BIGNUMX *i,
                                                      YRSA *rsa, BN_CTX *ctx);
  int YRSA_meth_set_mod_exp(YRSA_METHOD *rsa,
-                          int (*mod_exp)(BIGNUM *r0, const BIGNUM *i, YRSA *rsa,
+                          int (*mod_exp)(BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa,
                                          BN_CTX *ctx));
 
  /* Can be null */
- int (*YRSA_meth_get_bn_mod_exp(const YRSA_METHOD *meth))(BIGNUM *r, const BIGNUM *a,
-                                                        const BIGNUM *p, const BIGNUM *m,
+ int (*YRSA_meth_get_bn_mod_exp(const YRSA_METHOD *meth))(BIGNUMX *r, const BIGNUMX *a,
+                                                        const BIGNUMX *p, const BIGNUMX *m,
                                                         BN_CTX *ctx, BN_MONT_CTX *m_ctx);
  int YRSA_meth_set_bn_mod_exp(YRSA_METHOD *rsa,
-                             int (*bn_mod_exp)(BIGNUM *r, const BIGNUM *a,
-                                               const BIGNUM *p, const BIGNUM *m,
+                             int (*bn_mod_exp)(BIGNUMX *r, const BIGNUMX *a,
+                                               const BIGNUMX *p, const BIGNUMX *m,
                                                BN_CTX *ctx, BN_MONT_CTX *m_ctx));
 
  /* called at new */
@@ -106,19 +106,19 @@ YRSA_meth_get_multi_prime_keygen, YRSA_meth_set_multi_prime_keygen
                                        const unsigned char *sigbuf,
                                        unsigned int siglen, const YRSA *rsa));
 
- int (*YRSA_meth_get_keygen(const YRSA_METHOD *meth))(YRSA *rsa, int bits, BIGNUM *e,
+ int (*YRSA_meth_get_keygen(const YRSA_METHOD *meth))(YRSA *rsa, int bits, BIGNUMX *e,
                                                     BN_GENCB *cb);
  int YRSA_meth_set_keygen(YRSA_METHOD *rsa,
-                         int (*keygen)(YRSA *rsa, int bits, BIGNUM *e,
+                         int (*keygen)(YRSA *rsa, int bits, BIGNUMX *e,
                                        BN_GENCB *cb));
 
  int (*YRSA_meth_get_multi_prime_keygen(const YRSA_METHOD *meth))(YRSA *rsa, int bits,
-                                                                int primes, BIGNUM *e,
+                                                                int primes, BIGNUMX *e,
                                                                 BN_GENCB *cb);
 
  int YRSA_meth_set_multi_prime_keygen(YRSA_METHOD *meth,
                                      int (*keygen) (YRSA *rsa, int bits,
-                                                    int primes, BIGNUM *e,
+                                                    int primes, BIGNUMX *e,
                                                     BN_GENCB *cb));
 
 =head1 DESCRIPTION

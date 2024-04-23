@@ -76,8 +76,8 @@ DSA_SIG *DSA_SIG_new(void);
 void DSA_SIG_free(DSA_SIG *a);
 int i2d_DSA_SIG(const DSA_SIG *a, unsigned char **pp);
 DSA_SIG *d2i_DSA_SIG(DSA_SIG **v, const unsigned char **pp, long length);
-void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
-int DSA_SIG_set0(DSA_SIG *sig, BIGNUM *r, BIGNUM *s);
+void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUMX **pr, const BIGNUMX **ps);
+int DSA_SIG_set0(DSA_SIG *sig, BIGNUMX *r, BIGNUMX *s);
 
 DSA_SIG *DSA_do_sign(const unsigned char *dgst, int dlen, DSA *dsa);
 int DSA_do_verify(const unsigned char *dgst, int dgst_len,
@@ -99,7 +99,7 @@ int DSA_size(const DSA *);
 int DSA_bits(const DSA *d);
 int DSA_security_bits(const DSA *d);
         /* next 4 return -1 on error */
-DEPRECATEDIN_1_2_0(int DSA_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp, BIGNUM **rp))
+DEPRECATEDIN_1_2_0(int DSA_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUMX **kinvp, BIGNUMX **rp))
 int DSA_sign(int type, const unsigned char *dgst, int dlen,
              unsigned char *sig, unsigned int *siglen, DSA *dsa);
 int DSA_verify(int type, const unsigned char *dgst, int dgst_len,
@@ -174,16 +174,16 @@ DH *DSA_dup_DH(const DSA *r);
 # define EVVP_PKEY_CTRL_DSA_PARAMGEN_MD           (EVVP_PKEY_ALG_CTRL + 3)
 
 void DSA_get0_pqg(const DSA *d,
-                  const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);
-int DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+                  const BIGNUMX **p, const BIGNUMX **q, const BIGNUMX **g);
+int DSA_set0_pqg(DSA *d, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g);
 void DSA_get0_key(const DSA *d,
-                  const BIGNUM **pub_key, const BIGNUM **priv_key);
-int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key);
-const BIGNUM *DSA_get0_p(const DSA *d);
-const BIGNUM *DSA_get0_q(const DSA *d);
-const BIGNUM *DSA_get0_g(const DSA *d);
-const BIGNUM *DSA_get0_pub_key(const DSA *d);
-const BIGNUM *DSA_get0_priv_key(const DSA *d);
+                  const BIGNUMX **pub_key, const BIGNUMX **priv_key);
+int DSA_set0_key(DSA *d, BIGNUMX *pub_key, BIGNUMX *priv_key);
+const BIGNUMX *DSA_get0_p(const DSA *d);
+const BIGNUMX *DSA_get0_q(const DSA *d);
+const BIGNUMX *DSA_get0_g(const DSA *d);
+const BIGNUMX *DSA_get0_pub_key(const DSA *d);
+const BIGNUMX *DSA_get0_priv_key(const DSA *d);
 void DSA_clear_flags(DSA *d, int flags);
 int DSA_test_flags(const DSA *d, int flags);
 void DSA_set_flags(DSA *d, int flags);
@@ -203,26 +203,26 @@ DSA_SIG *(*DSA_meth_get_sign(const DSA_METHOD *dsam))
 int DSA_meth_set_sign(DSA_METHOD *dsam,
                        DSA_SIG *(*sign) (const unsigned char *, int, DSA *));
 int (*DSA_meth_get_sign_setup(const DSA_METHOD *dsam))
-        (DSA *, BN_CTX *, BIGNUM **, BIGNUM **);
+        (DSA *, BN_CTX *, BIGNUMX **, BIGNUMX **);
 int DSA_meth_set_sign_setup(DSA_METHOD *dsam,
-        int (*sign_setup) (DSA *, BN_CTX *, BIGNUM **, BIGNUM **));
+        int (*sign_setup) (DSA *, BN_CTX *, BIGNUMX **, BIGNUMX **));
 int (*DSA_meth_get_verify(const DSA_METHOD *dsam))
         (const unsigned char *, int, DSA_SIG *, DSA *);
 int DSA_meth_set_verify(DSA_METHOD *dsam,
     int (*verify) (const unsigned char *, int, DSA_SIG *, DSA *));
 int (*DSA_meth_get_mod_exp(const DSA_METHOD *dsam))
-        (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *, const BIGNUM *,
-         const BIGNUM *, const BIGNUM *, BN_CTX *, BN_MONT_CTX *);
+        (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+         const BIGNUMX *, const BIGNUMX *, BN_CTX *, BN_MONT_CTX *);
 int DSA_meth_set_mod_exp(DSA_METHOD *dsam,
-    int (*mod_exp) (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *,
-                    const BIGNUM *, const BIGNUM *, const BIGNUM *, BN_CTX *,
+    int (*mod_exp) (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+                    const BIGNUMX *, const BIGNUMX *, const BIGNUMX *, BN_CTX *,
                     BN_MONT_CTX *));
 int (*DSA_meth_get_bn_mod_exp(const DSA_METHOD *dsam))
-    (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *, const BIGNUM *,
+    (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
      BN_CTX *, BN_MONT_CTX *);
 int DSA_meth_set_bn_mod_exp(DSA_METHOD *dsam,
-    int (*bn_mod_exp) (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *,
-                       const BIGNUM *, BN_CTX *, BN_MONT_CTX *));
+    int (*bn_mod_exp) (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+                       const BIGNUMX *, BN_CTX *, BN_MONT_CTX *));
 int (*DSA_meth_get_init(const DSA_METHOD *dsam))(DSA *);
 int DSA_meth_set_init(DSA_METHOD *dsam, int (*init)(DSA *));
 int (*DSA_meth_get_finish(const DSA_METHOD *dsam)) (DSA *);

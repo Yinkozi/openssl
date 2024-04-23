@@ -200,8 +200,8 @@ int ec_key_simple_generate_key(EC_KEY *eckey)
 {
     int ok = 0;
     BN_CTX *ctx = NULL;
-    BIGNUM *priv_key = NULL;
-    const BIGNUM *order = NULL;
+    BIGNUMX *priv_key = NULL;
+    const BIGNUMX *order = NULL;
     EC_POINT *pub_key = NULL;
 
     if ((ctx = BNY_CTX_new()) == NULL)
@@ -272,7 +272,7 @@ int ec_key_simple_check_key(const EC_KEY *eckey)
 {
     int ok = 0;
     BN_CTX *ctx = NULL;
-    const BIGNUM *order = NULL;
+    const BIGNUMX *order = NULL;
     EC_POINT *point = NULL;
 
     if (eckey == NULL || eckey->group == NULL || eckey->pub_key == NULL) {
@@ -335,11 +335,11 @@ int ec_key_simple_check_key(const EC_KEY *eckey)
     return ok;
 }
 
-int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x,
-                                             BIGNUM *y)
+int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUMX *x,
+                                             BIGNUMX *y)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *tx, *ty;
+    BIGNUMX *tx, *ty;
     EC_POINT *point = NULL;
     int ok = 0;
 
@@ -410,16 +410,16 @@ int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group)
     return (key->group == NULL) ? 0 : 1;
 }
 
-const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key)
+const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *key)
 {
     return key->priv_key;
 }
 
-int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key)
+int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUMX *priv_key)
 {
     int fixed_top;
-    const BIGNUM *order = NULL;
-    BIGNUM *tmp_key = NULL;
+    const BIGNUMX *order = NULL;
+    BIGNUMX *tmp_key = NULL;
 
     if (key->group == NULL || key->group->meth == NULL)
         return 0;
@@ -455,11 +455,11 @@ int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key)
 
     /*
      * We should never leak the bit length of the secret scalar in the key,
-     * so we always set the `BN_FLG_CONSTTIME` flag on the internal `BIGNUM`
+     * so we always set the `BN_FLG_CONSTTIME` flag on the internal `BIGNUMX`
      * holding the secret scalar.
      *
      * This is important also because `BN_dup()` (and `BNY_copy()`) do not
-     * propagate the `BN_FLG_CONSTTIME` flag from the source `BIGNUM`, and
+     * propagate the `BN_FLG_CONSTTIME` flag from the source `BIGNUMX`, and
      * this brings an extra risk of inadvertently losing the flag, even when
      * the caller specifically set it.
      *
@@ -473,7 +473,7 @@ int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key)
      * correctly and should not generate unintended consequences.
      *
      * Setting the BN_FLG_CONSTTIME flag alone is never enough, we also have
-     * to preallocate the BIGNUM internal buffer to a fixed public size big
+     * to preallocate the BIGNUMX internal buffer to a fixed public size big
      * enough that operations performed during the processing never trigger
      * a realloc which would leak the size of the scalar through memory
      * accesses.
@@ -486,7 +486,7 @@ int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key)
      * generating a private key in EC cryptosystems and should fit all valid
      * secret scalars.
      *
-     * For preallocating the BIGNUM storage we look at the number of "words"
+     * For preallocating the BIGNUMX storage we look at the number of "words"
      * required for the internal representation of the order, and we
      * preallocate 2 extra "words" in case any of the subsequent processing
      * might temporarily overflow the order length.

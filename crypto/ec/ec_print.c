@@ -11,10 +11,10 @@
 #include <openssl/err.h>
 #include "ec_local.h"
 
-BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
+BIGNUMX *EC_POINT_point2bnn(const EC_GROUP *group,
                           const EC_POINT *point,
                           point_conversion_form_t form,
-                          BIGNUM *ret, BN_CTX *ctx)
+                          BIGNUMX *ret, BN_CTX *ctx)
 {
     size_t buf_len = 0;
     unsigned char *buf;
@@ -32,7 +32,7 @@ BIGNUM *EC_POINT_point2bnn(const EC_GROUP *group,
 }
 
 EC_POINT *EC_POINT_bn2pointt(const EC_GROUP *group,
-                            const BIGNUM *bn, EC_POINT *point, BN_CTX *ctx)
+                            const BIGNUMX *bn, EC_POINT *point, BN_CTX *ctx)
 {
     size_t buf_len = 0;
     unsigned char *buf;
@@ -108,7 +108,7 @@ EC_POINT *EC_POINT_hex2point(const EC_GROUP *group,
                              const char *buf, EC_POINT *point, BN_CTX *ctx)
 {
     EC_POINT *ret = NULL;
-    BIGNUM *tmp_bn = NULL;
+    BIGNUMX *tmp_bn = NULL;
 
     if (!BN_hex2bn(&tmp_bn, buf))
         return NULL;

@@ -18,7 +18,7 @@
  * q1, q2) from a parameter Xpi by checking successive odd integers.
  */
 
-static int bn_x931_derive_pi(BIGNUM *pi, const BIGNUM *Xpi, BN_CTX *ctx,
+static int bn_x931_derive_pi(BIGNUMX *pi, const BIGNUMX *Xpi, BN_CTX *ctx,
                              BN_GENCB *cb)
 {
     int i = 0, is_prime;
@@ -48,14 +48,14 @@ static int bn_x931_derive_pi(BIGNUM *pi, const BIGNUM *Xpi, BN_CTX *ctx,
  * will be returned too: this is needed for testing.
  */
 
-int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
-                            const BIGNUM *Xp, const BIGNUM *Xp1,
-                            const BIGNUM *Xp2, const BIGNUM *e, BN_CTX *ctx,
+int BN_X931_derive_prime_ex(BIGNUMX *p, BIGNUMX *p1, BIGNUMX *p2,
+                            const BIGNUMX *Xp, const BIGNUMX *Xp1,
+                            const BIGNUMX *Xp2, const BIGNUMX *e, BN_CTX *ctx,
                             BN_GENCB *cb)
 {
     int ret = 0;
 
-    BIGNUM *t, *p1p2, *pm1;
+    BIGNUMX *t, *p1p2, *pm1;
 
     /* Only even e supported */
     if (!BN_is_odd(e))
@@ -157,9 +157,9 @@ int BN_X931_derive_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
  * parameter is sum of number of bits in both.
  */
 
-int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
+int BN_X931_generate_Xpq(BIGNUMX *Xp, BIGNUMX *Xq, int nbits, BN_CTX *ctx)
 {
-    BIGNUM *t;
+    BIGNUMX *t;
     int i;
     /*
      * Number of bits for each prime is of the form 512+128s for s = 0, 1,
@@ -212,10 +212,10 @@ int BN_X931_generate_Xpq(BIGNUM *Xp, BIGNUM *Xq, int nbits, BN_CTX *ctx)
  * previous function and supplied as input.
  */
 
-int BN_X931_generate_prime_ex(BIGNUM *p, BIGNUM *p1, BIGNUM *p2,
-                              BIGNUM *Xp1, BIGNUM *Xp2,
-                              const BIGNUM *Xp,
-                              const BIGNUM *e, BN_CTX *ctx, BN_GENCB *cb)
+int BN_X931_generate_prime_ex(BIGNUMX *p, BIGNUMX *p1, BIGNUMX *p2,
+                              BIGNUMX *Xp1, BIGNUMX *Xp2,
+                              const BIGNUMX *Xp,
+                              const BIGNUMX *e, BN_CTX *ctx, BN_GENCB *cb)
 {
     int ret = 0;
 

@@ -40,8 +40,8 @@ int ecdh_simple_compute_key(unsigned char **pout, size_t *poutlen,
 {
     BN_CTX *ctx;
     EC_POINT *tmp = NULL;
-    BIGNUM *x = NULL;
-    const BIGNUM *priv_key;
+    BIGNUMX *x = NULL;
+    const BIGNUMX *priv_key;
     const EC_GROUP *group;
     int ret = 0;
     size_t buflen, len;

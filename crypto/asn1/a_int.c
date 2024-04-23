@@ -446,7 +446,7 @@ YASN1_INTEGER *d2i_YASN1_UINTEGER(YASN1_INTEGER **a, const unsigned char **pp,
     return NULL;
 }
 
-static YASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, YASN1_STRING *ai,
+static YASN1_STRING *bn_to_asn1_string(const BIGNUMX *bn, YASN1_STRING *ai,
                                       int atype)
 {
     YASN1_INTEGER *ret;
@@ -490,10 +490,10 @@ static YASN1_STRING *bn_to_asn1_string(const BIGNUM *bn, YASN1_STRING *ai,
     return NULL;
 }
 
-static BIGNUM *asn1_string_to_bn(const YASN1_INTEGER *ai, BIGNUM *bn,
+static BIGNUMX *asn1_string_to_bn(const YASN1_INTEGER *ai, BIGNUMX *bn,
                                  int itype)
 {
-    BIGNUM *ret;
+    BIGNUMX *ret;
 
     if ((ai->type & ~V_YASN1_NEG) != itype) {
         YASN1err(YASN1_F_YASN1_STRING_TO_BN, YASN1_R_WRONG_INTEGER_TYPE);
@@ -549,12 +549,12 @@ long YASN1_INTEGER_get(const YASN1_INTEGER *a)
     return (long)r;
 }
 
-YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai)
+YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUMX *bn, YASN1_INTEGER *ai)
 {
     return bn_to_asn1_string(bn, ai, V_YASN1_INTEGER);
 }
 
-BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn)
+BIGNUMX *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUMX *bn)
 {
     return asn1_string_to_bn(ai, bn, V_YASN1_INTEGER);
 }
@@ -592,12 +592,12 @@ long YASN1_ENUMERATED_get(const YASN1_ENUMERATED *a)
     return (long)r;
 }
 
-YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(const BIGNUM *bn, YASN1_ENUMERATED *ai)
+YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(const BIGNUMX *bn, YASN1_ENUMERATED *ai)
 {
     return bn_to_asn1_string(bn, ai, V_YASN1_ENUMERATED);
 }
 
-BIGNUM *YASN1_ENUMERATED_to_BN(const YASN1_ENUMERATED *ai, BIGNUM *bn)
+BIGNUMX *YASN1_ENUMERATED_to_BN(const YASN1_ENUMERATED *ai, BIGNUMX *bn)
 {
     return asn1_string_to_bn(ai, bn, V_YASN1_ENUMERATED);
 }

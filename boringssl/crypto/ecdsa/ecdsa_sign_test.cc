@@ -50,23 +50,23 @@ static bssl::UniquePtr<EC_GROUP> GetCurve(FileTest *t, const char *key) {
   return nullptr;
 }
 
-static bssl::UniquePtr<BIGNUM> GetBIGNUM(FileTest *t, const char *key) {
+static bssl::UniquePtr<BIGNUMX> GetBIGNUMX(FileTest *t, const char *key) {
   std::vector<uint8_t> bytes;
   if (!t->GetBytes(&bytes, key)) {
     return nullptr;
   }
 
-  return bssl::UniquePtr<BIGNUM>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
+  return bssl::UniquePtr<BIGNUMX>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
 }
 
 static bool TestECDSASign(FileTest *t, void *arg) {
   bssl::UniquePtr<EC_GROUP> group = GetCurve(t, "Curve");
-  bssl::UniquePtr<BIGNUM> priv_key = GetBIGNUM(t, "Private");
-  bssl::UniquePtr<BIGNUM> x = GetBIGNUM(t, "X");
-  bssl::UniquePtr<BIGNUM> y = GetBIGNUM(t, "Y");
-  bssl::UniquePtr<BIGNUM> k = GetBIGNUM(t, "K");
-  bssl::UniquePtr<BIGNUM> r = GetBIGNUM(t, "R");
-  bssl::UniquePtr<BIGNUM> s = GetBIGNUM(t, "S");
+  bssl::UniquePtr<BIGNUMX> priv_key = GetBIGNUMX(t, "Private");
+  bssl::UniquePtr<BIGNUMX> x = GetBIGNUMX(t, "X");
+  bssl::UniquePtr<BIGNUMX> y = GetBIGNUMX(t, "Y");
+  bssl::UniquePtr<BIGNUMX> k = GetBIGNUMX(t, "K");
+  bssl::UniquePtr<BIGNUMX> r = GetBIGNUMX(t, "R");
+  bssl::UniquePtr<BIGNUMX> s = GetBIGNUMX(t, "S");
   std::vector<uint8_t> digest;
   if (!group || !priv_key || !x || !y || !k || !r || !s ||
       !t->GetBytes(&digest, "Digest")) {

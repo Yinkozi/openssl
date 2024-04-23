@@ -1787,13 +1787,13 @@ int SSL_CTX_set_srp_username_callback(SSL_CTX *ctx,
                                       int (*cb) (SSL *, int *, void *));
 int SSL_CTX_set_srp_cb_arg(SSL_CTX *ctx, void *arg);
 
-int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
-                             BIGNUM *sa, BIGNUM *v, char *info);
+int SSL_set_srp_server_param(SSL *s, const BIGNUMX *N, const BIGNUMX *g,
+                             BIGNUMX *sa, BIGNUMX *v, char *info);
 int SSL_set_srp_server_param_pw(SSL *s, const char *user, const char *pass,
                                 const char *grp);
 
-__owur BIGNUM *SSL_get_srp_g(SSL *s);
-__owur BIGNUM *SSL_get_srp_N(SSL *s);
+__owur BIGNUMX *SSL_get_srp_g(SSL *s);
+__owur BIGNUMX *SSL_get_srp_N(SSL *s);
 
 __owur char *SSL_get_srp_username(SSL *s);
 __owur char *SSL_get_srp_userinfo(SSL *s);

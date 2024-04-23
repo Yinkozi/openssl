@@ -114,8 +114,8 @@
 
 #include "internal.h"
 
-static BIGNUM *euclid(BIGNUM *a, BIGNUM *b) {
-  BIGNUM *t;
+static BIGNUMX *euclid(BIGNUMX *a, BIGNUMX *b) {
+  BIGNUMX *t;
   int shifts = 0;
 
   /* 0 <= b <= a */
@@ -183,8 +183,8 @@ err:
   return NULL;
 }
 
-int BN_gcd(BIGNUM *r, const BIGNUM *in_a, const BIGNUM *in_b, BN_CTX *ctx) {
-  BIGNUM *a, *b, *t;
+int BN_gcd(BIGNUMX *r, const BIGNUMX *in_a, const BIGNUMX *in_b, BN_CTX *ctx) {
+  BIGNUMX *a, *b, *t;
   int ret = 0;
 
   BNY_CTX_start(ctx);
@@ -225,12 +225,12 @@ err:
 }
 
 /* solves ax == 1 (mod n) */
-static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
-                                  const BIGNUM *a, const BIGNUM *n,
+static int bn_mod_inverse_general(BIGNUMX *out, int *out_no_inverse,
+                                  const BIGNUMX *a, const BIGNUMX *n,
                                   BN_CTX *ctx);
 
-int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
-                       const BIGNUM *n, BN_CTX *ctx) {
+int BN_mod_inverse_odd(BIGNUMX *out, int *out_no_inverse, const BIGNUMX *a,
+                       const BIGNUMX *n, BN_CTX *ctx) {
   *out_no_inverse = 0;
 
   if (!BN_is_odd(n)) {
@@ -243,7 +243,7 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
     return 0;
   }
 
-  BIGNUM *A, *B, *X, *Y;
+  BIGNUMX *A, *B, *X, *Y;
   int ret = 0;
   int sign;
 
@@ -256,7 +256,7 @@ int BN_mod_inverse_odd(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
     goto err;
   }
 
-  BIGNUM *R = out;
+  BIGNUMX *R = out;
 
   BN_zero(Y);
   if (!BN_one(X) || BNY_copy(B, a) == NULL || BNY_copy(A, n) == NULL) {
@@ -397,9 +397,9 @@ err:
   return ret;
 }
 
-BIGNUM *BN_mod_inverse(BIGNUM *out, const BIGNUM *a, const BIGNUM *n,
+BIGNUMX *BN_mod_inverse(BIGNUMX *out, const BIGNUMX *a, const BIGNUMX *n,
                        BN_CTX *ctx) {
-  BIGNUM *new_out = NULL;
+  BIGNUMX *new_out = NULL;
   if (out == NULL) {
     new_out = BNY_new();
     if (new_out == NULL) {
@@ -410,7 +410,7 @@ BIGNUM *BN_mod_inverse(BIGNUM *out, const BIGNUM *a, const BIGNUM *n,
   }
 
   int ok = 0;
-  BIGNUM *a_reduced = NULL;
+  BIGNUMX *a_reduced = NULL;
   if (a->neg || BNY_ucmp(a, n) >= 0) {
     a_reduced = BN_dup(a);
     if (a_reduced == NULL) {
@@ -442,7 +442,7 @@ err:
   return out;
 }
 
-int BN_mod_inverse_blinded(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
+int BN_mod_inverse_blinded(BIGNUMX *out, int *out_no_inverse, const BIGNUMX *a,
                            const BN_MONT_CTX *mont, BN_CTX *ctx) {
   *out_no_inverse = 0;
 
@@ -452,7 +452,7 @@ int BN_mod_inverse_blinded(BIGNUM *out, int *out_no_inverse, const BIGNUM *a,
   }
 
   int ret = 0;
-  BIGNUM blinding_factor;
+  BIGNUMX blinding_factor;
   BN_init(&blinding_factor);
 
   if (!BNY_rand_range_ex(&blinding_factor, 1, &mont->N) ||
@@ -475,10 +475,10 @@ err:
  * branches that may leak sensitive information; see "New Branch Prediction
  * Vulnerabilities in OpenSSL and Necessary Software Countermeasures" by
  * Onur Acıçmez, Shay Gueron, and Jean-Pierre Seifert. */
-static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
-                                  const BIGNUM *a, const BIGNUM *n,
+static int bn_mod_inverse_general(BIGNUMX *out, int *out_no_inverse,
+                                  const BIGNUMX *a, const BIGNUMX *n,
                                   BN_CTX *ctx) {
-  BIGNUM *A, *B, *X, *Y, *M, *D, *T;
+  BIGNUMX *A, *B, *X, *Y, *M, *D, *T;
   int ret = 0;
   int sign;
 
@@ -496,7 +496,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
     goto err;
   }
 
-  BIGNUM *R = out;
+  BIGNUMX *R = out;
 
   BN_zero(Y);
   if (!BN_one(X) || BNY_copy(B, a) == NULL || BNY_copy(A, n) == NULL) {
@@ -513,7 +513,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
    */
 
   while (!BN_is_zero(B)) {
-    BIGNUM *tmp;
+    BIGNUMX *tmp;
 
     /*
      *      0 < B < A,
@@ -532,7 +532,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
      * (**)  sign*Y*a  ==  D*B + M   (mod |n|).
      */
 
-    tmp = A; /* keep the BIGNUM object, the value does not matter */
+    tmp = A; /* keep the BIGNUMX object, the value does not matter */
 
     /* (A, B) := (B, A mod B) ... */
     A = B;
@@ -565,7 +565,7 @@ static int bn_mod_inverse_general(BIGNUM *out, int *out_no_inverse,
       goto err;
     }
 
-    M = Y; /* keep the BIGNUM object, the value does not matter */
+    M = Y; /* keep the BIGNUMX object, the value does not matter */
     Y = X;
     X = tmp;
     sign = -sign;
@@ -610,10 +610,10 @@ err:
   return ret;
 }
 
-int bn_mod_inverse_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
+int bn_mod_inverse_prime(BIGNUMX *out, const BIGNUMX *a, const BIGNUMX *p,
                          BN_CTX *ctx, const BN_MONT_CTX *mont_p) {
   BNY_CTX_start(ctx);
-  BIGNUM *p_minus_2 = BNY_CTX_get(ctx);
+  BIGNUMX *p_minus_2 = BNY_CTX_get(ctx);
   int ok = p_minus_2 != NULL &&
            BNY_copy(p_minus_2, p) &&
            BNY_sub_word(p_minus_2, 2) &&
@@ -622,10 +622,10 @@ int bn_mod_inverse_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
   return ok;
 }
 
-int bn_mod_inverse_secret_prime(BIGNUM *out, const BIGNUM *a, const BIGNUM *p,
+int bn_mod_inverse_secret_prime(BIGNUMX *out, const BIGNUMX *a, const BIGNUMX *p,
                                 BN_CTX *ctx, const BN_MONT_CTX *mont_p) {
   BNY_CTX_start(ctx);
-  BIGNUM *p_minus_2 = BNY_CTX_get(ctx);
+  BIGNUMX *p_minus_2 = BNY_CTX_get(ctx);
   int ok = p_minus_2 != NULL &&
            BNY_copy(p_minus_2, p) &&
            BNY_sub_word(p_minus_2, 2) &&

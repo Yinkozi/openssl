@@ -2,13 +2,13 @@
 
 =head1 NAME
 
-BNY_swap - exchange BIGNUMs
+BNY_swap - exchange BIGNUMXs
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- void BNY_swap(BIGNUM *a, BIGNUM *b);
+ void BNY_swap(BIGNUMX *a, BIGNUMX *b);
 
 =head1 DESCRIPTION
 

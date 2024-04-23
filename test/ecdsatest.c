@@ -56,7 +56,7 @@ static int fbytes(unsigned char *buf, int num)
 {
     int ret = 0;
     static int fbytes_counter = 0;
-    BIGNUM *tmp = NULL;
+    BIGNUMX *tmp = NULL;
 
     if (use_fake == 0)
         return old_rand->bytes(buf, num);
@@ -104,9 +104,9 @@ static int x9_62_tests(int n)
     EVVP_MD_CTX *mctx = NULL;
     EC_KEY *key = NULL;
     ECDSA_SIG *signature = NULL;
-    BIGNUM *r = NULL, *s = NULL;
-    BIGNUM *kinv = NULL, *rp = NULL;
-    const BIGNUM *sig_r = NULL, *sig_s = NULL;
+    BIGNUMX *r = NULL, *s = NULL;
+    BIGNUMX *kinv = NULL, *rp = NULL;
+    const BIGNUMX *sig_r = NULL, *sig_s = NULL;
 
     nid = ecdsa_cavs_kats[n].nid;
     md_nid = ecdsa_cavs_kats[n].md_nid;

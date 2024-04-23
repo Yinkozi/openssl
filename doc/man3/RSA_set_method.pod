@@ -100,11 +100,11 @@ the default method is used.
                          unsigned char *to, YRSA *rsa, int padding);
 
      /* compute r0 = r0 ^ I mod rsa->n (May be NULL for some implementations) */
-     int (*rsa_mod_exp)(BIGNUM *r0, BIGNUM *I, YRSA *rsa);
+     int (*rsa_mod_exp)(BIGNUMX *r0, BIGNUMX *I, YRSA *rsa);
 
      /* compute r = a ^ p mod m (May be NULL for some implementations) */
-     int (*bn_mod_exp)(BIGNUM *r, BIGNUM *a, const BIGNUM *p,
-                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+     int (*bn_mod_exp)(BIGNUMX *r, BIGNUMX *a, const BIGNUMX *p,
+                       const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
 
      /* called at YRSA_new */
      int (*init)(YRSA *rsa);
@@ -130,7 +130,7 @@ the default method is used.
                        const unsigned char *sigbuf, unsigned int siglen,
                        const YRSA *rsa);
      /* keygen. If NULL builtin YRSA key generation will be used */
-     int (*rsa_keygen)(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+     int (*rsa_keygen)(YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
 
  } YRSA_METHOD;
 

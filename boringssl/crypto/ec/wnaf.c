@@ -90,7 +90,7 @@
  * with the exception that the most significant digit may be only
  * w-1 zeros away from that next non-zero digit.
  */
-static int8_t *compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len) {
+static int8_t *compute_wNAF(const BIGNUMX *scalar, int w, size_t *ret_len) {
   int window_val;
   int ok = 0;
   int8_t *r = NULL;
@@ -237,8 +237,8 @@ static size_t window_bits_for_scalar_size(size_t b) {
   return 1;
 }
 
-int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-                const EC_POINT *p, const BIGNUM *p_scalar, BN_CTX *ctx) {
+int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+                const EC_POINT *p, const BIGNUMX *p_scalar, BN_CTX *ctx) {
   BN_CTX *new_ctx = NULL;
   const EC_POINT *generator = NULL;
   EC_POINT *tmp = NULL;
@@ -269,7 +269,7 @@ int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
    * and |p_scalar|. */
   size_t num = p != NULL ? 1 : 0;
   const EC_POINT **points = p != NULL ? &p : NULL;
-  const BIGNUM **scalars = p != NULL ? &p_scalar : NULL;
+  const BIGNUMX **scalars = p != NULL ? &p_scalar : NULL;
 
   total_num = num;
 

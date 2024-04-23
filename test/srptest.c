@@ -24,16 +24,16 @@ static int run_srp(const char *username, const char *client_pass,
                    const char *server_pass)
 {
     int ret = 0;
-    BIGNUM *s = NULL;
-    BIGNUM *v = NULL;
-    BIGNUM *a = NULL;
-    BIGNUM *b = NULL;
-    BIGNUM *u = NULL;
-    BIGNUM *x = NULL;
-    BIGNUM *Apub = NULL;
-    BIGNUM *Bpub = NULL;
-    BIGNUM *Kclient = NULL;
-    BIGNUM *Kserver = NULL;
+    BIGNUMX *s = NULL;
+    BIGNUMX *v = NULL;
+    BIGNUMX *a = NULL;
+    BIGNUMX *b = NULL;
+    BIGNUMX *u = NULL;
+    BIGNUMX *x = NULL;
+    BIGNUMX *Apub = NULL;
+    BIGNUMX *Bpub = NULL;
+    BIGNUMX *Kclient = NULL;
+    BIGNUMX *Kserver = NULL;
     unsigned char rand_tmp[RANDOM_SIZE];
     /* use builtin 1024-bit params */
     const SRP_gN *GN;
@@ -111,9 +111,9 @@ end:
     return ret;
 }
 
-static int check_bn(const char *name, const BIGNUM *bn, const char *hexbn)
+static int check_bn(const char *name, const BIGNUMX *bn, const char *hexbn)
 {
-    BIGNUM *tmp = NULL;
+    BIGNUMX *tmp = NULL;
     int r;
 
     if (!TEST_true(BN_hex2bn(&tmp, hexbn)))
@@ -130,16 +130,16 @@ static int check_bn(const char *name, const BIGNUM *bn, const char *hexbn)
 static int run_srp_kat(void)
 {
     int ret = 0;
-    BIGNUM *s = NULL;
-    BIGNUM *v = NULL;
-    BIGNUM *a = NULL;
-    BIGNUM *b = NULL;
-    BIGNUM *u = NULL;
-    BIGNUM *x = NULL;
-    BIGNUM *Apub = NULL;
-    BIGNUM *Bpub = NULL;
-    BIGNUM *Kclient = NULL;
-    BIGNUM *Kserver = NULL;
+    BIGNUMX *s = NULL;
+    BIGNUMX *v = NULL;
+    BIGNUMX *a = NULL;
+    BIGNUMX *b = NULL;
+    BIGNUMX *u = NULL;
+    BIGNUMX *x = NULL;
+    BIGNUMX *Apub = NULL;
+    BIGNUMX *Bpub = NULL;
+    BIGNUMX *Kclient = NULL;
+    BIGNUMX *Kserver = NULL;
     /* use builtin 1024-bit params */
     const SRP_gN *GN;
 

@@ -72,12 +72,12 @@ typedef struct asn1_sctx_st YASN1_SCTX;
 #  undef OCSP_RESPONSE
 # endif
 
-# ifdef BIGNUM
-#  undef BIGNUM
+# ifdef BIGNUMX
+#  undef BIGNUMX
 # endif
 struct dane_st;
 typedef struct bio_st BIO;
-typedef struct bignum_st BIGNUM;
+typedef struct bignum_st BIGNUMX;
 typedef struct bignum_ctx BN_CTX;
 typedef struct bn_blinding_st BN_BLINDING;
 typedef struct bn_mont_ctx_st BN_MONT_CTX;

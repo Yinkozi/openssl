@@ -244,25 +244,25 @@ int test_true(const char *file, int line, const char *s, int b);
 int test_false(const char *file, int line, const char *s, int b);
 
 /*
- * Comparisons between BIGNUMs.
- * BIGNUMS can be compared against other BIGNUMs or zero.
+ * Comparisons between BIGNUMXs.
+ * BIGNUMXS can be compared against other BIGNUMXs or zero.
  * Some additional equality tests against 1 & specific values are provided.
  * Tests for parity are included as well.
  */
-DECLARE_COMPARISONS(BIGNUM *, BN)
-int test_BN_eq_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_ne_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_lt_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_le_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_gt_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_ge_zero(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_eq_one(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_odd(const char *file, int line, const char *s, const BIGNUM *a);
-int test_BN_even(const char *file, int line, const char *s, const BIGNUM *a);
+DECLARE_COMPARISONS(BIGNUMX *, BN)
+int test_BN_eq_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_ne_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_lt_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_le_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_gt_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_ge_zero(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_eq_one(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_odd(const char *file, int line, const char *s, const BIGNUMX *a);
+int test_BN_even(const char *file, int line, const char *s, const BIGNUMX *a);
 int test_BN_eq_word(const char *file, int line, const char *bns, const char *ws,
-                    const BIGNUM *a, BN_ULONG w);
+                    const BIGNUMX *a, BN_ULONG w);
 int test_BN_abs_eq_word(const char *file, int line, const char *bns,
-                        const char *ws, const BIGNUM *a, BN_ULONG w);
+                        const char *ws, const BIGNUMX *a, BN_ULONG w);
 
 /*
  * Pretty print a failure message.
@@ -400,7 +400,7 @@ extern BIO *bio_err;
  * Formatted output for strings, memory and bignums.
  */
 void test_output_string(const char *name, const char *m, size_t l);
-void test_output_bignum(const char *name, const BIGNUM *bn);
+void test_output_bignum(const char *name, const BIGNUMX *bn);
 void test_output_memory(const char *name, const unsigned char *m, size_t l);
 
 

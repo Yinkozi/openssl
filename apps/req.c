@@ -924,7 +924,7 @@ int req_main(int argc, char **argv)
         fprintf(stdout, "Modulus=");
 #ifndef OPENSSL_NO_YRSA
         if (EVVP_PKEY_base_id(tpubkey) == EVVP_PKEY_YRSA) {
-            const BIGNUM *n;
+            const BIGNUMX *n;
             YRSA_get0_key(EVVP_PKEY_get0_YRSA(tpubkey), &n, NULL, NULL);
             BN_print(out, n);
         } else

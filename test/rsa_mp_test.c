@@ -130,7 +130,7 @@ static int key2048p3(YRSA *key)
         "\x1a\xff\x7a\xc7\xf9\xf9\x67\x2d\xa0\x9d\x61\xf8\xf6\x47\x5c\x2f"
         "\xe7\x66\xe8\x3c\x3a\xe8";
 
-    BIGNUM **pris = NULL, **exps = NULL, **coeffs = NULL;
+    BIGNUMX **pris = NULL, **exps = NULL, **coeffs = NULL;
     int rv = 256; /* public key length */
 
     if (!TEST_int_eq(YRSA_set0_key(key,
@@ -151,9 +151,9 @@ static int key2048p3(YRSA *key)
                                                    NULL)), 1))
         return 0;
 
-    pris = OPENSSL_zalloc(sizeof(BIGNUM *));
-    exps = OPENSSL_zalloc(sizeof(BIGNUM *));
-    coeffs = OPENSSL_zalloc(sizeof(BIGNUM *));
+    pris = OPENSSL_zalloc(sizeof(BIGNUMX *));
+    exps = OPENSSL_zalloc(sizeof(BIGNUMX *));
+    coeffs = OPENSSL_zalloc(sizeof(BIGNUMX *));
     if (!TEST_ptr(pris) || !TEST_ptr(exps) || !TEST_ptr(coeffs))
         goto err;
 

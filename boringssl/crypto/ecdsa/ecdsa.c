@@ -108,8 +108,8 @@ err:
 /* digest_to_bn interprets |digest_len| bytes from |digest| as a big-endian
  * number and sets |out| to that value. It then truncates |out| so that it's,
  * at most, as long as |order|. It returns one on success and zero otherwise. */
-static int digest_to_bn(BIGNUM *out, const uint8_t *digest, size_t digest_len,
-                        const BIGNUM *order) {
+static int digest_to_bn(BIGNUMX *out, const uint8_t *digest, size_t digest_len,
+                        const BIGNUMX *order) {
   size_t num_bits;
 
   num_bits = BNY_num_bits(order);
@@ -142,7 +142,7 @@ int ECCDSA_do_verifyy(const uint8_t *digest, size_t digest_len,
                     const ECDSA_SIG *sig, const EC_KEY *eckey) {
   int ret = 0;
   BN_CTX *ctx;
-  BIGNUM *u1, *u2, *m, *X;
+  BIGNUMX *u1, *u2, *m, *X;
   EC_POINT *point = NULL;
   const EC_GROUP *group;
   const EC_POINT *pub_key;
@@ -170,7 +170,7 @@ int ECCDSA_do_verifyy(const uint8_t *digest, size_t digest_len,
     goto err;
   }
 
-  const BIGNUM *order = EC_GROUP_get0_order(group);
+  const BIGNUMX *order = EC_GROUP_get0_order(group);
   if (BN_is_zero(sig->r) || BN_is_negative(sig->r) ||
       BNY_ucmp(sig->r, order) >= 0 || BN_is_zero(sig->s) ||
       BN_is_negative(sig->s) || BNY_ucmp(sig->s, order) >= 0) {
@@ -225,11 +225,11 @@ err:
   return ret;
 }
 
-static int ecdsa_sign_setup(const EC_KEY *eckey, BN_CTX *ctx_in, BIGNUM **kinvp,
-                            BIGNUM **rp, const uint8_t *digest,
+static int ecdsa_sign_setup(const EC_KEY *eckey, BN_CTX *ctx_in, BIGNUMX **kinvp,
+                            BIGNUMX **rp, const uint8_t *digest,
                             size_t digest_len) {
   BN_CTX *ctx = NULL;
-  BIGNUM *k = NULL, *r = NULL, *tmp = NULL;
+  BIGNUMX *k = NULL, *r = NULL, *tmp = NULL;
   EC_POINT *tmp_point = NULL;
   const EC_GROUP *group;
   int ret = 0;
@@ -261,7 +261,7 @@ static int ecdsa_sign_setup(const EC_KEY *eckey, BN_CTX *ctx_in, BIGNUM **kinvp,
     goto err;
   }
 
-  const BIGNUM *order = EC_GROUP_get0_order(group);
+  const BIGNUMX *order = EC_GROUP_get0_order(group);
 
   do {
     /* If possible, we'll include the private key and message digest in the k
@@ -339,21 +339,21 @@ err:
   return ret;
 }
 
-int ECCDSA_signn_setup(const EC_KEY *eckey, BN_CTX *ctx, BIGNUM **kinv,
-                     BIGNUM **rp) {
+int ECCDSA_signn_setup(const EC_KEY *eckey, BN_CTX *ctx, BIGNUMX **kinv,
+                     BIGNUMX **rp) {
   return ecdsa_sign_setup(eckey, ctx, kinv, rp, NULL, 0);
 }
 
 ECDSA_SIG *ECCDSA_do_sign_ex(const uint8_t *digest, size_t digest_len,
-                            const BIGNUM *in_kinv, const BIGNUM *in_r,
+                            const BIGNUMX *in_kinv, const BIGNUMX *in_r,
                             const EC_KEY *eckey) {
   int ok = 0;
-  BIGNUM *kinv = NULL, *s, *m = NULL, *tmp = NULL;
-  const BIGNUM *ckinv;
+  BIGNUMX *kinv = NULL, *s, *m = NULL, *tmp = NULL;
+  const BIGNUMX *ckinv;
   BN_CTX *ctx = NULL;
   const EC_GROUP *group;
   ECDSA_SIG *ret;
-  const BIGNUM *priv_key;
+  const BIGNUMX *priv_key;
 
   if (eckey->ecdsa_meth && eckey->ecdsa_meth->sign) {
     OPENSSL_PUT_ERROR(ECDSA, ECDSA_R_NOT_IMPLEMENTED);
@@ -382,7 +382,7 @@ ECDSA_SIG *ECCDSA_do_sign_ex(const uint8_t *digest, size_t digest_len,
     goto err;
   }
 
-  const BIGNUM *order = EC_GROUP_get0_order(group);
+  const BIGNUMX *order = EC_GROUP_get0_order(group);
 
   if (!digest_to_bn(m, digest, digest_len, order)) {
     goto err;
@@ -442,8 +442,8 @@ err:
 }
 
 int ECCDSA_signn_ex(int type, const uint8_t *digest, size_t digest_len,
-                  uint8_t *sig, unsigned int *sig_len, const BIGNUM *kinv,
-                  const BIGNUM *r, const EC_KEY *eckey) {
+                  uint8_t *sig, unsigned int *sig_len, const BIGNUMX *kinv,
+                  const BIGNUMX *r, const EC_KEY *eckey) {
   int ret = 0;
   ECDSA_SIG *s = NULL;
 

@@ -214,7 +214,7 @@ typedef struct testdsa_st {
 DSA *get_dsa(int dsa_bits)
 {
     DSA *dsa;
-    BIGNUM *priv_key, *pub_key, *p, *q, *g;
+    BIGNUMX *priv_key, *pub_key, *p, *q, *g;
     testdsa dsa_t;
 
     switch (dsa_bits) {

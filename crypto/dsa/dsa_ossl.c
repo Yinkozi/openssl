@@ -16,15 +16,15 @@
 #include <openssl/asn1.h>
 
 static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa);
-static int dsa_sign_setup_no_digest(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
-                                    BIGNUM **rp);
-static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
-                          BIGNUM **rp, const unsigned char *dgst, int dlen);
+static int dsa_sign_setup_no_digest(DSA *dsa, BN_CTX *ctx_in, BIGNUMX **kinvp,
+                                    BIGNUMX **rp);
+static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in, BIGNUMX **kinvp,
+                          BIGNUMX **rp, const unsigned char *dgst, int dlen);
 static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
                          DSA_SIG *sig, DSA *dsa);
 static int dsa_init(DSA *dsa);
 static int dsa_finish(DSA *dsa);
-static BIGNUM *dsa_mod_inverse_fermat(const BIGNUM *k, const BIGNUM *q,
+static BIGNUMX *dsa_mod_inverse_fermat(const BIGNUMX *k, const BIGNUMX *q,
                                       BN_CTX *ctx);
 
 static DSA_METHOD openssl_dsa_meth = {
@@ -61,8 +61,8 @@ const DSA_METHOD *DSA_OpenSSL(void)
 
 static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
 {
-    BIGNUM *kinv = NULL;
-    BIGNUM *m, *blind, *blindm, *tmp;
+    BIGNUMX *kinv = NULL;
+    BIGNUMX *m, *blind, *blindm, *tmp;
     BN_CTX *ctx = NULL;
     int reason = ERR_R_BN_LIB;
     DSA_SIG *ret = NULL;
@@ -174,18 +174,18 @@ static DSA_SIG *dsa_do_sign(const unsigned char *dgst, int dlen, DSA *dsa)
 }
 
 static int dsa_sign_setup_no_digest(DSA *dsa, BN_CTX *ctx_in,
-                                    BIGNUM **kinvp, BIGNUM **rp)
+                                    BIGNUMX **kinvp, BIGNUMX **rp)
 {
     return dsa_sign_setup(dsa, ctx_in, kinvp, rp, NULL, 0);
 }
 
 static int dsa_sign_setup(DSA *dsa, BN_CTX *ctx_in,
-                          BIGNUM **kinvp, BIGNUM **rp,
+                          BIGNUMX **kinvp, BIGNUMX **rp,
                           const unsigned char *dgst, int dlen)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *k, *kinv = NULL, *r = *rp;
-    BIGNUM *l;
+    BIGNUMX *k, *kinv = NULL, *r = *rp;
+    BIGNUMX *l;
     int ret = 0;
     int q_bits, q_words;
 
@@ -300,9 +300,9 @@ static int dsa_do_verify(const unsigned char *dgst, int dgst_len,
                          DSA_SIG *sig, DSA *dsa)
 {
     BN_CTX *ctx;
-    BIGNUM *u1, *u2, *t1;
+    BIGNUMX *u1, *u2, *t1;
     BN_MONT_CTX *mont = NULL;
-    const BIGNUM *r, *s;
+    const BIGNUMX *r, *s;
     int ret = -1, i;
     if (!dsa->p || !dsa->q || !dsa->g) {
         DSAerr(DSA_F_DSA_DO_VERIFY, DSA_R_MISSING_PARAMETERS);
@@ -418,13 +418,13 @@ static int dsa_finish(DSA *dsa)
  * Since q is prime, Fermat's Little Theorem applies, which reduces this to
  * mod-exp operation.  Both the exponent and modulus are public information
  * so a mod-exp that doesn't leak the base is sufficient.  A newly allocated
- * BIGNUM is returned which the caller must free.
+ * BIGNUMX is returned which the caller must free.
  */
-static BIGNUM *dsa_mod_inverse_fermat(const BIGNUM *k, const BIGNUM *q,
+static BIGNUMX *dsa_mod_inverse_fermat(const BIGNUMX *k, const BIGNUMX *q,
                                       BN_CTX *ctx)
 {
-    BIGNUM *res = NULL;
-    BIGNUM *r, *e;
+    BIGNUMX *res = NULL;
+    BIGNUMX *r, *e;
 
     if ((r = BNY_new()) == NULL)
         return NULL;

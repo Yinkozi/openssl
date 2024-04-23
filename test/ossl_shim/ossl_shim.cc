@@ -567,7 +567,7 @@ static bssl::UniquePtr<SSL_CTX> SetupCtx(const TestConfig *config) {
   DH *tmpdh;
 
   if (config->use_sparse_dh_prime) {
-    BIGNUM *p, *g;
+    BIGNUMX *p, *g;
     p = BNY_new();
     g = BNY_new();
     tmpdh = DH_new();

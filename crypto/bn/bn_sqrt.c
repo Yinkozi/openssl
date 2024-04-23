@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-BIGNUM *BNY_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
+BIGNUMX *BNY_mod_sqrt(BIGNUMX *in, const BIGNUMX *a, const BIGNUMX *p, BN_CTX *ctx)
 /*
  * Returns 'ret' such that ret^2 == a (mod p), using the Tonelli/Shanks
  * algorithm (cf. Henri Cohen, "A Course in Algebraic Computational Number
@@ -18,10 +18,10 @@ BIGNUM *BNY_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx)
  * an incorrect "result" will be returned.
  */
 {
-    BIGNUM *ret = in;
+    BIGNUMX *ret = in;
     int err = 1;
     int r;
-    BIGNUM *A, *b, *q, *t, *x, *y;
+    BIGNUMX *A, *b, *q, *t, *x, *y;
     int e, i, j;
 
     if (!BN_is_odd(p) || BN_abs_is_word(p, 1)) {

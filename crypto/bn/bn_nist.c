@@ -184,7 +184,7 @@ static const BN_ULONG _nist_p_521_sqr[] = {
 # error "unsupported BN_BITS2"
 #endif
 
-static const BIGNUM _bignum_nist_p_192 = {
+static const BIGNUMX _bignum_nist_p_192 = {
     (BN_ULONG *)_nist_p_192[0],
     BN_NIST_192_TOP,
     BN_NIST_192_TOP,
@@ -192,7 +192,7 @@ static const BIGNUM _bignum_nist_p_192 = {
     BN_FLG_STATIC_DATA
 };
 
-static const BIGNUM _bignum_nist_p_224 = {
+static const BIGNUMX _bignum_nist_p_224 = {
     (BN_ULONG *)_nist_p_224[0],
     BN_NIST_224_TOP,
     BN_NIST_224_TOP,
@@ -200,7 +200,7 @@ static const BIGNUM _bignum_nist_p_224 = {
     BN_FLG_STATIC_DATA
 };
 
-static const BIGNUM _bignum_nist_p_256 = {
+static const BIGNUMX _bignum_nist_p_256 = {
     (BN_ULONG *)_nist_p_256[0],
     BN_NIST_256_TOP,
     BN_NIST_256_TOP,
@@ -208,7 +208,7 @@ static const BIGNUM _bignum_nist_p_256 = {
     BN_FLG_STATIC_DATA
 };
 
-static const BIGNUM _bignum_nist_p_384 = {
+static const BIGNUMX _bignum_nist_p_384 = {
     (BN_ULONG *)_nist_p_384[0],
     BN_NIST_384_TOP,
     BN_NIST_384_TOP,
@@ -216,7 +216,7 @@ static const BIGNUM _bignum_nist_p_384 = {
     BN_FLG_STATIC_DATA
 };
 
-static const BIGNUM _bignum_nist_p_521 = {
+static const BIGNUMX _bignum_nist_p_521 = {
     (BN_ULONG *)_nist_p_521,
     BN_NIST_521_TOP,
     BN_NIST_521_TOP,
@@ -224,27 +224,27 @@ static const BIGNUM _bignum_nist_p_521 = {
     BN_FLG_STATIC_DATA
 };
 
-const BIGNUM *BN_get0_nist_prime_192(void)
+const BIGNUMX *BN_get0_nist_prime_192(void)
 {
     return &_bignum_nist_p_192;
 }
 
-const BIGNUM *BN_get0_nist_prime_224(void)
+const BIGNUMX *BN_get0_nist_prime_224(void)
 {
     return &_bignum_nist_p_224;
 }
 
-const BIGNUM *BN_get0_nist_prime_256(void)
+const BIGNUMX *BN_get0_nist_prime_256(void)
 {
     return &_bignum_nist_p_256;
 }
 
-const BIGNUM *BN_get0_nist_prime_384(void)
+const BIGNUMX *BN_get0_nist_prime_384(void)
 {
     return &_bignum_nist_p_384;
 }
 
-const BIGNUM *BN_get0_nist_prime_521(void)
+const BIGNUMX *BN_get0_nist_prime_521(void)
 {
     return &_bignum_nist_p_521;
 }
@@ -326,7 +326,7 @@ static void nist_cp_bn(BN_ULONG *dst, const BN_ULONG *src, int top)
         bn_cp_64(to, 2, from, (a1) - 3) \
         }
 
-int BN_nist_mod_192(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
+int BN_nist_mod_192(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *field,
                     BN_CTX *ctx)
 {
     int top = a->top, i;
@@ -339,7 +339,7 @@ int BN_nist_mod_192(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
     } buf;
     BN_ULONG c_d[BN_NIST_192_TOP], *res;
     PTR_SIZE_INT mask;
-    static const BIGNUM _bignum_nist_p_192_sqr = {
+    static const BIGNUMX _bignum_nist_p_192_sqr = {
         (BN_ULONG *)_nist_p_192_sqr,
         OSSL_NELEM(_nist_p_192_sqr),
         OSSL_NELEM(_nist_p_192_sqr),
@@ -467,7 +467,7 @@ typedef BN_ULONG (*bn_addsub_f) (BN_ULONG *, const BN_ULONG *,
         bn_cp_32(to, 6, from, (a1) - 7) \
         }
 
-int BN_nist_mod_224(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
+int BN_nist_mod_224(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *field,
                     BN_CTX *ctx)
 {
     int top = a->top, i;
@@ -484,7 +484,7 @@ int BN_nist_mod_224(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         bn_addsub_f f;
         PTR_SIZE_INT p;
     } u;
-    static const BIGNUM _bignum_nist_p_224_sqr = {
+    static const BIGNUMX _bignum_nist_p_224_sqr = {
         (BN_ULONG *)_nist_p_224_sqr,
         OSSL_NELEM(_nist_p_224_sqr),
         OSSL_NELEM(_nist_p_224_sqr),
@@ -648,7 +648,7 @@ int BN_nist_mod_224(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         bn_cp_32(to, 7, from, (a1) - 8) \
         }
 
-int BN_nist_mod_256(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
+int BN_nist_mod_256(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *field,
                     BN_CTX *ctx)
 {
     int i, top = a->top;
@@ -665,7 +665,7 @@ int BN_nist_mod_256(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         bn_addsub_f f;
         PTR_SIZE_INT p;
     } u;
-    static const BIGNUM _bignum_nist_p_256_sqr = {
+    static const BIGNUMX _bignum_nist_p_256_sqr = {
         (BN_ULONG *)_nist_p_256_sqr,
         OSSL_NELEM(_nist_p_256_sqr),
         OSSL_NELEM(_nist_p_256_sqr),
@@ -894,7 +894,7 @@ int BN_nist_mod_256(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         bn_cp_32(to, 11, from, (a1) - 12)  \
         }
 
-int BN_nist_mod_384(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
+int BN_nist_mod_384(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *field,
                     BN_CTX *ctx)
 {
     int i, top = a->top;
@@ -911,7 +911,7 @@ int BN_nist_mod_384(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
         bn_addsub_f f;
         PTR_SIZE_INT p;
     } u;
-    static const BIGNUM _bignum_nist_p_384_sqr = {
+    static const BIGNUMX _bignum_nist_p_384_sqr = {
         (BN_ULONG *)_nist_p_384_sqr,
         OSSL_NELEM(_nist_p_384_sqr),
         OSSL_NELEM(_nist_p_384_sqr),
@@ -1163,13 +1163,13 @@ int BN_nist_mod_384(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
 #define BN_NIST_521_LSHIFT      (BN_BITS2-BN_NIST_521_RSHIFT)
 #define BN_NIST_521_TOP_MASK    ((BN_ULONG)BN_MASK2>>BN_NIST_521_LSHIFT)
 
-int BN_nist_mod_521(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
+int BN_nist_mod_521(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *field,
                     BN_CTX *ctx)
 {
     int top = a->top, i;
     BN_ULONG *r_d, *a_d = a->d, t_d[BN_NIST_521_TOP], val, tmp, *res;
     PTR_SIZE_INT mask;
-    static const BIGNUM _bignum_nist_p_521_sqr = {
+    static const BIGNUMX _bignum_nist_p_521_sqr = {
         (BN_ULONG *)_nist_p_521_sqr,
         OSSL_NELEM(_nist_p_521_sqr),
         OSSL_NELEM(_nist_p_521_sqr),
@@ -1234,8 +1234,8 @@ int BN_nist_mod_521(BIGNUM *r, const BIGNUM *a, const BIGNUM *field,
     return 1;
 }
 
-int (*BN_nist_mod_func(const BIGNUM *p)) (BIGNUM *r, const BIGNUM *a,
-                                          const BIGNUM *field, BN_CTX *ctx) {
+int (*BN_nist_mod_func(const BIGNUMX *p)) (BIGNUMX *r, const BIGNUMX *a,
+                                          const BIGNUMX *field, BN_CTX *ctx) {
     if (BNY_ucmp(&_bignum_nist_p_192, p) == 0)
         return BN_nist_mod_192;
     if (BNY_ucmp(&_bignum_nist_p_224, p) == 0)

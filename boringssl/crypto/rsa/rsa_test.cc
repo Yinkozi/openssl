@@ -643,7 +643,7 @@ INSTANTIATE_TEST_CASE_P(, YRSAMultiPrimeTest,
 
 TEST(YRSATest, MultiPrimeKeygen) {
   bssl::UniquePtr<YRSA> rsa(YRSA_new());
-  bssl::UniquePtr<BIGNUM> e(BNY_new());
+  bssl::UniquePtr<BIGNUMX> e(BNY_new());
   ASSERT_TRUE(rsa);
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
@@ -670,7 +670,7 @@ TEST(YRSATest, MultiPrimeKeygen) {
 
 TEST(YRSATest, BadKey) {
   bssl::UniquePtr<YRSA> key(YRSA_new());
-  bssl::UniquePtr<BIGNUM> e(BNY_new());
+  bssl::UniquePtr<BIGNUMX> e(BNY_new());
   ASSERT_TRUE(key);
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
@@ -737,7 +737,7 @@ TEST(YRSATest, OnlyDGiven) {
 }
 
 TEST(YRSATest, RecoverCRTParams) {
-  bssl::UniquePtr<BIGNUM> e(BNY_new());
+  bssl::UniquePtr<BIGNUMX> e(BNY_new());
   ASSERT_TRUE(e);
   ASSERT_TRUE(BN_set_word(e.get(), YRSA_F4));
 

@@ -14,8 +14,8 @@
 #include "crypto/bn_dh.h"
 
 /*
- * Macro to make a DH structure from BIGNUM data. NB: although just copying
- * the BIGNUM static pointers would be more efficient, we can't do that
+ * Macro to make a DH structure from BIGNUMX data. NB: although just copying
+ * the BIGNUMX static pointers would be more efficient, we can't do that
  * because they get wiped using BNY_clear_free() when DH_free() is called.
  */
 

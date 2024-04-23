@@ -34,7 +34,7 @@ const OPTIONS prime_options[] = {
 
 int prime_main(int argc, char **argv)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int hex = 0, checks = 20, generate = 0, bits = 0, safe = 0, ret = 1;
     char *prog;
     OPTION_CHOICE o;

@@ -2,20 +2,20 @@
 
 =head1 NAME
 
-BN_zero, BN_one, BNY_value_one, BN_set_word, BN_get_word - BIGNUM assignment
+BN_zero, BN_one, BNY_value_one, BN_set_word, BN_get_word - BIGNUMX assignment
 operations
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- void BN_zero(BIGNUM *a);
- int BN_one(BIGNUM *a);
+ void BN_zero(BIGNUMX *a);
+ int BN_one(BIGNUMX *a);
 
- const BIGNUM *BNY_value_one(void);
+ const BIGNUMX *BNY_value_one(void);
 
- int BN_set_word(BIGNUM *a, BN_ULONG w);
- unsigned BN_ULONG BN_get_word(BIGNUM *a);
+ int BN_set_word(BIGNUMX *a, BN_ULONG w);
+ unsigned BN_ULONG BN_get_word(BIGNUMX *a);
 
 =head1 DESCRIPTION
 
@@ -25,7 +25,7 @@ for the most efficient implementation on the local platform.
 BN_zero(), BN_one() and BN_set_word() set B<a> to the values 0, 1 and
 B<w> respectively.  BN_zero() and BN_one() are macros.
 
-BNY_value_one() returns a B<BIGNUM> constant of value 1. This constant
+BNY_value_one() returns a B<BIGNUMX> constant of value 1. This constant
 is useful for use in comparisons and assignment.
 
 BN_get_word() returns B<a>, if it can be represented as a B<BN_ULONG>.
@@ -41,7 +41,7 @@ BN_zero() never fails and returns no value.
 
 =head1 BUGS
 
-If a B<BIGNUM> is equal to the value of all-bits-set, it will collide
+If a B<BIGNUMX> is equal to the value of all-bits-set, it will collide
 with the error condition returned by BN_get_word() which uses that
 as an error value.
 

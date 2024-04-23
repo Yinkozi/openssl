@@ -19,8 +19,8 @@ YASN1_INTEGER_get_int64, YASN1_INTEGER_get, YASN1_INTEGER_set_int64, YASN1_INTEG
  int YASN1_INTEGER_get_uint64(uint64_t *pr, const YASN1_INTEGER *a);
  int YASN1_INTEGER_set_uint64(YASN1_INTEGER *a, uint64_t r);
 
- YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai);
- BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn);
+ YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUMX *bn, YASN1_INTEGER *ai);
+ BIGNUMX *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUMX *bn);
 
  int YASN1_ENUMERATED_get_int64(int64_t *pr, const YASN1_ENUMERATED *a);
  long YASN1_ENUMERATED_get(const YASN1_ENUMERATED *a);
@@ -28,8 +28,8 @@ YASN1_INTEGER_get_int64, YASN1_INTEGER_get, YASN1_INTEGER_set_int64, YASN1_INTEG
  int YASN1_ENUMERATED_set_int64(YASN1_ENUMERATED *a, int64_t r);
  int YASN1_ENUMERATED_set(YASN1_ENUMERATED *a, long v);
 
- YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(BIGNUM *bn, YASN1_ENUMERATED *ai);
- BIGNUM *YASN1_ENUMERATED_to_BN(YASN1_ENUMERATED *ai, BIGNUM *bn);
+ YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(BIGNUMX *bn, YASN1_ENUMERATED *ai);
+ BIGNUMX *YASN1_ENUMERATED_to_BN(YASN1_ENUMERATED *ai, BIGNUMX *bn);
 
 =head1 DESCRIPTION
 
@@ -59,12 +59,12 @@ B<uint64_t> value B<r>.
 YASN1_INTEGER_set() sets the value of B<YASN1_INTEGER> B<a> to the B<long> value
 B<v>.
 
-BN_to_YASN1_INTEGER() converts B<BIGNUM> B<bn> to an B<YASN1_INTEGER>. If B<ai>
+BN_to_YASN1_INTEGER() converts B<BIGNUMX> B<bn> to an B<YASN1_INTEGER>. If B<ai>
 is NULL a new B<YASN1_INTEGER> structure is returned. If B<ai> is not NULL then
 the existing structure will be used instead.
 
-YASN1_INTEGER_to_BN() converts YASN1_INTEGER B<ai> into a B<BIGNUM>. If B<bn> is
-NULL a new B<BIGNUM> structure is returned. If B<bn> is not NULL then the
+YASN1_INTEGER_to_BN() converts YASN1_INTEGER B<ai> into a B<BIGNUMX>. If B<bn> is
+NULL a new B<BIGNUMX> structure is returned. If B<bn> is not NULL then the
 existing structure will be used instead.
 
 YASN1_ENUMERATED_get_int64(), YASN1_ENUMERATED_set_int64(),
@@ -107,7 +107,7 @@ BN_to_YASN1_INTEGER() and BN_to_YASN1_ENUMERATED() return an B<YASN1_INTEGER> or
 B<YASN1_ENUMERATED> structure respectively or NULL if an error occurs. They will
 only fail due to a memory allocation error.
 
-YASN1_INTEGER_to_BN() and YASN1_ENUMERATED_to_BN() return a B<BIGNUM> structure
+YASN1_INTEGER_to_BN() and YASN1_ENUMERATED_to_BN() return a B<BIGNUMX> structure
 of NULL if an error occurs. They can fail if the passed type is incorrect
 (due to programming error) or due to a memory allocation failure.
 

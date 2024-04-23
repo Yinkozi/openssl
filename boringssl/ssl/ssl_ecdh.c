@@ -32,13 +32,13 @@
 /* |EC_POINT| implementation. */
 
 static void ssl_ec_point_cleanup(SSL_ECDH_CTX *ctx) {
-  BIGNUM *private_key = (BIGNUM *)ctx->data;
+  BIGNUMX *private_key = (BIGNUMX *)ctx->data;
   BNY_clear_free(private_key);
 }
 
 static int ssl_ec_point_offer(SSL_ECDH_CTX *ctx, CBB *out) {
   assert(ctx->data == NULL);
-  BIGNUM *private_key = BNY_new();
+  BIGNUMX *private_key = BNY_new();
   if (private_key == NULL) {
     return 0;
   }
@@ -85,7 +85,7 @@ err:
 static int ssl_ec_point_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
                                size_t *out_secret_len, uint8_t *out_alert,
                                const uint8_t *peer_key, size_t peer_key_len) {
-  BIGNUM *private_key = (BIGNUM *)ctx->data;
+  BIGNUMX *private_key = (BIGNUMX *)ctx->data;
   assert(private_key != NULL);
   *out_alert = SSL_AD_INTERNAL_ERROR;
 
@@ -110,7 +110,7 @@ static int ssl_ec_point_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
   if (peer_point == NULL || result == NULL) {
     goto err;
   }
-  BIGNUM *x = BNY_CTX_get(bn_ctx);
+  BIGNUMX *x = BNY_CTX_get(bn_ctx);
   if (x == NULL) {
     goto err;
   }
@@ -247,7 +247,7 @@ static int ssl_dhe_finish(SSL_ECDH_CTX *ctx, uint8_t **out_secret,
 
   int secret_len = 0;
   uint8_t *secret = NULL;
-  BIGNUM *peer_point = BNY_bin2bn(peer_key, peer_key_len, NULL);
+  BIGNUMX *peer_point = BNY_bin2bn(peer_key, peer_key_len, NULL);
   if (peer_point == NULL) {
     goto err;
   }

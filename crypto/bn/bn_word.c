@@ -10,7 +10,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w)
+BN_ULONG BNY_mod_word(const BIGNUMX *a, BN_ULONG w)
 {
 #ifndef BN_LLONG
     BN_ULONG ret = 0;
@@ -28,7 +28,7 @@ BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w)
      * back to using BNY_div_word
      */
     if (w > ((BN_ULONG)1 << BN_BITS4)) {
-        BIGNUM *tmp = BN_dup(a);
+        BIGNUMX *tmp = BN_dup(a);
         if (tmp == NULL)
             return (BN_ULONG)-1;
 
@@ -58,7 +58,7 @@ BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w)
     return (BN_ULONG)ret;
 }
 
-BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w)
+BN_ULONG BNY_div_word(BIGNUMX *a, BN_ULONG w)
 {
     BN_ULONG ret = 0;
     int i, j;
@@ -95,7 +95,7 @@ BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w)
     return ret;
 }
 
-int BNY_add_word(BIGNUM *a, BN_ULONG w)
+int BNY_add_word(BIGNUMX *a, BN_ULONG w)
 {
     BN_ULONG l;
     int i;
@@ -131,7 +131,7 @@ int BNY_add_word(BIGNUM *a, BN_ULONG w)
     return 1;
 }
 
-int BNY_sub_word(BIGNUM *a, BN_ULONG w)
+int BNY_sub_word(BIGNUMX *a, BN_ULONG w)
 {
     int i;
 
@@ -178,7 +178,7 @@ int BNY_sub_word(BIGNUM *a, BN_ULONG w)
     return 1;
 }
 
-int BNY_mul_word(BIGNUM *a, BN_ULONG w)
+int BNY_mul_word(BIGNUMX *a, BN_ULONG w)
 {
     BN_ULONG ll;
 

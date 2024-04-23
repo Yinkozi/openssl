@@ -13,12 +13,12 @@ reciprocal
  BN_RECP_CTX *BN_RECP_CTX_new(void);
  void BN_RECP_CTX_free(BN_RECP_CTX *recp);
 
- int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *m, BN_CTX *ctx);
+ int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUMX *m, BN_CTX *ctx);
 
- int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, BIGNUM *a, BN_RECP_CTX *recp,
+ int BNY_div_recp(BIGNUMX *dv, BIGNUMX *rem, BIGNUMX *a, BN_RECP_CTX *recp,
                  BN_CTX *ctx);
 
- int BN_mod_mul_reciprocal(BIGNUM *r, BIGNUM *a, BIGNUM *b,
+ int BN_mod_mul_reciprocal(BIGNUMX *r, BIGNUMX *a, BIGNUMX *b,
                            BN_RECP_CTX *recp, BN_CTX *ctx);
 
 =head1 DESCRIPTION

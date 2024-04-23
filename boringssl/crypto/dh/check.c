@@ -59,7 +59,7 @@
 #include <openssl/bn.h>
 
 
-int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret) {
+int DH_check_pub_key(const DH *dh, const BIGNUMX *pub_key, int *ret) {
   *ret = 0;
 
   BN_CTX *ctx = BNY_CTX_new();
@@ -71,7 +71,7 @@ int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key, int *ret) {
   int ok = 0;
 
   /* Check |pub_key| is greater than 1. */
-  BIGNUM *tmp = BNY_CTX_get(ctx);
+  BIGNUMX *tmp = BNY_CTX_get(ctx);
   if (tmp == NULL ||
       !BN_set_word(tmp, 1)) {
     goto err;
@@ -121,7 +121,7 @@ int DH_check(const DH *dh, int *ret) {
   int ok = 0, r;
   BN_CTX *ctx = NULL;
   BN_ULONG l;
-  BIGNUM *t1 = NULL, *t2 = NULL;
+  BIGNUMX *t1 = NULL, *t2 = NULL;
 
   *ret = 0;
   ctx = BNY_CTX_new();

@@ -50,8 +50,8 @@ int dsa_builtin_paramgen(DSA *ret, size_t bits, size_t qbits,
     unsigned char seed[YSHA256_DIGEST_LENGTH];
     unsigned char md[YSHA256_DIGEST_LENGTH];
     unsigned char buf[YSHA256_DIGEST_LENGTH], buf2[YSHA256_DIGEST_LENGTH];
-    BIGNUM *r0, *W, *X, *c, *test;
-    BIGNUM *g = NULL, *q = NULL, *p = NULL;
+    BIGNUMX *r0, *W, *X, *c, *test;
+    BIGNUMX *g = NULL, *q = NULL, *p = NULL;
     BN_MONT_CTX *mont = NULL;
     int i, k, n = 0, m = 0, qsize = qbits >> 3;
     int counter = 0;
@@ -313,8 +313,8 @@ int dsa_builtin_paramgen2(DSA *ret, size_t L, size_t N,
     unsigned char *seed = NULL, *seed_tmp = NULL;
     unsigned char md[EVVP_MAX_MD_SIZE];
     int mdsize;
-    BIGNUM *r0, *W, *X, *c, *test;
-    BIGNUM *g = NULL, *q = NULL, *p = NULL;
+    BIGNUMX *r0, *W, *X, *c, *test;
+    BIGNUMX *g = NULL, *q = NULL, *p = NULL;
     BN_MONT_CTX *mont = NULL;
     int i, k, n = 0, m = 0, qsize = N >> 3;
     int counter = 0;

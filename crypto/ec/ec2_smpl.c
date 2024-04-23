@@ -93,8 +93,8 @@ int ec_GF2m_simple_group_copy(EC_GROUP *dest, const EC_GROUP *src)
 
 /* Set the curve parameters of an EC_GROUP structure. */
 int ec_GF2m_simple_group_set_curve(EC_GROUP *group,
-                                   const BIGNUM *p, const BIGNUM *a,
-                                   const BIGNUM *b, BN_CTX *ctx)
+                                   const BIGNUMX *p, const BIGNUMX *a,
+                                   const BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = 0, i;
 
@@ -132,8 +132,8 @@ int ec_GF2m_simple_group_set_curve(EC_GROUP *group,
  * Get the curve parameters of an EC_GROUP structure. If p, a, or b are NULL
  * then there values will not be set but the method will return with success.
  */
-int ec_GF2m_simple_group_get_curve(const EC_GROUP *group, BIGNUM *p,
-                                   BIGNUM *a, BIGNUM *b, BN_CTX *ctx)
+int ec_GF2m_simple_group_get_curve(const EC_GROUP *group, BIGNUMX *p,
+                                   BIGNUMX *a, BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = 0;
 
@@ -175,7 +175,7 @@ int ec_GF2m_simple_group_check_discriminant(const EC_GROUP *group,
                                             BN_CTX *ctx)
 {
     int ret = 0;
-    BIGNUM *b;
+    BIGNUMX *b;
     BN_CTX *new_ctx = NULL;
 
     if (ctx == NULL) {
@@ -278,8 +278,8 @@ int ec_GF2m_simple_point_set_to_infinity(const EC_GROUP *group,
  */
 int ec_GF2m_simple_point_set_affine_coordinates(const EC_GROUP *group,
                                                 EC_POINT *point,
-                                                const BIGNUM *x,
-                                                const BIGNUM *y, BN_CTX *ctx)
+                                                const BIGNUMX *x,
+                                                const BIGNUMX *y, BN_CTX *ctx)
 {
     int ret = 0;
     if (x == NULL || y == NULL) {
@@ -310,7 +310,7 @@ int ec_GF2m_simple_point_set_affine_coordinates(const EC_GROUP *group,
  */
 int ec_GF2m_simple_point_get_affine_coordinates(const EC_GROUP *group,
                                                 const EC_POINT *point,
-                                                BIGNUM *x, BIGNUM *y,
+                                                BIGNUMX *x, BIGNUMX *y,
                                                 BN_CTX *ctx)
 {
     int ret = 0;
@@ -350,7 +350,7 @@ int ec_GF2m_simple_add(const EC_GROUP *group, EC_POINT *r, const EC_POINT *a,
                        const EC_POINT *b, BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
-    BIGNUM *x0, *y0, *x1, *y1, *x2, *y2, *s, *t;
+    BIGNUMX *x0, *y0, *x1, *y1, *x2, *y2, *s, *t;
     int ret = 0;
 
     if (EC_POINT_is_at_infinity(group, a)) {
@@ -495,10 +495,10 @@ int ec_GF2m_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
 {
     int ret = -1;
     BN_CTX *new_ctx = NULL;
-    BIGNUM *lh, *y2;
-    int (*field_mul) (const EC_GROUP *, BIGNUM *, const BIGNUM *,
-                      const BIGNUM *, BN_CTX *);
-    int (*field_sqr) (const EC_GROUP *, BIGNUM *, const BIGNUM *, BN_CTX *);
+    BIGNUMX *lh, *y2;
+    int (*field_mul) (const EC_GROUP *, BIGNUMX *, const BIGNUMX *,
+                      const BIGNUMX *, BN_CTX *);
+    int (*field_sqr) (const EC_GROUP *, BIGNUMX *, const BIGNUMX *, BN_CTX *);
 
     if (EC_POINT_is_at_infinity(group, point))
         return 1;
@@ -560,7 +560,7 @@ int ec_GF2m_simple_is_on_curve(const EC_GROUP *group, const EC_POINT *point,
 int ec_GF2m_simple_cmp(const EC_GROUP *group, const EC_POINT *a,
                        const EC_POINT *b, BN_CTX *ctx)
 {
-    BIGNUM *aX, *aY, *bX, *bY;
+    BIGNUMX *aX, *aY, *bX, *bY;
     BN_CTX *new_ctx = NULL;
     int ret = -1;
 
@@ -606,7 +606,7 @@ int ec_GF2m_simple_make_affine(const EC_GROUP *group, EC_POINT *point,
                                BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
-    BIGNUM *x, *y;
+    BIGNUMX *x, *y;
     int ret = 0;
 
     if (point->Z_is_one || EC_POINT_is_at_infinity(group, point))
@@ -659,22 +659,22 @@ int ec_GF2m_simple_points_make_affine(const EC_GROUP *group, size_t num,
 }
 
 /* Wrapper to simple binary polynomial field multiplication implementation. */
-int ec_GF2m_simple_field_mul(const EC_GROUP *group, BIGNUM *r,
-                             const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int ec_GF2m_simple_field_mul(const EC_GROUP *group, BIGNUMX *r,
+                             const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     return BN_GF2m_mod_mul_arr(r, a, b, group->poly, ctx);
 }
 
 /* Wrapper to simple binary polynomial field squaring implementation. */
-int ec_GF2m_simple_field_sqr(const EC_GROUP *group, BIGNUM *r,
-                             const BIGNUM *a, BN_CTX *ctx)
+int ec_GF2m_simple_field_sqr(const EC_GROUP *group, BIGNUMX *r,
+                             const BIGNUMX *a, BN_CTX *ctx)
 {
     return BN_GF2m_mod_sqr_arr(r, a, group->poly, ctx);
 }
 
 /* Wrapper to simple binary polynomial field division implementation. */
-int ec_GF2m_simple_field_div(const EC_GROUP *group, BIGNUM *r,
-                             const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int ec_GF2m_simple_field_div(const EC_GROUP *group, BIGNUMX *r,
+                             const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     return BN_GF2m_mod_div(r, a, b, group->field, ctx);
 }
@@ -774,7 +774,7 @@ int ec_GF2m_simple_ladder_post(const EC_GROUP *group,
                                EC_POINT *p, BN_CTX *ctx)
 {
     int ret = 0;
-    BIGNUM *t0, *t1, *t2 = NULL;
+    BIGNUMX *t0, *t1, *t2 = NULL;
 
     if (BN_is_zero(r->Z))
         return EC_POINT_set_to_infinity(group, r);
@@ -820,7 +820,7 @@ int ec_GF2m_simple_ladder_post(const EC_GROUP *group,
 
     r->Z_is_one = 1;
 
-    /* GF(2^m) field elements should always have BIGNUM::neg = 0 */
+    /* GF(2^m) field elements should always have BIGNUMX::neg = 0 */
     BN_set_negative(r->X, 0);
     BN_set_negative(r->Y, 0);
 
@@ -833,9 +833,9 @@ int ec_GF2m_simple_ladder_post(const EC_GROUP *group,
 
 static
 int ec_GF2m_simple_points_mul(const EC_GROUP *group, EC_POINT *r,
-                              const BIGNUM *scalar, size_t num,
+                              const BIGNUMX *scalar, size_t num,
                               const EC_POINT *points[],
-                              const BIGNUM *scalars[],
+                              const BIGNUMX *scalars[],
                               BN_CTX *ctx)
 {
     int ret = 0;
@@ -893,8 +893,8 @@ int ec_GF2m_simple_points_mul(const EC_GROUP *group, EC_POINT *r,
  * If a is zero (or equivalent), you'll get a EC_R_CANNOT_INVERT error.
  * SCA hardening is with blinding: BN_GF2m_mod_inv does that.
  */
-static int ec_GF2m_simple_field_inv(const EC_GROUP *group, BIGNUM *r,
-                                    const BIGNUM *a, BN_CTX *ctx)
+static int ec_GF2m_simple_field_inv(const EC_GROUP *group, BIGNUMX *r,
+                                    const BIGNUMX *a, BN_CTX *ctx)
 {
     int ret;
 

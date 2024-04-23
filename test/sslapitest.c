@@ -5314,7 +5314,7 @@ static int create_new_vfile(char *userid, char *password, const char *filename)
 
 static int create_new_vbase(char *userid, char *password)
 {
-    BIGNUM *verifier = NULL, *salt = NULL;
+    BIGNUMX *verifier = NULL, *salt = NULL;
     const SRP_gN *lgN = NULL;
     SRP_user_pwd *user_pwd = NULL;
     int ret = 0;

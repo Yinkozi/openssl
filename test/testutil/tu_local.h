@@ -31,11 +31,11 @@ void test_fail_bignum_message(const char *prefix, const char *file,
                               int line, const char *type,
                               const char *left, const char *right,
                               const char *op,
-                              const BIGNUM *bn1, const BIGNUM *bn2);
+                              const BIGNUMX *bn1, const BIGNUMX *bn2);
 void test_fail_bignum_mono_message(const char *prefix, const char *file,
                                    int line, const char *type,
                                    const char *left, const char *right,
-                                   const char *op, const BIGNUM *bn);
+                                   const char *op, const BIGNUMX *bn);
 
 void test_fail_memory_message(const char *prefix, const char *file,
                               int line, const char *type,

@@ -57,15 +57,15 @@
 #include <openssl/err.h>
 
 
-BIGNUM *BNY_mod_sqrt(BIGNUM *in, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
+BIGNUMX *BNY_mod_sqrt(BIGNUMX *in, const BIGNUMX *a, const BIGNUMX *p, BN_CTX *ctx) {
   /* Compute a square root of |a| mod |p| using the Tonelli/Shanks algorithm
    * (cf. Henri Cohen, "A Course in Algebraic Computational Number Theory",
    * algorithm 1.5.1). |p| is assumed to be a prime. */
 
-  BIGNUM *ret = in;
+  BIGNUMX *ret = in;
   int err = 1;
   int r;
-  BIGNUM *A, *b, *q, *t, *x, *y;
+  BIGNUMX *A, *b, *q, *t, *x, *y;
   int e, i, j;
 
   if (!BN_is_odd(p) || BN_abs_is_word(p, 1)) {
@@ -428,8 +428,8 @@ end:
   return ret;
 }
 
-int BNY_sqrt(BIGNUM *out_sqrt, const BIGNUM *in, BN_CTX *ctx) {
-  BIGNUM *estimate, *tmp, *delta, *last_delta, *tmp2;
+int BNY_sqrt(BIGNUMX *out_sqrt, const BIGNUMX *in, BN_CTX *ctx) {
+  BIGNUMX *estimate, *tmp, *delta, *last_delta, *tmp2;
   int ok = 0, last_delta_valid = 0;
 
   if (in->neg) {

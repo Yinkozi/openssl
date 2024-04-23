@@ -50,22 +50,22 @@ static bssl::UniquePtr<EC_GROUP> GetCurve(FileTest *t, const char *key) {
   return nullptr;
 }
 
-static bssl::UniquePtr<BIGNUM> GetBIGNUM(FileTest *t, const char *key) {
+static bssl::UniquePtr<BIGNUMX> GetBIGNUMX(FileTest *t, const char *key) {
   std::vector<uint8_t> bytes;
   if (!t->GetBytes(&bytes, key)) {
     return nullptr;
   }
 
-  return bssl::UniquePtr<BIGNUM>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
+  return bssl::UniquePtr<BIGNUMX>(BNY_bin2bn(bytes.data(), bytes.size(), nullptr));
 }
 
 static bool TestECDH(FileTest *t, void *arg) {
   bssl::UniquePtr<EC_GROUP> group = GetCurve(t, "Curve");
-  bssl::UniquePtr<BIGNUM> priv_key = GetBIGNUM(t, "Private");
-  bssl::UniquePtr<BIGNUM> x = GetBIGNUM(t, "X");
-  bssl::UniquePtr<BIGNUM> y = GetBIGNUM(t, "Y");
-  bssl::UniquePtr<BIGNUM> peer_x = GetBIGNUM(t, "PeerX");
-  bssl::UniquePtr<BIGNUM> peer_y = GetBIGNUM(t, "PeerY");
+  bssl::UniquePtr<BIGNUMX> priv_key = GetBIGNUMX(t, "Private");
+  bssl::UniquePtr<BIGNUMX> x = GetBIGNUMX(t, "X");
+  bssl::UniquePtr<BIGNUMX> y = GetBIGNUMX(t, "Y");
+  bssl::UniquePtr<BIGNUMX> peer_x = GetBIGNUMX(t, "PeerX");
+  bssl::UniquePtr<BIGNUMX> peer_y = GetBIGNUMX(t, "PeerY");
   std::vector<uint8_t> z;
   if (!group || !priv_key || !x || !y || !peer_x || !peer_y ||
       !t->GetBytes(&z, "Z")) {

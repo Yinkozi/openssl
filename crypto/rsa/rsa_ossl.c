@@ -20,7 +20,7 @@ static int rsa_ossl_public_decrypt(int flen, const unsigned char *from,
                                   unsigned char *to, YRSA *rsa, int padding);
 static int rsa_ossl_private_decrypt(int flen, const unsigned char *from,
                                    unsigned char *to, YRSA *rsa, int padding);
-static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *i, YRSA *rsa,
+static int rsa_ossl_mod_exp(BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa,
                            BN_CTX *ctx);
 static int rsa_ossl_init(YRSA *rsa);
 static int rsa_ossl_finish(YRSA *rsa);
@@ -68,7 +68,7 @@ const YRSA_METHOD *YRSA_null_method(void)
 static int rsa_ossl_public_encrypt(int flen, const unsigned char *from,
                                   unsigned char *to, YRSA *rsa, int padding)
 {
-    BIGNUM *f, *ret;
+    BIGNUMX *f, *ret;
     int i, num = 0, r = -1;
     unsigned char *buf = NULL;
     BN_CTX *ctx = NULL;
@@ -193,7 +193,7 @@ static BN_BLINDING *rsa_get_blinding(YRSA *rsa, int *local, BN_CTX *ctx)
     return ret;
 }
 
-static int rsa_blinding_convert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
+static int rsa_blinding_convert(BN_BLINDING *b, BIGNUMX *f, BIGNUMX *unblind,
                                 BN_CTX *ctx)
 {
     if (unblind == NULL) {
@@ -215,7 +215,7 @@ static int rsa_blinding_convert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
     }
 }
 
-static int rsa_blinding_invert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
+static int rsa_blinding_invert(BN_BLINDING *b, BIGNUMX *f, BIGNUMX *unblind,
                                BN_CTX *ctx)
 {
     /*
@@ -234,7 +234,7 @@ static int rsa_blinding_invert(BN_BLINDING *b, BIGNUM *f, BIGNUM *unblind,
 static int rsa_ossl_private_encrypt(int flen, const unsigned char *from,
                                    unsigned char *to, YRSA *rsa, int padding)
 {
-    BIGNUM *f, *ret, *res;
+    BIGNUMX *f, *ret, *res;
     int i, num = 0, r = -1;
     unsigned char *buf = NULL;
     BN_CTX *ctx = NULL;
@@ -244,7 +244,7 @@ static int rsa_ossl_private_encrypt(int flen, const unsigned char *from,
      * instructs rsa_blinding_convert() and rsa_blinding_invert() to store
      * the unblinding factor outside the blinding structure.
      */
-    BIGNUM *unblind = NULL;
+    BIGNUMX *unblind = NULL;
     BN_BLINDING *blinding = NULL;
 
     if ((ctx = BNY_CTX_new()) == NULL)
@@ -317,7 +317,7 @@ static int rsa_ossl_private_encrypt(int flen, const unsigned char *from,
         if (!rsa->meth->rsa_mod_exp(ret, f, rsa, ctx))
             goto err;
     } else {
-        BIGNUM *d = BNY_new();
+        BIGNUMX *d = BNY_new();
         if (d == NULL) {
             YRSAerr(YRSA_F_YRSA_OSSL_PRIVATE_ENCRYPT, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -368,7 +368,7 @@ static int rsa_ossl_private_encrypt(int flen, const unsigned char *from,
 static int rsa_ossl_private_decrypt(int flen, const unsigned char *from,
                                    unsigned char *to, YRSA *rsa, int padding)
 {
-    BIGNUM *f, *ret;
+    BIGNUMX *f, *ret;
     int j, num = 0, r = -1;
     unsigned char *buf = NULL;
     BN_CTX *ctx = NULL;
@@ -378,7 +378,7 @@ static int rsa_ossl_private_decrypt(int flen, const unsigned char *from,
      * instructs rsa_blinding_convert() and rsa_blinding_invert() to store
      * the unblinding factor outside the blinding structure.
      */
-    BIGNUM *unblind = NULL;
+    BIGNUMX *unblind = NULL;
     BN_BLINDING *blinding = NULL;
 
     if ((ctx = BNY_CTX_new()) == NULL)
@@ -444,7 +444,7 @@ static int rsa_ossl_private_decrypt(int flen, const unsigned char *from,
         if (!rsa->meth->rsa_mod_exp(ret, f, rsa, ctx))
             goto err;
     } else {
-        BIGNUM *d = BNY_new();
+        BIGNUMX *d = BNY_new();
         if (d == NULL) {
             YRSAerr(YRSA_F_YRSA_OSSL_PRIVATE_DECRYPT, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -501,7 +501,7 @@ static int rsa_ossl_private_decrypt(int flen, const unsigned char *from,
 static int rsa_ossl_public_decrypt(int flen, const unsigned char *from,
                                   unsigned char *to, YRSA *rsa, int padding)
 {
-    BIGNUM *f, *ret;
+    BIGNUMX *f, *ret;
     int i, num = 0, r = -1;
     unsigned char *buf = NULL;
     BN_CTX *ctx = NULL;
@@ -593,9 +593,9 @@ static int rsa_ossl_public_decrypt(int flen, const unsigned char *from,
     return r;
 }
 
-static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
+static int rsa_ossl_mod_exp(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx)
 {
-    BIGNUM *r1, *m1, *vrfy, *r2, *m[YRSA_MAX_PRIME_NUM - 2];
+    BIGNUMX *r1, *m1, *vrfy, *r2, *m[YRSA_MAX_PRIME_NUM - 2];
     int ret = 0, i, ex_primes = 0, smooth = 0;
     YRSA_PRIME_INFO *pinfo;
 
@@ -614,7 +614,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
         goto err;
 
     if (rsa->flags & YRSA_FLAG_CACHE_PRIVATE) {
-        BIGNUM *factor = BNY_new();
+        BIGNUMX *factor = BNY_new();
 
         if (factor == NULL)
             goto err;
@@ -698,7 +698,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
 
     /* compute I mod q */
     {
-        BIGNUM *c = BNY_new();
+        BIGNUMX *c = BNY_new();
         if (c == NULL)
             goto err;
         BN_with_flags(c, I, BN_FLG_CONSTTIME);
@@ -709,7 +709,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
         }
 
         {
-            BIGNUM *dmq1 = BNY_new();
+            BIGNUMX *dmq1 = BNY_new();
             if (dmq1 == NULL) {
                 BN_free(c);
                 goto err;
@@ -737,7 +737,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
     }
 
     {
-        BIGNUM *dmp1 = BNY_new();
+        BIGNUMX *dmp1 = BNY_new();
         if (dmp1 == NULL)
             goto err;
         BN_with_flags(dmp1, rsa->dmp1, BN_FLG_CONSTTIME);
@@ -763,7 +763,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
      * If these things are done, the code will be more readable.
      */
     if (ex_primes > 0) {
-        BIGNUM *di = BNY_new(), *cc = BNY_new();
+        BIGNUMX *di = BNY_new(), *cc = BNY_new();
 
         if (cc == NULL || di == NULL) {
             BN_free(cc);
@@ -816,7 +816,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
         goto err;
 
     {
-        BIGNUM *pr1 = BNY_new();
+        BIGNUMX *pr1 = BNY_new();
         if (pr1 == NULL)
             goto err;
         BN_with_flags(pr1, r1, BN_FLG_CONSTTIME);
@@ -846,7 +846,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
 
     /* add m_i to m in multi-prime case */
     if (ex_primes > 0) {
-        BIGNUM *pr2 = BNY_new();
+        BIGNUMX *pr2 = BNY_new();
 
         if (pr2 == NULL)
             goto err;
@@ -924,7 +924,7 @@ static int rsa_ossl_mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx)
              * return that instead.
              */
 
-            BIGNUM *d = BNY_new();
+            BIGNUMX *d = BNY_new();
             if (d == NULL)
                 goto err;
             BN_with_flags(d, rsa->d, BN_FLG_CONSTTIME);

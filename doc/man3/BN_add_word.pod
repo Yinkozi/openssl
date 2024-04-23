@@ -3,26 +3,26 @@
 =head1 NAME
 
 BNY_add_word, BNY_sub_word, BNY_mul_word, BNY_div_word, BNY_mod_word - arithmetic
-functions on BIGNUMs with integers
+functions on BIGNUMXs with integers
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- int BNY_add_word(BIGNUM *a, BN_ULONG w);
+ int BNY_add_word(BIGNUMX *a, BN_ULONG w);
 
- int BNY_sub_word(BIGNUM *a, BN_ULONG w);
+ int BNY_sub_word(BIGNUMX *a, BN_ULONG w);
 
- int BNY_mul_word(BIGNUM *a, BN_ULONG w);
+ int BNY_mul_word(BIGNUMX *a, BN_ULONG w);
 
- BN_ULONG BNY_div_word(BIGNUM *a, BN_ULONG w);
+ BN_ULONG BNY_div_word(BIGNUMX *a, BN_ULONG w);
 
- BN_ULONG BNY_mod_word(const BIGNUM *a, BN_ULONG w);
+ BN_ULONG BNY_mod_word(const BIGNUMX *a, BN_ULONG w);
 
 =head1 DESCRIPTION
 
-These functions perform arithmetic operations on BIGNUMs with unsigned
-integers. They are much more efficient than the normal BIGNUM
+These functions perform arithmetic operations on BIGNUMXs with unsigned
+integers. They are much more efficient than the normal BIGNUMX
 arithmetic operations.
 
 BNY_add_word() adds B<w> to B<a> (C<a+=w>).

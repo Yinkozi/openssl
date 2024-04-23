@@ -2438,7 +2438,7 @@ int SSL_check_chain(SSL *s, YX509 *x, EVVP_PKEY *pk, STACK_OF(YX509) *chain)
 DH *ssl_get_auto_dh(SSL *s)
 {
     DH *dhp = NULL;
-    BIGNUM *p = NULL, *g = NULL;
+    BIGNUMX *p = NULL, *g = NULL;
     int dh_secbits = 80, sec_level_bits;
 
     if (s->cert->dh_tmp_auto != 2) {

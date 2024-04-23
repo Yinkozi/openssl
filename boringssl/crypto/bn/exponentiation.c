@@ -136,9 +136,9 @@ int bn_from_montgomery(BN_ULONG *rp, const BN_ULONG *ap,
                        const BN_ULONG *n0, int num);
 #endif
 
-int BN_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, BN_CTX *ctx) {
+int BN_exp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p, BN_CTX *ctx) {
   int i, bits, ret = 0;
-  BIGNUM *v, *rr;
+  BIGNUMX *v, *rr;
 
   BNY_CTX_start(ctx);
   if (r == a || r == p) {
@@ -192,8 +192,8 @@ err:
 #define TABLE_SIZE 32
 
 typedef struct bn_recp_ctx_st {
-  BIGNUM N;  /* the divisor */
-  BIGNUM Nr; /* the reciprocal */
+  BIGNUMX N;  /* the divisor */
+  BIGNUMX Nr; /* the reciprocal */
   int num_bits;
   int shift;
   int flags;
@@ -216,7 +216,7 @@ static void BN_RECP_CTX_free(BN_RECP_CTX *recp) {
   BN_free(&recp->Nr);
 }
 
-static int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *d, BN_CTX *ctx) {
+static int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUMX *d, BN_CTX *ctx) {
   if (!BNY_copy(&(recp->N), d)) {
     return 0;
   }
@@ -231,9 +231,9 @@ static int BN_RECP_CTX_set(BN_RECP_CTX *recp, const BIGNUM *d, BN_CTX *ctx) {
  * word of precision, so we can do faster division if the remainder is not
  * required.
  * r := 2^len / m */
-static int BN_reciprocal(BIGNUM *r, const BIGNUM *m, int len, BN_CTX *ctx) {
+static int BN_reciprocal(BIGNUMX *r, const BIGNUMX *m, int len, BN_CTX *ctx) {
   int ret = -1;
-  BIGNUM *t;
+  BIGNUMX *t;
 
   BNY_CTX_start(ctx);
   t = BNY_CTX_get(ctx);
@@ -256,10 +256,10 @@ err:
   return ret;
 }
 
-static int BNY_div_recp(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
+static int BNY_div_recp(BIGNUMX *dv, BIGNUMX *rem, const BIGNUMX *m,
                        BN_RECP_CTX *recp, BN_CTX *ctx) {
   int i, j, ret = 0;
-  BIGNUM *a, *b, *d, *r;
+  BIGNUMX *a, *b, *d, *r;
 
   BNY_CTX_start(ctx);
   a = BNY_CTX_get(ctx);
@@ -359,11 +359,11 @@ err:
   return ret;
 }
 
-static int BN_mod_mul_reciprocal(BIGNUM *r, const BIGNUM *x, const BIGNUM *y,
+static int BN_mod_mul_reciprocal(BIGNUMX *r, const BIGNUMX *x, const BIGNUMX *y,
                                  BN_RECP_CTX *recp, BN_CTX *ctx) {
   int ret = 0;
-  BIGNUM *a;
-  const BIGNUM *ca;
+  BIGNUMX *a;
+  const BIGNUMX *ca;
 
   BNY_CTX_start(ctx);
   a = BNY_CTX_get(ctx);
@@ -422,13 +422,13 @@ err:
 		 (b) >  79 ? 4 : \
 		 (b) >  23 ? 3 : 1)
 
-static int mod_exp_recp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                        const BIGNUM *m, BN_CTX *ctx) {
+static int mod_exp_recp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                        const BIGNUMX *m, BN_CTX *ctx) {
   int i, j, bits, ret = 0, wstart, window;
   int start = 1;
-  BIGNUM *aa;
+  BIGNUMX *aa;
   /* Table of variables obtained from 'ctx' */
-  BIGNUM *val[TABLE_SIZE];
+  BIGNUMX *val[TABLE_SIZE];
   BN_RECP_CTX recp;
 
   bits = BNY_num_bits(p);
@@ -562,7 +562,7 @@ err:
   return ret;
 }
 
-int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
+int BN_mod_exp(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p, const BIGNUMX *m,
                BN_CTX *ctx) {
   if (BN_is_odd(m)) {
     return BNY_mod_exp_mont(r, a, p, m, ctx, NULL);
@@ -571,14 +571,14 @@ int BN_mod_exp(BIGNUM *r, const BIGNUM *a, const BIGNUM *p, const BIGNUM *m,
   return mod_exp_recp(r, a, p, m, ctx);
 }
 
-int BNY_mod_exp_mont(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx, const BN_MONT_CTX *mont) {
+int BNY_mod_exp_mont(BIGNUMX *rr, const BIGNUMX *a, const BIGNUMX *p,
+                    const BIGNUMX *m, BN_CTX *ctx, const BN_MONT_CTX *mont) {
   int i, j, bits, ret = 0, wstart, window;
   int start = 1;
-  BIGNUM *d, *r;
-  const BIGNUM *aa;
+  BIGNUMX *d, *r;
+  const BIGNUMX *aa;
   /* Table of variables obtained from 'ctx' */
-  BIGNUM *val[TABLE_SIZE];
+  BIGNUMX *val[TABLE_SIZE];
   BN_MONT_CTX *new_mont = NULL;
 
   if (!BN_is_odd(m)) {
@@ -736,8 +736,8 @@ err:
 /* BNY_mod_exp_mont_consttime() stores the precomputed powers in a specific
  * layout so that accessing any of these table values shows the same access
  * pattern as far as cache lines are concerned. The following functions are
- * used to transfer a BIGNUM from/to that table. */
-static int copy_to_prebuf(const BIGNUM *b, int top, unsigned char *buf, int idx,
+ * used to transfer a BIGNUMX from/to that table. */
+static int copy_to_prebuf(const BIGNUMX *b, int top, unsigned char *buf, int idx,
                           int window) {
   int i, j;
   const int width = 1 << window;
@@ -754,7 +754,7 @@ static int copy_to_prebuf(const BIGNUM *b, int top, unsigned char *buf, int idx,
   return 1;
 }
 
-static int copy_from_prebuf(BIGNUM *b, int top, unsigned char *buf, int idx,
+static int copy_from_prebuf(BIGNUMX *b, int top, unsigned char *buf, int idx,
                             int window) {
   int i, j;
   const int width = 1 << window;
@@ -848,8 +848,8 @@ static int copy_from_prebuf(BIGNUM *b, int top, unsigned char *buf, int idx,
  * pointed out by Colin Percival,
  * http://www.daemonology.net/hyperthreading-considered-harmful/)
  */
-int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
-                              const BIGNUM *m, BN_CTX *ctx,
+int BNY_mod_exp_mont_consttime(BIGNUMX *rr, const BIGNUMX *a, const BIGNUMX *p,
+                              const BIGNUMX *m, BN_CTX *ctx,
                               const BN_MONT_CTX *mont) {
   int i, bits, ret = 0, window, wvalue;
   int top;
@@ -859,8 +859,8 @@ int BNY_mod_exp_mont_consttime(BIGNUM *rr, const BIGNUM *a, const BIGNUM *p,
   unsigned char *powerbufFree = NULL;
   int powerbufLen = 0;
   unsigned char *powerbuf = NULL;
-  BIGNUM tmp, am;
-  BIGNUM *new_a = NULL;
+  BIGNUMX tmp, am;
+  BIGNUMX *new_a = NULL;
 
   if (!BN_is_odd(m)) {
     OPENSSL_PUT_ERROR(BN, BN_R_CALLED_WITH_EVEN_MODULUS);
@@ -1179,10 +1179,10 @@ err:
   return (ret);
 }
 
-int BNY_mod_exp_mont_word(BIGNUM *rr, BN_ULONG a, const BIGNUM *p,
-                         const BIGNUM *m, BN_CTX *ctx,
+int BNY_mod_exp_mont_word(BIGNUMX *rr, BN_ULONG a, const BIGNUMX *p,
+                         const BIGNUMX *m, BN_CTX *ctx,
                          const BN_MONT_CTX *mont) {
-  BIGNUM a_bignum;
+  BIGNUMX a_bignum;
   BN_init(&a_bignum);
 
   int ret = 0;
@@ -1202,10 +1202,10 @@ err:
 
 #define TABLE_SIZE 32
 
-int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
-                     const BIGNUM *a2, const BIGNUM *p2, const BIGNUM *m,
+int BN_mod_exp2_mont(BIGNUMX *rr, const BIGNUMX *a1, const BIGNUMX *p1,
+                     const BIGNUMX *a2, const BIGNUMX *p2, const BIGNUMX *m,
                      BN_CTX *ctx, const BN_MONT_CTX *mont) {
-  BIGNUM tmp;
+  BIGNUMX tmp;
   BN_init(&tmp);
 
   int ret = 0;

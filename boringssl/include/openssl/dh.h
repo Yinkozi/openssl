@@ -90,13 +90,13 @@ OPENSSL_EXPORT int DH_up_ref(DH *dh);
 /* DH_get0_key sets |*out_pub_key| and |*out_priv_key|, if non-NULL, to |dh|'s
  * public and private key, respectively. If |dh| is a public key, the private
  * key will be set to NULL. */
-OPENSSL_EXPORT void DH_get0_key(const DH *dh, const BIGNUM **out_pub_key,
-                                const BIGNUM **out_priv_key);
+OPENSSL_EXPORT void DH_get0_key(const DH *dh, const BIGNUMX **out_pub_key,
+                                const BIGNUMX **out_priv_key);
 
 /* DH_get0_pqg sets |*out_p|, |*out_q|, and |*out_g|, if non-NULL, to |dh|'s p,
  * q, and g parameters, respectively. */
-OPENSSL_EXPORT void DH_get0_pqg(const DH *dh, const BIGNUM **out_p,
-                                const BIGNUM **out_q, const BIGNUM **out_g);
+OPENSSL_EXPORT void DH_get0_pqg(const DH *dh, const BIGNUMX **out_p,
+                                const BIGNUMX **out_q, const BIGNUMX **out_g);
 
 
 /* Standard parameters.
@@ -111,9 +111,9 @@ OPENSSL_EXPORT DH *DH_get_2048_224(const ENGINE *engine);
 OPENSSL_EXPORT DH *DH_get_2048_256(const ENGINE *engine);
 
 /* BN_get_rfc3526_prime_1536 sets |*ret| to the 1536-bit MODP group from RFC
- * 3526 and returns |ret|. If |ret| is NULL then a fresh |BIGNUM| is allocated
+ * 3526 and returns |ret|. If |ret| is NULL then a fresh |BIGNUMX| is allocated
  * and returned. It returns NULL on allocation failure. */
-OPENSSL_EXPORT BIGNUM *BN_get_rfc3526_prime_1536(BIGNUM *ret);
+OPENSSL_EXPORT BIGNUMX *BN_get_rfc3526_prime_1536(BIGNUMX *ret);
 
 
 /* Parameter generation. */
@@ -143,7 +143,7 @@ OPENSSL_EXPORT int DH_generate_key(DH *dh);
  * writes it as a big-endian integer into |out|, which must have |DH_size|
  * bytes of space. It returns the number of bytes written, or a negative number
  * on error. */
-OPENSSL_EXPORT int DH_compute_key(uint8_t *out, const BIGNUM *peers_key,
+OPENSSL_EXPORT int DH_compute_key(uint8_t *out, const BIGNUMX *peers_key,
                                   DH *dh);
 
 
@@ -183,7 +183,7 @@ OPENSSL_EXPORT int DH_check(const DH *dh, int *out_flags);
  * DH group in |dh| and sets |DH_CHECK_PUBKEY_*| flags in |*out_flags| if it
  * finds any errors. It returns one if |*out_flags| was successfully set and
  * zero on error. */
-OPENSSL_EXPORT int DH_check_pub_key(const DH *dh, const BIGNUM *pub_key,
+OPENSSL_EXPORT int DH_check_pub_key(const DH *dh, const BIGNUMX *pub_key,
                                     int *out_flags);
 
 /* DHparams_dup allocates a fresh |DH| and copies the parameters from |dh| into
@@ -247,10 +247,10 @@ OPENSSL_EXPORT int i2d_DHparams(const DH *in, unsigned char **outp);
 
 
 struct dh_st {
-  BIGNUM *p;
-  BIGNUM *g;
-  BIGNUM *pub_key;  /* g^x mod p */
-  BIGNUM *priv_key; /* x */
+  BIGNUMX *p;
+  BIGNUMX *g;
+  BIGNUMX *pub_key;  /* g^x mod p */
+  BIGNUMX *priv_key; /* x */
 
   /* priv_length contains the length, in bits, of the private value. If zero,
    * the private value will be the same length as |p|. */
@@ -260,11 +260,11 @@ struct dh_st {
   BN_MONT_CTX *method_mont_p;
 
   /* Place holders if we want to do X9.42 DH */
-  BIGNUM *q;
-  BIGNUM *j;
+  BIGNUMX *q;
+  BIGNUMX *j;
   unsigned char *seed;
   int seedlen;
-  BIGNUM *counter;
+  BIGNUMX *counter;
 
   int flags;
   CRYPTO_refcount_t references;

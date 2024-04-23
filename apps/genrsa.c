@@ -56,9 +56,9 @@ int genrsa_main(int argc, char **argv)
     BN_GENCB *cb = BN_GENCB_new();
     PW_CB_DATA cb_data;
     ENGINE *eng = NULL;
-    BIGNUM *bn = BNY_new();
+    BIGNUMX *bn = BNY_new();
     BIO *out = NULL;
-    const BIGNUM *e;
+    const BIGNUMX *e;
     YRSA *rsa = NULL;
     const EVVP_CIPHER *enc = NULL;
     int ret = 1, num = DEFBITS, private = 0, primes = DEFPRIMES;

@@ -141,8 +141,8 @@ TEST(ECTest, Encoding) {
   const EC_POINT *pub_key = ECC_KEY_get0_public_key(key.get());
   ASSERT_TRUE(pub_key) << "Public key missing";
 
-  bssl::UniquePtr<BIGNUM> x(BNY_new());
-  bssl::UniquePtr<BIGNUM> y(BNY_new());
+  bssl::UniquePtr<BIGNUMX> x(BNY_new());
+  bssl::UniquePtr<BIGNUMX> y(BNY_new());
   ASSERT_TRUE(x);
   ASSERT_TRUE(y);
   ASSERT_TRUE(EC_POINT_get_affine_coordinates_GFp(
@@ -231,17 +231,17 @@ TEST(ECTest, ArbitraryCurve) {
   };
   bssl::UniquePtr<BN_CTX> ctx(BNY_CTX_new());
   ASSERT_TRUE(ctx);
-  bssl::UniquePtr<BIGNUM> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
+  bssl::UniquePtr<BIGNUMX> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
   ASSERT_TRUE(p);
-  bssl::UniquePtr<BIGNUM> a(BNY_bin2bn(kA, sizeof(kA), nullptr));
+  bssl::UniquePtr<BIGNUMX> a(BNY_bin2bn(kA, sizeof(kA), nullptr));
   ASSERT_TRUE(a);
-  bssl::UniquePtr<BIGNUM> b(BNY_bin2bn(kB, sizeof(kB), nullptr));
+  bssl::UniquePtr<BIGNUMX> b(BNY_bin2bn(kB, sizeof(kB), nullptr));
   ASSERT_TRUE(b);
-  bssl::UniquePtr<BIGNUM> gx(BNY_bin2bn(kX, sizeof(kX), nullptr));
+  bssl::UniquePtr<BIGNUMX> gx(BNY_bin2bn(kX, sizeof(kX), nullptr));
   ASSERT_TRUE(gx);
-  bssl::UniquePtr<BIGNUM> gy(BNY_bin2bn(kY, sizeof(kY), nullptr));
+  bssl::UniquePtr<BIGNUMX> gy(BNY_bin2bn(kY, sizeof(kY), nullptr));
   ASSERT_TRUE(gy);
-  bssl::UniquePtr<BIGNUM> order(BNY_bin2bn(kOrder, sizeof(kOrder), nullptr));
+  bssl::UniquePtr<BIGNUMX> order(BNY_bin2bn(kOrder, sizeof(kOrder), nullptr));
   ASSERT_TRUE(order);
 
   bssl::UniquePtr<EC_GROUP> group(
@@ -262,7 +262,7 @@ TEST(ECTest, ArbitraryCurve) {
   ASSERT_TRUE(key2);
   bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group.get()));
   ASSERT_TRUE(point);
-  bssl::UniquePtr<BIGNUM> x(BNY_new()), y(BNY_new());
+  bssl::UniquePtr<BIGNUMX> x(BNY_new()), y(BNY_new());
   ASSERT_TRUE(x);
   ASSERT_TRUE(ECC_KEY_set_group(key2.get(), group.get()));
   ASSERT_TRUE(
@@ -291,9 +291,9 @@ TEST_P(ECCurveTest, SetAffine) {
       EC_POINT_is_on_curve(group, ECC_KEY_get0_public_key(key.get()), nullptr));
 
   // Get the public key's coordinates.
-  bssl::UniquePtr<BIGNUM> x(BNY_new());
+  bssl::UniquePtr<BIGNUMX> x(BNY_new());
   ASSERT_TRUE(x);
-  bssl::UniquePtr<BIGNUM> y(BNY_new());
+  bssl::UniquePtr<BIGNUMX> y(BNY_new());
   ASSERT_TRUE(y);
   EXPECT_TRUE(EC_POINT_get_affine_coordinates_GFp(
       group, ECC_KEY_get0_public_key(key.get()), x.get(), y.get(), nullptr));
@@ -351,7 +351,7 @@ TEST_P(ECCurveTest, MulZero) {
 
   bssl::UniquePtr<EC_POINT> point(EC_POINT_new(group.get()));
   ASSERT_TRUE(point);
-  bssl::UniquePtr<BIGNUM> zero(BNY_new());
+  bssl::UniquePtr<BIGNUMX> zero(BNY_new());
   ASSERT_TRUE(zero);
   BN_zero(zero.get());
   ASSERT_TRUE(EC_POINT_mul(group.get(), point.get(), zero.get(), nullptr,

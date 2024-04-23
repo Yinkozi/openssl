@@ -174,7 +174,7 @@
 #  ifdef BN_DEBUG_RAND
 #   define bn_pollute(a) \
         do { \
-            const BIGNUM *_bnum1 = (a); \
+            const BIGNUMX *_bnum1 = (a); \
             if (_bnum1->top < _bnum1->dmax) { \
                 unsigned char _tmp_char; \
                 /* We cast away const without the compiler knowing, any \
@@ -192,7 +192,7 @@
 #  endif
 #  define bn_check_top(a) \
         do { \
-                const BIGNUM *_bnum2 = (a); \
+                const BIGNUMX *_bnum2 = (a); \
                 if (_bnum2 != NULL) { \
                         int _top = _bnum2->top; \
                         (void)ossl_assert((_top == 0 && !_bnum2->neg) || \
@@ -207,7 +207,7 @@
 #  define bn_check_size(bn, bits) bn_wcheck_size(bn, ((bits+BN_BITS2-1))/BN_BITS2)
 #  define bn_wcheck_size(bn, words) \
         do { \
-                const BIGNUM *_bnum2 = (bn); \
+                const BIGNUMX *_bnum2 = (bn); \
                 assert((words) <= (_bnum2)->dmax && \
                        (words) >= (_bnum2)->top); \
                 /* avoid unused variable warning with NDEBUG */ \
@@ -248,10 +248,10 @@ struct bignum_st {
 /* Used for montgomery multiplication */
 struct bn_mont_ctx_st {
     int ri;                     /* number of bits in R */
-    BIGNUM RR;                  /* used to convert to montgomery form,
+    BIGNUMX RR;                  /* used to convert to montgomery form,
                                    possibly zero-padded */
-    BIGNUM N;                   /* The modulus */
-    BIGNUM Ni;                  /* R*(1/R mod N) - N*Ni = 1 (Ni is only
+    BIGNUMX N;                   /* The modulus */
+    BIGNUMX Ni;                  /* R*(1/R mod N) - N*Ni = 1 (Ni is only
                                  * stored for bignum algorithm) */
     BN_ULONG n0[2];             /* least significant word(s) of Ni; (type
                                  * changed with 0.9.9, was "BN_ULONG n0;"
@@ -264,8 +264,8 @@ struct bn_mont_ctx_st {
  * threads
  */
 struct bn_recp_ctx_st {
-    BIGNUM N;                   /* the divisor */
-    BIGNUM Nr;                  /* the reciprocal */
+    BIGNUMX N;                   /* the divisor */
+    BIGNUMX Nr;                  /* the reciprocal */
     int num_bits;
     int shift;
     int flags;
@@ -648,7 +648,7 @@ unsigned __int64 _umul128(unsigned __int64 a, unsigned __int64 b,
 void BN_RECP_CTX_init(BN_RECP_CTX *recp);
 void BN_MONT_CTX_init(BN_MONT_CTX *ctx);
 
-void bn_init(BIGNUM *a);
+void bn_init(BIGNUMX *a);
 void bn_mul_normal(BN_ULONG *r, BN_ULONG *a, int na, BN_ULONG *b, int nb);
 void bn_mul_comba8(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b);
 void bn_mul_comba4(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b);
@@ -669,12 +669,12 @@ BN_ULONG bn_sub_part_words(BN_ULONG *r, const BN_ULONG *a, const BN_ULONG *b,
                            int cl, int dl);
 int bn_mul_mont(BN_ULONG *rp, const BN_ULONG *ap, const BN_ULONG *bp,
                 const BN_ULONG *np, const BN_ULONG *n0, int num);
-void bn_correct_top_consttime(BIGNUM *a);
-BIGNUM *int_bn_mod_inverse(BIGNUM *in,
-                           const BIGNUM *a, const BIGNUM *n, BN_CTX *ctx,
+void bn_correct_top_consttime(BIGNUMX *a);
+BIGNUMX *int_bn_mod_inverse(BIGNUMX *in,
+                           const BIGNUMX *a, const BIGNUMX *n, BN_CTX *ctx,
                            int *noinv);
 
-static ossl_inline BIGNUM *bn_expand(BIGNUM *a, int bits)
+static ossl_inline BIGNUMX *bn_expand(BIGNUMX *a, int bits)
 {
     if (bits > (INT_MAX - BN_BITS2 + 1))
         return NULL;

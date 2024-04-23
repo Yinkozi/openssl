@@ -132,12 +132,12 @@ int ec_GFp_mont_group_copy(EC_GROUP *dest, const EC_GROUP *src)
     return 0;
 }
 
-int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
-                                const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUMX *p,
+                                const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
     BN_MONT_CTX *mont = NULL;
-    BIGNUM *one = NULL;
+    BIGNUMX *one = NULL;
     int ret = 0;
 
     BN_MONT_CTX_free(group->field_data1);
@@ -185,8 +185,8 @@ int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     return ret;
 }
 
-int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
-                          const BIGNUM *b, BN_CTX *ctx)
+int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
+                          const BIGNUMX *b, BN_CTX *ctx)
 {
     if (group->field_data1 == NULL) {
         ECerr(EC_F_EC_GFP_MONT_FIELD_MUL, EC_R_NOT_INITIALIZED);
@@ -196,7 +196,7 @@ int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     return BNY_mod_mul_montgomery(r, a, b, group->field_data1, ctx);
 }
 
-int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                           BN_CTX *ctx)
 {
     if (group->field_data1 == NULL) {
@@ -212,10 +212,10 @@ int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
  * If a is zero (or equivalent), you'll get a EC_R_CANNOT_INVERT error.
  * We have a Mont structure, so SCA hardening is FLT inversion.
  */
-int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                             BN_CTX *ctx)
 {
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     BN_CTX *new_ctx = NULL;
     int ret = 0;
 
@@ -255,8 +255,8 @@ int ec_GFp_mont_field_inv(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     return ret;
 }
 
-int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUM *r,
-                             const BIGNUM *a, BN_CTX *ctx)
+int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUMX *r,
+                             const BIGNUMX *a, BN_CTX *ctx)
 {
     if (group->field_data1 == NULL) {
         ECerr(EC_F_EC_GFP_MONT_FIELD_ENCODE, EC_R_NOT_INITIALIZED);
@@ -266,8 +266,8 @@ int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUM *r,
     return BN_to_montgomery(r, a, (BN_MONT_CTX *)group->field_data1, ctx);
 }
 
-int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUM *r,
-                             const BIGNUM *a, BN_CTX *ctx)
+int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUMX *r,
+                             const BIGNUMX *a, BN_CTX *ctx)
 {
     if (group->field_data1 == NULL) {
         ECerr(EC_F_EC_GFP_MONT_FIELD_DECODE, EC_R_NOT_INITIALIZED);
@@ -277,7 +277,7 @@ int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUM *r,
     return BN_from_montgomery(r, a, group->field_data1, ctx);
 }
 
-int ec_GFp_mont_field_set_to_one(const EC_GROUP *group, BIGNUM *r,
+int ec_GFp_mont_field_set_to_one(const EC_GROUP *group, BIGNUMX *r,
                                  BN_CTX *ctx)
 {
     if (group->field_data2 == NULL) {

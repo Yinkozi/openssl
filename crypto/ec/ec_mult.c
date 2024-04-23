@@ -137,15 +137,15 @@ void EC_ec_pre_comp_free(EC_PRE_COMP *pre)
  * Returns 1 on success, 0 otherwise.
  */
 int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
-                         const BIGNUM *scalar, const EC_POINT *point,
+                         const BIGNUMX *scalar, const EC_POINT *point,
                          BN_CTX *ctx)
 {
     int i, cardinality_bits, group_top, kbit, pbit, Z_is_one;
     EC_POINT *p = NULL;
     EC_POINT *s = NULL;
-    BIGNUM *k = NULL;
-    BIGNUM *lambda = NULL;
-    BIGNUM *cardinality = NULL;
+    BIGNUMX *k = NULL;
+    BIGNUMX *lambda = NULL;
+    BIGNUMX *cardinality = NULL;
     int ret = 0;
 
     /* early exit if the input point is the point at infinity */
@@ -400,8 +400,8 @@ int ec_scalar_mul_ladder(const EC_GROUP *group, EC_POINT *r,
  *      scalar*generator
  * in the addition if scalar != NULL
  */
-int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
-                size_t num, const EC_POINT *points[], const BIGNUM *scalars[],
+int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *scalar,
+                size_t num, const EC_POINT *points[], const BIGNUMX *scalars[],
                 BN_CTX *ctx)
 {
     const EC_POINT *generator = NULL;
@@ -823,7 +823,7 @@ int ec_wNAF_precompute_mult(EC_GROUP *group, BN_CTX *ctx)
     const EC_POINT *generator;
     EC_POINT *tmp_point = NULL, *base = NULL, **var;
     BN_CTX *new_ctx = NULL;
-    const BIGNUM *order;
+    const BIGNUMX *order;
     size_t i, bits, w, pre_points_per_block, blocksize, numblocks, num;
     EC_POINT **points = NULL;
     EC_PRE_COMP *pre_comp;

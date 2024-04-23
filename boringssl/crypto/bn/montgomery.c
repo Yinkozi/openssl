@@ -125,8 +125,8 @@
 #define OPENSSL_BN_ASM_MONT
 #endif
 
-static int bn_mod_mul_montgomery_fallback(BIGNUM *r, const BIGNUM *a,
-                                          const BIGNUM *b,
+static int bn_mod_mul_montgomery_fallback(BIGNUMX *r, const BIGNUMX *a,
+                                          const BIGNUMX *b,
                                           const BN_MONT_CTX *mont, BN_CTX *ctx);
 
 
@@ -173,7 +173,7 @@ OPENSSL_COMPILE_ASSERT(BN_MONT_CTX_N0_LIMBS == 1 || BN_MONT_CTX_N0_LIMBS == 2,
 OPENSSL_COMPILE_ASSERT(sizeof(BN_ULONG) * BN_MONT_CTX_N0_LIMBS ==
                        sizeof(uint64_t), BN_MONT_CTX_set_64_bit_mismatch);
 
-int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx) {
+int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUMX *mod, BN_CTX *ctx) {
   if (BN_is_zero(mod)) {
     OPENSSL_PUT_ERROR(BN, BN_R_DIV_BY_ZERO);
     return 0;
@@ -224,7 +224,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx) {
 }
 
 int BN_MONT_CTX_set_locked(BN_MONT_CTX **pmont, CRYPTO_MUTEX *lock,
-                           const BIGNUM *mod, BN_CTX *bn_ctx) {
+                           const BIGNUMX *mod, BN_CTX *bn_ctx) {
   CRYPTO_MUTEX_lock_read(lock);
   BN_MONT_CTX *ctx = *pmont;
   CRYPTO_MUTEX_unlock_read(lock);
@@ -255,17 +255,17 @@ out:
   return ctx != NULL;
 }
 
-int BN_to_montgomery(BIGNUM *ret, const BIGNUM *a, const BN_MONT_CTX *mont,
+int BN_to_montgomery(BIGNUMX *ret, const BIGNUMX *a, const BN_MONT_CTX *mont,
                      BN_CTX *ctx) {
   return BNY_mod_mul_montgomery(ret, a, &mont->RR, mont, ctx);
 }
 
-static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r,
+static int BN_from_montgomery_word(BIGNUMX *ret, BIGNUMX *r,
                                    const BN_MONT_CTX *mont) {
   BN_ULONG *ap, *np, *rp, n0, v, carry;
   int nl, max, i;
 
-  const BIGNUM *n = &mont->N;
+  const BIGNUMX *n = &mont->N;
   nl = n->top;
   if (nl == 0) {
     ret->top = 0;
@@ -344,10 +344,10 @@ static int BN_from_montgomery_word(BIGNUM *ret, BIGNUM *r,
   return 1;
 }
 
-int BN_from_montgomery(BIGNUM *r, const BIGNUM *a, const BN_MONT_CTX *mont,
+int BN_from_montgomery(BIGNUMX *r, const BIGNUMX *a, const BN_MONT_CTX *mont,
                        BN_CTX *ctx) {
   int ret = 0;
-  BIGNUM *t;
+  BIGNUMX *t;
 
   BNY_CTX_start(ctx);
   t = BNY_CTX_get(ctx);
@@ -364,7 +364,7 @@ err:
   return ret;
 }
 
-int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int BNY_mod_mul_montgomery(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
                           const BN_MONT_CTX *mont, BN_CTX *ctx) {
 #if !defined(OPENSSL_BN_ASM_MONT)
   return bn_mod_mul_montgomery_fallback(r, a, b, mont, ctx);
@@ -395,14 +395,14 @@ int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 #endif
 }
 
-static int bn_mod_mul_montgomery_fallback(BIGNUM *r, const BIGNUM *a,
-                                          const BIGNUM *b,
+static int bn_mod_mul_montgomery_fallback(BIGNUMX *r, const BIGNUMX *a,
+                                          const BIGNUMX *b,
                                           const BN_MONT_CTX *mont,
                                           BN_CTX *ctx) {
   int ret = 0;
 
   BNY_CTX_start(ctx);
-  BIGNUM *tmp = BNY_CTX_get(ctx);
+  BIGNUMX *tmp = BNY_CTX_get(ctx);
   if (tmp == NULL) {
     goto err;
   }

@@ -203,7 +203,7 @@ static void ecp_nistz256_mod_inverse_mont(BN_ULONG r[P256_LIMBS],
 /* ecp_nistz256_bignum_to_field_elem copies the contents of |in| to |out| and
  * returns one if it fits. Otherwise it returns zero. */
 static int ecp_nistz256_bignum_to_field_elem(BN_ULONG out[P256_LIMBS],
-                                             const BIGNUM *in) {
+                                             const BIGNUMX *in) {
   if (in->top > P256_LIMBS) {
     return 0;
   }
@@ -215,7 +215,7 @@ static int ecp_nistz256_bignum_to_field_elem(BN_ULONG out[P256_LIMBS],
 
 /* r = p * p_scalar */
 static int ecp_nistz256_windowed_mul(const EC_GROUP *group, P256_POINT *r,
-                                     const EC_POINT *p, const BIGNUM *p_scalar,
+                                     const EC_POINT *p, const BIGNUMX *p_scalar,
                                      BN_CTX *ctx) {
   assert(p != NULL);
   assert(p_scalar != NULL);
@@ -245,7 +245,7 @@ static int ecp_nistz256_windowed_mul(const EC_GROUP *group, P256_POINT *r,
     }
     BNY_CTX_start(ctx);
     ctx_started = 1;
-    BIGNUM *mod = BNY_CTX_get(ctx);
+    BIGNUMX *mod = BNY_CTX_get(ctx);
     if (mod == NULL) {
       OPENSSL_PUT_ERROR(EC, ERR_R_MALLOC_FAILURE);
       goto err;
@@ -364,8 +364,8 @@ err:
 }
 
 static int ecp_nistz256_points_mul(
-    const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-    const EC_POINT *p_, const BIGNUM *p_scalar, BN_CTX *ctx) {
+    const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+    const EC_POINT *p_, const BIGNUMX *p_scalar, BN_CTX *ctx) {
   assert((p_ != NULL) == (p_scalar != NULL));
 
   static const unsigned kWindowSize = 7;
@@ -391,7 +391,7 @@ static int ecp_nistz256_points_mul(
       }
       BNY_CTX_start(ctx);
       ctx_started = 1;
-      BIGNUM *tmp_scalar = BNY_CTX_get(ctx);
+      BIGNUMX *tmp_scalar = BNY_CTX_get(ctx);
       if (tmp_scalar == NULL) {
         goto err;
       }
@@ -495,7 +495,7 @@ err:
 }
 
 static int ecp_nistz256_get_affine(const EC_GROUP *group, const EC_POINT *point,
-                                   BIGNUM *x, BIGNUM *y, BN_CTX *ctx) {
+                                   BIGNUMX *x, BIGNUMX *y, BN_CTX *ctx) {
   BN_ULONG z_inv2[P256_LIMBS];
   BN_ULONG z_inv3[P256_LIMBS];
   BN_ULONG point_x[P256_LIMBS], point_y[P256_LIMBS], point_z[P256_LIMBS];

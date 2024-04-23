@@ -291,7 +291,7 @@ static const ERR_STRING_DATA EC_str_functs[] = {
 static const ERR_STRING_DATA EC_str_reasons[] = {
     {ERR_PACK(ERR_LIB_EC, 0, EC_R_YASN1_ERROR), "asn1 error"},
     {ERR_PACK(ERR_LIB_EC, 0, EC_R_BAD_SIGNATURE), "bad signature"},
-    {ERR_PACK(ERR_LIB_EC, 0, EC_R_BIGNUM_OUT_OF_RANGE), "bignum out of range"},
+    {ERR_PACK(ERR_LIB_EC, 0, EC_R_BIGNUMX_OUT_OF_RANGE), "bignum out of range"},
     {ERR_PACK(ERR_LIB_EC, 0, EC_R_BUFFER_TOO_SMALL), "buffer too small"},
     {ERR_PACK(ERR_LIB_EC, 0, EC_R_CANNOT_INVERT), "cannot invert"},
     {ERR_PACK(ERR_LIB_EC, 0, EC_R_COORDINATES_OUT_OF_RANGE),

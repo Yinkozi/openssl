@@ -15,8 +15,8 @@
 #include <openssl/rand.h>
 
 YASN1_SEQUENCE(DSA_SIG) = {
-        YASN1_SIMPLE(DSA_SIG, r, CBIGNUM),
-        YASN1_SIMPLE(DSA_SIG, s, CBIGNUM)
+        YASN1_SIMPLE(DSA_SIG, r, CBIGNUMX),
+        YASN1_SIMPLE(DSA_SIG, s, CBIGNUMX)
 } static_YASN1_SEQUENCE_END(DSA_SIG)
 
 IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA_SIG, DSA_SIG, DSA_SIG)
@@ -38,7 +38,7 @@ void DSA_SIG_free(DSA_SIG *sig)
     OPENSSL_free(sig);
 }
 
-void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
+void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUMX **pr, const BIGNUMX **ps)
 {
     if (pr != NULL)
         *pr = sig->r;
@@ -46,7 +46,7 @@ void DSA_SIG_get0(const DSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
         *ps = sig->s;
 }
 
-int DSA_SIG_set0(DSA_SIG *sig, BIGNUM *r, BIGNUM *s)
+int DSA_SIG_set0(DSA_SIG *sig, BIGNUMX *r, BIGNUMX *s)
 {
     if (r == NULL || s == NULL)
         return 0;
@@ -76,28 +76,28 @@ static int dsa_cb(int operation, YASN1_VALUE **pval, const YASN1_ITEM *it,
 
 YASN1_SEQUENCE_cb(DSAPrivateKey, dsa_cb) = {
         YASN1_EMBED(DSA, version, INT32),
-        YASN1_SIMPLE(DSA, p, BIGNUM),
-        YASN1_SIMPLE(DSA, q, BIGNUM),
-        YASN1_SIMPLE(DSA, g, BIGNUM),
-        YASN1_SIMPLE(DSA, pub_key, BIGNUM),
-        YASN1_SIMPLE(DSA, priv_key, CBIGNUM)
+        YASN1_SIMPLE(DSA, p, BIGNUMX),
+        YASN1_SIMPLE(DSA, q, BIGNUMX),
+        YASN1_SIMPLE(DSA, g, BIGNUMX),
+        YASN1_SIMPLE(DSA, pub_key, BIGNUMX),
+        YASN1_SIMPLE(DSA, priv_key, CBIGNUMX)
 } static_YASN1_SEQUENCE_END_cb(DSA, DSAPrivateKey)
 
 IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPrivateKey, DSAPrivateKey)
 
 YASN1_SEQUENCE_cb(DSAparams, dsa_cb) = {
-        YASN1_SIMPLE(DSA, p, BIGNUM),
-        YASN1_SIMPLE(DSA, q, BIGNUM),
-        YASN1_SIMPLE(DSA, g, BIGNUM),
+        YASN1_SIMPLE(DSA, p, BIGNUMX),
+        YASN1_SIMPLE(DSA, q, BIGNUMX),
+        YASN1_SIMPLE(DSA, g, BIGNUMX),
 } static_YASN1_SEQUENCE_END_cb(DSA, DSAparams)
 
 IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAparams, DSAparams)
 
 YASN1_SEQUENCE_cb(DSAPublicKey, dsa_cb) = {
-        YASN1_SIMPLE(DSA, pub_key, BIGNUM),
-        YASN1_SIMPLE(DSA, p, BIGNUM),
-        YASN1_SIMPLE(DSA, q, BIGNUM),
-        YASN1_SIMPLE(DSA, g, BIGNUM)
+        YASN1_SIMPLE(DSA, pub_key, BIGNUMX),
+        YASN1_SIMPLE(DSA, p, BIGNUMX),
+        YASN1_SIMPLE(DSA, q, BIGNUMX),
+        YASN1_SIMPLE(DSA, g, BIGNUMX)
 } static_YASN1_SEQUENCE_END_cb(DSA, DSAPublicKey)
 
 IMPLEMENT_YASN1_ENCODE_FUNCTIONS_const_fname(DSA, DSAPublicKey, DSAPublicKey)

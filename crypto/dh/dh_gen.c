@@ -61,7 +61,7 @@ int DH_generate_parameters_ex(DH *ret, int prime_len, int generator,
 static int dh_builtin_genparams(DH *ret, int prime_len, int generator,
                                 BN_GENCB *cb)
 {
-    BIGNUM *t1, *t2;
+    BIGNUMX *t1, *t2;
     int g, ok = -1;
     BN_CTX *ctx = NULL;
 

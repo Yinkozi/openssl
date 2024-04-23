@@ -28,17 +28,17 @@ static int cb(int p, int n, BN_GENCB *arg);
 static int dh_test(void)
 {
     DH *dh = NULL;
-    BIGNUM *p = NULL, *q = NULL, *g = NULL;
-    const BIGNUM *p2, *q2, *g2;
-    BIGNUM *priv_key = NULL;
-    const BIGNUM *pub_key2, *priv_key2;
+    BIGNUMX *p = NULL, *q = NULL, *g = NULL;
+    const BIGNUMX *p2, *q2, *g2;
+    BIGNUMX *priv_key = NULL;
+    const BIGNUMX *pub_key2, *priv_key2;
     BN_GENCB *_cb = NULL;
     DH *a = NULL;
     DH *b = NULL;
     DH *c = NULL;
-    const BIGNUM *ap = NULL, *ag = NULL, *apub_key = NULL;
-    const BIGNUM *bpub_key = NULL, *bpriv_key = NULL;
-    BIGNUM *bp = NULL, *bg = NULL, *cpriv_key = NULL;
+    const BIGNUMX *ap = NULL, *ag = NULL, *apub_key = NULL;
+    const BIGNUMX *bpub_key = NULL, *bpriv_key = NULL;
+    BIGNUMX *bp = NULL, *bg = NULL, *cpriv_key = NULL;
     unsigned char *abuf = NULL;
     unsigned char *bbuf = NULL;
     unsigned char *cbuf = NULL;
@@ -543,8 +543,8 @@ static int rfc5114_test(void)
     unsigned char *Z1 = NULL;
     unsigned char *Z2 = NULL;
     const rfc5114_td *td = NULL;
-    BIGNUM *bady = NULL, *priv_key = NULL, *pub_key = NULL;
-    const BIGNUM *pub_key_tmp;
+    BIGNUMX *bady = NULL, *priv_key = NULL, *pub_key = NULL;
+    const BIGNUMX *pub_key_tmp;
 
     for (i = 0; i < (int)OSSL_NELEM(rfctd); i++) {
         td = rfctd + i;
@@ -649,7 +649,7 @@ static int rfc5114_test(void)
 static int rfc7919_test(void)
 {
     DH *a = NULL, *b = NULL;
-    const BIGNUM *apub_key = NULL, *bpub_key = NULL;
+    const BIGNUMX *apub_key = NULL, *bpub_key = NULL;
     unsigned char *abuf = NULL;
     unsigned char *bbuf = NULL;
     int i, alen, blen, aout, bout;

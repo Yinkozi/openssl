@@ -605,7 +605,7 @@ OPENSSL_EXPORT int EVVP_PKEY_CTX_set_rsa_keygen_bits(EVVP_PKEY_CTX *ctx,
 /* EVVP_PKEY_CTX_set_rsa_keygen_pubexp sets |e| as the public exponent for key
  * generation. Returns one on success or zero on error. */
 OPENSSL_EXPORT int EVVP_PKEY_CTX_set_rsa_keygen_pubexp(EVVP_PKEY_CTX *ctx,
-                                                      BIGNUM *e);
+                                                      BIGNUMX *e);
 
 /* EVVP_PKEY_CTX_set_rsa_oaep_md sets |md| as the digest used in OAEP padding.
  * Returns one on success or zero on error. */

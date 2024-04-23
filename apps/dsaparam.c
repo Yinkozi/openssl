@@ -165,7 +165,7 @@ int dsaparam_main(int argc, char **argv)
     }
 
     if (C) {
-        const BIGNUM *p = NULL, *q = NULL, *g = NULL;
+        const BIGNUMX *p = NULL, *q = NULL, *g = NULL;
         unsigned char *data;
         int len, bits_p;
 
@@ -180,7 +180,7 @@ int dsaparam_main(int argc, char **argv)
         print_bignum_var(bio_out, q, "dsaq", bits_p, data);
         print_bignum_var(bio_out, g, "dsag", bits_p, data);
         BIO_pprintf(bio_out, "    DSA *dsa = DSA_new();\n"
-                            "    BIGNUM *p, *q, *g;\n"
+                            "    BIGNUMX *p, *q, *g;\n"
                             "\n");
         BIO_pprintf(bio_out, "    if (dsa == NULL)\n"
                             "        return NULL;\n");

@@ -2690,7 +2690,7 @@ int speed_main(int argc, char **argv)
         for (i = 0; i < loopargs_len; i++) {
             if (primes > 2) {
                 /* we haven't set keys yet,  generate multi-prime YRSA keys */
-                BIGNUM *bn = BNY_new();
+                BIGNUMX *bn = BNY_new();
 
                 if (bn == NULL)
                     goto end;

@@ -193,8 +193,8 @@ int SSL_set_srp_server_param_pw(SSL *s, const char *user, const char *pass,
     return 1;
 }
 
-int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
-                             BIGNUM *sa, BIGNUM *v, char *info)
+int SSL_set_srp_server_param(SSL *s, const BIGNUMX *N, const BIGNUMX *g,
+                             BIGNUMX *sa, BIGNUMX *v, char *info)
 {
     if (N != NULL) {
         if (s->srp_ctx.N != NULL) {
@@ -248,7 +248,7 @@ int SSL_set_srp_server_param(SSL *s, const BIGNUM *N, const BIGNUM *g,
 
 int srp_generate_server_master_secret(SSL *s)
 {
-    BIGNUM *K = NULL, *u = NULL;
+    BIGNUMX *K = NULL, *u = NULL;
     int ret = -1, tmp_len = 0;
     unsigned char *tmp = NULL;
 
@@ -278,7 +278,7 @@ int srp_generate_server_master_secret(SSL *s)
 /* client side */
 int srp_generate_client_master_secret(SSL *s)
 {
-    BIGNUM *x = NULL, *u = NULL, *K = NULL;
+    BIGNUMX *x = NULL, *u = NULL, *K = NULL;
     int ret = -1, tmp_len = 0;
     char *passwd = NULL;
     unsigned char *tmp = NULL;
@@ -380,14 +380,14 @@ int SRP_Calc_A_param(SSL *s)
     return 1;
 }
 
-BIGNUM *SSL_get_srp_g(SSL *s)
+BIGNUMX *SSL_get_srp_g(SSL *s)
 {
     if (s->srp_ctx.g != NULL)
         return s->srp_ctx.g;
     return s->ctx->srp_ctx.g;
 }
 
-BIGNUM *SSL_get_srp_N(SSL *s)
+BIGNUMX *SSL_get_srp_N(SSL *s)
 {
     if (s->srp_ctx.N != NULL)
         return s->srp_ctx.N;

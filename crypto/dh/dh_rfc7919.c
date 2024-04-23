@@ -14,13 +14,13 @@
 #include <openssl/objects.h>
 #include "crypto/bn_dh.h"
 
-static DH *dh_param_init(const BIGNUM *p, int32_t nbits)
+static DH *dh_param_init(const BIGNUMX *p, int32_t nbits)
 {
     DH *dh = DH_new();
     if (dh == NULL)
         return NULL;
-    dh->p = (BIGNUM *)p;
-    dh->g = (BIGNUM *)&_bignum_const_2;
+    dh->p = (BIGNUMX *)p;
+    dh->g = (BIGNUMX *)&_bignum_const_2;
     dh->length = nbits;
     return dh;
 }
@@ -63,7 +63,7 @@ int DH_get_nid(const DH *dh)
     else
         return NID_undef;
     if (dh->q != NULL) {
-        BIGNUM *q = BN_dup(dh->p);
+        BIGNUMX *q = BN_dup(dh->p);
 
         /* Check q = p * 2 + 1 we already know q is odd, so just shift right */
         if (q == NULL || !BN_ryshift1(q, q) || !BN_cmp(dh->q, q))

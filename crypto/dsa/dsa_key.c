@@ -26,7 +26,7 @@ static int dsa_builtin_keygen(DSA *dsa)
 {
     int ok = 0;
     BN_CTX *ctx = NULL;
-    BIGNUM *pub_key = NULL, *priv_key = NULL;
+    BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
     if ((ctx = BNY_CTX_new()) == NULL)
         goto err;
@@ -49,7 +49,7 @@ static int dsa_builtin_keygen(DSA *dsa)
         pub_key = dsa->pub_key;
 
     {
-        BIGNUM *prk = BNY_new();
+        BIGNUMX *prk = BNY_new();
 
         if (prk == NULL)
             goto err;

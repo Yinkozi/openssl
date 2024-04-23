@@ -28,8 +28,8 @@
  * Test that r == 0 in test_exp_mod_zero(). Returns one on success,
  * returns zero and prints debug output otherwise.
  */
-static int a_is_zero_mod_one(const char *method, const BIGNUM *r,
-                             const BIGNUM *a)
+static int a_is_zero_mod_one(const char *method, const BIGNUMX *r,
+                             const BIGNUMX *a)
 {
     if (!BN_is_zero(r)) {
         TEST_error("%s failed: a ** 0 mod 1 = r (should be 0)", method);
@@ -45,8 +45,8 @@ static int a_is_zero_mod_one(const char *method, const BIGNUM *r,
  */
 static int test_mod_exp_zero(void)
 {
-    BIGNUM *a = NULL, *p = NULL, *m = NULL;
-    BIGNUM *r = NULL;
+    BIGNUMX *a = NULL, *p = NULL, *m = NULL;
+    BIGNUMX *r = NULL;
     BN_ULONG one_word = 1;
     BN_CTX *ctx = BNY_CTX_new();
     int ret = 0, failed = 0;
@@ -153,13 +153,13 @@ static int test_mod_exp(int round)
     BN_CTX *ctx;
     unsigned char c;
     int ret = 0;
-    BIGNUM *r_mont = NULL;
-    BIGNUM *r_mont_const = NULL;
-    BIGNUM *r_recp = NULL;
-    BIGNUM *r_simple = NULL;
-    BIGNUM *a = NULL;
-    BIGNUM *b = NULL;
-    BIGNUM *m = NULL;
+    BIGNUMX *r_mont = NULL;
+    BIGNUMX *r_mont_const = NULL;
+    BIGNUMX *r_recp = NULL;
+    BIGNUMX *r_simple = NULL;
+    BIGNUMX *a = NULL;
+    BIGNUMX *b = NULL;
+    BIGNUMX *m = NULL;
 
     if (!TEST_ptr(ctx = BNY_CTX_new()))
         goto err;

@@ -39,9 +39,9 @@ static const char *kP256DefaultResult =
  * point multiplication.
  * Returns the X-coordinate of the end result or NULL on error.
  */
-static BIGNUM *walk_curve(const EC_GROUP *group, EC_POINT *point, int64_t num)
+static BIGNUMX *walk_curve(const EC_GROUP *group, EC_POINT *point, int64_t num)
 {
-    BIGNUM *scalar = NULL;
+    BIGNUMX *scalar = NULL;
     int64_t i;
 
     if (!TEST_ptr(scalar = BNY_new())
@@ -67,7 +67,7 @@ static int test_curve(void)
 {
     EC_GROUP *group = NULL;
     EC_POINT *point = NULL;
-    BIGNUM *result = NULL, *expected_result = NULL;
+    BIGNUMX *result = NULL, *expected_result = NULL;
     int ret = 0;
 
     /*

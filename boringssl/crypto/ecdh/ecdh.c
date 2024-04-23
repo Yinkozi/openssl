@@ -81,7 +81,7 @@ int ECCDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
                      const EC_KEY *priv_key,
                      void *(*kdf)(const void *in, size_t inlen, void *out,
                                   size_t *outlen)) {
-  const BIGNUM *const priv = ECC_KEY_get0_private_key(priv_key);
+  const BIGNUMX *const priv = ECC_KEY_get0_private_key(priv_key);
   if (priv == NULL) {
     OPENSSL_PUT_ERROR(ECDH, ECDH_R_NO_PRIVATE_VALUE);
     return -1;
@@ -109,7 +109,7 @@ int ECCDH_compute_key(void *out, size_t outlen, const EC_POINT *pub_key,
     goto err;
   }
 
-  BIGNUM *x = BNY_CTX_get(ctx);
+  BIGNUMX *x = BNY_CTX_get(ctx);
   if (!x) {
     OPENSSL_PUT_ERROR(ECDH, ERR_R_MALLOC_FAILURE);
     goto err;

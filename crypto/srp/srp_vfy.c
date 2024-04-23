@@ -201,8 +201,8 @@ static SRP_user_pwd *SRP_user_pwd_new(void)
     return ret;
 }
 
-static void SRP_user_pwd_set_gN(SRP_user_pwd *vinfo, const BIGNUM *g,
-                                const BIGNUM *N)
+static void SRP_user_pwd_set_gN(SRP_user_pwd *vinfo, const BIGNUMX *g,
+                                const BIGNUMX *N)
 {
     vinfo->N = N;
     vinfo->g = g;
@@ -243,7 +243,7 @@ static int SRP_user_pwd_set_sv(SRP_user_pwd *vinfo, const char *s,
     return 0;
 }
 
-static int SRP_user_pwd_set_sv_BN(SRP_user_pwd *vinfo, BIGNUM *s, BIGNUM *v)
+static int SRP_user_pwd_set_sv_BN(SRP_user_pwd *vinfo, BIGNUMX *s, BIGNUMX *v)
 {
     vinfo->v = v;
     vinfo->s = s;
@@ -350,7 +350,7 @@ static SRP_gN *SRP_get_gN_by_id(const char *id, STACK_OF(SRP_gN) *gN_tab)
     return SRP_get_default_gN(id);
 }
 
-static BIGNUM *SRP_gN_place_bn(STACK_OF(SRP_gN_cache) *gN_cache, char *ch)
+static BIGNUMX *SRP_gN_place_bn(STACK_OF(SRP_gN_cache) *gN_cache, char *ch)
 {
     int i;
     if (gN_cache == NULL)
@@ -583,8 +583,8 @@ char *SRP_create_verifier(const char *user, const char *pass, char **salt,
 {
     int len;
     char *result = NULL, *vf = NULL;
-    const BIGNUM *N_bn = NULL, *g_bn = NULL;
-    BIGNUM *N_bn_alloc = NULL, *g_bn_alloc = NULL, *s = NULL, *v = NULL;
+    const BIGNUMX *N_bn = NULL, *g_bn = NULL;
+    BIGNUMX *N_bn_alloc = NULL, *g_bn_alloc = NULL, *s = NULL, *v = NULL;
     unsigned char tmp[MAX_LEN];
     unsigned char tmp2[MAX_LEN];
     char *defgNid = NULL;
@@ -668,23 +668,23 @@ char *SRP_create_verifier(const char *user, const char *pass, char **salt,
 }
 
 /*
- * create a verifier (*salt,*verifier,g and N are BIGNUMs). If *salt != NULL
+ * create a verifier (*salt,*verifier,g and N are BIGNUMXs). If *salt != NULL
  * then the provided salt will be used. On successful exit *verifier will point
- * to a newly allocated BIGNUM containing the verifier and (if a salt was not
- * provided) *salt will be populated with a newly allocated BIGNUM containing a
+ * to a newly allocated BIGNUMX containing the verifier and (if a salt was not
+ * provided) *salt will be populated with a newly allocated BIGNUMX containing a
  * random salt.
  * The caller is responsible for freeing the allocated *salt and *verifier
- * BIGNUMS.
+ * BIGNUMXS.
  */
-int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUM **salt,
-                           BIGNUM **verifier, const BIGNUM *N,
-                           const BIGNUM *g)
+int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUMX **salt,
+                           BIGNUMX **verifier, const BIGNUMX *N,
+                           const BIGNUMX *g)
 {
     int result = 0;
-    BIGNUM *x = NULL;
+    BIGNUMX *x = NULL;
     BN_CTX *bn_ctx = BNY_CTX_new();
     unsigned char tmp2[MAX_LEN];
-    BIGNUM *salttmp = NULL, *verif;
+    BIGNUMX *salttmp = NULL, *verif;
 
     if ((user == NULL) ||
         (pass == NULL) ||

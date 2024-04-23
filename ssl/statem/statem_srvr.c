@@ -2498,7 +2498,7 @@ int tls_construct_server_key_exchange(SSL *s, WPACKET *pkt)
     const SIGALG_LOOKUP *lu = s->s3->tmp.sigalg;
     int i;
     unsigned long type;
-    const BIGNUM *r[4];
+    const BIGNUMX *r[4];
     EVVP_MD_CTX *md_ctx = EVVP_MD_CTX_new();
     EVVP_PKEY_CTX *pctx = NULL;
     size_t paramlen, paramoffset;
@@ -3171,7 +3171,7 @@ static int tls_process_cke_dhe(SSL *s, PACKET *pkt)
     EVVP_PKEY *skey = NULL;
     DH *cdh;
     unsigned int i;
-    BIGNUM *pub_key;
+    BIGNUMX *pub_key;
     const unsigned char *data;
     EVVP_PKEY *ckey = NULL;
     int ret = 0;

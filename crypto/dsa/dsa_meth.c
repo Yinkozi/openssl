@@ -119,13 +119,13 @@ int DSA_meth_set_sign(DSA_METHOD *dsam,
 }
 
 int (*DSA_meth_get_sign_setup(const DSA_METHOD *dsam))
-        (DSA *, BN_CTX *, BIGNUM **, BIGNUM **)
+        (DSA *, BN_CTX *, BIGNUMX **, BIGNUMX **)
 {
     return dsam->dsa_sign_setup;
 }
 
 int DSA_meth_set_sign_setup(DSA_METHOD *dsam,
-        int (*sign_setup) (DSA *, BN_CTX *, BIGNUM **, BIGNUM **))
+        int (*sign_setup) (DSA *, BN_CTX *, BIGNUMX **, BIGNUMX **))
 {
     dsam->dsa_sign_setup = sign_setup;
     return 1;
@@ -145,15 +145,15 @@ int DSA_meth_set_verify(DSA_METHOD *dsam,
 }
 
 int (*DSA_meth_get_mod_exp(const DSA_METHOD *dsam))
-        (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *, const BIGNUM *,
-         const BIGNUM *, const BIGNUM *, BN_CTX *, BN_MONT_CTX *)
+        (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+         const BIGNUMX *, const BIGNUMX *, BN_CTX *, BN_MONT_CTX *)
 {
     return dsam->dsa_mod_exp;
 }
 
 int DSA_meth_set_mod_exp(DSA_METHOD *dsam,
-    int (*mod_exp) (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *,
-                    const BIGNUM *, const BIGNUM *, const BIGNUM *, BN_CTX *,
+    int (*mod_exp) (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+                    const BIGNUMX *, const BIGNUMX *, const BIGNUMX *, BN_CTX *,
                     BN_MONT_CTX *))
 {
     dsam->dsa_mod_exp = mod_exp;
@@ -161,15 +161,15 @@ int DSA_meth_set_mod_exp(DSA_METHOD *dsam,
 }
 
 int (*DSA_meth_get_bn_mod_exp(const DSA_METHOD *dsam))
-    (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *, const BIGNUM *, BN_CTX *,
+    (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *, const BIGNUMX *, BN_CTX *,
      BN_MONT_CTX *)
 {
     return dsam->bn_mod_exp;
 }
 
 int DSA_meth_set_bn_mod_exp(DSA_METHOD *dsam,
-    int (*bn_mod_exp) (DSA *, BIGNUM *, const BIGNUM *, const BIGNUM *,
-                       const BIGNUM *, BN_CTX *, BN_MONT_CTX *))
+    int (*bn_mod_exp) (DSA *, BIGNUMX *, const BIGNUMX *, const BIGNUMX *,
+                       const BIGNUMX *, BN_CTX *, BN_MONT_CTX *))
 {
     dsam->bn_mod_exp = bn_mod_exp;
     return 1;

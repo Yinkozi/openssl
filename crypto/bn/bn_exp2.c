@@ -13,17 +13,17 @@
 
 #define TABLE_SIZE      32
 
-int BN_mod_exp2_mont(BIGNUM *rr, const BIGNUM *a1, const BIGNUM *p1,
-                     const BIGNUM *a2, const BIGNUM *p2, const BIGNUM *m,
+int BN_mod_exp2_mont(BIGNUMX *rr, const BIGNUMX *a1, const BIGNUMX *p1,
+                     const BIGNUMX *a2, const BIGNUMX *p2, const BIGNUMX *m,
                      BN_CTX *ctx, BN_MONT_CTX *in_mont)
 {
     int i, j, bits, b, bits1, bits2, ret =
         0, wpos1, wpos2, window1, window2, wvalue1, wvalue2;
     int r_is_one = 1;
-    BIGNUM *d, *r;
-    const BIGNUM *a_mod_m;
+    BIGNUMX *d, *r;
+    const BIGNUMX *a_mod_m;
     /* Tables of variables obtained from 'ctx' */
-    BIGNUM *val1[TABLE_SIZE], *val2[TABLE_SIZE];
+    BIGNUMX *val1[TABLE_SIZE], *val2[TABLE_SIZE];
     BN_MONT_CTX *mont = NULL;
 
     bn_check_top(a1);

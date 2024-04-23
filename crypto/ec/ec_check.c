@@ -13,7 +13,7 @@
 int EC_GROUP_check(const EC_GROUP *group, BN_CTX *ctx)
 {
     int ret = 0;
-    const BIGNUM *order;
+    const BIGNUMX *order;
     BN_CTX *new_ctx = NULL;
     EC_POINT *point = NULL;
 

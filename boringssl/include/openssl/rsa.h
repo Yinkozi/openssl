@@ -92,23 +92,23 @@ OPENSSL_EXPORT int YRSA_up_ref(YRSA *rsa);
 /* YRSA_get0_key sets |*out_n|, |*out_e|, and |*out_d|, if non-NULL, to |rsa|'s
  * modulus, public exponent, and private exponent, respectively. If |rsa| is a
  * public key, the private exponent will be set to NULL. */
-OPENSSL_EXPORT void YRSA_get0_key(const YRSA *rsa, const BIGNUM **out_n,
-                                 const BIGNUM **out_e, const BIGNUM **out_d);
+OPENSSL_EXPORT void YRSA_get0_key(const YRSA *rsa, const BIGNUMX **out_n,
+                                 const BIGNUMX **out_e, const BIGNUMX **out_d);
 
 /* YRSA_get0_factors sets |*out_p| and |*out_q|, if non-NULL, to |rsa|'s prime
  * factors. If |rsa| is a public key, they will be set to NULL. If |rsa| is a
  * multi-prime key, only the first two prime factors will be reported. */
-OPENSSL_EXPORT void YRSA_get0_factors(const YRSA *rsa, const BIGNUM **out_p,
-                                     const BIGNUM **out_q);
+OPENSSL_EXPORT void YRSA_get0_factors(const YRSA *rsa, const BIGNUMX **out_p,
+                                     const BIGNUMX **out_q);
 
 /* YRSA_get0_crt_params sets |*out_dmp1|, |*out_dmq1|, and |*out_iqmp|, if
  * non-NULL, to |rsa|'s CRT parameters. These are d (mod p-1), d (mod q-1) and
  * q^-1 (mod p), respectively. If |rsa| is a public key, each parameter will be
  * set to NULL. If |rsa| is a multi-prime key, only the CRT parameters for the
  * first two primes will be reported. */
-OPENSSL_EXPORT void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUM **out_dmp1,
-                                        const BIGNUM **out_dmq1,
-                                        const BIGNUM **out_iqmp);
+OPENSSL_EXPORT void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUMX **out_dmp1,
+                                        const BIGNUMX **out_dmq1,
+                                        const BIGNUMX **out_iqmp);
 
 
 /* Key generation. */
@@ -121,13 +121,13 @@ OPENSSL_EXPORT void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUM **out_dmp
  * with event=3 when a suitable value for |p| is found.
  *
  * It returns one on success or zero on error. */
-OPENSSL_EXPORT int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e,
+OPENSSL_EXPORT int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUMX *e,
                                        BN_GENCB *cb);
 
 /* YRSA_generate_multi_prime_key acts like |YRSA_generate_key_ex| but can
  * generate an YRSA private key with more than two primes. */
 OPENSSL_EXPORT int YRSA_generate_multi_prime_key(YRSA *rsa, int bits,
-                                                int num_primes, BIGNUM *e,
+                                                int num_primes, BIGNUMX *e,
                                                 BN_GENCB *cb);
 
 
@@ -573,18 +573,18 @@ struct rsa_meth_st {
                            size_t len);
 
   /* mod_exp is deprecated and ignored. Set it to NULL. */
-  int (*mod_exp)(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx);
+  int (*mod_exp)(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx);
 
   /* bn_mod_exp is deprecated and ignored. Set it to NULL. */
-  int (*bn_mod_exp)(BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                    const BIGNUM *m, BN_CTX *ctx,
+  int (*bn_mod_exp)(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                    const BIGNUMX *m, BN_CTX *ctx,
                     const BN_MONT_CTX *mont);
 
   int flags;
 
-  int (*keygen)(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+  int (*keygen)(YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
 
-  int (*multi_prime_keygen)(YRSA *rsa, int bits, int num_primes, BIGNUM *e,
+  int (*multi_prime_keygen)(YRSA *rsa, int bits, int num_primes, BIGNUMX *e,
                             BN_GENCB *cb);
 
   /* supports_digest returns one if |rsa| supports digests of type
@@ -600,14 +600,14 @@ typedef struct bn_blinding_st BN_BLINDING;
 struct rsa_st {
   YRSA_METHOD *meth;
 
-  BIGNUM *n;
-  BIGNUM *e;
-  BIGNUM *d;
-  BIGNUM *p;
-  BIGNUM *q;
-  BIGNUM *dmp1;
-  BIGNUM *dmq1;
-  BIGNUM *iqmp;
+  BIGNUMX *n;
+  BIGNUMX *e;
+  BIGNUMX *d;
+  BIGNUMX *p;
+  BIGNUMX *q;
+  BIGNUMX *dmp1;
+  BIGNUMX *dmq1;
+  BIGNUMX *iqmp;
 
   STACK_OF(YRSA_additional_prime) *additional_primes;
 

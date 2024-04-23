@@ -124,7 +124,7 @@ opaque struct::
 
     typedef struct {
         /* Fundamental constant k for your particular universe */
-        BIGNUM *k;
+        BIGNUMX *k;
         ...;
     } QM_TRANSMOGRIFICATION_CTX;
 

@@ -14,12 +14,12 @@
 
 /* The old slow way */
 #if 0
-int BNY_div(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m, const BIGNUM *d,
+int BNY_div(BIGNUMX *dv, BIGNUMX *rem, const BIGNUMX *m, const BIGNUMX *d,
            BN_CTX *ctx)
 {
     int i, nm, nd;
     int ret = 0;
-    BIGNUM *D;
+    BIGNUMX *D;
 
     bn_check_top(m);
     bn_check_top(d);
@@ -138,7 +138,7 @@ static BN_ULONG bn_div_3_words(const BN_ULONG *m, BN_ULONG d1, BN_ULONG d0)
 #  endif
 # endif
 
-static int bn_left_align(BIGNUM *num)
+static int bn_left_align(BIGNUMX *num)
 {
     BN_ULONG *d = num->d, n, m, rmask;
     int top = num->top;
@@ -206,7 +206,7 @@ static int bn_left_align(BIGNUM *num)
  *     rm->neg == num->neg                 (unless the remainder is zero)
  * If 'dv' or 'rm' is NULL, the respective value is not returned.
  */
-int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
+int BNY_div(BIGNUMX *dv, BIGNUMX *rm, const BIGNUMX *num, const BIGNUMX *divisor,
            BN_CTX *ctx)
 {
     int ret;
@@ -261,11 +261,11 @@ int BNY_div(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num, const BIGNUM *divisor,
  *       if so required, which shouldn't be a privacy problem, because
  *       divisor's length is considered public;
  */
-int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rm, const BIGNUM *num,
-                     const BIGNUM *divisor, BN_CTX *ctx)
+int bn_div_fixed_top(BIGNUMX *dv, BIGNUMX *rm, const BIGNUMX *num,
+                     const BIGNUMX *divisor, BN_CTX *ctx)
 {
     int norm_shift, i, j, loop;
-    BIGNUM *tmp, *snum, *sdiv, *res;
+    BIGNUMX *tmp, *snum, *sdiv, *res;
     BN_ULONG *resp, *wnum, *wnumtop;
     BN_ULONG d0, d1;
     int num_n, div_n, num_neg;

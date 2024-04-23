@@ -3336,7 +3336,7 @@ int tls1_verify_channel_id(SSL_HANDSHAKE *hs) {
 
   EC_KEY *key = NULL;
   EC_POINT *point = NULL;
-  BIGNUM x, y;
+  BIGNUMX x, y;
   ECDSA_SIG sig;
   BN_init(&x);
   BN_init(&y);
@@ -3413,8 +3413,8 @@ int tls1_write_channel_id(SSL_HANDSHAKE *hs, CBB *cbb) {
   }
 
   int ret = 0;
-  BIGNUM *x = BNY_new();
-  BIGNUM *y = BNY_new();
+  BIGNUMX *x = BNY_new();
+  BIGNUMX *y = BNY_new();
   ECDSA_SIG *sig = NULL;
   if (x == NULL || y == NULL ||
       !EC_POINT_get_affine_coordinates_GFp(ECC_KEY_get0_group(ec_key),

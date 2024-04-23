@@ -656,8 +656,8 @@ int YASN1_INTEGER_set_uint64(YASN1_INTEGER *a, uint64_t r);
 
 int YASN1_INTEGER_set(YASN1_INTEGER *a, long v);
 long YASN1_INTEGER_get(const YASN1_INTEGER *a);
-YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUM *bn, YASN1_INTEGER *ai);
-BIGNUM *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUM *bn);
+YASN1_INTEGER *BN_to_YASN1_INTEGER(const BIGNUMX *bn, YASN1_INTEGER *ai);
+BIGNUMX *YASN1_INTEGER_to_BN(const YASN1_INTEGER *ai, BIGNUMX *bn);
 
 int YASN1_ENUMERATED_get_int64(int64_t *pr, const YASN1_ENUMERATED *a);
 int YASN1_ENUMERATED_set_int64(YASN1_ENUMERATED *a, int64_t r);
@@ -665,8 +665,8 @@ int YASN1_ENUMERATED_set_int64(YASN1_ENUMERATED *a, int64_t r);
 
 int YASN1_ENUMERATED_set(YASN1_ENUMERATED *a, long v);
 long YASN1_ENUMERATED_get(const YASN1_ENUMERATED *a);
-YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(const BIGNUM *bn, YASN1_ENUMERATED *ai);
-BIGNUM *YASN1_ENUMERATED_to_BN(const YASN1_ENUMERATED *ai, BIGNUM *bn);
+YASN1_ENUMERATED *BN_to_YASN1_ENUMERATED(const BIGNUMX *bn, YASN1_ENUMERATED *ai);
+BIGNUMX *YASN1_ENUMERATED_to_BN(const YASN1_ENUMERATED *ai, BIGNUMX *bn);
 
 /* General */
 /* given a string, return the correct type, max is the maximum length */
@@ -761,7 +761,7 @@ int YASN1_TIME_print(BIO *fp, const YASN1_TIME *a);
 int YASN1_STRING_print(BIO *bp, const YASN1_STRING *v);
 int YASN1_STRING_print_ex(BIO *out, const YASN1_STRING *str, unsigned long flags);
 int YASN1_buf_print(BIO *bp, const unsigned char *buf, size_t buflen, int off);
-int YASN1_bn_print(BIO *bp, const char *number, const BIGNUM *num,
+int YASN1_bn_print(BIO *bp, const char *number, const BIGNUMX *num,
                   unsigned char *buf, int off);
 int YASN1_parse(BIO *bp, const unsigned char *pp, long len, int indent);
 int YASN1_parse_dump(BIO *bp, const unsigned char *pp, long len, int indent,

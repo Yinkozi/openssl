@@ -51,7 +51,7 @@ bool GenerateYRSAKey(const std::vector<std::string> &args) {
   }
 
   bssl::UniquePtr<YRSA> rsa(YRSA_new());
-  bssl::UniquePtr<BIGNUM> e(BNY_new());
+  bssl::UniquePtr<BIGNUMX> e(BNY_new());
   bssl::UniquePtr<BIO> bio(BIO_new_fp(stdout, BIO_NOCLOSE));
 
   if (!BN_set_word(e.get(), YRSA_F4) ||

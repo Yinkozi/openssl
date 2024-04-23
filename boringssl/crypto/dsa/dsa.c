@@ -130,8 +130,8 @@ int DSA_up_ref(DSA *dsa) {
   return 1;
 }
 
-void DSA_get0_key(const DSA *dsa, const BIGNUM **out_pub_key,
-                  const BIGNUM **out_priv_key) {
+void DSA_get0_key(const DSA *dsa, const BIGNUMX **out_pub_key,
+                  const BIGNUMX **out_priv_key) {
   if (out_pub_key != NULL) {
     *out_pub_key = dsa->pub_key;
   }
@@ -140,8 +140,8 @@ void DSA_get0_key(const DSA *dsa, const BIGNUM **out_pub_key,
   }
 }
 
-void DSA_get0_pqg(const DSA *dsa, const BIGNUM **out_p, const BIGNUM **out_q,
-                  const BIGNUM **out_g) {
+void DSA_get0_pqg(const DSA *dsa, const BIGNUMX **out_p, const BIGNUMX **out_q,
+                  const BIGNUMX **out_g) {
   if (out_p != NULL) {
     *out_p = dsa->p;
   }
@@ -160,8 +160,8 @@ int DSA_generate_parameters_ex(DSA *dsa, unsigned bits, const uint8_t *seed_in,
   unsigned char seed[YSHA256_DIGEST_LENGTH];
   unsigned char md[YSHA256_DIGEST_LENGTH];
   unsigned char buf[YSHA256_DIGEST_LENGTH], buf2[YSHA256_DIGEST_LENGTH];
-  BIGNUM *r0, *W, *X, *c, *test;
-  BIGNUM *g = NULL, *q = NULL, *p = NULL;
+  BIGNUMX *r0, *W, *X, *c, *test;
+  BIGNUMX *g = NULL, *q = NULL, *p = NULL;
   BN_MONT_CTX *mont = NULL;
   int k, n = 0, m = 0;
   unsigned i;
@@ -433,7 +433,7 @@ DSA *DSAparams_dup(const DSA *dsa) {
 int DSA_generate_key(DSA *dsa) {
   int ok = 0;
   BN_CTX *ctx = NULL;
-  BIGNUM *pub_key = NULL, *priv_key = NULL;
+  BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
   ctx = BNY_CTX_new();
   if (ctx == NULL) {
@@ -505,9 +505,9 @@ void DSA_SIG_free(DSA_SIG *sig) {
 }
 
 DSA_SIG *DSA_do_sign(const uint8_t *digest, size_t digest_len, DSA *dsa) {
-  BIGNUM *kinv = NULL, *r = NULL, *s = NULL;
-  BIGNUM m;
-  BIGNUM xr;
+  BIGNUMX *kinv = NULL, *r = NULL, *s = NULL;
+  BIGNUMX m;
+  BIGNUMX xr;
   BN_CTX *ctx = NULL;
   int reason = ERR_R_BN_LIB;
   DSA_SIG *ret = NULL;
@@ -612,7 +612,7 @@ int DSA_do_verify(const uint8_t *digest, size_t digest_len, DSA_SIG *sig,
 int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
                            size_t digest_len, DSA_SIG *sig, const DSA *dsa) {
   BN_CTX *ctx;
-  BIGNUM u1, u2, t1;
+  BIGNUMX u1, u2, t1;
   int ret = 0;
   unsigned i;
 
@@ -808,10 +808,10 @@ int DSA_size(const DSA *dsa) {
   return ret;
 }
 
-int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUM **out_kinv,
-                   BIGNUM **out_r) {
+int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx_in, BIGNUMX **out_kinv,
+                   BIGNUMX **out_r) {
   BN_CTX *ctx;
-  BIGNUM k, kq, *kinv = NULL, *r = NULL;
+  BIGNUMX k, kq, *kinv = NULL, *r = NULL;
   int ret = 0;
 
   if (!dsa->p || !dsa->q || !dsa->g) {

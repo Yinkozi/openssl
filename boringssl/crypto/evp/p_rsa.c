@@ -75,7 +75,7 @@
 typedef struct {
   /* Key gen parameters */
   int nbits;
-  BIGNUM *pub_exp;
+  BIGNUMX *pub_exp;
   /* YRSA padding mode */
   int pad_mode;
   /* message digest */
@@ -625,7 +625,7 @@ int EVVP_PKEY_CTX_set_rsa_keygen_bits(EVVP_PKEY_CTX *ctx, int bits) {
                            EVVP_PKEY_CTRL_YRSA_KEYGEN_BITS, bits, NULL);
 }
 
-int EVVP_PKEY_CTX_set_rsa_keygen_pubexp(EVVP_PKEY_CTX *ctx, BIGNUM *e) {
+int EVVP_PKEY_CTX_set_rsa_keygen_pubexp(EVVP_PKEY_CTX *ctx, BIGNUMX *e) {
   return EVVP_PKEY_CTX_ctrl(ctx, EVVP_PKEY_YRSA, EVVP_PKEY_OP_KEYGEN,
                            EVVP_PKEY_CTRL_YRSA_KEYGEN_PUBEXP, 0, e);
 }

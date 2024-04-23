@@ -81,7 +81,7 @@ static size_t ecc_GFp_simple_point2oct(const EC_GROUP *group,
   size_t ret;
   BN_CTX *new_ctx = NULL;
   int used_ctx = 0;
-  BIGNUM *x, *y;
+  BIGNUMX *x, *y;
   size_t field_len, i;
 
   if ((form != POINT_CONVERSION_COMPRESSED) &&
@@ -175,7 +175,7 @@ static int ecc_GFp_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
   point_conversion_form_t form;
   int y_bit;
   BN_CTX *new_ctx = NULL;
-  BIGNUM *x, *y;
+  BIGNUMX *x, *y;
   size_t field_len, enc_len;
   int ret = 0;
 
@@ -281,7 +281,7 @@ int EC_POINT_point2cbb(CBB *out, const EC_GROUP *group, const EC_POINT *point,
 }
 
 int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
-                                             EC_POINT *point, const BIGNUM *x,
+                                             EC_POINT *point, const BIGNUMX *x,
                                              int y_bit, BN_CTX *ctx) {
   if (BN_is_negative(x) || BN_cmp(x, &group->field) >= 0) {
     OPENSSL_PUT_ERROR(EC, EC_R_INVALID_COMPRESSED_POINT);
@@ -289,7 +289,7 @@ int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *group,
   }
 
   BN_CTX *new_ctx = NULL;
-  BIGNUM *tmp1, *tmp2, *y;
+  BIGNUMX *tmp1, *tmp2, *y;
   int ret = 0;
 
   ERR_clear_error();
@@ -406,7 +406,7 @@ err:
 }
 
 int EC_POINT_set_compressed_coordinates_GFp(const EC_GROUP *group,
-                                            EC_POINT *point, const BIGNUM *x,
+                                            EC_POINT *point, const BIGNUMX *x,
                                             int y_bit, BN_CTX *ctx) {
   if (group->meth != point->meth) {
     OPENSSL_PUT_ERROR(EC, EC_R_INCOMPATIBLE_OBJECTS);

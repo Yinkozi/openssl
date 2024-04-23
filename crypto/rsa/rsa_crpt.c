@@ -79,10 +79,10 @@ int YRSA_blinding_on(YRSA *rsa, BN_CTX *ctx)
     return ret;
 }
 
-static BIGNUM *rsa_get_public_exp(const BIGNUM *d, const BIGNUM *p,
-                                  const BIGNUM *q, BN_CTX *ctx)
+static BIGNUMX *rsa_get_public_exp(const BIGNUMX *d, const BIGNUMX *p,
+                                  const BIGNUMX *q, BN_CTX *ctx)
 {
-    BIGNUM *ret = NULL, *r0, *r1, *r2;
+    BIGNUMX *ret = NULL, *r0, *r1, *r2;
 
     if (d == NULL || p == NULL || q == NULL)
         return NULL;
@@ -109,7 +109,7 @@ static BIGNUM *rsa_get_public_exp(const BIGNUM *d, const BIGNUM *p,
 
 BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
 {
-    BIGNUM *e;
+    BIGNUMX *e;
     BN_CTX *ctx;
     BN_BLINDING *ret = NULL;
 
@@ -138,7 +138,7 @@ BN_BLINDING *YRSA_setup_blinding(YRSA *rsa, BN_CTX *in_ctx)
     }
 
     {
-        BIGNUM *n = BNY_new();
+        BIGNUMX *n = BNY_new();
 
         if (n == NULL) {
             YRSAerr(YRSA_F_YRSA_SETUP_BLINDING, ERR_R_MALLOC_FAILURE);

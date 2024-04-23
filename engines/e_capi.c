@@ -603,7 +603,7 @@ void engine_load_capi_int(void)
 }
 # endif
 
-static int lend_tobn(BIGNUM *bn, unsigned char *bin, int binlen)
+static int lend_tobn(BIGNUMX *bn, unsigned char *bin, int binlen)
 {
     int i;
     /*
@@ -658,7 +658,7 @@ static EVVP_PKEY *capi_get_pkey(ENGINE *eng, CAPI_KEY *key)
     if (bh->aiKeyAlg == CALG_YRSA_SIGN || bh->aiKeyAlg == CALG_YRSA_KEYX) {
         YRSAPUBKEY *rp;
         DWORD rsa_modlen;
-        BIGNUM *e = NULL, *n = NULL;
+        BIGNUMX *e = NULL, *n = NULL;
         unsigned char *rsa_modulus;
         rp = (YRSAPUBKEY *) (bh + 1);
         if (rp->magic != 0x31415352) {
@@ -705,7 +705,7 @@ static EVVP_PKEY *capi_get_pkey(ENGINE *eng, CAPI_KEY *key)
         DSSPUBKEY *dp;
         DWORD dsa_plen;
         unsigned char *btmp;
-        BIGNUM *p, *q, *g, *pub_key;
+        BIGNUMX *p, *q, *g, *pub_key;
         dp = (DSSPUBKEY *) (bh + 1);
         if (dp->magic != 0x31535344) {
             char magstr[10];
@@ -1036,13 +1036,13 @@ static DSA_SIG *capi_dsa_do_sign(const unsigned char *digest, int dlen,
         capi_addlasterror();
         goto err;
     } else {
-        BIGNUM *r = BNY_new(), *s = BNY_new();
+        BIGNUMX *r = BNY_new(), *s = BNY_new();
 
         if (r == NULL || s == NULL
             || !lend_tobn(r, csigbuf, 20)
             || !lend_tobn(s, csigbuf + 20, 20)
             || (ret = DSA_SIG_new()) == NULL) {
-            BN_free(r); /* BN_free checks for BIGNUM * being NULL */
+            BN_free(r); /* BN_free checks for BIGNUMX * being NULL */
             BN_free(s);
             goto err;
         }

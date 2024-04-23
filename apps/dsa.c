@@ -183,7 +183,7 @@ int dsa_main(int argc, char **argv)
     }
 
     if (modulus) {
-        const BIGNUM *pub_key = NULL;
+        const BIGNUMX *pub_key = NULL;
         DSA_get0_key(dsa, &pub_key, NULL);
         BIO_pprintf(out, "Public Key=");
         BN_print(out, pub_key);

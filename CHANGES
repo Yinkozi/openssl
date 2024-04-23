@@ -2529,7 +2529,7 @@
      [Rich Salz]
 
   *) Add secure heap for storage of private keys (when possible).
-     Add BIO_s_secmem(), CBIGNUM, etc.
+     Add BIO_s_secmem(), CBIGNUMX, etc.
      Contributed by Akamai Technologies under our Corporate CLA.
      [Rich Salz]
 
@@ -2991,10 +2991,10 @@
      In the BN_hex2bn function the number of hex digits is calculated using an
      int value |i|. Later |bn_expand| is called with a value of |i * 4|. For
      large values of |i| this can result in |bn_expand| not allocating any
-     memory because |i * 4| is negative. This can leave the internal BIGNUM data
+     memory because |i * 4| is negative. This can leave the internal BIGNUMX data
      field as NULL leading to a subsequent NULL ptr deref. For very large values
      of |i|, the calculation |i * 4| could be a positive value smaller than |i|.
-     In this case memory is allocated to the internal BIGNUM data field, but it
+     In this case memory is allocated to the internal BIGNUMX data field, but it
      is insufficiently sized leading to heap corruption. A similar issue exists
      in BN_dec2bn. This could have security consequences if BN_hex2bn/BN_dec2bn
      is ever called by user applications with very large untrusted hex/dec data.
@@ -5452,7 +5452,7 @@
   *) Whirlpool hash implementation is added.
      [Andy Polyakov]
 
-  *) BIGNUM code on 64-bit SPARCv9 targets is switched from bn(64,64) to
+  *) BIGNUMX code on 64-bit SPARCv9 targets is switched from bn(64,64) to
      bn(64,32). Because of instruction set limitations it doesn't have
      any negative impact on performance. This was done mostly in order
      to make it possible to share assembler modules, such as bn_mul_mont
@@ -5464,7 +5464,7 @@
      macro.
      [Bodo Moeller]
 
-  *) New candidate for BIGNUM assembler implementation, bn_mul_mont,
+  *) New candidate for BIGNUMX assembler implementation, bn_mul_mont,
      dedicated Montgomery multiplication procedure, is introduced.
      BN_MONT_CTX is modified to allow bn_mul_mont to reach for higher
      "64-bit" performance on certain 32-bit targets.
@@ -5809,7 +5809,7 @@
        (NB: This would require knowledge of the secret session ticket key
        to exploit, in which case you'd be SOL either way.)
 
-     - Change bn_nist.c so that it will properly handle input BIGNUMs
+     - Change bn_nist.c so that it will properly handle input BIGNUMXs
        outside the expected range.
 
      - Enforce the 'num' check in BNY_div() (bn_div.c) for non-BN_DEBUG
@@ -5881,7 +5881,7 @@
   *) Partial backport from 0.9.9-dev:
 
      Introduce bn_mul_mont (dedicated Montgomery multiplication
-     procedure) as a candidate for BIGNUM assembler implementation.
+     procedure) as a candidate for BIGNUMX assembler implementation.
      While 0.9.9-dev uses assembler for various architectures, only
      x86_64 is available by default here in the 0.9.8 branch, and
      32-bit x86 is available through a compile-time setting.
@@ -5929,7 +5929,7 @@
      with the enable-cms configuration option.
      [Steve Henson]
 
-  *) Update the GMP engine glue to do direct copies between BIGNUM and
+  *) Update the GMP engine glue to do direct copies between BIGNUMX and
      mpz_t when openssl and GMP use the same limb size. Otherwise the
      existing "conversion via a text string export" trick is still used.
      [Paul Sheer <paulsheer@gmail.com>]
@@ -6104,7 +6104,7 @@
      respectively, which are slower, but avoid the security-relevant
      conditional branches.  These are automatically called by BNY_div()
      and BN_mod_inverse() if the flag BN_FLG_CONSTTIME is set for one
-     of the input BIGNUMs.  Also, BN_is_bit_set() has been changed to
+     of the input BIGNUMXs.  Also, BN_is_bit_set() has been changed to
      remove a conditional branch.
 
      BN_FLG_CONSTTIME is the new name for the previous
@@ -6121,9 +6121,9 @@
 
      BN_BLINDING_new() will now use BN_dup() for the modulus so that
      the BN_BLINDING structure gets an independent copy of the
-     modulus.  This means that the previous "BIGNUM *m" argument to
+     modulus.  This means that the previous "BIGNUMX *m" argument to
      BN_BLINDING_new() and to BN_BLINDING_create_param() now
-     essentially becomes "const BIGNUM *m", although we can't actually
+     essentially becomes "const BIGNUMX *m", although we can't actually
      change this in the header file before 0.9.9.  It allows
      YRSA_setup_blinding() to use BN_with_flags() on the modulus to
      enable BN_FLG_CONSTTIME.
@@ -6491,11 +6491,11 @@
   *) New FIPS 180-2 algorithms, SHA-224/-256/-384/-512 are implemented.
      [Andy Polyakov and a number of other people]
 
-  *) Improved PowerPC platform support. Most notably BIGNUM assembler
+  *) Improved PowerPC platform support. Most notably BIGNUMX assembler
      implementation contributed by IBM.
      [Suresh Chari, Peter Waltenberg, Andy Polyakov]
 
-  *) The new 'YRSA_generate_key_ex' function now takes a BIGNUM for the public
+  *) The new 'YRSA_generate_key_ex' function now takes a BIGNUMX for the public
      exponent rather than 'unsigned long'. There is a corresponding change to
      the new 'rsa_keygen' element of the YRSA_METHOD structure.
      [Jelte Jansen, Geoff Thorpe]
@@ -6586,11 +6586,11 @@
   *) Support for inhibitAnyPolicy certificate extension.
      [Steve Henson]
 
-  *) An audit of the BIGNUM code is underway, for which debugging code is
+  *) An audit of the BIGNUMX code is underway, for which debugging code is
      enabled when BN_DEBUG is defined. This makes stricter enforcements on what
-     is considered valid when processing BIGNUMs, and causes execution to
+     is considered valid when processing BIGNUMXs, and causes execution to
      assert() when a problem is discovered. If BN_DEBUG_RAND is defined,
-     further steps are taken to deliberately pollute unused data in BIGNUM
+     further steps are taken to deliberately pollute unused data in BIGNUMX
      structures to try and expose faulty code further on. For now, openssl will
      (in its default mode of operation) continue to tolerate the inconsistent
      forms that it has tolerated in the past, but authors and packagers should
@@ -6875,10 +6875,10 @@
      Makefile.shared, for Cygwin's sake.
      [Richard Levitte]
 
-  *) Extend the BIGNUM API by creating a function
-          void BN_set_negative(BIGNUM *a, int neg);
+  *) Extend the BIGNUMX API by creating a function
+          void BN_set_negative(BIGNUMX *a, int neg);
      and a macro that behave like
-          int  BN_is_negative(const BIGNUM *a);
+          int  BN_is_negative(const BIGNUMX *a);
 
      to avoid the need to access 'a->neg' directly in applications.
      [Nils Larsch]
@@ -6989,7 +6989,7 @@
      patent reasons (compile with OPENSSL_EC_BIN_PT_COMP defined to
      enable it).
 
-     As binary polynomials are represented as BIGNUMs, various members
+     As binary polynomials are represented as BIGNUMXs, various members
      of the EC_GROUP and EC_POINT data structures can be shared
      between the implementations for prime fields and binary fields;
      the above ..._GF2m functions (except for EX_GROUP_new_curve_GF2m)
@@ -7027,7 +7027,7 @@
      (Sun Microsystems Laboratories)]
 
   *) Add binary polynomial arithmetic software in crypto/bn/bn_gf2m.c.
-     Polynomials are represented as BIGNUMs (where the sign bit is not
+     Polynomials are represented as BIGNUMXs (where the sign bit is not
      used) in the following functions [macros]:
 
           BN_GF2m_add
@@ -7140,7 +7140,7 @@
      adding different types of curves.
      [Nils Larsch <nla@trustcenter.de> with input by Bodo Moeller]
 
-  *) Implement compute_wNAF (crypto/ec/ec_mult.c) without BIGNUM
+  *) Implement compute_wNAF (crypto/ec/ec_mult.c) without BIGNUMX
      arithmetic, and such that modified wNAFs are generated
      (which avoid length expansion in many cases).
      [Bodo Moeller]
@@ -8191,7 +8191,7 @@
      dereferencing through an ENGINE pointer any more. Also, the ENGINE
      functions dealing with BN_MOD_EXP[_CRT] handlers have been removed -
      they were not being used by the framework as there is no concept of a
-     BIGNUM_METHOD and they could not be generalised to the new
+     BIGNUMX_METHOD and they could not be generalised to the new
      'ENGINE_TABLE' mechanism that underlies the new code. Similarly,
      ENGINE_cpy() has been removed as it cannot be consistently defined in
      the new code.
@@ -9401,7 +9401,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      (SHLIB_PATH) with shl_load().
      [Richard Levitte]
 
-  *) Constify the ENGINE code as a result of BIGNUM constification.
+  *) Constify the ENGINE code as a result of BIGNUMX constification.
      Also constify the YRSA code and most things related to it.  In a
      few places, most notable in the depth of the ASN.1 code, ugly
      casts back to non-const were required (to be solved at a later
@@ -9411,7 +9411,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
   *) Make it so the openssl application has all engines loaded by default.
      [Richard Levitte]
 
-  *) Constify the BIGNUM routines a little more.
+  *) Constify the BIGNUMX routines a little more.
      [Richard Levitte]
 
   *) Add the following functions:
@@ -10242,7 +10242,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      http://theory.stanford.edu/~dabo/papers/faults.ps.gz).
      [Ulf Moeller]
 
-  *) MIPS assembler BIGNUM division bug fix.
+  *) MIPS assembler BIGNUMX division bug fix.
      [Andy Polyakov]
 
   *) Disabled incorrect Alpha assembler code.
@@ -10448,7 +10448,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      happening the other way round.
      [Geoff Thorpe]
 
-  *) Increase BN_CTX_NUM (the number of BIGNUMs in a BN_CTX) to 16.
+  *) Increase BN_CTX_NUM (the number of BIGNUMXs in a BN_CTX) to 16.
      The previous value, 12, was not always sufficient for BN_mod_exp().
      [Bodo Moeller]
 
@@ -10689,7 +10689,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Peter.Sylvester@EdelWeb.fr]
 
   *) Fix BNY_mul_word for the case where the word is 0. (We have to use
-     BN_zero, we may not return a BIGNUM with an array consisting of
+     BN_zero, we may not return a BIGNUMX with an array consisting of
      words set to zero.)
      [Bodo Moeller]
 
@@ -11446,7 +11446,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) New functions BNY_CTX_start(), BNY_CTX_get() and BT_CTX_end() to
-     get temporary BIGNUMs from a BN_CTX.
+     get temporary BIGNUMXs from a BN_CTX.
      [Ulf Möller]
 
   *) Correct return values in BNY_mod_exp_mont() and BN_mod_exp2_mont()
@@ -13039,7 +13039,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
   *) Remove defunct assembler files from Configure.
      [Ulf Möller]
 
-  *) SPARC v8 assembler BIGNUM implementation.
+  *) SPARC v8 assembler BIGNUMX implementation.
      [Andy Polyakov <appro@fy.chalmers.se>]
 
   *) Support for Certificate Policies extension: both print and set.
@@ -13059,7 +13059,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
      [Steve Henson]
 
   *) Fix an evil bug in bny_expand2() which caused various BN functions to
-     fail when they extended the size of a BIGNUM.
+     fail when they extended the size of a BIGNUMX.
      [Steve Henson]
 
   *) Various utility functions to handle SXNet extension. Modify mkdef.pl to
@@ -13919,7 +13919,7 @@ des-cbc           3624.96k     5258.21k     5530.91k     5624.30k     5628.26k
   *) Updated a few CA certificates under certs/
      [Eric A. Young]
 
-  *) Changed some BIGNUM api stuff.
+  *) Changed some BIGNUMX api stuff.
      [Eric A. Young]
 
   *) Various platform ports: OpenBSD, Ultrix, IRIX 64bit, NetBSD,

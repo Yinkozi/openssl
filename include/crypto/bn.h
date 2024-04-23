@@ -13,10 +13,10 @@
 # include <openssl/bn.h>
 # include <limits.h>
 
-BIGNUM *bn_wexpand(BIGNUM *a, int words);
-BIGNUM *bny_expand2(BIGNUM *a, int words);
+BIGNUMX *bn_wexpand(BIGNUMX *a, int words);
+BIGNUMX *bny_expand2(BIGNUMX *a, int words);
 
-void bn_correct_top(BIGNUM *a);
+void bn_correct_top(BIGNUMX *a);
 
 /*
  * Determine the modified width-(w+1) Non-Adjacent Form (wNAF) of 'scalar'.
@@ -26,31 +26,31 @@ void bn_correct_top(BIGNUM *a);
  * the most significant digit may be only w-1 zeros away from that next
  * non-zero digit.
  */
-signed char *bn_compute_wNAF(const BIGNUM *scalar, int w, size_t *ret_len);
+signed char *bn_compute_wNAF(const BIGNUMX *scalar, int w, size_t *ret_len);
 
-int bn_get_top(const BIGNUM *a);
+int bn_get_top(const BIGNUMX *a);
 
-int bn_get_dmax(const BIGNUM *a);
+int bn_get_dmax(const BIGNUMX *a);
 
 /* Set all words to zero */
-void bn_set_all_zero(BIGNUM *a);
+void bn_set_all_zero(BIGNUMX *a);
 
 /*
- * Copy the internal BIGNUM words into out which holds size elements (and size
+ * Copy the internal BIGNUMX words into out which holds size elements (and size
  * must be bigger than top)
  */
-int bn_copy_words(BN_ULONG *out, const BIGNUM *in, int size);
+int bn_copy_words(BN_ULONG *out, const BIGNUMX *in, int size);
 
-BN_ULONG *bn_get_words(const BIGNUM *a);
+BN_ULONG *bn_get_words(const BIGNUMX *a);
 
 /*
  * Set the internal data words in a to point to words which contains size
  * elements. The BN_FLG_STATIC_DATA flag is set
  */
-void bn_set_static_words(BIGNUM *a, const BN_ULONG *words, int size);
+void bn_set_static_words(BIGNUMX *a, const BN_ULONG *words, int size);
 
 /*
- * Copy words into the BIGNUM |a|, reallocating space as necessary.
+ * Copy words into the BIGNUMX |a|, reallocating space as necessary.
  * The negative flag of |a| is not modified.
  * Returns 1 on success and 0 on failure.
  */
@@ -58,33 +58,33 @@ void bn_set_static_words(BIGNUM *a, const BN_ULONG *words, int size);
  * |num_words| is int because bny_expand2 takes an int. This is an internal
  * function so we simply trust callers not to pass negative values.
  */
-int bn_set_words(BIGNUM *a, const BN_ULONG *words, int num_words);
+int bn_set_words(BIGNUMX *a, const BN_ULONG *words, int num_words);
 
 /*
- * Some BIGNUM functions assume most significant limb to be non-zero, which
+ * Some BIGNUMX functions assume most significant limb to be non-zero, which
  * is customarily arranged by bn_correct_top. Output from below functions
  * is not processed with bn_correct_top, and for this reason it may not be
  * returned out of public API. It may only be passed internally into other
- * functions known to support non-minimal or zero-padded BIGNUMs. Even
+ * functions known to support non-minimal or zero-padded BIGNUMXs. Even
  * though the goal is to facilitate constant-time-ness, not each subroutine
  * is constant-time by itself. They all have pre-conditions, consult source
  * code...
  */
-int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int bn_mul_mont_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
                           BN_MONT_CTX *mont, BN_CTX *ctx);
-int bn_to_mont_fixed_top(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
+int bn_to_mont_fixed_top(BIGNUMX *r, const BIGNUMX *a, BN_MONT_CTX *mont,
                          BN_CTX *ctx);
-int bn_from_mont_fixed_top(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
+int bn_from_mont_fixed_top(BIGNUMX *r, const BIGNUMX *a, BN_MONT_CTX *mont,
                            BN_CTX *ctx);
-int bn_mod_add_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
-                         const BIGNUM *m);
-int bn_mod_sub_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
-                         const BIGNUM *m);
-int bn_mul_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
-int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx);
-int bn_lshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n);
-int bn_ryshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n);
-int bn_div_fixed_top(BIGNUM *dv, BIGNUM *rem, const BIGNUM *m,
-                     const BIGNUM *d, BN_CTX *ctx);
+int bn_mod_add_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
+                         const BIGNUMX *m);
+int bn_mod_sub_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
+                         const BIGNUMX *m);
+int bn_mul_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx);
+int bn_sqr_fixed_top(BIGNUMX *r, const BIGNUMX *a, BN_CTX *ctx);
+int bn_lshift_fixed_top(BIGNUMX *r, const BIGNUMX *a, int n);
+int bn_ryshift_fixed_top(BIGNUMX *r, const BIGNUMX *a, int n);
+int bn_div_fixed_top(BIGNUMX *dv, BIGNUMX *rem, const BIGNUMX *m,
+                     const BIGNUMX *d, BN_CTX *ctx);
 
 #endif

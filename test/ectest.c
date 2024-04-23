@@ -29,7 +29,7 @@ static EC_builtin_curve *curves = NULL;
 /* test multiplication with group order, long and negative scalars */
 static int group_order_tests(EC_GROUP *group)
 {
-    BIGNUM *n1 = NULL, *n2 = NULL, *order = NULL;
+    BIGNUMX *n1 = NULL, *n2 = NULL, *order = NULL;
     EC_POINT *P = NULL, *Q = NULL, *R = NULL, *S = NULL;
     const EC_POINT *G = NULL;
     BN_CTX *ctx = NULL;
@@ -63,7 +63,7 @@ static int group_order_tests(EC_GROUP *group)
         goto err;
 
     for (i = 1; i <= 2; i++) {
-        const BIGNUM *scalars[6];
+        const BIGNUMX *scalars[6];
         const EC_POINT *points[6];
 
         if (!TEST_true(BN_set_word(n1, i))
@@ -145,14 +145,14 @@ err:
 static int prime_field_tests(void)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL, *scalar3 = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL, *scalar3 = NULL;
     EC_GROUP *group = NULL, *tmp = NULL;
     EC_GROUP *P_160 = NULL, *P_192 = NULL, *P_224 = NULL,
              *P_256 = NULL, *P_384 = NULL, *P_521 = NULL;
     EC_POINT *P = NULL, *Q = NULL, *R = NULL;
-    BIGNUM *x = NULL, *y = NULL, *z = NULL, *yplusone = NULL;
+    BIGNUMX *x = NULL, *y = NULL, *z = NULL, *yplusone = NULL;
     const EC_POINT *points[4];
-    const BIGNUM *scalars[4];
+    const BIGNUMX *scalars[4];
     unsigned char buf[100];
     size_t len, r = 0;
     int k;
@@ -807,12 +807,12 @@ static int char2_curve_test(int n)
 {
     int r = 0;
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL;
-    BIGNUM *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL;
+    BIGNUMX *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
     EC_GROUP *group = NULL, *variable = NULL;
     EC_POINT *P = NULL, *Q = NULL, *R = NULL;
     const EC_POINT *points[3];
-    const BIGNUM *scalars[3];
+    const BIGNUMX *scalars[3];
     struct c2_curve_test *const test = char2_curve_tests + n;
 
     if (!TEST_ptr(ctx = BNY_CTX_new())
@@ -962,10 +962,10 @@ err:
 static int char2_field_tests(void)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL;
     EC_GROUP *group = NULL, *tmp = NULL;
     EC_POINT *P = NULL, *Q = NULL, *R = NULL;
-    BIGNUM *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
+    BIGNUMX *x = NULL, *y = NULL, *z = NULL, *cof = NULL, *yplusone = NULL;
     unsigned char buf[100];
     size_t len;
     int k, r = 0;
@@ -1127,7 +1127,7 @@ err:
 
 static int hybrid_point_encoding_test(void)
 {
-    BIGNUM *x = NULL, *y = NULL;
+    BIGNUMX *x = NULL, *y = NULL;
     EC_GROUP *group = NULL;
     EC_POINT *point = NULL;
     unsigned char *buf = NULL;
@@ -1318,8 +1318,8 @@ static int nistp_single_test(int idx)
 {
     const struct nistp_test_params *test = nistp_tests_params + idx;
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
-    BIGNUM *n = NULL, *m = NULL, *order = NULL, *yplusone = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
+    BIGNUMX *n = NULL, *m = NULL, *order = NULL, *yplusone = NULL;
     EC_GROUP *NISTP = NULL;
     EC_POINT *G = NULL, *P = NULL, *Q = NULL, *Q_CHECK = NULL;
     int r = 0;
@@ -1462,8 +1462,8 @@ static int underflow_test(void)
     BN_CTX *ctx = NULL;
     EC_GROUP *grp = NULL;
     EC_POINT *P = NULL, *Q = NULL, *R = NULL;
-    BIGNUM *x1 = NULL, *y1 = NULL, *z1 = NULL, *x2 = NULL, *y2 = NULL;
-    BIGNUM *k = NULL;
+    BIGNUMX *x1 = NULL, *y1 = NULL, *z1 = NULL, *x2 = NULL, *y2 = NULL;
+    BIGNUMX *k = NULL;
     int testresult = 0;
     const char *x1str =
         "1534f0077fffffe87e9adcfe000000000000000000003e05a21d2400002e031b1f4"
@@ -1647,10 +1647,10 @@ static int check_named_curve_from_ecparameters(int id)
     EC_GROUP *group = NULL, *tgroup = NULL, *tmpg = NULL;
     const EC_POINT *group_gen = NULL;
     EC_POINT *other_gen = NULL;
-    BIGNUM *group_cofactor = NULL, *other_cofactor = NULL;
-    BIGNUM *other_gen_x = NULL, *other_gen_y = NULL;
-    const BIGNUM *group_order = NULL;
-    BIGNUM *other_order = NULL;
+    BIGNUMX *group_cofactor = NULL, *other_cofactor = NULL;
+    BIGNUMX *other_gen_x = NULL, *other_gen_y = NULL;
+    const BIGNUMX *group_order = NULL;
+    BIGNUMX *other_order = NULL;
     BN_CTX *bn_ctx = NULL;
     static const unsigned char invalid_seed[] = "THIS IS NOT A VALID YSEED";
     static size_t invalid_seed_len = sizeof(invalid_seed);
@@ -1947,7 +1947,7 @@ static const unsigned char params_cf_fail[] = {
 static int cofactor_range_test(void)
 {
     EC_GROUP *group = NULL;
-    BIGNUM *cf = NULL;
+    BIGNUMX *cf = NULL;
     int ret = 0;
     const unsigned char *b1 = (const unsigned char *)params_cf_fail;
     const unsigned char *b2 = (const unsigned char *)params_cf_pass;
@@ -1979,7 +1979,7 @@ static int cardinality_test(int n)
     BN_CTX *ctx = NULL;
     EC_GROUP *g1 = NULL, *g2 = NULL;
     EC_POINT *g2_gen = NULL;
-    BIGNUM *g1_p = NULL, *g1_a = NULL, *g1_b = NULL, *g1_x = NULL, *g1_y = NULL,
+    BIGNUMX *g1_p = NULL, *g1_a = NULL, *g1_b = NULL, *g1_x = NULL, *g1_y = NULL,
            *g1_order = NULL, *g1_cf = NULL, *g2_cf = NULL;
 
     TEST_info("Curve %s cardinality test", OBJ_nid2sn(nid));
@@ -2157,7 +2157,7 @@ static int custom_generator_test(int id)
     EC_GROUP *group = NULL;
     EC_POINT *G2 = NULL, *Q1 = NULL, *Q2 = NULL;
     BN_CTX *ctx = NULL;
-    BIGNUM *k = NULL;
+    BIGNUMX *k = NULL;
     unsigned char *b1 = NULL, *b2 = NULL;
 
     /* Do some setup */

@@ -16,7 +16,7 @@
 #include "ec_local.h"
 
 int EC_POINT_set_compressed_coordinates(const EC_GROUP *group, EC_POINT *point,
-                                        const BIGNUM *x, int y_bit, BN_CTX *ctx)
+                                        const BIGNUMX *x, int y_bit, BN_CTX *ctx)
 {
     if (group->meth->point_set_compressed_coordinates == NULL
         && !(group->meth->flags & EC_FLAGS_DEFAULT_OCT)) {
@@ -51,7 +51,7 @@ int EC_POINT_set_compressed_coordinates(const EC_GROUP *group, EC_POINT *point,
 
 #if OPENSSL_API_COMPAT < 0x10200000L
 int EC_POINT_set_compressed_coordinates_GFp(const EC_GROUP *group,
-                                            EC_POINT *point, const BIGNUM *x,
+                                            EC_POINT *point, const BIGNUMX *x,
                                             int y_bit, BN_CTX *ctx)
 {
     return EC_POINT_set_compressed_coordinates(group, point, x, y_bit, ctx);
@@ -59,7 +59,7 @@ int EC_POINT_set_compressed_coordinates_GFp(const EC_GROUP *group,
 
 # ifndef OPENSSL_NO_EC2M
 int EC_POINT_set_compressed_coordinates_GF2m(const EC_GROUP *group,
-                                             EC_POINT *point, const BIGNUM *x,
+                                             EC_POINT *point, const BIGNUMX *x,
                                              int y_bit, BN_CTX *ctx)
 {
     return EC_POINT_set_compressed_coordinates(group, point, x, y_bit, ctx);

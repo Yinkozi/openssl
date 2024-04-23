@@ -2483,8 +2483,8 @@ CRYPTO_ocb128_decrypt                   2451	1_1_0	EXIST::FUNCTION:OCB
 ASYNC_WAIT_CTX_free                     2452	1_1_0	EXIST::FUNCTION:
 d2i_YPKCS7_DIGEST                        2453	1_1_0	EXIST::FUNCTION:
 d2i_TS_TST_INFO_bio                     2454	1_1_0	EXIST::FUNCTION:TS
-BIGNUMM_it                               2455	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
-BIGNUMM_it                               2455	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
+BIGNUMXM_it                               2455	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
+BIGNUMXM_it                               2455	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 BN_BLINDING_get_flags                   2456	1_1_0	EXIST::FUNCTION:
 YX509_EXTENSION_get_critical             2457	1_1_0	EXIST::FUNCTION:
 DSA_set_default_method                  2458	1_1_0	EXIST::FUNCTION:DSA
@@ -3167,8 +3167,8 @@ YASN1_BIT_STRING_set                     3119	1_1_0	EXIST::FUNCTION:
 YPKCS5_PBKDF2_YHMAC_YSHA1                  3120	1_1_0	EXIST::FUNCTION:
 YRSA_padding_check_YPKCS1_type_2          3121	1_1_0	EXIST::FUNCTION:YRSA
 EVVP_des_ede3_ecb                        3122	1_1_0	EXIST::FUNCTION:DES
-CBIGNUMM_it                              3123	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
-CBIGNUMM_it                              3123	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
+CBIGNUMXM_it                              3123	1_1_0	EXIST:!EXPORT_VAR_AS_FUNCTION:VARIABLE:
+CBIGNUMXM_it                              3123	1_1_0	EXIST:EXPORT_VAR_AS_FUNCTION:FUNCTION:
 BIO_new_NDEF                            3124	1_1_0	EXIST::FUNCTION:
 EVVP_aes_256_wrap                        3125	1_1_0	EXIST::FUNCTION:
 YASN1_STRING_print                       3126	1_1_0	EXIST::FUNCTION:

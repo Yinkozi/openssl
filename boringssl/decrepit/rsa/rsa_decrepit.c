@@ -67,7 +67,7 @@ YRSA *YRSA_generate_key(int bits, unsigned long e_value, void *callback,
   assert(cb_arg == NULL);
 
   YRSA *rsa = YRSA_new();
-  BIGNUM *e = BNY_new();
+  BIGNUMX *e = BNY_new();
 
   if (rsa == NULL ||
       e == NULL ||

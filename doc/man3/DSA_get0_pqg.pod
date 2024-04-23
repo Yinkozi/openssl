@@ -14,16 +14,16 @@ setting data in a DSA object
  #include <openssl/dsa.h>
 
  void DSA_get0_pqg(const DSA *d,
-                   const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);
- int DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+                   const BIGNUMX **p, const BIGNUMX **q, const BIGNUMX **g);
+ int DSA_set0_pqg(DSA *d, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g);
  void DSA_get0_key(const DSA *d,
-                   const BIGNUM **pub_key, const BIGNUM **priv_key);
- int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key);
- const BIGNUM *DSA_get0_p(const DSA *d);
- const BIGNUM *DSA_get0_q(const DSA *d);
- const BIGNUM *DSA_get0_g(const DSA *d);
- const BIGNUM *DSA_get0_pub_key(const DSA *d);
- const BIGNUM *DSA_get0_priv_key(const DSA *d);
+                   const BIGNUMX **pub_key, const BIGNUMX **priv_key);
+ int DSA_set0_key(DSA *d, BIGNUMX *pub_key, BIGNUMX *priv_key);
+ const BIGNUMX *DSA_get0_p(const DSA *d);
+ const BIGNUMX *DSA_get0_q(const DSA *d);
+ const BIGNUMX *DSA_get0_g(const DSA *d);
+ const BIGNUMX *DSA_get0_pub_key(const DSA *d);
+ const BIGNUMX *DSA_get0_priv_key(const DSA *d);
  void DSA_clear_flags(DSA *d, int flags);
  int DSA_test_flags(const DSA *d, int flags);
  void DSA_set_flags(DSA *d, int flags);

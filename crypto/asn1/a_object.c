@@ -57,7 +57,7 @@ int a2d_YASN1_OBJECT(unsigned char *out, int olen, const char *buf, int num)
     int tmpsize = sizeof(ftmp);
     const char *p;
     unsigned long l;
-    BIGNUM *bl = NULL;
+    BIGNUMX *bl = NULL;
 
     if (num == 0)
         return 0;

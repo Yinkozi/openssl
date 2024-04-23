@@ -2090,7 +2090,7 @@ static int tls_process_ske_dhe(SSL *s, PACKET *pkt, EVVP_PKEY **pkey)
     EVVP_PKEY *peer_tmp = NULL;
 
     DH *dh = NULL;
-    BIGNUM *p = NULL, *g = NULL, *bnpub_key = NULL;
+    BIGNUMX *p = NULL, *g = NULL, *bnpub_key = NULL;
 
     int check_bits = 0;
 
@@ -3065,7 +3065,7 @@ static int tls_construct_cke_dhe(SSL *s, WPACKET *pkt)
 {
 #ifndef OPENSSL_NO_DH
     DH *dh_clnt = NULL;
-    const BIGNUM *pub_key;
+    const BIGNUMX *pub_key;
     EVVP_PKEY *ckey = NULL, *skey = NULL;
     unsigned char *keybytes = NULL;
 

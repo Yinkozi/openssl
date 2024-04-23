@@ -72,7 +72,7 @@ static int dsa_test(void)
     unsigned long h;
     unsigned char sig[256];
     unsigned int siglen;
-    const BIGNUM *p = NULL, *q = NULL, *g = NULL;
+    const BIGNUMX *p = NULL, *q = NULL, *g = NULL;
 
     if (!TEST_ptr(cb = BN_GENCB_new()))
         goto end;

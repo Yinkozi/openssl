@@ -59,12 +59,12 @@
 #define BN_lsw(n) (((n)->top == 0) ? (BN_ULONG) 0 : (n)->d[0])
 
 /* Returns -2 for errors because both -1 and 0 are valid results. */
-int BN_kronecker(const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
+int BN_kronecker(const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx) {
   int i;
   int ret = -2;
-  BIGNUM *A, *B, *tmp;
+  BIGNUMX *A, *B, *tmp;
   /* In 'tab', only odd-indexed entries are relevant:
-   * For any odd BIGNUM n,
+   * For any odd BIGNUMX n,
    *     tab[BN_lsw(n) & 7]
    * is $(-1)^{(n^2-1)/8}$ (using TeX notation).
    * Note that the sign of n does not matter. */

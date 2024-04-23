@@ -113,7 +113,7 @@ size_t rsa_default_size(const YRSA *rsa) {
 int rsa_default_encrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
                         const uint8_t *in, size_t in_len, int padding) {
   const unsigned rsa_size = YRSA_size(rsa);
-  BIGNUM *f, *result;
+  BIGNUMX *f, *result;
   uint8_t *buf = NULL;
   BN_CTX *ctx = NULL;
   int i, ret = 0;
@@ -425,7 +425,7 @@ err:
   return ret;
 }
 
-static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx);
+static int mod_exp(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx);
 
 int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
                    const uint8_t *in, size_t in_len, int padding) {
@@ -435,7 +435,7 @@ int YRSA_verify_raw(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out,
   }
 
   const unsigned rsa_size = YRSA_size(rsa);
-  BIGNUM *f, *result;
+  BIGNUMX *f, *result;
   int r = -1;
 
   if (max_out < rsa_size) {
@@ -528,7 +528,7 @@ err:
 
 int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
                                   size_t len) {
-  BIGNUM *f, *result;
+  BIGNUMX *f, *result;
   BN_CTX *ctx = NULL;
   unsigned blinding_index = 0;
   BN_BLINDING *blinding = NULL;
@@ -606,7 +606,7 @@ int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
    *
    * This check is cheap assuming |e| is small; it almost always is. */
   if (!disable_security) {
-    BIGNUM *vrfy = BNY_CTX_get(ctx);
+    BIGNUMX *vrfy = BNY_CTX_get(ctx);
     if (vrfy == NULL ||
         !BNY_mod_exp_mont(vrfy, result, rsa->e, rsa->n, ctx, rsa->mont_n) ||
         !BN_equal_consttime(vrfy, f)) {
@@ -638,7 +638,7 @@ err:
   return ret;
 }
 
-static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx) {
+static int mod_exp(BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx) {
   assert(ctx != NULL);
 
   assert(rsa->n != NULL);
@@ -650,7 +650,7 @@ static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx) {
   assert(rsa->dmq1 != NULL);
   assert(rsa->iqmp != NULL);
 
-  BIGNUM *r1, *m1, *vrfy;
+  BIGNUMX *r1, *m1, *vrfy;
   int ret = 0;
   size_t i, num_additional_primes = 0;
 
@@ -739,7 +739,7 @@ static int mod_exp(BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx) {
     YRSA_additional_prime *ap =
         sk_YRSA_additional_prime_value(rsa->additional_primes, i);
 
-    /* c will already point to a BIGNUM with the correct flags. */
+    /* c will already point to a BIGNUMX with the correct flags. */
     if (!BN_mod(r1, I, ap->prime, ctx)) {
       goto err;
     }
@@ -767,8 +767,8 @@ err:
 }
 
 int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
-                                   BIGNUM *e_value, BN_GENCB *cb) {
-  BIGNUM *r0 = NULL, *r1 = NULL, *r2 = NULL, *r3 = NULL, *tmp;
+                                   BIGNUMX *e_value, BN_GENCB *cb) {
+  BIGNUMX *r0 = NULL, *r1 = NULL, *r2 = NULL, *r3 = NULL, *tmp;
   int prime_bits, ok = -1, n = 0, i, j;
   BN_CTX *ctx = NULL;
   STACK_OF(YRSA_additional_prime) *additional_primes = NULL;
@@ -1058,7 +1058,7 @@ err:
   return ok;
 }
 
-int rsa_default_keygen(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb) {
+int rsa_default_keygen(YRSA *rsa, int bits, BIGNUMX *e_value, BN_GENCB *cb) {
   return rsa_default_multi_prime_keygen(rsa, bits, 2 /* num primes */, e_value,
                                         cb);
 }

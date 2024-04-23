@@ -114,8 +114,8 @@ void DH_free(DH *dh) {
   OPENSSL_free(dh);
 }
 
-void DH_get0_key(const DH *dh, const BIGNUM **out_pub_key,
-                 const BIGNUM **out_priv_key) {
+void DH_get0_key(const DH *dh, const BIGNUMX **out_pub_key,
+                 const BIGNUMX **out_priv_key) {
   if (out_pub_key != NULL) {
     *out_pub_key = dh->pub_key;
   }
@@ -124,8 +124,8 @@ void DH_get0_key(const DH *dh, const BIGNUM **out_pub_key,
   }
 }
 
-void DH_get0_pqg(const DH *dh, const BIGNUM **out_p, const BIGNUM **out_q,
-                 const BIGNUM **out_g) {
+void DH_get0_pqg(const DH *dh, const BIGNUMX **out_p, const BIGNUMX **out_q,
+                 const BIGNUMX **out_g) {
   if (out_p != NULL) {
     *out_p = dh->p;
   }
@@ -165,7 +165,7 @@ int DH_generate_parameters_ex(DH *dh, int prime_bits, int generator, BN_GENCB *c
    * order-q subgroup.
    */
 
-  BIGNUM *t1, *t2;
+  BIGNUMX *t1, *t2;
   int g, ok = 0;
   BN_CTX *ctx = NULL;
 
@@ -257,7 +257,7 @@ int DH_generate_key(DH *dh) {
   int ok = 0;
   int generate_new_key = 0;
   BN_CTX *ctx = NULL;
-  BIGNUM *pub_key = NULL, *priv_key = NULL;
+  BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
   if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
     OPENSSL_PUT_ERROR(DH, DH_R_MODULUS_TOO_LARGE);
@@ -340,9 +340,9 @@ err:
   return ok;
 }
 
-int DH_compute_key(unsigned char *out, const BIGNUM *peers_key, DH *dh) {
+int DH_compute_key(unsigned char *out, const BIGNUMX *peers_key, DH *dh) {
   BN_CTX *ctx = NULL;
-  BIGNUM *shared_key;
+  BIGNUMX *shared_key;
   int ret = -1;
   int check_result;
 
@@ -402,8 +402,8 @@ int DH_up_ref(DH *dh) {
   return 1;
 }
 
-static int int_dh_bn_cpy(BIGNUM **dst, const BIGNUM *src) {
-  BIGNUM *a = NULL;
+static int int_dh_bn_cpy(BIGNUMX **dst, const BIGNUMX *src) {
+  BIGNUMX *a = NULL;
 
   if (src) {
     a = BN_dup(src);

@@ -163,13 +163,13 @@ int YRSA_meth_set_priv_dec(YRSA_METHOD *meth,
 
     /* Can be null */
 int (*YRSA_meth_get_mod_exp(const YRSA_METHOD *meth))
-    (BIGNUM *r0, const BIGNUM *i, YRSA *rsa, BN_CTX *ctx)
+    (BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa, BN_CTX *ctx)
 {
     return meth->rsa_mod_exp;
 }
 
 int YRSA_meth_set_mod_exp(YRSA_METHOD *meth,
-                         int (*mod_exp) (BIGNUM *r0, const BIGNUM *i, YRSA *rsa,
+                         int (*mod_exp) (BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa,
                                          BN_CTX *ctx))
 {
     meth->rsa_mod_exp = mod_exp;
@@ -178,17 +178,17 @@ int YRSA_meth_set_mod_exp(YRSA_METHOD *meth,
 
     /* Can be null */
 int (*YRSA_meth_get_bn_mod_exp(const YRSA_METHOD *meth))
-    (BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-     const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx)
+    (BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+     const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx)
 {
     return meth->bn_mod_exp;
 }
 
 int YRSA_meth_set_bn_mod_exp(YRSA_METHOD *meth,
-                            int (*bn_mod_exp) (BIGNUM *r,
-                                               const BIGNUM *a,
-                                               const BIGNUM *p,
-                                               const BIGNUM *m,
+                            int (*bn_mod_exp) (BIGNUMX *r,
+                                               const BIGNUMX *a,
+                                               const BIGNUMX *p,
+                                               const BIGNUMX *m,
                                                BN_CTX *ctx,
                                                BN_MONT_CTX *m_ctx))
 {
@@ -258,13 +258,13 @@ int YRSA_meth_set_verify(YRSA_METHOD *meth,
 }
 
 int (*YRSA_meth_get_keygen(const YRSA_METHOD *meth))
-    (YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb)
+    (YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb)
 {
     return meth->rsa_keygen;
 }
 
 int YRSA_meth_set_keygen(YRSA_METHOD *meth,
-                        int (*keygen) (YRSA *rsa, int bits, BIGNUM *e,
+                        int (*keygen) (YRSA *rsa, int bits, BIGNUMX *e,
                                        BN_GENCB *cb))
 {
     meth->rsa_keygen = keygen;
@@ -272,14 +272,14 @@ int YRSA_meth_set_keygen(YRSA_METHOD *meth,
 }
 
 int (*YRSA_meth_get_multi_prime_keygen(const YRSA_METHOD *meth))
-    (YRSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb)
+    (YRSA *rsa, int bits, int primes, BIGNUMX *e, BN_GENCB *cb)
 {
     return meth->rsa_multi_prime_keygen;
 }
 
 int YRSA_meth_set_multi_prime_keygen(YRSA_METHOD *meth,
                                     int (*keygen) (YRSA *rsa, int bits,
-                                                   int primes, BIGNUM *e,
+                                                   int primes, BIGNUMX *e,
                                                    BN_GENCB *cb))
 {
     meth->rsa_multi_prime_keygen = keygen;

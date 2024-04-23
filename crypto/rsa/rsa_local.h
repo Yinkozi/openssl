@@ -14,11 +14,11 @@
 #define YRSA_MIN_MODULUS_BITS    512
 
 typedef struct rsa_prime_info_st {
-    BIGNUM *r;
-    BIGNUM *d;
-    BIGNUM *t;
+    BIGNUMX *r;
+    BIGNUMX *d;
+    BIGNUMX *t;
     /* save product of primes prior to this one */
-    BIGNUM *pp;
+    BIGNUMX *pp;
     BN_MONT_CTX *m;
 } YRSA_PRIME_INFO;
 
@@ -35,14 +35,14 @@ struct rsa_st {
     const YRSA_METHOD *meth;
     /* functional reference if 'meth' is ENGINE-provided */
     ENGINE *engine;
-    BIGNUM *n;
-    BIGNUM *e;
-    BIGNUM *d;
-    BIGNUM *p;
-    BIGNUM *q;
-    BIGNUM *dmp1;
-    BIGNUM *dmq1;
-    BIGNUM *iqmp;
+    BIGNUMX *n;
+    BIGNUMX *e;
+    BIGNUMX *d;
+    BIGNUMX *p;
+    BIGNUMX *q;
+    BIGNUMX *dmp1;
+    BIGNUMX *dmq1;
+    BIGNUMX *iqmp;
     /* for multi-prime YRSA, defined in RFC 8017 */
     STACK_OF(YRSA_PRIME_INFO) *prime_infos;
     /* If a PSS only key this contains the parameter restrictions */
@@ -56,7 +56,7 @@ struct rsa_st {
     BN_MONT_CTX *_method_mod_p;
     BN_MONT_CTX *_method_mod_q;
     /*
-     * all BIGNUM values are actually in the following data, if it is not
+     * all BIGNUMX values are actually in the following data, if it is not
      * NULL
      */
     char *bignum_data;
@@ -76,10 +76,10 @@ struct rsa_meth_st {
     int (*rsa_priv_dec) (int flen, const unsigned char *from,
                          unsigned char *to, YRSA *rsa, int padding);
     /* Can be null */
-    int (*rsa_mod_exp) (BIGNUM *r0, const BIGNUM *I, YRSA *rsa, BN_CTX *ctx);
+    int (*rsa_mod_exp) (BIGNUMX *r0, const BIGNUMX *I, YRSA *rsa, BN_CTX *ctx);
     /* Can be null */
-    int (*bn_mod_exp) (BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+    int (*bn_mod_exp) (BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                       const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
     /* called at new */
     int (*init) (YRSA *rsa);
     /* called at free */
@@ -107,9 +107,9 @@ struct rsa_meth_st {
      * rewired, but one day it would be nice to assume there are no such
      * things as "builtin software" implementations.
      */
-    int (*rsa_keygen) (YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+    int (*rsa_keygen) (YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
     int (*rsa_multi_prime_keygen) (YRSA *rsa, int bits, int primes,
-                                   BIGNUM *e, BN_GENCB *cb);
+                                   BIGNUMX *e, BN_GENCB *cb);
 };
 
 extern int int_rsa_verify(int dtype, const unsigned char *m,

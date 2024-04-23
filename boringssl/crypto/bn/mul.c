@@ -561,12 +561,12 @@ static void bn_mul_part_recursive(BN_ULONG *r, BN_ULONG *a, BN_ULONG *b, int n,
   }
 }
 
-int BNY_mul(BIGNUM *r, const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
+int BNY_mul(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx) {
   int ret = 0;
   int top, al, bl;
-  BIGNUM *rr;
+  BIGNUMX *rr;
   int i;
-  BIGNUM *t = NULL;
+  BIGNUMX *t = NULL;
   int j = 0, k;
 
   al = a->top;
@@ -775,7 +775,7 @@ static void bny_sqr_recursive(BN_ULONG *r, const BN_ULONG *a, int n2, BN_ULONG *
   }
 }
 
-int BNY_mul_word(BIGNUM *bn, BN_ULONG w) {
+int BNY_mul_word(BIGNUMX *bn, BN_ULONG w) {
   BN_ULONG ll;
 
   w &= BN_MASK2;
@@ -799,10 +799,10 @@ int BNY_mul_word(BIGNUM *bn, BN_ULONG w) {
   return 1;
 }
 
-int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx) {
+int BNY_sqr(BIGNUMX *r, const BIGNUMX *a, BN_CTX *ctx) {
   int max, al;
   int ret = 0;
-  BIGNUM *tmp, *rr;
+  BIGNUMX *tmp, *rr;
 
   al = a->top;
   if (al <= 0) {

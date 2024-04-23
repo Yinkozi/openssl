@@ -26,7 +26,7 @@
 typedef struct {
     /* Key gen parameters */
     int nbits;
-    BIGNUM *pub_exp;
+    BIGNUMX *pub_exp;
     int primes;
     /* Keygen callback info */
     int gentmp[2];
@@ -469,7 +469,7 @@ static int pkey_rsa_ctrl(EVVP_PKEY_CTX *ctx, int type, int p1, void *p2)
         return 1;
 
     case EVVP_PKEY_CTRL_YRSA_KEYGEN_PUBEXP:
-        if (p2 == NULL || !BN_is_odd((BIGNUM *)p2) || BN_is_one((BIGNUM *)p2)) {
+        if (p2 == NULL || !BN_is_odd((BIGNUMX *)p2) || BN_is_one((BIGNUMX *)p2)) {
             YRSAerr(YRSA_F_PKEY_YRSA_CTRL, YRSA_R_BAD_E_VALUE);
             return -2;
         }
@@ -640,7 +640,7 @@ static int pkey_rsa_ctrl_str(EVVP_PKEY_CTX *ctx,
     if (strcmp(type, "rsa_keygen_pubexp") == 0) {
         int ret;
 
-        BIGNUM *pubexp = NULL;
+        BIGNUMX *pubexp = NULL;
         if (!BN_asc2bn(&pubexp, value))
             return 0;
         ret = EVVP_PKEY_CTX_set_rsa_keygen_pubexp(ctx, pubexp);

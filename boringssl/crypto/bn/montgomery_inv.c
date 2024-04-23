@@ -31,7 +31,7 @@ OPENSSL_COMPILE_ASSERT(sizeof(uint64_t) ==
 /* LG_LITTLE_R is log_2(r). */
 #define LG_LITTLE_R (BN_MONT_CTX_N0_LIMBS * BN_BITS2)
 
-uint64_t bn_mont_n0(const BIGNUM *n) {
+uint64_t bn_mont_n0(const BIGNUMX *n) {
   /* These conditions are checked by the caller, |BN_MONT_CTX_set|. */
   assert(!BN_is_zero(n));
   assert(!BN_is_negative(n));
@@ -162,7 +162,7 @@ static uint64_t bn_neg_inv_mod_r_u64(uint64_t n) {
 /* bn_mod_exp_base_2_vartime calculates r = 2**p (mod n). |p| must be larger
  * than log_2(n); i.e. 2**p must be larger than |n|. |n| must be positive and
  * odd. */
-int bn_mod_exp_base_2_vartime(BIGNUM *r, unsigned p, const BIGNUM *n) {
+int bn_mod_exp_base_2_vartime(BIGNUMX *r, unsigned p, const BIGNUMX *n) {
   assert(!BN_is_zero(n));
   assert(!BN_is_negative(n));
   assert(BN_is_odd(n));

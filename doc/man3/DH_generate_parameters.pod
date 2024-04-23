@@ -19,7 +19,7 @@ parameters
 
  int DH_check_ex(const DH *dh);
  int DH_check_params_ex(const DH *dh);
- int DH_check_pub_key_ex(const DH *dh, const BIGNUM *pub_key);
+ int DH_check_pub_key_ex(const DH *dh, const BIGNUMX *pub_key);
 
 Deprecated:
 

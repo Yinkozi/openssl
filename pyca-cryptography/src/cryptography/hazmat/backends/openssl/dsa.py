@@ -95,9 +95,9 @@ class _DSAParameters(dsa.DSAParameters):
         self._dsa_cdata = dsa_cdata
 
     def parameter_numbers(self) -> dsa.DSAParameterNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_pqg(self._dsa_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(q[0] != self._backend._ffi.NULL)
@@ -118,7 +118,7 @@ class _DSAPrivateKey(dsa.DSAPrivateKey):
         self._dsa_cdata = dsa_cdata
         self._evp_pkey = evp_pkey
 
-        p = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_pqg(
             dsa_cdata, p, self._backend._ffi.NULL, self._backend._ffi.NULL
         )
@@ -135,11 +135,11 @@ class _DSAPrivateKey(dsa.DSAPrivateKey):
         return _DSASignatureContext(self._backend, self, signature_algorithm)
 
     def private_numbers(self) -> dsa.DSAPrivateNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
-        pub_key = self._backend._ffi.new("BIGNUM **")
-        priv_key = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
+        priv_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_pqg(self._dsa_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(q[0] != self._backend._ffi.NULL)
@@ -165,7 +165,7 @@ class _DSAPrivateKey(dsa.DSAPrivateKey):
         dsa_cdata = self._backend._ffi.gc(
             dsa_cdata, self._backend._lib.DSA_free
         )
-        pub_key = self._backend._ffi.new("BIGNUM **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_key(
             self._dsa_cdata, pub_key, self._backend._ffi.NULL
         )
@@ -217,7 +217,7 @@ class _DSAPublicKey(dsa.DSAPublicKey):
         self._backend = backend
         self._dsa_cdata = dsa_cdata
         self._evp_pkey = evp_pkey
-        p = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_pqg(
             dsa_cdata, p, self._backend._ffi.NULL, self._backend._ffi.NULL
         )
@@ -240,10 +240,10 @@ class _DSAPublicKey(dsa.DSAPublicKey):
         )
 
     def public_numbers(self) -> dsa.DSAPublicNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
-        pub_key = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DSA_get0_pqg(self._dsa_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(q[0] != self._backend._ffi.NULL)

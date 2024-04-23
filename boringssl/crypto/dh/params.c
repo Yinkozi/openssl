@@ -166,25 +166,25 @@ static const BN_ULONG dh2048_256_q[] = {
 };
 
 struct standard_parameters {
-  BIGNUM p, q, g;
+  BIGNUMX p, q, g;
 };
 
 static const struct standard_parameters dh1024_160 = {
-  STATIC_BIGNUM(dh1024_160_p),
-  STATIC_BIGNUM(dh1024_160_q),
-  STATIC_BIGNUM(dh1024_160_g),
+  STATIC_BIGNUMX(dh1024_160_p),
+  STATIC_BIGNUMX(dh1024_160_q),
+  STATIC_BIGNUMX(dh1024_160_g),
 };
 
 static const struct standard_parameters dh2048_224 = {
-  STATIC_BIGNUM(dh2048_224_p),
-  STATIC_BIGNUM(dh2048_224_q),
-  STATIC_BIGNUM(dh2048_224_g),
+  STATIC_BIGNUMX(dh2048_224_p),
+  STATIC_BIGNUMX(dh2048_224_q),
+  STATIC_BIGNUMX(dh2048_224_g),
 };
 
 static const struct standard_parameters dh2048_256 = {
-  STATIC_BIGNUM(dh2048_256_p),
-  STATIC_BIGNUM(dh2048_256_q),
-  STATIC_BIGNUM(dh2048_256_g),
+  STATIC_BIGNUMX(dh2048_256_p),
+  STATIC_BIGNUMX(dh2048_256_q),
+  STATIC_BIGNUMX(dh2048_256_g),
 };
 
 static DH *get_standard_parameters(const struct standard_parameters *params,
@@ -217,7 +217,7 @@ DH *DH_get_2048_256(const ENGINE *engine) {
   return get_standard_parameters(&dh2048_256, engine);
 }
 
-BIGNUM *BN_get_rfc3526_prime_1536(BIGNUM *ret) {
+BIGNUMX *BN_get_rfc3526_prime_1536(BIGNUMX *ret) {
   static const BN_ULONG kPrime1536Data[] = {
       TOBN(0xffffffff, 0xffffffff), TOBN(0xf1746c08, 0xca237327),
       TOBN(0x670c354e, 0x4abc9804), TOBN(0x9ed52907, 0x7096966d),
@@ -233,9 +233,9 @@ BIGNUM *BN_get_rfc3526_prime_1536(BIGNUM *ret) {
       TOBN(0xc90fdaa2, 0x2168c234), TOBN(0xffffffff, 0xffffffff),
   };
 
-  static const BIGNUM kPrime1536BN = STATIC_BIGNUM(kPrime1536Data);
+  static const BIGNUMX kPrime1536BN = STATIC_BIGNUMX(kPrime1536Data);
 
-  BIGNUM *alloc = NULL;
+  BIGNUMX *alloc = NULL;
   if (ret == NULL) {
     alloc = BNY_new();
     if (alloc == NULL) {

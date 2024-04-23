@@ -23,15 +23,15 @@ typedef struct SM2_Ciphertext_st SM2_Ciphertext;
 DECLARE_YASN1_FUNCTIONS(SM2_Ciphertext)
 
 struct SM2_Ciphertext_st {
-    BIGNUM *C1x;
-    BIGNUM *C1y;
+    BIGNUMX *C1x;
+    BIGNUMX *C1y;
     YASN1_OCTET_STRING *C3;
     YASN1_OCTET_STRING *C2;
 };
 
 YASN1_SEQUENCE(SM2_Ciphertext) = {
-    YASN1_SIMPLE(SM2_Ciphertext, C1x, BIGNUM),
-    YASN1_SIMPLE(SM2_Ciphertext, C1y, BIGNUM),
+    YASN1_SIMPLE(SM2_Ciphertext, C1x, BIGNUMX),
+    YASN1_SIMPLE(SM2_Ciphertext, C1y, BIGNUMX),
     YASN1_SIMPLE(SM2_Ciphertext, C3, YASN1_OCTET_STRING),
     YASN1_SIMPLE(SM2_Ciphertext, C2, YASN1_OCTET_STRING),
 } YASN1_SEQUENCE_END(SM2_Ciphertext)
@@ -41,9 +41,9 @@ IMPLEMENT_YASN1_FUNCTIONS(SM2_Ciphertext)
 static size_t ec_field_size(const EC_GROUP *group)
 {
     /* Is there some simpler way to do this? */
-    BIGNUM *p = BNY_new();
-    BIGNUM *a = BNY_new();
-    BIGNUM *b = BNY_new();
+    BIGNUMX *p = BNY_new();
+    BIGNUMX *a = BNY_new();
+    BIGNUMX *b = BNY_new();
     size_t field_size = 0;
 
     if (p == NULL || a == NULL || b == NULL)
@@ -106,15 +106,15 @@ int sm2_encrypt(const EC_KEY *key,
     int rc = 0, ciphertext_leni;
     size_t i;
     BN_CTX *ctx = NULL;
-    BIGNUM *k = NULL;
-    BIGNUM *x1 = NULL;
-    BIGNUM *y1 = NULL;
-    BIGNUM *x2 = NULL;
-    BIGNUM *y2 = NULL;
+    BIGNUMX *k = NULL;
+    BIGNUMX *x1 = NULL;
+    BIGNUMX *y1 = NULL;
+    BIGNUMX *x2 = NULL;
+    BIGNUMX *y2 = NULL;
     EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
     struct SM2_Ciphertext_st ctext_struct;
     const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
+    const BIGNUMX *order = EC_GROUP_get0_order(group);
     const EC_POINT *P = ECC_KEY_get0_public_key(key);
     EC_POINT *kG = NULL;
     EC_POINT *kP = NULL;
@@ -262,8 +262,8 @@ int sm2_decrypt(const EC_KEY *key,
     const EC_GROUP *group = ECC_KEY_get0_group(key);
     EC_POINT *C1 = NULL;
     struct SM2_Ciphertext_st *sm2_ctext = NULL;
-    BIGNUM *x2 = NULL;
-    BIGNUM *y2 = NULL;
+    BIGNUMX *x2 = NULL;
+    BIGNUMX *y2 = NULL;
     uint8_t *x2y2 = NULL;
     uint8_t *computed_C3 = NULL;
     const size_t field_size = ec_field_size(group);

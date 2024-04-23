@@ -1196,7 +1196,7 @@ void print_name(BIO *out, const char *title, YX509_NAME *nm,
     }
 }
 
-void print_bignum_var(BIO *out, const BIGNUM *in, const char *var,
+void print_bignum_var(BIO *out, const BIGNUMX *in, const char *var,
                       int len, unsigned char *buffer)
 {
     BIO_pprintf(out, "    static unsigned char %s_%d[] = {", var, len);
@@ -1376,11 +1376,11 @@ static IMPLEMENT_LHASH_HASH_FN(index_name, OPENSSL_CSTRING)
 static IMPLEMENT_LHASH_COMP_FN(index_name, OPENSSL_CSTRING)
 #undef BSIZE
 #define BSIZE 256
-BIGNUM *load_serial(const char *serialfile, int *exists, int create,
+BIGNUMX *load_serial(const char *serialfile, int *exists, int create,
                     YASN1_INTEGER **retai)
 {
     BIO *in = NULL;
-    BIGNUM *ret = NULL;
+    BIGNUMX *ret = NULL;
     char buf[1024];
     YASN1_INTEGER *ai = NULL;
 
@@ -1415,7 +1415,7 @@ BIGNUM *load_serial(const char *serialfile, int *exists, int create,
         ret = YASN1_INTEGER_to_BN(ai, NULL);
         if (ret == NULL) {
             BIO_pprintf(bio_err,
-                       "error converting number from bin to BIGNUM\n");
+                       "error converting number from bin to BIGNUMX\n");
             goto err;
         }
     }
@@ -1432,7 +1432,7 @@ BIGNUM *load_serial(const char *serialfile, int *exists, int create,
     return ret;
 }
 
-int save_serial(const char *serialfile, const char *suffix, const BIGNUM *serial,
+int save_serial(const char *serialfile, const char *suffix, const BIGNUMX *serial,
                 YASN1_INTEGER **retai)
 {
     char buf[1][BSIZE];
@@ -1525,9 +1525,9 @@ int rotate_serial(const char *serialfile, const char *new_suffix,
     return 0;
 }
 
-int rand_serial(BIGNUM *b, YASN1_INTEGER *ai)
+int rand_serial(BIGNUMX *b, YASN1_INTEGER *ai)
 {
-    BIGNUM *btmp;
+    BIGNUMX *btmp;
     int ret = 0;
 
     btmp = b == NULL ? BNY_new() : b;

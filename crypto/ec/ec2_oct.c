@@ -32,11 +32,11 @@
  */
 int ec_GF2m_simple_set_compressed_coordinates(const EC_GROUP *group,
                                               EC_POINT *point,
-                                              const BIGNUM *x_, int y_bit,
+                                              const BIGNUMX *x_, int y_bit,
                                               BN_CTX *ctx)
 {
     BN_CTX *new_ctx = NULL;
-    BIGNUM *tmp, *x, *y, *z;
+    BIGNUMX *tmp, *x, *y, *z;
     int ret = 0, z0;
 
     /* clear error queue */
@@ -117,7 +117,7 @@ size_t ec_GF2m_simple_point2oct(const EC_GROUP *group, const EC_POINT *point,
     size_t ret;
     BN_CTX *new_ctx = NULL;
     int used_ctx = 0;
-    BIGNUM *x, *y, *yxi;
+    BIGNUMX *x, *y, *yxi;
     size_t field_len, i, skip;
 
     if ((form != POINT_CONVERSION_COMPRESSED)
@@ -239,7 +239,7 @@ int ec_GF2m_simple_oct2point(const EC_GROUP *group, EC_POINT *point,
     point_conversion_form_t form;
     int y_bit, m;
     BN_CTX *new_ctx = NULL;
-    BIGNUM *x, *y, *yxi;
+    BIGNUMX *x, *y, *yxi;
     size_t field_len, enc_len;
     int ret = 0;
 

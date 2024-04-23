@@ -22,11 +22,11 @@
 #define MAX_LEN (256 * 1000)
 
 static BN_CTX *ctx;
-static BIGNUM *b1;
-static BIGNUM *b2;
-static BIGNUM *b3;
-static BIGNUM *b4;
-static BIGNUM *b5;
+static BIGNUMX *b1;
+static BIGNUMX *b2;
+static BIGNUMX *b3;
+static BIGNUMX *b4;
+static BIGNUMX *b5;
 
 int FuzzerInitialize(int *argc, char ***argv)
 {

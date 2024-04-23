@@ -191,7 +191,7 @@ DH *DSA_dup_DH(const DSA *r)
      */
 
     DH *ret = NULL;
-    BIGNUM *p = NULL, *q = NULL, *g = NULL, *pub_key = NULL, *priv_key = NULL;
+    BIGNUMX *p = NULL, *q = NULL, *g = NULL, *pub_key = NULL, *priv_key = NULL;
 
     if (r == NULL)
         goto err;
@@ -241,7 +241,7 @@ DH *DSA_dup_DH(const DSA *r)
 #endif
 
 void DSA_get0_pqg(const DSA *d,
-                  const BIGNUM **p, const BIGNUM **q, const BIGNUM **g)
+                  const BIGNUMX **p, const BIGNUMX **q, const BIGNUMX **g)
 {
     if (p != NULL)
         *p = d->p;
@@ -251,7 +251,7 @@ void DSA_get0_pqg(const DSA *d,
         *g = d->g;
 }
 
-int DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+int DSA_set0_pqg(DSA *d, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g)
 {
     /* If the fields p, q and g in d are NULL, the corresponding input
      * parameters MUST be non-NULL.
@@ -278,7 +278,7 @@ int DSA_set0_pqg(DSA *d, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 }
 
 void DSA_get0_key(const DSA *d,
-                  const BIGNUM **pub_key, const BIGNUM **priv_key)
+                  const BIGNUMX **pub_key, const BIGNUMX **priv_key)
 {
     if (pub_key != NULL)
         *pub_key = d->pub_key;
@@ -286,7 +286,7 @@ void DSA_get0_key(const DSA *d,
         *priv_key = d->priv_key;
 }
 
-int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key)
+int DSA_set0_key(DSA *d, BIGNUMX *pub_key, BIGNUMX *priv_key)
 {
     /* If the field pub_key in d is NULL, the corresponding input
      * parameters MUST be non-NULL.  The priv_key field may
@@ -307,27 +307,27 @@ int DSA_set0_key(DSA *d, BIGNUM *pub_key, BIGNUM *priv_key)
     return 1;
 }
 
-const BIGNUM *DSA_get0_p(const DSA *d)
+const BIGNUMX *DSA_get0_p(const DSA *d)
 {
     return d->p;
 }
 
-const BIGNUM *DSA_get0_q(const DSA *d)
+const BIGNUMX *DSA_get0_q(const DSA *d)
 {
     return d->q;
 }
 
-const BIGNUM *DSA_get0_g(const DSA *d)
+const BIGNUMX *DSA_get0_g(const DSA *d)
 {
     return d->g;
 }
 
-const BIGNUM *DSA_get0_pub_key(const DSA *d)
+const BIGNUMX *DSA_get0_pub_key(const DSA *d)
 {
     return d->pub_key;
 }
 
-const BIGNUM *DSA_get0_priv_key(const DSA *d)
+const BIGNUMX *DSA_get0_priv_key(const DSA *d)
 {
     return d->priv_key;
 }

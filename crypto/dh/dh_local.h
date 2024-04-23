@@ -17,19 +17,19 @@ struct dh_st {
      */
     int pad;
     int version;
-    BIGNUM *p;
-    BIGNUM *g;
+    BIGNUMX *p;
+    BIGNUMX *g;
     int32_t length;             /* optional */
-    BIGNUM *pub_key;            /* g^x % p */
-    BIGNUM *priv_key;           /* x */
+    BIGNUMX *pub_key;            /* g^x % p */
+    BIGNUMX *priv_key;           /* x */
     int flags;
     BN_MONT_CTX *method_mont_p;
     /* Place holders if we want to do X9.42 DH */
-    BIGNUM *q;
-    BIGNUM *j;
+    BIGNUMX *q;
+    BIGNUMX *j;
     unsigned char *seed;
     int seedlen;
-    BIGNUM *counter;
+    BIGNUMX *counter;
     CRYPTO_REF_COUNT references;
     CRYPTO_EX_DATA ex_data;
     const DH_METHOD *meth;
@@ -41,11 +41,11 @@ struct dh_method {
     char *name;
     /* Methods here */
     int (*generate_key) (DH *dh);
-    int (*compute_key) (unsigned char *key, const BIGNUM *pub_key, DH *dh);
+    int (*compute_key) (unsigned char *key, const BIGNUMX *pub_key, DH *dh);
 
     /* Can be null */
-    int (*bn_mod_exp) (const DH *dh, BIGNUM *r, const BIGNUM *a,
-                       const BIGNUM *p, const BIGNUM *m, BN_CTX *ctx,
+    int (*bn_mod_exp) (const DH *dh, BIGNUMX *r, const BIGNUMX *a,
+                       const BIGNUMX *p, const BIGNUMX *m, BN_CTX *ctx,
                        BN_MONT_CTX *m_ctx);
     int (*init) (DH *dh);
     int (*finish) (DH *dh);

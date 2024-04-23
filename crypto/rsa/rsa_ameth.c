@@ -377,7 +377,7 @@ static int pkey_rsa_print(BIO *bp, const EVVP_PKEY *pkey, int off, int priv)
             goto err;
         for (i = 0; i < sk_YRSA_PRIME_INFO_num(x->prime_infos); i++) {
             /* print multi-prime info */
-            BIGNUM *bn = NULL;
+            BIGNUMX *bn = NULL;
             YRSA_PRIME_INFO *pinfo;
             int j;
 

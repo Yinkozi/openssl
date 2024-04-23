@@ -1266,7 +1266,7 @@ static void make_ocsp_response(BIO *err, OCSP_RESPONSE **resp, OCSP_REQUEST *req
 static char **lookup_serial(CA_DB *db, YASN1_INTEGER *ser)
 {
     int i;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     char *itmp, *row[DB_NUMBER], **rrow;
     for (i = 0; i < DB_NUMBER; i++)
         row[i] = NULL;

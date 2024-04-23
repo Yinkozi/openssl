@@ -12,7 +12,7 @@
 # include "../bn_asm.c"         /* kind of dirty hack for Sun Studio */
 #else
 /*-
- * x86_64 BIGNUM accelerator version 0.1, December 2002.
+ * x86_64 BIGNUMX accelerator version 0.1, December 2002.
  *
  * Implemented by Andy Polyakov <appro@openssl.org> for the OpenSSL
  * project.

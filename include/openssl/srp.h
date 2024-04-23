@@ -29,7 +29,7 @@ extern "C" {
 
 typedef struct SRP_gN_cache_st {
     char *b64_bn;
-    BIGNUM *bn;
+    BIGNUMX *bn;
 } SRP_gN_cache;
 
 
@@ -38,11 +38,11 @@ DEFINE_STACK_OF(SRP_gN_cache)
 typedef struct SRP_user_pwd_st {
     /* Owned by us. */
     char *id;
-    BIGNUM *s;
-    BIGNUM *v;
+    BIGNUMX *s;
+    BIGNUMX *v;
     /* Not owned by us. */
-    const BIGNUM *g;
-    const BIGNUM *N;
+    const BIGNUMX *g;
+    const BIGNUMX *N;
     /* Owned by us. */
     char *info;
 } SRP_user_pwd;
@@ -56,8 +56,8 @@ typedef struct SRP_VBASE_st {
     STACK_OF(SRP_gN_cache) *gN_cache;
 /* to simulate a user */
     char *seed_key;
-    const BIGNUM *default_g;
-    const BIGNUM *default_N;
+    const BIGNUMX *default_g;
+    const BIGNUMX *default_N;
 } SRP_VBASE;
 
 /*
@@ -65,8 +65,8 @@ typedef struct SRP_VBASE_st {
  */
 typedef struct SRP_gN_st {
     char *id;
-    const BIGNUM *g;
-    const BIGNUM *N;
+    const BIGNUMX *g;
+    const BIGNUMX *N;
 } SRP_gN;
 
 DEFINE_STACK_OF(SRP_gN)
@@ -82,9 +82,9 @@ SRP_user_pwd *SRP_VBASE_get1_by_user(SRP_VBASE *vb, char *username);
 
 char *SRP_create_verifier(const char *user, const char *pass, char **salt,
                           char **verifier, const char *N, const char *g);
-int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUM **salt,
-                           BIGNUM **verifier, const BIGNUM *N,
-                           const BIGNUM *g);
+int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUMX **salt,
+                           BIGNUMX **verifier, const BIGNUMX *N,
+                           const BIGNUMX *g);
 
 # define SRP_NO_ERROR 0
 # define SRP_ERR_VBASE_INCOMPLETE_FILE 1
@@ -107,23 +107,23 @@ int SRP_create_verifier_BN(const char *user, const char *pass, BIGNUM **salt,
 # define DB_SRP_MODIF    'v'
 
 /* see srp.c */
-char *SRP_check_known_gN_param(const BIGNUM *g, const BIGNUM *N);
+char *SRP_check_known_gN_param(const BIGNUMX *g, const BIGNUMX *N);
 SRP_gN *SRP_get_default_gN(const char *id);
 
 /* server side .... */
-BIGNUM *SRP_Calc_server_key(const BIGNUM *A, const BIGNUM *v, const BIGNUM *u,
-                            const BIGNUM *b, const BIGNUM *N);
-BIGNUM *SRP_Calc_B(const BIGNUM *b, const BIGNUM *N, const BIGNUM *g,
-                   const BIGNUM *v);
-int SRP_Verify_A_mod_N(const BIGNUM *A, const BIGNUM *N);
-BIGNUM *SRP_Calc_u(const BIGNUM *A, const BIGNUM *B, const BIGNUM *N);
+BIGNUMX *SRP_Calc_server_key(const BIGNUMX *A, const BIGNUMX *v, const BIGNUMX *u,
+                            const BIGNUMX *b, const BIGNUMX *N);
+BIGNUMX *SRP_Calc_B(const BIGNUMX *b, const BIGNUMX *N, const BIGNUMX *g,
+                   const BIGNUMX *v);
+int SRP_Verify_A_mod_N(const BIGNUMX *A, const BIGNUMX *N);
+BIGNUMX *SRP_Calc_u(const BIGNUMX *A, const BIGNUMX *B, const BIGNUMX *N);
 
 /* client side .... */
-BIGNUM *SRP_Calc_x(const BIGNUM *s, const char *user, const char *pass);
-BIGNUM *SRP_Calc_A(const BIGNUM *a, const BIGNUM *N, const BIGNUM *g);
-BIGNUM *SRP_Calc_client_key(const BIGNUM *N, const BIGNUM *B, const BIGNUM *g,
-                            const BIGNUM *x, const BIGNUM *a, const BIGNUM *u);
-int SRP_Verify_B_mod_N(const BIGNUM *B, const BIGNUM *N);
+BIGNUMX *SRP_Calc_x(const BIGNUMX *s, const char *user, const char *pass);
+BIGNUMX *SRP_Calc_A(const BIGNUMX *a, const BIGNUMX *N, const BIGNUMX *g);
+BIGNUMX *SRP_Calc_client_key(const BIGNUMX *N, const BIGNUMX *B, const BIGNUMX *g,
+                            const BIGNUMX *x, const BIGNUMX *a, const BIGNUMX *u);
+int SRP_Verify_B_mod_N(const BIGNUMX *B, const BIGNUMX *N);
 
 # define SRP_MINIMAL_N 1024
 

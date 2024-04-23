@@ -13,10 +13,10 @@
 #include "crypto/bn.h"
 
 static int generate_key(DH *dh);
-static int compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh);
-static int dh_bn_mod_exp(const DH *dh, BIGNUM *r,
-                         const BIGNUM *a, const BIGNUM *p,
-                         const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+static int compute_key(unsigned char *key, const BIGNUMX *pub_key, DH *dh);
+static int dh_bn_mod_exp(const DH *dh, BIGNUMX *r,
+                         const BIGNUMX *a, const BIGNUMX *p,
+                         const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
 static int dh_init(DH *dh);
 static int dh_finish(DH *dh);
 
@@ -29,7 +29,7 @@ int DH_generate_key(DH *dh)
  * NB: This function is inherently not constant time due to the
  * RFC 5246 (8.1.2) padding style that strips leading zero bytes.
  */
-int DH_compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
+int DH_compute_key(unsigned char *key, const BIGNUMX *pub_key, DH *dh)
 {
     int ret = 0, i;
     volatile size_t npad = 0, mask = 1;
@@ -54,7 +54,7 @@ int DH_compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
     return ret;
 }
 
-int DH_compute_key_padded(unsigned char *key, const BIGNUM *pub_key, DH *dh)
+int DH_compute_key_padded(unsigned char *key, const BIGNUMX *pub_key, DH *dh)
 {
     int rv, pad;
 
@@ -107,7 +107,7 @@ static int generate_key(DH *dh)
     unsigned l;
     BN_CTX *ctx = NULL;
     BN_MONT_CTX *mont = NULL;
-    BIGNUM *pub_key = NULL, *priv_key = NULL;
+    BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
     if (BNY_num_bits(dh->p) > OPENSSL_DH_MAX_MODULUS_BITS) {
         DHerr(DH_F_GENERATE_KEY, DH_R_MODULUS_TOO_LARGE);
@@ -165,7 +165,7 @@ static int generate_key(DH *dh)
     }
 
     {
-        BIGNUM *prk = BNY_new();
+        BIGNUMX *prk = BNY_new();
 
         if (prk == NULL)
             goto err;
@@ -194,11 +194,11 @@ static int generate_key(DH *dh)
     return ok;
 }
 
-static int compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
+static int compute_key(unsigned char *key, const BIGNUMX *pub_key, DH *dh)
 {
     BN_CTX *ctx = NULL;
     BN_MONT_CTX *mont = NULL;
-    BIGNUM *tmp;
+    BIGNUMX *tmp;
     int ret = -1;
     int check_result;
 
@@ -246,9 +246,9 @@ static int compute_key(unsigned char *key, const BIGNUM *pub_key, DH *dh)
     return ret;
 }
 
-static int dh_bn_mod_exp(const DH *dh, BIGNUM *r,
-                         const BIGNUM *a, const BIGNUM *p,
-                         const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx)
+static int dh_bn_mod_exp(const DH *dh, BIGNUMX *r,
+                         const BIGNUMX *a, const BIGNUMX *p,
+                         const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx)
 {
     return BNY_mod_exp_mont(r, a, p, m, ctx, m_ctx);
 }

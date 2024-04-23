@@ -14,20 +14,20 @@
 #define BN_BLINDING_COUNTER     32
 
 struct bn_blinding_st {
-    BIGNUM *A;
-    BIGNUM *Ai;
-    BIGNUM *e;
-    BIGNUM *mod;                /* just a reference */
+    BIGNUMX *A;
+    BIGNUMX *Ai;
+    BIGNUMX *e;
+    BIGNUMX *mod;                /* just a reference */
     CRYPTO_THREAD_ID tid;
     int counter;
     unsigned long flags;
     BN_MONT_CTX *m_ctx;
-    int (*bn_mod_exp) (BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+    int (*bn_mod_exp) (BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                       const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
     CRYPTO_RWLOCK *lock;
 };
 
-BN_BLINDING *BN_BLINDING_new(const BIGNUM *A, const BIGNUM *Ai, BIGNUM *mod)
+BN_BLINDING *BN_BLINDING_new(const BIGNUMX *A, const BIGNUMX *Ai, BIGNUMX *mod)
 {
     BN_BLINDING *ret = NULL;
 
@@ -126,12 +126,12 @@ int BN_BLINDING_update(BN_BLINDING *b, BN_CTX *ctx)
     return ret;
 }
 
-int BN_BLINDING_convert(BIGNUM *n, BN_BLINDING *b, BN_CTX *ctx)
+int BN_BLINDING_convert(BIGNUMX *n, BN_BLINDING *b, BN_CTX *ctx)
 {
     return BN_BLINDING_convert_ex(n, NULL, b, ctx);
 }
 
-int BN_BLINDING_convert_ex(BIGNUM *n, BIGNUM *r, BN_BLINDING *b, BN_CTX *ctx)
+int BN_BLINDING_convert_ex(BIGNUMX *n, BIGNUMX *r, BN_BLINDING *b, BN_CTX *ctx)
 {
     int ret = 1;
 
@@ -159,12 +159,12 @@ int BN_BLINDING_convert_ex(BIGNUM *n, BIGNUM *r, BN_BLINDING *b, BN_CTX *ctx)
     return ret;
 }
 
-int BN_BLINDING_invert(BIGNUM *n, BN_BLINDING *b, BN_CTX *ctx)
+int BN_BLINDING_invert(BIGNUMX *n, BN_BLINDING *b, BN_CTX *ctx)
 {
     return BN_BLINDING_invert_ex(n, NULL, b, ctx);
 }
 
-int BN_BLINDING_invert_ex(BIGNUM *n, const BIGNUM *r, BN_BLINDING *b,
+int BN_BLINDING_invert_ex(BIGNUMX *n, const BIGNUMX *r, BN_BLINDING *b,
                           BN_CTX *ctx)
 {
     int ret;
@@ -232,11 +232,11 @@ void BN_BLINDING_set_flags(BN_BLINDING *b, unsigned long flags)
 }
 
 BN_BLINDING *BN_BLINDING_create_param(BN_BLINDING *b,
-                                      const BIGNUM *e, BIGNUM *m, BN_CTX *ctx,
-                                      int (*bn_mod_exp) (BIGNUM *r,
-                                                         const BIGNUM *a,
-                                                         const BIGNUM *p,
-                                                         const BIGNUM *m,
+                                      const BIGNUMX *e, BIGNUMX *m, BN_CTX *ctx,
+                                      int (*bn_mod_exp) (BIGNUMX *r,
+                                                         const BIGNUMX *a,
+                                                         const BIGNUMX *p,
+                                                         const BIGNUMX *m,
                                                          BN_CTX *ctx,
                                                          BN_MONT_CTX *m_ctx),
                                       BN_MONT_CTX *m_ctx)

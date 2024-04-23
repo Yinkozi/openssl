@@ -51,7 +51,7 @@
 struct groupdata_st {
     const groupdef *gdef;
     EC_GROUP *group;
-    BIGNUM *order;
+    BIGNUMX *order;
     BN_CTX *ctx;
     EC_POINT *M;
     EC_POINT *N;
@@ -140,11 +140,11 @@ error:
 
 /* Convert pseudo-random bytes into a scalar value in constant time.
  * Return NULL on failure. */
-static BIGNUM *
+static BIGNUMX *
 unmarshal_w(const groupdata *gdata, const uint8_t *wbytes)
 {
     const spake_iana *reg = gdata->gdef->reg;
-    BIGNUM *w = NULL;
+    BIGNUMX *w = NULL;
 
     w = BNY_new();
     if (w == NULL)
@@ -168,7 +168,7 @@ ossl_keygen(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
     const EC_POINT *constant = use_m ? gdata->M : gdata->N;
     krb5_boolean success = FALSE;
     EC_POINT *pub = NULL;
-    BIGNUM *priv = NULL, *w = NULL;
+    BIGNUMX *priv = NULL, *w = NULL;
     size_t len;
 
     w = unmarshal_w(gdata, wbytes);
@@ -218,7 +218,7 @@ ossl_result(krb5_context context, groupdata *gdata, const uint8_t *wbytes,
     const EC_POINT *constant = use_m ? gdata->M : gdata->N;
     krb5_boolean success = FALSE, invalid = FALSE;
     EC_POINT *result = NULL, *pub = NULL;
-    BIGNUM *priv = NULL, *w = NULL;
+    BIGNUMX *priv = NULL, *w = NULL;
     size_t len;
 
     w = unmarshal_w(gdata, wbytes);

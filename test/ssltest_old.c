@@ -2939,7 +2939,7 @@ static DH *get_dh512(void)
         0x02,
     };
     DH *dh;
-    BIGNUM *p, *g;
+    BIGNUMX *p, *g;
 
     if ((dh = DH_new()) == NULL)
         return NULL;
@@ -2983,7 +2983,7 @@ static DH *get_dh1024(void)
         0x02,
     };
     DH *dh;
-    BIGNUM *p, *g;
+    BIGNUMX *p, *g;
 
     if ((dh = DH_new()) == NULL)
         return NULL;
@@ -3047,7 +3047,7 @@ static DH *get_dh1024dsa(void)
         0x07, 0xE7, 0x68, 0x1A, 0x82, 0x5D, 0x32, 0xA2,
     };
     DH *dh;
-    BIGNUM *p, *g;
+    BIGNUMX *p, *g;
 
     if ((dh = DH_new()) == NULL)
         return NULL;
@@ -3065,7 +3065,7 @@ static DH *get_dh1024dsa(void)
 
 static DH *get_dh2048(void)
 {
-    BIGNUM *p = NULL, *g = NULL;
+    BIGNUMX *p = NULL, *g = NULL;
     DH *dh = NULL;
 
     if ((dh = DH_new()) == NULL)
@@ -3093,7 +3093,7 @@ static DH *get_dh2048(void)
 
 static DH *get_dh4096(void)
 {
-    BIGNUM *p = NULL, *g = NULL;
+    BIGNUMX *p = NULL, *g = NULL;
     DH *dh = NULL;
 
     if ((dh = DH_new()) == NULL)
@@ -3126,11 +3126,11 @@ static int psk_key2bn(const char *pskkey, unsigned char *psk,
                       unsigned int max_psk_len)
 {
     int ret;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
 
     ret = BN_hex2bn(&bn, pskkey);
     if (!ret) {
-        BIO_pprintf(bio_err, "Could not convert PSK key '%s' to BIGNUM\n",
+        BIO_pprintf(bio_err, "Could not convert PSK key '%s' to BIGNUMX\n",
                    pskkey);
         BN_free(bn);
         return 0;

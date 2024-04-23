@@ -63,7 +63,7 @@
 #include "internal.h"
 
 
-int BN_lshift(BIGNUM *r, const BIGNUM *a, int n) {
+int BN_lshift(BIGNUMX *r, const BIGNUMX *a, int n) {
   int i, nw, lb, rb;
   BN_ULONG *t, *f;
   BN_ULONG l;
@@ -101,7 +101,7 @@ int BN_lshift(BIGNUM *r, const BIGNUM *a, int n) {
   return 1;
 }
 
-int BN_lshift1(BIGNUM *r, const BIGNUM *a) {
+int BN_lshift1(BIGNUMX *r, const BIGNUMX *a) {
   BN_ULONG *ap, *rp, t, c;
   int i;
 
@@ -132,7 +132,7 @@ int BN_lshift1(BIGNUM *r, const BIGNUM *a) {
   return 1;
 }
 
-int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n) {
+int BN_ryshift(BIGNUMX *r, const BIGNUMX *a, int n) {
   int i, j, nw, lb, rb;
   BN_ULONG *t, *f;
   BN_ULONG l, tmp;
@@ -189,7 +189,7 @@ int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n) {
   return 1;
 }
 
-int BN_ryshift1(BIGNUM *r, const BIGNUM *a) {
+int BN_ryshift1(BIGNUMX *r, const BIGNUMX *a) {
   BN_ULONG *ap, *rp, t, c;
   int i, j;
 
@@ -226,7 +226,7 @@ int BN_ryshift1(BIGNUM *r, const BIGNUM *a) {
   return 1;
 }
 
-int BN_set_bit(BIGNUM *a, int n) {
+int BN_set_bit(BIGNUMX *a, int n) {
   int i, j, k;
 
   if (n < 0) {
@@ -250,7 +250,7 @@ int BN_set_bit(BIGNUM *a, int n) {
   return 1;
 }
 
-int BN_clear_bit(BIGNUM *a, int n) {
+int BN_clear_bit(BIGNUMX *a, int n) {
   int i, j;
 
   if (n < 0) {
@@ -268,7 +268,7 @@ int BN_clear_bit(BIGNUM *a, int n) {
   return 1;
 }
 
-int BN_is_bit_set(const BIGNUM *a, int n) {
+int BN_is_bit_set(const BIGNUMX *a, int n) {
   int i, j;
 
   if (n < 0) {
@@ -283,7 +283,7 @@ int BN_is_bit_set(const BIGNUM *a, int n) {
   return (a->d[i]>>j)&1;
 }
 
-int BN_mask_bits(BIGNUM *a, int n) {
+int BN_mask_bits(BIGNUMX *a, int n) {
   int b, w;
 
   if (n < 0) {

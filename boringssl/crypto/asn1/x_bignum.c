@@ -60,9 +60,9 @@
 #include <openssl/bn.h>
 
 /*
- * Custom primitive type for BIGNUM handling. This reads in an YASN1_INTEGER
- * as a BIGNUM directly. Currently it ignores the sign which isn't a problem
- * since all BIGNUMs used are non negative and anything that looks negative
+ * Custom primitive type for BIGNUMX handling. This reads in an YASN1_INTEGER
+ * as a BIGNUMX directly. Currently it ignores the sign which isn't a problem
+ * since all BIGNUMXs used are non negative and anything that looks negative
  * is normally due to an encoding error.
  */
 
@@ -86,13 +86,13 @@ static const YASN1_PRIMITIVE_FUNCS bignum_pf = {
     NULL /* prim_print */ ,
 };
 
-YASN1_ITEM_start(BIGNUM)
-        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &bignum_pf, 0, "BIGNUM"
-YASN1_ITEM_end(BIGNUM)
+YASN1_ITEM_start(BIGNUMX)
+        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &bignum_pf, 0, "BIGNUMX"
+YASN1_ITEM_end(BIGNUMX)
 
-YASN1_ITEM_start(CBIGNUM)
-        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &bignum_pf, BN_SENSITIVE, "BIGNUM"
-YASN1_ITEM_end(CBIGNUM)
+YASN1_ITEM_start(CBIGNUMX)
+        YASN1_ITYPE_PRIMITIVE, V_YASN1_INTEGER, NULL, 0, &bignum_pf, BN_SENSITIVE, "BIGNUMX"
+YASN1_ITEM_end(CBIGNUMX)
 
 static int bny_new(YASN1_VALUE **pval, const YASN1_ITEM *it)
 {
@@ -108,20 +108,20 @@ static void bny_free(YASN1_VALUE **pval, const YASN1_ITEM *it)
     if (!*pval)
         return;
     if (it->size & BN_SENSITIVE)
-        BNY_clear_free((BIGNUM *)*pval);
+        BNY_clear_free((BIGNUMX *)*pval);
     else
-        BN_free((BIGNUM *)*pval);
+        BN_free((BIGNUMX *)*pval);
     *pval = NULL;
 }
 
 static int bny_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
                   const YASN1_ITEM *it)
 {
-    BIGNUM *bn;
+    BIGNUMX *bn;
     int pad;
     if (!*pval)
         return -1;
-    bn = (BIGNUM *)*pval;
+    bn = (BIGNUMX *)*pval;
     /* If MSB set in an octet we need a padding byte */
     if (BNY_num_bits(bn) & 0x7)
         pad = 0;
@@ -138,13 +138,13 @@ static int bny_i2c(YASN1_VALUE **pval, unsigned char *cont, int *putype,
 static int bny_c2i(YASN1_VALUE **pval, const unsigned char *cont, int len,
                   int utype, char *free_cont, const YASN1_ITEM *it)
 {
-    BIGNUM *bn;
+    BIGNUMX *bn;
     if (!*pval) {
         if (!bny_new(pval, it)) {
             return 0;
         }
     }
-    bn = (BIGNUM *)*pval;
+    bn = (BIGNUMX *)*pval;
     if (!BNY_bin2bn(cont, len, bn)) {
         bny_free(pval, it);
         return 0;

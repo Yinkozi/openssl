@@ -42,7 +42,7 @@ int YASN1_buf_print(BIO *bp, const unsigned char *buf, size_t buflen, int indent
     return 1;
 }
 
-int YASN1_bn_print(BIO *bp, const char *number, const BIGNUM *num,
+int YASN1_bn_print(BIO *bp, const char *number, const BIGNUMX *num,
                   unsigned char *ign, int indent)
 {
     int n, rv = 0;

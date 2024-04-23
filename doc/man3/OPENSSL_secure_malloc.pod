@@ -47,7 +47,7 @@ The level and type of security guarantees depend on the operating system.
 It is a good idea to review the code and see if it addresses your
 threat model and concerns.
 
-If a secure heap is used, then private key B<BIGNUM> values are stored there.
+If a secure heap is used, then private key B<BIGNUMX> values are stored there.
 This protects long-term storage of private keys, but will not necessarily
 put all intermediate values and computations there.
 

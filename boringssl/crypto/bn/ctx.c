@@ -70,7 +70,7 @@
 /* A bundle of bignums that can be linked with other bundles */
 typedef struct bignum_pool_item {
   /* The bignum values */
-  BIGNUM vals[BN_CTX_POOL_SIZE];
+  BIGNUMX vals[BN_CTX_POOL_SIZE];
   /* Linked-list admin */
   struct bignum_pool_item *prev, *next;
 } BN_POOL_ITEM;
@@ -85,7 +85,7 @@ typedef struct bignum_pool {
 
 static void BN_POOL_init(BN_POOL *);
 static void BN_POOL_finish(BN_POOL *);
-static BIGNUM *BN_POOL_get(BN_POOL *);
+static BIGNUMX *BN_POOL_get(BN_POOL *);
 static void BN_POOL_release(BN_POOL *, unsigned int);
 
 /************/
@@ -160,8 +160,8 @@ void BNY_CTX_start(BN_CTX *ctx) {
   }
 }
 
-BIGNUM *BNY_CTX_get(BN_CTX *ctx) {
-  BIGNUM *ret;
+BIGNUMX *BNY_CTX_get(BN_CTX *ctx) {
+  BIGNUMX *ret;
   if (ctx->err_stack || ctx->too_many) {
     return NULL;
   }
@@ -243,7 +243,7 @@ static void BN_POOL_init(BN_POOL *p) {
 static void BN_POOL_finish(BN_POOL *p) {
   while (p->head) {
     unsigned int loop = 0;
-    BIGNUM *bn = p->head->vals;
+    BIGNUMX *bn = p->head->vals;
     while (loop++ < BN_CTX_POOL_SIZE) {
       if (bn->d) {
         BNY_clear_free(bn);
@@ -257,9 +257,9 @@ static void BN_POOL_finish(BN_POOL *p) {
   }
 }
 
-static BIGNUM *BN_POOL_get(BN_POOL *p) {
+static BIGNUMX *BN_POOL_get(BN_POOL *p) {
   if (p->used == p->size) {
-    BIGNUM *bn;
+    BIGNUMX *bn;
     unsigned int loop = 0;
     BN_POOL_ITEM *item = OPENSSL_malloc(sizeof(BN_POOL_ITEM));
     if (!item) {

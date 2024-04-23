@@ -157,7 +157,7 @@ int YX509V3_add_value_bool_nf(char *name, int asn1_bool,
 
 char *i2s_YASN1_ENUMERATED(YX509V3_EXT_METHOD *method, YASN1_ENUMERATED *a)
 {
-    BIGNUM *bntmp = NULL;
+    BIGNUMX *bntmp = NULL;
     char *strtmp = NULL;
     if (!a)
         return NULL;
@@ -170,7 +170,7 @@ char *i2s_YASN1_ENUMERATED(YX509V3_EXT_METHOD *method, YASN1_ENUMERATED *a)
 
 char *i2s_YASN1_INTEGER(YX509V3_EXT_METHOD *method, YASN1_INTEGER *a)
 {
-    BIGNUM *bntmp = NULL;
+    BIGNUMX *bntmp = NULL;
     char *strtmp = NULL;
     if (!a)
         return NULL;
@@ -183,7 +183,7 @@ char *i2s_YASN1_INTEGER(YX509V3_EXT_METHOD *method, YASN1_INTEGER *a)
 
 YASN1_INTEGER *s2i_YASN1_INTEGER(YX509V3_EXT_METHOD *method, char *value)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     YASN1_INTEGER *aint;
     int isneg, ishex;
     int ret;

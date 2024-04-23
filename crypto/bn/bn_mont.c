@@ -20,10 +20,10 @@
 #define MONT_WORD               /* use the faster word-based algorithm */
 
 #ifdef MONT_WORD
-static int bn_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont);
+static int bn_from_montgomery_word(BIGNUMX *ret, BIGNUMX *r, BN_MONT_CTX *mont);
 #endif
 
-int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int BNY_mod_mul_montgomery(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
                           BN_MONT_CTX *mont, BN_CTX *ctx)
 {
     int ret = bn_mul_mont_fixed_top(r, a, b, mont, ctx);
@@ -34,10 +34,10 @@ int BNY_mod_mul_montgomery(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
     return ret;
 }
 
-int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
+int bn_mul_mont_fixed_top(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b,
                           BN_MONT_CTX *mont, BN_CTX *ctx)
 {
-    BIGNUM *tmp;
+    BIGNUMX *tmp;
     int ret = 0;
     int num = mont->N.top;
 
@@ -85,9 +85,9 @@ int bn_mul_mont_fixed_top(BIGNUM *r, const BIGNUM *a, const BIGNUM *b,
 }
 
 #ifdef MONT_WORD
-static int bn_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
+static int bn_from_montgomery_word(BIGNUMX *ret, BIGNUMX *r, BN_MONT_CTX *mont)
 {
-    BIGNUM *n;
+    BIGNUMX *n;
     BN_ULONG *ap, *np, *rp, n0, v, carry;
     int nl, max, i;
     unsigned int rtop;
@@ -159,7 +159,7 @@ static int bn_from_montgomery_word(BIGNUM *ret, BIGNUM *r, BN_MONT_CTX *mont)
 }
 #endif                          /* MONT_WORD */
 
-int BN_from_montgomery(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
+int BN_from_montgomery(BIGNUMX *ret, const BIGNUMX *a, BN_MONT_CTX *mont,
                        BN_CTX *ctx)
 {
     int retn;
@@ -171,12 +171,12 @@ int BN_from_montgomery(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
     return retn;
 }
 
-int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
+int bn_from_mont_fixed_top(BIGNUMX *ret, const BIGNUMX *a, BN_MONT_CTX *mont,
                            BN_CTX *ctx)
 {
     int retn = 0;
 #ifdef MONT_WORD
-    BIGNUM *t;
+    BIGNUMX *t;
 
     BNY_CTX_start(ctx);
     if ((t = BNY_CTX_get(ctx)) && BNY_copy(t, a)) {
@@ -184,7 +184,7 @@ int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
     }
     BNY_CTX_end(ctx);
 #else                           /* !MONT_WORD */
-    BIGNUM *t1, *t2;
+    BIGNUMX *t1, *t2;
 
     BNY_CTX_start(ctx);
     t1 = BNY_CTX_get(ctx);
@@ -219,7 +219,7 @@ int bn_from_mont_fixed_top(BIGNUM *ret, const BIGNUM *a, BN_MONT_CTX *mont,
     return retn;
 }
 
-int bn_to_mont_fixed_top(BIGNUM *r, const BIGNUM *a, BN_MONT_CTX *mont,
+int bn_to_mont_fixed_top(BIGNUMX *r, const BIGNUMX *a, BN_MONT_CTX *mont,
                          BN_CTX *ctx)
 {
     return bn_mul_mont_fixed_top(r, a, &(mont->RR), mont, ctx);
@@ -260,10 +260,10 @@ void BN_MONT_CTX_free(BN_MONT_CTX *mont)
         OPENSSL_free(mont);
 }
 
-int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
+int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUMX *mod, BN_CTX *ctx)
 {
     int i, ret = 0;
-    BIGNUM *Ri, *R;
+    BIGNUMX *Ri, *R;
 
     if (BN_is_zero(mod))
         return 0;
@@ -280,7 +280,7 @@ int BN_MONT_CTX_set(BN_MONT_CTX *mont, const BIGNUM *mod, BN_CTX *ctx)
 
 #ifdef MONT_WORD
     {
-        BIGNUM tmod;
+        BIGNUMX tmod;
         BN_ULONG buf[2];
 
         bn_init(&tmod);
@@ -426,7 +426,7 @@ BN_MONT_CTX *BN_MONT_CTX_copy(BN_MONT_CTX *to, BN_MONT_CTX *from)
 }
 
 BN_MONT_CTX *BN_MONT_CTX_set_locked(BN_MONT_CTX **pmont, CRYPTO_RWLOCK *lock,
-                                    const BIGNUM *mod, BN_CTX *ctx)
+                                    const BIGNUMX *mod, BN_CTX *ctx)
 {
     BN_MONT_CTX *ret;
 

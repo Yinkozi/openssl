@@ -207,15 +207,15 @@ static void flip_endian(u8 *out, const u8 *in, size_t len) {
   }
 }
 
-/* From OpenSSL BIGNUM to internal representation */
-static int BN_to_felem(felem out, const BIGNUM *bn) {
+/* From OpenSSL BIGNUMX to internal representation */
+static int BN_to_felem(felem out, const BIGNUMX *bn) {
   /* BNY_bn2bin eats leading zeroes */
   felem_bytearray b_out;
   OPENSSL_memset(b_out, 0, sizeof(b_out));
   size_t num_bytes = BN_num_bytes(bn);
   if (num_bytes > sizeof(b_out) ||
       BN_is_negative(bn)) {
-    OPENSSL_PUT_ERROR(EC, EC_R_BIGNUM_OUT_OF_RANGE);
+    OPENSSL_PUT_ERROR(EC, EC_R_BIGNUMX_OUT_OF_RANGE);
     return 0;
   }
 
@@ -226,8 +226,8 @@ static int BN_to_felem(felem out, const BIGNUM *bn) {
   return 1;
 }
 
-/* From internal representation to OpenSSL BIGNUM */
-static BIGNUM *felem_to_BN(BIGNUM *out, const felem in) {
+/* From internal representation to OpenSSL BIGNUMX */
+static BIGNUMX *felem_to_BN(BIGNUMX *out, const felem in) {
   felem_bytearray b_in, b_out;
   felem_to_bin28(b_in, in);
   flip_endian(b_out, b_in, sizeof(b_out));
@@ -976,7 +976,7 @@ static void batch_mul(felem x_out, felem y_out, felem z_out, const u8 *p_scalar,
  * (X', Y') = (X/Z^2, Y/Z^3) */
 static int ec_GFp_nistp224_point_get_affine_coordinates(const EC_GROUP *group,
                                                         const EC_POINT *point,
-                                                        BIGNUM *x, BIGNUM *y,
+                                                        BIGNUMX *x, BIGNUMX *y,
                                                         BN_CTX *ctx) {
   felem z1, z2, x_in, y_in, x_out, y_out;
   widefelem tmp;
@@ -1017,11 +1017,11 @@ static int ec_GFp_nistp224_point_get_affine_coordinates(const EC_GROUP *group,
 }
 
 static int ec_GFp_nistp224_points_mul(const EC_GROUP *group, EC_POINT *r,
-                                      const BIGNUM *g_scalar, const EC_POINT *p,
-                                      const BIGNUM *p_scalar, BN_CTX *ctx) {
+                                      const BIGNUMX *g_scalar, const EC_POINT *p,
+                                      const BIGNUMX *p_scalar, BN_CTX *ctx) {
   int ret = 0;
   BN_CTX *new_ctx = NULL;
-  BIGNUM *x, *y, *z, *tmp_scalar;
+  BIGNUMX *x, *y, *z, *tmp_scalar;
   felem_bytearray g_secret, p_secret;
   felem p_pre_comp[17][3];
   felem_bytearray tmp;

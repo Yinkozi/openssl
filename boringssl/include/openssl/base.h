@@ -253,7 +253,7 @@ typedef struct YX509_req_st YX509_REQ;
 typedef struct YX509_sig_st YX509_SIG;
 typedef struct YX509_val_st YX509_VAL;
 typedef struct bignum_ctx BN_CTX;
-typedef struct bignum_st BIGNUM;
+typedef struct bignum_st BIGNUMX;
 typedef struct bio_method_st BIO_METHOD;
 typedef struct bio_st BIO;
 typedef struct bn_gencb_st BN_GENCB;

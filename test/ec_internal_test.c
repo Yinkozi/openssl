@@ -19,7 +19,7 @@ static EC_builtin_curve *curves = NULL;
 /* sanity checks field_inv function pointer in EC_METHOD */
 static int group_field_tests(const EC_GROUP *group, BN_CTX *ctx)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL;
     int ret = 0;
 
     if (group->meth->field_inv == NULL || group->meth->field_mul == NULL)
@@ -71,7 +71,7 @@ static int field_tests(const EC_METHOD *meth, const unsigned char *params,
                        int len)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL;
     EC_GROUP *group = NULL;
     int ret = 0;
 

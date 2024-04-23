@@ -144,8 +144,8 @@ static bool PointToAffine(P256_POINT_AFFINE *out, const P256_POINT *in) {
       0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
   };
 
-  bssl::UniquePtr<BIGNUM> x(BNY_new()), y(BNY_new()), z(BNY_new());
-  bssl::UniquePtr<BIGNUM> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
+  bssl::UniquePtr<BIGNUMX> x(BNY_new()), y(BNY_new()), z(BNY_new());
+  bssl::UniquePtr<BIGNUMX> p(BNY_bin2bn(kP, sizeof(kP), nullptr));
   if (!x || !y || !z || !p ||
       !bn_set_words(x.get(), in->X, P256_LIMBS) ||
       !bn_set_words(y.get(), in->Y, P256_LIMBS) ||

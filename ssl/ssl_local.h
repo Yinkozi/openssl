@@ -603,8 +603,8 @@ typedef struct srp_ctx_st {
     /* set SRP client passwd callback */
     char *(*SRP_give_srp_client_pwd_callback) (SSL *, void *);
     char *login;
-    BIGNUM *N, *g, *s, *B, *A;
-    BIGNUM *a, *b, *v;
+    BIGNUMX *N, *g, *s, *B, *A;
+    BIGNUMX *a, *b, *v;
     char *info;
     int strength;
     unsigned long srp_Mask;

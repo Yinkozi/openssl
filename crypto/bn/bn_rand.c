@@ -18,7 +18,7 @@ typedef enum bnrand_flag_e {
     NORMAL, TESTING, PRIVATE
 } BNRAND_FLAG;
 
-static int bnrand(BNRAND_FLAG flag, BIGNUM *rnd, int bits, int top, int bottom)
+static int bnrand(BNRAND_FLAG flag, BIGNUMX *rnd, int bits, int top, int bottom)
 {
     unsigned char *buf = NULL;
     int b, ret = 0, bit, bytes, mask;
@@ -94,23 +94,23 @@ toosmall:
     return 0;
 }
 
-int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_rand(BIGNUMX *rnd, int bits, int top, int bottom)
 {
     return bnrand(NORMAL, rnd, bits, top, bottom);
 }
 
-int BN_bntest_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BN_bntest_rand(BIGNUMX *rnd, int bits, int top, int bottom)
 {
     return bnrand(TESTING, rnd, bits, top, bottom);
 }
 
-int BNY_priv_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_priv_rand(BIGNUMX *rnd, int bits, int top, int bottom)
 {
     return bnrand(PRIVATE, rnd, bits, top, bottom);
 }
 
 /* random number r:  0 <= r < range */
-static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
+static int bnrand_range(BNRAND_FLAG flag, BIGNUMX *r, const BIGNUMX *range)
 {
     int n;
     int count = 100;
@@ -174,22 +174,22 @@ static int bnrand_range(BNRAND_FLAG flag, BIGNUM *r, const BIGNUM *range)
     return 1;
 }
 
-int BNY_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_rand_range(BIGNUMX *r, const BIGNUMX *range)
 {
     return bnrand_range(NORMAL, r, range);
 }
 
-int BNY_priv_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_priv_rand_range(BIGNUMX *r, const BIGNUMX *range)
 {
     return bnrand_range(PRIVATE, r, range);
 }
 
-int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom)
+int BNY_pseudo_rand(BIGNUMX *rnd, int bits, int top, int bottom)
 {
     return BNY_rand(rnd, bits, top, bottom);
 }
 
-int BNY_pseudo_rand_range(BIGNUM *r, const BIGNUM *range)
+int BNY_pseudo_rand_range(BIGNUMX *r, const BIGNUMX *range)
 {
     return BNY_rand_range(r, range);
 }
@@ -202,8 +202,8 @@ int BNY_pseudo_rand_range(BIGNUM *r, const BIGNUM *range)
  * weakness leads directly to private key exposure unless this function is
  * used.
  */
-int BN_generate_dsa_nonce(BIGNUM *out, const BIGNUM *range,
-                          const BIGNUM *priv, const unsigned char *message,
+int BN_generate_dsa_nonce(BIGNUMX *out, const BIGNUMX *range,
+                          const BIGNUMX *priv, const unsigned char *message,
                           size_t message_len, BN_CTX *ctx)
 {
     YSHA512_CTX sha;

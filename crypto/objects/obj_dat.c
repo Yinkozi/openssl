@@ -397,7 +397,7 @@ YASN1_OBJECT *OBJ_txt2obj(const char *s, int no_name)
 int OBJ_obj2txt(char *buf, int buf_len, const YASN1_OBJECT *a, int no_name)
 {
     int i, n = 0, len, nid, first, use_bn;
-    BIGNUM *bl;
+    BIGNUMX *bl;
     unsigned long l;
     const unsigned char *p;
     char tbuf[DECIMAL_SIZE(i) + DECIMAL_SIZE(l) + 2];

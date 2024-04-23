@@ -751,7 +751,7 @@ static YASN1_INTEGER *next_serial(const char *serialfile)
     int ret = 0;
     BIO *in = NULL;
     YASN1_INTEGER *serial = NULL;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
 
     if ((serial = YASN1_INTEGER_new()) == NULL)
         goto err;

@@ -83,29 +83,29 @@ struct ec_method_st {
   int (*group_init)(EC_GROUP *);
   void (*group_finish)(EC_GROUP *);
   int (*group_copy)(EC_GROUP *, const EC_GROUP *);
-  int (*group_set_curve)(EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
-                         const BIGNUM *b, BN_CTX *);
+  int (*group_set_curve)(EC_GROUP *, const BIGNUMX *p, const BIGNUMX *a,
+                         const BIGNUMX *b, BN_CTX *);
   int (*point_get_affine_coordinates)(const EC_GROUP *, const EC_POINT *,
-                                      BIGNUM *x, BIGNUM *y, BN_CTX *);
+                                      BIGNUMX *x, BIGNUMX *y, BN_CTX *);
 
   /* Computes |r = g_scalar*generator + p_scalar*p| if |g_scalar| and |p_scalar|
    * are both non-null. Computes |r = g_scalar*generator| if |p_scalar| is null.
    * Computes |r = p_scalar*p| if g_scalar is null. At least one of |g_scalar|
    * and |p_scalar| must be non-null, and |p| must be non-null if |p_scalar| is
    * non-null. */
-  int (*mul)(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-             const EC_POINT *p, const BIGNUM *p_scalar, BN_CTX *ctx);
+  int (*mul)(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+             const EC_POINT *p, const BIGNUMX *p_scalar, BN_CTX *ctx);
 
   /* 'field_mul' and 'field_sqr' can be used by 'add' and 'dbl' so that the
    * same implementations of point operations can be used with different
    * optimized implementations of expensive field operations: */
-  int (*field_mul)(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
-                   const BIGNUM *b, BN_CTX *);
-  int (*field_sqr)(const EC_GROUP *, BIGNUM *r, const BIGNUM *a, BN_CTX *);
+  int (*field_mul)(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
+                   const BIGNUMX *b, BN_CTX *);
+  int (*field_sqr)(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a, BN_CTX *);
 
-  int (*field_encode)(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+  int (*field_encode)(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                       BN_CTX *); /* e.g. to Montgomery */
-  int (*field_decode)(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+  int (*field_decode)(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                       BN_CTX *); /* e.g. from Montgomery */
 } /* EC_METHOD */;
 
@@ -115,7 +115,7 @@ struct ec_group_st {
   const EC_METHOD *meth;
 
   EC_POINT *generator;
-  BIGNUM order;
+  BIGNUMX order;
 
   int curve_name; /* optional NID for named curve */
 
@@ -124,23 +124,23 @@ struct ec_group_st {
   /* The following members are handled by the method functions,
    * even if they appear generic */
 
-  BIGNUM field; /* For curves over GF(p), this is the modulus. */
+  BIGNUMX field; /* For curves over GF(p), this is the modulus. */
 
-  BIGNUM a, b; /* Curve coefficients. */
+  BIGNUMX a, b; /* Curve coefficients. */
 
   int a_is_minus3; /* enable optimized point arithmetics for special case */
 
   BN_MONT_CTX *mont; /* Montgomery structure. */
 
-  BIGNUM one; /* The value one. */
+  BIGNUMX one; /* The value one. */
 } /* EC_GROUP */;
 
 struct ec_point_st {
   const EC_METHOD *meth;
 
-  BIGNUM X;
-  BIGNUM Y;
-  BIGNUM Z; /* Jacobian projective coordinates:
+  BIGNUMX X;
+  BIGNUMX Y;
+  BIGNUMX Z; /* Jacobian projective coordinates:
              * (X, Y, Z)  represents  (X/Z^2, Y/Z^3)  if  Z != 0 */
 } /* EC_POINT */;
 
@@ -152,17 +152,17 @@ int ec_group_copy(EC_GROUP *dest, const EC_GROUP *src);
  * a built-in group. */
 const BN_MONT_CTX *ec_group_get_mont_data(const EC_GROUP *group);
 
-int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-                const EC_POINT *p, const BIGNUM *p_scalar, BN_CTX *ctx);
+int ec_wNAF_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+                const EC_POINT *p, const BIGNUMX *p_scalar, BN_CTX *ctx);
 
 /* method functions in simple.c */
 int ec_GFp_simple_group_init(EC_GROUP *);
 void ec_GFp_simple_group_finish(EC_GROUP *);
 int ec_GFp_simple_group_copy(EC_GROUP *, const EC_GROUP *);
-int ec_GFp_simple_group_set_curve(EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
-                                  const BIGNUM *b, BN_CTX *);
-int ec_GFp_simple_group_get_curve(const EC_GROUP *, BIGNUM *p, BIGNUM *a,
-                                  BIGNUM *b, BN_CTX *);
+int ec_GFp_simple_group_set_curve(EC_GROUP *, const BIGNUMX *p, const BIGNUMX *a,
+                                  const BIGNUMX *b, BN_CTX *);
+int ec_GFp_simple_group_get_curve(const EC_GROUP *, BIGNUMX *p, BIGNUMX *a,
+                                  BIGNUMX *b, BN_CTX *);
 unsigned ec_GFp_simple_group_get_degree(const EC_GROUP *);
 int ec_GFp_simple_point_init(EC_POINT *);
 void ec_GFp_simple_point_finish(EC_POINT *);
@@ -170,18 +170,18 @@ void ec_GFp_simple_point_clear_finish(EC_POINT *);
 int ec_GFp_simple_point_copy(EC_POINT *, const EC_POINT *);
 int ec_GFp_simple_point_set_to_infinity(const EC_GROUP *, EC_POINT *);
 int ec_GFp_simple_set_Jprojective_coordinates_GFp(const EC_GROUP *, EC_POINT *,
-                                                  const BIGNUM *x,
-                                                  const BIGNUM *y,
-                                                  const BIGNUM *z, BN_CTX *);
+                                                  const BIGNUMX *x,
+                                                  const BIGNUMX *y,
+                                                  const BIGNUMX *z, BN_CTX *);
 int ec_GFp_simple_get_Jprojective_coordinates_GFp(const EC_GROUP *,
-                                                  const EC_POINT *, BIGNUM *x,
-                                                  BIGNUM *y, BIGNUM *z,
+                                                  const EC_POINT *, BIGNUMX *x,
+                                                  BIGNUMX *y, BIGNUMX *z,
                                                   BN_CTX *);
 int ec_GFp_simple_point_set_affine_coordinates(const EC_GROUP *, EC_POINT *,
-                                               const BIGNUM *x, const BIGNUM *y,
+                                               const BIGNUMX *x, const BIGNUMX *y,
                                                BN_CTX *);
 int ec_GFp_simple_set_compressed_coordinates(const EC_GROUP *, EC_POINT *,
-                                             const BIGNUM *x, int y_bit,
+                                             const BIGNUMX *x, int y_bit,
                                              BN_CTX *);
 int ec_GFp_simple_add(const EC_GROUP *, EC_POINT *r, const EC_POINT *a,
                       const EC_POINT *b, BN_CTX *);
@@ -195,29 +195,29 @@ int ec_GFp_simple_cmp(const EC_GROUP *, const EC_POINT *a, const EC_POINT *b,
 int ec_GFp_simple_make_affine(const EC_GROUP *, EC_POINT *, BN_CTX *);
 int ec_GFp_simple_points_make_affine(const EC_GROUP *, size_t num,
                                      EC_POINT * [], BN_CTX *);
-int ec_GFp_simple_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
-                            const BIGNUM *b, BN_CTX *);
-int ec_GFp_simple_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_simple_field_mul(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
+                            const BIGNUMX *b, BN_CTX *);
+int ec_GFp_simple_field_sqr(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                             BN_CTX *);
 
 /* method functions in montgomery.c */
 int ec_GFp_mont_group_init(EC_GROUP *);
-int ec_GFp_mont_group_set_curve(EC_GROUP *, const BIGNUM *p, const BIGNUM *a,
-                                const BIGNUM *b, BN_CTX *);
+int ec_GFp_mont_group_set_curve(EC_GROUP *, const BIGNUMX *p, const BIGNUMX *a,
+                                const BIGNUMX *b, BN_CTX *);
 void ec_GFp_mont_group_finish(EC_GROUP *);
 int ec_GFp_mont_group_copy(EC_GROUP *, const EC_GROUP *);
-int ec_GFp_mont_field_mul(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
-                          const BIGNUM *b, BN_CTX *);
-int ec_GFp_mont_field_sqr(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_mul(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
+                          const BIGNUMX *b, BN_CTX *);
+int ec_GFp_mont_field_sqr(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                           BN_CTX *);
-int ec_GFp_mont_field_encode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_encode(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                              BN_CTX *);
-int ec_GFp_mont_field_decode(const EC_GROUP *, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_decode(const EC_GROUP *, BIGNUMX *r, const BIGNUMX *a,
                              BN_CTX *);
 
 int ec_point_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             EC_POINT *point, const BIGNUM *x,
-                                             const BIGNUM *y, const BIGNUM *z,
+                                             EC_POINT *point, const BIGNUMX *x,
+                                             const BIGNUMX *y, const BIGNUMX *z,
                                              BN_CTX *ctx);
 
 void ec_GFp_nistp_recode_scalar_bits(uint8_t *sign, uint8_t *digit, uint8_t in);
@@ -233,7 +233,7 @@ struct ec_key_st {
   EC_GROUP *group;
 
   EC_POINT *pub_key;
-  BIGNUM *priv_key;
+  BIGNUMX *priv_key;
 
   unsigned int enc_flag;
   point_conversion_form_t conv_form;

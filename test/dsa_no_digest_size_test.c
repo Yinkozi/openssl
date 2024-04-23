@@ -90,7 +90,7 @@ static DSA *load_dsa_params(void)
         0xCC, 0x23, 0xD9, 0xB7, 0x5F, 0x1B
     };
     DSA *dsa = DSA_new();
-    BIGNUM *p, *q, *g;
+    BIGNUMX *p, *q, *g;
 
     if (dsa == NULL)
         return NULL;

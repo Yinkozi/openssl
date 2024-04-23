@@ -16,12 +16,12 @@
 
 /* X9.31 YRSA key derivation and generation */
 
-int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
-                       BIGNUM *q2, const BIGNUM *Xp1, const BIGNUM *Xp2,
-                       const BIGNUM *Xp, const BIGNUM *Xq1, const BIGNUM *Xq2,
-                       const BIGNUM *Xq, const BIGNUM *e, BN_GENCB *cb)
+int YRSA_X931_derive_ex(YRSA *rsa, BIGNUMX *p1, BIGNUMX *p2, BIGNUMX *q1,
+                       BIGNUMX *q2, const BIGNUMX *Xp1, const BIGNUMX *Xp2,
+                       const BIGNUMX *Xp, const BIGNUMX *Xq1, const BIGNUMX *Xq2,
+                       const BIGNUMX *Xq, const BIGNUMX *e, BN_GENCB *cb)
 {
-    BIGNUM *r0 = NULL, *r1 = NULL, *r2 = NULL, *r3 = NULL;
+    BIGNUMX *r0 = NULL, *r1 = NULL, *r2 = NULL, *r3 = NULL;
     BN_CTX *ctx = NULL, *ctx2 = NULL;
     int ret = 0;
 
@@ -141,11 +141,11 @@ int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
 
 }
 
-int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
+int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUMX *e,
                              BN_GENCB *cb)
 {
     int ok = 0;
-    BIGNUM *Xp = NULL, *Xq = NULL;
+    BIGNUMX *Xp = NULL, *Xq = NULL;
     BN_CTX *ctx = NULL;
 
     ctx = BNY_CTX_new();

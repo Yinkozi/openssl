@@ -115,8 +115,8 @@ err:
   return 0;
 }
 
-int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUM *p,
-                                const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx) {
+int ec_GFp_mont_group_set_curve(EC_GROUP *group, const BIGNUMX *p,
+                                const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx) {
   BN_CTX *new_ctx = NULL;
   BN_MONT_CTX *mont = NULL;
   int ret = 0;
@@ -156,8 +156,8 @@ err:
   return ret;
 }
 
-int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
-                          const BIGNUM *b, BN_CTX *ctx) {
+int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
+                          const BIGNUMX *b, BN_CTX *ctx) {
   if (group->mont == NULL) {
     OPENSSL_PUT_ERROR(EC, EC_R_NOT_INITIALIZED);
     return 0;
@@ -166,7 +166,7 @@ int ec_GFp_mont_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
   return BNY_mod_mul_montgomery(r, a, b, group->mont, ctx);
 }
 
-int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                           BN_CTX *ctx) {
   if (group->mont == NULL) {
     OPENSSL_PUT_ERROR(EC, EC_R_NOT_INITIALIZED);
@@ -176,7 +176,7 @@ int ec_GFp_mont_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
   return BNY_mod_mul_montgomery(r, a, a, group->mont, ctx);
 }
 
-int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                              BN_CTX *ctx) {
   if (group->mont == NULL) {
     OPENSSL_PUT_ERROR(EC, EC_R_NOT_INITIALIZED);
@@ -186,7 +186,7 @@ int ec_GFp_mont_field_encode(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
   return BN_to_montgomery(r, a, group->mont, ctx);
 }
 
-int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                              BN_CTX *ctx) {
   if (group->mont == NULL) {
     OPENSSL_PUT_ERROR(EC, EC_R_NOT_INITIALIZED);
@@ -198,7 +198,7 @@ int ec_GFp_mont_field_decode(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
 
 static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
                                                     const EC_POINT *point,
-                                                    BIGNUM *x, BIGNUM *y,
+                                                    BIGNUMX *x, BIGNUMX *y,
                                                     BN_CTX *ctx) {
   if (EC_POINT_is_at_infinity(group, point)) {
     OPENSSL_PUT_ERROR(EC, EC_R_POINT_AT_INFINITY);
@@ -228,9 +228,9 @@ static int ec_GFp_mont_point_get_affine_coordinates(const EC_GROUP *group,
   } else {
     /* transform  (X, Y, Z)  into  (x, y) := (X/Z^2, Y/Z^3) */
 
-    BIGNUM *Z_1 = BNY_CTX_get(ctx);
-    BIGNUM *Z_2 = BNY_CTX_get(ctx);
-    BIGNUM *Z_3 = BNY_CTX_get(ctx);
+    BIGNUMX *Z_1 = BNY_CTX_get(ctx);
+    BIGNUMX *Z_2 = BNY_CTX_get(ctx);
+    BIGNUMX *Z_3 = BNY_CTX_get(ctx);
     if (Z_1 == NULL ||
         Z_2 == NULL ||
         Z_3 == NULL) {

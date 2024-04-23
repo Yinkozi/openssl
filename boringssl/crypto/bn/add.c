@@ -64,8 +64,8 @@
 #include "internal.h"
 
 
-int BNY_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
-  const BIGNUM *tmp;
+int BNY_add(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b) {
+  const BIGNUMX *tmp;
   int a_neg = a->neg, ret;
 
   /*  a +  b	a+b
@@ -101,10 +101,10 @@ int BNY_add(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
   return ret;
 }
 
-int BNY_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
+int BNY_uadd(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b) {
   int max, min, dif;
   BN_ULONG *ap, *bp, *rp, carry, t1, t2;
-  const BIGNUM *tmp;
+  const BIGNUMX *tmp;
 
   if (a->top < b->top) {
     tmp = a;
@@ -159,7 +159,7 @@ int BNY_uadd(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
   return 1;
 }
 
-int BNY_add_word(BIGNUM *a, BN_ULONG w) {
+int BNY_add_word(BIGNUMX *a, BN_ULONG w) {
   BN_ULONG l;
   int i;
 
@@ -201,10 +201,10 @@ int BNY_add_word(BIGNUM *a, BN_ULONG w) {
   return 1;
 }
 
-int BNY_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
+int BNY_sub(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b) {
   int max;
   int add = 0, neg = 0;
-  const BIGNUM *tmp;
+  const BIGNUMX *tmp;
 
   /*  a -  b	a-b
    *  a - -b	a+b
@@ -258,7 +258,7 @@ int BNY_sub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
   return 1;
 }
 
-int BNY_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
+int BNY_usub(BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *b) {
   int max, min, dif;
   register BN_ULONG t1, t2, *ap, *bp, *rp;
   int i, carry;
@@ -324,7 +324,7 @@ int BNY_usub(BIGNUM *r, const BIGNUM *a, const BIGNUM *b) {
   return 1;
 }
 
-int BNY_sub_word(BIGNUM *a, BN_ULONG w) {
+int BNY_sub_word(BIGNUMX *a, BN_ULONG w) {
   int i;
 
   w &= BN_MASK2;

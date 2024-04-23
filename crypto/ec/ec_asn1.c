@@ -250,7 +250,7 @@ static int ec_asn1_group2curve(const EC_GROUP *, X9_62_CURVE *);
 static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
 {
     int ok = 0, nid;
-    BIGNUM *tmp = NULL;
+    BIGNUMX *tmp = NULL;
 
     if (group == NULL || field == NULL)
         return 0;
@@ -372,7 +372,7 @@ static int ec_asn1_group2fieldid(const EC_GROUP *group, X9_62_FIELDID *field)
 static int ec_asn1_group2curve(const EC_GROUP *group, X9_62_CURVE *curve)
 {
     int ok = 0;
-    BIGNUM *tmp_1 = NULL, *tmp_2 = NULL;
+    BIGNUMX *tmp_1 = NULL, *tmp_2 = NULL;
     unsigned char *a_buf = NULL, *b_buf = NULL;
     size_t len;
 
@@ -448,7 +448,7 @@ ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group,
 {
     size_t len = 0;
     ECPARAMETERS *ret = NULL;
-    const BIGNUM *tmp;
+    const BIGNUMX *tmp;
     unsigned char *buffer = NULL;
     const EC_POINT *point = NULL;
     point_conversion_form_t form;
@@ -586,7 +586,7 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
 {
     int ok = 0, tmp;
     EC_GROUP *ret = NULL, *dup = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL;
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL;
     EC_POINT *point = NULL;
     long field_bits;
     int curve_name = NID_undef;
@@ -1253,8 +1253,8 @@ int i2o_ECCPublicKey(const EC_KEY *a, unsigned char **out)
 }
 
 YASN1_SEQUENCE(ECDSA_SIG) = {
-        YASN1_SIMPLE(ECDSA_SIG, r, CBIGNUM),
-        YASN1_SIMPLE(ECDSA_SIG, s, CBIGNUM)
+        YASN1_SIMPLE(ECDSA_SIG, r, CBIGNUMX),
+        YASN1_SIMPLE(ECDSA_SIG, s, CBIGNUMX)
 } static_YASN1_SEQUENCE_END(ECDSA_SIG)
 
 DECLARE_YASN1_FUNCTIONS_const(ECDSA_SIG)
@@ -1278,7 +1278,7 @@ void ECDSA_SIG_free(ECDSA_SIG *sig)
     OPENSSL_free(sig);
 }
 
-void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
+void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUMX **pr, const BIGNUMX **ps)
 {
     if (pr != NULL)
         *pr = sig->r;
@@ -1286,17 +1286,17 @@ void ECCDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps)
         *ps = sig->s;
 }
 
-const BIGNUM *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig)
+const BIGNUMX *ECCDSA_SIG_get0_r(const ECDSA_SIG *sig)
 {
     return sig->r;
 }
 
-const BIGNUM *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig)
+const BIGNUMX *ECCDSA_SIG_get0_s(const ECDSA_SIG *sig)
 {
     return sig->s;
 }
 
-int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s)
+int ECCDSA_SIG_set0(ECDSA_SIG *sig, BIGNUMX *r, BIGNUMX *s)
 {
     if (r == NULL || s == NULL)
         return 0;

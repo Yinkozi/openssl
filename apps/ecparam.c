@@ -73,8 +73,8 @@ static OPT_PAIR encodings[] = {
 int ecparam_main(int argc, char **argv)
 {
     ENGINE *e = NULL;
-    BIGNUM *ec_gen = NULL, *ec_order = NULL, *ec_cofactor = NULL;
-    BIGNUM *ec_p = NULL, *ec_a = NULL, *ec_b = NULL;
+    BIGNUMX *ec_gen = NULL, *ec_order = NULL, *ec_cofactor = NULL;
+    BIGNUMX *ec_p = NULL, *ec_a = NULL, *ec_b = NULL;
     BIO *in = NULL, *out = NULL;
     EC_GROUP *group = NULL;
     point_conversion_form_t form = POINT_CONVERSION_UNCOMPRESSED;
@@ -339,9 +339,9 @@ int ecparam_main(int argc, char **argv)
         BIO_pprintf(out, "    int ok = 0;\n"
                         "    EC_GROUP *group = NULL;\n"
                         "    EC_POINT *point = NULL;\n"
-                        "    BIGNUM *tmp_1 = NULL;\n"
-                        "    BIGNUM *tmp_2 = NULL;\n"
-                        "    BIGNUM *tmp_3 = NULL;\n"
+                        "    BIGNUMX *tmp_1 = NULL;\n"
+                        "    BIGNUMX *tmp_2 = NULL;\n"
+                        "    BIGNUMX *tmp_3 = NULL;\n"
                         "\n");
 
         BIO_pprintf(out, "    if ((tmp_1 = BNY_bin2bn(ec_p_%d, sizeof(ec_p_%d), NULL)) == NULL)\n"

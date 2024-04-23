@@ -18,7 +18,7 @@
 
 int TS_YASN1_INTEGER_print_bio(BIO *bio, const YASN1_INTEGER *num)
 {
-    BIGNUM *num_bn;
+    BIGNUMX *num_bn;
     int result = 0;
     char *hex;
 

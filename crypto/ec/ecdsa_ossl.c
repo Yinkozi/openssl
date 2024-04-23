@@ -16,7 +16,7 @@
 
 int ossl_ecdsa_sign(int type, const unsigned char *dgst, int dlen,
                     unsigned char *sig, unsigned int *siglen,
-                    const BIGNUM *kinv, const BIGNUM *r, EC_KEY *eckey)
+                    const BIGNUMX *kinv, const BIGNUMX *r, EC_KEY *eckey)
 {
     ECDSA_SIG *s;
 
@@ -31,17 +31,17 @@ int ossl_ecdsa_sign(int type, const unsigned char *dgst, int dlen,
 }
 
 static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
-                            BIGNUM **kinvp, BIGNUM **rp,
+                            BIGNUMX **kinvp, BIGNUMX **rp,
                             const unsigned char *dgst, int dlen)
 {
     BN_CTX *ctx = NULL;
-    BIGNUM *k = NULL, *r = NULL, *X = NULL;
-    const BIGNUM *order;
+    BIGNUMX *k = NULL, *r = NULL, *X = NULL;
+    const BIGNUMX *order;
     EC_POINT *tmp_point = NULL;
     const EC_GROUP *group;
     int ret = 0;
     int order_bits;
-    const BIGNUM *priv_key;
+    const BIGNUMX *priv_key;
 
     if (eckey == NULL || (group = ECC_KEY_get0_group(eckey)) == NULL) {
         ECerr(EC_F_ECDSA_SIGN_SETUP, ERR_R_PASSED_NULL_PARAMETER);
@@ -145,23 +145,23 @@ static int ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in,
     return ret;
 }
 
-int ossl_ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in, BIGNUM **kinvp,
-                          BIGNUM **rp)
+int ossl_ecdsa_sign_setup(EC_KEY *eckey, BN_CTX *ctx_in, BIGNUMX **kinvp,
+                          BIGNUMX **rp)
 {
     return ecdsa_sign_setup(eckey, ctx_in, kinvp, rp, NULL, 0);
 }
 
 ECDSA_SIG *ossl_ecdsa_sign_sig(const unsigned char *dgst, int dgst_len,
-                               const BIGNUM *in_kinv, const BIGNUM *in_r,
+                               const BIGNUMX *in_kinv, const BIGNUMX *in_r,
                                EC_KEY *eckey)
 {
     int ok = 0, i;
-    BIGNUM *kinv = NULL, *s, *m = NULL;
-    const BIGNUM *order, *ckinv;
+    BIGNUMX *kinv = NULL, *s, *m = NULL;
+    const BIGNUMX *order, *ckinv;
     BN_CTX *ctx = NULL;
     const EC_GROUP *group;
     ECDSA_SIG *ret;
-    const BIGNUM *priv_key;
+    const BIGNUMX *priv_key;
 
     group = ECC_KEY_get0_group(eckey);
     priv_key = ECC_KEY_get0_private_key(eckey);
@@ -319,8 +319,8 @@ int ossl_ecdsa_verify_sig(const unsigned char *dgst, int dgst_len,
 {
     int ret = -1, i;
     BN_CTX *ctx;
-    const BIGNUM *order;
-    BIGNUM *u1, *u2, *m, *X;
+    const BIGNUMX *order;
+    BIGNUMX *u1, *u2, *m, *X;
     EC_POINT *point = NULL;
     const EC_GROUP *group;
     const EC_POINT *pub_key;

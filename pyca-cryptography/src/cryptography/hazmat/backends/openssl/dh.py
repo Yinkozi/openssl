@@ -17,7 +17,7 @@ def _dh_params_dup(dh_cdata, backend):
     param_cdata = ffi.gc(param_cdata, lib.DH_free)
     if lib.CRYPTOGRAPHY_IS_LIBRESSL:
         # In libressl DHparams_dup don't copy q
-        q = ffi.new("BIGNUM **")
+        q = ffi.new("BIGNUMX **")
         lib.DH_get0_pqg(dh_cdata, ffi.NULL, q, ffi.NULL)
         q_dup = lib.BN_dup(q[0])
         res = lib.DH_set0_pqg(param_cdata, ffi.NULL, q_dup, ffi.NULL)
@@ -37,9 +37,9 @@ class _DHParameters(dh.DHParameters):
         self._dh_cdata = dh_cdata
 
     def parameter_numbers(self) -> dh.DHParameterNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_pqg(self._dh_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(g[0] != self._backend._ffi.NULL)
@@ -64,7 +64,7 @@ class _DHParameters(dh.DHParameters):
         if format is not serialization.ParameterFormat.YPKCS3:
             raise ValueError("Only YPKCS3 serialization is supported")
         if not self._backend._lib.Cryptography_HAS_EVVP_PKEY_DHX:
-            q = self._backend._ffi.new("BIGNUM **")
+            q = self._backend._ffi.new("BIGNUMX **")
             self._backend._lib.DH_get0_pqg(
                 self._dh_cdata,
                 self._backend._ffi.NULL,
@@ -81,7 +81,7 @@ class _DHParameters(dh.DHParameters):
 
 
 def _get_dh_num_bits(backend, dh_cdata) -> int:
-    p = backend._ffi.new("BIGNUM **")
+    p = backend._ffi.new("BIGNUMX **")
     backend._lib.DH_get0_pqg(dh_cdata, p, backend._ffi.NULL, backend._ffi.NULL)
     backend.openssl_assert(p[0] != backend._ffi.NULL)
     return backend._lib.BNY_num_bits(p[0])
@@ -99,9 +99,9 @@ class _DHPrivateKey(dh.DHPrivateKey):
         return _get_dh_num_bits(self._backend, self._dh_cdata)
 
     def private_numbers(self) -> dh.DHPrivateNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_pqg(self._dh_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(g[0] != self._backend._ffi.NULL)
@@ -109,8 +109,8 @@ class _DHPrivateKey(dh.DHPrivateKey):
             q_val = None
         else:
             q_val = self._backend._bn_to_int(q[0])
-        pub_key = self._backend._ffi.new("BIGNUM **")
-        priv_key = self._backend._ffi.new("BIGNUM **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
+        priv_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_key(self._dh_cdata, pub_key, priv_key)
         self._backend.openssl_assert(pub_key[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(priv_key[0] != self._backend._ffi.NULL)
@@ -172,7 +172,7 @@ class _DHPrivateKey(dh.DHPrivateKey):
 
     def public_key(self) -> dh.DHPublicKey:
         dh_cdata = _dh_params_dup(self._dh_cdata, self._backend)
-        pub_key = self._backend._ffi.new("BIGNUM **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_key(
             self._dh_cdata, pub_key, self._backend._ffi.NULL
         )
@@ -201,7 +201,7 @@ class _DHPrivateKey(dh.DHPrivateKey):
                 "DH private keys support only YPKCS8 serialization"
             )
         if not self._backend._lib.Cryptography_HAS_EVVP_PKEY_DHX:
-            q = self._backend._ffi.new("BIGNUM **")
+            q = self._backend._ffi.new("BIGNUMX **")
             self._backend._lib.DH_get0_pqg(
                 self._dh_cdata,
                 self._backend._ffi.NULL,
@@ -236,9 +236,9 @@ class _DHPublicKey(dh.DHPublicKey):
         return self._key_size_bits
 
     def public_numbers(self) -> dh.DHPublicNumbers:
-        p = self._backend._ffi.new("BIGNUM **")
-        g = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        g = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_pqg(self._dh_cdata, p, q, g)
         self._backend.openssl_assert(p[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(g[0] != self._backend._ffi.NULL)
@@ -246,7 +246,7 @@ class _DHPublicKey(dh.DHPublicKey):
             q_val = None
         else:
             q_val = self._backend._bn_to_int(q[0])
-        pub_key = self._backend._ffi.new("BIGNUM **")
+        pub_key = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.DH_get0_key(
             self._dh_cdata, pub_key, self._backend._ffi.NULL
         )
@@ -275,7 +275,7 @@ class _DHPublicKey(dh.DHPublicKey):
             )
 
         if not self._backend._lib.Cryptography_HAS_EVVP_PKEY_DHX:
-            q = self._backend._ffi.new("BIGNUM **")
+            q = self._backend._ffi.new("BIGNUMX **")
             self._backend._lib.DH_get0_pqg(
                 self._dh_cdata,
                 self._backend._ffi.NULL,

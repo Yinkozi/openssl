@@ -29,13 +29,13 @@ int sm2_compute_z_digest(uint8_t *out,
     const EC_GROUP *group = ECC_KEY_get0_group(key);
     BN_CTX *ctx = NULL;
     EVVP_MD_CTX *hash = NULL;
-    BIGNUM *p = NULL;
-    BIGNUM *a = NULL;
-    BIGNUM *b = NULL;
-    BIGNUM *xG = NULL;
-    BIGNUM *yG = NULL;
-    BIGNUM *xA = NULL;
-    BIGNUM *yA = NULL;
+    BIGNUMX *p = NULL;
+    BIGNUMX *a = NULL;
+    BIGNUMX *b = NULL;
+    BIGNUMX *xG = NULL;
+    BIGNUMX *yG = NULL;
+    BIGNUMX *xA = NULL;
+    BIGNUMX *yA = NULL;
     int p_bytes = 0;
     uint8_t *buf = NULL;
     uint16_t entl = 0;
@@ -136,7 +136,7 @@ int sm2_compute_z_digest(uint8_t *out,
     return rc;
 }
 
-static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
+static BIGNUMX *sm2_compute_msg_hash(const EVVP_MD *digest,
                                     const EC_KEY *key,
                                     const uint8_t *id,
                                     const size_t id_len,
@@ -145,7 +145,7 @@ static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
     EVVP_MD_CTX *hash = EVVP_MD_CTX_new();
     const int md_size = EVVP_MD_size(digest);
     uint8_t *z = NULL;
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
 
     if (md_size < 0) {
         SM2err(SM2_F_SM2_COMPUTE_MSG_HASH, SM2_R_INVALID_DIGEST);
@@ -182,20 +182,20 @@ static BIGNUM *sm2_compute_msg_hash(const EVVP_MD *digest,
     return e;
 }
 
-static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
+static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUMX *e)
 {
-    const BIGNUM *dA = ECC_KEY_get0_private_key(key);
+    const BIGNUMX *dA = ECC_KEY_get0_private_key(key);
     const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
+    const BIGNUMX *order = EC_GROUP_get0_order(group);
     ECDSA_SIG *sig = NULL;
     EC_POINT *kG = NULL;
     BN_CTX *ctx = NULL;
-    BIGNUM *k = NULL;
-    BIGNUM *rk = NULL;
-    BIGNUM *r = NULL;
-    BIGNUM *s = NULL;
-    BIGNUM *x1 = NULL;
-    BIGNUM *tmp = NULL;
+    BIGNUMX *k = NULL;
+    BIGNUMX *rk = NULL;
+    BIGNUMX *r = NULL;
+    BIGNUMX *s = NULL;
+    BIGNUMX *x1 = NULL;
+    BIGNUMX *tmp = NULL;
 
     kG = EC_POINT_new(group);
     ctx = BNY_CTX_new();
@@ -284,17 +284,17 @@ static ECDSA_SIG *sm2_sig_gen(const EC_KEY *key, const BIGNUM *e)
 }
 
 static int sm2_sig_verify(const EC_KEY *key, const ECDSA_SIG *sig,
-                          const BIGNUM *e)
+                          const BIGNUMX *e)
 {
     int ret = 0;
     const EC_GROUP *group = ECC_KEY_get0_group(key);
-    const BIGNUM *order = EC_GROUP_get0_order(group);
+    const BIGNUMX *order = EC_GROUP_get0_order(group);
     BN_CTX *ctx = NULL;
     EC_POINT *pt = NULL;
-    BIGNUM *t = NULL;
-    BIGNUM *x1 = NULL;
-    const BIGNUM *r = NULL;
-    const BIGNUM *s = NULL;
+    BIGNUMX *t = NULL;
+    BIGNUMX *x1 = NULL;
+    const BIGNUMX *r = NULL;
+    const BIGNUMX *s = NULL;
 
     ctx = BNY_CTX_new();
     pt = EC_POINT_new(group);
@@ -367,7 +367,7 @@ ECDSA_SIG *sm2_do_sign(const EC_KEY *key,
                        const size_t id_len,
                        const uint8_t *msg, size_t msg_len)
 {
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     ECDSA_SIG *sig = NULL;
 
     e = sm2_compute_msg_hash(digest, key, id, id_len, msg, msg_len);
@@ -390,7 +390,7 @@ int sm2_do_verify(const EC_KEY *key,
                   const size_t id_len,
                   const uint8_t *msg, size_t msg_len)
 {
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     int ret = 0;
 
     e = sm2_compute_msg_hash(digest, key, id, id_len, msg, msg_len);
@@ -409,7 +409,7 @@ int sm2_do_verify(const EC_KEY *key,
 int sm2_sign(const unsigned char *dgst, int dgstlen,
              unsigned char *sig, unsigned int *siglen, EC_KEY *eckey)
 {
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     ECDSA_SIG *s = NULL;
     int sigleni;
     int ret = -1;
@@ -441,7 +441,7 @@ int sm2_verify(const unsigned char *dgst, int dgstlen,
                const unsigned char *sig, int sig_len, EC_KEY *eckey)
 {
     ECDSA_SIG *s = NULL;
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     const unsigned char *p = sig;
     unsigned char *der = NULL;
     int derlen = -1;

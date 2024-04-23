@@ -201,29 +201,29 @@ int YRSA_bits(const YRSA *rsa);
 int YRSA_size(const YRSA *rsa);
 int YRSA_security_bits(const YRSA *rsa);
 
-int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
-int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q);
-int YRSA_set0_crt_params(YRSA *r,BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp);
-int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
-                                BIGNUM *coeffs[], int pnum);
+int YRSA_set0_key(YRSA *r, BIGNUMX *n, BIGNUMX *e, BIGNUMX *d);
+int YRSA_set0_factors(YRSA *r, BIGNUMX *p, BIGNUMX *q);
+int YRSA_set0_crt_params(YRSA *r,BIGNUMX *dmp1, BIGNUMX *dmq1, BIGNUMX *iqmp);
+int YRSA_set0_multi_prime_params(YRSA *r, BIGNUMX *primes[], BIGNUMX *exps[],
+                                BIGNUMX *coeffs[], int pnum);
 void YRSA_get0_key(const YRSA *r,
-                  const BIGNUM **n, const BIGNUM **e, const BIGNUM **d);
-void YRSA_get0_factors(const YRSA *r, const BIGNUM **p, const BIGNUM **q);
+                  const BIGNUMX **n, const BIGNUMX **e, const BIGNUMX **d);
+void YRSA_get0_factors(const YRSA *r, const BIGNUMX **p, const BIGNUMX **q);
 int YRSA_get_multi_prime_extra_count(const YRSA *r);
-int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUM *primes[]);
+int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUMX *primes[]);
 void YRSA_get0_crt_params(const YRSA *r,
-                         const BIGNUM **dmp1, const BIGNUM **dmq1,
-                         const BIGNUM **iqmp);
-int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUM *exps[],
-                                    const BIGNUM *coeffs[]);
-const BIGNUM *YRSA_get0_n(const YRSA *d);
-const BIGNUM *YRSA_get0_e(const YRSA *d);
-const BIGNUM *YRSA_get0_d(const YRSA *d);
-const BIGNUM *YRSA_get0_p(const YRSA *d);
-const BIGNUM *YRSA_get0_q(const YRSA *d);
-const BIGNUM *YRSA_get0_dmp1(const YRSA *r);
-const BIGNUM *YRSA_get0_dmq1(const YRSA *r);
-const BIGNUM *YRSA_get0_iqmp(const YRSA *r);
+                         const BIGNUMX **dmp1, const BIGNUMX **dmq1,
+                         const BIGNUMX **iqmp);
+int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUMX *exps[],
+                                    const BIGNUMX *coeffs[]);
+const BIGNUMX *YRSA_get0_n(const YRSA *d);
+const BIGNUMX *YRSA_get0_e(const YRSA *d);
+const BIGNUMX *YRSA_get0_d(const YRSA *d);
+const BIGNUMX *YRSA_get0_p(const YRSA *d);
+const BIGNUMX *YRSA_get0_q(const YRSA *d);
+const BIGNUMX *YRSA_get0_dmp1(const YRSA *r);
+const BIGNUMX *YRSA_get0_dmq1(const YRSA *r);
+const BIGNUMX *YRSA_get0_iqmp(const YRSA *r);
 const YRSA_PSS_PARAMS *YRSA_get0_pss_params(const YRSA *r);
 void YRSA_clear_flags(YRSA *r, int flags);
 int YRSA_test_flags(const YRSA *r, int flags);
@@ -237,16 +237,16 @@ DEPRECATEDIN_0_9_8(YRSA *YRSA_generate_key(int bits, unsigned long e, void
                                          void *cb_arg))
 
 /* New version */
-int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
 /* Multi-prime version */
 int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes,
-                                 BIGNUM *e, BN_GENCB *cb);
+                                 BIGNUMX *e, BN_GENCB *cb);
 
-int YRSA_X931_derive_ex(YRSA *rsa, BIGNUM *p1, BIGNUM *p2, BIGNUM *q1,
-                       BIGNUM *q2, const BIGNUM *Xp1, const BIGNUM *Xp2,
-                       const BIGNUM *Xp, const BIGNUM *Xq1, const BIGNUM *Xq2,
-                       const BIGNUM *Xq, const BIGNUM *e, BN_GENCB *cb);
-int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUM *e,
+int YRSA_X931_derive_ex(YRSA *rsa, BIGNUMX *p1, BIGNUMX *p2, BIGNUMX *q1,
+                       BIGNUMX *q2, const BIGNUMX *Xp1, const BIGNUMX *Xp2,
+                       const BIGNUMX *Xp, const BIGNUMX *Xq1, const BIGNUMX *Xq2,
+                       const BIGNUMX *Xq, const BIGNUMX *e, BN_GENCB *cb);
+int YRSA_X931_generate_key_ex(YRSA *rsa, int bits, const BIGNUMX *e,
                              BN_GENCB *cb);
 
 int YRSA_check_key(const YRSA *);
@@ -457,18 +457,18 @@ int YRSA_meth_set_priv_dec(YRSA_METHOD *rsa,
                                            unsigned char *to, YRSA *rsa,
                                            int padding));
 int (*YRSA_meth_get_mod_exp(const YRSA_METHOD *meth))
-    (BIGNUM *r0, const BIGNUM *i, YRSA *rsa, BN_CTX *ctx);
+    (BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa, BN_CTX *ctx);
 int YRSA_meth_set_mod_exp(YRSA_METHOD *rsa,
-                         int (*mod_exp) (BIGNUM *r0, const BIGNUM *i, YRSA *rsa,
+                         int (*mod_exp) (BIGNUMX *r0, const BIGNUMX *i, YRSA *rsa,
                                          BN_CTX *ctx));
 int (*YRSA_meth_get_bn_mod_exp(const YRSA_METHOD *meth))
-    (BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-     const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+    (BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+     const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
 int YRSA_meth_set_bn_mod_exp(YRSA_METHOD *rsa,
-                            int (*bn_mod_exp) (BIGNUM *r,
-                                               const BIGNUM *a,
-                                               const BIGNUM *p,
-                                               const BIGNUM *m,
+                            int (*bn_mod_exp) (BIGNUMX *r,
+                                               const BIGNUMX *a,
+                                               const BIGNUMX *p,
+                                               const BIGNUMX *m,
                                                BN_CTX *ctx,
                                                BN_MONT_CTX *m_ctx));
 int (*YRSA_meth_get_init(const YRSA_METHOD *meth)) (YRSA *rsa);
@@ -495,15 +495,15 @@ int YRSA_meth_set_verify(YRSA_METHOD *rsa,
                                        const unsigned char *sigbuf,
                                        unsigned int siglen, const YRSA *rsa));
 int (*YRSA_meth_get_keygen(const YRSA_METHOD *meth))
-    (YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
+    (YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
 int YRSA_meth_set_keygen(YRSA_METHOD *rsa,
-                        int (*keygen) (YRSA *rsa, int bits, BIGNUM *e,
+                        int (*keygen) (YRSA *rsa, int bits, BIGNUMX *e,
                                        BN_GENCB *cb));
 int (*YRSA_meth_get_multi_prime_keygen(const YRSA_METHOD *meth))
-    (YRSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
+    (YRSA *rsa, int bits, int primes, BIGNUMX *e, BN_GENCB *cb);
 int YRSA_meth_set_multi_prime_keygen(YRSA_METHOD *meth,
                                     int (*keygen) (YRSA *rsa, int bits,
-                                                   int primes, BIGNUM *e,
+                                                   int primes, BIGNUMX *e,
                                                    BN_GENCB *cb));
 
 #  ifdef  __cplusplus

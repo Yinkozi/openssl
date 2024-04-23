@@ -67,9 +67,9 @@ static const char *findattr(STANZA *s, const char *key)
 }
 
 /*
- * Parse BIGNUM from sparse hex-strings, return |BN_hex2bn| result.
+ * Parse BIGNUMX from sparse hex-strings, return |BN_hex2bn| result.
  */
-static int parse_bigBN(BIGNUM **out, const char *bn_strings[])
+static int parse_bigBN(BIGNUMX **out, const char *bn_strings[])
 {
     char *bigstring = glue_strings(bn_strings, NULL);
     int ret = BN_hex2bn(out, bigstring);
@@ -79,24 +79,24 @@ static int parse_bigBN(BIGNUM **out, const char *bn_strings[])
 }
 
 /*
- * Parse BIGNUM, return number of bytes parsed.
+ * Parse BIGNUMX, return number of bytes parsed.
  */
-static int parseBN(BIGNUM **out, const char *in)
+static int parseBN(BIGNUMX **out, const char *in)
 {
     *out = NULL;
     return BN_hex2bn(out, in);
 }
 
-static int parsedecBN(BIGNUM **out, const char *in)
+static int parsedecBN(BIGNUMX **out, const char *in)
 {
     *out = NULL;
     return BN_dec2bn(out, in);
 }
 
-static BIGNUM *getBN(STANZA *s, const char *attribute)
+static BIGNUMX *getBN(STANZA *s, const char *attribute)
 {
     const char *hex;
-    BIGNUM *ret = NULL;
+    BIGNUMX *ret = NULL;
 
     if ((hex = findattr(s, attribute)) == NULL) {
         TEST_error("%s:%d: Can't find %s", s->test_file, s->start, attribute);
@@ -112,7 +112,7 @@ static BIGNUM *getBN(STANZA *s, const char *attribute)
 
 static int getint(STANZA *s, int *out, const char *attribute)
 {
-    BIGNUM *ret;
+    BIGNUMX *ret;
     BN_ULONG word;
     int st = 0;
 
@@ -127,7 +127,7 @@ static int getint(STANZA *s, int *out, const char *attribute)
     return st;
 }
 
-static int equalBN(const char *op, const BIGNUM *expected, const BIGNUM *actual)
+static int equalBN(const char *op, const BIGNUMX *expected, const BIGNUMX *actual)
 {
     if (BN_cmp(expected, actual) == 0)
         return 1;
@@ -150,7 +150,7 @@ static int rand_neg(void)
 
 static int test_swap(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL;
     int top, cond, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -223,7 +223,7 @@ static int test_swap(void)
 
 static int test_sub(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL;
     int i, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -260,7 +260,7 @@ static int test_sub(void)
 
 static int test_div_recip(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL, *e = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL, *e = NULL;
     BN_RECP_CTX *recp = NULL;
     int st = 0, i;
 
@@ -313,9 +313,9 @@ static struct {
     { -10,  -3,   3,  -1 },
 };
 
-static BIGNUM *set_signed_bn(int value)
+static BIGNUMX *set_signed_bn(int value)
 {
-    BIGNUM *bn = BNY_new();
+    BIGNUMX *bn = BNY_new();
 
     if (bn == NULL)
         return NULL;
@@ -329,7 +329,7 @@ static BIGNUM *set_signed_bn(int value)
 
 static int test_signed_mod_replace_ab(int n)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = set_signed_bn(signed_mod_tests[n].n))
@@ -352,7 +352,7 @@ static int test_signed_mod_replace_ab(int n)
 
 static int test_signed_mod_replace_ba(int n)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = set_signed_bn(signed_mod_tests[n].n))
@@ -375,7 +375,7 @@ static int test_signed_mod_replace_ba(int n)
 
 static int test_mod(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL, *e = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL, *e = NULL;
     int st = 0, i;
 
     if (!TEST_ptr(a = BNY_new())
@@ -456,8 +456,8 @@ static const char *bn2strings[] = {
  */
 static int test_modexp_mont5(void)
 {
-    BIGNUM *a = NULL, *p = NULL, *m = NULL, *d = NULL, *e = NULL;
-    BIGNUM *b = NULL, *n = NULL, *c = NULL;
+    BIGNUMX *a = NULL, *p = NULL, *m = NULL, *d = NULL, *e = NULL;
+    BIGNUMX *b = NULL, *n = NULL, *c = NULL;
     BN_MONT_CTX *mont = NULL;
     int st = 0;
 
@@ -719,7 +719,7 @@ static int test_modexp_mont5(void)
 #ifndef OPENSSL_NO_EC2M
 static int test_gf2m_add(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL;
     int i, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -753,7 +753,7 @@ static int test_gf2m_add(void)
 
 static int test_gf2m_mod(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL, *e = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL, *e = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -793,8 +793,8 @@ static int test_gf2m_mod(void)
 
 static int test_gf2m_mul(void)
 {
-    BIGNUM *a, *b[2] = {NULL, NULL}, *c = NULL, *d = NULL;
-    BIGNUM *e = NULL, *f = NULL, *g = NULL, *h = NULL;
+    BIGNUMX *a, *b[2] = {NULL, NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *e = NULL, *f = NULL, *g = NULL, *h = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -846,7 +846,7 @@ static int test_gf2m_mul(void)
 
 static int test_gf2m_sqr(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -885,7 +885,7 @@ static int test_gf2m_sqr(void)
 
 static int test_gf2m_modinv(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -922,8 +922,8 @@ static int test_gf2m_modinv(void)
 
 static int test_gf2m_moddiv(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
-    BIGNUM *e = NULL, *f = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *e = NULL, *f = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -966,8 +966,8 @@ static int test_gf2m_moddiv(void)
 
 static int test_gf2m_modexp(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
-    BIGNUM *e = NULL, *f = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *e = NULL, *f = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -1014,8 +1014,8 @@ static int test_gf2m_modexp(void)
 
 static int test_gf2m_modsqrt(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
-    BIGNUM *e = NULL, *f = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *e = NULL, *f = NULL;
     int i, j, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -1059,8 +1059,8 @@ static int test_gf2m_modsqrt(void)
 
 static int test_gf2m_modsolvequad(void)
 {
-    BIGNUM *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
-    BIGNUM *e = NULL;
+    BIGNUMX *a = NULL, *b[2] = {NULL,NULL}, *c = NULL, *d = NULL;
+    BIGNUMX *e = NULL;
     int i, j, s = 0, t, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -1113,7 +1113,7 @@ static int test_gf2m_modsolvequad(void)
 
 static int test_kronecker(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *r = NULL, *t = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *r = NULL, *t = NULL;
     int i, legendre, kronecker, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -1191,7 +1191,7 @@ static int test_kronecker(void)
 
 static int file_sum(STANZA *s)
 {
-    BIGNUM *a = NULL, *b = NULL, *sum = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *sum = NULL, *ret = NULL;
     BN_ULONG b_word;
     int st = 0;
 
@@ -1210,9 +1210,9 @@ static int file_sum(STANZA *s)
         goto err;
 
     /*
-     * Test that the functions work when |r| and |a| point to the same BIGNUM,
-     * or when |r| and |b| point to the same BIGNUM.
-     * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
+     * Test that the functions work when |r| and |a| point to the same BIGNUMX,
+     * or when |r| and |b| point to the same BIGNUMX.
+     * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUMX.
      */
     if (!TEST_true(BNY_copy(ret, a))
             || !TEST_true(BNY_add(ret, ret, b))
@@ -1251,8 +1251,8 @@ static int file_sum(STANZA *s)
             goto err;
         /*
          * Test that the functions work when |r| and |a| point to the same
-         * BIGNUM, or when |r| and |b| point to the same BIGNUM.
-         * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUM.
+         * BIGNUMX, or when |r| and |b| point to the same BIGNUMX.
+         * TODO: Test where all of |r|, |a|, and |b| point to the same BIGNUMX.
          */
         if (!TEST_true(BNY_copy(ret, a))
                 || !TEST_true(BNY_uadd(ret, ret, b))
@@ -1300,8 +1300,8 @@ static int file_sum(STANZA *s)
 
 static int file_lshift1(STANZA *s)
 {
-    BIGNUM *a = NULL, *lshift1 = NULL, *zero = NULL, *ret = NULL;
-    BIGNUM *two = NULL, *remainder = NULL;
+    BIGNUMX *a = NULL, *lshift1 = NULL, *zero = NULL, *ret = NULL;
+    BIGNUMX *two = NULL, *remainder = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1352,7 +1352,7 @@ static int file_lshift1(STANZA *s)
 
 static int file_lshift(STANZA *s)
 {
-    BIGNUM *a = NULL, *lshift = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *lshift = NULL, *ret = NULL;
     int n = 0, st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1377,7 +1377,7 @@ static int file_lshift(STANZA *s)
 
 static int file_ryshift(STANZA *s)
 {
-    BIGNUM *a = NULL, *ryshift = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *ryshift = NULL, *ret = NULL;
     int n = 0, st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1407,8 +1407,8 @@ static int file_ryshift(STANZA *s)
 
 static int file_square(STANZA *s)
 {
-    BIGNUM *a = NULL, *square = NULL, *zero = NULL, *ret = NULL;
-    BIGNUM *remainder = NULL, *tmp = NULL;
+    BIGNUMX *a = NULL, *square = NULL, *zero = NULL, *ret = NULL;
+    BIGNUMX *remainder = NULL, *tmp = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1467,8 +1467,8 @@ static int file_square(STANZA *s)
 
 static int file_product(STANZA *s)
 {
-    BIGNUM *a = NULL, *b = NULL, *product = NULL, *ret = NULL;
-    BIGNUM *remainder = NULL, *zero = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *product = NULL, *ret = NULL;
+    BIGNUMX *remainder = NULL, *zero = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1504,8 +1504,8 @@ static int file_product(STANZA *s)
 
 static int file_quotient(STANZA *s)
 {
-    BIGNUM *a = NULL, *b = NULL, *quotient = NULL, *remainder = NULL;
-    BIGNUM *ret = NULL, *ret2 = NULL, *nnmod = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *quotient = NULL, *remainder = NULL;
+    BIGNUMX *ret = NULL, *ret2 = NULL, *nnmod = NULL;
     BN_ULONG b_word, ret_word;
     int st = 0;
 
@@ -1588,7 +1588,7 @@ static int file_quotient(STANZA *s)
 
 static int file_modmul(STANZA *s)
 {
-    BIGNUM *a = NULL, *b = NULL, *m = NULL, *mod_mul = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *m = NULL, *mod_mul = NULL, *ret = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1605,8 +1605,8 @@ static int file_modmul(STANZA *s)
     if (BN_is_odd(m)) {
         /* Reduce |a| and |b| and test the Montgomery version. */
         BN_MONT_CTX *mont = BN_MONT_CTX_new();
-        BIGNUM *a_tmp = BNY_new();
-        BIGNUM *b_tmp = BNY_new();
+        BIGNUMX *a_tmp = BNY_new();
+        BIGNUMX *b_tmp = BNY_new();
 
         if (mont == NULL || a_tmp == NULL || b_tmp == NULL
                 || !TEST_true(BN_MONT_CTX_set(mont, m, ctx))
@@ -1640,8 +1640,8 @@ static int file_modmul(STANZA *s)
 
 static int file_modexp(STANZA *s)
 {
-    BIGNUM *a = NULL, *e = NULL, *m = NULL, *mod_exp = NULL, *ret = NULL;
-    BIGNUM *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *a = NULL, *e = NULL, *m = NULL, *mod_exp = NULL, *ret = NULL;
+    BIGNUMX *b = NULL, *c = NULL, *d = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1695,7 +1695,7 @@ static int file_modexp(STANZA *s)
 
 static int file_exp(STANZA *s)
 {
-    BIGNUM *a = NULL, *e = NULL, *exp = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *e = NULL, *exp = NULL, *ret = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1719,7 +1719,7 @@ static int file_exp(STANZA *s)
 
 static int file_modsqrt(STANZA *s)
 {
-    BIGNUM *a = NULL, *p = NULL, *mod_sqrt = NULL, *ret = NULL, *ret2 = NULL;
+    BIGNUMX *a = NULL, *p = NULL, *mod_sqrt = NULL, *ret = NULL, *ret2 = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1760,7 +1760,7 @@ static int file_modsqrt(STANZA *s)
 
 static int file_gcd(STANZA *s)
 {
-    BIGNUM *a = NULL, *b = NULL, *gcd = NULL, *ret = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *gcd = NULL, *ret = NULL;
     int st = 0;
 
     if (!TEST_ptr(a = getBN(s, "A"))
@@ -1786,7 +1786,7 @@ static int test_bn2padded(void)
 {
     uint8_t zeros[256], out[256], reference[128];
     size_t bytes;
-    BIGNUM *n;
+    BIGNUMX *n;
     int st = 0;
 
     /* Test edge case at 0. */
@@ -1842,7 +1842,7 @@ static int test_bn2padded(void)
 
 static int test_dec2bn(void)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int st = 0;
 
     if (!TEST_int_eq(parsedecBN(&bn, "0"), 1)
@@ -1911,7 +1911,7 @@ static int test_dec2bn(void)
 
 static int test_hex2bn(void)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int st = 0;
 
     if (!TEST_int_eq(parseBN(&bn, "0"), 1)
@@ -1977,7 +1977,7 @@ static int test_hex2bn(void)
 
 static int test_asc2bn(void)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int st = 0;
 
     if (!TEST_ptr(bn = BNY_new()))
@@ -2043,8 +2043,8 @@ static int test_mpi(int i)
     uint8_t scratch[8];
     const MPITEST *test = &kMPITests[i];
     size_t mpi_len, mpi_len2;
-    BIGNUM *bn = NULL;
-    BIGNUM *bn2 = NULL;
+    BIGNUMX *bn = NULL;
+    BIGNUMX *bn2 = NULL;
     int st = 0;
 
     if (!TEST_ptr(bn = BNY_new())
@@ -2075,7 +2075,7 @@ static int test_mpi(int i)
 
 static int test_rand(void)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int st = 0;
 
     if (!TEST_ptr(bn = BNY_new()))
@@ -2101,8 +2101,8 @@ static int test_rand(void)
 
 static int test_negzero(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *c = NULL, *d = NULL;
-    BIGNUM *numerator = NULL, *denominator = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *c = NULL, *d = NULL;
+    BIGNUMX *numerator = NULL, *denominator = NULL;
     int consttime, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -2170,7 +2170,7 @@ static int test_negzero(void)
 
 static int test_badmod(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *zero = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *zero = NULL;
     BN_MONT_CTX *mont = NULL;
     int st = 0;
 
@@ -2236,7 +2236,7 @@ static int test_badmod(void)
 
 static int test_expmodzero(void)
 {
-    BIGNUM *a = NULL, *r = NULL, *zero = NULL;
+    BIGNUMX *a = NULL, *r = NULL, *zero = NULL;
     int st = 0;
 
     if (!TEST_ptr(zero = BNY_new())
@@ -2270,10 +2270,10 @@ static int test_expmodzero(void)
 static int test_expmodone(void)
 {
     int ret = 0, i;
-    BIGNUM *r = BNY_new();
-    BIGNUM *a = BNY_new();
-    BIGNUM *p = BNY_new();
-    BIGNUM *m = BNY_new();
+    BIGNUMX *r = BNY_new();
+    BIGNUMX *a = BNY_new();
+    BIGNUMX *p = BNY_new();
+    BIGNUMX *m = BNY_new();
 
     if (!TEST_ptr(r)
             || !TEST_ptr(a)
@@ -2316,7 +2316,7 @@ static int test_expmodone(void)
 
 static int test_smallprime(int kBits)
 {
-    BIGNUM *r;
+    BIGNUMX *r;
     int st = 0;
 
     if (!TEST_ptr(r = BNY_new()))
@@ -2341,7 +2341,7 @@ static int test_smallprime(int kBits)
 
 static int test_smallsafeprime(int kBits)
 {
-    BIGNUM *r;
+    BIGNUMX *r;
     int st = 0;
 
     if (!TEST_ptr(r = BNY_new()))
@@ -2369,7 +2369,7 @@ static int primes[] = { 2, 3, 5, 7, 17863 };
 static int test_is_prime(int i)
 {
     int ret = 0;
-    BIGNUM *r = NULL;
+    BIGNUMX *r = NULL;
     int trial;
 
     if (!TEST_ptr(r = BNY_new()))
@@ -2393,7 +2393,7 @@ static int not_primes[] = { -1, 0, 1, 4 };
 static int test_not_prime(int i)
 {
     int ret = 0;
-    BIGNUM *r = NULL;
+    BIGNUMX *r = NULL;
     int trial;
 
     if (!TEST_ptr(r = BNY_new()))
@@ -2415,7 +2415,7 @@ static int test_ctx_set_ct_flag(BN_CTX *c)
 {
     int st = 0;
     size_t i;
-    BIGNUM *b[15];
+    BIGNUMX *b[15];
 
     BNY_CTX_start(c);
     for (i = 0; i < OSSL_NELEM(b); i++) {
@@ -2435,7 +2435,7 @@ static int test_ctx_check_ct_flag(BN_CTX *c)
 {
     int st = 0;
     size_t i;
-    BIGNUM *b[30];
+    BIGNUMX *b[30];
 
     BNY_CTX_start(c);
     for (i = 0; i < OSSL_NELEM(b); i++) {
@@ -2457,11 +2457,11 @@ static int test_ctx_consttime_flag(void)
      * The constant-time flag should not "leak" among BN_CTX frames:
      *
      * - test_ctx_set_ct_flag() starts a frame in the given BN_CTX and
-     *   sets the BN_FLG_CONSTTIME flag on some of the BIGNUMs obtained
+     *   sets the BN_FLG_CONSTTIME flag on some of the BIGNUMXs obtained
      *   from the frame before ending it.
      * - test_ctx_check_ct_flag() then starts a new frame and gets a
-     *   number of BIGNUMs from it. In absence of leaks, none of the
-     *   BIGNUMs in the new frame should have BN_FLG_CONSTTIME set.
+     *   number of BIGNUMXs from it. In absence of leaks, none of the
+     *   BIGNUMXs in the new frame should have BN_FLG_CONSTTIME set.
      *
      * In actual BN_CTX usage inside libcrypto the leak could happen at
      * any depth level in the BN_CTX stack, with varying results
@@ -2499,7 +2499,7 @@ static int test_ctx_consttime_flag(void)
 
 static int test_gcd_prime(void)
 {
-    BIGNUM *a = NULL, *b = NULL, *gcd = NULL;
+    BIGNUMX *a = NULL, *b = NULL, *gcd = NULL;
     int i, st = 0;
 
     if (!TEST_ptr(a = BNY_new())
@@ -2739,8 +2739,8 @@ static int test_mod_exp(int i)
 {
     const MOD_EXP_TEST *test = &ModExpTests[i];
     int res = 0;
-    BIGNUM* result = NULL;
-    BIGNUM *base = NULL, *exponent = NULL, *modulo = NULL;
+    BIGNUMX* result = NULL;
+    BIGNUMX *base = NULL, *exponent = NULL, *modulo = NULL;
     char *s = NULL;
 
     if (!TEST_ptr(result = BNY_new())
@@ -2773,8 +2773,8 @@ static int test_mod_exp_consttime(int i)
 {
     const MOD_EXP_TEST *test = &ModExpTests[i];
     int res = 0;
-    BIGNUM* result = NULL;
-    BIGNUM *base = NULL, *exponent = NULL, *modulo = NULL;
+    BIGNUMX* result = NULL;
+    BIGNUMX *base = NULL, *exponent = NULL, *modulo = NULL;
     char *s = NULL;
 
     if (!TEST_ptr(result = BNY_new())
@@ -2814,8 +2814,8 @@ static int test_mod_exp_consttime(int i)
 static int test_mod_exp2_mont(void)
 {
     int res = 0;
-    BIGNUM *exp_result = NULL;
-    BIGNUM *exp_a1 = NULL, *exp_p1 = NULL, *exp_a2 = NULL, *exp_p2 = NULL,
+    BIGNUMX *exp_result = NULL;
+    BIGNUMX *exp_a1 = NULL, *exp_p1 = NULL, *exp_a2 = NULL, *exp_p2 = NULL,
            *exp_m = NULL;
 
     if (!TEST_ptr(exp_result = BNY_new())

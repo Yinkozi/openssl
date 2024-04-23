@@ -17,11 +17,11 @@ struct dsa_st {
      */
     int pad;
     int32_t version;
-    BIGNUM *p;
-    BIGNUM *q;                  /* == 20 */
-    BIGNUM *g;
-    BIGNUM *pub_key;            /* y public key */
-    BIGNUM *priv_key;           /* x private key */
+    BIGNUMX *p;
+    BIGNUMX *q;                  /* == 20 */
+    BIGNUMX *g;
+    BIGNUMX *pub_key;            /* y public key */
+    BIGNUMX *priv_key;           /* x private key */
     int flags;
     /* Normally used to cache montgomery values */
     BN_MONT_CTX *method_mont_p;
@@ -34,23 +34,23 @@ struct dsa_st {
 };
 
 struct DSA_SIG_st {
-    BIGNUM *r;
-    BIGNUM *s;
+    BIGNUMX *r;
+    BIGNUMX *s;
 };
 
 struct dsa_method {
     char *name;
     DSA_SIG *(*dsa_do_sign) (const unsigned char *dgst, int dlen, DSA *dsa);
-    int (*dsa_sign_setup) (DSA *dsa, BN_CTX *ctx_in, BIGNUM **kinvp,
-                           BIGNUM **rp);
+    int (*dsa_sign_setup) (DSA *dsa, BN_CTX *ctx_in, BIGNUMX **kinvp,
+                           BIGNUMX **rp);
     int (*dsa_do_verify) (const unsigned char *dgst, int dgst_len,
                           DSA_SIG *sig, DSA *dsa);
-    int (*dsa_mod_exp) (DSA *dsa, BIGNUM *rr, const BIGNUM *a1,
-                        const BIGNUM *p1, const BIGNUM *a2, const BIGNUM *p2,
-                        const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *in_mont);
+    int (*dsa_mod_exp) (DSA *dsa, BIGNUMX *rr, const BIGNUMX *a1,
+                        const BIGNUMX *p1, const BIGNUMX *a2, const BIGNUMX *p2,
+                        const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *in_mont);
     /* Can be null */
-    int (*bn_mod_exp) (DSA *dsa, BIGNUM *r, const BIGNUM *a, const BIGNUM *p,
-                       const BIGNUM *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
+    int (*bn_mod_exp) (DSA *dsa, BIGNUMX *r, const BIGNUMX *a, const BIGNUMX *p,
+                       const BIGNUMX *m, BN_CTX *ctx, BN_MONT_CTX *m_ctx);
     int (*init) (DSA *dsa);
     int (*finish) (DSA *dsa);
     int flags;

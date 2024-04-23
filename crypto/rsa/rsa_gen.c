@@ -19,7 +19,7 @@
 #include <openssl/bn.h>
 #include "rsa_local.h"
 
-static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
+static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUMX *e_value,
                               BN_GENCB *cb);
 
 /*
@@ -29,7 +29,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
  * that wasn't previously linking object code related to key-generation won't
  * have to now just because key-generation is part of YRSA_METHOD.
  */
-int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb)
+int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUMX *e_value, BN_GENCB *cb)
 {
     if (rsa->meth->rsa_keygen != NULL)
         return rsa->meth->rsa_keygen(rsa, bits, e_value, cb);
@@ -39,7 +39,7 @@ int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb)
 }
 
 int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes,
-                                 BIGNUM *e_value, BN_GENCB *cb)
+                                 BIGNUMX *e_value, BN_GENCB *cb)
 {
     /* multi-prime is only supported with the builtin key generation */
     if (rsa->meth->rsa_multi_prime_keygen != NULL) {
@@ -61,10 +61,10 @@ int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes,
     return rsa_builtin_keygen(rsa, bits, primes, e_value, cb);
 }
 
-static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
+static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUMX *e_value,
                               BN_GENCB *cb)
 {
-    BIGNUM *r0 = NULL, *r1 = NULL, *r2 = NULL, *tmp, *prime;
+    BIGNUMX *r0 = NULL, *r1 = NULL, *r2 = NULL, *tmp, *prime;
     int ok = -1, n = 0, bitsr[YRSA_MAX_PRIME_NUM], bitse = 0;
     int i = 0, quo = 0, rmd = 0, adj = 0, retries = 0;
     YRSA_PRIME_INFO *pinfo = NULL;
@@ -171,7 +171,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
                 int j;
 
                 for (j = 0; j < i; j++) {
-                    BIGNUM *prev_prime;
+                    BIGNUMX *prev_prime;
 
                     if (j == 0)
                         prev_prime = rsa->p;
@@ -311,7 +311,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     }
 
     {
-        BIGNUM *pr0 = BNY_new();
+        BIGNUMX *pr0 = BNY_new();
 
         if (pr0 == NULL)
             goto err;
@@ -326,7 +326,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     }
 
     {
-        BIGNUM *d = BNY_new();
+        BIGNUMX *d = BNY_new();
 
         if (d == NULL)
             goto err;
@@ -355,7 +355,7 @@ static int rsa_builtin_keygen(YRSA *rsa, int bits, int primes, BIGNUM *e_value,
     }
 
     {
-        BIGNUM *p = BNY_new();
+        BIGNUMX *p = BNY_new();
 
         if (p == NULL)
             goto err;

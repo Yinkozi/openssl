@@ -65,25 +65,25 @@
 #include "internal.h"
 
 
-BIGNUM *BNY_new(void) {
-  BIGNUM *bn = OPENSSL_malloc(sizeof(BIGNUM));
+BIGNUMX *BNY_new(void) {
+  BIGNUMX *bn = OPENSSL_malloc(sizeof(BIGNUMX));
 
   if (bn == NULL) {
     OPENSSL_PUT_ERROR(BN, ERR_R_MALLOC_FAILURE);
     return NULL;
   }
 
-  OPENSSL_memset(bn, 0, sizeof(BIGNUM));
+  OPENSSL_memset(bn, 0, sizeof(BIGNUMX));
   bn->flags = BN_FLG_MALLOCED;
 
   return bn;
 }
 
-void BN_init(BIGNUM *bn) {
-  OPENSSL_memset(bn, 0, sizeof(BIGNUM));
+void BN_init(BIGNUMX *bn) {
+  OPENSSL_memset(bn, 0, sizeof(BIGNUMX));
 }
 
-void BN_free(BIGNUM *bn) {
+void BN_free(BIGNUMX *bn) {
   if (bn == NULL) {
     return;
   }
@@ -99,7 +99,7 @@ void BN_free(BIGNUM *bn) {
   }
 }
 
-void BNY_clear_free(BIGNUM *bn) {
+void BNY_clear_free(BIGNUMX *bn) {
   char should_free;
 
   if (bn == NULL) {
@@ -114,14 +114,14 @@ void BNY_clear_free(BIGNUM *bn) {
   }
 
   should_free = (bn->flags & BN_FLG_MALLOCED) != 0;
-  OPENSSL_cleanse(bn, sizeof(BIGNUM));
+  OPENSSL_cleanse(bn, sizeof(BIGNUMX));
   if (should_free) {
     OPENSSL_free(bn);
   }
 }
 
-BIGNUM *BN_dup(const BIGNUM *src) {
-  BIGNUM *copy;
+BIGNUMX *BN_dup(const BIGNUMX *src) {
+  BIGNUMX *copy;
 
   if (src == NULL) {
     return NULL;
@@ -140,7 +140,7 @@ BIGNUM *BN_dup(const BIGNUM *src) {
   return copy;
 }
 
-BIGNUM *BNY_copy(BIGNUM *dest, const BIGNUM *src) {
+BIGNUMX *BNY_copy(BIGNUMX *dest, const BIGNUMX *src) {
   if (src == dest) {
     return dest;
   }
@@ -156,7 +156,7 @@ BIGNUM *BNY_copy(BIGNUM *dest, const BIGNUM *src) {
   return dest;
 }
 
-void BN_clear(BIGNUM *bn) {
+void BN_clear(BIGNUMX *bn) {
   if (bn->d != NULL) {
     OPENSSL_memset(bn->d, 0, bn->dmax * sizeof(bn->d[0]));
   }
@@ -165,9 +165,9 @@ void BN_clear(BIGNUM *bn) {
   bn->neg = 0;
 }
 
-const BIGNUM *BNY_value_one(void) {
+const BIGNUMX *BNY_value_one(void) {
   static const BN_ULONG kOneLimbs[1] = { 1 };
-  static const BIGNUM kOne = STATIC_BIGNUM(kOneLimbs);
+  static const BIGNUMX kOne = STATIC_BIGNUMX(kOneLimbs);
 
   return &kOne;
 }
@@ -222,7 +222,7 @@ unsigned BNY_num_bits_word(BN_ULONG l) {
   }
 }
 
-unsigned BNY_num_bits(const BIGNUM *bn) {
+unsigned BNY_num_bits(const BIGNUMX *bn) {
   const int max = bn->top - 1;
 
   if (BN_is_zero(bn)) {
@@ -232,19 +232,19 @@ unsigned BNY_num_bits(const BIGNUM *bn) {
   return max*BN_BITS2 + BNY_num_bits_word(bn->d[max]);
 }
 
-unsigned BN_num_bytes(const BIGNUM *bn) {
+unsigned BN_num_bytes(const BIGNUMX *bn) {
   return (BNY_num_bits(bn) + 7) / 8;
 }
 
-void BN_zero(BIGNUM *bn) {
+void BN_zero(BIGNUMX *bn) {
   bn->top = bn->neg = 0;
 }
 
-int BN_one(BIGNUM *bn) {
+int BN_one(BIGNUMX *bn) {
   return BN_set_word(bn, 1);
 }
 
-int BN_set_word(BIGNUM *bn, BN_ULONG value) {
+int BN_set_word(BIGNUMX *bn, BN_ULONG value) {
   if (value == 0) {
     BN_zero(bn);
     return 1;
@@ -260,7 +260,7 @@ int BN_set_word(BIGNUM *bn, BN_ULONG value) {
   return 1;
 }
 
-int BN_set_u64(BIGNUM *bn, uint64_t value) {
+int BN_set_u64(BIGNUMX *bn, uint64_t value) {
 #if BN_BITS2 == 64
   return BN_set_word(bn, value);
 #elif BN_BITS2 == 32
@@ -282,7 +282,7 @@ int BN_set_u64(BIGNUM *bn, uint64_t value) {
 #endif
 }
 
-int bn_set_words(BIGNUM *bn, const BN_ULONG *words, size_t num) {
+int bn_set_words(BIGNUMX *bn, const BN_ULONG *words, size_t num) {
   if (bn_wexpand(bn, num) == NULL) {
     return 0;
   }
@@ -294,11 +294,11 @@ int bn_set_words(BIGNUM *bn, const BN_ULONG *words, size_t num) {
   return 1;
 }
 
-int BN_is_negative(const BIGNUM *bn) {
+int BN_is_negative(const BIGNUMX *bn) {
   return bn->neg != 0;
 }
 
-void BN_set_negative(BIGNUM *bn, int sign) {
+void BN_set_negative(BIGNUMX *bn, int sign) {
   if (sign && !BN_is_zero(bn)) {
     bn->neg = 1;
   } else {
@@ -306,7 +306,7 @@ void BN_set_negative(BIGNUM *bn, int sign) {
   }
 }
 
-BIGNUM *bn_wexpand(BIGNUM *bn, size_t words) {
+BIGNUMX *bn_wexpand(BIGNUMX *bn, size_t words) {
   BN_ULONG *a;
 
   if (words <= (size_t)bn->dmax) {
@@ -314,12 +314,12 @@ BIGNUM *bn_wexpand(BIGNUM *bn, size_t words) {
   }
 
   if (words > (INT_MAX / (4 * BN_BITS2))) {
-    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUM_TOO_LONG);
+    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUMX_TOO_LONG);
     return NULL;
   }
 
   if (bn->flags & BN_FLG_STATIC_DATA) {
-    OPENSSL_PUT_ERROR(BN, BN_R_EXPAND_ON_STATIC_BIGNUM_DATA);
+    OPENSSL_PUT_ERROR(BN, BN_R_EXPAND_ON_STATIC_BIGNUMX_DATA);
     return NULL;
   }
 
@@ -338,15 +338,15 @@ BIGNUM *bn_wexpand(BIGNUM *bn, size_t words) {
   return bn;
 }
 
-BIGNUM *bn_expand(BIGNUM *bn, size_t bits) {
+BIGNUMX *bn_expand(BIGNUMX *bn, size_t bits) {
   if (bits + BN_BITS2 - 1 < bits) {
-    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUM_TOO_LONG);
+    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUMX_TOO_LONG);
     return NULL;
   }
   return bn_wexpand(bn, (bits+BN_BITS2-1)/BN_BITS2);
 }
 
-void bn_correct_top(BIGNUM *bn) {
+void bn_correct_top(BIGNUMX *bn) {
   BN_ULONG *ftl;
   int tmp_top = bn->top;
 

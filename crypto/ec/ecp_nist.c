@@ -82,8 +82,8 @@ int ec_GFp_nist_group_copy(EC_GROUP *dest, const EC_GROUP *src)
     return ec_GFp_simple_group_copy(dest, src);
 }
 
-int ec_GFp_nist_group_set_curve(EC_GROUP *group, const BIGNUM *p,
-                                const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx)
+int ec_GFp_nist_group_set_curve(EC_GROUP *group, const BIGNUMX *p,
+                                const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = 0;
     BN_CTX *new_ctx = NULL;
@@ -117,8 +117,8 @@ int ec_GFp_nist_group_set_curve(EC_GROUP *group, const BIGNUM *p,
     return ret;
 }
 
-int ec_GFp_nist_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
-                          const BIGNUM *b, BN_CTX *ctx)
+int ec_GFp_nist_field_mul(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
+                          const BIGNUMX *b, BN_CTX *ctx)
 {
     int ret = 0;
     BN_CTX *ctx_new = NULL;
@@ -142,7 +142,7 @@ int ec_GFp_nist_field_mul(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
     return ret;
 }
 
-int ec_GFp_nist_field_sqr(const EC_GROUP *group, BIGNUM *r, const BIGNUM *a,
+int ec_GFp_nist_field_sqr(const EC_GROUP *group, BIGNUMX *r, const BIGNUMX *a,
                           BN_CTX *ctx)
 {
     int ret = 0;

@@ -329,13 +329,13 @@ static const uint16_t primes[NUMPRIMES] = {
     17851, 17863,
 };
 
-static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
-                   const BIGNUM *a1_odd, int k, BN_CTX *ctx, BN_MONT_CTX *mont);
-static int probable_prime(BIGNUM *rnd, int bits);
-static int probable_prime_dh(BIGNUM *rnd, int bits, const BIGNUM *add,
-                             const BIGNUM *rem, BN_CTX *ctx);
-static int probable_prime_dh_safe(BIGNUM *rnd, int bits, const BIGNUM *add,
-                                  const BIGNUM *rem, BN_CTX *ctx);
+static int witness(BIGNUMX *w, const BIGNUMX *a, const BIGNUMX *a1,
+                   const BIGNUMX *a1_odd, int k, BN_CTX *ctx, BN_MONT_CTX *mont);
+static int probable_prime(BIGNUMX *rnd, int bits);
+static int probable_prime_dh(BIGNUMX *rnd, int bits, const BIGNUMX *add,
+                             const BIGNUMX *rem, BN_CTX *ctx);
+static int probable_prime_dh_safe(BIGNUMX *rnd, int bits, const BIGNUMX *add,
+                                  const BIGNUMX *rem, BN_CTX *ctx);
 
 void BN_GENCB_set(BN_GENCB *callback,
                   int (*f)(int event, int n, struct bn_gencb_st *),
@@ -352,9 +352,9 @@ int BN_GENCB_call(BN_GENCB *callback, int event, int n) {
   return callback->callback(event, n, callback);
 }
 
-int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe, const BIGNUM *add,
-                         const BIGNUM *rem, BN_GENCB *cb) {
-  BIGNUM *t;
+int BNY_generate_prime_ex(BIGNUMX *ret, int bits, int safe, const BIGNUMX *add,
+                         const BIGNUMX *rem, BN_GENCB *cb) {
+  BIGNUMX *t;
   int found = 0;
   int i, j, c1 = 0;
   BN_CTX *ctx;
@@ -451,7 +451,7 @@ err:
   return found;
 }
 
-int BN_primality_test(int *is_probably_prime, const BIGNUM *candidate,
+int BN_primality_test(int *is_probably_prime, const BIGNUMX *candidate,
                       int checks, BN_CTX *ctx, int do_trial_division,
                       BN_GENCB *cb) {
   switch (BNY_is_prime_fasttest_ex(candidate, checks, ctx, do_trial_division, cb)) {
@@ -467,18 +467,18 @@ int BN_primality_test(int *is_probably_prime, const BIGNUM *candidate,
   }
 }
 
-int BN_is_prime_ex(const BIGNUM *candidate, int checks, BN_CTX *ctx, BN_GENCB *cb) {
+int BN_is_prime_ex(const BIGNUMX *candidate, int checks, BN_CTX *ctx, BN_GENCB *cb) {
   return BNY_is_prime_fasttest_ex(candidate, checks, ctx, 0, cb);
 }
 
-int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+int BNY_is_prime_fasttest_ex(const BIGNUMX *a, int checks, BN_CTX *ctx_passed,
                             int do_trial_division, BN_GENCB *cb) {
   int i, j, ret = -1;
   int k;
   BN_CTX *ctx = NULL;
-  BIGNUM *A1, *A1_odd, *check; /* taken from ctx */
+  BIGNUMX *A1, *A1_odd, *check; /* taken from ctx */
   BN_MONT_CTX *mont = NULL;
-  const BIGNUM *A = NULL;
+  const BIGNUMX *A = NULL;
 
   if (BN_cmp(a, BNY_value_one()) <= 0) {
     return 0;
@@ -519,7 +519,7 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
 
   /* A := abs(a) */
   if (a->neg) {
-    BIGNUM *t = BNY_CTX_get(ctx);
+    BIGNUMX *t = BNY_CTX_get(ctx);
     if (t == NULL || !BNY_copy(t, a)) {
       goto err;
     }
@@ -603,8 +603,8 @@ err:
   return ret;
 }
 
-static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
-                   const BIGNUM *a1_odd, int k, BN_CTX *ctx,
+static int witness(BIGNUMX *w, const BIGNUMX *a, const BIGNUMX *a1,
+                   const BIGNUMX *a1_odd, int k, BN_CTX *ctx,
                    BN_MONT_CTX *mont) {
   if (!BNY_mod_exp_mont(w, w, a1_odd, a, ctx, mont)) { /* w := w^a1_odd mod a */
     return -1;
@@ -636,14 +636,14 @@ static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
   return 1;
 }
 
-static BN_ULONG get_word(const BIGNUM *bn) {
+static BN_ULONG get_word(const BIGNUMX *bn) {
   if (bn->top == 1) {
     return bn->d[0];
   }
   return 0;
 }
 
-static int probable_prime(BIGNUM *rnd, int bits) {
+static int probable_prime(BIGNUMX *rnd, int bits) {
   int i;
   uint16_t mods[NUMPRIMES];
   BN_ULONG delta;
@@ -725,10 +725,10 @@ loop:
   return 1;
 }
 
-static int probable_prime_dh(BIGNUM *rnd, int bits, const BIGNUM *add,
-                             const BIGNUM *rem, BN_CTX *ctx) {
+static int probable_prime_dh(BIGNUMX *rnd, int bits, const BIGNUMX *add,
+                             const BIGNUMX *rem, BN_CTX *ctx) {
   int i, ret = 0;
-  BIGNUM *t1;
+  BIGNUMX *t1;
 
   BNY_CTX_start(ctx);
   if ((t1 = BNY_CTX_get(ctx)) == NULL) {
@@ -780,10 +780,10 @@ err:
   return ret;
 }
 
-static int probable_prime_dh_safe(BIGNUM *p, int bits, const BIGNUM *padd,
-                                  const BIGNUM *rem, BN_CTX *ctx) {
+static int probable_prime_dh_safe(BIGNUMX *p, int bits, const BIGNUMX *padd,
+                                  const BIGNUMX *rem, BN_CTX *ctx) {
   int i, ret = 0;
-  BIGNUM *t1, *qadd, *q;
+  BIGNUMX *t1, *qadd, *q;
 
   bits--;
   BNY_CTX_start(ctx);

@@ -11,7 +11,7 @@
 #include "internal/cryptlib.h"
 #include "bn_local.h"
 
-int BN_lshift1(BIGNUM *r, const BIGNUM *a)
+int BN_lshift1(BIGNUMX *r, const BIGNUMX *a)
 {
     register BN_ULONG *ap, *rp, t, c;
     int i;
@@ -42,7 +42,7 @@ int BN_lshift1(BIGNUM *r, const BIGNUM *a)
     return 1;
 }
 
-int BN_ryshift1(BIGNUM *r, const BIGNUM *a)
+int BN_ryshift1(BIGNUMX *r, const BIGNUMX *a)
 {
     BN_ULONG *ap, *rp, t, c;
     int i;
@@ -78,7 +78,7 @@ int BN_ryshift1(BIGNUM *r, const BIGNUM *a)
     return 1;
 }
 
-int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
+int BN_lshift(BIGNUMX *r, const BIGNUMX *a, int n)
 {
     int ret;
 
@@ -101,7 +101,7 @@ int BN_lshift(BIGNUM *r, const BIGNUM *a, int n)
  * for constant-time-ness is |n < BN_BITS2| or |n / BN_BITS2| being
  * non-secret.
  */
-int bn_lshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
+int bn_lshift_fixed_top(BIGNUMX *r, const BIGNUMX *a, int n)
 {
     int i, nw;
     unsigned int lb, rb;
@@ -147,7 +147,7 @@ int bn_lshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
     return 1;
 }
 
-int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n)
+int BN_ryshift(BIGNUMX *r, const BIGNUMX *a, int n)
 {
     int ret = 0;
 
@@ -170,7 +170,7 @@ int BN_ryshift(BIGNUM *r, const BIGNUM *a, int n)
  * for constant-time-ness for sufficiently[!] zero-padded inputs is
  * |n < BN_BITS2| or |n / BN_BITS2| being non-secret.
  */
-int bn_ryshift_fixed_top(BIGNUM *r, const BIGNUM *a, int n)
+int bn_ryshift_fixed_top(BIGNUMX *r, const BIGNUMX *a, int n)
 {
     int i, top, nw;
     unsigned int lb, rb;

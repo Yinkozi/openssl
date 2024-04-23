@@ -69,11 +69,11 @@
 
 #include "internal.h"
 
-BIGNUM *BNY_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
+BIGNUMX *BNY_bin2bn(const uint8_t *in, size_t len, BIGNUMX *ret) {
   size_t num_words;
   unsigned m;
   BN_ULONG word = 0;
-  BIGNUM *bn = NULL;
+  BIGNUMX *bn = NULL;
 
   if (ret == NULL) {
     ret = bn = BNY_new();
@@ -118,8 +118,8 @@ BIGNUM *BNY_bin2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
   return ret;
 }
 
-BIGNUM *BN_le2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
-  BIGNUM *bn = NULL;
+BIGNUMX *BN_le2bn(const uint8_t *in, size_t len, BIGNUMX *ret) {
+  BIGNUMX *bn = NULL;
   if (ret == NULL) {
     bn = BNY_new();
     ret = bn;
@@ -154,7 +154,7 @@ BIGNUM *BN_le2bn(const uint8_t *in, size_t len, BIGNUM *ret) {
   return ret;
 }
 
-size_t BNY_bn2bin(const BIGNUM *in, uint8_t *out) {
+size_t BNY_bn2bin(const BIGNUMX *in, uint8_t *out) {
   size_t n, i;
   BN_ULONG l;
 
@@ -166,7 +166,7 @@ size_t BNY_bn2bin(const BIGNUM *in, uint8_t *out) {
   return n;
 }
 
-int BN_bn2le_padded(uint8_t *out, size_t len, const BIGNUM *in) {
+int BN_bn2le_padded(uint8_t *out, size_t len, const BIGNUMX *in) {
   /* If we don't have enough space, fail out. */
   size_t num_bytes = BN_num_bytes(in);
   if (len < num_bytes) {
@@ -203,7 +203,7 @@ static int constant_time_le_size_t(size_t x, size_t y) {
  * |in|, however it necessarily does not have the same memory access pattern. If
  * the access would be out of bounds, it reads the last word of |in|. |in| must
  * not be zero. */
-static BN_ULONG read_word_padded(const BIGNUM *in, size_t i) {
+static BN_ULONG read_word_padded(const BIGNUMX *in, size_t i) {
   /* Read |in->d[i]| if valid. Otherwise, read the last word. */
   BN_ULONG l = in->d[constant_time_select_ulong(
       constant_time_le_size_t(in->dmax, i), in->dmax - 1, i)];
@@ -212,7 +212,7 @@ static BN_ULONG read_word_padded(const BIGNUM *in, size_t i) {
   return constant_time_select_ulong(constant_time_le_size_t(in->top, i), 0, l);
 }
 
-int BNY_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in) {
+int BNY_bn2bin_padded(uint8_t *out, size_t len, const BIGNUMX *in) {
   /* Special case for |in| = 0. Just branch as the probability is negligible. */
   if (BN_is_zero(in)) {
     OPENSSL_memset(out, 0, len);
@@ -246,14 +246,14 @@ int BNY_bn2bin_padded(uint8_t *out, size_t len, const BIGNUM *in) {
   return 1;
 }
 
-int BN_bn2cbb_padded(CBB *out, size_t len, const BIGNUM *in) {
+int BN_bn2cbb_padded(CBB *out, size_t len, const BIGNUMX *in) {
   uint8_t *ptr;
   return CBB_add_space(out, &ptr, len) && BNY_bn2bin_padded(ptr, len, in);
 }
 
 static const char hextable[] = "0123456789abcdef";
 
-char *BN_bn2hexx(const BIGNUM *bn) {
+char *BN_bn2hexx(const BIGNUMX *bn) {
   char *buf = OPENSSL_malloc(1 /* leading '-' */ + 1 /* zero is non-empty */ +
                              bn->top * BN_BYTES * 2 + 1 /* trailing NUL */);
   if (buf == NULL) {
@@ -288,9 +288,9 @@ char *BN_bn2hexx(const BIGNUM *bn) {
 }
 
 /* decode_hex decodes |in_len| bytes of hex data from |in| and updates |bn|. */
-static int decode_hex(BIGNUM *bn, const char *in, int in_len) {
+static int decode_hex(BIGNUMX *bn, const char *in, int in_len) {
   if (in_len > INT_MAX/4) {
-    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUM_TOO_LONG);
+    OPENSSL_PUT_ERROR(BN, BN_R_BIGNUMX_TOO_LONG);
     return 0;
   }
   /* |in_len| is the number of hex digits. */
@@ -335,7 +335,7 @@ static int decode_hex(BIGNUM *bn, const char *in, int in_len) {
 }
 
 /* decode_dec decodes |in_len| bytes of decimal data from |in| and updates |bn|. */
-static int decode_dec(BIGNUM *bn, const char *in, int in_len) {
+static int decode_dec(BIGNUMX *bn, const char *in, int in_len) {
   int i, j;
   BN_ULONG l = 0;
 
@@ -360,11 +360,11 @@ static int decode_dec(BIGNUM *bn, const char *in, int in_len) {
   return 1;
 }
 
-typedef int (*decode_func) (BIGNUM *bn, const char *in, int in_len);
+typedef int (*decode_func) (BIGNUMX *bn, const char *in, int in_len);
 typedef int (*char_test_func) (int c);
 
-static int bn_x2bn(BIGNUM **outp, const char *in, decode_func decode, char_test_func want_char) {
-  BIGNUM *ret = NULL;
+static int bn_x2bn(BIGNUMX **outp, const char *in, decode_func decode, char_test_func want_char) {
+  BIGNUMX *ret = NULL;
   int neg = 0, i;
   int num;
 
@@ -415,14 +415,14 @@ err:
   return 0;
 }
 
-int BN_hex2bn(BIGNUM **outp, const char *in) {
+int BN_hex2bn(BIGNUMX **outp, const char *in) {
   return bn_x2bn(outp, in, decode_hex, isxdigit);
 }
 
-char *BN_bn2dec(const BIGNUM *a) {
+char *BN_bn2dec(const BIGNUMX *a) {
   /* It is easier to print strings little-endian, so we assemble it in reverse
    * and fix at the end. */
-  BIGNUM *copy = NULL;
+  BIGNUMX *copy = NULL;
   CBB cbb;
   if (!CBB_init(&cbb, 16) ||
       !CBB_add_u8(&cbb, 0 /* trailing NUL */)) {
@@ -485,11 +485,11 @@ err:
   return NULL;
 }
 
-int BN_dec2bn(BIGNUM **outp, const char *in) {
+int BN_dec2bn(BIGNUMX **outp, const char *in) {
   return bn_x2bn(outp, in, decode_dec, isdigit);
 }
 
-int BN_asc2bn(BIGNUM **outp, const char *in) {
+int BN_asc2bn(BIGNUMX **outp, const char *in) {
   const char *const orig_in = in;
   if (*in == '-') {
     in++;
@@ -512,7 +512,7 @@ int BN_asc2bn(BIGNUM **outp, const char *in) {
   return 1;
 }
 
-int BN_print(BIO *bp, const BIGNUM *a) {
+int BN_print(BIO *bp, const BIGNUMX *a) {
   int i, j, v, z = 0;
   int ret = 0;
 
@@ -542,7 +542,7 @@ end:
   return ret;
 }
 
-int BN_print_fp(FILE *fp, const BIGNUM *a) {
+int BN_print_fp(FILE *fp, const BIGNUMX *a) {
   BIO *b;
   int ret;
 
@@ -557,7 +557,7 @@ int BN_print_fp(FILE *fp, const BIGNUM *a) {
   return ret;
 }
 
-BN_ULONG BN_get_word(const BIGNUM *bn) {
+BN_ULONG BN_get_word(const BIGNUMX *bn) {
   switch (bn->top) {
     case 0:
       return 0;
@@ -568,7 +568,7 @@ BN_ULONG BN_get_word(const BIGNUM *bn) {
   }
 }
 
-int BN_get_u64(const BIGNUM *bn, uint64_t *out) {
+int BN_get_u64(const BIGNUMX *bn, uint64_t *out) {
   switch (bn->top) {
     case 0:
       *out = 0;
@@ -586,7 +586,7 @@ int BN_get_u64(const BIGNUM *bn, uint64_t *out) {
   }
 }
 
-size_t BNY_bn2mpi(const BIGNUM *in, uint8_t *out) {
+size_t BNY_bn2mpi(const BIGNUMX *in, uint8_t *out) {
   const size_t bits = BNY_num_bits(in);
   const size_t bytes = (bits + 7) / 8;
   /* If the number of bits is a multiple of 8, i.e. if the MSB is set,
@@ -626,7 +626,7 @@ size_t BNY_bn2mpi(const BIGNUM *in, uint8_t *out) {
   return len + 4;
 }
 
-BIGNUM *BNY_mpi2bn(const uint8_t *in, size_t len, BIGNUM *out) {
+BIGNUMX *BNY_mpi2bn(const uint8_t *in, size_t len, BIGNUMX *out) {
   if (len < 4) {
     OPENSSL_PUT_ERROR(BN, BN_R_BAD_ENCODING);
     return NULL;

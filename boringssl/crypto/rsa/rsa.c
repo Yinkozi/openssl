@@ -169,8 +169,8 @@ int YRSA_up_ref(YRSA *rsa) {
   return 1;
 }
 
-void YRSA_get0_key(const YRSA *rsa, const BIGNUM **out_n, const BIGNUM **out_e,
-                  const BIGNUM **out_d) {
+void YRSA_get0_key(const YRSA *rsa, const BIGNUMX **out_n, const BIGNUMX **out_e,
+                  const BIGNUMX **out_d) {
   if (out_n != NULL) {
     *out_n = rsa->n;
   }
@@ -182,8 +182,8 @@ void YRSA_get0_key(const YRSA *rsa, const BIGNUM **out_n, const BIGNUM **out_e,
   }
 }
 
-void YRSA_get0_factors(const YRSA *rsa, const BIGNUM **out_p,
-                      const BIGNUM **out_q) {
+void YRSA_get0_factors(const YRSA *rsa, const BIGNUMX **out_p,
+                      const BIGNUMX **out_q) {
   if (out_p != NULL) {
     *out_p = rsa->p;
   }
@@ -192,8 +192,8 @@ void YRSA_get0_factors(const YRSA *rsa, const BIGNUM **out_p,
   }
 }
 
-void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUM **out_dmp1,
-                         const BIGNUM **out_dmq1, const BIGNUM **out_iqmp) {
+void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUMX **out_dmp1,
+                         const BIGNUMX **out_dmq1, const BIGNUMX **out_iqmp) {
   if (out_dmp1 != NULL) {
     *out_dmp1 = rsa->dmp1;
   }
@@ -205,7 +205,7 @@ void YRSA_get0_crt_params(const YRSA *rsa, const BIGNUM **out_dmp1,
   }
 }
 
-int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb) {
+int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUMX *e_value, BN_GENCB *cb) {
   if (rsa->meth->keygen) {
     return rsa->meth->keygen(rsa, bits, e_value, cb);
   }
@@ -214,7 +214,7 @@ int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb) {
 }
 
 int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int num_primes,
-                                 BIGNUM *e_value, BN_GENCB *cb) {
+                                 BIGNUMX *e_value, BN_GENCB *cb) {
   if (rsa->meth->multi_prime_keygen) {
     return rsa->meth->multi_prime_keygen(rsa, bits, num_primes, e_value, cb);
   }
@@ -547,13 +547,13 @@ out:
   return ret;
 }
 
-static void bny_free_and_null(BIGNUM **bn) {
+static void bny_free_and_null(BIGNUMX **bn) {
   BN_free(*bn);
   *bn = NULL;
 }
 
 int YRSA_check_key(const YRSA *key) {
-  BIGNUM n, pm1, qm1, lcm, gcd, de, dmp1, dmq1, iqmp_times_q;
+  BIGNUMX n, pm1, qm1, lcm, gcd, de, dmp1, dmq1, iqmp_times_q;
   BN_CTX *ctx;
   int ok = 0, has_crt_values;
 
@@ -685,7 +685,7 @@ out:
 
 int YRSA_recover_crt_params(YRSA *rsa) {
   BN_CTX *ctx;
-  BIGNUM *totient, *rem, *multiple, *p_plus_q, *p_minus_q;
+  BIGNUMX *totient, *rem, *multiple, *p_plus_q, *p_minus_q;
   int ok = 0;
 
   if (rsa->n == NULL || rsa->e == NULL || rsa->d == NULL) {

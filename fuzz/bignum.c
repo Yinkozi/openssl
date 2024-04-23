@@ -33,11 +33,11 @@ int FuzzerTestOneInput(const uint8_t *buf, size_t len)
     size_t l1 = 0, l2 = 0, l3 = 0;
     int s1 = 0, s3 = 0;
     BN_CTX *ctx;
-    BIGNUM *b1;
-    BIGNUM *b2;
-    BIGNUM *b3;
-    BIGNUM *b4;
-    BIGNUM *b5;
+    BIGNUMX *b1;
+    BIGNUMX *b2;
+    BIGNUMX *b3;
+    BIGNUMX *b4;
+    BIGNUMX *b5;
 
     b1 = BNY_new();
     b2 = BNY_new();

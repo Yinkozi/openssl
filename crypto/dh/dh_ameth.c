@@ -268,7 +268,7 @@ static int do_dh_print(BIO *bp, const DH *x, int indent, int ptype)
 {
     int reason = ERR_R_BUF_LIB;
     const char *ktype = NULL;
-    BIGNUM *priv_key, *pub_key;
+    BIGNUMX *priv_key, *pub_key;
 
     if (ptype == 2)
         priv_key = x->priv_key;
@@ -371,9 +371,9 @@ static int dh_cmp_parameters(const EVVP_PKEY *a, const EVVP_PKEY *b)
     return 1;
 }
 
-static int int_dh_bn_cpy(BIGNUM **dst, const BIGNUM *src)
+static int int_dh_bn_cpy(BIGNUMX **dst, const BIGNUMX *src)
 {
-    BIGNUM *a;
+    BIGNUMX *a;
 
     /*
      * If source is read only just copy the pointer, so
@@ -383,7 +383,7 @@ static int int_dh_bn_cpy(BIGNUM **dst, const BIGNUM *src)
         a = NULL;
     else if (BN_get_flags(src, BN_FLG_STATIC_DATA)
                 && !BN_get_flags(src, BN_FLG_MALLOCED))
-        a = (BIGNUM *)src;
+        a = (BIGNUMX *)src;
     else if ((a = BN_dup(src)) == NULL)
         return 0;
     BNY_clear_free(*dst);

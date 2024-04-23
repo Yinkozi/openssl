@@ -460,7 +460,7 @@ class Backend(BackendInterface):
 
     def _int_to_bn(self, num, bn=None):
         """
-        Converts a python integer to a BIGNUM. The returned BIGNUM will not
+        Converts a python integer to a BIGNUMX. The returned BIGNUMX will not
         be garbage collected (to support adding them to structs that take
         ownership of the object). Be sure to register it for GC if it will
         be discarded after use.
@@ -2028,7 +2028,7 @@ class Backend(BackendInterface):
             raise TypeError("OpenSSH encoding is not supported")
 
         # Only DH is supported here currently.
-        q = self._ffi.new("BIGNUM **")
+        q = self._ffi.new("BIGNUMX **")
         self._lib.DH_get0_pqg(cdata, self._ffi.NULL, q, self._ffi.NULL)
         if encoding is serialization.Encoding.PEM:
             if q[0] != self._ffi.NULL:

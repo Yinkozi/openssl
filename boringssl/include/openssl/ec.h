@@ -127,22 +127,22 @@ OPENSSL_EXPORT int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b,
  * in |group| that specifies the generator for the group. */
 OPENSSL_EXPORT const EC_POINT *EC_GROUP_get0_generator(const EC_GROUP *group);
 
-/* EC_GROUP_get0_order returns a pointer to the internal |BIGNUM| object in
+/* EC_GROUP_get0_order returns a pointer to the internal |BIGNUMX| object in
  * |group| that specifies the order of the group. */
-OPENSSL_EXPORT const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group);
+OPENSSL_EXPORT const BIGNUMX *EC_GROUP_get0_order(const EC_GROUP *group);
 
 /* EC_GROUP_get_cofactor sets |*cofactor| to the cofactor of |group| using
  * |ctx|, if it's not NULL. It returns one on success and zero otherwise. */
 OPENSSL_EXPORT int EC_GROUP_get_cofactor(const EC_GROUP *group,
-                                         BIGNUM *cofactor, BN_CTX *ctx);
+                                         BIGNUMX *cofactor, BN_CTX *ctx);
 
 /* EC_GROUP_get_curve_GFp gets various parameters about a group. It sets
  * |*out_p| to the order of the coordinate field and |*out_a| and |*out_b| to
  * the parameters of the curve when expressed as y² = x³ + ax + b. Any of the
  * output parameters can be NULL. It returns one on success and zero on
  * error. */
-OPENSSL_EXPORT int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *out_p,
-                                          BIGNUM *out_a, BIGNUM *out_b,
+OPENSSL_EXPORT int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUMX *out_p,
+                                          BIGNUMX *out_a, BIGNUMX *out_b,
                                           BN_CTX *ctx);
 
 /* EC_GROUP_get_curve_name returns a NID that identifies |group|. */
@@ -215,7 +215,7 @@ OPENSSL_EXPORT int EC_POINTs_make_affine(const EC_GROUP *group, size_t num,
  * otherwise. */
 OPENSSL_EXPORT int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
                                                        const EC_POINT *point,
-                                                       BIGNUM *x, BIGNUM *y,
+                                                       BIGNUMX *x, BIGNUMX *y,
                                                        BN_CTX *ctx);
 
 /* EC_POINT_set_affine_coordinates_GFp sets the value of |point| to be
@@ -224,8 +224,8 @@ OPENSSL_EXPORT int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
  * considered an error if the point is not on the curve. */
 OPENSSL_EXPORT int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group,
                                                        EC_POINT *point,
-                                                       const BIGNUM *x,
-                                                       const BIGNUM *y,
+                                                       const BIGNUMX *x,
+                                                       const BIGNUMX *y,
                                                        BN_CTX *ctx);
 
 /* EC_POINT_point2oct serialises |point| into the X9.62 form given by |form|
@@ -255,7 +255,7 @@ OPENSSL_EXPORT int EC_POINT_oct2point(const EC_GROUP *group, EC_POINT *point,
  * the given |x| coordinate and the y coordinate specified by |y_bit| (see
  * X9.62). It returns one on success and zero otherwise. */
 OPENSSL_EXPORT int EC_POINT_set_compressed_coordinates_GFp(
-    const EC_GROUP *group, EC_POINT *point, const BIGNUM *x, int y_bit,
+    const EC_GROUP *group, EC_POINT *point, const BIGNUMX *x, int y_bit,
     BN_CTX *ctx);
 
 
@@ -280,8 +280,8 @@ OPENSSL_EXPORT int EC_POINT_invert(const EC_GROUP *group, EC_POINT *a,
 /* EC_POINT_mul sets r = generator*n + q*m. It returns one on success and zero
  * otherwise. If |ctx| is not NULL, it may be used. */
 OPENSSL_EXPORT int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r,
-                                const BIGNUM *n, const EC_POINT *q,
-                                const BIGNUM *m, BN_CTX *ctx);
+                                const BIGNUMX *n, const EC_POINT *q,
+                                const BIGNUMX *m, BN_CTX *ctx);
 
 
 /* Deprecated functions. */
@@ -299,9 +299,9 @@ OPENSSL_EXPORT int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r,
  * return |NID_undef|.
  *
  * Avoid using arbitrary curves and use |EC_GROUP_new_by_curve_mame| instead. */
-OPENSSL_EXPORT EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p,
-                                                const BIGNUM *a,
-                                                const BIGNUM *b, BN_CTX *ctx);
+OPENSSL_EXPORT EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUMX *p,
+                                                const BIGNUMX *a,
+                                                const BIGNUMX *b, BN_CTX *ctx);
 
 /* EC_GROUP_set_generator sets the generator for |group| to |generator|, which
  * must have the given order and cofactor. It may only be used with |EC_GROUP|
@@ -309,13 +309,13 @@ OPENSSL_EXPORT EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p,
  * each group. */
 OPENSSL_EXPORT int EC_GROUP_set_generator(EC_GROUP *group,
                                           const EC_POINT *generator,
-                                          const BIGNUM *order,
-                                          const BIGNUM *cofactor);
+                                          const BIGNUMX *order,
+                                          const BIGNUMX *cofactor);
 
 /* EC_GROUP_get_order sets |*order| to the order of |group|, if it's not
  * NULL. It returns one on success and zero otherwise. |ctx| is ignored. Use
  * |EC_GROUP_get0_order| instead. */
-OPENSSL_EXPORT int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order,
+OPENSSL_EXPORT int EC_GROUP_get_order(const EC_GROUP *group, BIGNUMX *order,
                                       BN_CTX *ctx);
 
 /* EC_GROUP_set_asn1_flag does nothing. */
@@ -396,7 +396,7 @@ BORINGSSL_MAKE_DELETER(EC_GROUP, EC_GROUP_free)
 #define EC_R_UNKNOWN_GROUP 123
 #define EC_R_UNKNOWN_ORDER 124
 #define EC_R_WRONG_ORDER 125
-#define EC_R_BIGNUM_OUT_OF_RANGE 126
+#define EC_R_BIGNUMX_OUT_OF_RANGE 126
 #define EC_R_WRONG_CURVE_PARAMETERS 127
 #define EC_R_DECODE_ERROR 128
 #define EC_R_ENCODE_ERROR 129

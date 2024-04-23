@@ -14,7 +14,7 @@
 /*
  * I've just gone over this and it is now %20 faster on x86 - eay - 27 Jun 96
  */
-int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+int BNY_sqr(BIGNUMX *r, const BIGNUMX *a, BN_CTX *ctx)
 {
     int ret = bn_sqr_fixed_top(r, a, ctx);
 
@@ -24,11 +24,11 @@ int BNY_sqr(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
     return ret;
 }
 
-int bn_sqr_fixed_top(BIGNUM *r, const BIGNUM *a, BN_CTX *ctx)
+int bn_sqr_fixed_top(BIGNUMX *r, const BIGNUMX *a, BN_CTX *ctx)
 {
     int max, al;
     int ret = 0;
-    BIGNUM *tmp, *rr;
+    BIGNUMX *tmp, *rr;
 
     bn_check_top(a);
 

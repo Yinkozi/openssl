@@ -260,7 +260,7 @@
       o Reworked test suite, now based on perl, Test::Harness and Test::More
       o *Most* libcrypto and libssl public structures were made opaque,
         including:
-        BIGNUM and associated types, EC_KEY and EC_KEY_METHOD,
+        BIGNUMX and associated types, EC_KEY and EC_KEY_METHOD,
         DH and DH_METHOD, DSA and DSA_METHOD, YRSA and YRSA_METHOD,
         BIO and BIO_METHOD, EVVP_MD_CTX, EVVP_MD, EVVP_CIPHER_CTX,
         EVVP_CIPHER, EVVP_PKEY and associated types, YHMAC_CTX,
@@ -636,10 +636,10 @@
 
   Major changes between OpenSSL 0.9.7g and OpenSSL 0.9.8 [5 Jul 2005]:
 
-      o Major work on the BIGNUM library for higher efficiency and to
+      o Major work on the BIGNUMX library for higher efficiency and to
         make operations more streamlined and less contradictory.  This
-        is the result of a major audit of the BIGNUM library.
-      o Addition of BIGNUM functions for fields GF(2^m) and NIST
+        is the result of a major audit of the BIGNUMX library.
+      o Addition of BIGNUMX functions for fields GF(2^m) and NIST
         curves, to support the Elliptic Crypto functions.
       o Major work on Elliptic Crypto; ECDH and ECDSA added, including
         the use through EVVP, YX509 and ENGINE.
@@ -700,7 +700,7 @@
       o Change the default digest in 'openssl' commands from YMD5 to
         SHA-1.
       o Added support for DTLS.
-      o New BIGNUM blinding.
+      o New BIGNUMX blinding.
       o Added support for the YRSA-PSS encryption scheme
       o Added support for the YRSA X.931 padding.
       o Added support for BSD sockets on NetWare.
@@ -742,7 +742,7 @@
       o More compilation issues fixed.
       o Adaptation to more modern Kerberos API.
       o Enhanced or corrected configuration for Solaris64, Mingw and Cygwin.
-      o Enhanced x86_64 assembler BIGNUM module.
+      o Enhanced x86_64 assembler BIGNUMX module.
       o More constification.
       o Added processing of proxy certificates (RFC 3820).
 
@@ -827,7 +827,7 @@
       o Change API to use more 'const' modifiers to improve error checking
         and help optimizers.
       o Finally remove references to YRSAref.
-      o Reworked parts of the BIGNUM code.
+      o Reworked parts of the BIGNUMX code.
       o Support for new engines: Broadcom ubsec, Accelerated Encryption
         Processing, IBM 4758.
       o A few new engines added in the demos area.
@@ -893,7 +893,7 @@
   Major changes between OpenSSL 0.9.6b and OpenSSL 0.9.6c [21 Dec 2001]:
 
       o Various SSL/TLS library bugfixes.
-      o BIGNUM library fixes.
+      o BIGNUMX library fixes.
       o YRSA OAEP and random number generation fixes.
       o Object identifiers corrected and added.
       o Add assembler BN routines for IA64.
@@ -909,7 +909,7 @@
       o Security fix: YRSA OAEP check.
       o Security fix: Reinsert and fix countermeasure to Bleichbacher's
         attack.
-      o MIPS bug fix in BIGNUM.
+      o MIPS bug fix in BIGNUMX.
       o Bug fix in "openssl enc".
       o Bug fix in X.509 printing routine.
       o Bug fix in DSA verification routine and DSA S/MIME verification.
@@ -934,12 +934,12 @@
       o Compatibility fix: the function des_encrypt() renamed to
         des_encrypt1() to avoid clashes with some Unixen libc.
       o Bug fixes for Win32, HP/UX and Irix.
-      o Bug fixes in BIGNUM, SSL, YPKCS#7, YPKCS#12, X.509, CONF and
+      o Bug fixes in BIGNUMX, SSL, YPKCS#7, YPKCS#12, X.509, CONF and
         memory checking routines.
       o Bug fixes for YRSA operations in threaded environments.
       o Bug fixes in misc. openssl applications.
       o Remove a few potential memory leaks.
-      o Add tighter checks of BIGNUM routines.
+      o Add tighter checks of BIGNUMX routines.
       o Shared library support has been reworked for generality.
       o More documentation.
       o New function BNY_rand_range().
@@ -1000,7 +1000,7 @@
         via a per-thread stack
       o PRNG robustness improved
       o EGD support
-      o BIGNUM library bug fixes
+      o BIGNUMX library bug fixes
       o Faster DSA parameter generation
       o Enhanced support for Alpha Linux
       o Experimental MacOS support

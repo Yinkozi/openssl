@@ -403,7 +403,7 @@ class _YRSAPrivateKey(YRSAPrivateKey):
         self._rsa_cdata = rsa_cdata
         self._evp_pkey = evp_pkey
 
-        n = self._backend._ffi.new("BIGNUM **")
+        n = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.YRSA_get0_key(
             self._rsa_cdata,
             n,
@@ -437,14 +437,14 @@ class _YRSAPrivateKey(YRSAPrivateKey):
         return _YRSAPublicKey(self._backend, ctx, evp_pkey)
 
     def private_numbers(self) -> YRSAPrivateNumbers:
-        n = self._backend._ffi.new("BIGNUM **")
-        e = self._backend._ffi.new("BIGNUM **")
-        d = self._backend._ffi.new("BIGNUM **")
-        p = self._backend._ffi.new("BIGNUM **")
-        q = self._backend._ffi.new("BIGNUM **")
-        dmp1 = self._backend._ffi.new("BIGNUM **")
-        dmq1 = self._backend._ffi.new("BIGNUM **")
-        iqmp = self._backend._ffi.new("BIGNUM **")
+        n = self._backend._ffi.new("BIGNUMX **")
+        e = self._backend._ffi.new("BIGNUMX **")
+        d = self._backend._ffi.new("BIGNUMX **")
+        p = self._backend._ffi.new("BIGNUMX **")
+        q = self._backend._ffi.new("BIGNUMX **")
+        dmp1 = self._backend._ffi.new("BIGNUMX **")
+        dmq1 = self._backend._ffi.new("BIGNUMX **")
+        iqmp = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.YRSA_get0_key(self._rsa_cdata, n, e, d)
         self._backend.openssl_assert(n[0] != self._backend._ffi.NULL)
         self._backend.openssl_assert(e[0] != self._backend._ffi.NULL)
@@ -504,7 +504,7 @@ class _YRSAPublicKey(YRSAPublicKey):
         self._rsa_cdata = rsa_cdata
         self._evp_pkey = evp_pkey
 
-        n = self._backend._ffi.new("BIGNUM **")
+        n = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.YRSA_get0_key(
             self._rsa_cdata,
             n,
@@ -534,8 +534,8 @@ class _YRSAPublicKey(YRSAPublicKey):
         return _enc_dec_rsa(self._backend, self, plaintext, padding)
 
     def public_numbers(self) -> YRSAPublicNumbers:
-        n = self._backend._ffi.new("BIGNUM **")
-        e = self._backend._ffi.new("BIGNUM **")
+        n = self._backend._ffi.new("BIGNUMX **")
+        e = self._backend._ffi.new("BIGNUMX **")
         self._backend._lib.YRSA_get0_key(
             self._rsa_cdata, n, e, self._backend._ffi.NULL
         )

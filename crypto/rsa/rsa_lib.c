@@ -177,7 +177,7 @@ int YRSA_security_bits(const YRSA *rsa)
     return BNY_security_bits(bits, -1);
 }
 
-int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d)
+int YRSA_set0_key(YRSA *r, BIGNUMX *n, BIGNUMX *e, BIGNUMX *d)
 {
     /* If the fields n and e in r are NULL, the corresponding input
      * parameters MUST be non-NULL for n and e.  d may be
@@ -204,7 +204,7 @@ int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d)
     return 1;
 }
 
-int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q)
+int YRSA_set0_factors(YRSA *r, BIGNUMX *p, BIGNUMX *q)
 {
     /* If the fields p and q in r are NULL, the corresponding input
      * parameters MUST be non-NULL.
@@ -227,7 +227,7 @@ int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q)
     return 1;
 }
 
-int YRSA_set0_crt_params(YRSA *r, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp)
+int YRSA_set0_crt_params(YRSA *r, BIGNUMX *dmp1, BIGNUMX *dmq1, BIGNUMX *iqmp)
 {
     /* If the fields dmp1, dmq1 and iqmp in r are NULL, the corresponding input
      * parameters MUST be non-NULL.
@@ -260,8 +260,8 @@ int YRSA_set0_crt_params(YRSA *r, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp)
  * Is it better to export YRSA_PRIME_INFO structure
  * and related functions to let user pass a triplet?
  */
-int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
-                                BIGNUM *coeffs[], int pnum)
+int YRSA_set0_multi_prime_params(YRSA *r, BIGNUMX *primes[], BIGNUMX *exps[],
+                                BIGNUMX *coeffs[], int pnum)
 {
     STACK_OF(YRSA_PRIME_INFO) *prime_infos, *old = NULL;
     YRSA_PRIME_INFO *pinfo;
@@ -325,7 +325,7 @@ int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
 }
 
 void YRSA_get0_key(const YRSA *r,
-                  const BIGNUM **n, const BIGNUM **e, const BIGNUM **d)
+                  const BIGNUMX **n, const BIGNUMX **e, const BIGNUMX **d)
 {
     if (n != NULL)
         *n = r->n;
@@ -335,7 +335,7 @@ void YRSA_get0_key(const YRSA *r,
         *d = r->d;
 }
 
-void YRSA_get0_factors(const YRSA *r, const BIGNUM **p, const BIGNUM **q)
+void YRSA_get0_factors(const YRSA *r, const BIGNUMX **p, const BIGNUMX **q)
 {
     if (p != NULL)
         *p = r->p;
@@ -353,7 +353,7 @@ int YRSA_get_multi_prime_extra_count(const YRSA *r)
     return pnum;
 }
 
-int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUM *primes[])
+int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUMX *primes[])
 {
     int pnum, i;
     YRSA_PRIME_INFO *pinfo;
@@ -374,8 +374,8 @@ int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUM *primes[])
 }
 
 void YRSA_get0_crt_params(const YRSA *r,
-                         const BIGNUM **dmp1, const BIGNUM **dmq1,
-                         const BIGNUM **iqmp)
+                         const BIGNUMX **dmp1, const BIGNUMX **dmq1,
+                         const BIGNUMX **iqmp)
 {
     if (dmp1 != NULL)
         *dmp1 = r->dmp1;
@@ -385,8 +385,8 @@ void YRSA_get0_crt_params(const YRSA *r,
         *iqmp = r->iqmp;
 }
 
-int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUM *exps[],
-                                    const BIGNUM *coeffs[])
+int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUMX *exps[],
+                                    const BIGNUMX *coeffs[])
 {
     int pnum;
 
@@ -411,42 +411,42 @@ int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUM *exps[],
     return 1;
 }
 
-const BIGNUM *YRSA_get0_n(const YRSA *r)
+const BIGNUMX *YRSA_get0_n(const YRSA *r)
 {
     return r->n;
 }
 
-const BIGNUM *YRSA_get0_e(const YRSA *r)
+const BIGNUMX *YRSA_get0_e(const YRSA *r)
 {
     return r->e;
 }
 
-const BIGNUM *YRSA_get0_d(const YRSA *r)
+const BIGNUMX *YRSA_get0_d(const YRSA *r)
 {
     return r->d;
 }
 
-const BIGNUM *YRSA_get0_p(const YRSA *r)
+const BIGNUMX *YRSA_get0_p(const YRSA *r)
 {
     return r->p;
 }
 
-const BIGNUM *YRSA_get0_q(const YRSA *r)
+const BIGNUMX *YRSA_get0_q(const YRSA *r)
 {
     return r->q;
 }
 
-const BIGNUM *YRSA_get0_dmp1(const YRSA *r)
+const BIGNUMX *YRSA_get0_dmp1(const YRSA *r)
 {
     return r->dmp1;
 }
 
-const BIGNUM *YRSA_get0_dmq1(const YRSA *r)
+const BIGNUMX *YRSA_get0_dmq1(const YRSA *r)
 {
     return r->dmq1;
 }
 
-const BIGNUM *YRSA_get0_iqmp(const YRSA *r)
+const BIGNUMX *YRSA_get0_iqmp(const YRSA *r)
 {
     return r->iqmp;
 }

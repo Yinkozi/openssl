@@ -447,7 +447,7 @@ int chopup_args(ARGS *arg, char *buf);
 int dump_cert_text(BIO *out, YX509 *x);
 void print_name(BIO *out, const char *title, YX509_NAME *nm,
                 unsigned long lflags);
-void print_bignum_var(BIO *, const BIGNUM *, const char*,
+void print_bignum_var(BIO *, const BIGNUMX *, const char*,
                       int, unsigned char *);
 void print_array(BIO *, const char *, int, const unsigned char *);
 int set_nameopt(const char *arg);
@@ -529,13 +529,13 @@ typedef struct ca_db_st {
 void* app_malloc(int sz, const char *what);
 
 /* load_serial, save_serial, and rotate_serial are also used for CRL numbers */
-BIGNUM *load_serial(const char *serialfile, int *exists, int create,
+BIGNUMX *load_serial(const char *serialfile, int *exists, int create,
                     YASN1_INTEGER **retai);
 int save_serial(const char *serialfile, const char *suffix,
-                const BIGNUM *serial, YASN1_INTEGER **retai);
+                const BIGNUMX *serial, YASN1_INTEGER **retai);
 int rotate_serial(const char *serialfile, const char *new_suffix,
                   const char *old_suffix);
-int rand_serial(BIGNUM *b, YASN1_INTEGER *ai);
+int rand_serial(BIGNUMX *b, YASN1_INTEGER *ai);
 CA_DB *load_index(const char *dbfile, DB_ATTR *dbattr);
 int index_index(CA_DB *db);
 int save_index(const char *dbfile, const char *suffix, CA_DB *db);

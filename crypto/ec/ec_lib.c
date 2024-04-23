@@ -282,7 +282,7 @@ static int ec_precompute_mont_data(EC_GROUP *);
 static int ec_guess_cofactor(EC_GROUP *group) {
     int ret = 0;
     BN_CTX *ctx = NULL;
-    BIGNUM *q = NULL;
+    BIGNUMX *q = NULL;
 
     /*-
      * If the cofactor is too large, we cannot guess it.
@@ -328,7 +328,7 @@ static int ec_guess_cofactor(EC_GROUP *group) {
 }
 
 int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
-                           const BIGNUM *order, const BIGNUM *cofactor)
+                           const BIGNUMX *order, const BIGNUMX *cofactor)
 {
     if (generator == NULL) {
         ECerr(EC_F_EC_GROUP_SET_GENERATOR, ERR_R_PASSED_NULL_PARAMETER);
@@ -407,7 +407,7 @@ BN_MONT_CTX *EC_GROUP_get_mont_data(const EC_GROUP *group)
     return group->mont_data;
 }
 
-int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
+int EC_GROUP_get_order(const EC_GROUP *group, BIGNUMX *order, BN_CTX *ctx)
 {
     if (group->order == NULL)
         return 0;
@@ -417,7 +417,7 @@ int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx)
     return !BN_is_zero(order);
 }
 
-const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group)
+const BIGNUMX *EC_GROUP_get0_order(const EC_GROUP *group)
 {
     return group->order;
 }
@@ -427,7 +427,7 @@ int EC_GROUP_order_bits(const EC_GROUP *group)
     return group->meth->group_order_bits(group);
 }
 
-int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
+int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUMX *cofactor,
                           BN_CTX *ctx)
 {
 
@@ -439,7 +439,7 @@ int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
     return !BN_is_zero(group->cofactor);
 }
 
-const BIGNUM *EC_GROUP_get0_cofactor(const EC_GROUP *group)
+const BIGNUMX *EC_GROUP_get0_cofactor(const EC_GROUP *group)
 {
     return group->cofactor;
 }
@@ -505,8 +505,8 @@ size_t EC_GROUP_get_seed_len(const EC_GROUP *group)
     return group->seed_len;
 }
 
-int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
-                       const BIGNUM *b, BN_CTX *ctx)
+int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUMX *p, const BIGNUMX *a,
+                       const BIGNUMX *b, BN_CTX *ctx)
 {
     if (group->meth->group_set_curve == 0) {
         ECerr(EC_F_EC_GROUP_SET_CURVE, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
@@ -515,7 +515,7 @@ int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
     return group->meth->group_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUMX *p, BIGNUMX *a, BIGNUMX *b,
                        BN_CTX *ctx)
 {
     if (group->meth->group_get_curve == NULL) {
@@ -526,27 +526,27 @@ int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
 }
 
 #if OPENSSL_API_COMPAT < 0x10200000L
-int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
-                           const BIGNUM *b, BN_CTX *ctx)
+int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUMX *p, const BIGNUMX *a,
+                           const BIGNUMX *b, BN_CTX *ctx)
 {
     return EC_GROUP_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
-                           BIGNUM *b, BN_CTX *ctx)
+int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUMX *p, BIGNUMX *a,
+                           BIGNUMX *b, BN_CTX *ctx)
 {
     return EC_GROUP_get_curve(group, p, a, b, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
-int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
-                            const BIGNUM *b, BN_CTX *ctx)
+int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUMX *p, const BIGNUMX *a,
+                            const BIGNUMX *b, BN_CTX *ctx)
 {
     return EC_GROUP_set_curve(group, p, a, b, ctx);
 }
 
-int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUM *p, BIGNUM *a,
-                            BIGNUM *b, BN_CTX *ctx)
+int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUMX *p, BIGNUMX *a,
+                            BIGNUMX *b, BN_CTX *ctx)
 {
     return EC_GROUP_get_curve(group, p, a, b, ctx);
 }
@@ -575,7 +575,7 @@ int EC_GROUP_check_discriminant(const EC_GROUP *group, BN_CTX *ctx)
 int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
 {
     int r = 0;
-    BIGNUM *a1, *a2, *a3, *b1, *b2, *b3;
+    BIGNUMX *a1, *a2, *a3, *b1, *b2, *b3;
     BN_CTX *ctx_new = NULL;
 
     /* compare the field types */
@@ -624,7 +624,7 @@ int EC_GROUP_cmp(const EC_GROUP *a, const EC_GROUP *b, BN_CTX *ctx)
         r = 1;
 
     if (!r) {
-        const BIGNUM *ao, *bo, *ac, *bc;
+        const BIGNUMX *ao, *bo, *ac, *bc;
         /* compare the order and cofactor */
         ao = EC_GROUP_get0_order(a);
         bo = EC_GROUP_get0_order(b);
@@ -756,8 +756,8 @@ int EC_POINT_set_to_infinity(const EC_GROUP *group, EC_POINT *point)
 }
 
 int EC_POINT_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             EC_POINT *point, const BIGNUM *x,
-                                             const BIGNUM *y, const BIGNUM *z,
+                                             EC_POINT *point, const BIGNUMX *x,
+                                             const BIGNUMX *y, const BIGNUMX *z,
                                              BN_CTX *ctx)
 {
     if (group->meth->point_set_Jprojective_coordinates_GFp == 0) {
@@ -775,8 +775,8 @@ int EC_POINT_set_Jprojective_coordinates_GFp(const EC_GROUP *group,
 }
 
 int EC_POINT_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
-                                             const EC_POINT *point, BIGNUM *x,
-                                             BIGNUM *y, BIGNUM *z,
+                                             const EC_POINT *point, BIGNUMX *x,
+                                             BIGNUMX *y, BIGNUMX *z,
                                              BN_CTX *ctx)
 {
     if (group->meth->point_get_Jprojective_coordinates_GFp == 0) {
@@ -794,7 +794,7 @@ int EC_POINT_get_Jprojective_coordinates_GFp(const EC_GROUP *group,
 }
 
 int EC_POINT_set_affine_coordinates(const EC_GROUP *group, EC_POINT *point,
-                                    const BIGNUM *x, const BIGNUM *y,
+                                    const BIGNUMX *x, const BIGNUMX *y,
                                     BN_CTX *ctx)
 {
     if (group->meth->point_set_affine_coordinates == NULL) {
@@ -818,16 +818,16 @@ int EC_POINT_set_affine_coordinates(const EC_GROUP *group, EC_POINT *point,
 
 #if OPENSSL_API_COMPAT < 0x10200000L
 int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group,
-                                        EC_POINT *point, const BIGNUM *x,
-                                        const BIGNUM *y, BN_CTX *ctx)
+                                        EC_POINT *point, const BIGNUMX *x,
+                                        const BIGNUMX *y, BN_CTX *ctx)
 {
     return EC_POINT_set_affine_coordinates(group, point, x, y, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
 int EC_POINT_set_affine_coordinates_GF2m(const EC_GROUP *group,
-                                         EC_POINT *point, const BIGNUM *x,
-                                         const BIGNUM *y, BN_CTX *ctx)
+                                         EC_POINT *point, const BIGNUMX *x,
+                                         const BIGNUMX *y, BN_CTX *ctx)
 {
     return EC_POINT_set_affine_coordinates(group, point, x, y, ctx);
 }
@@ -835,7 +835,7 @@ int EC_POINT_set_affine_coordinates_GF2m(const EC_GROUP *group,
 #endif
 
 int EC_POINT_get_affine_coordinates(const EC_GROUP *group,
-                                    const EC_POINT *point, BIGNUM *x, BIGNUM *y,
+                                    const EC_POINT *point, BIGNUMX *x, BIGNUMX *y,
                                     BN_CTX *ctx)
 {
     if (group->meth->point_get_affine_coordinates == NULL) {
@@ -856,16 +856,16 @@ int EC_POINT_get_affine_coordinates(const EC_GROUP *group,
 
 #if OPENSSL_API_COMPAT < 0x10200000L
 int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
-                                        const EC_POINT *point, BIGNUM *x,
-                                        BIGNUM *y, BN_CTX *ctx)
+                                        const EC_POINT *point, BIGNUMX *x,
+                                        BIGNUMX *y, BN_CTX *ctx)
 {
     return EC_POINT_get_affine_coordinates(group, point, x, y, ctx);
 }
 
 # ifndef OPENSSL_NO_EC2M
 int EC_POINT_get_affine_coordinates_GF2m(const EC_GROUP *group,
-                                         const EC_POINT *point, BIGNUM *x,
-                                         BIGNUM *y, BN_CTX *ctx)
+                                         const EC_POINT *point, BIGNUMX *x,
+                                         BIGNUMX *y, BN_CTX *ctx)
 {
     return EC_POINT_get_affine_coordinates(group, point, x, y, ctx);
 }
@@ -1000,9 +1000,9 @@ int EC_POINTs_make_affine(const EC_GROUP *group, size_t num,
  * methods.
  */
 
-int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
+int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *scalar,
                   size_t num, const EC_POINT *points[],
-                  const BIGNUM *scalars[], BN_CTX *ctx)
+                  const BIGNUMX *scalars[], BN_CTX *ctx)
 {
     int ret = 0;
     size_t i = 0;
@@ -1038,13 +1038,13 @@ int EC_POINTs_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *scalar,
     return ret;
 }
 
-int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-                 const EC_POINT *point, const BIGNUM *p_scalar, BN_CTX *ctx)
+int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+                 const EC_POINT *point, const BIGNUMX *p_scalar, BN_CTX *ctx)
 {
     /* just a convenient interface to EC_POINTs_mul() */
 
     const EC_POINT *points[1];
-    const BIGNUM *scalars[1];
+    const BIGNUMX *scalars[1];
 
     points[0] = point;
     scalars[0] = p_scalar;
@@ -1129,10 +1129,10 @@ int ec_group_simple_order_bits(const EC_GROUP *group)
     return BNY_num_bits(group->order);
 }
 
-static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
-                                    const BIGNUM *x, BN_CTX *ctx)
+static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUMX *r,
+                                    const BIGNUMX *x, BN_CTX *ctx)
 {
-    BIGNUM *e = NULL;
+    BIGNUMX *e = NULL;
     BN_CTX *new_ctx = NULL;
     int ret = 0;
 
@@ -1182,8 +1182,8 @@ static int ec_field_inverse_mod_ord(const EC_GROUP *group, BIGNUM *r,
  * EC_METHODs must implement their own field_inverse_mod_ord for
  * other functionality.
  */
-int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
-                            const BIGNUM *x, BN_CTX *ctx)
+int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUMX *res,
+                            const BIGNUMX *x, BN_CTX *ctx)
 {
     if (group->meth->field_inverse_mod_ord != NULL)
         return group->meth->field_inverse_mod_ord(group, res, x, ctx);

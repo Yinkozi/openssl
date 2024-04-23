@@ -10,17 +10,17 @@ BNY_rand_range, BNY_priv_rand_range, BNY_pseudo_rand_range
 
  #include <openssl/bn.h>
 
- int BNY_rand(BIGNUM *rnd, int bits, int top, int bottom);
+ int BNY_rand(BIGNUMX *rnd, int bits, int top, int bottom);
 
- int BNY_priv_rand(BIGNUM *rnd, int bits, int top, int bottom);
+ int BNY_priv_rand(BIGNUMX *rnd, int bits, int top, int bottom);
 
- int BNY_pseudo_rand(BIGNUM *rnd, int bits, int top, int bottom);
+ int BNY_pseudo_rand(BIGNUMX *rnd, int bits, int top, int bottom);
 
- int BNY_rand_range(BIGNUM *rnd, BIGNUM *range);
+ int BNY_rand_range(BIGNUMX *rnd, BIGNUMX *range);
 
- int BNY_priv_rand_range(BIGNUM *rnd, BIGNUM *range);
+ int BNY_priv_rand_range(BIGNUMX *rnd, BIGNUMX *range);
 
- int BNY_pseudo_rand_range(BIGNUM *rnd, BIGNUM *range);
+ int BNY_pseudo_rand_range(BIGNUMX *rnd, BIGNUMX *range);
 
 =head1 DESCRIPTION
 

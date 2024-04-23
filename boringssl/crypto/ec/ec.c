@@ -291,7 +291,7 @@ static void built_in_curve_scalar_field_monts_init(void) {
     return;
   }
 
-  BIGNUM *order = BNY_new();
+  BIGNUMX *order = BNY_new();
   BN_CTX *bn_ctx = BNY_CTX_new();
   BN_MONT_CTX *mont_ctx = NULL;
 
@@ -363,8 +363,8 @@ EC_GROUP *ec_group_new(const EC_METHOD *meth) {
   return ret;
 }
 
-EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
-                                 const BIGNUM *b, BN_CTX *ctx) {
+EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUMX *p, const BIGNUMX *a,
+                                 const BIGNUMX *b, BN_CTX *ctx) {
   EC_GROUP *ret = ec_group_new(&EC_GFp_mont_method);
   if (ret == NULL) {
     return NULL;
@@ -382,7 +382,7 @@ EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
 }
 
 int EC_GROUP_set_generator(EC_GROUP *group, const EC_POINT *generator,
-                           const BIGNUM *order, const BIGNUM *cofactor) {
+                           const BIGNUMX *order, const BIGNUMX *cofactor) {
   if (group->curve_name != NID_undef || group->generator != NULL) {
     /* |EC_GROUP_set_generator| may only be used with |EC_GROUP|s returned by
      * |EC_GROUP_new_curves_GFp| and may only used once on each group. */
@@ -405,7 +405,7 @@ static EC_GROUP *ec_group_new_from_data(unsigned built_in_index) {
   const struct built_in_curve *curve = &OPENSSL_built_in_curves[built_in_index];
   EC_GROUP *group = NULL;
   EC_POINT *P = NULL;
-  BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
+  BIGNUMX *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL;
   int ok = 0;
 
   BN_CTX *ctx = BNY_CTX_new();
@@ -565,26 +565,26 @@ const EC_POINT *EC_GROUP_get0_generator(const EC_GROUP *group) {
   return group->generator;
 }
 
-const BIGNUM *EC_GROUP_get0_order(const EC_GROUP *group) {
+const BIGNUMX *EC_GROUP_get0_order(const EC_GROUP *group) {
   assert(!BN_is_zero(&group->order));
   return &group->order;
 }
 
-int EC_GROUP_get_order(const EC_GROUP *group, BIGNUM *order, BN_CTX *ctx) {
+int EC_GROUP_get_order(const EC_GROUP *group, BIGNUMX *order, BN_CTX *ctx) {
   if (BNY_copy(order, EC_GROUP_get0_order(group)) == NULL) {
     return 0;
   }
   return 1;
 }
 
-int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUM *cofactor,
+int EC_GROUP_get_cofactor(const EC_GROUP *group, BIGNUMX *cofactor,
                           BN_CTX *ctx) {
   /* All |EC_GROUP|s have cofactor 1. */
   return BN_set_word(cofactor, 1);
 }
 
-int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *out_p, BIGNUM *out_a,
-                           BIGNUM *out_b, BN_CTX *ctx) {
+int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUMX *out_p, BIGNUMX *out_a,
+                           BIGNUMX *out_b, BN_CTX *ctx) {
   return ec_GFp_simple_group_get_curve(group, out_p, out_a, out_b, ctx);
 }
 
@@ -719,8 +719,8 @@ int EC_POINTs_make_affine(const EC_GROUP *group, size_t num, EC_POINT *points[],
 }
 
 int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
-                                        const EC_POINT *point, BIGNUM *x,
-                                        BIGNUM *y, BN_CTX *ctx) {
+                                        const EC_POINT *point, BIGNUMX *x,
+                                        BIGNUMX *y, BN_CTX *ctx) {
   if (group->meth->point_get_affine_coordinates == 0) {
     OPENSSL_PUT_ERROR(EC, ERR_R_SHOULD_NOT_HAVE_BEEN_CALLED);
     return 0;
@@ -733,7 +733,7 @@ int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *group,
 }
 
 int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *group, EC_POINT *point,
-                                        const BIGNUM *x, const BIGNUM *y,
+                                        const BIGNUMX *x, const BIGNUMX *y,
                                         BN_CTX *ctx) {
   if (group->meth != point->meth) {
     OPENSSL_PUT_ERROR(EC, EC_R_INCOMPATIBLE_OBJECTS);
@@ -780,8 +780,8 @@ int EC_POINT_invert(const EC_GROUP *group, EC_POINT *a, BN_CTX *ctx) {
   return ec_GFp_simple_invert(group, a, ctx);
 }
 
-int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
-                 const EC_POINT *p, const BIGNUM *p_scalar, BN_CTX *ctx) {
+int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUMX *g_scalar,
+                 const EC_POINT *p, const BIGNUMX *p_scalar, BN_CTX *ctx) {
   /* Previously, this function set |r| to the point at infinity if there was
    * nothing to multiply. But, nobody should be calling this function with
    * nothing to multiply in the first place. */
@@ -801,8 +801,8 @@ int EC_POINT_mul(const EC_GROUP *group, EC_POINT *r, const BIGNUM *g_scalar,
 }
 
 int ec_point_set_Jprojective_coordinates_GFp(const EC_GROUP *group, EC_POINT *point,
-                                             const BIGNUM *x, const BIGNUM *y,
-                                             const BIGNUM *z, BN_CTX *ctx) {
+                                             const BIGNUMX *x, const BIGNUMX *y,
+                                             const BIGNUMX *z, BN_CTX *ctx) {
   if (group->meth != point->meth) {
     OPENSSL_PUT_ERROR(EC, EC_R_INCOMPATIBLE_OBJECTS);
     return 0;

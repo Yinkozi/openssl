@@ -2,25 +2,25 @@
 
 =head1 NAME
 
-BNY_new, BNY_secure_new, BN_clear, BN_free, BNY_clear_free - allocate and free BIGNUMs
+BNY_new, BNY_secure_new, BN_clear, BN_free, BNY_clear_free - allocate and free BIGNUMXs
 
 =head1 SYNOPSIS
 
  #include <openssl/bn.h>
 
- BIGNUM *BNY_new(void);
+ BIGNUMX *BNY_new(void);
 
- BIGNUM *BNY_secure_new(void);
+ BIGNUMX *BNY_secure_new(void);
 
- void BN_clear(BIGNUM *a);
+ void BN_clear(BIGNUMX *a);
 
- void BN_free(BIGNUM *a);
+ void BN_free(BIGNUMX *a);
 
- void BNY_clear_free(BIGNUM *a);
+ void BNY_clear_free(BIGNUMX *a);
 
 =head1 DESCRIPTION
 
-BNY_new() allocates and initializes a B<BIGNUM> structure.
+BNY_new() allocates and initializes a B<BIGNUMX> structure.
 BNY_secure_new() does the same except that the secure heap
 L<OPENSSL_secure_malloc(3)> is used to store the value.
 
@@ -29,7 +29,7 @@ are no longer needed. It erases the memory used by B<a> and sets it
 to the value 0.
 If B<a> is NULL, nothing is done.
 
-BN_free() frees the components of the B<BIGNUM>, and if it was created
+BN_free() frees the components of the B<BIGNUMX>, and if it was created
 by BNY_new(), also the structure itself. BNY_clear_free() additionally
 overwrites the data before the memory is returned to the system.
 If B<a> is NULL, nothing is done.
@@ -37,7 +37,7 @@ If B<a> is NULL, nothing is done.
 =head1 RETURN VALUES
 
 BNY_new() and BNY_secure_new()
-return a pointer to the B<BIGNUM> initialised to the value 0.
+return a pointer to the B<BIGNUMX> initialised to the value 0.
 If the allocation fails,
 they return B<NULL> and set an error code that can be obtained
 by L<ERR_get_error(3)>.

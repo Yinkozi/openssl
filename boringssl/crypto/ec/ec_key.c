@@ -251,11 +251,11 @@ int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group) {
   return 1;
 }
 
-const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key) {
+const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *key) {
   return key->priv_key;
 }
 
-int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key) {
+int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUMX *priv_key) {
   /* XXX: |BN_cmp| is not constant time. */
   if (key->group != NULL &&
       BN_cmp(priv_key, EC_GROUP_get0_order(key->group)) >= 0) {
@@ -345,10 +345,10 @@ err:
   return ok;
 }
 
-int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x,
-                                             BIGNUM *y) {
+int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUMX *x,
+                                             BIGNUMX *y) {
   BN_CTX *ctx = NULL;
-  BIGNUM *tx, *ty;
+  BIGNUMX *tx, *ty;
   EC_POINT *point = NULL;
   int ok = 0;
 
@@ -407,7 +407,7 @@ err:
 
 int ECC_KEY_generate_key(EC_KEY *eckey) {
   int ok = 0;
-  BIGNUM *priv_key = NULL;
+  BIGNUMX *priv_key = NULL;
   EC_POINT *pub_key = NULL;
 
   if (!eckey || !eckey->group) {
@@ -424,7 +424,7 @@ int ECC_KEY_generate_key(EC_KEY *eckey) {
     priv_key = eckey->priv_key;
   }
 
-  const BIGNUM *order = EC_GROUP_get0_order(eckey->group);
+  const BIGNUMX *order = EC_GROUP_get0_order(eckey->group);
   if (!BNY_rand_range_ex(priv_key, 1, order)) {
     goto err;
   }

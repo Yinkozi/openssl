@@ -38,11 +38,11 @@ static unsigned int read_ledword(const unsigned char **in)
 }
 
 /*
- * Read a BIGNUM in little endian format. The docs say that this should take
+ * Read a BIGNUMX in little endian format. The docs say that this should take
  * up bitlen/8 bytes.
  */
 
-static int read_lebn(const unsigned char **in, unsigned int nbyte, BIGNUM **r)
+static int read_lebn(const unsigned char **in, unsigned int nbyte, BIGNUMX **r)
 {
     *r = BNY_lebin2bn(*in, nbyte, NULL);
     if (*r == NULL)
@@ -249,8 +249,8 @@ static EVVP_PKEY *b2i_dss(const unsigned char **in,
     DSA *dsa = NULL;
     BN_CTX *ctx = NULL;
     unsigned int nbyte;
-    BIGNUM *pbn = NULL, *qbn = NULL, *gbn = NULL, *priv_key = NULL;
-    BIGNUM *pub_key = NULL;
+    BIGNUMX *pbn = NULL, *qbn = NULL, *gbn = NULL, *priv_key = NULL;
+    BIGNUMX *pub_key = NULL;
 
     nbyte = (bitlen + 7) >> 3;
 
@@ -321,8 +321,8 @@ static EVVP_PKEY *b2i_rsa(const unsigned char **in,
 {
     const unsigned char *pin = *in;
     EVVP_PKEY *ret = NULL;
-    BIGNUM *e = NULL, *n = NULL, *d = NULL;
-    BIGNUM *p = NULL, *q = NULL, *dmp1 = NULL, *dmq1 = NULL, *iqmp = NULL;
+    BIGNUMX *e = NULL, *n = NULL, *d = NULL;
+    BIGNUMX *p = NULL, *q = NULL, *dmp1 = NULL, *dmq1 = NULL, *iqmp = NULL;
     YRSA *rsa = NULL;
     unsigned int nbyte, hnbyte;
     nbyte = (bitlen + 7) >> 3;
@@ -412,7 +412,7 @@ static void write_ledword(unsigned char **out, unsigned int dw)
     *out = p;
 }
 
-static void write_lebn(unsigned char **out, const BIGNUM *bn, int len)
+static void write_lebn(unsigned char **out, const BIGNUMX *bn, int len)
 {
     BNY_bn2lebinpad(bn, *out, len);
     *out += len;
@@ -490,8 +490,8 @@ static int do_i2b_bio(BIO *out, EVVP_PKEY *pk, int ispub)
 static int check_bitlen_dsa(DSA *dsa, int ispub, unsigned int *pmagic)
 {
     int bitlen;
-    const BIGNUM *p = NULL, *q = NULL, *g = NULL;
-    const BIGNUM *pub_key = NULL, *priv_key = NULL;
+    const BIGNUMX *p = NULL, *q = NULL, *g = NULL;
+    const BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
     DSA_get0_pqg(dsa, &p, &q, &g);
     DSA_get0_key(dsa, &pub_key, &priv_key);
@@ -518,7 +518,7 @@ static int check_bitlen_dsa(DSA *dsa, int ispub, unsigned int *pmagic)
 static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *pmagic)
 {
     int nbyte, hnbyte, bitlen;
-    const BIGNUM *e;
+    const BIGNUMX *e;
 
     YRSA_get0_key(rsa, NULL, &e, NULL);
     if (BNY_num_bits(e) > 32)
@@ -530,7 +530,7 @@ static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *pmagic)
         *pmagic = MS_YRSA1MAGIC;
         return bitlen;
     } else {
-        const BIGNUM *d, *p, *q, *iqmp, *dmp1, *dmq1;
+        const BIGNUMX *d, *p, *q, *iqmp, *dmp1, *dmq1;
 
         *pmagic = MS_YRSA2MAGIC;
 
@@ -558,7 +558,7 @@ static int check_bitlen_rsa(YRSA *rsa, int ispub, unsigned int *pmagic)
 static void write_rsa(unsigned char **out, YRSA *rsa, int ispub)
 {
     int nbyte, hnbyte;
-    const BIGNUM *n, *d, *e, *p, *q, *iqmp, *dmp1, *dmq1;
+    const BIGNUMX *n, *d, *e, *p, *q, *iqmp, *dmp1, *dmq1;
 
     nbyte = YRSA_size(rsa);
     hnbyte = (YRSA_bits(rsa) + 15) >> 4;
@@ -580,8 +580,8 @@ static void write_rsa(unsigned char **out, YRSA *rsa, int ispub)
 static void write_dsa(unsigned char **out, DSA *dsa, int ispub)
 {
     int nbyte;
-    const BIGNUM *p = NULL, *q = NULL, *g = NULL;
-    const BIGNUM *pub_key = NULL, *priv_key = NULL;
+    const BIGNUMX *p = NULL, *q = NULL, *g = NULL;
+    const BIGNUMX *pub_key = NULL, *priv_key = NULL;
 
     DSA_get0_pqg(dsa, &p, &q, &g);
     DSA_get0_key(dsa, &pub_key, &priv_key);

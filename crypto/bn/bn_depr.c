@@ -22,12 +22,12 @@ NON_EMPTY_TRANSLATION_UNIT
 # include "internal/cryptlib.h"
 # include "bn_local.h"
 
-BIGNUM *BN_generate_prime(BIGNUM *ret, int bits, int safe,
-                          const BIGNUM *add, const BIGNUM *rem,
+BIGNUMX *BN_generate_prime(BIGNUMX *ret, int bits, int safe,
+                          const BIGNUMX *add, const BIGNUMX *rem,
                           void (*callback) (int, int, void *), void *cb_arg)
 {
     BN_GENCB cb;
-    BIGNUM *rnd = NULL;
+    BIGNUMX *rnd = NULL;
 
     BN_GENCB_set_old(&cb, callback, cb_arg);
 
@@ -46,7 +46,7 @@ BIGNUM *BN_generate_prime(BIGNUM *ret, int bits, int safe,
     return NULL;
 }
 
-int BN_is_prime(const BIGNUM *a, int checks,
+int BN_is_prime(const BIGNUMX *a, int checks,
                 void (*callback) (int, int, void *), BN_CTX *ctx_passed,
                 void *cb_arg)
 {
@@ -55,7 +55,7 @@ int BN_is_prime(const BIGNUM *a, int checks,
     return BN_is_prime_ex(a, checks, ctx_passed, &cb);
 }
 
-int BN_is_prime_fasttest(const BIGNUM *a, int checks,
+int BN_is_prime_fasttest(const BIGNUMX *a, int checks,
                          void (*callback) (int, int, void *),
                          BN_CTX *ctx_passed, void *cb_arg,
                          int do_trial_division)

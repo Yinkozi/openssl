@@ -207,7 +207,7 @@ int ERR_load_EC_strings(void);
  */
 #  define EC_R_YASN1_ERROR                                  115
 #  define EC_R_BAD_SIGNATURE                               156
-#  define EC_R_BIGNUM_OUT_OF_RANGE                         144
+#  define EC_R_BIGNUMX_OUT_OF_RANGE                         144
 #  define EC_R_BUFFER_TOO_SMALL                            100
 #  define EC_R_CANNOT_INVERT                               165
 #  define EC_R_COORDINATES_OUT_OF_RANGE                    146

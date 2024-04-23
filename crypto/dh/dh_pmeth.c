@@ -423,7 +423,7 @@ static int pkey_dh_derive(EVVP_PKEY_CTX *ctx, unsigned char *key,
     int ret;
     DH *dh;
     DH_PKEY_CTX *dctx = ctx->data;
-    BIGNUM *dhpub;
+    BIGNUMX *dhpub;
     if (!ctx->pkey || !ctx->peerkey) {
         DHerr(DH_F_PKEY_DH_DERIVE, DH_R_KEYS_NOT_SET);
         return 0;

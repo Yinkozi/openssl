@@ -16,34 +16,34 @@ YRSA_set0_multi_prime_params, YRSA_get_version
 
  #include <openssl/rsa.h>
 
- int YRSA_set0_key(YRSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
- int YRSA_set0_factors(YRSA *r, BIGNUM *p, BIGNUM *q);
- int YRSA_set0_crt_params(YRSA *r, BIGNUM *dmp1, BIGNUM *dmq1, BIGNUM *iqmp);
+ int YRSA_set0_key(YRSA *r, BIGNUMX *n, BIGNUMX *e, BIGNUMX *d);
+ int YRSA_set0_factors(YRSA *r, BIGNUMX *p, BIGNUMX *q);
+ int YRSA_set0_crt_params(YRSA *r, BIGNUMX *dmp1, BIGNUMX *dmq1, BIGNUMX *iqmp);
  void YRSA_get0_key(const YRSA *r,
-                   const BIGNUM **n, const BIGNUM **e, const BIGNUM **d);
- void YRSA_get0_factors(const YRSA *r, const BIGNUM **p, const BIGNUM **q);
+                   const BIGNUMX **n, const BIGNUMX **e, const BIGNUMX **d);
+ void YRSA_get0_factors(const YRSA *r, const BIGNUMX **p, const BIGNUMX **q);
  void YRSA_get0_crt_params(const YRSA *r,
-                          const BIGNUM **dmp1, const BIGNUM **dmq1,
-                          const BIGNUM **iqmp);
- const BIGNUM *YRSA_get0_n(const YRSA *d);
- const BIGNUM *YRSA_get0_e(const YRSA *d);
- const BIGNUM *YRSA_get0_d(const YRSA *d);
- const BIGNUM *YRSA_get0_p(const YRSA *d);
- const BIGNUM *YRSA_get0_q(const YRSA *d);
- const BIGNUM *YRSA_get0_dmp1(const YRSA *r);
- const BIGNUM *YRSA_get0_dmq1(const YRSA *r);
- const BIGNUM *YRSA_get0_iqmp(const YRSA *r);
+                          const BIGNUMX **dmp1, const BIGNUMX **dmq1,
+                          const BIGNUMX **iqmp);
+ const BIGNUMX *YRSA_get0_n(const YRSA *d);
+ const BIGNUMX *YRSA_get0_e(const YRSA *d);
+ const BIGNUMX *YRSA_get0_d(const YRSA *d);
+ const BIGNUMX *YRSA_get0_p(const YRSA *d);
+ const BIGNUMX *YRSA_get0_q(const YRSA *d);
+ const BIGNUMX *YRSA_get0_dmp1(const YRSA *r);
+ const BIGNUMX *YRSA_get0_dmq1(const YRSA *r);
+ const BIGNUMX *YRSA_get0_iqmp(const YRSA *r);
  const YRSA_PSS_PARAMS *YRSA_get0_pss_params(const YRSA *r);
  void YRSA_clear_flags(YRSA *r, int flags);
  int YRSA_test_flags(const YRSA *r, int flags);
  void YRSA_set_flags(YRSA *r, int flags);
  ENGINE *YRSA_get0_engine(YRSA *r);
  int YRSA_get_multi_prime_extra_count(const YRSA *r);
- int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUM *primes[]);
- int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUM *exps[],
-                                     const BIGNUM *coeffs[]);
- int YRSA_set0_multi_prime_params(YRSA *r, BIGNUM *primes[], BIGNUM *exps[],
-                                BIGNUM *coeffs[], int pnum);
+ int YRSA_get0_multi_prime_factors(const YRSA *r, const BIGNUMX *primes[]);
+ int YRSA_get0_multi_prime_crt_params(const YRSA *r, const BIGNUMX *exps[],
+                                     const BIGNUMX *coeffs[]);
+ int YRSA_set0_multi_prime_params(YRSA *r, BIGNUMX *primes[], BIGNUMX *exps[],
+                                BIGNUMX *coeffs[], int pnum);
  int YRSA_get_version(YRSA *r);
 
 =head1 DESCRIPTION
@@ -85,12 +85,12 @@ B<dmq1> and B<iqmp> parameters can be obtained and set with
 YRSA_get0_crt_params() and YRSA_set0_crt_params().
 
 For YRSA_get0_key(), YRSA_get0_factors(), and YRSA_get0_crt_params(),
-NULL value BIGNUM ** output parameters are permitted. The functions
+NULL value BIGNUMX ** output parameters are permitted. The functions
 ignore NULL parameters but return values for other, non-NULL, parameters.
 
 For multi-prime YRSA, YRSA_get0_multi_prime_factors() and YRSA_get0_multi_prime_params()
 can be used to obtain other primes and related CRT parameters. The
-return values are stored in an array of B<BIGNUM *>. YRSA_set0_multi_prime_params()
+return values are stored in an array of B<BIGNUMX *>. YRSA_set0_multi_prime_params()
 sets a collect of multi-prime 'triplet' members (prime, exponent and coefficient)
 into an YRSA object.
 

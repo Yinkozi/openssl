@@ -51,7 +51,7 @@ static krb5_error_code pkinit_init_pkcs11(pkinit_identity_crypto_context ctx);
 static void pkinit_fini_pkcs11(pkinit_identity_crypto_context ctx);
 
 static krb5_error_code pkinit_encode_dh_params
-(const BIGNUM *, const BIGNUM *, const BIGNUM *, uint8_t **, unsigned int *);
+(const BIGNUMX *, const BIGNUMX *, const BIGNUMX *, uint8_t **, unsigned int *);
 static DH *decode_dh_params(const uint8_t *, unsigned int );
 static int pkinit_check_dh_params(DH *dh1, DH *dh2);
 
@@ -71,7 +71,7 @@ static krb5_error_code pkinit_decode_data
 
 #ifdef DEBUG_DH
 static void print_dh(DH *, char *);
-static void print_pubkey(BIGNUM *, char *);
+static void print_pubkey(BIGNUMX *, char *);
 #endif
 
 static int prepare_enc_data
@@ -205,7 +205,7 @@ pkinit_pkcs11_code_to_text(int err);
 #define OBJ_length(o) ((o)->length)
 
 #define DH_set0_pqg compat_dh_set0_pqg
-static int compat_dh_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+static int compat_dh_set0_pqg(DH *dh, BIGNUMX *p, BIGNUMX *q, BIGNUMX *g)
 {
     /* The real function frees the old values and does argument checking, but
      * our code doesn't need that. */
@@ -216,8 +216,8 @@ static int compat_dh_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
 }
 
 #define DH_get0_pqg compat_dh_get0_pqg
-static void compat_dh_get0_pqg(const DH *dh, const BIGNUM **p,
-                               const BIGNUM **q, const BIGNUM **g)
+static void compat_dh_get0_pqg(const DH *dh, const BIGNUMX **p,
+                               const BIGNUMX **q, const BIGNUMX **g)
 {
     if (p != NULL)
         *p = dh->p;
@@ -228,8 +228,8 @@ static void compat_dh_get0_pqg(const DH *dh, const BIGNUM **p,
 }
 
 #define DH_get0_key compat_dh_get0_key
-static void compat_dh_get0_key(const DH *dh, const BIGNUM **pub,
-                               const BIGNUM **priv)
+static void compat_dh_get0_key(const DH *dh, const BIGNUMX **pub,
+                               const BIGNUMX **priv)
 {
     if (pub != NULL)
         *pub = dh->pub_key;
@@ -863,7 +863,7 @@ static DH *
 make_oakley_dh(uint8_t *prime, size_t len)
 {
     DH *dh = NULL;
-    BIGNUM *p = NULL, *q = NULL, *g = NULL;
+    BIGNUMX *p = NULL, *q = NULL, *g = NULL;
 
     p = BNY_bin2bn(prime, len, NULL);
     if (p == NULL)
@@ -2637,7 +2637,7 @@ cleanup:
 /* Call DH_compute_key() and ensure that we left-pad short results instead of
  * leaving junk bytes at the end of the buffer. */
 static void
-compute_dh(unsigned char *buf, int size, BIGNUM *server_pub_key, DH *dh)
+compute_dh(unsigned char *buf, int size, BIGNUMX *server_pub_key, DH *dh)
 {
     int len, pad;
 
@@ -2665,7 +2665,7 @@ client_create_dh(krb5_context context,
     unsigned char *buf = NULL;
     int dh_err = 0;
     YASN1_INTEGER *pub_key = NULL;
-    const BIGNUM *pubkey_bn, *p, *q, *g;
+    const BIGNUMX *pubkey_bn, *p, *q, *g;
     unsigned char *dh_params = NULL, *dh_pubkey = NULL;
     unsigned int dh_params_len, dh_pubkey_len;
 
@@ -2767,7 +2767,7 @@ client_process_dh(krb5_context context,
                   unsigned int *client_key_len_out)
 {
     krb5_error_code retval = KRB5KDC_ERR_PREAUTH_FAILED;
-    BIGNUM *server_pub_key = NULL;
+    BIGNUMX *server_pub_key = NULL;
     YASN1_INTEGER *pub_key = NULL;
     unsigned char *client_key = NULL;
     unsigned int client_key_len;
@@ -2848,7 +2848,7 @@ server_check_dh(krb5_context context,
                 int minbits)
 {
     DH *dh = NULL;
-    const BIGNUM *p;
+    const BIGNUMX *p;
     int dh_prime_bits;
     krb5_error_code retval = KRB5KDC_ERR_DH_KEY_PARAMETERS_NOT_ACCEPTED;
 
@@ -2883,8 +2883,8 @@ cleanup:
 static DH *
 dup_dh_params(const DH *src)
 {
-    const BIGNUM *oldp, *oldq, *oldg;
-    BIGNUM *p = NULL, *q = NULL, *g = NULL;
+    const BIGNUMX *oldp, *oldq, *oldg;
+    BIGNUMX *p = NULL, *q = NULL, *g = NULL;
     DH *dh;
 
     DH_get0_pqg(src, &oldp, &oldq, &oldg);
@@ -2920,8 +2920,8 @@ server_process_dh(krb5_context context,
     DH *dh = NULL, *dh_server = NULL;
     unsigned char *p = NULL;
     YASN1_INTEGER *pub_key = NULL;
-    BIGNUM *client_pubkey = NULL;
-    const BIGNUM *server_pubkey;
+    BIGNUMX *client_pubkey = NULL;
+    const BIGNUMX *server_pubkey;
     unsigned char *dh_pubkey = NULL, *server_key = NULL;
     unsigned int dh_pubkey_len = 0, server_key_len = 0;
 
@@ -3008,7 +3008,7 @@ pkinit_openssl_init()
 }
 
 static krb5_error_code
-pkinit_encode_dh_params(const BIGNUM *p, const BIGNUM *g, const BIGNUM *q,
+pkinit_encode_dh_params(const BIGNUMX *p, const BIGNUMX *g, const BIGNUMX *q,
                         uint8_t **buf, unsigned int *buf_len)
 {
     krb5_error_code retval = ENOMEM;
@@ -3065,27 +3065,27 @@ cleanup:
 
 typedef struct {
     YASN1_BIT_STRING *seed;
-    BIGNUM *counter;
+    BIGNUMX *counter;
 } int_dhvparams;
 
 typedef struct {
-    BIGNUM *p;
-    BIGNUM *q;
-    BIGNUM *g;
-    BIGNUM *j;
+    BIGNUMX *p;
+    BIGNUMX *q;
+    BIGNUMX *g;
+    BIGNUMX *j;
     int_dhvparams *vparams;
 } int_dhx942_dh;
 
 YASN1_SEQUENCE(DHvparams) = {
     YASN1_SIMPLE(int_dhvparams, seed, YASN1_BIT_STRING),
-    YASN1_SIMPLE(int_dhvparams, counter, BIGNUM)
+    YASN1_SIMPLE(int_dhvparams, counter, BIGNUMX)
 } static_YASN1_SEQUENCE_END_name(int_dhvparams, DHvparams)
 
 YASN1_SEQUENCE(DHxparams) = {
-    YASN1_SIMPLE(int_dhx942_dh, p, BIGNUM),
-    YASN1_SIMPLE(int_dhx942_dh, g, BIGNUM),
-    YASN1_OPT(int_dhx942_dh, q, BIGNUM),
-    YASN1_OPT(int_dhx942_dh, j, BIGNUM),
+    YASN1_SIMPLE(int_dhx942_dh, p, BIGNUMX),
+    YASN1_SIMPLE(int_dhx942_dh, g, BIGNUMX),
+    YASN1_OPT(int_dhx942_dh, q, BIGNUMX),
+    YASN1_OPT(int_dhx942_dh, j, BIGNUMX),
     YASN1_OPT(int_dhx942_dh, vparams, DHvparams),
 } static_YASN1_SEQUENCE_END_name(int_dhx942_dh, DHxparams)
 
@@ -3309,7 +3309,7 @@ pkinit_create_td_dh_parameters(krb5_context context,
     krb5_pa_data **pa_data = NULL;
     krb5_data *encoded_algId = NULL;
     krb5_algorithm_identifier **algId = NULL;
-    const BIGNUM *p, *q, *g;
+    const BIGNUMX *p, *q, *g;
 
     if (opts->dh_min_bits > 4096)
         goto cleanup;
@@ -3488,7 +3488,7 @@ pkinit_check_kdc_pkid(krb5_context context,
 static int
 pkinit_check_dh_params(DH *dh1, DH *dh2)
 {
-    const BIGNUM *p1, *p2, *g1, *g2;
+    const BIGNUMX *p1, *p2, *g1, *g2;
 
     DH_get0_pqg(dh1, &p1, NULL, &g1);
     DH_get0_pqg(dh2, &p2, NULL, &g2);
@@ -3519,7 +3519,7 @@ pkinit_process_td_dh_params(krb5_context context,
 
     while (algId[i] != NULL) {
         DH *dh = NULL;
-        const BIGNUM *p;
+        const BIGNUMX *p;
         int dh_prime_bits = 0;
 
         if (algId[i]->algorithm.length != dh_oid.length ||
@@ -5963,7 +5963,7 @@ print_dh(DH * dh, char *msg)
 }
 
 static void
-print_pubkey(BIGNUM * key, char *msg)
+print_pubkey(BIGNUMX * key, char *msg)
 {
     BIO *bio_err = NULL;
 

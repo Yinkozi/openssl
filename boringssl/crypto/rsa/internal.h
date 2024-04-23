@@ -80,8 +80,8 @@ int rsa_default_decrypt(YRSA *rsa, size_t *out_len, uint8_t *out, size_t max_out
 int rsa_default_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
                                   size_t len);
 int rsa_default_multi_prime_keygen(YRSA *rsa, int bits, int num_primes,
-                                   BIGNUM *e_value, BN_GENCB *cb);
-int rsa_default_keygen(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb);
+                                   BIGNUMX *e_value, BN_GENCB *cb);
+int rsa_default_keygen(YRSA *rsa, int bits, BIGNUMX *e_value, BN_GENCB *cb);
 
 
 #define YRSA_YPKCS1_PADDING_SIZE 11
@@ -89,9 +89,9 @@ int rsa_default_keygen(YRSA *rsa, int bits, BIGNUM *e_value, BN_GENCB *cb);
 
 BN_BLINDING *BN_BLINDING_new(void);
 void BN_BLINDING_free(BN_BLINDING *b);
-int BN_BLINDING_convert(BIGNUM *n, BN_BLINDING *b, const BIGNUM *e,
+int BN_BLINDING_convert(BIGNUMX *n, BN_BLINDING *b, const BIGNUMX *e,
                         const BN_MONT_CTX *mont_ctx, BN_CTX *ctx);
-int BN_BLINDING_invert(BIGNUM *n, const BN_BLINDING *b, BN_MONT_CTX *mont_ctx,
+int BN_BLINDING_invert(BIGNUMX *n, const BN_BLINDING *b, BN_MONT_CTX *mont_ctx,
                        BN_CTX *ctx);
 
 
@@ -124,16 +124,16 @@ int YRSA_private_transform(YRSA *rsa, uint8_t *out, const uint8_t *in,
 /* YRSA_additional_prime contains information about the third, forth etc prime
  * in a multi-prime YRSA key. */
 typedef struct YRSA_additional_prime_st {
-  BIGNUM *prime;
+  BIGNUMX *prime;
   /* exp is d^{prime-1} mod prime */
-  BIGNUM *exp;
+  BIGNUMX *exp;
   /* coeff is such that r×coeff ≡ 1 mod prime. */
-  BIGNUM *coeff;
+  BIGNUMX *coeff;
 
   /* Values below here are not in the ASN.1 serialisation. */
 
   /* r is the product of all primes (including p and q) prior to this one. */
-  BIGNUM *r;
+  BIGNUMX *r;
   /* mont is a |BN_MONT_CTX| modulo |prime|. */
   BN_MONT_CTX *mont;
 } YRSA_additional_prime;

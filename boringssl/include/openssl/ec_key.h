@@ -120,11 +120,11 @@ OPENSSL_EXPORT const EC_GROUP *ECC_KEY_get0_group(const EC_KEY *key);
 OPENSSL_EXPORT int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group);
 
 /* ECC_KEY_get0_private_key returns a pointer to the private key inside |key|. */
-OPENSSL_EXPORT const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key);
+OPENSSL_EXPORT const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *key);
 
 /* ECC_KEY_set_private_key sets the private key of |key| to |priv|. It returns
  * one on success and zero otherwise. */
-OPENSSL_EXPORT int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *prv);
+OPENSSL_EXPORT int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUMX *prv);
 
 /* ECC_KEY_get0_public_key returns a pointer to the public key point inside
  * |key|. */
@@ -162,8 +162,8 @@ OPENSSL_EXPORT int ECC_KEY_check_key(const EC_KEY *key);
 /* ECC_KEY_set_public_key_affine_coordinates sets the public key in |key| to
  * (|x|, |y|). It returns one on success and zero otherwise. */
 OPENSSL_EXPORT int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key,
-                                                            BIGNUM *x,
-                                                            BIGNUM *y);
+                                                            BIGNUMX *x,
+                                                            BIGNUMX *y);
 
 
 /* Key generation. */

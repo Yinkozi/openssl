@@ -19,12 +19,12 @@
  */
 #include "bn_prime.h"
 
-static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
-                   const BIGNUM *a1_odd, int k, BN_CTX *ctx,
+static int witness(BIGNUMX *w, const BIGNUMX *a, const BIGNUMX *a1,
+                   const BIGNUMX *a1_odd, int k, BN_CTX *ctx,
                    BN_MONT_CTX *mont);
-static int probable_prime(BIGNUM *rnd, int bits, int safe, prime_t *mods);
-static int probable_prime_dh(BIGNUM *rnd, int bits, int safe, prime_t *mods,
-                             const BIGNUM *add, const BIGNUM *rem,
+static int probable_prime(BIGNUMX *rnd, int bits, int safe, prime_t *mods);
+static int probable_prime_dh(BIGNUMX *rnd, int bits, int safe, prime_t *mods,
+                             const BIGNUMX *add, const BIGNUMX *rem,
                              BN_CTX *ctx);
 
 #define square(x) ((BN_ULONG)(x) * (BN_ULONG)(x))
@@ -51,10 +51,10 @@ int BN_GENCB_call(BN_GENCB *cb, int a, int b)
     return 0;
 }
 
-int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe,
-                         const BIGNUM *add, const BIGNUM *rem, BN_GENCB *cb)
+int BNY_generate_prime_ex(BIGNUMX *ret, int bits, int safe,
+                         const BIGNUMX *add, const BIGNUMX *rem, BN_GENCB *cb)
 {
-    BIGNUM *t;
+    BIGNUMX *t;
     int found = 0;
     int i, j, c1 = 0;
     BN_CTX *ctx = NULL;
@@ -142,19 +142,19 @@ int BNY_generate_prime_ex(BIGNUM *ret, int bits, int safe,
     return found;
 }
 
-int BN_is_prime_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+int BN_is_prime_ex(const BIGNUMX *a, int checks, BN_CTX *ctx_passed,
                    BN_GENCB *cb)
 {
     return BNY_is_prime_fasttest_ex(a, checks, ctx_passed, 0, cb);
 }
 
-int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
+int BNY_is_prime_fasttest_ex(const BIGNUMX *a, int checks, BN_CTX *ctx_passed,
                             int do_trial_division, BN_GENCB *cb)
 {
     int i, j, ret = -1;
     int k;
     BN_CTX *ctx = NULL;
-    BIGNUM *A1, *A1_odd, *A3, *check; /* taken from ctx */
+    BIGNUMX *A1, *A1_odd, *A3, *check; /* taken from ctx */
     BN_MONT_CTX *mont = NULL;
 
     /* Take care of the really small primes 2 & 3 */
@@ -242,8 +242,8 @@ int BNY_is_prime_fasttest_ex(const BIGNUM *a, int checks, BN_CTX *ctx_passed,
     return ret;
 }
 
-static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
-                   const BIGNUM *a1_odd, int k, BN_CTX *ctx,
+static int witness(BIGNUMX *w, const BIGNUMX *a, const BIGNUMX *a1,
+                   const BIGNUMX *a1_odd, int k, BN_CTX *ctx,
                    BN_MONT_CTX *mont)
 {
     if (!BNY_mod_exp_mont(w, w, a1_odd, a, ctx, mont)) /* w := w^a1_odd mod a */
@@ -269,7 +269,7 @@ static int witness(BIGNUM *w, const BIGNUM *a, const BIGNUM *a1,
     return 1;
 }
 
-static int probable_prime(BIGNUM *rnd, int bits, int safe, prime_t *mods)
+static int probable_prime(BIGNUMX *rnd, int bits, int safe, prime_t *mods)
 {
     int i;
     BN_ULONG delta;
@@ -317,12 +317,12 @@ static int probable_prime(BIGNUM *rnd, int bits, int safe, prime_t *mods)
     return 1;
 }
 
-static int probable_prime_dh(BIGNUM *rnd, int bits, int safe, prime_t *mods,
-                             const BIGNUM *add, const BIGNUM *rem,
+static int probable_prime_dh(BIGNUMX *rnd, int bits, int safe, prime_t *mods,
+                             const BIGNUMX *add, const BIGNUMX *rem,
                              BN_CTX *ctx)
 {
     int i, ret = 0;
-    BIGNUM *t1;
+    BIGNUMX *t1;
     BN_ULONG delta;
     BN_ULONG maxdelta = BN_MASK2 - primes[NUMPRIMES - 1];
 

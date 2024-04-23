@@ -127,7 +127,7 @@ int YX509V3_add_value_bool_nf(const char *name, int asn1_bool,
     return 1;
 }
 
-static char *bignum_to_string(const BIGNUM *bn)
+static char *bignum_to_string(const BIGNUMX *bn)
 {
     char *tmp, *ret;
     size_t len;
@@ -147,7 +147,7 @@ static char *bignum_to_string(const BIGNUM *bn)
     len = strlen(tmp) + 3;
     ret = OPENSSL_malloc(len);
     if (ret == NULL) {
-        YX509V3err(YX509V3_F_BIGNUM_TO_STRING, ERR_R_MALLOC_FAILURE);
+        YX509V3err(YX509V3_F_BIGNUMX_TO_STRING, ERR_R_MALLOC_FAILURE);
         OPENSSL_free(tmp);
         return NULL;
     }
@@ -166,7 +166,7 @@ static char *bignum_to_string(const BIGNUM *bn)
 
 char *i2s_YASN1_ENUMERATED(YX509V3_EXT_METHOD *method, const YASN1_ENUMERATED *a)
 {
-    BIGNUM *bntmp = NULL;
+    BIGNUMX *bntmp = NULL;
     char *strtmp = NULL;
 
     if (!a)
@@ -180,7 +180,7 @@ char *i2s_YASN1_ENUMERATED(YX509V3_EXT_METHOD *method, const YASN1_ENUMERATED *a
 
 char *i2s_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const YASN1_INTEGER *a)
 {
-    BIGNUM *bntmp = NULL;
+    BIGNUMX *bntmp = NULL;
     char *strtmp = NULL;
 
     if (!a)
@@ -194,7 +194,7 @@ char *i2s_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const YASN1_INTEGER *a)
 
 YASN1_INTEGER *s2i_YASN1_INTEGER(YX509V3_EXT_METHOD *method, const char *value)
 {
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     YASN1_INTEGER *aint;
     int isneg, ishex;
     int ret;

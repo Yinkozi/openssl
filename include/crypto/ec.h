@@ -38,8 +38,8 @@
  * reduction round on the input can be omitted by the underlying
  * implementations for better SCA properties on regular input values).
  */
-__owur int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUM *res,
-                                   const BIGNUM *x, BN_CTX *ctx);
+__owur int ec_group_do_inverse_ord(const EC_GROUP *group, BIGNUMX *res,
+                                   const BIGNUMX *x, BN_CTX *ctx);
 
 /*-
  * ECDH Key Derivation Function as defined in ANSI X9.63

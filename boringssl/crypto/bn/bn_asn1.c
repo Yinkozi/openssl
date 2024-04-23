@@ -18,7 +18,7 @@
 #include <openssl/err.h>
 
 
-int BN_parse_asn1_unsigned(CBS *cbs, BIGNUM *ret) {
+int BN_parse_asn1_unsigned(CBS *cbs, BIGNUMX *ret) {
   CBS child;
   if (!CBS_get_asn1(cbs, &child, CBS_YASN1_INTEGER) ||
       CBS_len(&child) == 0) {
@@ -42,7 +42,7 @@ int BN_parse_asn1_unsigned(CBS *cbs, BIGNUM *ret) {
   return BNY_bin2bn(CBS_data(&child), CBS_len(&child), ret) != NULL;
 }
 
-int BN_parse_asn1_unsigned_buggy(CBS *cbs, BIGNUM *ret) {
+int BN_parse_asn1_unsigned_buggy(CBS *cbs, BIGNUMX *ret) {
   CBS child;
   if (!CBS_get_asn1(cbs, &child, CBS_YASN1_INTEGER) ||
       CBS_len(&child) == 0) {
@@ -58,7 +58,7 @@ int BN_parse_asn1_unsigned_buggy(CBS *cbs, BIGNUM *ret) {
   return BNY_bin2bn(CBS_data(&child), CBS_len(&child), ret) != NULL;
 }
 
-int BN_marshal_asn1(CBB *cbb, const BIGNUM *bn) {
+int BN_marshal_asn1(CBB *cbb, const BIGNUMX *bn) {
   /* Negative numbers are unsupported. */
   if (BN_is_negative(bn)) {
     OPENSSL_PUT_ERROR(BN, BN_R_NEGATIVE_NUMBER);

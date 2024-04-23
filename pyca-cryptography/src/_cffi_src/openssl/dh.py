@@ -21,11 +21,11 @@ int DH_generate_key(DH *);
 DH *DHparams_dup(DH *);
 
 /* added in 1.1.0 when the DH struct was opaqued */
-void DH_get0_pqg(const DH *, const BIGNUM **, const BIGNUM **,
-                 const BIGNUM **);
-int DH_set0_pqg(DH *, BIGNUM *, BIGNUM *, BIGNUM *);
-void DH_get0_key(const DH *, const BIGNUM **, const BIGNUM **);
-int DH_set0_key(DH *, BIGNUM *, BIGNUM *);
+void DH_get0_pqg(const DH *, const BIGNUMX **, const BIGNUMX **,
+                 const BIGNUMX **);
+int DH_set0_pqg(DH *, BIGNUMX *, BIGNUMX *, BIGNUMX *);
+void DH_get0_key(const DH *, const BIGNUMX **, const BIGNUMX **);
+int DH_set0_key(DH *, BIGNUMX *, BIGNUMX *);
 
 int Cryptography_DH_check(const DH *, int *);
 int DH_generate_parameters_ex(DH *, int, int, BN_GENCB *);
@@ -66,7 +66,7 @@ int Cryptography_DH_check(const DH *dh, int *ret)
     int ok = 0, r;
     BN_CTX *ctx = NULL;
     BN_ULONG l;
-    BIGNUM *t1 = NULL, *t2 = NULL;
+    BIGNUMX *t1 = NULL, *t2 = NULL;
 
     *ret = 0;
     ctx = BNY_CTX_new();

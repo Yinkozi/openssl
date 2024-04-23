@@ -3013,7 +3013,7 @@ static EC_GROUP *ec_group_new_from_data(const ec_list_element curve)
     EC_GROUP *group = NULL;
     EC_POINT *P = NULL;
     BN_CTX *ctx = NULL;
-    BIGNUM *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL, *order =
+    BIGNUMX *p = NULL, *a = NULL, *b = NULL, *x = NULL, *y = NULL, *order =
         NULL;
     int ok = 0;
     int seed_len, param_len;
@@ -3243,9 +3243,9 @@ int ec_curve_nid_from_params(const EC_GROUP *group, BN_CTX *ctx)
     const EC_CURVE_DATA *data;
     const EC_POINT *generator = NULL;
     const EC_METHOD *meth;
-    const BIGNUM *cofactor = NULL;
-    /* An array of BIGNUMs for (p, a, b, x, y, order) */
-    BIGNUM *bn[NUM_BN_FIELDS] = {NULL, NULL, NULL, NULL, NULL, NULL};
+    const BIGNUMX *cofactor = NULL;
+    /* An array of BIGNUMXs for (p, a, b, x, y, order) */
+    BIGNUMX *bn[NUM_BN_FIELDS] = {NULL, NULL, NULL, NULL, NULL, NULL};
 
     meth = EC_GROUP_method_of(group);
     if (meth == NULL)

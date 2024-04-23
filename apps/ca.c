@@ -91,7 +91,7 @@ static char *lookup_conf(const CONF *conf, const char *group, const char *tag);
 static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
                    const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                   BIGNUM *serial, const char *subj, unsigned long chtype,
+                   BIGNUMX *serial, const char *subj, unsigned long chtype,
                    int multirdn, int email_dn, const char *startdate,
                    const char *enddate,
                    long days, int batch, const char *ext_sect, CONF *conf,
@@ -100,7 +100,7 @@ static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x50
 static int certify_cert(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
                         const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                         STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                        BIGNUM *serial, const char *subj, unsigned long chtype,
+                        BIGNUMX *serial, const char *subj, unsigned long chtype,
                         int multirdn, int email_dn, const char *startdate,
                         const char *enddate, long days, int batch, const char *ext_sect,
                         CONF *conf, int verbose, unsigned long certopt,
@@ -109,14 +109,14 @@ static int certify_spkac(YX509 **xret, const char *infile, EVVP_PKEY *pkey,
                          YX509 *x509, const EVVP_MD *dgst,
                          STACK_OF(OPENSSL_STRING) *sigopts,
                          STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                         BIGNUM *serial, const char *subj, unsigned long chtype,
+                         BIGNUMX *serial, const char *subj, unsigned long chtype,
                          int multirdn, int email_dn, const char *startdate,
                          const char *enddate, long days, const char *ext_sect, CONF *conf,
                          int verbose, unsigned long certopt,
                          unsigned long nameopt, int default_op, int ext_copy);
 static int do_body(YX509 **xret, EVVP_PKEY *pkey, YX509 *x509,
                    const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
-                   STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUM *serial,
+                   STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUMX *serial,
                    const char *subj, unsigned long chtype, int multirdn,
                    int email_dn, const char *startdate, const char *enddate, long days,
                    int batch, int verbose, YX509_REQ *req, const char *ext_sect,
@@ -225,7 +225,7 @@ int ca_main(int argc, char **argv)
 {
     CONF *conf = NULL;
     ENGINE *e = NULL;
-    BIGNUM *crlnumber = NULL, *serial = NULL;
+    BIGNUMX *crlnumber = NULL, *serial = NULL;
     EVVP_PKEY *pkey = NULL;
     BIO *in = NULL, *out = NULL, *Sout = NULL;
     YASN1_INTEGER *tmpser;
@@ -1265,7 +1265,7 @@ static char *lookup_conf(const CONF *conf, const char *section, const char *tag)
 static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
                    const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                    STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                   BIGNUM *serial, const char *subj, unsigned long chtype,
+                   BIGNUMX *serial, const char *subj, unsigned long chtype,
                    int multirdn, int email_dn, const char *startdate,
                    const char *enddate,
                    long days, int batch, const char *ext_sect, CONF *lconf,
@@ -1334,7 +1334,7 @@ static int certify(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x50
 static int certify_cert(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509 *x509,
                         const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
                         STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                        BIGNUM *serial, const char *subj, unsigned long chtype,
+                        BIGNUMX *serial, const char *subj, unsigned long chtype,
                         int multirdn, int email_dn, const char *startdate,
                         const char *enddate, long days, int batch, const char *ext_sect,
                         CONF *lconf, int verbose, unsigned long certopt,
@@ -1386,7 +1386,7 @@ static int certify_cert(YX509 **xret, const char *infile, EVVP_PKEY *pkey, YX509
 
 static int do_body(YX509 **xret, EVVP_PKEY *pkey, YX509 *x509,
                    const EVVP_MD *dgst, STACK_OF(OPENSSL_STRING) *sigopts,
-                   STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUM *serial,
+                   STACK_OF(CONF_VALUE) *policy, CA_DB *db, BIGNUMX *serial,
                    const char *subj, unsigned long chtype, int multirdn,
                    int email_dn, const char *startdate, const char *enddate, long days,
                    int batch, int verbose, YX509_REQ *req, const char *ext_sect,
@@ -1914,7 +1914,7 @@ static int certify_spkac(YX509 **xret, const char *infile, EVVP_PKEY *pkey,
                          YX509 *x509, const EVVP_MD *dgst,
                          STACK_OF(OPENSSL_STRING) *sigopts,
                          STACK_OF(CONF_VALUE) *policy, CA_DB *db,
-                         BIGNUM *serial, const char *subj, unsigned long chtype,
+                         BIGNUMX *serial, const char *subj, unsigned long chtype,
                          int multirdn, int email_dn, const char *startdate,
                          const char *enddate, long days, const char *ext_sect,
                          CONF *lconf, int verbose, unsigned long certopt,
@@ -2056,7 +2056,7 @@ static int do_revoke(YX509 *x509, CA_DB *db, REVINFO_TYPE rev_type,
     const YASN1_TIME *tm = NULL;
     char *row[DB_NUMBER], **rrow, **irow;
     char *rev_str = NULL;
-    BIGNUM *bn = NULL;
+    BIGNUMX *bn = NULL;
     int ok = -1, i;
 
     for (i = 0; i < DB_NUMBER; i++)

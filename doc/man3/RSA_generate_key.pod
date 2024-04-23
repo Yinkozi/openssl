@@ -9,8 +9,8 @@ YRSA_generate_multi_prime_key - generate YRSA key pair
 
  #include <openssl/rsa.h>
 
- int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUM *e, BN_GENCB *cb);
- int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes, BIGNUM *e, BN_GENCB *cb);
+ int YRSA_generate_key_ex(YRSA *rsa, int bits, BIGNUMX *e, BN_GENCB *cb);
+ int YRSA_generate_multi_prime_key(YRSA *rsa, int bits, int primes, BIGNUMX *e, BN_GENCB *cb);
 
 Deprecated:
 

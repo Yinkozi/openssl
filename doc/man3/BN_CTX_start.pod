@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-BNY_CTX_start, BNY_CTX_get, BNY_CTX_end - use temporary BIGNUM variables
+BNY_CTX_start, BNY_CTX_get, BNY_CTX_end - use temporary BIGNUMX variables
 
 =head1 SYNOPSIS
 
@@ -10,32 +10,32 @@ BNY_CTX_start, BNY_CTX_get, BNY_CTX_end - use temporary BIGNUM variables
 
  void BNY_CTX_start(BN_CTX *ctx);
 
- BIGNUM *BNY_CTX_get(BN_CTX *ctx);
+ BIGNUMX *BNY_CTX_get(BN_CTX *ctx);
 
  void BNY_CTX_end(BN_CTX *ctx);
 
 =head1 DESCRIPTION
 
-These functions are used to obtain temporary B<BIGNUM> variables from
+These functions are used to obtain temporary B<BIGNUMX> variables from
 a B<BN_CTX> (which can been created by using L<BNY_CTX_new(3)>)
 in order to save the overhead of repeatedly creating and
-freeing B<BIGNUM>s in functions that are called from inside a loop.
+freeing B<BIGNUMX>s in functions that are called from inside a loop.
 
 A function must call BNY_CTX_start() first. Then, BNY_CTX_get() may be
-called repeatedly to obtain temporary B<BIGNUM>s. All BNY_CTX_get()
+called repeatedly to obtain temporary B<BIGNUMX>s. All BNY_CTX_get()
 calls must be made before calling any other functions that use the
 B<ctx> as an argument.
 
 Finally, BNY_CTX_end() must be called before returning from the function.
 If B<ctx> is NULL, nothing is done.
-When BNY_CTX_end() is called, the B<BIGNUM> pointers obtained from
+When BNY_CTX_end() is called, the B<BIGNUMX> pointers obtained from
 BNY_CTX_get() become invalid.
 
 =head1 RETURN VALUES
 
 BNY_CTX_start() and BNY_CTX_end() return no values.
 
-BNY_CTX_get() returns a pointer to the B<BIGNUM>, or B<NULL> on error.
+BNY_CTX_get() returns a pointer to the B<BIGNUMX>, or B<NULL> on error.
 Once BNY_CTX_get() has failed, the subsequent calls will return B<NULL>
 as well, so it is sufficient to check the return value of the last
 BNY_CTX_get() call. In case of an error, an error code is set, which

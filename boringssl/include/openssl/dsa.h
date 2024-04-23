@@ -93,13 +93,13 @@ OPENSSL_EXPORT int DSA_up_ref(DSA *dsa);
 /* DSA_get0_key sets |*out_pub_key| and |*out_priv_key|, if non-NULL, to |dsa|'s
  * public and private key, respectively. If |dsa| is a public key, the private
  * key will be set to NULL. */
-OPENSSL_EXPORT void DSA_get0_key(const DSA *dsa, const BIGNUM **out_pub_key,
-                                 const BIGNUM **out_priv_key);
+OPENSSL_EXPORT void DSA_get0_key(const DSA *dsa, const BIGNUMX **out_pub_key,
+                                 const BIGNUMX **out_priv_key);
 
 /* DSA_get0_pqg sets |*out_p|, |*out_q|, and |*out_g|, if non-NULL, to |dsa|'s
  * p, q, and g parameters, respectively. */
-OPENSSL_EXPORT void DSA_get0_pqg(const DSA *dsa, const BIGNUM **out_p,
-                                 const BIGNUM **out_q, const BIGNUM **out_g);
+OPENSSL_EXPORT void DSA_get0_pqg(const DSA *dsa, const BIGNUMX **out_p,
+                                 const BIGNUMX **out_q, const BIGNUMX **out_g);
 
 
 /* Parameter generation. */
@@ -144,7 +144,7 @@ OPENSSL_EXPORT int DSA_generate_key(DSA *dsa);
 
 /* DSA_SIG_st (aka |DSA_SIG|) contains a DSA signature as a pair of integers. */
 struct DSA_SIG_st {
-  BIGNUM *r, *s;
+  BIGNUMX *r, *s;
 };
 
 /* DSA_SIG_new returns a freshly allocated, DIG_SIG structure or NULL on error.
@@ -186,7 +186,7 @@ OPENSSL_EXPORT int DSA_do_check_signature(int *out_valid, const uint8_t *digest,
 /* ASN.1 signatures.
  *
  * These functions also perform DSA signature operations, but deal with ASN.1
- * encoded signatures as opposed to raw |BIGNUM|s. If you don't know what
+ * encoded signatures as opposed to raw |BIGNUMX|s. If you don't know what
  * encoding a DSA signature is in, it's probably ASN.1. */
 
 /* DSA_sign signs |digest| with the key in |dsa| and writes the resulting
@@ -279,7 +279,7 @@ OPENSSL_EXPORT int DSA_marshal_parameters(CBB *cbb, const DSA *dsa);
  * way for the user to install them. Also, it forces the DSA* not to be const
  * when passing to the signing function. */
 OPENSSL_EXPORT int DSA_sign_setup(const DSA *dsa, BN_CTX *ctx,
-                                  BIGNUM **out_kinv, BIGNUM **out_r);
+                                  BIGNUMX **out_kinv, BIGNUMX **out_r);
 
 
 /* Conversion. */
@@ -389,15 +389,15 @@ OPENSSL_EXPORT DSA *DSA_generate_parameters(int bits, unsigned char *seed,
 
 struct dsa_st {
   long version;
-  BIGNUM *p;
-  BIGNUM *q; /* == 20 */
-  BIGNUM *g;
+  BIGNUMX *p;
+  BIGNUMX *q; /* == 20 */
+  BIGNUMX *g;
 
-  BIGNUM *pub_key;  /* y public key */
-  BIGNUM *priv_key; /* x private key */
+  BIGNUMX *pub_key;  /* y public key */
+  BIGNUMX *priv_key; /* x private key */
 
-  BIGNUM *kinv; /* Signing pre-calc */
-  BIGNUM *r;    /* Signing pre-calc */
+  BIGNUMX *kinv; /* Signing pre-calc */
+  BIGNUMX *r;    /* Signing pre-calc */
 
   int flags;
   /* Normally used to cache montgomery values */

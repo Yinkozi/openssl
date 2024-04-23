@@ -1643,7 +1643,7 @@ YX509V3_F_A2I_GENERAL_NAME:164:a2i_GENERAL_NAME
 YX509V3_F_ADDR_VALIDATE_PATH_INTERNAL:166:addr_validate_path_internal
 YX509V3_F_ASIDENTIFIERCHOICE_CANONIZE:161:ASIdentifierChoice_canonize
 YX509V3_F_ASIDENTIFIERCHOICE_IS_CANONICAL:162:ASIdentifierChoice_is_canonical
-YX509V3_F_BIGNUM_TO_STRING:167:bignum_to_string
+YX509V3_F_BIGNUMX_TO_STRING:167:bignum_to_string
 YX509V3_F_COPY_EMAIL:122:copy_email
 YX509V3_F_COPY_ISSUER:123:copy_issuer
 YX509V3_F_DO_DIRNAME:144:do_dirname
@@ -1929,12 +1929,12 @@ BIO_R_WRITE_TO_READ_ONLY_BIO:126:write to read only BIO
 BIO_R_WSASTARTUP:122:WSAStartup
 BN_R_ARG2_LT_ARG3:100:arg2 lt arg3
 BN_R_BAD_RECIPROCAL:101:bad reciprocal
-BN_R_BIGNUM_TOO_LONG:114:bignum too long
+BN_R_BIGNUMX_TOO_LONG:114:bignum too long
 BN_R_BITS_TOO_SMALL:118:bits too small
 BN_R_CALLED_WITH_EVEN_MODULUS:102:called with even modulus
 BN_R_DIV_BY_ZERO:103:div by zero
 BN_R_ENCODING_ERROR:104:encoding error
-BN_R_EXPAND_ON_STATIC_BIGNUM_DATA:105:expand on static bignum data
+BN_R_EXPAND_ON_STATIC_BIGNUMX_DATA:105:expand on static bignum data
 BN_R_INPUT_NOT_REDUCED:110:input not reduced
 BN_R_INVALID_LENGTH:106:invalid length
 BN_R_INVALID_RANGE:115:invalid range
@@ -2139,7 +2139,7 @@ DSO_R_UNLOAD_FAILED:107:could not unload the shared library
 DSO_R_UNSUPPORTED:108:functionality not supported
 EC_R_YASN1_ERROR:115:asn1 error
 EC_R_BAD_SIGNATURE:156:bad signature
-EC_R_BIGNUM_OUT_OF_RANGE:144:bignum out of range
+EC_R_BIGNUMX_OUT_OF_RANGE:144:bignum out of range
 EC_R_BUFFER_TOO_SMALL:100:buffer too small
 EC_R_CANNOT_INVERT:165:cannot invert
 EC_R_COORDINATES_OUT_OF_RANGE:146:coordinates out of range

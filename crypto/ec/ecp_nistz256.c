@@ -213,7 +213,7 @@ static BN_ULONG is_equal(const BN_ULONG a[P256_LIMBS],
     return is_zero(res);
 }
 
-static BN_ULONG is_one(const BIGNUM *z)
+static BN_ULONG is_one(const BIGNUMX *z)
 {
     BN_ULONG res = 0;
     BN_ULONG *a = bn_get_words(z);
@@ -601,7 +601,7 @@ static void ecp_nistz256_mod_inverse(BN_ULONG r[P256_LIMBS],
  * returns one if it fits. Otherwise it returns zero.
  */
 __owur static int ecp_nistz256_bignum_to_field_elem(BN_ULONG out[P256_LIMBS],
-                                                    const BIGNUM *in)
+                                                    const BIGNUMX *in)
 {
     return bn_copy_words(out, in, P256_LIMBS);
 }
@@ -609,7 +609,7 @@ __owur static int ecp_nistz256_bignum_to_field_elem(BN_ULONG out[P256_LIMBS],
 /* r = sum(scalar[i]*point[i]) */
 __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
                                             P256_POINT *r,
-                                            const BIGNUM **scalar,
+                                            const BIGNUMX **scalar,
                                             const EC_POINT **point,
                                             size_t num, BN_CTX *ctx)
 {
@@ -621,7 +621,7 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
     const unsigned int mask = (1 << (window_size + 1)) - 1;
     unsigned int wvalue;
     P256_POINT *temp;           /* place for 5 temporary points */
-    const BIGNUM **scalars = NULL;
+    const BIGNUMX **scalars = NULL;
     P256_POINT (*table)[16] = NULL;
     void *table_storage = NULL;
 
@@ -630,7 +630,7 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
             OPENSSL_malloc((num * 16 + 5) * sizeof(P256_POINT) + 64)) == NULL
         || (p_str =
             OPENSSL_malloc(num * 33 * sizeof(unsigned char))) == NULL
-        || (scalars = OPENSSL_malloc(num * sizeof(BIGNUM *))) == NULL) {
+        || (scalars = OPENSSL_malloc(num * sizeof(BIGNUMX *))) == NULL) {
         ECerr(EC_F_ECP_NISTZ256_WINDOWED_MUL, ERR_R_MALLOC_FAILURE);
         goto err;
     }
@@ -643,7 +643,7 @@ __owur static int ecp_nistz256_windowed_mul(const EC_GROUP *group,
 
         /* This is an unusual input, we don't guarantee constant-timeness. */
         if ((BNY_num_bits(scalar[i]) > 256) || BN_is_negative(scalar[i])) {
-            BIGNUM *mod;
+            BIGNUMX *mod;
 
             if ((mod = BNY_CTX_get(ctx)) == NULL)
                 goto err;
@@ -813,7 +813,7 @@ __owur static int ecp_nistz256_mult_precompute(EC_GROUP *group, BN_CTX *ctx)
      * implicit value of infinity at index zero. We use window of size 7, and
      * therefore require ceil(256/7) = 37 tables.
      */
-    const BIGNUM *order;
+    const BIGNUMX *order;
     EC_POINT *P = NULL, *T = NULL;
     const EC_POINT *generator;
     NISTZ256_PRE_COMP *pre_comp;
@@ -946,17 +946,17 @@ __owur static int ecp_nistz256_set_from_affine(EC_POINT *out, const EC_GROUP *gr
 /* r = scalar*G + sum(scalars[i]*points[i]) */
 __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
                                           EC_POINT *r,
-                                          const BIGNUM *scalar,
+                                          const BIGNUMX *scalar,
                                           size_t num,
                                           const EC_POINT *points[],
-                                          const BIGNUM *scalars[], BN_CTX *ctx)
+                                          const BIGNUMX *scalars[], BN_CTX *ctx)
 {
     int i = 0, ret = 0, no_precomp_for_generator = 0, p_is_infinity = 0;
     unsigned char p_str[33] = { 0 };
     const PRECOMP256_ROW *preComputedTable = NULL;
     const NISTZ256_PRE_COMP *pre_comp = NULL;
     const EC_POINT *generator = NULL;
-    const BIGNUM **new_scalars = NULL;
+    const BIGNUMX **new_scalars = NULL;
     const EC_POINT **new_points = NULL;
     unsigned int idx = 0;
     const unsigned int window_size = 7;
@@ -966,7 +966,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
         P256_POINT p;
         P256_POINT_AFFINE a;
     } t, p;
-    BIGNUM *tmp_scalar;
+    BIGNUMX *tmp_scalar;
 
     if ((num + 1) == 0 || (num + 1) > OPENSSL_MALLOC_MAX_NELEMS(void *)) {
         ECerr(EC_F_ECP_NISTZ256_POINTS_MUL, ERR_R_MALLOC_FAILURE);
@@ -1117,7 +1117,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
          * Without a precomputed table for the generator, it has to be
          * handled like a normal point.
          */
-        new_scalars = OPENSSL_malloc((num + 1) * sizeof(BIGNUM *));
+        new_scalars = OPENSSL_malloc((num + 1) * sizeof(BIGNUMX *));
         if (new_scalars == NULL) {
             ECerr(EC_F_ECP_NISTZ256_POINTS_MUL, ERR_R_MALLOC_FAILURE);
             goto err;
@@ -1129,7 +1129,7 @@ __owur static int ecp_nistz256_points_mul(const EC_GROUP *group,
             goto err;
         }
 
-        memcpy(new_scalars, scalars, num * sizeof(BIGNUM *));
+        memcpy(new_scalars, scalars, num * sizeof(BIGNUMX *));
         new_scalars[num] = scalar;
         memcpy(new_points, points, num * sizeof(EC_POINT *));
         new_points[num] = generator;
@@ -1170,7 +1170,7 @@ err:
 
 __owur static int ecp_nistz256_get_affine(const EC_GROUP *group,
                                           const EC_POINT *point,
-                                          BIGNUM *x, BIGNUM *y, BN_CTX *ctx)
+                                          BIGNUMX *x, BIGNUMX *y, BN_CTX *ctx)
 {
     BN_ULONG z_inv2[P256_LIMBS];
     BN_ULONG z_inv3[P256_LIMBS];
@@ -1293,8 +1293,8 @@ void ecp_nistz256_ord_sqr_mont(BN_ULONG res[P256_LIMBS],
                                const BN_ULONG a[P256_LIMBS],
                                int rep);
 
-static int ecp_nistz256_inv_mod_ord(const EC_GROUP *group, BIGNUM *r,
-                                    const BIGNUM *x, BN_CTX *ctx)
+static int ecp_nistz256_inv_mod_ord(const EC_GROUP *group, BIGNUMX *r,
+                                    const BIGNUMX *x, BN_CTX *ctx)
 {
     /* RR = 2^512 mod ord(p256) */
     static const BN_ULONG RR[P256_LIMBS]  = {
@@ -1326,7 +1326,7 @@ static int ecp_nistz256_inv_mod_ord(const EC_GROUP *group, BIGNUM *r,
     }
 
     if ((BNY_num_bits(x) > 256) || BN_is_negative(x)) {
-        BIGNUM *tmp;
+        BIGNUMX *tmp;
 
         if ((tmp = BNY_CTX_get(ctx)) == NULL
             || !BNY_nnmod(tmp, x, group->order, ctx)) {

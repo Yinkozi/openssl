@@ -77,7 +77,7 @@ static int example_EC_POINT_mul(void) {
   /* This example ensures that 10×∞ + G = G, in P-256. */
   EC_GROUP *group = NULL;
   EC_POINT *p = NULL, *result = NULL;
-  BIGNUM *n = NULL;
+  BIGNUMX *n = NULL;
   int ret = 0;
   const EC_POINT *generator;
 

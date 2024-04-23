@@ -31,24 +31,24 @@ objects
  void EC_GROUP_free(EC_GROUP *group);
  void EC_GROUP_clear_free(EC_GROUP *group);
 
- EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUM *p, const BIGNUM *a,
-                                  const BIGNUM *b, BN_CTX *ctx);
- EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUM *p, const BIGNUM *a,
-                                   const BIGNUM *b, BN_CTX *ctx);
+ EC_GROUP *EC_GROUP_new_curves_GFp(const BIGNUMX *p, const BIGNUMX *a,
+                                  const BIGNUMX *b, BN_CTX *ctx);
+ EC_GROUP *EC_GROUP_new_curves_GF2m(const BIGNUMX *p, const BIGNUMX *a,
+                                   const BIGNUMX *b, BN_CTX *ctx);
  EC_GROUP *EC_GROUP_new_by_curve_mame(int nid);
 
- int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUM *p, const BIGNUM *a,
-                        const BIGNUM *b, BN_CTX *ctx);
- int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUM *p, BIGNUM *a, BIGNUM *b,
+ int EC_GROUP_set_curve(EC_GROUP *group, const BIGNUMX *p, const BIGNUMX *a,
+                        const BIGNUMX *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve(const EC_GROUP *group, BIGNUMX *p, BIGNUMX *a, BIGNUMX *b,
                         BN_CTX *ctx);
- int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUM *p,
-                            const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
- int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUM *p,
-                            BIGNUM *a, BIGNUM *b, BN_CTX *ctx);
- int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUM *p,
-                             const BIGNUM *a, const BIGNUM *b, BN_CTX *ctx);
- int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUM *p,
-                             BIGNUM *a, BIGNUM *b, BN_CTX *ctx);
+ int EC_GROUP_set_curve_GFp(EC_GROUP *group, const BIGNUMX *p,
+                            const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve_GFp(const EC_GROUP *group, BIGNUMX *p,
+                            BIGNUMX *a, BIGNUMX *b, BN_CTX *ctx);
+ int EC_GROUP_set_curve_GF2m(EC_GROUP *group, const BIGNUMX *p,
+                             const BIGNUMX *a, const BIGNUMX *b, BN_CTX *ctx);
+ int EC_GROUP_get_curve_GF2m(const EC_GROUP *group, BIGNUMX *p,
+                             BIGNUMX *a, BIGNUMX *b, BN_CTX *ctx);
 
  ECPARAMETERS *EC_GROUP_get_ecparameters(const EC_GROUP *group, ECPARAMETERS *params)
  ECPKPARAMETERS *EC_GROUP_get_ecpkparameters(const EC_GROUP *group, ECPKPARAMETERS *params)

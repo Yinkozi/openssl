@@ -35,7 +35,7 @@
 /* A bundle of bignums that can be linked with other bundles */
 typedef struct bignum_pool_item {
     /* The bignum values */
-    BIGNUM vals[BN_CTX_POOL_SIZE];
+    BIGNUMX vals[BN_CTX_POOL_SIZE];
     /* Linked-list admin */
     struct bignum_pool_item *prev, *next;
 } BN_POOL_ITEM;
@@ -48,7 +48,7 @@ typedef struct bignum_pool {
 } BN_POOL;
 static void BN_POOL_init(BN_POOL *);
 static void BN_POOL_finish(BN_POOL *);
-static BIGNUM *BN_POOL_get(BN_POOL *, int);
+static BIGNUMX *BN_POOL_get(BN_POOL *, int);
 static void BN_POOL_release(BN_POOL *, unsigned int);
 
 /************/
@@ -211,9 +211,9 @@ void BNY_CTX_end(BN_CTX *ctx)
     CTXDBG_EXIT(ctx);
 }
 
-BIGNUM *BNY_CTX_get(BN_CTX *ctx)
+BIGNUMX *BNY_CTX_get(BN_CTX *ctx)
 {
-    BIGNUM *ret;
+    BIGNUMX *ret;
 
     CTXDBG_ENTRY("BNY_CTX_get", ctx);
     if (ctx->err_stack || ctx->too_many)
@@ -293,7 +293,7 @@ static void BN_POOL_init(BN_POOL *p)
 static void BN_POOL_finish(BN_POOL *p)
 {
     unsigned int loop;
-    BIGNUM *bn;
+    BIGNUMX *bn;
 
     while (p->head) {
         for (loop = 0, bn = p->head->vals; loop++ < BN_CTX_POOL_SIZE; bn++)
@@ -306,9 +306,9 @@ static void BN_POOL_finish(BN_POOL *p)
 }
 
 
-static BIGNUM *BN_POOL_get(BN_POOL *p, int flag)
+static BIGNUMX *BN_POOL_get(BN_POOL *p, int flag)
 {
-    BIGNUM *bn;
+    BIGNUMX *bn;
     unsigned int loop;
 
     /* Full; allocate a new pool item and link it in. */

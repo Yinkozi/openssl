@@ -64,7 +64,7 @@
 #include "../bytestring/internal.h"
 
 
-static int parse_integer(CBS *cbs, BIGNUM **out) {
+static int parse_integer(CBS *cbs, BIGNUMX **out) {
   assert(*out == NULL);
   *out = BNY_new();
   if (*out == NULL) {
@@ -73,7 +73,7 @@ static int parse_integer(CBS *cbs, BIGNUM **out) {
   return BN_parse_asn1_unsigned(cbs, *out);
 }
 
-static int marshal_integer(CBB *cbb, BIGNUM *bn) {
+static int marshal_integer(CBB *cbb, BIGNUMX *bn) {
   if (bn == NULL) {
     /* A DSA object may be missing some components. */
     OPENSSL_PUT_ERROR(DSA, ERR_R_PASSED_NULL_PARAMETER);

@@ -44,15 +44,15 @@ void EC_KEY_free(EC_KEY *);
 
 EC_KEY *ECC_KEY_new_by_curve_name(int);
 const EC_GROUP *ECC_KEY_get0_group(const EC_KEY *);
-int EC_GROUP_get_order(const EC_GROUP *, BIGNUM *, BN_CTX *);
+int EC_GROUP_get_order(const EC_GROUP *, BIGNUMX *, BN_CTX *);
 int ECC_KEY_set_group(EC_KEY *, const EC_GROUP *);
-const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *);
-int ECC_KEY_set_private_key(EC_KEY *, const BIGNUM *);
+const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *);
+int ECC_KEY_set_private_key(EC_KEY *, const BIGNUMX *);
 const EC_POINT *ECC_KEY_get0_public_key(const EC_KEY *);
 int ECC_KEY_set_public_key(EC_KEY *, const EC_POINT *);
 void ECC_KEY_set_asn1_flag(EC_KEY *, int);
 int ECC_KEY_generate_key(EC_KEY *);
-int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *, BIGNUM *, BIGNUM *);
+int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *, BIGNUMX *, BIGNUMX *);
 
 EC_POINT *EC_POINT_new(const EC_GROUP *);
 void EC_POINT_free(EC_POINT *);
@@ -60,13 +60,13 @@ void EC_POINT_clear_free(EC_POINT *);
 EC_POINT *EC_POINT_dup(const EC_POINT *, const EC_GROUP *);
 
 int EC_POINT_set_affine_coordinates_GFp(const EC_GROUP *, EC_POINT *,
-    const BIGNUM *, const BIGNUM *, BN_CTX *);
+    const BIGNUMX *, const BIGNUMX *, BN_CTX *);
 
 int EC_POINT_get_affine_coordinates_GFp(const EC_GROUP *,
-    const EC_POINT *, BIGNUM *, BIGNUM *, BN_CTX *);
+    const EC_POINT *, BIGNUMX *, BIGNUMX *, BN_CTX *);
 
 int EC_POINT_get_affine_coordinates_GF2m(const EC_GROUP *,
-    const EC_POINT *, BIGNUM *, BIGNUM *, BN_CTX *);
+    const EC_POINT *, BIGNUMX *, BIGNUMX *, BN_CTX *);
 
 size_t EC_POINT_point2oct(const EC_GROUP *, const EC_POINT *,
     point_conversion_form_t,
@@ -86,8 +86,8 @@ int EC_POINT_is_on_curve(const EC_GROUP *, const EC_POINT *, BN_CTX *);
 int EC_POINT_cmp(
     const EC_GROUP *, const EC_POINT *, const EC_POINT *, BN_CTX *);
 
-int EC_POINT_mul(const EC_GROUP *, EC_POINT *, const BIGNUM *,
-    const EC_POINT *, const BIGNUM *, BN_CTX *);
+int EC_POINT_mul(const EC_GROUP *, EC_POINT *, const BIGNUMX *,
+    const EC_POINT *, const BIGNUMX *, BN_CTX *);
 
 int EC_METHOD_get_field_type(const EC_METHOD *);
 
@@ -101,7 +101,7 @@ CUSTOMIZATIONS = """
 static const long Cryptography_HAS_EC2M = 0;
 
 int (*EC_POINT_get_affine_coordinates_GF2m)(const EC_GROUP *,
-    const EC_POINT *, BIGNUM *, BIGNUM *, BN_CTX *) = NULL;
+    const EC_POINT *, BIGNUMX *, BIGNUMX *, BN_CTX *) = NULL;
 
 #else
 static const long Cryptography_HAS_EC2M = 1;

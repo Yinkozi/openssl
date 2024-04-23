@@ -32,8 +32,8 @@ EC_KEY objects
  ENGINE *ECC_KEY_get0_engine(const EC_KEY *eckey);
  const EC_GROUP *ECC_KEY_get0_group(const EC_KEY *key);
  int ECC_KEY_set_group(EC_KEY *key, const EC_GROUP *group);
- const BIGNUM *ECC_KEY_get0_private_key(const EC_KEY *key);
- int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUM *priv_key);
+ const BIGNUMX *ECC_KEY_get0_private_key(const EC_KEY *key);
+ int ECC_KEY_set_private_key(EC_KEY *key, const BIGNUMX *priv_key);
  const EC_POINT *ECC_KEY_get0_public_key(const EC_KEY *key);
  int ECC_KEY_set_public_key(EC_KEY *key, const EC_POINT *pub);
  point_conversion_form_t ECC_KEY_get_conv_form(const EC_KEY *key);
@@ -43,7 +43,7 @@ EC_KEY objects
  int ECC_KEY_precompute_mult(EC_KEY *key, BN_CTX *ctx);
  int ECC_KEY_generate_key(EC_KEY *key);
  int ECC_KEY_check_key(const EC_KEY *key);
- int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUM *x, BIGNUM *y);
+ int ECC_KEY_set_public_key_affine_coordinates(EC_KEY *key, BIGNUMX *x, BIGNUMX *y);
  const EC_KEY_METHOD *ECC_KEY_get_method(const EC_KEY *key);
  int ECC_KEY_set_method(EC_KEY *key, const EC_KEY_METHOD *meth);
 

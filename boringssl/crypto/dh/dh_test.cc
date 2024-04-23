@@ -511,7 +511,7 @@ static const uint8_t kRFC5114_2048_224BadY[] = {
 
 static bool TestBadY() {
   bssl::UniquePtr<DH> dh(DH_get_2048_224(nullptr));
-  bssl::UniquePtr<BIGNUM> pub_key(
+  bssl::UniquePtr<BIGNUMX> pub_key(
       BNY_bin2bn(kRFC5114_2048_224BadY, sizeof(kRFC5114_2048_224BadY), nullptr));
   if (!dh || !pub_key || !DH_generate_key(dh.get())) {
     return false;
@@ -536,12 +536,12 @@ static bool TestBadY() {
   return true;
 }
 
-static bool BIGNUMEqualsHex(const BIGNUM *bn, const char *hex) {
-  BIGNUM *hex_bn = NULL;
+static bool BIGNUMXEqualsHex(const BIGNUMX *bn, const char *hex) {
+  BIGNUMX *hex_bn = NULL;
   if (!BN_hex2bn(&hex_bn, hex)) {
     return false;
   }
-  bssl::UniquePtr<BIGNUM> free_hex_bn(hex_bn);
+  bssl::UniquePtr<BIGNUMX> free_hex_bn(hex_bn);
   return BN_cmp(bn, hex_bn) == 0;
 }
 
@@ -559,10 +559,10 @@ static bool TestYASN1() {
   CBS_init(&cbs, kParams, sizeof(kParams));
   bssl::UniquePtr<DH> dh(DH_parse_parameters(&cbs));
   if (!dh || CBS_len(&cbs) != 0 ||
-      !BIGNUMEqualsHex(
+      !BIGNUMXEqualsHex(
           dh->p,
           "d72034a3274fdfbf04fd246825b656d8ab2a412d740a52087c40714ed2579313") ||
-      !BIGNUMEqualsHex(dh->g, "2") || dh->priv_length != 0) {
+      !BIGNUMXEqualsHex(dh->g, "2") || dh->priv_length != 0) {
     return false;
   }
 
@@ -600,11 +600,11 @@ static bool TestYASN1() {
   CBS_init(&cbs, kParamsDSA, sizeof(kParamsDSA));
   dh.reset(DH_parse_parameters(&cbs));
   if (!dh || CBS_len(&cbs) != 0 ||
-      !BIGNUMEqualsHex(dh->p,
+      !BIGNUMXEqualsHex(dh->p,
                        "93f3c11801e662b6d1469a2c72ea31d91810302863e2347d80caee8"
                        "22b193c19bb42830270dddb8c03abe99cc4004d705f5203312ca467"
                        "3451952aac11e26a55") ||
-      !BIGNUMEqualsHex(dh->g,
+      !BIGNUMXEqualsHex(dh->g,
                        "44c8105344323163d8d18c75c898533b5b4a2a0a09e7d03c5372a86"
                        "b70419c267144fc7f0875e102ab7441e82a3d3c263309e48bb441ec"
                        "a6a8ba1a078a77f55f") ||
@@ -627,7 +627,7 @@ static bool TestYASN1() {
 }
 
 static bool TestRFC3526() {
-  bssl::UniquePtr<BIGNUM> bn(BN_get_rfc3526_prime_1536(nullptr));
+  bssl::UniquePtr<BIGNUMX> bn(BN_get_rfc3526_prime_1536(nullptr));
   if (!bn) {
     return false;
   }
